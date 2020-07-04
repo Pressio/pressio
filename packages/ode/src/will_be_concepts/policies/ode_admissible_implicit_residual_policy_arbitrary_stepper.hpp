@@ -7,31 +7,25 @@ namespace pressio{ namespace ode{ namespace meta {
 
 template<
   typename T,
-  typename state_t,
   typename residual_t,
   typename system_t,
   typename enable = void
   >
-struct residual_policy_callable_with_two_args : std::false_type{};
+struct residual_policy_create_method : std::false_type{};
 
 template<
   typename T,
-  typename state_t,
   typename residual_t,
   typename system_t
   >
-struct residual_policy_callable_with_two_args<
-  T, state_t, residual_t, system_t,
+struct residual_policy_create_method<
+  T, residual_t, system_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
       residual_t,
       decltype
       (
-       std::declval<T const>().operator()
-       (
-	std::declval<state_t const &>(),
-	std::declval<system_t const &>()
-	)
+       std::declval<T const>().create(std::declval<system_t const &>())
        )
       >::value
     >
@@ -47,7 +41,7 @@ template<
   typename scalar_t,
   typename enable = void
   >
-struct residual_policy_callable_with_nine_args : std::false_type{};
+struct residual_policy_compute_method : std::false_type{};
 
 template<
   typename T,
@@ -57,13 +51,13 @@ template<
   typename system_t,
   typename scalar_t
   >
-struct residual_policy_callable_with_nine_args<
+struct residual_policy_compute_method<
   T, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const>().template operator()
+       std::declval<T const>().template compute
        (
 	std::declval<state_t const &>(),
 	std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
@@ -72,7 +66,7 @@ struct residual_policy_callable_with_nine_args<
 	std::declval<scalar_t const &>(),
 	std::declval<::pressio::ode::types::step_t const &>(),
 	std::declval<residual_t &>(),
-	::pressio::solvers::Norm::Undefined,
+	::pressio::Norm::Undefined,
 	std::declval<scalar_t &>()
 	)
        )
@@ -96,10 +90,9 @@ struct admissible_residual_policy_for_implicit_arbitrary_stepper
   static constexpr bool c1 = ::pressio::ode::meta::legitimate_implicit_state_type<state_t>::value;
   static constexpr bool c2 = ::pressio::ode::meta::legitimate_implicit_residual_type<residual_t>::value;
 
-  static constexpr bool c5 = residual_policy_callable_with_two_args<
-    T, state_t, residual_t, system_t>::value;
+  static constexpr bool c5 = residual_policy_create_method<T, residual_t, system_t>::value;
 
-  static constexpr bool c6 = residual_policy_callable_with_nine_args<
+  static constexpr bool c6 = residual_policy_compute_method<
     T, numPrevStates, state_t, residual_t, system_t, scalar_t>::value;
 
   using value_type = bool;

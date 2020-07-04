@@ -27,13 +27,19 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   using lin_solver_t = solvers::linear::Solver<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  // using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  // nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 2, solverO);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 2, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -66,9 +72,15 @@ TEST(ode_implicit_euler, guesserLambda){
   using lin_algo_t = solvers::linear::iterative::Bicgstab;
   using lin_solver_t = solvers::linear::Solver<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
-  solverO.setMaxIterations(0);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  NonLinSolver.setMaxIterations(0);
+  // using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  // nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   const auto testLambda = [](const ode::types::step_t & step,
@@ -79,7 +91,7 @@ TEST(ode_implicit_euler, guesserLambda){
   			  };
 
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1, solverO, testLambda);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1, NonLinSolver, testLambda);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y[0], -22.0);
@@ -123,13 +135,17 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   using lin_solver_t = solvers::linear::Solver<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);

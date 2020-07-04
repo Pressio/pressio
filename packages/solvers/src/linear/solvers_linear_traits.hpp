@@ -207,17 +207,5 @@ struct traits<::pressio::solvers::linear::direct::geqrf> {
 };
 #endif
 
-
-// template <>
-// struct traits<CompleteOrthogonalDecomposition> {
-
-//   template <typename MatrixT>
-//   using eigen_solver_type = Eigen::CompleteOrthogonalDecomposition<MatrixT>;
-
-//   static constexpr bool direct = true;
-//   static constexpr bool eigen_enabled = true;
-// };
-
-
 }}}}//end namespace pressio::solvers::linear::details
 #endif

@@ -110,7 +110,7 @@ public:
 		  const scalar_t	& dt,
 		  const ::pressio::ode::types::step_t & step,
 		  lspg_res_t		& R,
-		  ::pressio::solvers::Norm normKind,
+		  ::pressio::Norm normKind,
 		  scalar_t & normValue) const
   {
     preconditionable::template operator()<

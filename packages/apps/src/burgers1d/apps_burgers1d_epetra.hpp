@@ -94,6 +94,17 @@ public:
     return *U0_;
   };
 
+  velocity_type createVelocity() const{
+    Epetra_Vector R(*dataMap_);
+    return R;
+  }
+
+  // computes: A = Jac B where B is a multivector
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
+    dense_matrix_type C( Jac_->RangeMap(), B.NumVectors() );
+    return C;
+  }
+
   void velocity(const state_type & u,
 		const scalar_type /* t */,
 		velocity_type & rhs) const
@@ -129,14 +140,6 @@ public:
   }//end velocity
   //-------------------------------------------------------
 
-
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    Epetra_Vector R(*dataMap_);
-    velocity(u,t,R);
-    return R;
-  }//end residual
-
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
@@ -153,14 +156,6 @@ public:
     //A.Print(std::cout);
   }
 
-  // computes: A = Jac B where B is a multivector
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
-    dense_matrix_type C( Jac_->RangeMap(), B.NumVectors() );
-    applyJacobian(y, B, t, C);
-    return C;
-  }
 
   void jacobian(const state_type & u,
 		const scalar_type /*t*/,

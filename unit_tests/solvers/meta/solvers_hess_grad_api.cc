@@ -13,8 +13,8 @@ struct ValidSystemA {
   using hessian_type	= matrix_w_t;
   using gradient_type	= vector_w_t;
 
-  hessian_type createHessianObject(const state_type & x) const;
-  gradient_type createGradientObject(const state_type & x) const;
+  hessian_type createHessian() const;
+  gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
   		    pressio::solvers::Norm normKind,
@@ -36,8 +36,8 @@ struct ValidSystemB {
   using hessian_type	= matrix_w_t;
   using gradient_type	= vector_w_t;
 
-  hessian_type createHessianObject(const state_type & x) const;
-  gradient_type createGradientObject(const state_type & x) const;
+  hessian_type createHessian() const;
+  gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
   		    pressio::solvers::Norm normKind,

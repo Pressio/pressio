@@ -14,21 +14,12 @@ struct admissible_system_explicit_ode<
   mpl::enable_if_t<
     ::pressio::containers::meta::has_scalar_typedef<T>::value and
     ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::ode::meta::has_velocity_typedef<T>::value 
-    and
-    ::pressio::ode::meta::has_const_velocity_method_accept_state_time_return_result<
-      T,
-      typename T::state_type,
-      typename T::scalar_type,
-      typename T::velocity_type
-    >::value 
-    and
+    ::pressio::ode::meta::has_velocity_typedef<T>::value and
+    //// velocity methods
+    ::pressio::ode::meta::has_const_create_velocity_method_return_result<
+      T, typename T::velocity_type >::value and
     ::pressio::ode::meta::has_const_velocity_method_accept_state_time_result_return_void<
-      T,
-      typename T::state_type,
-      typename T::scalar_type,
-      typename T::velocity_type
-    >::value
+      T, typename T::state_type,typename T::scalar_type,typename T::velocity_type>::value
    >
   > : std::true_type{};
 

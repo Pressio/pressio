@@ -52,7 +52,7 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_t, typename lin_solver_t, ::pressio::solvers::Norm normType
+  typename T, typename state_t, typename lin_solver_t, ::pressio::Norm normType
   >
 class HessianGradientCorrector : public T
 {

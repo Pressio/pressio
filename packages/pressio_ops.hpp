@@ -54,6 +54,7 @@
 #include "pressio_containers.hpp"
 
 #include "ops/src/ops_ConfigDefs.hpp"
+#include "ops/src/ops_fwd.hpp"
 
 // meta
 #include "ops/src/meta/ops_has_method_deep_copy.hpp"

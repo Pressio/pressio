@@ -49,7 +49,7 @@ TEST(ode_explicit_rk4,
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
   using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, double>;
+    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t>;
   stepper_t stepperObj(y, appObj);
 
   // // integrate in time
@@ -86,7 +86,7 @@ TEST(ode_explicit_rk4,
   res_std_pol_t polObj;
   using stepper_t = ode::ExplicitStepper<
     ode::explicitmethods::RungeKutta4, state_t,
-    app_t, res_t, res_std_pol_t, double>;
+    app_t, res_t, res_std_pol_t>;
   stepper_t stepperObj(y, appObj, polObj);
 
   // integrate in time

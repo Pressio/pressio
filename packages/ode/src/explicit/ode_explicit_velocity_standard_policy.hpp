@@ -81,8 +81,13 @@ public:
   VelocityStandardPolicy() = default;
   ~VelocityStandardPolicy() = default;
 
+  state_type create(const system_type & model) const
+  {
+    return state_type(model.createVelocity());
+  }
+
   template < typename scalar_type>
-  void operator()(const state_type & state,
+  void compute(const state_type & state,
 		  state_type & f,
 		  const system_type & model,
 		  const scalar_type & time) const
@@ -90,13 +95,6 @@ public:
     model.velocity(*state.data(), time, *f.data());
   }
 
-  template < typename scalar_type >
-  state_type operator()(const state_type & state,
-			const system_type & model,
-			const scalar_type & time) const
-  {
-    return state_type(model.velocity(*state.data(), time));
-  }
 };//end class
 
 }}}}//end namespace pressio::ode::explicitmethods::policy

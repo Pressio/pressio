@@ -22,7 +22,7 @@ struct has_const_td_residual_method_accept_step_time_dt_result_norm_states_retur
 							    std::declval<sc_t const &>(),
 							    std::declval<sc_t const &>(),
 							    std::declval<residual_t &>(),
-							    ::pressio::solvers::Norm::Undefined,
+							    ::pressio::Norm::Undefined,
 							    std::declval<sc_t &>(),
 							    std::declval<state_t const&>()
 							    )
@@ -43,7 +43,7 @@ struct has_const_td_residual_method_accept_step_time_dt_result_norm_states_retur
 							    std::declval<sc_t const &>(),
 							    std::declval<sc_t const &>(),
 							    std::declval<residual_t &>(),
-							    ::pressio::solvers::Norm::Undefined,
+							    ::pressio::Norm::Undefined,
 							    std::declval<sc_t &>(),
 							    std::declval<state_t const&>(),
 							    std::declval<state_t const&>()
@@ -65,7 +65,7 @@ struct has_const_td_residual_method_accept_step_time_dt_result_norm_states_retur
 							    std::declval<sc_t const &>(),
 							    std::declval<sc_t const &>(),
 							    std::declval<residual_t &>(),
-							    ::pressio::solvers::Norm::Undefined,
+							    ::pressio::Norm::Undefined,
 							    std::declval<sc_t &>(),
 							    std::declval<state_t const&>(),
 							    std::declval<state_t const&>(),

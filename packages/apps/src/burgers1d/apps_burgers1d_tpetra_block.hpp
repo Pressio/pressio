@@ -145,34 +145,29 @@ public:
     }
   }
 
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const
-  {
-    velocity_type R(*dataMap_,1);
-    velocity(u,t,R);
-    return R;
-  }
-
   // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
-		     scalar_type t,
-		     dense_matrix_type & A) const
+         const dense_matrix_type & B,
+         scalar_type t,
+         dense_matrix_type & A) const
   {
     computeJacobianUpdate(y, *Jac_, t);
     const auto B_vv = B.getMultiVectorView();
-    auto A_vv	    = A.getMultiVectorView();
+    auto A_vv     = A.getMultiVectorView();
     Jac_->apply(B_vv, A_vv);
     //Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   }
 
+  velocity_type createVelocity() const
+  {
+    velocity_type R(*dataMap_,1);
+    return R;
+  }
+
   // computes: A = Jac B where B is dense
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
   {
     dense_matrix_type A( *dataMap_, blockSize, B.getNumVectors() );
-    applyJacobian(y, B, t, A);
     return A;
   }
 

@@ -52,6 +52,7 @@
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
+  typename galerkin_state_t,
   typename fom_states_manager_t,
   typename fom_rhs_t,
   typename decoder_t,
@@ -100,26 +101,24 @@ public:
       udOps_{&udOps}{}
 
 public:
-  /* for now, the ROM state and ROM velocity must be of the same type */
-  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
-  void operator()(const galerkin_state_t  & romState,
-		  galerkin_state_t	  & romRhs,
-  		  const fom_t		  & app,
-		  const scalar_t	  & t) const
-  {
-    this->compute_impl(romState, romRhs, app, t);
-  }
-
-  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
-  galerkin_state_t operator()(const galerkin_state_t  & romState,
-			      const fom_t	      & app,
-			      const scalar_t	      & t) const
+  template <typename fom_t>
+  galerkin_state_t create(const fom_t & app) const
   {
     // this is called once
-    galerkin_state_t result(romState);
+    galerkin_state_t result(phi_.extent(1));
     ::pressio::ops::set_zero(result);
-    this->compute_impl(romState, result, app, t);
+    // this->compute_impl(romState, result, app, t);
     return result;
+  }
+
+  /* for now, the ROM state and ROM velocity must be of the same type */
+  template <typename fom_t, typename scalar_t>
+  void create(const galerkin_state_t & romState, 
+              galerkin_state_t & romRhs,
+  		        const fom_t	& app,
+		          const scalar_t & t) const
+  {
+    this->compute_impl(romState, romRhs, app, t);
   }
 
 private:
@@ -192,8 +191,7 @@ private:
     udOps_->product(::pressio::transpose(), one, *phi_.data(), *fomRhs_.data(), zero, result);
   }
 
-private:
-  template <typename galerkin_state_t, typename fom_t, typename scalar_t>
+  template <typename fom_t, typename scalar_t>
   void compute_impl(const galerkin_state_t  & romState,
 		    galerkin_state_t	    & romRhs,
 		    const fom_t		    & app,

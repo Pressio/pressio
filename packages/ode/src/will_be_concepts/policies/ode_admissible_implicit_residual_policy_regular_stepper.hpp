@@ -35,11 +35,7 @@ struct admissible_implicit_residual_policy_regular_stepper<
       residual_t,
       decltype
       (
-       std::declval<T const>().operator()
-       (
-	       std::declval<state_t const &>(),
-	       std::declval<system_t const &>()
-	     )
+       std::declval<T const>().create(std::declval<system_t const &>())
        )
       >::value
     and
@@ -47,7 +43,7 @@ struct admissible_implicit_residual_policy_regular_stepper<
     std::is_void<
       decltype
       (
-       std::declval<T const>().template operator()
+       std::declval<T const>().template compute
        <tag>(
 	     std::declval<state_t const &>(),
 	     std::declval<::pressio::ode::AuxStatesContainer<false, state_t, numPrevStates> const &>(),
@@ -56,7 +52,7 @@ struct admissible_implicit_residual_policy_regular_stepper<
 	     std::declval<scalar_t const &>(),
 	     std::declval<::pressio::ode::types::step_t>(),
 	     std::declval<residual_t &>(),
-	     ::pressio::solvers::Norm::Undefined,
+	     ::pressio::Norm::Undefined,
 	     std::declval<scalar_t &>()
 	     )
        )

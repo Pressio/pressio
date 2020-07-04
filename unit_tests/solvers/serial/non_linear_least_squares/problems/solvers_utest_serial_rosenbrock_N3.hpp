@@ -20,11 +20,11 @@ struct Rosenbrock3 {
   static constexpr int nf = 4; // num functions
   static constexpr int nv = 3; // num variables
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     return residual_type(nf);
   }
 
-  jacobian_type createJacobianObject(const state_type& x) const {
+  jacobian_type createJacobian() const {
     return jacobian_type(nf, nv);
   }
 

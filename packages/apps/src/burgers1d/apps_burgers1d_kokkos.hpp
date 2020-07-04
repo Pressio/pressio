@@ -132,6 +132,17 @@ public:
     return U_d_;
   };
 
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  {
+    dense_matrix_type A("AA", Ncell_, B.extent(1) );
+    return A;
+  }
+
+  velocity_type createVelocity() const{
+    velocity_type RR("RR", Ncell_);
+    return RR;
+  }
+
   void velocity(const state_type & u,
 		const scalar_type /* t */,
 		velocity_type & rhs) const
@@ -141,60 +152,7 @@ public:
     Kokkos::parallel_for(Ncell_, F);
   }
 
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    velocity_type RR("RR", Ncell_);
-    this->velocity(u, t, RR);
-    return RR;
-  }
-
-  void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
-		     scalar_type t,
-		     dense_matrix_type & A) const
-  {
-    auto JJ = jacobian(y, t);
-    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
-
-    const char ct = 'N';
-    KokkosSparse::spmv(&ct, one, JJ, B, zero, A);
-  }
-
-
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const
-  {
-    dense_matrix_type A("AA", Ncell_, B.extent(1) );
-    applyJacobian(y, B, t, A);
-    return A;
-  }
-
-  void jacobian(const state_type & u,
-		const scalar_type t,
-		jacobian_type & jac) const
-  {
-    // here the Jacobian is passed in as an argument.
-    // to recompute it, use parallel for
-
-    // state_type_h u_h = Kokkos::create_mirror_view(u);
-    // jacobian_type JJ2("JJ2", numRows, numCols, numEnt, val, ptr, ind);
-    // jac = JJ2;
-    //Kokkos::deep_copy(jac.values, JJ2.values);
-
-    using exe_space = typename Burgers1dKokkos::execution_space;
-
-    using policy_type = Kokkos::RangePolicy<exe_space, int>;
-
-    using func_t = JacobianFunctor<state_type, jacobian_type, sc_t>;
-    func_t F(Ncell_, dxInv_, u, jac);
-    Kokkos::parallel_for( policy_type(0, Ncell_), F);
-    //Kokkos::parallel_for(Ncell_, F);
-  }
-
-  jacobian_type jacobian(const state_type & u,
-			 const scalar_type t) const
+  jacobian_type createJacobian() const
   {
     const int numRows = Ncell_;
     const int numCols = Ncell_;
@@ -243,6 +201,41 @@ public:
     jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
     this->jacobian(u, t, JJ);
     return JJ;
+  }
+
+  void jacobian(const state_type & u,
+    const scalar_type t,
+    jacobian_type & jac) const
+  {
+    // here the Jacobian is passed in as an argument.
+    // to recompute it, use parallel for
+
+    // state_type_h u_h = Kokkos::create_mirror_view(u);
+    // jacobian_type JJ2("JJ2", numRows, numCols, numEnt, val, ptr, ind);
+    // jac = JJ2;
+    //Kokkos::deep_copy(jac.values, JJ2.values);
+
+    using exe_space = typename Burgers1dKokkos::execution_space;
+
+    using policy_type = Kokkos::RangePolicy<exe_space, int>;
+
+    using func_t = JacobianFunctor<state_type, jacobian_type, sc_t>;
+    func_t F(Ncell_, dxInv_, u, jac);
+    Kokkos::parallel_for( policy_type(0, Ncell_), F);
+    //Kokkos::parallel_for(Ncell_, F);
+  }
+
+  void applyJacobian(const state_type & y,
+         const dense_matrix_type & B,
+         scalar_type t,
+         dense_matrix_type & A) const
+  {
+    auto JJ = jacobian(y, t);
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+
+    const char ct = 'N';
+    KokkosSparse::spmv(&ct, one, JJ, B, zero, A);
   }
 
 private:

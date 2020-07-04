@@ -115,7 +115,7 @@ public:
     : stateAuxStorage_{state}, 
       sys_(model), 
       policy_(policy), 
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) )
+      veloAuxStorage_(policy_.create(model))
   {}  
 
   // the following cnstr is enabled if we are using user-defined ops
@@ -130,7 +130,7 @@ public:
     : stateAuxStorage_{state},
       sys_(model), 
       policy_(policy), 
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) ),
+      veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
   {}  
 
@@ -149,7 +149,7 @@ public:
     : stateAuxStorage_{state},
       sys_(model), 
       policy_(), // default construct policy
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) )
+      veloAuxStorage_(policy_.create(model))
   {}
 
   // the following cnstr is only enabled if 
@@ -168,7 +168,7 @@ public:
     : stateAuxStorage_{state},
       sys_(model), 
       policy_(), // default construct policy
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) ),
+      veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
   {}
 
@@ -199,19 +199,19 @@ public:
     const scalar_type dt3 = dt / three;
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_(stateInOut, auxRhs0, sys_.get(), t);
+    policy_.compute(stateInOut, auxRhs0, sys_.get(), t);
     this->stage_update_impl(ytmp, stateInOut, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_(ytmp, auxRhs1, sys_.get(), t_phalf);
+    policy_.compute(ytmp, auxRhs1, sys_.get(), t_phalf);
     this->stage_update_impl(ytmp, stateInOut, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
-    policy_(ytmp, auxRhs2, sys_.get(), t_phalf);
+    policy_.compute(ytmp, auxRhs2, sys_.get(), t_phalf);
     this->stage_update_impl(ytmp, stateInOut, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_(ytmp, auxRhs3, sys_.get(), t + dt);
+    policy_.compute(ytmp, auxRhs3, sys_.get(), t + dt);
     this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
   }//end doStep
 

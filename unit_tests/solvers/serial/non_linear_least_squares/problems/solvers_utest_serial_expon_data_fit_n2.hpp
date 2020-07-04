@@ -16,11 +16,11 @@ struct ExpDataFitN2 {
   const double times_[n] = {1.,2.,3.,4., 5.,6.,7.,8};
   const double y_[n] = {3.29, 4.27, 5.3, 7.1, 10.1, 9.8, 16.1, 20.2};
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     return residual_type(n);
   }
 
-  jacobian_type createJacobianObject(const state_type& x) const {
+  jacobian_type createJacobian() const {
     return jacobian_type(n, 2);
   }
 

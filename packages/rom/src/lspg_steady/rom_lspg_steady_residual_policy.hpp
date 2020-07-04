@@ -80,7 +80,7 @@ public:
   void operator()(const lspg_state_t	& romState,
 		  lspg_residual_t	& romR,
   		  const fom_t		& app,
-		  ::pressio::solvers::Norm normKind,
+		  ::pressio::Norm normKind,
 		  sc_t & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -98,9 +98,9 @@ public:
 					   fomStatesMngr_.getCRefToCurrentFomState(),
 					   romR);
 
-    if (normKind == ::pressio::solvers::Norm::L2)
+    if (normKind == ::pressio::Norm::L2)
       normValue = ::pressio::ops::norm2(romR);
-    else if (normKind == ::pressio::solvers::Norm::L1)
+    else if (normKind == ::pressio::Norm::L1)
       normValue = ::pressio::ops::norm1(romR);
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");

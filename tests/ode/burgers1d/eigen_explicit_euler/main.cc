@@ -26,12 +26,6 @@ int main(int argc, char *argv[]){
   app_t appObj(mu, Ncell);
   auto & y0n = appObj.getInitialState();
 
-  auto j0n = appObj.jacobian(y0n, static_cast<scalar_t>(0));
-  std::cout << std::fixed << std::setprecision(15) << y0n << std::endl;
-  std::cout << " --- " << std::endl;
-  std::cout << std::fixed << std::setprecision(15) << j0n << std::endl;
-  std::cout << " --- " << std::endl;
-
   // types for ode
   using ode_state_t = pressio::containers::Vector<app_state_t>;
   using ode_res_t   = pressio::containers::Vector<app_rhs_t>;

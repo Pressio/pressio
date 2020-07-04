@@ -51,9 +51,6 @@
 
 namespace pressio{
 
-struct transpose{};
-struct nontranspose{};
-
 struct view{};
 
 struct matrixFull{};

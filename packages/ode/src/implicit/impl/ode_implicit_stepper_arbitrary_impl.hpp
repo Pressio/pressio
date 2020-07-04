@@ -86,27 +86,25 @@ public:
     return order_setter_t::value;
   }
 
-  residual_type createResidualObject(const state_type & odeState) const
-  {
-    return this->residual_obj_.operator()(odeState, sys_.get());
+  residual_type createResidual() const{
+    return this->residual_obj_.create(sys_.get());
   }
 
-  jacobian_type createJacobianObject(const state_type & odeState) const
-  {
-    return this->jacobian_obj_.operator()(odeState, sys_.get());
+  jacobian_type createJacobian() const{
+    return this->jacobian_obj_.create(sys_.get());
   }
 
   void residual(const state_type & odeState, residual_type & R,
-    ::pressio::solvers::Norm normKind, scalar_t & normValue) const
+    ::pressio::Norm normKind, scalar_t & normValue) const
   {
-    this->residual_obj_(odeState, this->auxStates_, this->sys_.get(),
+    this->residual_obj_.compute(odeState, this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R,
       normKind, normValue);
   }
 
   void jacobian(const state_type & odeState, jacobian_type & J) const
   {
-    this->jacobian_obj_(odeState, this->auxStates_, this->sys_.get(),
+    this->jacobian_obj_.compute(odeState, this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, J);
   }
 

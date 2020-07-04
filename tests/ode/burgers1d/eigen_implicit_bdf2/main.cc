@@ -48,14 +48,18 @@ int main(int argc, char *argv[]){
   using lin_solver_t = pressio::solvers::linear::Solver<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
-  using nonlin_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, scalar_t>; 
-  nonlin_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
 
   // integrate in time
   scalar_t fint = 10;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, NonLinSolver);
   {
     using namespace pressio::apps::test;
     checkSol(y, Burgers1dImpGoldStatesBDF2::get(Ncell, dt, fint));

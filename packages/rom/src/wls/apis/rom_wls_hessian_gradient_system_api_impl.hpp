@@ -186,7 +186,7 @@ public:
   void hessianAndGradient(const state_type	      & wls_state,
 			  hessian_type		      & hessian,
 			  gradient_type		      & gradient,
-			  const pressio::solvers::Norm & normType,
+			  const pressio::Norm & normType,
 			  scalar_type		      & rnorm) const
   {
     rnorm = pressio::utils::constants<scalar_type>::zero();
@@ -204,7 +204,7 @@ public:
   }//end computeHessianAndGradient
 
   void residualNorm(const state_type	      & wls_state,
-		    const pressio::solvers::Norm & normType,
+		    const pressio::Norm & normType,
 		    scalar_type		      & rnorm) const
   {
    // missing

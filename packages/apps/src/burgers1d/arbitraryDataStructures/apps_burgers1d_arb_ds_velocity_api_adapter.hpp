@@ -73,16 +73,20 @@ public:
       JJ_{appObj.meshSize(), appObj.meshSize()}{}
 
 public:
+  velocity_type createVelocity() const{
+    return f_;
+  }
+
+  // computes: A = Jac B
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
+    dense_matrix_type A( appObj_.meshSize(), B.extent(1) );
+    return A;
+  }
+
   void velocity(const state_type & u,
   		const scalar_type & t,
   		velocity_type & f) const{
     appObj_.velocity(u, t, f);
-  }
-
-  velocity_type velocity(const state_type & u,
-			 const scalar_type & t) const{
-    appObj_.velocity(u, t, f_);
-    return f_;
   }
 
   // computes: A = Jac B
@@ -100,15 +104,6 @@ public:
 	}
       }
     }
-  }
-
-  // computes: A = Jac B
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
-    dense_matrix_type A( y.extent(0), B.extent(1) );
-    this->applyJacobian(y, B, t, A);
-    return A;
   }
 
 private:

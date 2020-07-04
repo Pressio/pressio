@@ -49,9 +49,20 @@
 #ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
 #define SOLVERS_FORWARD_DECLARATIONS_HPP_
 
-namespace pressio{ namespace solvers{
+namespace pressio{ namespace solvers{ namespace iterative{ 
 
-namespace iterative{ namespace hacked{
+namespace converged_when{
+struct absoluteNormCorrectionBelowTol{};
+struct absoluteNormResidualBelowTol{};
+struct relativeNormResidualBelowTol{};
+struct absoluteNormGradientBelowTol{};
+struct relativeNormGradientBelowTol{};
+struct completingNumMaxIters{};
+}// end namespace pressio::solvers::iterative::converged_when
+
+using default_convergence = converged_when::absoluteNormCorrectionBelowTol;
+
+namespace hacked{
 template <
   typename scalar_t,
   typename lin_solver_tag,

@@ -16,14 +16,18 @@ struct admissible_system_implicit_ode_regular_stepper<
     ::pressio::ode::meta::has_state_typedef<T>::value and
     ::pressio::ode::meta::has_velocity_typedef<T>::value and
     ::pressio::ode::meta::has_jacobian_typedef<T>::value and
-    //
-    has_const_jacobian_method_accept_state_time_return_result<
+    /////// residual methods
+    has_const_create_velocity_method_return_result<
+      T, typename T::velocity_type >::value and
+    has_const_velocity_method_accept_state_time_result_return_void<
       T, 
       typename T::state_type, 
       typename T::scalar_type, 
-      typename T::jacobian_type
+      typename T::velocity_type
       >::value and
-    //
+    /////// jacobian methods 
+    has_const_create_jacobian_method_return_result<
+      T, typename T::jacobian_type >::value and
     has_const_jacobian_method_accept_state_time_result_return_void<
       T, 
       typename T::state_type, 

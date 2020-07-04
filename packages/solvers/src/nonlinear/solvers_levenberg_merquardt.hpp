@@ -49,6 +49,8 @@
 #ifndef PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
 #define PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
 
+#include "./impl/solvers_nonlinear_compose.hpp"
+
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
 template<
@@ -57,7 +59,7 @@ template<
   template<typename...> class looper,
   typename ... Args
   >
-using composeLM = impl::compose<system_t, LM, update, looper, void, Args...>;
+using composeLM = impl::compose<system_t, impl::LM, update, looper, void, Args...>;
 
 template<
   typename system_t,

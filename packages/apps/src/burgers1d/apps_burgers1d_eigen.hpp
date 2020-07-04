@@ -85,9 +85,27 @@ public:
     return U0_;
   };
 
+  velocity_type createVelocity() const{
+    velocity_type RR(Ncell_);
+    return RR;
+  }
+
+  jacobian_type createJacobian() const{
+    jacobian_type JJ(Ncell_, Ncell_);
+    // this->jacobian(u, t, JJ);
+    return JJ;
+  }
+
+  // computes: A = Jac B where B is a Eigen::MatrixXd
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
+    dense_matrix_type A( Ncell_, B.cols() );
+    return A;
+  }
+
   void velocity(const state_type & u,
   		const scalar_type /* t */,
-    velocity_type & rhs) const{
+    velocity_type & rhs) const
+  {
     rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
     for (ui_t i=1; i<Ncell_; ++i){
       rhs(i) = 0.5 * dxInv_ * (u(i-1)*u(i-1) - u(i)*u(i));
@@ -97,32 +115,18 @@ public:
     }
   }
 
-  velocity_type velocity(const state_type & u,
-  			 const scalar_type t) const{
-    velocity_type RR(Ncell_);
-    this->velocity(u, t, RR);
-    return RR;
-  }
-
   // computes: A = Jac B where B is a Eigen::MatrixXd
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
-		     dense_matrix_type & A) const{
-    auto JJ = jacobian(y, t);
+		     dense_matrix_type & A) const
+  {
+    auto JJ = createJacobian();
+    this->jacobian(y, t, JJ);
     // std::cout << "ApplyJacobian" << std::endl;
     // std::cout << JJ << std::endl;
     // multiply
     A = JJ * B;
-  }
-
-  // computes: A = Jac B where B is a Eigen::MatrixXd
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
-    dense_matrix_type A( y.size(), B.cols() );
-    applyJacobian(y, B, t, A);
-    return A;
   }
 
   void jacobian(const state_type & u,
@@ -140,14 +144,6 @@ public:
       tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
     }
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
-  }
-
-  jacobian_type jacobian(const state_type & u,
-			 const scalar_type t) const{
-
-    jacobian_type JJ(u.size(), u.size());
-    this->jacobian(u, t, JJ);
-    return JJ;
   }
 
 private:

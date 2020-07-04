@@ -59,10 +59,8 @@ public:
     f = -10. * yIn;
   };
 
-  velocity_type velocity(const state_type & yIn,
-			 const scalar_type & t) const{
+  velocity_type createVelocity() const{
     velocity_type f(3);
-    this->velocity(yIn, t, f);
     return f;
   };
 
@@ -78,10 +76,8 @@ public:
     JJ.setFromTriplets(tripletList.begin(), tripletList.end());
   };
 
-  jacobian_type jacobian(const state_type & yIn,
-  			 const scalar_type & t) const{
+  jacobian_type createJacobian() const{
     jacobian_type JJ(3,3);
-    this->jacobian(yIn, t, JJ);
     return JJ;
   };
   //--------------------------------------------
@@ -92,9 +88,11 @@ public:
                             const scalar_type & time,
                             const scalar_type & dt,
                             residual_type & R,
+                            ::pressio::Norm normKind, 
+                            scalar_type & normVal,
                             Args && ... args) const
   {
-    this->timeDiscreteResidualImpl( step, time, dt, R, std::forward<Args>(args)... );
+    this->timeDiscreteResidualImpl( step, time, dt, R, normKind, normVal, std::forward<Args>(args)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -107,22 +105,21 @@ public:
     this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
   }
 
-  residual_type createTimeDiscreteResidualObject(const state_type & state) const
+  residual_type createTimeDiscreteResidual() const
   {
     residual_type R(3);
-    R.setConstant(0);
     return R;
   }
 
-  jacobian_type createTimeDiscreteJacobianObject(const state_type & state) const
+  jacobian_type createTimeDiscreteJacobian() const
   {
     jacobian_type J(3,3);
-    typedef Eigen::Triplet<scalar_type> Tr;
-    std::vector<Tr> tripletList;
-    tripletList.push_back( Tr( 0, 0, 0.) );
-    tripletList.push_back( Tr( 1, 1, 0.) );
-    tripletList.push_back( Tr( 2, 2, 0.) );
-    J.setFromTriplets(tripletList.begin(), tripletList.end());
+    // typedef Eigen::Triplet<scalar_type> Tr;
+    // std::vector<Tr> tripletList;
+    // tripletList.push_back( Tr( 0, 0, 0.) );
+    // tripletList.push_back( Tr( 1, 1, 0.) );
+    // tripletList.push_back( Tr( 2, 2, 0.) );
+    // J.setFromTriplets(tripletList.begin(), tripletList.end());
     return J;
   }
 
@@ -132,17 +129,18 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				residual_type & R,
-        ::pressio::solvers::Norm normKind,
+        ::pressio::Norm normKind,
         scalar_type & normValue,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
-    const auto f =  this->velocity(yn, time);
+    auto f =  this->createVelocity();
+    this->velocity(yn, time, f);
     R = yn - ynm1 - dt * f;
 
-    if (normKind==::pressio::solvers::Norm::L2)
+    if (normKind==::pressio::Norm::L2)
       normValue = R.norm();
-    if (normKind==::pressio::solvers::Norm::L1)
+    if (normKind==::pressio::Norm::L1)
       normValue = R.lpNorm<1>();
   }
 
@@ -154,7 +152,7 @@ private:
 				const state_t & yn,
 				const state_t & ynm1) const
   {
-    J =  this->jacobian(yn, time);
+    this->jacobian(yn, time, J);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     J.coeffs() *= -dt;
     J.coeffRef(0,0) += one;
@@ -163,7 +161,6 @@ private:
   }
 
 };
-
 
 
 struct Bdf1Solver
@@ -184,7 +181,11 @@ struct Bdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  // using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
   app_t appObj_ = {};
   state_t y_ = {};
@@ -198,7 +199,7 @@ struct Bdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
@@ -225,7 +226,10 @@ struct CustomBdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
-  using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
 
   app_t appObj_		= {};
   state_t y_		= {};
@@ -239,14 +243,14 @@ struct CustomBdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambda(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -258,7 +262,7 @@ struct CustomBdf1Solver
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -270,7 +274,7 @@ struct CustomBdf1Solver
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
   {
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -287,7 +291,7 @@ struct CustomBdf1Solver
       >::value, "");
 
     lin_solver_t linSolverObj;
-    nonlin_solver_t solverO(stepperObj_, y_, linSolverObj);
+    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;

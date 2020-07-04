@@ -3,7 +3,6 @@
 #include "pressio_solvers.hpp"
 #include "./problems/solvers_utest_serial_rosenbrock_N4.hpp"
 
-
 TEST(solvers_nonlinear_least_squares, gn_res_jac_api_rosenbrock4){
   using namespace pressio;
 

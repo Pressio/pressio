@@ -19,30 +19,25 @@ template<
 struct admissible_explicit_velocity_policy<
   T, scalar_t, state_t, velocity_t, system_t,
   mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T const>().template operator()
-       (
-	std::declval<state_t const &>(),
-	std::declval<velocity_t &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>()
-	)
-       )
-      >::value
-    and
     std::is_same<
       decltype
       (
-       std::declval<T const>().template operator()
-       (
-	std::declval<state_t const &>(),
-	std::declval<system_t const &>(),
-	std::declval<scalar_t const &>()
-	)
+       std::declval<T const>().create(std::declval<system_t const &>())
        ),
       velocity_t
+      >::value
+    and
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().template compute
+       (
+      	std::declval<state_t const &>(),
+      	std::declval<velocity_t &>(),
+      	std::declval<system_t const &>(),
+      	std::declval<scalar_t const &>()
+      	)
+       )
       >::value
     >
   > : std::true_type{};

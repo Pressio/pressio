@@ -163,20 +163,18 @@ public:
     solver.solve(*this, odeState);
   }
 
-  residual_t createResidualObject(const state_t & odeState) const
-  {
-    return this->residual_obj_.operator()(odeState, sys_.get());
+  residual_t createResidual() const{
+    return this->residual_obj_.create(sys_.get());
   }
 
-  jacobian_t createJacobianObject(const state_t & odeState) const
-  {
-    return this->jacobian_obj_.operator()(odeState, sys_.get());
+  jacobian_t createJacobian() const{
+    return this->jacobian_obj_.create(sys_.get());
   }
 
   void residual(const state_t & odeState, residual_t & R,
-    ::pressio::solvers::Norm normKind, scalar_t & normValue) const
+    ::pressio::Norm normKind, scalar_t & normValue) const
   {
-    this->residual_obj_.template operator()<tag_name>(odeState, 
+    this->residual_obj_.template compute<tag_name>(odeState, 
       this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R,
       normKind, normValue);
@@ -184,7 +182,7 @@ public:
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    this->jacobian_obj_.template operator()<
+    this->jacobian_obj_.template compute<
       tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
   }
 

@@ -75,21 +75,21 @@ public:
   ~ResidualStandardPolicy() = default;
 
 public:
-  residual_type operator()(const state_type & odeCurrentState, const system_type & model) const
+  residual_type create(const system_type & model) const
   {
-    residual_type R(model.velocity(*odeCurrentState.data(), 0.));
+    residual_type R(model.createVelocity());
     return R;
   }
 
   template <typename tag_name, typename prev_states_type, typename scalar_type>
-  void operator()(const state_type & odeCurrentState,
+  void compute(const state_type & odeCurrentState,
 	     const prev_states_type & odePrevStates,
 	     const system_type & model,
 	     const scalar_type & t,
 	     const scalar_type & dt,
 	     const types::step_t & step,
 	     residual_type & R,
-	     ::pressio::solvers::Norm normKind,
+	     ::pressio::Norm normKind,
 	     scalar_type & normValue) const
   {
     model.velocity(*odeCurrentState.data(), t, *R.data());

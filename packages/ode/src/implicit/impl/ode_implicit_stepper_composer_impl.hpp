@@ -213,7 +213,7 @@ struct Composer<
   mpl::enable_if_t<
     ::pressio::ode::meta::legitimate_implicit_state_type<state_type>::value and
     ::pressio::ode::meta::legitimate_implicit_residual_type<residual_type>::value and 
-    ::pressio::ode::meta::legitimate_jacobian_type<jacobian_type>::value and     
+    ::pressio::ode::meta::legitimate_jacobian_type<jacobian_type>::value and
     ::pressio::ode::meta::admissible_system_implicit_ode_arbitrary_stepper<system_type>::value and
     ::pressio::ode::meta::IsStepperOrderSetter<order_setter_t>::value and   
     ::pressio::ode::meta::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value 

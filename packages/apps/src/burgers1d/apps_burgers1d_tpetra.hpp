@@ -80,8 +80,8 @@ public:
   using scalar_type	= double;
   using state_type	= nativeVec;
   using velocity_type	= state_type;
-  using dense_matrix_type	= Tpetra::MultiVector<>;
   using jacobian_type	= Tpetra::CrsMatrix<>;
+  using dense_matrix_type = Tpetra::MultiVector<>;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
@@ -102,6 +102,18 @@ public:
   state_type const & getInitialState() const{
     return *U0_;
   };
+
+  velocity_type createVelocity() const{
+    velocity_type R(dataMap_);
+    return R;
+  }
+
+  // computes: A = Jac B where B is dense
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  {
+    dense_matrix_type C( dataMap_, B.getNumVectors() );
+    return C;
+  }
 
   void velocity(const state_type & u,
 		const scalar_type /* t */,
@@ -142,14 +154,6 @@ public:
     }
   }
 
-
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    velocity_type R(dataMap_);
-    velocity(u,t,R);
-    return R;
-  }
-
   // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
@@ -159,16 +163,6 @@ public:
     computeJacobianReplace(y, *Jac_, t);
     Jac_->apply(B, A);
     // Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
-  }
-
-  // computes: A = Jac B where B is dense
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const
-  {
-    dense_matrix_type C( dataMap_, B.getNumVectors() );
-    applyJacobian(y, B, t, C);
-    return C;
   }
 
 protected:

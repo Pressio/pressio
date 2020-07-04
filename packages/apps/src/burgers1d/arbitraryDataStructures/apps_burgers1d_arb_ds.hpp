@@ -83,30 +83,26 @@ public:
   };
 
 public:
-  void velocity(const state_type & u,
-  		const scalar_type & t,
-  		velocity_type & f) const{
-    this->velocity_impl(u, t, f);
+  velocity_type createVelocity() const{
+    velocity_type f(Ncell_);
+    return f;
   }
 
-  velocity_type velocity(const state_type & u,
-			 const scalar_type & t) const{
-    velocity_type f(Ncell_);
+  jacobian_type createJacobian() const{
+    jacobian_type JJ(Ncell_, Ncell_);
+    return JJ;
+  }
+
+  void velocity(const state_type & u,
+      const scalar_type & t,
+      velocity_type & f) const{
     this->velocity_impl(u, t, f);
-    return f;
   }
 
   void jacobian(const state_type & u,
   		const scalar_type & t,
   		jacobian_type & jac) const{
     this->jacobian_impl(u, t, jac);
-  }
-
-  jacobian_type jacobian(const state_type & u,
-			 const scalar_type & t) const{
-    jacobian_type JJ(Ncell_, Ncell_);
-    this->jacobian_impl(u, t, JJ);
-    return JJ;
   }
 
 private:

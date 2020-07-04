@@ -49,7 +49,7 @@
 #ifndef PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
 #define PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
 
-#include "./impl/solvers_compose.hpp"
+#include "./impl/solvers_nonlinear_compose.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
@@ -59,7 +59,7 @@ template<
   template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewton = impl::compose<system_t, GaussNewton, update, looper, void, Args...>;
+using composeGaussNewton = impl::compose<system_t, impl::GaussNewton, update, looper, void, Args...>;
 
 template<
   typename system_t,
@@ -76,7 +76,7 @@ template<
   template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewtonQR = impl::compose<system_t, GaussNewtonQR, update, looper, void, Args...>;
+using composeGaussNewtonQR = impl::compose<system_t, impl::GaussNewtonQR, update, looper, void, Args...>;
 
 template<
   typename system_t,

@@ -80,10 +80,14 @@ int main(int argc, char *argv[]){
   using lin_solver_t = pressio::solvers::linear::Solver<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
-  using nonlin_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, scalar_t>; 
-  nonlin_solver_t solverO(stepperObj, y, linSolverObj);
-  solverO.setTolerance(1e-13);
-  solverO.setMaxIterations(200);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
+  NonLinSolver.setTolerance(1e-13);
+  NonLinSolver.setMaxIterations(200);
 
   // integrate in time
   scalar_t fint = 0.10;
@@ -93,7 +97,7 @@ int main(int argc, char *argv[]){
   // define observer
   observer<ode_state_t> Obs(Nsteps, Ncell, y);
 
-  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, solverO);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, NonLinSolver);
   Obs.printAll();
   {
     using namespace pressio::apps::test;

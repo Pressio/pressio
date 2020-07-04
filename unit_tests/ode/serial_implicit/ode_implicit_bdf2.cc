@@ -34,13 +34,19 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   using lin_solver_t = solvers::linear::Solver<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  // using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
+  // nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
@@ -87,13 +93,17 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   using lin_solver_t = solvers::linear::Solver<
     solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);

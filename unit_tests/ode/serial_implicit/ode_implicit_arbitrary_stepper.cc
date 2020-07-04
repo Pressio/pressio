@@ -8,21 +8,20 @@ class ResidualPolicy{
 
 public:
   template <typename prev_states_type>
-  void operator()(const state_type & y,
+  void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
 		  const double & t,
 		  const double & dt,
 		  ::pressio::ode::types::step_t step,
 		  residual_type & R,
-      ::pressio::solvers::Norm normKind,
+      ::pressio::Norm normKind,
       double & normValue) const
   {
     // here I would need to compute the time discrete residual
   }
 
-  residual_type operator()(const state_type & y,
-  			   const system_type & model) const{
+  residual_type create(const system_type & model) const{
     return residual_type();
   }
 
@@ -34,7 +33,7 @@ class JacobianPolicy{
 
 public:
   template <typename prev_states_type>
-  void operator()(const state_type & y,
+  void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
 		  const double &  t,
@@ -44,8 +43,7 @@ public:
     // here I would need to compute the time discrete version
   }
 
-  jacobian_type operator()(const state_type & y,
-  			   const system_type & model) const{
+  jacobian_type create(const system_type & model) const{
     return jacobian_type();
   }
 

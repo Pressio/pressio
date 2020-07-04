@@ -18,8 +18,8 @@ struct admissible_system_implicit_ode_arbitrary_stepper<
     ::pressio::ode::meta::has_jacobian_typedef<T>::value and
     //
     // time-discrete residual 
-    has_const_create_td_residual_object_method_accept_state_return_result<
-        T, typename T::state_type, typename T::residual_type>::value and 
+    has_const_create_td_residual_method_return_result<
+        T, typename T::residual_type>::value and 
     has_const_td_residual_method_accept_step_time_dt_result_norm_states_return_void<
         T, 1, types::step_t, typename T::scalar_type, typename T::scalar_type, 
         typename T::residual_type>::value and 
@@ -31,8 +31,8 @@ struct admissible_system_implicit_ode_arbitrary_stepper<
         typename T::residual_type>::value and        
     // 
     // time-discrete jacobian
-    has_const_create_td_jacobian_object_method_accept_state_return_result<
-        T, typename T::state_type, typename T::jacobian_type>::value and 
+    has_const_create_td_jacobian_method_return_result<
+        T, typename T::jacobian_type>::value and 
     has_const_td_jacobian_method_accept_step_time_dt_result_states_return_void<
         T, 1, types::step_t, typename T::scalar_type, typename T::scalar_type, 
         typename T::jacobian_type>::value and 

@@ -1,7 +1,8 @@
 #include <iostream>
 #include "pressio_solvers.hpp"
 
-struct NonLinearLeastSquareSystem {
+struct NonLinearLeastSquareSystem 
+{
   using matrix_n_t  = Eigen::Matrix<double, -1, -1>;
   using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
@@ -14,18 +15,11 @@ struct NonLinearLeastSquareSystem {
   using residual_type = vector_w_t;
   using jacobian_type = matrix_w_t;
 
-  // void residualNorm(const state_type & state,
-  // 		    pressio::solvers::Norm normKind,
-  // 		    scalar_type & resNorm) const
-  // {
-  //   // here I can create one R every time, because performance does not matter
-  //   // but it would be better to create a R only once
-  //   auto R = createResidualObject(state);
-  //   residual(state, R, normKind, resNorm);
-  // }
-
-  void residual(const state_type& x, residual_type & res,
-		::pressio::solvers::Norm normKind, scalar_type & normResidual) const {
+  void residual(const state_type& x, 
+    residual_type & res,
+		::pressio::solvers::Norm normKind, 
+    scalar_type & normResidual) const 
+  {
     res[0] = x[0] - x[1]*(2. - x[1]*(5. - x[1]) ) - 13.;
     res[1] = x[0] - x[1]*(14. - x[1]*(1. + x[1]) ) - 29.;
 
@@ -40,11 +34,11 @@ struct NonLinearLeastSquareSystem {
     jac.data()->coeffRef(1,1) = x[1]*(x[1] + 1.) - (-2.*x[1] - 1.)*x[1] - 14.;
   }
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     return residual_type(2);
   }
 
-  jacobian_type createJacobianObject(const state_type& x) const {
+  jacobian_type createJacobian() const {
     return jacobian_type(2, 2);
   }
 };

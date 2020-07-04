@@ -73,14 +73,37 @@ public:
       JJ_{appObj.meshSize(), appObj.meshSize()}{}
 
 public:
+  residual_type createTimeDiscreteResidual() const
+  {
+    std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
+    residual_type R( appObj_.meshSize() );
+    // for (int_t i=0; i<R.extent(0); ++i)
+    //   R(i) = ::pressio::utils::constants<scalar_type>::zero();
+    return R;
+  }
+
+  dense_matrix_type createApplyTimeDiscreteJacobianResult(const dense_matrix_type & B) const
+  {
+    std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
+    dense_matrix_type A(appObj_.meshSize(), B.extent(1));
+    // for (int_t i=0; i<A.extent(0); ++i){
+    //   for (int_t j=0; j<A.extent(1); ++j){
+    //     A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
+    //   }
+    // }
+    return A;
+  }
+
   template <typename step_t, typename ... Args>
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
   			    const scalar_type & dt,
   			    residual_type & R,
+            pressio::Norm normKind,
+            scalar_type & normR,
   			    Args && ... states) const
   {
-    timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+    timeDiscreteResidualImpl(step, time, dt, R, normKind, normR, std::forward<Args>(states)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -88,37 +111,11 @@ public:
   				 const scalar_type & time,
   				 const scalar_type & dt,
   				 const dense_matrix_type & B,
-  				 int id,
   				 dense_matrix_type & A,
   				 Args && ... states) const
   {
-    applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
+    applyTimeDiscreteJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
   }
-
-  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
-  {
-    std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
-
-    residual_type R( appObj_.meshSize() );
-    for (int_t i=0; i<R.extent(0); ++i)
-      R(i) = ::pressio::utils::constants<scalar_type>::zero();
-
-    return R;
-  }
-
-  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
-							  const dense_matrix_type & B) const
-  {
-    std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
-
-    dense_matrix_type A(appObj_.meshSize(), B.extent(1));
-    for (int_t i=0; i<A.extent(0); ++i)
-      for (int_t j=0; j<A.extent(1); ++j)
-	A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
-
-    return A;
-  }
-
 
 private:
   // case when we only have a single auxiliary state
@@ -127,6 +124,8 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				residual_type & R,
+        pressio::Norm normKind,
+        scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
@@ -141,7 +140,6 @@ private:
 				     const scalar_type & time,
 				     const scalar_type & dt,
 				     const dense_matrix_type & B,
-				     int id,
 				     dense_matrix_type & A,
 				     const state_t & yn,
 				     const state_t & ynm1) const

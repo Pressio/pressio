@@ -106,7 +106,7 @@ public:
                            const velocity_policy_type & policy)
     : sys_(model), 
       policy_(policy), 
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) )
+      veloAuxStorage_(policy_.create(model))
   {}  
 
   // the following cnstr is enabled if we are using user-defined ops
@@ -120,7 +120,7 @@ public:
                            const _ops_t & udOps)
     : sys_(model), 
       policy_(policy), 
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) ),
+      veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
   {}  
 
@@ -138,7 +138,7 @@ public:
                            const system_type & model)
     : sys_(model), 
       policy_(), // default construct policy
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) )
+      veloAuxStorage_(policy_.create(model))
   {}
 
   // the following cnstr is only enabled if 
@@ -156,7 +156,7 @@ public:
                            const _ops_t & udOps)
     : sys_(model), 
       policy_(), // default construct policy
-      veloAuxStorage_( policy_(state, model, utils::constants<scalar_type>::zero()) ),
+      veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
   {}
 
@@ -176,7 +176,7 @@ public:
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
-    policy_(stateInOut, auxRhs0, sys_.get(), time);
+    policy_.compute(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
@@ -191,7 +191,7 @@ public:
   	     const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
-    policy_(stateInOut, auxRhs0, sys_.get(), time);
+    policy_.compute(stateInOut, auxRhs0, sys_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);

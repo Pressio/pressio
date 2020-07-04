@@ -85,29 +85,7 @@ public:
     return U0_;
   };
 
-  template <typename step_t, typename ... Args>
-  void timeDiscreteResidual(const step_t & step,
-  			    const scalar_type & time,
-  			    const scalar_type & dt,
-  			    residual_type & R,
-  			    Args && ... states) const
-  {
-    this->timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
-  }
-
-  template <typename step_t, typename ... Args>
-  void applyTimeDiscreteJacobian(const step_t & step,
-  				 const scalar_type & time,
-  				 const scalar_type & dt,
-  				 const dense_matrix_type & B,
-  				 int id,
-  				 dense_matrix_type & A,
-  				 Args && ... states) const
-  {
-    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, id, A, std::forward<Args>(states)...);
-  }
-
-  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
+  residual_type createTimeDiscreteResidual() const
   {
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
     residual_type R(Ncell_);
@@ -115,13 +93,35 @@ public:
     return R;
   }
 
-  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
-							  const dense_matrix_type & B) const
+  dense_matrix_type createApplyTimeDiscreteJacobianResult(const dense_matrix_type & B) const
   {
     std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
     dense_matrix_type A(Ncell_, B.cols());
     A.setConstant(0);
     return A;
+  }
+
+  template <typename step_t, typename ... Args>
+  void timeDiscreteResidual(const step_t & step,
+  			    const scalar_type & time,
+  			    const scalar_type & dt,
+  			    residual_type & R,
+            pressio::Norm normKind,
+            scalar_type & normR,
+  			    Args && ... states) const
+  {
+    this->timeDiscreteResidualImpl(step, time, dt, R,normKind, normR, std::forward<Args>(states)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  void applyTimeDiscreteJacobian(const step_t & step,
+  				 const scalar_type & time,
+  				 const scalar_type & dt,
+  				 const dense_matrix_type & B,
+  				 dense_matrix_type & A,
+  				 Args && ... states) const
+  {
+    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
   }
 
 private:
@@ -131,6 +131,8 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				residual_type & R,
+        pressio::Norm normKind,
+        scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
@@ -144,6 +146,8 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				residual_type & R,
+        pressio::Norm normKind,
+        scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1,
         const state_type & ynm2) const
@@ -159,7 +163,6 @@ private:
 				     const scalar_type & time,
 				     const scalar_type & dt,
 				     const dense_matrix_type & B,
-				     int id,
 				     dense_matrix_type & A,
 				     const state_t & yn,
 				     const state_t & ynm1) const
@@ -183,7 +186,6 @@ private:
 				     const scalar_type & time,
 				     const scalar_type & dt,
 				     const dense_matrix_type & B,
-				     int id,
 				     dense_matrix_type & A,
 				     const state_t & yn,
 				     const state_t & ynm1,

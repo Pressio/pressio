@@ -89,14 +89,14 @@ public:
 		  const scalar_t			& dt,
 		  const ::pressio::ode::types::step_t	& step,
 		  residual_t				& romR,
-		  ::pressio::solvers::Norm		normKind,
+		  ::pressio::Norm		normKind,
 		  scalar_t				& normValue) const
   {
     this->compute_impl(romState, romPrevStates, app, time, dt, step, romR);
 
-    if (normKind == ::pressio::solvers::Norm::L2)
+    if (normKind == ::pressio::Norm::L2)
       normValue = ::pressio::ops::norm2(romR);
-    else if (normKind == ::pressio::solvers::Norm::L1)
+    else if (normKind == ::pressio::Norm::L1)
       normValue = ::pressio::ops::norm1(romR);
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");

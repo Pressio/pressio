@@ -71,8 +71,8 @@ public:
      > = 0
   >
   ResidualJacobianOperators(const system_t & system, const state_t & state)
-    : r_(system.createResidualObject(state)),
-      J_(system.createJacobianObject(state)){}
+    : r_( system.createResidual() ),
+      J_( system.createJacobian() ){}
 
 public:
   r_t & getResidual(){ return r_; }
@@ -83,7 +83,7 @@ public:
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::solvers::Norm normType, sc_t & residualNorm)
+	       ::pressio::Norm normType, sc_t & residualNorm)
   {
     system.residual(state, r_, normType, residualNorm);
   }
@@ -91,7 +91,7 @@ public:
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::solvers::Norm normType, sc_t & residualNorm)
+	       ::pressio::Norm normType, sc_t & residualNorm)
   {
     system.residualNorm(state, normType, residualNorm);
   }
@@ -99,7 +99,7 @@ public:
   template<typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
-		   ::pressio::solvers::Norm normType, sc_t & residualNorm)
+		   ::pressio::Norm normType, sc_t & residualNorm)
   {
     sys.residual(state, r_, normType, residualNorm);
     sys.jacobian(state, J_);
@@ -108,7 +108,7 @@ public:
   template<typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
-		   ::pressio::solvers::Norm normType, sc_t & residualNorm)
+		   ::pressio::Norm normType, sc_t & residualNorm)
   {
     sys.residualAndJacobian(state, r_, J_, normType, residualNorm);
   }

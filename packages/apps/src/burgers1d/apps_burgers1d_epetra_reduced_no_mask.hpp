@@ -70,6 +70,23 @@ public:
   ~Burgers1dEpetraReducedNoMask() = default;
 
 public:
+  velocity_type createVelocity() const{
+    // velocity_type R(*dataMap_);
+    // base_t::velocity(u, t, R);
+    velocity_type dest(*maskMap_);
+    // dest.Import(R, *importer_, Insert);
+    return dest;
+  }
+
+  // return Jac * B
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
+    // dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
+    // base_t::applyJacobian(y, B, t, Cfull);
+    dense_matrix_type C(*maskMap_, B.NumVectors());
+    // C.Import(Cfull, *importer_, Insert);
+    return C;
+  }
+
   void velocity(const state_type & u,
 		const scalar_type t,
     velocity_type & rhs) const
@@ -77,15 +94,6 @@ public:
     velocity_type R(*dataMap_);
     base_t::velocity(u, t, R);
     rhs.Import(R, *importer_, Insert);
-  }
-
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const{
-    velocity_type R(*dataMap_);
-    base_t::velocity(u, t, R);
-    velocity_type dest(*maskMap_);
-    dest.Import(R, *importer_, Insert);
-    return dest;
   }
 
   // A = Jac * B
@@ -98,16 +106,6 @@ public:
     A.Import(Cfull, *importer_, Insert);
   }
 
-  // return Jac * B
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
-    dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
-    base_t::applyJacobian(y, B, t, Cfull);
-    dense_matrix_type C(*maskMap_, B.NumVectors());
-    C.Import(Cfull, *importer_, Insert);
-    return C;
-  }
 
 private:
   void setup(){

@@ -119,7 +119,7 @@ public:
 		  const scalar_t & dt,
 		  const ::pressio::ode::types::step_t & step,
 		  residual_t & romR,
-		  ::pressio::solvers::Norm normKind,
+		  ::pressio::Norm normKind,
 		  scalar_t & normValue) const
   {
     this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app,
@@ -137,15 +137,15 @@ private:
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
 			   const scalar_t & dt,
-			   ::pressio::solvers::Norm normKind,
+			   ::pressio::Norm normKind,
 			   scalar_t & normValue) const
   {
     using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt);
 
-    if (normKind == ::pressio::solvers::Norm::L2)
+    if (normKind == ::pressio::Norm::L2)
       normValue = ::pressio::ops::norm2(romR);
-    else if (normKind == ::pressio::solvers::Norm::L1)
+    else if (normKind == ::pressio::Norm::L1)
       normValue = ::pressio::ops::norm1(romR);
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
@@ -161,15 +161,15 @@ private:
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
 			   const scalar_t & dt,
-			   ::pressio::solvers::Norm normKind,
+			   ::pressio::Norm normKind,
 			   scalar_t & normValue) const
   {
     using namespace ::pressio::rom::lspg::unsteady::impl;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
 
-    if (normKind == ::pressio::solvers::Norm::L2)
+    if (normKind == ::pressio::Norm::L2)
       normValue = udOps_->norm2(*romR.data());
-    else if (normKind == ::pressio::solvers::Norm::L1)
+    else if (normKind == ::pressio::Norm::L1)
       normValue = udOps_->norm1(*romR.data());
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
@@ -189,7 +189,7 @@ private:
 		    const scalar_t		     & t,
 		    const scalar_t		     & dt,
 		    const ::pressio::ode::types::step_t & step,
-		    ::pressio::solvers::Norm normKind,
+		    ::pressio::Norm normKind,
 		    scalar_t & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

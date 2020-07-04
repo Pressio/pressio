@@ -13,7 +13,7 @@ struct fakeAppForTraitsForExp{
   void velocity(const state_type & y,
     scalar_type t, velocity_type & R) const{
   };
-  velocity_type velocity(const state_type & y, scalar_type t )const{
+  velocity_type createVelocity()const{
     velocity_type R;
     return R;
   };
@@ -33,10 +33,9 @@ struct refAppEigen{
       R[i] = y[i];
   };
 
-  velocity_type velocity(const state_type & y,
-			 scalar_type t) const{
-    velocity_type R(y);
-    velocity(y, t, R);
+  velocity_type createVelocity() const
+  {
+    velocity_type R(3);
     return R;
   };
 
@@ -92,11 +91,9 @@ public:
   };
   //--------------------------------------------
 
-  velocity_type velocity(const state_type & yIn,
-  			 scalar_type t) const{
-    velocity_type R(yIn);
-    assert(R.size()==3);
-    velocity(yIn, t, R);
+  velocity_type createVelocity() const
+  {
+    velocity_type R(3);
     return R;
   };
   //--------------------------------------------
@@ -114,10 +111,9 @@ public:
   };
   //--------------------------------------------
 
-  jacobian_type jacobian(const state_type & yIn,
-  			 scalar_type t) const{
+  jacobian_type createJacobian() const
+  {
     jacobian_type JJ(3,3);
-    jacobian(yIn, t, JJ);
     return JJ;
   };
   //--------------------------------------------
@@ -190,11 +186,7 @@ public:
     //timeDiscreteResidualImpl<step_t>( step, time, f, std::forward<Args>(states)... );
   }
 
-  template <typename step_t, typename ... Args>
-  residual_type timeDiscreteResidual(const step_t & step,
-                                     const scalar_type & time,
-                                     const scalar_type & dt,
-                                     Args & ... states) const
+  residual_type createTimeDiscreteResidual() const
   {
     // initialize which depends on the app and data structure types used
     residual_type R(3);
@@ -213,11 +205,7 @@ public:
     // timeDiscreteJacobianImpl<step_t>( step, time, f, std::forward<Args>(states)... );
   }
 
-  template <typename step_t, typename ... Args>
-  jacobian_type timeDiscreteJacobian(const step_t & step,
-                                     const scalar_type & time,
-                                     const scalar_type & dt,
-                                     Args & ... states) const
+  jacobian_type createTimeDiscreteJacobian() const
   {
     // initialize which depends on the app and data structure types used
     jacobian_type J(3,3);

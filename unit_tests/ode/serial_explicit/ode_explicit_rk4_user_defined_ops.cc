@@ -17,10 +17,8 @@ public:
     R[2] = -10. * y[2];
   };
 
-  velocity_type velocity(const state_type & y,
-			 const scalar_type & t) const{
-    velocity_type R(y);
-    velocity(y, t, R);
+  velocity_type createVelocity() const{
+    velocity_type R(3);
     return R;
   };
 };

@@ -16,7 +16,16 @@ struct ValidSystem {
   using jacobian_type = matrix_w_t;
   using scalar_type = double;
 
-  void residual(const state_type& x, residual_type& res,
+  residual_type createResidual() const {
+    return residual_type(2);
+  }
+
+  jacobian_type createJacobian() const {
+    return jacobian_type(2, 2);
+  }
+
+  void residual(const state_type& x, 
+                residual_type& res,
                 pressio::solvers::Norm normKind, 
                 scalar_type & norm) const 
   {
@@ -33,22 +42,6 @@ struct ValidSystem {
     jac.data()->coeffRef(0, 1) =  1.0;
     jac.data()->coeffRef(1, 0) = -1.0;
     jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
-  }
-
-  residual_type createResidualObject(const state_type& x) const {
-    residual_type res(2);
-    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    return res;
-  }
-
-  jacobian_type createJacobianObject(const state_type& x) const {
-    jacobian_type jac(2, 2);
-    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
-    jac.data()->coeffRef(0, 1) =  1.0;
-    jac.data()->coeffRef(1, 0) = -1.0;
-    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
-    return jac;
   }
 };
 
@@ -70,11 +63,14 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   // linear system
   using lin_solver_t = linear::Solver<linear::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
-  // nonlinear system
-  NewtonRaphson<problem_t, lin_solver_t, scalar_t> solver(sys, y, linearSolverObj);
 
-  solver.solve(sys, y);
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(sys, y, linearSolverObj);
 
+  NonLinSolver.solve(sys, y);
   EXPECT_NEAR( y[0],  1.0, 1e-8 );
   EXPECT_NEAR( y[1],  0.0, 1e-8 );
 }

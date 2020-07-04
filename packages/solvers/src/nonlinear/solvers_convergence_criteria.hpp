@@ -49,59 +49,62 @@
 #ifndef PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 #define PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 
-#include "./impl/convergence_mixins/solvers_stop_at_max_iters.hpp"
-#include "./impl/convergence_mixins/solvers_stop_when_correction_norm_below_tol.hpp"
-#include "./impl/convergence_mixins/solvers_stop_when_residual_norm_below_tol.hpp"
-#include "./impl/convergence_mixins/solvers_stop_when_gradient_norm_below_tol.hpp"
+#include "./impl/solve_until_mixins/solvers_solve_until_max_iters.hpp"
+#include "./impl/solve_until_mixins/solvers_solve_until_correction_norm_below_tol.hpp"
+#include "./impl/solve_until_mixins/solvers_solve_until_residual_norm_below_tol.hpp"
+#include "./impl/solve_until_mixins/solvers_solve_until_gradient_norm_below_tol.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-// correction norm below tol
-template<typename ... Args>
-using ConvergedWhenCorrectionNormBelowTol = impl::StopWhenCorrectionNormBelowTol<Args...>;
-template<typename ... Args>
-using StopWhenCorrectionNormBelowTol      = impl::StopWhenCorrectionNormBelowTol<Args...>;
-
 // default convergence
 template<typename ... Args>
-using DefaultConvergence = impl::StopWhenCorrectionNormBelowTol<Args...>;
+using DefaultConvergence = impl::SolveUntilCorrectionNormBelowTol<Args...>;
+
+//-------------------------------
+// correction norm below tol
+//-------------------------------
+template<typename ... Args>
+using ConvergedWhenCorrectionNormBelowTol = impl::SolveUntilCorrectionNormBelowTol<Args...>;
+template<typename ... Args>
+using StopWhenCorrectionNormBelowTol      = impl::SolveUntilCorrectionNormBelowTol<Args...>;
 
 //--------------------------------
 // stop at max iters
-template<typename ... Args> using ConvergedWhenMaxIters = impl::StopAtMaxIters<Args...>;
-template<typename ... Args> using StopWhenMaxIters	= impl::StopAtMaxIters<Args...>;
-template<typename ... Args> using StopAfterMaxIters	= impl::StopAtMaxIters<Args...>;
-template<typename ... Args> using StopAtMaxIters	= impl::StopAtMaxIters<Args...>;
+//--------------------------------
+template<typename ... Args> using ConvergedWhenMaxIters = impl::SolveUntilMaxIters<Args...>;
+template<typename ... Args> using StopWhenMaxIters	= impl::SolveUntilMaxIters<Args...>;
+template<typename ... Args> using StopAfterMaxIters	= impl::SolveUntilMaxIters<Args...>;
+template<typename ... Args> using StopAtMaxIters	= impl::SolveUntilMaxIters<Args...>;
 
 //--------------------------------
-// *** residual norm ***
+// residual norm
 //--------------------------------
 // absolute norm below tol
 template<typename ... Args>
-using ConvergedWhenAbsoluteResidualNormBelowTol = impl::StopWhenResidualNormBelowTol<true, Args...>;
+using ConvergedWhenAbsoluteResidualNormBelowTol = impl::SolveUntilResidualNormBelowTol<true, Args...>;
 template<typename ... Args>
-using StopWhenAbsoluteResidualNormBelowTol	= impl::StopWhenResidualNormBelowTol<true, Args...>;
+using StopWhenAbsoluteResidualNormBelowTol	= impl::SolveUntilResidualNormBelowTol<true, Args...>;
 
 // relative residual norm below tol
 template<typename ... Args>
-using ConvergedWhenRelativeResidualNormBelowTol = impl::StopWhenResidualNormBelowTol<false, Args...>;
+using ConvergedWhenRelativeResidualNormBelowTol = impl::SolveUntilResidualNormBelowTol<false, Args...>;
 template<typename ... Args>
-using StopWhenRelativeResidualNormBelowTol	= impl::StopWhenResidualNormBelowTol<false, Args...>;
+using StopWhenRelativeResidualNormBelowTol	= impl::SolveUntilResidualNormBelowTol<false, Args...>;
 
 //--------------------------------
-// *** gradiet norm ***
+// gradiet norm
 //--------------------------------
 // absolute gradient norm below tol
 template<typename ... Args>
-using ConvergedWhenAbsoluteGradientNormBelowTol = impl::StopWhenGradientNormBelowTol<true, Args...>;
+using ConvergedWhenAbsoluteGradientNormBelowTol = impl::SolveUntilGradientNormBelowTol<true, Args...>;
 template<typename ... Args>
-using StopWhenAbsoluteGradientNormBelowTol	= impl::StopWhenGradientNormBelowTol<true, Args...>;
+using StopWhenAbsoluteGradientNormBelowTol	= impl::SolveUntilGradientNormBelowTol<true, Args...>;
 
 // relative gradient norm below tol
 template<typename ... Args>
-using ConvergedWhenRelativeGradientNormBelowTol = impl::StopWhenGradientNormBelowTol<false, Args...>;
+using ConvergedWhenRelativeGradientNormBelowTol = impl::SolveUntilGradientNormBelowTol<false, Args...>;
 template<typename ... Args>
-using StopWhenRelativeGradientNormBelowTol	= impl::StopWhenGradientNormBelowTol<false, Args...>;
+using StopWhenRelativeGradientNormBelowTol	= impl::SolveUntilGradientNormBelowTol<false, Args...>;
 
 }}}
 #endif

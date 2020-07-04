@@ -78,14 +78,14 @@ public:
 
 public:
 
-  jacobian_type operator()(const state_type & odeCurrentState, const system_type & model) const
+  jacobian_type create(const system_type & model) const
   {
-    jacobian_type JJ(model.jacobian(*odeCurrentState.data(), 0.));
+    jacobian_type JJ(model.createJacobian());
     return JJ;
   }
 
   template <typename tag_name, typename scalar_t>
-  void operator()(const state_type & odeCurrentState,
+  void compute(const state_type & odeCurrentState,
 		  const system_type & model,
 		  const scalar_t & t,
 		  const scalar_t & dt,

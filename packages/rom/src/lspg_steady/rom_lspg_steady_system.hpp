@@ -120,7 +120,7 @@ public:
 
   void residual(const lspg_state_type & romState,
 		lspg_residual_type & R,
-		::pressio::solvers::Norm normKind,
+		::pressio::Norm normKind,
 		scalar_type & nrmValue) const
   {
     (this->residualEvaluator_).template operator()(romState, R, app_, normKind, nrmValue);
@@ -135,14 +135,14 @@ public:
   scalar_type operator()(const state_type & romState) const
   {
     scalar_type normR = {};
-    this->residual(romState, R_, ::pressio::solvers::Norm::L2, normR);
+    this->residual(romState, R_, ::pressio::Norm::L2, normR);
     return normR*normR;
   }
 
   void gradient( const state_type & romState, state_type & g) const
   {
     scalar_type normR = {};
-    this->residual(romState, R_, ::pressio::solvers::Norm::L2, normR);
+    this->residual(romState, R_, ::pressio::Norm::L2, normR);
     this->jacobian(romState, J_);
     constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
     constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();

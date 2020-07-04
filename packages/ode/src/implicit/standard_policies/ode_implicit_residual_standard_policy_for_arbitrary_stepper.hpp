@@ -81,10 +81,9 @@ public:
 
 public:
 
-  residual_type operator()(const state_type & odeCurrentState,
-  			   const system_type & model) const
+  residual_type create(const system_type & model) const
   {
-    residual_type R(model.createTimeDiscreteResidualObject(*odeCurrentState.data()));
+    residual_type R(model.createTimeDiscreteResidual());
     return R;
   }
 
@@ -93,14 +92,14 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==1>
-  operator()(const state_type & odeCurrentState,
+  compute(const state_type & odeCurrentState,
 		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R,
-      ::pressio::solvers::Norm normKind,
+      ::pressio::Norm normKind,
       scalar_type & normValue) const
   {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());
@@ -117,14 +116,14 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==2>
-  operator()(const state_type & odeCurrentState,
+  compute(const state_type & odeCurrentState,
 		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t & step,
 		  residual_type & R,
-      ::pressio::solvers::Norm normKind,
+      ::pressio::Norm normKind,
       scalar_type & normValue) const
   {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());
@@ -143,14 +142,14 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==3>
-  operator()(const state_type & odeCurrentState,
+  compute(const state_type & odeCurrentState,
 		  const prev_states_type & prevStates,
 		  const system_type & model,
 		  const scalar_type & t,
 		  const scalar_type & dt,
 		  const types::step_t &  step,
 		  residual_type & R,
-      ::pressio::solvers::Norm normKind,
+      ::pressio::Norm normKind,
       scalar_type & normValue) const
   {
     const auto & ynm1 = prevStates.get(ode::nMinusOne());

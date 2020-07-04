@@ -88,8 +88,7 @@ struct Stepper
   using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
     scalar_t, state_type, velocity_t, system_t,
     ::pressio::ode::meta::admissible_explicit_velocity_policy, Args...>;
-  using velocity_policy_t = ::pressio::mpl::variadic::at_or_t
-    <standard_velocity_policy_t, ic3::value, Args...>;
+  using velocity_policy_t = ::pressio::mpl::variadic::at_or_t<standard_velocity_policy_t, ic3::value, Args...>;
 
   // check for user-defined ops
   using ops_t = typename UserDefinedOpsFilter<tag, scalar_t, state_t, velocity_t, Args...>::type;

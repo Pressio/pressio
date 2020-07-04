@@ -33,18 +33,14 @@ struct admissible_implicit_jacobian_policy_regular_stepper
      jacobian_t,
      decltype
      (
-      std::declval<T const>().operator()
-      (
-       std::declval<state_t const &>(),
-       std::declval<system_t const &>()
-       )
+      std::declval<T const>().create(std::declval<system_t const &>())
       )
      >::value
    and
    std::is_void<
      decltype
      (
-      std::declval<T const>().template operator()
+      std::declval<T const>().template compute
       <tag>(
 	    std::declval<state_t const &>(),
 	    std::declval<system_t const &>(),

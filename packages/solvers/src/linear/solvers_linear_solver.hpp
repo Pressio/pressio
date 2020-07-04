@@ -49,78 +49,12 @@
 #ifndef SOLVERS_LINEAR_SOLVER_HPP_
 #define SOLVERS_LINEAR_SOLVER_HPP_
 
-#include "solvers/src/linear/impl/solvers_linear_eigen_direct.hpp"
-#include "solvers/src/linear/impl/solvers_linear_eigen_iterative.hpp"
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "solvers/src/linear/impl/solvers_linear_kokkos_direct_geqrf.hpp"
-#include "solvers/src/linear/impl/solvers_linear_kokkos_direct_getrs.hpp"
-#include "solvers/src/linear/impl/solvers_linear_kokkos_direct_potrs_lower.hpp"
-#include "solvers/src/linear/impl/solvers_linear_kokkos_direct_potrs_upper.hpp"
-#endif
+#include "./impl/solvers_linear_solver_selector_impl.hpp"
 
 namespace pressio{ namespace solvers{ namespace linear {
 
-namespace impl{
-
-template<typename tag, typename MatrixT, typename enable = void>
-struct _LinearSolverSelector{
-  using type = void;
-};
-
-template<typename tag, typename MatrixT>
-struct _LinearSolverSelector<
-  tag, MatrixT,
-  mpl::enable_if_t<
-    ::pressio::solvers::linear::details::traits<tag>::iterative and
-    (::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
-     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value)
-    >
-  >
-{
-  using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
-  using solver_traits   = linear::details::traits<tag>;
-  using type = ::pressio::solvers::linear::impl::EigenIterative<tag, MatrixT>;
-};
-
-template<typename tag, typename MatrixT>
-struct _LinearSolverSelector<
-  tag, MatrixT,
-  mpl::enable_if_t<
-    ::pressio::solvers::linear::details::traits<tag>::direct and
-    (::pressio::containers::meta::is_matrix_wrapper_eigen<MatrixT>::value or
-     ::pressio::containers::meta::is_multi_vector_wrapper_eigen<MatrixT>::value)
-    >
-  >
-{
-  using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
-  using solver_traits   = linear::details::traits<tag>;
-  using type = ::pressio::solvers::linear::impl::EigenDirect<tag, MatrixT>;
-};
-
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename tag, typename MatrixT>
-struct _LinearSolverSelector<
-  tag, MatrixT,
-  mpl::enable_if_t<
-    ::pressio::solvers::linear::details::traits<tag>::direct and
-    (::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
-     ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<MatrixT>::value)
-    >
-  >
-{
-  using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
-  using solver_traits   = linear::details::traits<tag>;
-  using type = ::pressio::solvers::linear::impl::KokkosDirect<tag, MatrixT>;
-};
-#endif
-
-}// end namespace pressio::solvers::linear::impl
-
-
 template <typename ... Args>
-using Solver = typename impl::_LinearSolverSelector<Args...>::type;
-
+using Solver = typename impl::LinearSolverSelector<Args...>::type;
 
 }}}//end namespace pressio::solvers::linear
 #endif

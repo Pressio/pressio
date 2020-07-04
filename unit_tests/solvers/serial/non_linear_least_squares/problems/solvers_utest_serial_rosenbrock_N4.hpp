@@ -6,7 +6,8 @@
 
 namespace pressio{ namespace solvers{ namespace test{
 
-struct Rosenbrock4Impl{
+struct Rosenbrock4Impl
+{
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
   using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
@@ -20,11 +21,11 @@ struct Rosenbrock4Impl{
   static constexpr int nf = 6; // num functions
   static constexpr int nv = 4; // num variables
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     return residual_type(nf);
   }
 
-  jacobian_type createJacobianObject(const state_type& x) const {
+  jacobian_type createJacobian() const {
     return jacobian_type(nf, nv);
   }
 
@@ -38,7 +39,8 @@ struct Rosenbrock4Impl{
   //   residual(state, R, normKind, resNorm);
   // }
 
-  void residual(const state_type& x, residual_type & res,
+  void residual(const state_type& x, 
+    residual_type & res,
 		::pressio::solvers::Norm normKind,
 		scalar_type & normResidual) const
   {
@@ -79,9 +81,8 @@ struct Rosenbrock4Impl{
 
 using Rosenbrock4 = Rosenbrock4Impl;
 
-
-
-struct Rosenbrock4HessGradApi{
+struct Rosenbrock4HessGradApi
+{
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
   using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
@@ -97,12 +98,22 @@ struct Rosenbrock4HessGradApi{
 
   Rosenbrock4Impl rosImpl;
 
+public:
+  hessian_type createHessian() const{
+    // this only construct empty objects
+    return hessian_type(nv, nv);
+  }
+
+  gradient_type createGradient() const{
+    // this only construct empty objects
+    return gradient_type(nv);
+  }
 
   void residualNorm(const state_type & state,
 		    pressio::solvers::Norm normKind,
 		    scalar_type & resNorm) const
   {
-    auto R = rosImpl.createResidualObject(state);
+    auto R = rosImpl.createResidual();
     rosImpl.residual(state, R, normKind, resNorm);
   }
 
@@ -112,29 +123,17 @@ struct Rosenbrock4HessGradApi{
 			  pressio::solvers::Norm normType,
 			  scalar_type & residualNorm) const
   {
-    auto J = rosImpl.createJacobianObject(x);
+    auto J = rosImpl.createJacobian();
     rosImpl.jacobian(x, J);
     *hess.data() = J.data()->transpose() * (*J.data());
 
-    auto R = rosImpl.createResidualObject(x);
+    auto R = rosImpl.createResidual();
     rosImpl.residual(x, R, normType, residualNorm);
 
     *grad.data() = J.data()->transpose() * (*R.data());
 
     if (normType == ::pressio::solvers::Norm::L2) residualNorm = R.data()->norm();
     if (normType == ::pressio::solvers::Norm::L1) residualNorm = R.data()->lpNorm<1>();
-  }
-
-  hessian_type createHessianObject(const state_type & x) const{
-    // this only construct empty objects
-    hessian_type hess(nv, nv);
-    return hess;
-  }
-
-  gradient_type createGradientObject(const state_type & x) const{
-    // this only construct empty objects
-    gradient_type grad(nv);
-    return grad;
   }
 };
 

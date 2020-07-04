@@ -6,7 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../packages)
 include(macrosForCreatingTests)
 
 add_subdirectory(apps)
+add_subdirectory(solvers)
 add_subdirectory(ode)
 add_subdirectory(optimizers)
 add_subdirectory(rom)
-add_subdirectory(solvers)

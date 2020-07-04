@@ -24,7 +24,6 @@ int main(int argc, char *argv[]){
   constexpr int Ncell = 20;
   app_t appObj(mu, Ncell);
   auto & y0n = appObj.getInitialState();
-  auto r0n = appObj.velocity(y0n, static_cast<scalar_t>(0));
 
   // types for ode
   using ode_state_t = pressio::containers::Vector<app_state_t>;
@@ -41,14 +40,18 @@ int main(int argc, char *argv[]){
   using lin_solver_t = pressio::solvers::linear::Solver<
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
-  using nonlin_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, scalar_t>; 
-  nonlin_solver_t solverO(stepperObj, y, linSolverObj);
+
+  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
+    lin_solver_t>;
+  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, solverO);
+  pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data();
   {
     using namespace pressio::apps::test;

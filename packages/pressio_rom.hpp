@@ -59,8 +59,6 @@
 #include "pressio_solvers.hpp"
 #include "pressio_ode.hpp"
 
-#include "rom/src/rom_ConfigDefs.hpp"
-
 #include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
 #include "rom/src/meta/rom_has_dense_matrix_typedef.hpp"
@@ -91,22 +89,22 @@
 #include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
 
 //----------------
-// classes for fom state reconstructor
+// fom state reconstructor
 //----------------
 #include "rom/src/meta/rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp"
 #include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
 
-//----------------
-// steady LSPG
-//----------------
-#include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_jacobian_policy.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_system.hpp"
-#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_common_traits.hpp"
-#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_default_problem_traits.hpp"
-#include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_problem_generator.hpp"
-#include "rom/src/lspg_steady/rom_lspg_steady_api_aliases.hpp"
+// //----------------
+// // steady LSPG
+// //----------------
+// #include "rom/src/lspg_steady/rom_lspg_steady_residual_policy.hpp"
+// #include "rom/src/lspg_steady/rom_lspg_steady_jacobian_policy.hpp"
+// #include "rom/src/lspg_steady/rom_lspg_steady_system.hpp"
+// #include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_common_traits.hpp"
+// #include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_default_problem_traits.hpp"
+// #include "rom/src/lspg_steady/problem_traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
+// #include "rom/src/lspg_steady/rom_lspg_steady_problem_generator.hpp"
+// #include "rom/src/lspg_steady/rom_lspg_steady_api_aliases.hpp"
 
 //----------------
 // unsteady LSPG
@@ -119,15 +117,14 @@
 #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
 #include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
 
-// metaf for residual api
-#include "rom/src/meta/lspg_residual_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
-#include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
-#include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
-#include "rom/src/meta/lspg_residual_api/rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
-#include "rom/src/meta/lspg_residual_api/rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp"
-#include "rom/src/meta/lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
+// // metaf for residual api
+// #include "rom/src/meta/lspg_residual_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
+// #include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
+// #include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
+// #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
+// #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp"
+// #include "rom/src/meta/lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
 
-// metaf for checking valid model for unsteady lspg
 #include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
 // lspg problems
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
@@ -135,37 +132,37 @@
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_preconditioned.hpp"
 #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
 
-//----------------
-// galerkin
-//----------------
-// metaf for checking ops
-#include "rom/src/meta/galerkin_velocity_api/rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp"
-// meta for checking api
-#include "rom/src/meta/galerkin_velocity_api/rom_model_meets_velocity_api_for_galerkin.hpp"
-#include "rom/src/meta/galerkin_residual_api/rom_model_meets_residual_api_for_galerkin.hpp"
-#include "rom/src/meta/rom_is_legitimate_model_for_galerkin.hpp"
-// problem classes
-#include "rom/src/galerkin/rom_galerkin_problem_default.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
+// //----------------
+// // galerkin
+// //----------------
+// // metaf for checking ops
+// #include "rom/src/meta/galerkin_velocity_api/rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp"
+// // meta for checking api
+// #include "rom/src/meta/galerkin_velocity_api/rom_model_meets_velocity_api_for_galerkin.hpp"
+// #include "rom/src/meta/galerkin_residual_api/rom_model_meets_residual_api_for_galerkin.hpp"
+// #include "rom/src/meta/rom_is_legitimate_model_for_galerkin.hpp"
+// // problem classes
+// #include "rom/src/galerkin/rom_galerkin_problem_default.hpp"
+// #include "rom/src/galerkin/rom_galerkin_problem_generator.hpp"
 
-//----------------
-// wls
-//----------------
-#include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_wls.hpp"
-#include "rom/src/meta/wls_residual_api/rom_model_meets_residual_api_for_wls.hpp"
+// //----------------
+// // wls
+// //----------------
+// #include "rom/src/meta/wls_velocity_api/rom_model_meets_velocity_api_for_wls.hpp"
+// #include "rom/src/meta/wls_residual_api/rom_model_meets_residual_api_for_wls.hpp"
 
-#include "rom/src/wls/rom_wls_types.hpp"
-#include "rom/src/wls/rom_wls_jacobian_updating_tag.hpp"
-#include "rom/src/wls/rom_wls_jacobians_container.hpp"
-#include "rom/src/wls/rom_wls_preconditioners.hpp"
-#include "rom/src/wls/meta/rom_wls_is_legitimate_preconditioner_type.hpp"
-#include "rom/src/wls/meta/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
+// #include "rom/src/wls/rom_wls_types.hpp"
+// #include "rom/src/wls/rom_wls_jacobian_updating_tag.hpp"
+// #include "rom/src/wls/rom_wls_jacobians_container.hpp"
+// #include "rom/src/wls/rom_wls_preconditioners.hpp"
+// #include "rom/src/wls/meta/rom_wls_is_legitimate_preconditioner_type.hpp"
+// #include "rom/src/wls/meta/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
 
-#include "rom/src/wls/time_schemes/rom_wls_implicit_euler.hpp"
-#include "rom/src/wls/time_schemes/rom_wls_bdf2.hpp"
-#include "rom/src/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
+// #include "rom/src/wls/time_schemes/rom_wls_implicit_euler.hpp"
+// #include "rom/src/wls/time_schemes/rom_wls_bdf2.hpp"
+// #include "rom/src/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
 
-#include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
-#include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
+// #include "rom/src/wls/apis/rom_wls_hessian_gradient_system_api.hpp"
+// #include "rom/src/wls/policies/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 
 #endif

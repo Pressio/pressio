@@ -80,10 +80,9 @@ public:
 
 public:
 
-  jacobian_type operator()(const state_type & stateIn,
-  			   const system_type & model) const
+  jacobian_type create(const system_type & model) const
   {
-    jacobian_type JJ(model.createTimeDiscreteJacobianObject(*stateIn.data()));
+    jacobian_type JJ(model.createTimeDiscreteJacobian());
     return JJ;
   }
 
@@ -92,7 +91,7 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==1 >
-  operator()(const state_type & stateIn,
+  compute(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
@@ -113,7 +112,7 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==2 >
-  operator()(const state_type & stateIn,
+  compute(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,
@@ -136,7 +135,7 @@ public:
   //-------------------------------
   template <typename prev_states_type, typename scalar_type>
   mpl::enable_if_t< prev_states_type::size()==3 >
-  operator()(const state_type & stateIn,
+  compute(const state_type & stateIn,
 		  const prev_states_type & oldStates,
 		  const system_type & model,
 		  const scalar_type & t,

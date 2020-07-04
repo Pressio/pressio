@@ -56,18 +56,20 @@
 #include "pressio_qr.hpp"
 #include "pressio_svd.hpp"
 
-#include "solvers/src/solvers_convergence_tags.hpp"
-#include "solvers/src/solvers_norm_tags.hpp"
 #include "solvers/src/solvers_fwd.hpp"
 #include "solvers/src/solvers_meta_static_checks.hpp"
 
 // base classes
 #include "solvers/src/base/solvers_iterative_base.hpp"
 #include "solvers/src/base/solvers_linear_base.hpp"
-#include "solvers/src/base/solvers_nonlinear_base.hpp"
 
-// meta
-#include "solvers/src/meta/solvers_basic_meta.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_matrix_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_gradient_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_hessian_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_jacobian_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_residual_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_scalar_typedef.hpp"
+#include "solvers/src/predicates/typedefs/solvers_has_state_typedef.hpp"
 
 //**********************
 // *** linear *** //
@@ -76,51 +78,36 @@
 #include "solvers/src/linear/solvers_linear_traits.hpp"
 #include "solvers/src/linear/solvers_linear_solver.hpp"
 
-//**********************
-// *** non-linear *** //
-//**********************
-#include "solvers/src/meta/solvers_is_legitimate_linear_solver_for_least_squares_solver.hpp"
-#include "solvers/src/meta/solvers_is_legitimate_qr_solver_for_gn_qr.hpp"
-
-#include "solvers/src/meta/residual_jacobian_api/solvers_system_meets_residual_jacobian_api.hpp"
-#include "solvers/src/meta/residual_jacobian_api/solvers_system_meets_fused_residual_jacobian_api.hpp"
-#include "solvers/src/meta/hessian_gradient_api/solvers_system_meets_hessian_gradient_api.hpp"
-#include "solvers/src/meta/hessian_gradient_api/solvers_system_meets_fused_hessian_gradient_api.hpp"
-
-#include "solvers/src/nonlinear/solvers_nonlinear_tags.hpp"
+//************************************
+// *** non-linear ***
+//************************************
+#include "solvers/src/predicates/solvers_has_const_residualnorm_method_accept_state_norm_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_create_residual_method_return_result.hpp"
+#include "solvers/src/predicates/solvers_has_const_create_jacobian_method_return_result.hpp"
+#include "solvers/src/predicates/solvers_has_const_jacobian_method_accept_state_result_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_residual_method_accept_state_result_norm_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void.hpp"
+#include "solvers/src/will_be_concepts/system/solvers_admissible_system_fused_residual_jacobian_api.hpp"
+#include "solvers/src/will_be_concepts/system/solvers_admissible_system_residual_jacobian_api.hpp"
 #include "solvers/src/nonlinear/solvers_updating_criteria.hpp"
 #include "solvers/src/nonlinear/solvers_convergence_criteria.hpp"
+
+// *** non-linear least-squares *** //
+#include "solvers/src/predicates/solvers_has_const_create_hessian_method_return_result.hpp"
+#include "solvers/src/predicates/solvers_has_const_create_gradient_method_return_result.hpp"
+#include "solvers/src/predicates/solvers_has_const_gradient_method_accept_state_result_norm_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_hessian_method_accept_state_result_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_hessianandgradient_method_accept_state_result_norm_return_void.hpp"
+#include "solvers/src/will_be_concepts/system/solvers_admissible_system_fused_hessian_gradient_api.hpp"
+#include "solvers/src/will_be_concepts/system/solvers_admissible_system_hessian_gradient_api.hpp"
+#include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_least_squares_solver.hpp"
+#include "solvers/src/will_be_concepts/solvers_legitimate_qr_solver_for_gn_qr.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton.hpp"
 #include "solvers/src/nonlinear/solvers_levenberg_merquardt.hpp"
 
+// *** Newton-Raphson *** //
 #include "solvers/src/nonlinear/solvers_newton_raphson.hpp"
 
-// #include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_norms.hpp"
-// #include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_for_hessian.hpp"
-// #include "solvers/src/meta/custom_ops_detection/solvers_has_all_needed_methods_for_gradient.hpp"
-// #include "solvers/src/nonlinear/solvers_line_search_tags.hpp"
-// #include "solvers/src/nonlinear/solvers_lm_schedule_policy_tags.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_convergence_tag.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_lm_schedule_policy_tag.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_line_search_tag.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_hessian_for_gn_normeq.hpp"
-
-// #include "solvers/src/meta/solvers_is_legitimate_residual_observer_each_solver_step.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_residual_observer_when_converged.hpp"
-// #include "solvers/src/meta/solvers_system_meets_gn_hessian_gradient_api.hpp"
-
-// #include "solvers/src/meta/solvers_system_has_all_needed_jacobian_methods.hpp"
-// #include "solvers/src/meta/solvers_system_has_all_needed_residual_methods.hpp"
-// #include "solvers/src/meta/solvers_system_meets_default_api.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_system_for_gauss_newton.hpp"
-// #include "solvers/src/meta/solvers_is_legitimate_system_for_newton_raphson.hpp"
-
-// // newton-raphson
-
-// // Gauss-Newton
-// #include "solvers/src/nonlinear/gauss_newton/solvers_gauss_newton.hpp"
-// // LM
-// #include "solvers/src/nonlinear/lm/solvers_lm.hpp"
 // // Gauss-Newton conservative rom
 // #include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
 
