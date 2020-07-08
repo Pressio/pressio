@@ -18,7 +18,7 @@ struct UserDefinedOpsFilter<
   // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::pressio::ode::meta::admissible_user_defined_ops_for_explicit_euler, Args...>;
+    ::pressio::ode::concepts::user_defined_ops_for_explicit_euler, Args...>;
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
 
@@ -30,7 +30,7 @@ struct UserDefinedOpsFilter<
   // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::pressio::ode::meta::admissible_user_defined_ops_for_explicit_rk4, Args...>;
+    ::pressio::ode::concepts::user_defined_ops_for_explicit_rk4, Args...>;
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
 
@@ -68,12 +68,12 @@ struct Stepper
 		//  "You need a scalar_type in the ExplicitStepper templates");
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
 
-  static_assert(::pressio::ode::meta::admissible_system_explicit_ode<system_t>::value,
+  static_assert(::pressio::ode::concepts::continuous_time_system_explicit_stepping<system_t>::value,
        "Invalid system passed to the ExplicitStepper");
 
   // check args for a valid velocity type
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::ode::meta::admissible_explicit_velocity_type, Args...>;
+    ::pressio::ode::concepts::explicit_velocity, Args...>;
   // if a velocity type is NOT found, then set it equal to the state
   using velocity_t = ::pressio::mpl::variadic::at_or_t<state_t, ic2::value, Args...>;
   static_assert(std::is_void<system_t>::value == false,
@@ -87,7 +87,7 @@ struct Stepper
   // check Args if a user-defined velocity policy is passed
   using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
     scalar_t, state_type, velocity_t, system_t,
-    ::pressio::ode::meta::admissible_explicit_velocity_policy, Args...>;
+    ::pressio::ode::concepts::explicit_velocity_policy, Args...>;
   using velocity_policy_t = ::pressio::mpl::variadic::at_or_t<standard_velocity_policy_t, ic3::value, Args...>;
 
   // check for user-defined ops

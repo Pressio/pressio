@@ -61,10 +61,6 @@ template<
   typename jacobian_policy_t
   >
 class StepperBDF1
-: public ::pressio::ode::implicitmethods::StepperBase< 
-  StepperBDF1<scalar_t, state_t, residual_t, jacobian_t, 
-  system_type, residual_policy_t, jacobian_policy_t> 
-  >
 {
 
 public:
@@ -77,7 +73,7 @@ public:
   static constexpr types::stepper_order_t order_value = 1;
   static constexpr std::size_t numAuxStates = 1;
   using system_wrapper_t  = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-  using aux_states_t = ::pressio::ode::AuxStatesContainer<false, state_t, numAuxStates>;
+  using aux_states_t = ::pressio::ode::AuxStatesManager<state_t, numAuxStates>;
 
   using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
     state_t, system_type, residual_t>;
@@ -136,6 +132,10 @@ public:
 	      const types::step_t & step,
 	      solver_type & solver)
   {
+    static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
+      solver_type, decltype(*this), state_type>::value, 
+      "Invalid solver for BDF1 stepper");
+
     using nm1 = ode::nMinusOne;
     auto & odeState_nm1 = this->auxStates_.get(nm1());
     this->dt_ = dt;
@@ -153,6 +153,10 @@ public:
 	      solver_type & solver,
 	      guess_callback_t && guesserCb)
   {
+    static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
+      solver_type, decltype(*this), state_type>::value, 
+      "Invalid solver for BDF1 stepper");
+
     using nm1 = ode::nMinusOne;
     auto & odeState_nm1 = this->auxStates_.get(nm1());
     this->dt_ = dt;
@@ -174,8 +178,8 @@ public:
   void residual(const state_t & odeState, residual_t & R,
     ::pressio::Norm normKind, scalar_t & normValue) const
   {
-    this->residual_obj_.template compute<tag_name>(odeState, 
-      this->auxStates_, this->sys_.get(),
+    this->residual_obj_.template compute<tag_name>(
+      odeState, this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R,
       normKind, normValue);
   }
@@ -183,7 +187,8 @@ public:
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     this->jacobian_obj_.template compute<
-      tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
+      tag_name>(odeState, this->auxStates_, this->sys_.get(), 
+                this->t_, this->dt_, this->step_, J);
   }
 
 private:

@@ -49,7 +49,7 @@
 #ifndef ODE_IS_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
 #define ODE_IS_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace concepts {
 
 template <typename T, typename stepper_t, typename state_t, typename enable = void>
 struct legitimate_solver_for_implicit_stepper : std::false_type{};
@@ -67,5 +67,5 @@ struct legitimate_solver_for_implicit_stepper<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ode::concepts
 #endif

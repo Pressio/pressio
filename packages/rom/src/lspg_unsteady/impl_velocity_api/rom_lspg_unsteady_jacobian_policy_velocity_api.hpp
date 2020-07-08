@@ -104,23 +104,25 @@ public:
 
 public:
 
-  template <typename lspg_state_t, typename app_t>
-  apply_jac_return_t operator()(const lspg_state_t & romState,
-				const app_t & app) const
+  template <typename app_t>
+  apply_jac_return_t create(const app_t & app) const
   {
     return JJ_;
   }
 
   template <
     typename stepper_tag,
-    typename lspg_state_t, typename lspg_jac_t, typename app_t, typename scalar_t
+    typename lspg_state_t, 
+    typename lspg_jac_t, 
+    typename app_t, 
+    typename scalar_t
   >
-  void operator()(const lspg_state_t & romState,
-  		  const app_t	     & app,
-		  const scalar_t     & time,
-		  const scalar_t     & dt,
+  void compute(const lspg_state_t & romState,
+  		  const app_t	& app,
+		  const scalar_t & time,
+		  const scalar_t & dt,
 		  const ::pressio::ode::types::step_t & step,
-		  lspg_jac_t	     & romJac) const
+		  lspg_jac_t & romJac) const
   {
     this->compute_impl<stepper_tag>(romState, romJac, app, time, dt, step);
   }

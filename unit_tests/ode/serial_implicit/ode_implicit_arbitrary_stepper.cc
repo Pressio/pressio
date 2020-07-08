@@ -7,7 +7,9 @@ template<typename state_type, typename system_type, typename residual_type>
 class ResidualPolicy{
 
 public:
-  template <typename prev_states_type>
+  residual_type create(const system_type & model) const{ return residual_type(); }
+
+  template <typename odetag, typename prev_states_type>
   void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
@@ -17,14 +19,7 @@ public:
 		  residual_type & R,
       ::pressio::Norm normKind,
       double & normValue) const
-  {
-    // here I would need to compute the time discrete residual
-  }
-
-  residual_type create(const system_type & model) const{
-    return residual_type();
-  }
-
+  {}
 };//end class
 
 
@@ -32,21 +27,19 @@ template<typename state_type, typename system_type, typename jacobian_type>
 class JacobianPolicy{
 
 public:
-  template <typename prev_states_type>
+  template <typename odetag, typename prev_states_type>
   void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
 		  const double &  t,
 		  const double &  dt,
 		  ::pressio::ode::types::step_t step,
-		  jacobian_type & J) const{
-    // here I would need to compute the time discrete version
-  }
+		  jacobian_type & J) const
+  {}
 
   jacobian_type create(const system_type & model) const{
     return jacobian_type();
   }
-
 };//end class
 
 
@@ -62,14 +55,12 @@ TEST(ode_implicit, validArbitraryStepperPolicies){
   using jac_t = containers::Matrix<njac_t>;
 
   using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
-  static_assert
-    (ode::meta::admissible_residual_policy_for_implicit_arbitrary_stepper<
-     residual_policy_t, 1, state_t, res_t, app_t, double>::value, "");
+  static_assert(ode::concepts::implicit_euler_residual_policy<
+     residual_policy_t, state_t, res_t, app_t, double>::value, "");
 
   using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
-  static_assert
-    (ode::meta::admissible_jacobian_policy_for_implicit_arbitrary_stepper<
-     jacobian_policy_t, 1, state_t, jac_t, app_t, double>::value, "");
+  static_assert(ode::concepts::implicit_euler_jacobian_policy<
+     jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
 }
 
 

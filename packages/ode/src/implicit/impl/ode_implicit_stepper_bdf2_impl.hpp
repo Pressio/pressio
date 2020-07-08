@@ -15,10 +15,6 @@ template<
   typename jacobian_policy_t
   >
 class StepperBDF2
-: public ::pressio::ode::implicitmethods::StepperBase< 
-  StepperBDF2<scalar_t, state_t, residual_t, jacobian_t, 
-  system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t> 
-  >
 {
 public:
   // these need to be here because are detected by solver
@@ -36,7 +32,7 @@ public:
   static constexpr types::stepper_order_t order_value = 2;
   static constexpr std::size_t numAuxStates = 2;
   using system_wrapper_t  = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-  using aux_states_t = ::pressio::ode::AuxStatesContainer<false, state_type, numAuxStates>;
+  using aux_states_t = ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
 
   using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
     state_type, system_type, residual_type>;
@@ -86,7 +82,6 @@ public:
     return order_value;
   }
 
-  // enable when auxiliary stepper is implicit too
   template<typename solver_type>
   void doStep(state_type & odeState,
 	      const scalar_t &  t,
@@ -94,6 +89,10 @@ public:
 	      const types::step_t & step,
 	      solver_type & solver)
   {
+    static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
+      solver_type, decltype(*this), state_type>::value, 
+      "Invalid solver for BDF2 stepper");
+
     using nm1 = ode::nMinusOne;
     using nm2 = ode::nMinusTwo;
 
@@ -124,7 +123,6 @@ public:
     }
   }
 
-  // enable when auxiliary stepper is implicit too
   // overload for when we have a guesser callback
   template<typename solver_type, typename guess_callback_t>
   void doStep(state_type & odeState,
@@ -134,6 +132,10 @@ public:
 	      solver_type & solver,
 	      guess_callback_t && guesserCb)
   {
+    static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
+      solver_type, decltype(*this), state_type>::value, 
+      "Invalid solver for BDF2 stepper");
+
     using nm1 = ode::nMinusOne;
     using nm2 = ode::nMinusTwo;
 
@@ -178,8 +180,8 @@ public:
   void residual(const state_t & odeState, residual_t & R,
     ::pressio::Norm normKind, scalar_t & normValue) const
   {
-    this->residual_obj_.template compute<tag_name>(odeState, 
-      this->auxStates_, this->sys_.get(),
+    this->residual_obj_.template compute<tag_name>(
+      odeState,  this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R,
       normKind, normValue);
   }
@@ -187,7 +189,8 @@ public:
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     this->jacobian_obj_.template compute<
-      tag_name>(odeState, this->sys_.get(), this->t_, this->dt_, this->step_, J);
+      tag_name>(odeState, this->auxStates_, this->sys_.get(), 
+                this->t_, this->dt_, this->step_, J);
   }
 
 private:

@@ -49,7 +49,7 @@
 #ifndef ODE_META_HAS_STATE_TYPEDEF_HPP_
 #define ODE_META_HAS_STATE_TYPEDEF_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct has_state_typedef : std::false_type{};
@@ -64,5 +64,5 @@ struct has_state_typedef<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::ode::meta
+}}}//end namespace pressio::ode::predicates
 #endif

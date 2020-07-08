@@ -62,7 +62,7 @@ class ProblemGeneratorResidualApi
 {
 
   /* here, the fom_type must satisfy the residual api */
-  static_assert( ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+  static_assert( ::pressio::rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<fom_type>::value,
 		 "\nYou are trying to generate an unsteady LSPG problem \n \
 requiring a fom adapter class to meet the residual api. \n \
 However, the fom/adapter type you passed does not meet that api. \n \

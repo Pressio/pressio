@@ -2,7 +2,7 @@
 #ifndef ode_admissible_system_implicit_ode_HPP_
 #define ode_admissible_system_implicit_ode_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace concepts {
 
 template<typename T, typename enable = void>
 struct admissible_system_implicit_ode : std::false_type{};
@@ -17,5 +17,5 @@ struct admissible_system_implicit_ode<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ode::concepts
 #endif

@@ -30,7 +30,7 @@ struct Rosenbrock3 {
 
   void residual(const state_type& x,
 		residual_type & res,
-		::pressio::solvers::Norm normKind,
+		::pressio::Norm normKind,
 		scalar_type & normResidual) const
   {
     auto x1 = x[0];
@@ -42,8 +42,8 @@ struct Rosenbrock3 {
     res[2] = (1.-x1);
     res[3] = (1.-x2);
 
-    if (normKind == pressio::solvers::Norm::L2) normResidual = res.data()->norm();
-    if (normKind == pressio::solvers::Norm::L1) normResidual = res.data()->lpNorm<1>();
+    if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
+    if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const {

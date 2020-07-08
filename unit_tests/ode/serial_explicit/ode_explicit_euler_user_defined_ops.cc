@@ -67,7 +67,7 @@ TEST(ode_explicit_euler, userDefinedOps){
 
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
   {
   auto yptr2 = y.data();
   EXPECT_DOUBLE_EQ( (*yptr2)[0], 2.0);

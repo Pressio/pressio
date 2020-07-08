@@ -17,11 +17,11 @@ struct ValidSystemA {
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
-  		    pressio::solvers::Norm normKind,
+  		    pressio::Norm normKind,
   		    scalar_type & resNorm) const;
 
   void gradient(const state_type &, gradient_type &,
-		::pressio::solvers::Norm normKind, scalar_type & normResidual) const;
+		::pressio::Norm normKind, scalar_type & normResidual) const;
   void hessian(const state_type &, hessian_type &) const;
 };
 
@@ -40,11 +40,11 @@ struct ValidSystemB {
   gradient_type createGradient() const;
 
   void residualNorm(const state_type & state,
-  		    pressio::solvers::Norm normKind,
+  		    pressio::Norm normKind,
   		    scalar_type & resNorm) const;
 
   void hessianAndGradient(const state_type &, hessian_type &, gradient_type &,
-			  ::pressio::solvers::Norm normKind, scalar_type & normResidual) const;
+			  ::pressio::Norm normKind, scalar_type & normResidual) const;
 };
 
 TEST(solvers_meta, system_admissible_hes_gra_api){

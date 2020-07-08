@@ -10,32 +10,29 @@ struct ValidApp{
   using dense_matrix_type = std::vector<std::vector<scalar_type>>;
 
 public:
-  void velocity(const state_type & y, scalar_type t, velocity_type & f) const
-  {};
-
-  velocity_type velocity(const state_type & y, scalar_type t) const{
+  velocity_type createVelocity() const{
     velocity_type f;
     return f;
   };
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
+    dense_matrix_type A;
+    return A;
+  }
+
+  void velocity(const state_type & y, scalar_type t, velocity_type & f) const
+  {};
 
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
 		     dense_matrix_type & A) const
   {}
-
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
-    dense_matrix_type A;
-    return A;
-  }
 };
 
 TEST(rom_wls_meta, validVeloAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::model_meets_velocity_api_for_wls<app_t>::value,"");
+  static_assert( rom::meta::admissible_system_velocity_api_wls<app_t>::value,"");
 }
 
 

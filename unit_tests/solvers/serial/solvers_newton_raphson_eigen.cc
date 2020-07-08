@@ -26,14 +26,14 @@ struct ValidSystem {
 
   void residual(const state_type& x, 
                 residual_type& res,
-                pressio::solvers::Norm normKind, 
+                pressio::Norm normKind, 
                 scalar_type & norm) const 
   {
     res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
     res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    if (normKind == pressio::solvers::Norm::L2) 
+    if (normKind == pressio::Norm::L2) 
       norm = res.data()->norm();
-    else if (normKind == pressio::solvers::Norm::L1) 
+    else if (normKind == pressio::Norm::L1) 
       norm = res.data()->lpNorm<1>();
   }
 

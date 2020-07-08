@@ -34,7 +34,7 @@ struct Observer{
 };
 
 
-struct MyApp
+struct MyAppContinuousTimeApi
 {
 
   /*
@@ -81,39 +81,40 @@ public:
     return JJ;
   };
   //--------------------------------------------
+};
+
+
+struct MyAppDiscreteTimeAPI
+{
+
+  /*
+    dy
+    -- = -10*y
+    dt
+
+    y(0) = 1;
+    y(1) = 2;
+    y(2) = 3;
+   */
+  using scalar_type = double;
+  using state_type    = Eigen::VectorXd;
+  using velocity_type = state_type;
+  using residual_type = state_type;
+  using jacobian_type = Eigen::SparseMatrix<double>;
+  using discrete_time_residual_type = residual_type;
+  using discrete_time_jacobian_type = jacobian_type;
 
 public:
-  template <typename step_t, typename ... Args>
-  void timeDiscreteResidual(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            residual_type & R,
-                            ::pressio::Norm normKind, 
-                            scalar_type & normVal,
-                            Args && ... args) const
-  {
-    this->timeDiscreteResidualImpl( step, time, dt, R, normKind, normVal, std::forward<Args>(args)... );
-  }
 
-  template <typename step_t, typename ... Args>
-  void timeDiscreteJacobian(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            jacobian_type & J,
-                            Args && ... states) const
+  discrete_time_residual_type createDiscreteTimeResidual() const
   {
-    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
-  }
-
-  residual_type createTimeDiscreteResidual() const
-  {
-    residual_type R(3);
+    discrete_time_residual_type R(3);
     return R;
   }
 
-  jacobian_type createTimeDiscreteJacobian() const
+  discrete_time_jacobian_type createDiscreteTimeJacobian() const
   {
-    jacobian_type J(3,3);
+    discrete_time_jacobian_type J(3,3);
     // typedef Eigen::Triplet<scalar_type> Tr;
     // std::vector<Tr> tripletList;
     // tripletList.push_back( Tr( 0, 0, 0.) );
@@ -123,16 +124,66 @@ public:
     return J;
   }
 
+  template <typename step_t, typename ... Args>
+  void discreteTimeResidual(const step_t & step,
+                            const scalar_type & time,
+                            const scalar_type & dt,
+                            discrete_time_residual_type & R,
+                            ::pressio::Norm normKind, 
+                            scalar_type & normVal,
+                            Args && ... args) const
+  {
+    this->timeDiscreteResidualImpl( step, time, dt, R, normKind, normVal, std::forward<Args>(args)... );
+  }
+
+  template <typename step_t, typename ... Args>
+  void discreteTimeJacobian(const step_t & step,
+                            const scalar_type & time,
+                            const scalar_type & dt,
+                            discrete_time_jacobian_type & J,
+                            Args && ... states) const
+  {
+    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
+  }
+
 private:
+  void velocity(const state_type & yIn,
+    const scalar_type & t,
+    velocity_type & f) const{
+    f = -10. * yIn;
+  };
+
+  velocity_type createVelocity() const{
+    velocity_type f(3);
+    return f;
+  };
+
+  void jacobian(const state_type & yIn,
+      const scalar_type & t,
+    jacobian_type & JJ) const
+  {
+    typedef Eigen::Triplet<scalar_type> Tr;
+    std::vector<Tr> tripletList;
+    tripletList.push_back( Tr( 0, 0, -10.) );
+    tripletList.push_back( Tr( 1, 1, -10.) );
+    tripletList.push_back( Tr( 2, 2, -10.) );
+    JJ.setFromTriplets(tripletList.begin(), tripletList.end());
+  };
+
+  jacobian_type createJacobian() const{
+    jacobian_type JJ(3,3);
+    return JJ;
+  };
+
   template <typename step_t, typename state_type>
   void timeDiscreteResidualImpl(const step_t & step,
-				const scalar_type & time,
-				const scalar_type & dt,
-				residual_type & R,
+        const scalar_type & time,
+        const scalar_type & dt,
+        residual_type & R,
         ::pressio::Norm normKind,
         scalar_type & normValue,
-				const state_type & yn,
-				const state_type & ynm1) const
+        const state_type & yn,
+        const state_type & ynm1) const
   {
     auto f =  this->createVelocity();
     this->velocity(yn, time, f);
@@ -146,11 +197,11 @@ private:
 
   template <typename step_t, typename state_t>
   void timeDiscreteJacobianImpl(const step_t & step,
-				const scalar_type & time,
-				const scalar_type & dt,
-				jacobian_type & J,
-				const state_t & yn,
-				const state_t & ynm1) const
+        const scalar_type & time,
+        const scalar_type & dt,
+        jacobian_type & J,
+        const state_t & yn,
+        const state_t & ynm1) const
   {
     this->jacobian(yn, time, J);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
@@ -159,13 +210,12 @@ private:
     J.coeffRef(1,1) += one;
     J.coeffRef(2,2) += one;
   }
-
 };
 
 
 struct Bdf1Solver
 {
-  using app_t		= MyApp;
+  using app_t		= MyAppContinuousTimeApi;
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
   using nveloc_t	= typename app_t::velocity_type;
@@ -200,14 +250,16 @@ struct Bdf1Solver
   {
     lin_solver_t linSolverObj;
     nl_solver_t solverO(stepperObj_, y_, linSolverObj);
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
 
 
 struct CustomBdf1Solver
 {
-  using app_t		= MyApp;
+  using app_t		= MyAppDiscreteTimeAPI;
+  static_assert(::pressio::ode::concepts::discrete_time_system_implicit_stepping<app_t>::value, "");
+
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
   using nresid_t	= typename app_t::residual_type;
@@ -244,7 +296,7 @@ struct CustomBdf1Solver
   {
     lin_solver_t linSolverObj;
     nl_solver_t solverO(stepperObj_, y_, linSolverObj);
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambda(int steps)
@@ -256,7 +308,8 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
   };
 
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
@@ -268,7 +321,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_*2.;
 				};
-    ::pressio::ode::integrateNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
   };
 
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
@@ -280,13 +333,13 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
+    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
   };
 
   template <typename observer_t>
   void integrateToTimeWithStepSizeManagerLambdaAndCollector(sc_t finalTime, observer_t & observer)
   {
-    static_assert( pressio::ode::meta::collector_callable_with_step_time_native_container_return_void<
+    static_assert( pressio::ode::concepts::collector_callable_with_step_time_native_container_return_void<
       observer_t, double, state_t
       >::value, "");
 
@@ -297,13 +350,12 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::integrateToTargetTime(stepperObj_, y_, 0.0,
+    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0,
 					  finalTime, solverO,
 					  dtSetterLambda, observer);
   };
 
 };
-
 
 
 TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
@@ -445,7 +497,7 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWith
 
   // define observer (templated on the native state type so that pressio
   // passes us an object of the native state)
-  using state_t = typename MyApp::state_type;
+  using state_t = typename MyAppDiscreteTimeAPI::state_type;
   using observer_t = Observer<state_t>;
 
   // create test class object

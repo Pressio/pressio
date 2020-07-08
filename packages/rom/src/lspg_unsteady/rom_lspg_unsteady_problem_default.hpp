@@ -50,7 +50,7 @@
 #define ROM_LSPG_UNSTEADY_PROBLEM_TYPE_GENERATOR_DEFAULT_HPP_
 
 #include "./impl_velocity_api/problem_traits/rom_lspg_unsteady_default_problem_traits_velocity_api.hpp"
-#include "./impl_residual_api/rom_lspg_unsteady_default_problem_traits_residual_api.hpp"
+// #include "./impl_residual_api/rom_lspg_unsteady_default_problem_traits_residual_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
 
@@ -62,13 +62,14 @@ template <
   >
 using Default =
   mpl::conditional_t<
-  ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
-  impl::DefaultProblemTraitsVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
-  mpl::conditional_t<
-    ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
-    impl::DefaultProblemTraitsResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+  ::pressio::rom::meta::admissible_system_velocity_api_unsteady_lspg<fom_type>::value,
+    impl::DefaultProblemTraitsVelocityApi<stepper_tag, fom_type, lspg_state_type, Args...>,
     void
-    >
+    /*mpl::conditional_t<
+      ::pressio::rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<fom_type>::value,
+      impl::DefaultProblemTraitsResidualApi<stepper_tag, fom_type, lspg_state_type, Args...>,
+      void*/
+    // >
   >;
 
 }}//end namespace pressio::rom::lspg::unsteady

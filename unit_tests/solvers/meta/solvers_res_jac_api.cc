@@ -17,7 +17,7 @@ struct ValidSystemA {
   jacobian_type createJacobian() const;
 
   void residual(const state_type& x, residual_type & res,
-		::pressio::solvers::Norm normKind, scalar_type & normResidual) const;
+		::pressio::Norm normKind, scalar_type & normResidual) const;
 
   void jacobian(const state_type& x, jacobian_type & jac) const;
 };
@@ -37,7 +37,7 @@ struct NonValidSystemA1 {
   jacobian_type createJacobian() const;
 
   void residual(const state_type& x, residual_type & res,
-		::pressio::solvers::Norm normKind, scalar_type & normResidual) const;
+		::pressio::Norm normKind, scalar_type & normResidual) const;
 
   void jacobian(const state_type& x, jacobian_type & jac) const;
 };
@@ -57,12 +57,12 @@ struct ValidSystemB {
   jacobian_type createJacobian() const;
 
   void residualNorm(const state_type & state,
-		    pressio::solvers::Norm normKind,
+		    pressio::Norm normKind,
 		    scalar_type & resNorm) const;
 
   void residualAndJacobian(const state_type& x,
 			   residual_type & res, jacobian_type & J,
-			   ::pressio::solvers::Norm normKind,
+			   ::pressio::Norm normKind,
 			   scalar_type & normResidual) const;
 };
 

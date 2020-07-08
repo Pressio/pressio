@@ -61,17 +61,10 @@ template<
   typename ops_t
   >
 class ExplicitRungeKutta4StepperImpl
-  : public StepperBase< 
-  ExplicitRungeKutta4StepperImpl<scalar_type, state_type, system_type, 
-    velocity_type, velocity_policy_type, standard_velocity_policy_type, ops_t> 
-  >
 {
 
   using this_t = ExplicitRungeKutta4StepperImpl<scalar_type, state_type, system_type, 
     velocity_type, velocity_policy_type, standard_velocity_policy_type, ops_t>;
-  using base_t    = StepperBase<this_t>;
-  // need to friend base to allow it to access the private methods below
-  friend base_t;
 
 public:
   static constexpr bool is_implicit = false;
@@ -80,11 +73,10 @@ public:
   static constexpr types::stepper_order_t order_value = 4;
 
 private:
-  using state_storage_t	    = ::pressio::ode::AuxStatesContainer<is_explicit, state_type, 1>;
   using velocity_storage_t  = VelocitiesContainer<velocity_type, 4>;
   using system_wrapper_t    = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
-  state_storage_t stateAuxStorage_;
+  state_type tmpState_;
   velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
 
@@ -112,7 +104,7 @@ public:
   ExplicitRungeKutta4StepperImpl(const state_type & state, 
                                  const system_type & model, 
                                  const velocity_policy_type & policy)
-    : stateAuxStorage_{state}, 
+    : tmpState_{state}, 
       sys_(model), 
       policy_(policy), 
       veloAuxStorage_(policy_.create(model))
@@ -127,7 +119,7 @@ public:
                                  const system_type & model, 
                                  const velocity_policy_type & policy,
                                  const _ops_t & udOps)
-    : stateAuxStorage_{state},
+    : tmpState_{state},
       sys_(model), 
       policy_(policy), 
       veloAuxStorage_(policy_.create(model)),
@@ -146,7 +138,7 @@ public:
   >
   ExplicitRungeKutta4StepperImpl(const state_type & state, 
                                  const system_type & model)
-    : stateAuxStorage_{state},
+    : tmpState_{state},
       sys_(model), 
       policy_(), // default construct policy
       veloAuxStorage_(policy_.create(model))
@@ -165,7 +157,7 @@ public:
   ExplicitRungeKutta4StepperImpl(const state_type & state, 
                                  const system_type & model, 
                                  const _ops_t & udOps)
-    : stateAuxStorage_{state},
+    : tmpState_{state},
       sys_(model), 
       policy_(), // default construct policy
       veloAuxStorage_(policy_.create(model)),
@@ -183,7 +175,6 @@ public:
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
-    auto & ytmp	   = stateAuxStorage_(0);
     auto & auxRhs0 = veloAuxStorage_(0);
     auto & auxRhs1 = veloAuxStorage_(1);
     auto & auxRhs2 = veloAuxStorage_(2);
@@ -200,18 +191,18 @@ public:
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
     policy_.compute(stateInOut, auxRhs0, sys_.get(), t);
-    this->stage_update_impl(ytmp, stateInOut, auxRhs0, dt_half);
+    this->stage_update_impl(tmpState_, stateInOut, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_.compute(ytmp, auxRhs1, sys_.get(), t_phalf);
-    this->stage_update_impl(ytmp, stateInOut, auxRhs1, dt_half);
+    policy_.compute(tmpState_, auxRhs1, sys_.get(), t_phalf);
+    this->stage_update_impl(tmpState_, stateInOut, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
-    policy_.compute(ytmp, auxRhs2, sys_.get(), t_phalf);
-    this->stage_update_impl(ytmp, stateInOut, auxRhs2, dt);
+    policy_.compute(tmpState_, auxRhs2, sys_.get(), t_phalf);
+    this->stage_update_impl(tmpState_, stateInOut, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_.compute(ytmp, auxRhs3, sys_.get(), t + dt);
+    policy_.compute(tmpState_, auxRhs3, sys_.get(), t + dt);
     this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
   }//end doStep
 

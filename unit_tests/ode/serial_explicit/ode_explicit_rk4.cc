@@ -54,7 +54,7 @@ TEST(ode_explicit_rk4,
 
   // // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
   std::cout << std::setprecision(14) << *y.data();
 
   appObj.analyticAdvanceRK4(dt);
@@ -91,7 +91,7 @@ TEST(ode_explicit_rk4,
 
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
   std::cout << std::setprecision(14) << *y.data();
 
   appObj.analyticAdvanceRK4(dt);

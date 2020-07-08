@@ -49,7 +49,7 @@
 #ifndef ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_
 #define ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_
 
-namespace pressio{ namespace ode{ namespace meta { 
+namespace pressio{ namespace ode{ namespace predicates { 
 
 template <typename T>
 struct IsStepperTotalNumStatesSetter : std::false_type{};
@@ -89,5 +89,5 @@ struct IsStepperTotalNumStatesSetter<
   ::pressio::ode::types::StepperTotalNumberOfStates<7>
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta::impl
+}}} // namespace pressio::ode::predicates
 #endif

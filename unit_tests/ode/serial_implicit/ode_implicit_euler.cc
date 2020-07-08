@@ -39,7 +39,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 2, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -91,7 +91,7 @@ TEST(ode_implicit_euler, guesserLambda){
   			  };
 
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1, NonLinSolver, testLambda);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1, NonLinSolver, testLambda);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y[0], -22.0);
@@ -119,11 +119,10 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   //**********************
   using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
   using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
-
-  // static_assert(::pressio::ode::meta::admissible_implicit_euler_residual_policy_regular_stepper<
-  //   res_pol_t, state_t, res_t, app_t, double>::value,"");
-  // static_assert(::pressio::ode::meta::admissible_implicit_euler_jacobian_policy_regular_stepper<
-  //   jac_pol_t, state_t, jac_t, app_t, double>::value,"");
+  // static_assert(::pressio::ode::meta::admissible_implicit_euler_residual_policy_continuous_time_system<
+  //   res_pol_t, app_t, state_t, res_t, double>::value,"");
+  // static_assert(::pressio::ode::meta::admissible_implicit_euler_jacobian_policy_continuous_time_system<
+  //   jac_pol_t, app_t, state_t, jac_t, double>::value,"");
 
   using stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
@@ -145,7 +144,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -245,7 +244,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
 //   // integrate in time
 //   ::pressio::ode::types::step_t nSteps = 2;
 //   double dt = 0.01;
-//   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+//   ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
 //   std::cout << std::setprecision(14) << *y.data() << "\n";
 
 //   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);

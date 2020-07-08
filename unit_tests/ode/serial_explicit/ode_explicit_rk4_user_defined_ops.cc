@@ -84,9 +84,13 @@ TEST(ode_explicit_rk4, userDefinedOps){
     ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
   stepper_t stepperObj(y, appObj, opsObj);
 
+  // static_assert(pressio::ode::meta::explicitly_steppable<
+  //   stepper_t, 
+  //   >::value, "");
+
   // integrate in time
   double dt = 0.1;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, 1);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
   {
     std::cout << std::setprecision(14) 
     << (*y.data())[0] << " " 

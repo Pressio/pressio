@@ -61,10 +61,6 @@ template<
   typename ops_t
   >
 class ExplicitEulerStepperImpl 
-  : public StepperBase< 
-  ExplicitEulerStepperImpl<scalar_type, state_type, system_type, 
-    velocity_type, velocity_policy_type, standard_velocity_policy_type, ops_t> 
-  >
 {
 
 public:

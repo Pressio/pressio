@@ -46,7 +46,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
@@ -103,7 +103,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 4;
   double dt = 0.01;
-  ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
@@ -207,7 +207,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 //   // integrate in time
 //   ::pressio::ode::types::step_t nSteps = 4;
 //   double dt = 0.01;
-//   ode::integrateNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
+//   ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, solverO);
 //   std::cout << std::setprecision(14) << *y.data() << "\n";
 
 //   appObj.analyticAdvanceBackEulerNSteps(dt, 1);

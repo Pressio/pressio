@@ -2,8 +2,6 @@
 #include <gtest/gtest.h>
 #include "pressio_rom.hpp"
 
-// NOTE: here it does not matter to leave all empty since this
-// is just for doing type checking
 struct ValidApp{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
@@ -15,20 +13,18 @@ public:
   void velocity(const state_type & y, scalar_type t, velocity_type & f) const
   {};
 
-  velocity_type velocity(const state_type & y, scalar_type t) const{
+  void applyJacobian(const state_type & y,
+         const dense_matrix_type & B,
+         scalar_type t,
+         dense_matrix_type & A) const
+  {}
+
+  velocity_type createVelocity() const{
     velocity_type f;
     return f;
   };
 
-  void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
-		     scalar_type t,
-		     dense_matrix_type & A) const
-  {}
-
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const{
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
     dense_matrix_type A;
     return A;
   }
@@ -37,9 +33,6 @@ public:
 TEST(rom_lspg_meta, validVeloAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::model_meets_velocity_api_for_unsteady_lspg<app_t>::value,"");
-  static_assert( rom::meta::is_legitimate_model_for_unsteady_lspg<app_t>::value,"");
-
-  // assert that it does not meet residual api
-  static_assert( !rom::meta::model_meets_residual_api_for_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::meta::admissible_system_velocity_api_unsteady_lspg<app_t>::value,"");
+  static_assert( !rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<app_t>::value,"");
 }

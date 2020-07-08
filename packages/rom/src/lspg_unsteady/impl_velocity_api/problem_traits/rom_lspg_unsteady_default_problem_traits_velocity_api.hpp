@@ -61,7 +61,8 @@ template <
   typename lspg_state_type,
   typename ... Args
   >
-struct DefaultProblemTraitsVelocityApi{
+struct DefaultProblemTraitsVelocityApi
+{
 
   static_assert( !std::is_same< stepper_tag,  ::pressio::ode::implicitmethods::Arbitrary>::value,
 		 "\nTo use unsteady LSPG with the velocity api, \n \
@@ -70,7 +71,7 @@ valid when using the residual api. For the velocity api you need \n \
 to pass a valid tag from the ode steppers, like implicitmethods::Euler/BDF2");
 
   /* here, the fom_type must satisfy the velocity api */
-  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+  static_assert( ::pressio::rom::meta::admissible_system_velocity_api_unsteady_lspg<fom_type>::value,
 		 "\nUsing DefaultProblemTypeGeneratorVelocityApi \n \
 requires a fom adapter class that meets the velocity api. \n \
 However, the fom/adapter type you passed does not meet the velocity api. \n \
@@ -93,23 +94,23 @@ Verify the fom/adapter class you are using meets the velocity api.");
   using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
-  // policy defining how to compute the LSPG time-discrete residual
+  // policy to compute the LSPG time-discrete residual
   using lspg_residual_policy_t	= ::pressio::rom::lspg::unsteady::impl::ResidualPolicyVelocityApi<
     lspg_residual_t, fom_states_manager_t, ud_ops_t>;
+  static_assert( !std::is_void<lspg_residual_policy_t>::value, "");
 
-  // policy defining how to compute the LSPG time-discrete jacobian
+  // policy to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	= ::pressio::rom::lspg::unsteady::impl::JacobianPolicyVelocityApi<
     fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t>;
+  static_assert( !std::is_void<lspg_jacobian_policy_t>::value, "");
 
   using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
     stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
-    lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
+    lspg_residual_policy_t, lspg_jacobian_policy_t>::type;
 
-  // declare type of stepper object
-  using lspg_stepper_t		= ::pressio::ode::implicitmethods::Stepper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
-    aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
-
+  using lspg_stepper_t = 
+     ::pressio::ode::ImplicitStepper<stepper_tag, lspg_state_t, lspg_residual_t, 
+      lspg_matrix_t, fom_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 };//end class
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

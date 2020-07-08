@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
     scalar_t fint = 35;
     scalar_t dt = 0.01;
     auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-    pressio::ode::integrateNSteps(stepperObj, y, 0.0, dt, Nsteps);
+    pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps);
 
     using state_type_h = typename app_state_t::HostMirror;
     state_type_h yH("yH", Ncell);

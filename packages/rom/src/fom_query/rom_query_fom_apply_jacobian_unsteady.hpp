@@ -52,25 +52,6 @@
 namespace pressio{ namespace rom{
 
 template <
-  typename fom_t, typename state_t, typename operand_t, typename time_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  , mpl::enable_if_t<
-      mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
-      int > = 0
-#endif
-  >
-auto queryFomApplyJacobianUnsteady(const fom_t & fomObj,
-				   const state_t & yFOM,
-				   const operand_t & B,
-				   const time_t & t)
-  -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data(), t))
-{
-  return fomObj.applyJacobian(*yFOM.data(), *B.data(), t);
-}
-
-template <
   typename fom_t, typename state_t, typename operand_t,
   typename result_t, typename time_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -82,44 +63,64 @@ template <
 #endif
   >
 void queryFomApplyJacobianUnsteady(const fom_t & fomObj,
-				   const state_t & yFOM,
-				   const operand_t & B,
-				   result_t & out,
-				   const time_t & t)
+           const state_t & yFOM,
+           const operand_t & B,
+           result_t & out,
+           const time_t & t)
 {
   fomObj.applyJacobian(*yFOM.data(), *B.data(), t, *out.data());
 }
 
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename state_t, typename operand_t, typename result_t, typename time_t>
-mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-  ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
-  >
-queryFomApplyJacobianUnsteady(const pybind11::object  & fomObj,
-			      const state_t	  & yFOM,
-			      const operand_t & B,
-			      result_t	  & out,
-			      const time_t & t)
-{
-  *out.data() = fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
-}
+// template <
+//   typename fom_t, typename state_t, typename operand_t, typename time_t
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+//   , mpl::enable_if_t<
+//       mpl::not_same<fom_t, pybind11::object>::value and
+//       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+//       !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+//       int > = 0
+// #endif
+//   >
+// auto queryFomApplyJacobianUnsteady(const fom_t & fomObj,
+// 				   const state_t & yFOM,
+// 				   const operand_t & B,
+// 				   const time_t & t)
+//   -> decltype(fomObj.applyJacobian(*yFOM.data(), *B.data(), t))
+// {
+//   return fomObj.applyJacobian(*yFOM.data(), *B.data(), t);
+// }
 
-template <typename state_t, typename operand_t, typename time_t>
-mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-  ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
-  typename ::pressio::containers::details::traits<state_t>::wrapped_t
-  >
-queryFomApplyJacobianUnsteady(const pybind11::object & fomObj,
-			      const state_t   & yFOM,
-			      const operand_t & B,
-			      const time_t & t)
-{
-  return fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
-}
-#endif
+
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template <typename state_t, typename operand_t, typename result_t, typename time_t>
+// mpl::enable_if_t<
+//   ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+//   ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
+//   >
+// queryFomApplyJacobianUnsteady(const pybind11::object  & fomObj,
+// 			      const state_t	  & yFOM,
+// 			      const operand_t & B,
+// 			      result_t	  & out,
+// 			      const time_t & t)
+// {
+//   *out.data() = fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
+// }
+
+// template <typename state_t, typename operand_t, typename time_t>
+// mpl::enable_if_t<
+//   ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
+//   ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+//   typename ::pressio::containers::details::traits<state_t>::wrapped_t
+//   >
+// queryFomApplyJacobianUnsteady(const pybind11::object & fomObj,
+// 			      const state_t   & yFOM,
+// 			      const operand_t & B,
+// 			      const time_t & t)
+// {
+//   return fomObj.attr("applyJacobian")(*yFOM.data(), *B.data(), t);
+// }
+// #endif
 
 }} //end namespace pressio::rom
 #endif

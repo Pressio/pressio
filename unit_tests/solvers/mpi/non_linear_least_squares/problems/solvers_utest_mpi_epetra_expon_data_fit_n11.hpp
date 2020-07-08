@@ -124,15 +124,15 @@ struct ExpDataFitN11
   }//end jacobian
 
   void residual(const state_type& x, residual_type & R,
-    ::pressio::solvers::Norm normKind,
+    ::pressio::Norm normKind,
     scalar_type & normResidual) const 
   {
     for (auto i=0; i< NumMyElem_; i++){
       R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
     };
 
-    if (normKind == pressio::solvers::Norm::L2) R.data()->Norm2(&normResidual);
-    if (normKind == pressio::solvers::Norm::L1) R.data()->Norm1(&normResidual);
+    if (normKind == pressio::Norm::L2) R.data()->Norm2(&normResidual);
+    if (normKind == pressio::Norm::L1) R.data()->Norm1(&normResidual);
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const{

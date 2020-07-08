@@ -112,12 +112,12 @@ Verify the fom/adapter class you are using meets the velocity api.");
   // auxiliary stepper
   using aux_stepper_t = typename ::pressio::rom::lspg::unsteady::impl::auxStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
-    lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>::type;
+    lspg_residual_policy_t, lspg_jacobian_policy_t>::type;
 
   // primary stepper type
   using lspg_stepper_t		= ::pressio::ode::implicitmethods::Stepper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_type,
-    aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t, scalar_t>;
+    aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class
 

@@ -2,7 +2,7 @@
 #ifndef ode_has_const_create_jacobian_method_return_result_HPP_
 #define ode_has_const_create_jacobian_method_return_result_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace predicates {
   
 template <
   typename T,
@@ -29,5 +29,5 @@ struct has_const_create_jacobian_method_return_result<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ode::predicates
 #endif

@@ -30,7 +30,7 @@ struct Rosenbrock4Impl
   }
 
   // void residualNorm(const state_type & state,
-  // 		    pressio::solvers::Norm normKind,
+  // 		    pressio::Norm normKind,
   // 		    scalar_type & resNorm) const
   // {
   //   // here I can create one R every time, because performance does not matter
@@ -41,7 +41,7 @@ struct Rosenbrock4Impl
 
   void residual(const state_type& x, 
     residual_type & res,
-		::pressio::solvers::Norm normKind,
+		::pressio::Norm normKind,
 		scalar_type & normResidual) const
   {
     auto x1 = x[0];
@@ -55,8 +55,8 @@ struct Rosenbrock4Impl
     res[4] = (1.-x2);
     res[5] = (1.-x3);
 
-    if (normKind == pressio::solvers::Norm::L2) normResidual = res.data()->norm();
-    if (normKind == pressio::solvers::Norm::L1) normResidual = res.data()->lpNorm<1>();
+    if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
+    if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const {
@@ -110,7 +110,7 @@ public:
   }
 
   void residualNorm(const state_type & state,
-		    pressio::solvers::Norm normKind,
+		    pressio::Norm normKind,
 		    scalar_type & resNorm) const
   {
     auto R = rosImpl.createResidual();
@@ -120,7 +120,7 @@ public:
   void hessianAndGradient(const state_type & x,
 			  hessian_type & hess,
 			  gradient_type & grad,
-			  pressio::solvers::Norm normType,
+			  pressio::Norm normType,
 			  scalar_type & residualNorm) const
   {
     auto J = rosImpl.createJacobian();
@@ -132,8 +132,8 @@ public:
 
     *grad.data() = J.data()->transpose() * (*R.data());
 
-    if (normType == ::pressio::solvers::Norm::L2) residualNorm = R.data()->norm();
-    if (normType == ::pressio::solvers::Norm::L1) residualNorm = R.data()->lpNorm<1>();
+    if (normType == ::pressio::Norm::L2) residualNorm = R.data()->norm();
+    if (normType == ::pressio::Norm::L1) residualNorm = R.data()->lpNorm<1>();
   }
 };
 

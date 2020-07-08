@@ -4,10 +4,12 @@
 
 // NOTE: here it does not matter to leave all empty since this
 // is just for doing type checking
-struct ValidApp{
+struct ValidApp
+{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
   using residual_type = state_type;
+  using time_discrete_residual_type = residual_type;
   using jacobian_type = std::vector<std::vector<scalar_type>>;
   using dense_matrix_type = std::vector<std::vector<scalar_type>>;
 
@@ -17,7 +19,9 @@ public:
   void timeDiscreteResidual(const step_t & step,
   			    const scalar_type & time,
 			    const scalar_type & dt,
-  			    residual_type & R,
+  			    time_discrete_residual_type & R,
+            pressio::Norm normKind,
+            scalar_type & normR,
   			    Args & ... states) const
   {
     // forward to whatever approriate impl method, e. g.
@@ -29,20 +33,17 @@ public:
 				 const scalar_type & time,
 				 const scalar_type & dt,
 				 const dense_matrix_type & B,
-				 int id,
 				 dense_matrix_type & A,
 				 Args & ... states) const
   {}
 
-
-  residual_type createTimeDiscreteResidualObject(const state_type & stateIn) const
+  time_discrete_residual_type createTimeDiscreteResidual() const
   {
-    residual_type R;
+    time_discrete_residual_type R;
     return R;
   }
 
-  dense_matrix_type createApplyTimeDiscreteJacobianObject(const state_type & stateIn,
-							  const dense_matrix_type & B) const
+  dense_matrix_type createApplyTimeDiscreteJacobianResult(const dense_matrix_type & B) const
   {
     dense_matrix_type A;
     return A;
@@ -53,9 +54,6 @@ public:
 TEST(rom_lspg_meta, validResidualAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::model_meets_residual_api_for_unsteady_lspg<app_t>::value,"");
-
-  static_assert( rom::meta::is_legitimate_model_for_unsteady_lspg<app_t>::value,"");
-  // assert that it does not meet velocity api
-  static_assert( !rom::meta::model_meets_velocity_api_for_unsteady_lspg<app_t>::value,"");
+  static_assert( !rom::meta::admissible_system_velocity_api_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<app_t>::value,"");
 }

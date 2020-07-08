@@ -99,8 +99,8 @@ public:
   {}
 
 public:
-  template <typename lspg_state_t, typename fom_t>
-  residual_t operator()(const lspg_state_t & romState, const fom_t & app) const
+  template <typename fom_t>
+  residual_t create(const fom_t & app) const
   {
     return R_;
   }
@@ -112,7 +112,7 @@ public:
     typename fom_t,
     typename scalar_t
   >
-  void operator()(const lspg_state_t & romState,
+  void compute(const lspg_state_t & romState,
   		  const prev_states_t & romPrevStates,
   		  const fom_t & app,
 		  const scalar_t & t,

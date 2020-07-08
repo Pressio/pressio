@@ -16,10 +16,6 @@ template<
   typename jacobian_policy_t
   >
 class StepperArbitrary
-: public ::pressio::ode::implicitmethods::StepperBase< 
-  StepperArbitrary<scalar_t, ode_state_type, ode_residual_type, ode_jacobian_type, 
-  system_type, order_setter_t, tot_n_setter_t, residual_policy_t, jacobian_policy_t> 
-  >
 {
 public:
   static constexpr bool is_implicit = true;
@@ -31,11 +27,11 @@ public:
   static constexpr std::size_t numAuxStates = tot_n_setter_t::value - 1;
 
   using system_wrapper_t  = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-  using aux_states_t = ::pressio::ode::AuxStatesContainer<false, ode_state_type, numAuxStates>;
+  using aux_states_t = ::pressio::ode::AuxStatesManager<ode_state_type, numAuxStates>;
 
-  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicyForArbitraryStepper<
+  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
     ode_state_type, system_type, ode_residual_type>;
-  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicyForArbitraryStepper<
+  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
     ode_state_type, system_type, ode_jacobian_type>;
 
 public:
@@ -97,14 +93,16 @@ public:
   void residual(const state_type & odeState, residual_type & R,
     ::pressio::Norm normKind, scalar_t & normValue) const
   {
-    this->residual_obj_.compute(odeState, this->auxStates_, this->sys_.get(),
+    this->residual_obj_.template compute<tag_name>(
+      odeState, this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R,
       normKind, normValue);
   }
 
   void jacobian(const state_type & odeState, jacobian_type & J) const
   {
-    this->jacobian_obj_.compute(odeState, this->auxStates_, this->sys_.get(),
+    this->jacobian_obj_.template compute<tag_name>(
+      odeState, this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, J);
   }
 
@@ -115,6 +113,10 @@ public:
 	      const types::step_t & step,
 	      solver_type & solver)
   {
+    static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
+      solver_type, decltype(*this), ode_state_type>::value, 
+      "Invalid solver for Arbitrary stepper");
+
     this->dt_ = dt;
     this->t_ = t;
     this->step_ = step;

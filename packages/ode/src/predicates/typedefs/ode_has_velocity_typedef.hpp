@@ -49,7 +49,7 @@
 #ifndef ODE_PREDICATE_HAS_VELOCITY_TYPEDEF_HPP_
 #define ODE_PREDICATE_HAS_VELOCITY_TYPEDEF_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct has_velocity_typedef : std::false_type{};
@@ -64,5 +64,5 @@ struct has_velocity_typedef<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::ode::meta
+}}}//end namespace pressio::ode::predicates
 #endif

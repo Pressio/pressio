@@ -60,7 +60,7 @@ template <typename ... Rest>
 struct auxStepperHelper<::pressio::ode::implicitmethods::BDF2, Rest...>
 {
   using aux_stepper_tag = ::pressio::ode::implicitmethods::Euler;
-  using type = ::pressio::ode::implicitmethods::Stepper<aux_stepper_tag, Rest...>;
+  using type = ::pressio::ode::ImplicitStepper<aux_stepper_tag, Rest...>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl

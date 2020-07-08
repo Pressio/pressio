@@ -49,7 +49,7 @@
 #ifndef ODE_IS_STEPPER_ORDER_SETTER_HPP_
 #define ODE_IS_STEPPER_ORDER_SETTER_HPP_
 
-namespace pressio{ namespace ode{ namespace meta { 
+namespace pressio{ namespace ode{ namespace predicates { 
 
 template <typename T>
 struct IsStepperOrderSetter : std::false_type{};
@@ -90,5 +90,5 @@ struct IsStepperOrderSetter<
   > : std::true_type{};
 
 
-}}} // namespace pressio::ode::meta::impl
+}}} // namespace pressio::ode::predicates
 #endif

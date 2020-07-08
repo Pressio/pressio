@@ -131,7 +131,7 @@ must be (for now) a pressio vector wrapper.");
 
   /* ------------------------------------------------ */
   // detect for valid ops
-  static_assert(::pressio::rom::meta::is_legitimate_custom_ops_for_linear_decoder<
+  static_assert(::pressio::rom::meta::custom_ops_for_linear_decoder<
 		ops_t, matrix_type, rom_state_type, fom_state_type
 		>::value,
 		"You are tring to create linear decoder with custom ops. \

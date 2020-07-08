@@ -61,38 +61,82 @@
 
 #include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
-#include "rom/src/meta/rom_has_dense_matrix_typedef.hpp"
-
-//----------------
-// decorators
-//----------------
-#include "rom/src/decorators/rom_preconditioned_decorator_residual.hpp"
-#include "rom/src/decorators/rom_preconditioned_decorator_jacobian.hpp"
-#include "rom/src/decorators/rom_mask_decorator_residual.hpp"
-#include "rom/src/decorators/rom_mask_decorator_jacobian.hpp"
-
-//----------------
-// decoder classes
-//----------------
-#include "rom/src/meta/decoder/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
-#include "rom/src/meta/decoder/rom_is_legitimate_decoder_type.hpp"
-#include "rom/src/decoder/rom_linear_decoder.hpp"
 
 //----------------------
 // fom-querying functions
 //----------------------
 #include "rom/src/fom_query/rom_query_fom_velocity_unsteady.hpp"
-#include "rom/src/fom_query/rom_query_fom_velocity_steady.hpp"
 #include "rom/src/fom_query/rom_query_fom_apply_jacobian_unsteady.hpp"
-#include "rom/src/fom_query/rom_query_fom_apply_jacobian_steady.hpp"
-#include "rom/src/fom_query/rom_query_fom_apply_time_discrete_jacobian.hpp"
-#include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
+// #include "rom/src/fom_query/rom_query_fom_velocity_steady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_apply_jacobian_steady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_apply_time_discrete_jacobian.hpp"
+// #include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
+
+#include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_linear_decoder.hpp"
+#include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_fom_state_reconstructor.hpp"
+#include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_galerkin_velocity_api.hpp"
+#include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_unsteady_lspg_velocity_api.hpp"
+#include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_unsteady_lspg_residual_api.hpp"
+
+// general predicates and concepts
+#include "rom/src/predicates/typedefs/rom_has_dense_matrix_typedef.hpp"
+
+// decoder classes
+#include "rom/src/will_be_concepts/decoder/rom_admissible_decoder.hpp"
+#include "rom/src/decoder/rom_linear_decoder.hpp"
+
+// fom state reconstructor
+#include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
+
+//-----------------
+// unsteady LSPG 
+#include "rom/src/predicates/apply_jacobian_methods/rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp"
+#include "rom/src/predicates/apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void.hpp"
+#include "rom/src/predicates/apply_time_discrete_jacobian_methods/rom_has_const_apply_td_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
+#include "rom/src/predicates/apply_time_discrete_jacobian_methods/rom_has_const_create_apply_td_jacobian_result_method_accept_operand_return_result.hpp"
+
+#include "rom/src/will_be_concepts/system/rom_admissible_system_velocity_api_unsteady_lspg.hpp"
+#include "rom/src/will_be_concepts/system/rom_admissible_system_time_discrete_residual_api_unsteady_lspg.hpp"
+
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
+#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
+
 
 //----------------
-// fom state reconstructor
+// wls
 //----------------
-#include "rom/src/meta/rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp"
-#include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
+#include "rom/src/will_be_concepts/system/rom_admissible_system_velocity_api_wls.hpp"
+
+// //----------------
+// // decorators
+// //----------------
+// #include "rom/src/decorators/rom_preconditioned_decorator_residual.hpp"
+// #include "rom/src/decorators/rom_preconditioned_decorator_jacobian.hpp"
+// #include "rom/src/decorators/rom_mask_decorator_residual.hpp"
+// #include "rom/src/decorators/rom_mask_decorator_jacobian.hpp"
+
+// //----------------
+// // decoder classes
+// //----------------
+// #include "rom/src/meta/decoder/rom_is_legitimate_custom_ops_for_linear_decoder.hpp"
+// #include "rom/src/meta/decoder/rom_is_legitimate_decoder_type.hpp"
+// #include "rom/src/decoder/rom_linear_decoder.hpp"
+
+// //----------------------
+// // fom-querying functions
+// //----------------------
+// #include "rom/src/fom_query/rom_query_fom_velocity_unsteady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_velocity_steady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_apply_jacobian_unsteady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_apply_jacobian_steady.hpp"
+// #include "rom/src/fom_query/rom_query_fom_apply_time_discrete_jacobian.hpp"
+// #include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
+
+// //----------------
+// // fom state reconstructor
+// //----------------
+// #include "rom/src/meta/rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp"
+// #include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
 
 // //----------------
 // // steady LSPG
@@ -106,31 +150,31 @@
 // #include "rom/src/lspg_steady/rom_lspg_steady_problem_generator.hpp"
 // #include "rom/src/lspg_steady/rom_lspg_steady_api_aliases.hpp"
 
-//----------------
-// unsteady LSPG
-//----------------
-// metaf for velocity api
-#include "rom/src/meta/lspg_velocity_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_velocity_api.hpp"
-#include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_three_args_for_unsteady.hpp"
-#include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_four_args_for_unsteady.hpp"
-#include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
-#include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
-#include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
+// //----------------
+// // unsteady LSPG
+// //----------------
+// // metaf for velocity api
+// #include "rom/src/meta/lspg_velocity_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_velocity_api.hpp"
+// #include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_three_args_for_unsteady.hpp"
+// #include "rom/src/meta/lspg_velocity_api/rom_has_apply_jacobian_method_callable_with_four_args_for_unsteady.hpp"
+// #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_apply_jacobian_methods_for_unsteady.hpp"
+// #include "rom/src/meta/lspg_velocity_api/rom_model_has_needed_velocity_methods.hpp"
+// #include "rom/src/meta/lspg_velocity_api/rom_model_meets_velocity_api_for_unsteady_lspg.hpp"
 
-// // metaf for residual api
-// #include "rom/src/meta/lspg_residual_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
-// #include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
-// #include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
-// #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
-// #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp"
-// #include "rom/src/meta/lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
+// // // metaf for residual api
+// // #include "rom/src/meta/lspg_residual_api/rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp"
+// // #include "rom/src/meta/lspg_residual_api/rom_has_apply_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
+// // #include "rom/src/meta/lspg_residual_api/rom_has_create_apply_time_discrete_jacobian_object_method_returning_non_void.hpp"
+// // #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_apply_time_discrete_jacobian_methods.hpp"
+// // #include "rom/src/meta/lspg_residual_api/rom_model_has_needed_typedefs_for_unsteady_lspg_residual_api.hpp"
+// // #include "rom/src/meta/lspg_residual_api/rom_model_meets_residual_api_for_unsteady_lspg.hpp"
 
-#include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
-// lspg problems
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_masked.hpp"
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_preconditioned.hpp"
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
+// #include "rom/src/meta/rom_is_legitimate_model_for_unsteady_lspg.hpp"
+// // lspg problems
+// #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
+// #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_masked.hpp"
+// #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_preconditioned.hpp"
+// #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
 
 // //----------------
 // // galerkin

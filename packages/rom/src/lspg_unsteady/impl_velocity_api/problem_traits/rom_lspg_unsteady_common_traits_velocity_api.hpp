@@ -114,7 +114,7 @@ struct LSPGUnsteadyCommonTraitsVelocityApi
 
   // verify that args contains a valid decoder type
   using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    lspg_state_t, fom_state_t, ::pressio::rom::meta::is_legitimate_decoder_type, Args...>;
+    lspg_state_t, fom_state_t, ::pressio::rom::meta::admissible_decoder, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
 		"A valid decoder type must be passed to define a LSPG problem");
@@ -135,7 +135,7 @@ struct LSPGUnsteadyCommonTraitsVelocityApi
   // if we have an admissible user-defined ops
   using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     decoder_jac_t, lspg_state_t, fom_state_t,
-    ::pressio::rom::meta::is_legitimate_custom_ops_for_unsteady_lspg_velocity_api, Args...>;
+    ::pressio::rom::meta::custom_ops_for_unsteady_lspg_velocity_api, Args...>;
   using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type

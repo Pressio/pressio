@@ -61,7 +61,7 @@ template <
 struct ProblemGeneratorVelocityApi
 {
   /* here, the fom_type must satisfy the velocity api */
-  static_assert( ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+  static_assert( ::pressio::rom::meta::admissible_system_velocity_api_unsteady_lspg<fom_type>::value,
 		 "\nYou are trying to generate an unsteady LSPG problem \n \
 requiring a fom adapter class to meet the velocity api. \n \
 However, the fom/adapter type you passed does not meet the velocity api. \n \
@@ -142,11 +142,10 @@ public:
 			      lspg_state_t	 & yROM,
 			      scalar_t	 t0)
     : fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_(::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0)),
+      fomVelocityRef_(appObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
-								decoder.getReferenceToJacobian(), t0)),
+      jPhiMatrix_(appObj.createApplyJacobianResult( *decoder.getReferenceToJacobian().data() )),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
@@ -182,11 +181,10 @@ public:
 			      scalar_t t0,
 			      const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
+      fomVelocityRef_(appObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
-								decoder.getReferenceToJacobian(), t0)),
+      jPhiMatrix_(appObj.createApplyJacobianResult( *decoder.getReferenceToJacobian().data() )),
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
@@ -198,78 +196,78 @@ public:
   {}
 
 
-  /* specialize for:
-   * - the fom_t is regular c++
-   * - aux stepper is needed (e.g. for BDF2)
-   * - ud_ops_t == void
-   */
-  template <
-    typename _fom_t = fom_t,
-    typename _aux_stepper_t = aux_stepper_t,
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !std::is_same< _fom_t, pybind11::object >::value
-#endif
-      , int > = 0
-  >
-  ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      const decoder_t	 & decoder,
-			      lspg_state_t	 & yROM,
-			      scalar_t  t0)
-    : fomStateReference_(fomStateReferenceNative),
-      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
-								decoder.getReferenceToJacobian(), t0)),
-      // here we pass a fom velocity object to the residual policy to
-      // use it to initialize the residual data
-      // since the lspg residual is of same type and size of the fom velocity
-      // (this is true w and w/o hyperreduction)
-      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-      auxStepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_),
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_, auxStepperObj_)
-  {}
+//   /* specialize for:
+//    * - the fom_t is regular c++
+//    * - aux stepper is needed (e.g. for BDF2)
+//    * - ud_ops_t == void
+//    */
+//   template <
+//     typename _fom_t = fom_t,
+//     typename _aux_stepper_t = aux_stepper_t,
+//     typename _ud_ops_t = ud_ops_t,
+//     ::pressio::mpl::enable_if_t<
+//       !std::is_void<_aux_stepper_t>::value and
+//       std::is_void<_ud_ops_t>::value
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+//       and !std::is_same< _fom_t, pybind11::object >::value
+// #endif
+//       , int > = 0
+//   >
+//   ProblemGeneratorVelocityApi(const _fom_t	 & appObj,
+// 			      const fom_native_state_t & fomStateReferenceNative,
+// 			      const decoder_t	 & decoder,
+// 			      lspg_state_t	 & yROM,
+// 			      scalar_t  t0)
+//     : fomStateReference_(fomStateReferenceNative),
+//       fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
+//       fomStateReconstructor_(fomStateReference_, decoder),
+//       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+//       jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+// 								decoder.getReferenceToJacobian(), t0)),
+//       // here we pass a fom velocity object to the residual policy to
+//       // use it to initialize the residual data
+//       // since the lspg residual is of same type and size of the fom velocity
+//       // (this is true w and w/o hyperreduction)
+//       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+//       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
+//       auxStepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_),
+//       stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_, auxStepperObj_)
+//   {}
 
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /*- the fom_t is a pybind11::object
-   * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == void
-   */
-  template <
-    typename _fom_t = fom_t,
-    typename _lspg_state_t = lspg_state_t,
-    typename _aux_stepper_t = aux_stepper_t,
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
-      std::is_same< _fom_t, pybind11::object >::value and
-      ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
-      std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value,
-      int > = 0
-  >
-  ProblemGeneratorVelocityApi(const _fom_t       & appObj,
-			      const fom_native_state_t fomStateReferenceIn,
-			      const decoder_t    & decoder,
-			      typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
-			      scalar_t       t0)
-    : fomStateReference_(fomStateReferenceIn),
-      fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
-								decoder.getReferenceToJacobian(), t0)),
-      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-      stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
-  {}
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+//   /*- the fom_t is a pybind11::object
+//    * - aux stepper is NOT needed (e.g. for BDF1)
+//    * - ud_ops_t == void
+//    */
+//   template <
+//     typename _fom_t = fom_t,
+//     typename _lspg_state_t = lspg_state_t,
+//     typename _aux_stepper_t = aux_stepper_t,
+//     typename _ud_ops_t = ud_ops_t,
+//     ::pressio::mpl::enable_if_t<
+//       std::is_same< _fom_t, pybind11::object >::value and
+//       ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
+//       std::is_void<_aux_stepper_t>::value and
+//       std::is_void<_ud_ops_t>::value,
+//       int > = 0
+//   >
+//   ProblemGeneratorVelocityApi(const _fom_t       & appObj,
+// 			      const fom_native_state_t fomStateReferenceIn,
+// 			      const decoder_t    & decoder,
+// 			      typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
+// 			      scalar_t       t0)
+//     : fomStateReference_(fomStateReferenceIn),
+//       fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
+//       fomStateReconstructor_(fomStateReference_, decoder),
+//       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+//       jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
+// 								decoder.getReferenceToJacobian(), t0)),
+//       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+//       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
+//       stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
+//   {}
+// #endif
 
 };
 

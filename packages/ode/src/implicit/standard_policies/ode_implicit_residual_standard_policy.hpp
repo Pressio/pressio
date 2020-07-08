@@ -54,6 +54,10 @@ namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 template<typename state_type, typename system_type, typename residual_type, typename=void>
 class ResidualStandardPolicy;
 
+
+// ---------------------------------------------------------------
+// partially specialize for when continuous_time_system_implicit_stepping
+// ---------------------------------------------------------------
 template<
   typename state_type,
   typename system_type,
@@ -62,10 +66,11 @@ template<
 class ResidualStandardPolicy<
   state_type, system_type, residual_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ode::meta::legitimate_implicit_state_type<state_type>::value and
-    ::pressio::ode::meta::legitimate_implicit_residual_type<residual_type>::value and
+    ::pressio::ode::concepts::implicit_state<state_type>::value and
+    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<residual_type>::value
+    containers::meta::is_wrapper<residual_type>::value and 
+    ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
     >
   >
 {
@@ -75,16 +80,16 @@ public:
   ~ResidualStandardPolicy() = default;
 
 public:
-  residual_type create(const system_type & model) const
+  residual_type create(const system_type & system) const
   {
-    residual_type R(model.createVelocity());
+    residual_type R(system.createVelocity());
     return R;
   }
 
-  template <typename tag_name, typename prev_states_type, typename scalar_type>
+  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
   void compute(const state_type & odeCurrentState,
-	     const prev_states_type & odePrevStates,
-	     const system_type & model,
+	     const prev_states_mgr_type & prevStatesMgr,
+	     const system_type & system,
 	     const scalar_type & t,
 	     const scalar_type & dt,
 	     const types::step_t & step,
@@ -92,10 +97,83 @@ public:
 	     ::pressio::Norm normKind,
 	     scalar_type & normValue) const
   {
-    model.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::time_discrete_residual<tag_name>(odeCurrentState, R, odePrevStates, dt);
+    system.velocity(*odeCurrentState.data(), t, *R.data());
+    ::pressio::ode::impl::discrete_time_residual(odeCurrentState, R, prevStatesMgr, dt, ode_tag());
+  }
+};//end class
+
+
+// ---------------------------------------------------------------
+// partially specialize for when discrete_time_system_implicit_stepping
+// ---------------------------------------------------------------
+template<
+  typename state_type,
+  typename system_type,
+  typename residual_type
+  >
+class ResidualStandardPolicy<
+  state_type, system_type, residual_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::ode::concepts::implicit_state<state_type>::value and
+    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
+    containers::meta::is_wrapper<state_type>::value and
+    containers::meta::is_wrapper<residual_type>::value and
+    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
+    >
+  >
+{
+
+public:
+  ResidualStandardPolicy() = default;
+  ~ResidualStandardPolicy() = default;
+
+public:
+  residual_type create(const system_type & system) const
+  {
+    residual_type R(system.createDiscreteTimeResidual());
+    return R;
   }
 
+  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_mgr_type::size()==1>
+  compute(const state_type & odeCurrentState,
+      const prev_states_mgr_type & prevStatesMgr,
+      const system_type & system,
+      const scalar_type & t,
+      const scalar_type & dt,
+      const types::step_t & step,
+      residual_type & R,
+      ::pressio::Norm normKind,
+      scalar_type & normValue) const
+  {
+    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    system.template discreteTimeResidual(step, t, dt,
+          *R.data(), normKind, normValue,
+          *odeCurrentState.data(), *ynm1.data());
+  }
+
+  //-------------------------------
+  // specialize for n == 2
+  //-------------------------------
+  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_mgr_type::size()==2>
+  compute(const state_type & odeCurrentState,
+      const prev_states_mgr_type & prevStatesMgr,
+      const system_type & system,
+      const scalar_type & t,
+      const scalar_type & dt,
+      const types::step_t & step,
+      residual_type & R,
+      ::pressio::Norm normKind,
+      scalar_type & normValue) const
+  {
+    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
+
+    system.template discreteTimeResidual(step, t, dt,
+          *R.data(), normKind, normValue,
+          *odeCurrentState.data(), *ynm1.data(),*ynm2.data());
+  }
 };//end class
 
 }}}}//end namespace pressio::ode::implicitmethods::policy

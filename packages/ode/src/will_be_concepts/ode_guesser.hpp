@@ -49,7 +49,7 @@
 #ifndef ODE_IS_LEGITIMATE_GUESSER_HPP_
 #define ODE_IS_LEGITIMATE_GUESSER_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace concepts {
 
 template <typename T, typename step_t, typename time_t, typename state_t, typename enable = void>
 struct is_legitimate_guesser
@@ -71,5 +71,5 @@ struct is_legitimate_guesser<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ode::concepts
 #endif

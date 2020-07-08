@@ -80,17 +80,18 @@ template<
   using type =
     typename std::conditional<
     // if meets velocity API
-    ::pressio::rom::meta::model_meets_velocity_api_for_unsteady_lspg<fom_type>::value,
+    ::pressio::rom::meta::admissible_system_velocity_api_unsteady_lspg<fom_type>::value,
     // then set the proper type
     impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>,
     // else
-    typename std::conditional<
-      //check if meets residual API
-      ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
-      impl::ProblemGeneratorResidualApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>,
-      //otherwise set void
-      void
-      >::type
+    void
+    // typename std::conditional<
+    //   //check if meets residual API
+    //   ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+    //   impl::ProblemGeneratorResidualApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>,
+    //   //otherwise set void
+    //   void
+    //   >::type
     >::type;
 
   static_assert( !std::is_void<type>::value,
@@ -99,19 +100,20 @@ nor the residual API, so I cannot instantiate a valid LSPGUnsteadyProblem. \
 Verify the API of your model/adapter class.");
 };
 
-template<
-  template <class, class, class, class ...> class lspg_t,
-  typename stepper_tag,
-  typename fom_type,
-  typename lspg_state_t,
-  typename ...Args
-  >
-  struct ProblemHelper<lspg_t, true, stepper_tag, fom_type, lspg_state_t, Args...>
-{
-  using type = impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>;
-};
+// template<
+//   template <class, class, class, class ...> class lspg_t,
+//   typename stepper_tag,
+//   typename fom_type,
+//   typename lspg_state_t,
+//   typename ...Args
+//   >
+//   struct ProblemHelper<lspg_t, true, stepper_tag, fom_type, lspg_state_t, Args...>
+// {
+//   using type = impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>;
+// };
 
 }// end namespace pressio::rom::lspg::unsteady::impl
+
 
 template <
   template <class, class, class, class ...> class lspg_type,

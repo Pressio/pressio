@@ -49,7 +49,7 @@
 #ifndef ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_
 #define ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_
 
-namespace pressio{ namespace ode{ namespace meta {
+namespace pressio{ namespace ode{ namespace predicates {
 
 template <
   typename T,
@@ -82,5 +82,5 @@ struct has_const_velocity_method_accept_state_time_result_return_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ode::meta
+}}} // namespace pressio::ode::predicates
 #endif

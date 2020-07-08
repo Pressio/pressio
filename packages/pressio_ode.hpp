@@ -58,8 +58,8 @@
 #include "pressio_solvers.hpp"
 
 #include "ode/src/ode_types.hpp"
-#include "ode/src/ode_fwd.hpp"
-#include "ode/src/ode_aux_states_container.hpp"
+#include "ode/src/ode_stencil_tags.hpp"
+#include "ode/src/ode_aux_states_manager.hpp"
 #include "ode/src/ode_velocities_container.hpp"
 #include "ode/src/ode_system_wrapper.hpp"
 
@@ -67,29 +67,28 @@
 #include "ode/src/predicates/typedefs/ode_has_velocity_typedef.hpp"
 #include "ode/src/predicates/typedefs/ode_has_residual_typedef.hpp"
 #include "ode/src/predicates/typedefs/ode_has_jacobian_typedef.hpp"
+#include "ode/src/predicates/typedefs/ode_has_discrete_time_residual_typedef.hpp"
+#include "ode/src/predicates/typedefs/ode_has_discrete_time_jacobian_typedef.hpp"
 
-#include "ode/src/will_be_concepts/collector/ode_collector.hpp"
+#include "ode/src/will_be_concepts/ode_collector.hpp"
 #include "ode/src/will_be_concepts/ode_guesser.hpp"
-#include "ode/src/will_be_concepts/ode_legitimate_time_step_size_setter.hpp"
+#include "ode/src/will_be_concepts/ode_time_step_size_setter.hpp"
 
 // --------------
 // explicit
 // --------------
 #include "ode/src/explicit/ode_explicit_stepper_tags.hpp"
 
-#include "ode/src/will_be_concepts/ode_explicit_state_type.hpp"
-#include "ode/src/will_be_concepts/ode_explicit_velocity_type.hpp"
+#include "ode/src/will_be_concepts/ode_explicit_state.hpp"
+#include "ode/src/will_be_concepts/ode_explicit_velocity.hpp"
 #include "ode/src/predicates/velocity_methods/ode_has_const_create_velocity_method_return_result.hpp"
 #include "ode/src/predicates/velocity_methods/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_explicit_velocity_policy.hpp"
-#include "ode/src/will_be_concepts/system/ode_admissible_system_explicit_ode.hpp"
-#include "ode/src/will_be_concepts/user_defined_ops/ode_admissible_user_defined_ops_for_explicit_euler.hpp"
-#include "ode/src/will_be_concepts/user_defined_ops/ode_admissible_user_defined_ops_for_explicit_rk4.hpp"
-#include "ode/src/will_be_concepts/system/ode_admissible_system_explicit_ode.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_explicit_velocity_policy.hpp"
-
+#include "ode/src/will_be_concepts/user_defined_ops/ode_user_defined_ops_for_explicit_euler.hpp"
+#include "ode/src/will_be_concepts/user_defined_ops/ode_user_defined_ops_for_explicit_rk4.hpp"
+#include "ode/src/will_be_concepts/system/ode_continuous_time_system_explicit_stepping.hpp"
+#include "ode/src/will_be_concepts/policies/ode_explicit_velocity_policy.hpp"
+#include "ode/src/will_be_concepts/steppable/ode_explicitly_steppable.hpp"
 #include "ode/src/explicit/ode_explicit_velocity_standard_policy.hpp"
-#include "ode/src/explicit/ode_explicit_stepper_base.hpp"
 #include "ode/src/explicit/ode_explicit_stepper.hpp"
 
 // --------------
@@ -99,42 +98,36 @@
 
 #include "ode/src/predicates/ode_is_stepper_total_n_states_setter.hpp"
 #include "ode/src/predicates/ode_is_stepper_order_setter.hpp"
-#include "ode/src/predicates/time_discrete_residual_methods/ode_has_const_create_td_residual_method_return_result.hpp"
-#include "ode/src/predicates/time_discrete_residual_methods/ode_has_const_td_residual_method_accept_step_time_dt_result_norm_states_return_void.hpp"
-#include "ode/src/predicates/time_discrete_jacobian_methods/ode_has_const_create_td_jacobian_method_return_result.hpp"
-#include "ode/src/predicates/time_discrete_jacobian_methods/ode_has_const_time_discrete_jacobian_method_accepting_n_states_returning_void.hpp"
-
-#include "ode/src/will_be_concepts/ode_implicit_state_type.hpp"
-#include "ode/src/will_be_concepts/ode_implicit_residual_type.hpp"
-#include "ode/src/will_be_concepts/ode_implicit_jacobian_type.hpp"
+#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
+#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_states_return_void.hpp"
+#include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_create_discrete_time_jacobian_method_return_result.hpp"
+#include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
+#include "ode/src/will_be_concepts/ode_implicit_state.hpp"
+#include "ode/src/will_be_concepts/ode_implicit_residual.hpp"
+#include "ode/src/will_be_concepts/ode_implicit_jacobian.hpp"
 #include "ode/src/predicates/jacobian_methods/ode_has_const_create_jacobian_method_return_result.hpp"
 #include "ode/src/predicates/jacobian_methods/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
+#include "ode/src/will_be_concepts/system/ode_continuous_time_system_implicit_stepping.hpp"
+#include "ode/src/will_be_concepts/system/ode_discrete_time_system_implicit_stepping.hpp"
+#include "ode/src/will_be_concepts/policies/ode_implicit_residual_policy.hpp"
+#include "ode/src/will_be_concepts/policies/ode_implicit_jacobian_policy.hpp"
 #include "ode/src/will_be_concepts/ode_legitimate_solver_for_implicit_stepper.hpp"
-#include "ode/src/will_be_concepts/ode_admissible_auxiliary_stepper_for_implicit_ode.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_implicit_residual_policy_regular_stepper.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_implicit_jacobian_policy_regular_stepper.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_implicit_residual_policy_arbitrary_stepper.hpp"
-#include "ode/src/will_be_concepts/policies/ode_admissible_implicit_jacobian_policy_arbitrary_stepper.hpp"
-#include "ode/src/will_be_concepts/system/ode_admissible_system_implicit_ode_regular_stepper.hpp"
-#include "ode/src/will_be_concepts/system/ode_admissible_system_implicit_ode_arbitrary_stepper.hpp"
-#include "ode/src/will_be_concepts/system/ode_admissible_system_implicit_ode.hpp"
-
+#include "ode/src/will_be_concepts/ode_auxiliary_stepper_for_bdf2.hpp"
+#include "ode/src/will_be_concepts/steppable/ode_implicitly_steppable.hpp"
+#include "ode/src/will_be_concepts/steppable/ode_implicitly_steppable_with_guesser.hpp"
 #include "ode/src/implicit/ode_implicit_constants.hpp"
-#include "ode/src/implicit/impl/ode_time_discrete_residual_impl.hpp"
-#include "ode/src/implicit/impl/ode_time_discrete_jacobian_impl.hpp"
+#include "ode/src/implicit/impl/ode_discrete_time_residual_impl.hpp"
+#include "ode/src/implicit/impl/ode_discrete_time_jacobian_impl.hpp"
 #include "ode/src/implicit/standard_policies/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/standard_policies/ode_implicit_residual_standard_policy_for_arbitrary_stepper.hpp"
 #include "ode/src/implicit/standard_policies/ode_implicit_jacobian_standard_policy.hpp"
-#include "ode/src/implicit/standard_policies/ode_implicit_jacobian_standard_policy_for_arbitrary_stepper.hpp"
-#include "ode/src/implicit/ode_implicit_stepper_base.hpp"
 #include "ode/src/implicit/ode_implicit_stepper.hpp"
 
 // --------------
 // integrators
 // --------------
-#include "ode/src/integrators/ode_integrate_n_steps_explicit.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_arbitrary_step_size.hpp"
-#include "ode/src/integrators/ode_integrate_n_steps_implicit_constant_step_size.hpp"
-#include "ode/src/integrators/ode_integrate_to_target_time_implicit_arbitrary_step_size.hpp"
+#include "ode/src/integrators/ode_advance_n_steps_explicit.hpp"
+#include "ode/src/integrators/ode_advance_n_steps_implicit_arbitrary_step_size.hpp"
+#include "ode/src/integrators/ode_advance_n_steps_implicit_constant_step_size.hpp"
+#include "ode/src/integrators/ode_advance_to_target_time_implicit_arbitrary_step_size.hpp"
 
 #endif
