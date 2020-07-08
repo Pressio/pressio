@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_IS_CONTAINERS_MATRIX_WRAPPER_HPP_
 #define CONTAINERS_IS_CONTAINERS_MATRIX_WRAPPER_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_matrix_wrapper : std::false_type {};
@@ -64,8 +64,8 @@ struct is_matrix_wrapper< T,
 
 
 #define STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(TYPE) \
-  static_assert( containers::meta::is_matrix_wrapper<TYPE>::value, \
+  static_assert( containers::predicates::is_matrix_wrapper<TYPE>::value, \
 		 "THIS_IS_NOT_A_CONTAINERS_MATRIX_WRAPPER")
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

@@ -89,7 +89,7 @@ struct FomStateReconstructorPressioOps
   // this is added for pybind because I cannot figure out how to overload ()
   template <typename rom_state_t>
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_array_pybind<rom_state_t>::value,
+    ::pressio::containers::predicates::is_array_pybind<rom_state_t>::value,
     typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
     >
   evaluate(const rom_state_t & romY) const{

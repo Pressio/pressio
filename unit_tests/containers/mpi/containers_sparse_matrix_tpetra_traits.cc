@@ -24,7 +24,7 @@ TEST(containers_sparse_matrix_tpetra, Traits){
   STATIC_ASSERT_IS_NOT_MULTIVECTOR_TPETRA(mymat_t);
   STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mymat_t);
 
-  static_assert(containers::meta::is_sparse_matrix_wrapper_tpetra<mymat_t>::value, " ");
+  static_assert(containers::predicates::is_sparse_matrix_wrapper_tpetra<mymat_t>::value, " ");
 
   using matTrait = containers::details::traits<mymat_t>;
 

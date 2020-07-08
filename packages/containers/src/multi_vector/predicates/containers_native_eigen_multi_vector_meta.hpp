@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
 #define CONTAINERS_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_dynamic_multi_vector_eigen : std::false_type {};
@@ -70,5 +70,5 @@ Only column-major dense matrices can be wrapped and used as multivectors.");
   static constexpr bool value = cond2;
 };
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

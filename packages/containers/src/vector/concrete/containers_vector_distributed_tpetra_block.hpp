@@ -56,7 +56,7 @@ template <typename wrapped_type>
 class Vector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    meta::is_vector_tpetra_block<
+    ::pressio::containers::predicates::is_vector_tpetra_block<
       wrapped_type
       >::value
     >

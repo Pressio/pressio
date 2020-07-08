@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
 #define CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_wrapper : std::false_type {};
@@ -58,9 +58,9 @@ template <typename T>
 struct is_wrapper<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper<T>::value or
-    ::pressio::containers::meta::is_multi_vector_wrapper<T>::value or
-    ::pressio::containers::meta::is_matrix_wrapper<T>::value
+    ::pressio::containers::predicates::is_vector_wrapper<T>::value or
+    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
+    ::pressio::containers::predicates::is_matrix_wrapper<T>::value
     >
   > : std::true_type{};
 
@@ -73,5 +73,5 @@ struct not_wrapper<
   T, mpl::enable_if_t< is_wrapper<T>::value == false >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

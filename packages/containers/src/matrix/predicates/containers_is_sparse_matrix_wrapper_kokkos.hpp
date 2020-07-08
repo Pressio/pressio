@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_KOKKOS_HPP_
 #define CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_KOKKOS_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_sparse_matrix_wrapper_kokkos : std::false_type {};
@@ -65,6 +65,6 @@ struct is_sparse_matrix_wrapper_kokkos<
   >
   : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

@@ -9,10 +9,10 @@ TEST(containers_multivector_distributed_epetra,
   using namespace pressio;
 
   using natV_t = Epetra_MultiVector;
-  static_assert(::pressio::containers::meta::is_multi_vector_epetra<natV_t>::value, "");
+  static_assert(::pressio::containers::predicates::is_multi_vector_epetra<natV_t>::value, "");
 
   using myvec_t = containers::MultiVector<natV_t>;
-  static_assert(::pressio::containers::meta::is_multi_vector_wrapper_epetra<myvec_t>::value,"");
+  static_assert(::pressio::containers::predicates::is_multi_vector_wrapper_epetra<myvec_t>::value,"");
 
   using vecTrait = containers::details::traits<myvec_t>;
   ::testing::StaticAssertTypeEq<typename

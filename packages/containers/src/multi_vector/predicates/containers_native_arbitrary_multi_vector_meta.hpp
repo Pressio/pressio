@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_META_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_arbitrary : std::false_type {};
@@ -58,20 +58,20 @@ template <typename T>
 struct is_multi_vector_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !containers::meta::is_dynamic_multi_vector_eigen<T>::value
+    !containers::predicates::is_dynamic_multi_vector_eigen<T>::value
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and
-    !containers::meta::is_multi_vector_epetra<T>::value and
-    !containers::meta::is_multi_vector_tpetra_block<T>::value and
-    !containers::meta::is_multi_vector_tpetra<T>::value
+    !containers::predicates::is_multi_vector_epetra<T>::value and
+    !containers::predicates::is_multi_vector_tpetra_block<T>::value and
+    !containers::predicates::is_multi_vector_tpetra<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and
-    !containers::meta::is_multi_vector_kokkos<T>::value
+    !containers::predicates::is_multi_vector_kokkos<T>::value
 #endif
     >
   > : std::true_type{};
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

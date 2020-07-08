@@ -247,7 +247,7 @@ public:
 //     typename _ud_ops_t = ud_ops_t,
 //     ::pressio::mpl::enable_if_t<
 //       std::is_same< _fom_t, pybind11::object >::value and
-//       ::pressio::containers::meta::is_vector_wrapper_pybind<_lspg_state_t>::value and
+//       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
 //       std::is_void<_aux_stepper_t>::value and
 //       std::is_void<_ud_ops_t>::value,
 //       int > = 0

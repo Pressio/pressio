@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
 class ManagerFomStatesStatic
 {
-  static_assert( ::pressio::containers::meta::is_wrapper<fom_state_type>::value,
+  static_assert( ::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
 		 "Currently, you can only create a ManagerFomStatesStatic from types which have pressio wrappers.");
 
   static_assert( n>=1,

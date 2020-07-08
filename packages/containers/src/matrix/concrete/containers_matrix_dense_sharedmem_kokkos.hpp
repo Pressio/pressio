@@ -56,7 +56,7 @@ template <typename wrapped_type>
 class Matrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
+    containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
   : public MatrixSharedMemBase< Matrix<wrapped_type> >

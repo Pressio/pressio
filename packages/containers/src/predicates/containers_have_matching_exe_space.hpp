@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
 #define CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename ... Args>
 struct have_matching_execution_space;
@@ -57,8 +57,8 @@ struct have_matching_execution_space;
 template <typename T1>
 struct have_matching_execution_space<T1>
 {
-  static_assert( pressio::containers::meta::is_wrapper<T1>::value or
-		 pressio::containers::meta::is_expression<T1>::value,
+  static_assert( pressio::containers::predicates::is_wrapper<T1>::value or
+		 pressio::containers::predicates::is_expression<T1>::value,
 		 "args for scalar compatibility check must be pressio wrappers or expressions");
 
   static constexpr auto value = true;
@@ -67,11 +67,11 @@ struct have_matching_execution_space<T1>
 template <typename T1, typename T2>
 struct have_matching_execution_space<T1, T2>
 {
-  static_assert( (pressio::containers::meta::is_wrapper<T1>::value or
-		  pressio::containers::meta::is_expression<T1>::value )
+  static_assert( (pressio::containers::predicates::is_wrapper<T1>::value or
+		  pressio::containers::predicates::is_expression<T1>::value )
 		 and
-		 (pressio::containers::meta::is_wrapper<T2>::value or
-		  pressio::containers::meta::is_expression<T2>::value ),
+		 (pressio::containers::predicates::is_wrapper<T2>::value or
+		  pressio::containers::predicates::is_expression<T2>::value ),
 		 "args for scalar compatibility check must be pressio wrappers or expressions");
 
   static constexpr auto value = std::is_same<
@@ -88,6 +88,6 @@ struct have_matching_execution_space<T1, T2, rest...>
     have_matching_execution_space<T2, rest...>::value;
 };
 
-}}} // namespace pressio::containers::meta
+}}} // namespace pressio::containers::predicates
 #endif
 #endif

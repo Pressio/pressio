@@ -16,8 +16,8 @@ struct RunTest{
 
   using wmv = ::pressio::containers::MultiVector<k2d_d>;
   static_assert( ::pressio::containers::details::traits<wmv>::is_static == 0, "" );
-  static_assert( ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<wmv>::value, "" );
-  static_assert( !::pressio::containers::meta::is_vector_wrapper_kokkos<wmv>::value, "" );
+  static_assert( ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<wmv>::value, "" );
+  static_assert( !::pressio::containers::predicates::is_vector_wrapper_kokkos<wmv>::value, "" );
 
   // vector typedefs
   using k1d_d = Kokkos::View<double*, d_layout, exe_space>;
@@ -25,8 +25,8 @@ struct RunTest{
 
   using wv = ::pressio::containers::Vector<k1d_d>;
   static_assert( ::pressio::containers::details::traits<wv>::is_static == 0, "" );
-  static_assert( !::pressio::containers::meta::is_multi_vector_wrapper_kokkos<wv>::value, "" );
-  static_assert( ::pressio::containers::meta::is_vector_wrapper_kokkos<wv>::value, "" );
+  static_assert( !::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<wv>::value, "" );
+  static_assert( ::pressio::containers::predicates::is_vector_wrapper_kokkos<wv>::value, "" );
 
   RunTest(){
     // ------------------

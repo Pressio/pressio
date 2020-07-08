@@ -52,7 +52,7 @@
 
 #include <Tpetra_Experimental_BlockMultiVector_decl.hpp>
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_tpetra_block : std::false_type {};
@@ -73,6 +73,6 @@ struct is_multi_vector_tpetra_block<
   > : std::true_type{};
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

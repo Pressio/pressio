@@ -64,7 +64,7 @@ template<
 ::pressio::mpl::enable_if_t<
     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !::pressio::containers::meta::is_vector_wrapper_pybind<state_type>::value
+    and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_type>::value
     and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
 >
@@ -95,7 +95,7 @@ template<
 >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-  ::pressio::containers::meta::is_vector_wrapper_pybind<residual_type>::value
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
 >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    residual_type & R,
@@ -129,9 +129,9 @@ template<
 >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-  (containers::meta::is_vector_wrapper_eigen<state_type>::value == true
+  (containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-   or containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
+   or containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true
 #endif
    )
 >
@@ -162,9 +162,9 @@ template<
 >
   ::pressio::mpl::enable_if_t<
     std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
-    (containers::meta::is_vector_wrapper_eigen<state_type>::value == true
+    (containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-     or containers::meta::is_vector_wrapper_kokkos<state_type>::value == true
+     or containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true
 #endif
      )
   >
@@ -275,7 +275,7 @@ template<
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_epetra<state_type>::value == true
+  containers::predicates::is_vector_wrapper_epetra<state_type>::value == true
 >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 			    state_type & R,
@@ -370,7 +370,7 @@ template<
   typename ... Args
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_tpetra<state_type>::value == true
+  containers::predicates::is_vector_tpetra<state_type>::value == true
 >
 time_discrete_residual_tpetra_impl(const state_type & currentState,
 					state_type & R,
@@ -412,7 +412,7 @@ template<
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+  containers::predicates::is_vector_wrapper_tpetra<state_type>::value == true and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 >
 time_discrete_residual(const fom_states_manager_t & odeStates,
@@ -432,7 +432,7 @@ template<
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_tpetra<state_type>::value == true and
+  containers::predicates::is_vector_wrapper_tpetra<state_type>::value == true and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
 >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -459,7 +459,7 @@ template<
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<state_type>::value and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -483,7 +483,7 @@ template<
   typename scalar_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_tpetra_block<state_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<state_type>::value and
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
 >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,

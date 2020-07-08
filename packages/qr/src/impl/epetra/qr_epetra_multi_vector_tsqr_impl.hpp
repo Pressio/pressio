@@ -118,7 +118,7 @@ public:
   // if R_type != wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    !containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    !containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
   getCRefRFactor() const {
@@ -129,7 +129,7 @@ public:
   // if R_type == wrapper of Teuchos::SerialDenseMatrix
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
+    containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
   getCRefRFactor() const {

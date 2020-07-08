@@ -55,8 +55,8 @@ template <typename fom_t, typename state_t, typename rhs_t, typename time_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   mpl::enable_if_t<
   mpl::not_same<fom_t, pybind11::object>::value and
-  !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-  !::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value,
+  !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+  !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
   int > = 0
 #else
   void
@@ -77,7 +77,7 @@ queryFomVelocityUnsteady(const fom_t & fomObj,
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   , mpl::enable_if_t<
 //       mpl::not_same<fom_t, pybind11::object>::value and
-//       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value,
+//       !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value,
 //       int > = 0
 // #endif
 //   >
@@ -96,8 +96,8 @@ queryFomVelocityUnsteady(const fom_t & fomObj,
 // template <
 //   typename state_t, typename rhs_t, typename time_t,
 //   mpl::enable_if_t<
-//     ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-//     ::pressio::containers::meta::is_vector_wrapper_pybind<rhs_t>::value,
+//     ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+//     ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
 //     int > = 0
 //   >
 // static void queryFomVelocityUnsteady(const pybind11::object & fomObj,
@@ -110,7 +110,7 @@ queryFomVelocityUnsteady(const fom_t & fomObj,
 
 // template <typename state_t, typename time_t>
 // static mpl::enable_if_t<
-//   ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value,
+//   ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value,
 //   typename ::pressio::containers::details::traits<state_t>::wrapped_t
 //   >
 // queryFomVelocityUnsteady(const pybind11::object & fomObj,

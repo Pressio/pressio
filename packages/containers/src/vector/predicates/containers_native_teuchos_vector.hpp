@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_epetra_vector_meta.hpp
+// containers_native_teuchos_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -47,25 +47,26 @@
 */
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
+#ifndef CONTAINERS_NATIVE_TEUCHOS_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_TEUCHOS_VECTOR_META_HPP_
 
-#include "Epetra_Vector.h"
-#include "Epetra_MultiVector.h"
+#include "Teuchos_SerialDenseVector.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_epetra : std::false_type {};
+struct is_dense_vector_teuchos : std::false_type {};
 
 template <typename T>
-struct is_vector_epetra<T,
-      typename
-      std::enable_if<
-	std::is_same<T,Epetra_Vector>::value
-	>::type
+struct is_dense_vector_teuchos<T,
+      ::pressio::mpl::enable_if_t<
+	std::is_same<T,
+	  Teuchos::SerialDenseVector<typename T::ordinalType,
+				     typename T::scalarType>
+	  >::value
+	>
       > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

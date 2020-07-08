@@ -76,7 +76,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
-     !::pressio::containers::meta::is_matrix_wrapper_pybind<lspg_matrix_type>::value and
+     !::pressio::containers::predicates::is_matrix_wrapper_pybind<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value, int > = 0
 #endif
   >
@@ -101,7 +101,7 @@ template <
   typename decoder_jac_type
 >
 mpl::enable_if_t< 
- ::pressio::containers::meta::is_matrix_wrapper_pybind<lspg_matrix_type>::value
+ ::pressio::containers::predicates::is_matrix_wrapper_pybind<lspg_matrix_type>::value
 >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
@@ -138,12 +138,12 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  (containers::meta::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
-   containers::meta::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
+  (containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
+   containers::predicates::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
   or
-  (containers::meta::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
-   containers::meta::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)
+  (containers::predicates::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
+   containers::predicates::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)
 #endif
 >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
@@ -204,8 +204,8 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
-  containers::meta::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
+  containers::predicates::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 			    const scalar_type & dt,
@@ -250,8 +250,8 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_tpetra<lspg_matrix_type>::value and
-  containers::meta::is_multi_vector_tpetra<decoder_jac_type>::value
+  containers::predicates::is_multi_vector_tpetra<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_tpetra<decoder_jac_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type & dt,
@@ -294,8 +294,8 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
-  containers::meta::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
 >
 time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const scalar_type	& dt,
@@ -311,8 +311,8 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
-  containers::meta::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
 >
 time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const scalar_type & dt,

@@ -59,7 +59,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_vector_arbitrary<wrapped_type>::value
+    containers::predicates::is_vector_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -97,7 +97,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_static_row_vector_eigen<wrapped_type>::value
+    containers::predicates::is_static_row_vector_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -131,7 +131,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_static_column_vector_eigen<wrapped_type>::value
+    containers::predicates::is_static_column_vector_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -165,7 +165,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_dynamic_row_vector_eigen<wrapped_type>::value
+    containers::predicates::is_dynamic_row_vector_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -202,7 +202,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dynamic_column_vector_eigen<wrapped_type>::value
+    containers::predicates::is_dynamic_column_vector_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -240,7 +240,7 @@ template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_dense_vector_teuchos<wrapped_type>::value
+    containers::predicates::is_dense_vector_teuchos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -276,7 +276,7 @@ template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_vector_epetra<wrapped_type>::value
+    containers::predicates::is_vector_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -313,7 +313,7 @@ struct traits<
 template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
-  mpl::enable_if_t<containers::meta::is_vector_tpetra<wrapped_type>::value
+  mpl::enable_if_t<containers::predicates::is_vector_tpetra<wrapped_type>::value
 		   >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -369,7 +369,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_vector_kokkos<wrapped_type>::value
+    containers::predicates::is_vector_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -430,7 +430,7 @@ template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_vector_tpetra_block<wrapped_type>::value
+    containers::predicates::is_vector_tpetra_block<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,
@@ -485,7 +485,7 @@ template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
     mpl::enable_if_t<
-      containers::meta::is_array_pybind<wrapped_type>::value
+      containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Vector<wrapped_type>,

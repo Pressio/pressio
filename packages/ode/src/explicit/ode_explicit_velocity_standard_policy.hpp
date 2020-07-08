@@ -70,7 +70,7 @@ template<
 class VelocityStandardPolicy<
   state_type, system_type, state_type,
   mpl::enable_if_t<
-    containers::meta::is_vector_wrapper<state_type>::value
+    containers::predicates::is_vector_wrapper<state_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and mpl::not_same<system_type, pybind11::object >::value
 #endif

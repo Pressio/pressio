@@ -56,7 +56,7 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_eigen<T>::value
+  containers::predicates::is_multi_vector_wrapper_eigen<T>::value
 >
 do_update(T & mv, const scalar_t &a,
 	  const T & mv1, const scalar_t &b)
@@ -68,7 +68,7 @@ do_update(T & mv, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
 >
 do_update(T & mv, const T & mv1, const scalar_t & b)
 {

@@ -46,7 +46,7 @@ TEST(epetraMultiVector,
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;
   mvec_t A(rowMap, 4);
   mvec_t B(rowMap, 2);
-  static_assert(containers::meta::is_multi_vector_wrapper_epetra<mvec_t>::value,
+  static_assert(containers::predicates::is_multi_vector_wrapper_epetra<mvec_t>::value,
 		"");
 
   EXPECT_EQ( A.numVectors(), 4 );

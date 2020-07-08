@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 #define CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_wrapper_tpetra : std::false_type {};
@@ -65,6 +65,6 @@ struct is_multi_vector_wrapper_tpetra<
   >
   : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

@@ -15,8 +15,8 @@ TEST(containers_multi_vector_distributed_tpetra, Traits){
   using nat_t = Tpetra::MultiVector<ST, LO, GO, NT>;
   using mymvec_t = containers::MultiVector<nat_t>;
 
-  static_assert(::pressio::containers::meta::is_multi_vector_tpetra<nat_t>::value,"");
-  static_assert(::pressio::containers::meta::is_multi_vector_wrapper_tpetra<mymvec_t>::value,"");
+  static_assert(::pressio::containers::predicates::is_multi_vector_tpetra<nat_t>::value,"");
+  static_assert(::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<mymvec_t>::value,"");
 
 
   using mvecTrait = containers::details::traits<mymvec_t>;

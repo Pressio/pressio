@@ -41,7 +41,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
     residual_type, jacobian_type>::value,
     "state, residual and jacobian are not scalar compatible ");
 
@@ -84,7 +84,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type, residual_policy_type, jacobian_policy_type>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
 		"state, residual and jacobian are not scalar compatible ");
   using type = StepperBDF1<scalar_t, state_type, residual_type, jacobian_type,
         system_type, residual_policy_type, jacobian_policy_type>;
@@ -120,7 +120,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type, void, residual_policy_type, jacobian_policy_type>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
 		"state, residual and jacobian are not scalar compatible ");
   using type = StepperBDF1<scalar_t, state_type, residual_type, jacobian_type,
         system_type, residual_policy_type, jacobian_policy_type>;
@@ -149,7 +149,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
     residual_type, jacobian_type>::value,
     "state, residual and jacobian are not scalar compatible ");
 
@@ -189,7 +189,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t, residual_policy_type, jacobian_policy_type>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
 		"state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
@@ -247,7 +247,7 @@ struct Composer<
   state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t, Args...>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::meta::are_scalar_compatible<state_type,
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
     residual_type, jacobian_type>::value,
     "state, residual and jacobian are not scalar compatible ");
 

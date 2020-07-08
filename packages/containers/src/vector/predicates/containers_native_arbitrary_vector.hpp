@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_tpetra_block_vector_meta.hpp
+// containers_native_arbitrary_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,34 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_META_HPP_
+#ifndef CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
 
-#include <Tpetra_Experimental_BlockVector_decl.hpp>
-
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_tpetra_block : std::false_type {};
+struct is_vector_arbitrary : std::false_type {};
 
 template <typename T>
-struct is_vector_tpetra_block<T,
-      typename
-      std::enable_if<
-	std::is_same<T,
-		     Tpetra::Experimental::BlockVector<
-		       typename T::impl_scalar_type,
-		       typename T::local_ordinal_type,
-		       typename T::global_ordinal_type,
-		       typename T::node_type
-		       >
-		     >::value
-	>::type
-      > : std::true_type{};
-
-}}}//end namespace pressio::containers::meta
+struct is_vector_arbitrary<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !containers::predicates::is_vector_eigen<T>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    and !containers::predicates::is_array_pybind<T>::value
 #endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+    and !containers::predicates::is_vector_kokkos<T>::value
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+    and !containers::predicates::is_vector_epetra<T>::value
+    and !containers::predicates::is_dense_vector_teuchos<T>::value
+    and !containers::predicates::is_vector_tpetra_block<T>::value
+    and !containers::predicates::is_vector_tpetra<T>::value
+#endif
+    >
+  > : std::true_type{};
+
+
+}}}//end namespace pressio::containers::predicates
 #endif

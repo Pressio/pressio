@@ -56,7 +56,7 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
   >
 elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
 		     const T & x,

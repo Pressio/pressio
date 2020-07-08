@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_META_HAS_SCALAR_TYPEDEF_HPP_
 #define CONTAINERS_META_HAS_SCALAR_TYPEDEF_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct has_scalar_typedef : std::false_type{};
@@ -64,5 +64,5 @@ struct has_scalar_typedef<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

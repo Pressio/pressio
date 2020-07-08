@@ -71,22 +71,22 @@ struct LinearDecoderSpecializer<
   // the matrix type passed must be either a multivector wrapper
   // or a matrix wrapper, so we need to detect if either type if found
   static constexpr auto vMV =
-    ::pressio::containers::meta::is_multi_vector_wrapper<matrix_type>::value;
+    ::pressio::containers::predicates::is_multi_vector_wrapper<matrix_type>::value;
   static constexpr auto vMat =
-    ::pressio::containers::meta::is_matrix_wrapper<matrix_type>::value;
+    ::pressio::containers::predicates::is_matrix_wrapper<matrix_type>::value;
   static_assert(vMV or vMat,
 		"The matrix template arg passed to the LinearDecoder class \
 must be a multi-vector or matrix wrapper type. ");
 
   /* ------------------------------------------------ */
   // check for a valid ROM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<rom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<rom_state_type>::value,
 		"The rom state type template arg passed to the LinearDecoder class \
 must be (for now) a pressio vector wrapper.");
 
   /* ------------------------------------------------ */
   // check for a valid FOM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
 		"The fom state type template arg passed to the LinearDecoder class \
 must be (for now) a pressio vector wrapper.");
 
@@ -110,22 +110,22 @@ struct LinearDecoderSpecializer<
   // the matrix type passed must be either a multivector wrapper
   // or a matrix wrapper, so we need to detect if either type if found
   static constexpr auto vMV =
-    ::pressio::containers::meta::is_multi_vector_wrapper<matrix_type>::value;
+    ::pressio::containers::predicates::is_multi_vector_wrapper<matrix_type>::value;
   static constexpr auto vMat =
-    ::pressio::containers::meta::is_matrix_wrapper<matrix_type>::value;
+    ::pressio::containers::predicates::is_matrix_wrapper<matrix_type>::value;
   static_assert(vMV or vMat,
 		"The matrix template arg passed to the LinearDecoder class \
 must be a multi-vector or matrix wrapper type. ");
 
   /* ------------------------------------------------ */
   // check for a valid ROM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<rom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<rom_state_type>::value,
 		"The rom state type template arg passed to the LinearDecoder class \
 must be (for now) a pressio vector wrapper.");
 
   /* ------------------------------------------------ */
   // check for a valid FOM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
 		"The fom state type template arg passed to the LinearDecoder class \
 must be (for now) a pressio vector wrapper.");
 

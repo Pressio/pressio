@@ -68,7 +68,7 @@ template<
 struct collector_callable_with_step_time_pressio_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    ::pressio::containers::predicates::is_wrapper<state_type>::value and
     std::is_void<
       decltype
       (
@@ -102,7 +102,7 @@ template<
 struct collector_callable_with_step_time_native_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<state_type>::value and
+    ::pressio::containers::predicates::is_wrapper<state_type>::value and
     std::is_void<
       decltype
       (
@@ -128,7 +128,7 @@ template<
 struct collector_callable_with_step_time_native_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<state_type>::value == false and
+    ::pressio::containers::predicates::is_wrapper<state_type>::value == false and
     std::is_void<
       decltype
       (

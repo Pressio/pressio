@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 #define CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 /*
  * this metafunction is here because a pybind11::array_t
@@ -116,6 +116,6 @@ using is_cstyle_array_pybind = is_cstyle_array_pybind11<T>;
 template <typename T>
 using is_fstyle_array_pybind = is_fstyle_array_pybind11<T>;
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

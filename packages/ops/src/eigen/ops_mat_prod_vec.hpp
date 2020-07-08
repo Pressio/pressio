@@ -60,10 +60,10 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  (containers::meta::is_multi_vector_wrapper_eigen<A_type>::value or
-   containers::meta::is_matrix_wrapper_eigen<A_type>::value) and
-  containers::meta::is_vector_wrapper_eigen<x_type>::value and
-  containers::meta::is_vector_wrapper_eigen<y_type>::value
+  (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
+  containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -72,7 +72,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
   assert( y.extent(0) == A.extent(0) );
@@ -89,10 +89,10 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  (containers::meta::is_multi_vector_wrapper_eigen<A_type>::value or
-   containers::meta::is_matrix_wrapper_eigen<A_type>::value) and
-  containers::meta::is_vector_wrapper_eigen<x_type>::value and
-  containers::meta::is_vector_wrapper_eigen<y_type>::value
+  (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
+  containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -101,7 +101,7 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
   assert( y.extent(0) == A.extent(1) );

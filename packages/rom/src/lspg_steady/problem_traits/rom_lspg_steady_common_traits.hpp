@@ -58,7 +58,7 @@ template <
   >
 struct CommonTraits
 {
-  static_assert(::pressio::containers::meta::is_vector_wrapper<lspg_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<lspg_state_type>::value,
 		"the state type for steady lspg must be a vector wrapper");
 
 

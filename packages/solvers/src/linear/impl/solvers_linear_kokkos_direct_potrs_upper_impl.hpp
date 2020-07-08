@@ -67,8 +67,8 @@ class KokkosDirect<::pressio::solvers::linear::direct::potrsU, MatrixT>
   : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::potrsU, MatrixT>>
 {
 public:
-  static_assert( ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
-  		 ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<MatrixT>::value,
+  static_assert( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
+  		 ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
   		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
   using solver_tag	= ::pressio::solvers::linear::direct::potrsU;
@@ -105,7 +105,7 @@ private:
   template <typename _MatrixT = MatrixT, typename T>
   mpl::enable_if_t<
     mpl::is_same< typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft >::value and
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<T>::value and
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
     ::pressio::containers::details::traits<T>::has_host_execution_space and
     mpl::is_same<
      typename containers::details::traits<T>::execution_space,

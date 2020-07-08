@@ -63,7 +63,7 @@ namespace pressio{ namespace containers{ namespace impl{
 template<typename T, std::size_t n>
 class StaticCollection
 {
-  static_assert( ::pressio::containers::meta::is_wrapper<T>::value
+  static_assert( ::pressio::containers::predicates::is_wrapper<T>::value
 		 , "Currently, you can only create a StaticCollection of types \
 which have pressio wrappers.");
 

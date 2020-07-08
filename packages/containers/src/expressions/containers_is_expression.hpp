@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
 #define CONTAINERS_META_IS_EXPRESSION_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_expression : std::false_type{};
@@ -72,5 +72,5 @@ struct is_expression<
   //   >
   // > : std::true_type{};
 
-}}} // namespace pressio::containers::meta
+}}} // namespace pressio::containers::predicates
 #endif

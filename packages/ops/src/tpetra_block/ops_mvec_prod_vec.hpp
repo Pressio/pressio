@@ -65,9 +65,9 @@ namespace pressio{ namespace ops{
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  containers::meta::is_vector_wrapper_kokkos<x_type>::value and
-  containers::meta::is_vector_wrapper_tpetra_block<y_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -76,7 +76,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
     "Types are not scalar compatible");
 
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
@@ -110,9 +110,9 @@ product(::pressio::nontranspose mode,
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  !containers::meta::is_vector_wrapper_kokkos<x_type>::value and
-  containers::meta::is_vector_wrapper_tpetra_block<y_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -121,7 +121,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
     "Types are not scalar compatible");
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
@@ -146,9 +146,9 @@ product(::pressio::nontranspose mode,
 // y = sharedmem vec not kokkos
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  containers::meta::is_vector_wrapper_tpetra_block<x_type>::value and
-  !containers::meta::is_vector_wrapper_kokkos<y_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<x_type>::value and
+  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -173,9 +173,9 @@ product(::pressio::transpose mode,
 // y = wrapper of Kokkos vector
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  containers::meta::is_vector_wrapper_tpetra_block<x_type>::value and
-  containers::meta::is_vector_wrapper_kokkos<y_type>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  containers::predicates::is_vector_wrapper_tpetra_block<x_type>::value and
+  containers::predicates::is_vector_wrapper_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -184,7 +184,7 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Tpetra MV dot V: operands do not have matching scalar type");
 
   static_assert(std::is_same<

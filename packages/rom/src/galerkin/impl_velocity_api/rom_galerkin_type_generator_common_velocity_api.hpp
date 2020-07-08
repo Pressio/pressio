@@ -60,7 +60,7 @@ struct ExtractNativeHelper<
   mpl::enable_if_t<
     ::pressio::rom::meta::is_legitimate_model_for_explicit_galerkin<fom_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
+    and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
     >
   >
@@ -75,7 +75,7 @@ struct ExtractNativeHelper<
   fom_t, galerkin_state_t,
   mpl::enable_if_t<
     ::pressio::rom::meta::is_legitimate_model_for_explicit_galerkin<fom_t>::value
-    and ::pressio::containers::meta::is_vector_wrapper_pybind<galerkin_state_t>::value
+    and ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
     >
   >
 {

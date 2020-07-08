@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
 #define CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_matrix_wrapper_eigen : std::false_type {};
@@ -66,5 +66,5 @@ struct is_matrix_wrapper_eigen<
 
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

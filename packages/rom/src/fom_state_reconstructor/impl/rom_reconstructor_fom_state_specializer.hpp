@@ -71,7 +71,7 @@ struct FomStateReconstructorSpecializer<
 must be a floating point type");
 
   // check for a valid FOM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
     "The second template arg passed to FomStateReconstructor class \
 represents the FOM state and must be (for now) a pressio vector wrapper.");
 
@@ -95,7 +95,7 @@ struct FomStateReconstructorSpecializer<
 must be a floating point type");
 
   // check for a valid FOM state type
-  static_assert(::pressio::containers::meta::is_vector_wrapper<fom_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
 		"The second template arg passed to FomStateReconstructor class \
 represents the FOM state and must be (for now) a pressio vector wrapper.");
 

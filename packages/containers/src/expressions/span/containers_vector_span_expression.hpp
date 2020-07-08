@@ -55,7 +55,7 @@ template <typename vector_t>
 struct SpanExpr<
   vector_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<vector_t>::value
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<vector_t>::value
     >
   >
   : public VectorSharedMemBase< SpanExpr<vector_t> >
@@ -142,7 +142,7 @@ template <typename vector_t>
 struct SpanExpr<
   vector_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<vector_t>::value
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<vector_t>::value
     >
   >
   : public VectorSharedMemBase< SpanExpr<vector_t> >

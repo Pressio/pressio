@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_kokkos : std::false_type {};
@@ -65,6 +65,6 @@ struct is_multi_vector_kokkos<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

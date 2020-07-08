@@ -59,8 +59,8 @@ TEST(containers_vector_sharedmem_kokkos_class, Constructor)
 
   using myvec_t = containers::Vector<view_type>;
   static_assert( containers::details::traits<myvec_t>::is_static == 0, "" );
-  static_assert( containers::meta::is_vector_wrapper_kokkos<myvec_t>::value, "" );
-  static_assert( !containers::meta::is_multi_vector_wrapper_kokkos<myvec_t>::value, "" );
+  static_assert( containers::predicates::is_vector_wrapper_kokkos<myvec_t>::value, "" );
+  static_assert( !containers::predicates::is_multi_vector_wrapper_kokkos<myvec_t>::value, "" );
 
   myvec_t g(a);
 

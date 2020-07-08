@@ -63,7 +63,7 @@ struct ExtractNativeHelper<
   fom_t, lspg_state_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
-     !::pressio::containers::meta::is_vector_wrapper_pybind<lspg_state_t>::value
+     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
     >
 #endif
   >
@@ -77,7 +77,7 @@ template <typename fom_t, typename lspg_state_t>
 struct ExtractNativeHelper<
   fom_t, lspg_state_t,
   mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_pybind<lspg_state_t>::value
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
     >
   >
 {

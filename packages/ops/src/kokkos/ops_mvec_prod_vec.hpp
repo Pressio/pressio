@@ -66,8 +66,8 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and 
-  containers::meta::is_vector_wrapper_kokkos<x_type>::value
+  containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and 
+  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -76,9 +76,9 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
-  static_assert(::pressio::containers::meta::have_matching_execution_space<A_type, x_type, y_type>::value,
+  static_assert(::pressio::containers::predicates::have_matching_execution_space<A_type, x_type, y_type>::value,
 		"operands need to have same execution space" );
 
   assert( y.extent(0) == A.extent(0) );
@@ -92,8 +92,8 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_kokkos<A_type>::value and
-  containers::meta::is_vector_wrapper_kokkos<x_type>::value
+  containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
+  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -102,9 +102,9 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	::pressio::containers::VectorSharedMemBase<y_type> & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
-  static_assert(::pressio::containers::meta::have_matching_execution_space<A_type, x_type, y_type>::value,
+  static_assert(::pressio::containers::predicates::have_matching_execution_space<A_type, x_type, y_type>::value,
 		"operands need to have same execution space" );
 
   assert( y.extent(0) == A.extent(1) );

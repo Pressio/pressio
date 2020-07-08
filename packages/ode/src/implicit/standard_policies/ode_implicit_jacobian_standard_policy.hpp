@@ -67,8 +67,8 @@ class JacobianStandardPolicy<
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<jacobian_type>::value and
+    containers::predicates::is_wrapper<state_type>::value and
+    containers::predicates::is_wrapper<jacobian_type>::value and
     ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
     >
   >
@@ -112,8 +112,8 @@ class JacobianStandardPolicy<
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<jacobian_type>::value and
+    containers::predicates::is_wrapper<state_type>::value and
+    containers::predicates::is_wrapper<jacobian_type>::value and
     ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
     >
   >

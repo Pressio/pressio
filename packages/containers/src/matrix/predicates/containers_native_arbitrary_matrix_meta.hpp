@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_matrix_arbitrary : std::false_type {};
@@ -58,27 +58,27 @@ template <typename T>
 struct is_matrix_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !containers::meta::is_dense_matrix_eigen<T>::value and
-    !containers::meta::is_sparse_matrix_eigen<T>::value
+    !containers::predicates::is_dense_matrix_eigen<T>::value and
+    !containers::predicates::is_sparse_matrix_eigen<T>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !containers::meta::is_array_pybind<T>::value
+    and !containers::predicates::is_array_pybind<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and
-    !containers::meta::is_sparse_matrix_epetra<T>::value and
-    !containers::meta::is_dense_matrix_epetra<T>::value and
-    !containers::meta::is_dense_matrix_teuchos<T>::value and
-    !containers::meta::is_dense_matrix_teuchos_rcp<T>::value and
-    !containers::meta::is_sparse_matrix_tpetra<T>::value
+    !containers::predicates::is_sparse_matrix_epetra<T>::value and
+    !containers::predicates::is_dense_matrix_epetra<T>::value and
+    !containers::predicates::is_dense_matrix_teuchos<T>::value and
+    !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value and
+    !containers::predicates::is_sparse_matrix_tpetra<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and
-    !containers::meta::is_sparse_matrix_kokkos<T>::value and
-    !containers::meta::is_dense_matrix_kokkos<T>::value
+    !containers::predicates::is_sparse_matrix_kokkos<T>::value and
+    !containers::predicates::is_dense_matrix_kokkos<T>::value
 #endif
     >
   > : std::true_type{};
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

@@ -57,8 +57,8 @@ template< typename matrix_type, typename R_t, template <typename...> class Q_typ
 class QRHouseholderDenseEigenMatrixWrapper<
   matrix_type, R_t, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value or
-    containers::meta::is_multi_vector_wrapper_eigen<matrix_type>::value
+    containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value or
+    containers::predicates::is_multi_vector_wrapper_eigen<matrix_type>::value
     >
   >{
 

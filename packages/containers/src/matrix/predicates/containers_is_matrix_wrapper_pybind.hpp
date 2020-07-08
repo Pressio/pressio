@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_IS_MATRIX_WRAPPER_PYBIND_HPP_
 #define CONTAINERS_IS_MATRIX_WRAPPER_PYBIND_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_cstyle_matrix_wrapper_pybind : std::false_type {};
@@ -98,6 +98,6 @@ struct is_matrix_wrapper_pybind<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif // PRESSIO_ENABLE_TPL_PYBIND11

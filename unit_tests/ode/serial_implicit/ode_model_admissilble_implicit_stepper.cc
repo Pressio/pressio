@@ -8,7 +8,7 @@ TEST(ode_implicit, checkModelsScalar){
   using system_t	 = ode::testing::ModelForImplicitMissingScalarTypedef;
   static_assert(!ode::concepts::continuous_time_system_implicit_stepping<system_t>::value, "");
   static_assert(!ode::concepts::discrete_time_system_implicit_stepping<system_t>::value, "");
-  static_assert(!::pressio::containers::meta::has_scalar_typedef<system_t>::value, "");
+  static_assert(!::pressio::containers::predicates::has_scalar_typedef<system_t>::value, "");
 }
 
 TEST(ode_implicit, checkModelsStateMissing){

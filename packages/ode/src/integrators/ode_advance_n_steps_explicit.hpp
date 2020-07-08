@@ -59,7 +59,7 @@ template<typename stepper_type, typename state_type, typename time_type>
 mpl::enable_if_t<
   ::pressio::ode::concepts::explicitly_steppable<stepper_type, state_type, time_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and !::pressio::containers::meta::is_array_pybind<state_type>::value
+  and !::pressio::containers::predicates::is_array_pybind<state_type>::value
 #endif
 >
 advanceNSteps(stepper_type & stepper,
@@ -90,7 +90,7 @@ but the state type you are using is not admissible for explicit time-stepping.")
 template<typename stepper_type, typename state_type, typename time_type>
 mpl::enable_if_t<
   ::pressio::ode::concepts::explicitly_steppable<stepper_type, state_type, time_type>::value and
-  ::pressio::containers::meta::is_array_pybind<state_type>::value
+  ::pressio::containers::predicates::is_array_pybind<state_type>::value
 >
 advanceNSteps(stepper_type & stepper,
 		state_type	 & odeStateInOut,

@@ -12,8 +12,8 @@ TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
   using natV_t = Epetra_Vector;
   using myvec_t = containers::Vector<natV_t>;
 
-  static_assert(::pressio::containers::meta::is_vector_epetra<natV_t>::value,"");
-  static_assert(::pressio::containers::meta::is_vector_wrapper_epetra<myvec_t>::value,"");
+  static_assert(::pressio::containers::predicates::is_vector_epetra<natV_t>::value,"");
+  static_assert(::pressio::containers::predicates::is_vector_wrapper_epetra<myvec_t>::value,"");
 
   using vecTrait = containers::details::traits<myvec_t>;
  

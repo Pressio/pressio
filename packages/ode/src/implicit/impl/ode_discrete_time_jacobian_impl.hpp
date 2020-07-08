@@ -54,11 +54,11 @@ namespace pressio{ namespace ode{ namespace impl{
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
-  (containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
+  (containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-   containers::meta::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
+   containers::predicates::is_sparse_matrix_wrapper_epetra<jacobian_type>::value or
 #endif
-  containers::meta::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
+  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
 >
 discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::Euler)
 {
@@ -75,7 +75,7 @@ discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::o
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
-  containers::meta::is_array_pybind11<jacobian_type>::value
+  containers::predicates::is_array_pybind11<jacobian_type>::value
 >
 discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::Euler)
 {
@@ -106,7 +106,7 @@ discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::o
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value) and
-  containers::meta::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
+  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
 >
 discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::BDF2)
 {

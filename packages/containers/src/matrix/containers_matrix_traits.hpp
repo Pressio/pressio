@@ -59,7 +59,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
     mpl::enable_if_t<
-      containers::meta::is_matrix_arbitrary<wrapped_type>::value
+      containers::predicates::is_matrix_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -97,7 +97,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_dense_matrix_eigen<wrapped_type>::value
+    containers::predicates::is_dense_matrix_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -131,7 +131,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_sparse_matrix_eigen<wrapped_type>::value
+    containers::predicates::is_sparse_matrix_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -169,7 +169,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_sparse_matrix_epetra<wrapped_type>::value
+    containers::predicates::is_sparse_matrix_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -210,7 +210,7 @@ template<typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_dense_matrix_teuchos<wrapped_type>::value
+    containers::predicates::is_dense_matrix_teuchos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -249,7 +249,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::meta::is_dense_matrix_epetra<wrapped_type>::value
+    containers::predicates::is_dense_matrix_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -285,7 +285,7 @@ template<typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    meta::is_sparse_matrix_tpetra<wrapped_type>::value
+    ::pressio::containers::predicates::is_sparse_matrix_tpetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,
@@ -342,7 +342,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
   mpl::enable_if_t<
-    meta::is_sparse_matrix_kokkos<wrapped_type>::value
+    ::pressio::containers::predicates::is_sparse_matrix_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -387,7 +387,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_dense_matrix_kokkos<wrapped_type>::value
+      containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -445,7 +445,7 @@ template <typename wrapped_type>
 struct traits<
   Matrix<wrapped_type>,
     mpl::enable_if_t<
-      containers::meta::is_array_pybind<wrapped_type>::value
+      containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
   : public containers_shared_traits<Matrix<wrapped_type>,

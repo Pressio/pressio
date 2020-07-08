@@ -57,9 +57,9 @@ template<
 class SystemHessianGradientApi
 {
   // in all cases we need types to be wrappers from containers
-  static_assert(::pressio::containers::meta::is_vector_wrapper<wls_state_type>::value,
+  static_assert(::pressio::containers::predicates::is_vector_wrapper<wls_state_type>::value,
 		"For WLS, the state_type must be a pressio container vector");
-  static_assert(::pressio::containers::meta::is_matrix_wrapper<wls_hessian_type>::value,
+  static_assert(::pressio::containers::predicates::is_matrix_wrapper<wls_hessian_type>::value,
 		"WLS: hessian_type must be a pressio container matrix");
 
 public:

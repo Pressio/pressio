@@ -54,7 +54,7 @@ namespace pressio{ namespace containers{
 template <typename wrapped_type>
 class MultiVector<wrapped_type,
 		  ::pressio::mpl::enable_if_t<
-		    meta::is_dynamic_multi_vector_eigen<
+		    ::pressio::containers::predicates::is_dynamic_multi_vector_eigen<
 		      wrapped_type>::value>
 		  >
   : public MultiVectorSharedMemBase< MultiVector<wrapped_type> >

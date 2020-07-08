@@ -68,8 +68,8 @@ class ResidualStandardPolicy<
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<residual_type>::value and 
+    containers::predicates::is_wrapper<state_type>::value and
+    containers::predicates::is_wrapper<residual_type>::value and 
     ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
     >
   >
@@ -116,8 +116,8 @@ class ResidualStandardPolicy<
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    containers::meta::is_wrapper<state_type>::value and
-    containers::meta::is_wrapper<residual_type>::value and
+    containers::predicates::is_wrapper<state_type>::value and
+    containers::predicates::is_wrapper<residual_type>::value and
     ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
     >
   >

@@ -51,7 +51,7 @@
 
 #include <Eigen/Dense>
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 
 template <typename T, typename enable = void>
@@ -154,5 +154,5 @@ struct is_vector_eigen< T,
      > : std::true_type{};
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif

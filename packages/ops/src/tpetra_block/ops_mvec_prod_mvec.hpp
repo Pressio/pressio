@@ -67,8 +67,8 @@ template <
   typename A_type, typename B_type, typename scalar_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<B_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -78,7 +78,7 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	::pressio::containers::MatrixSharedMemBase<C_type> & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
   		"Types are not scalar compatible");
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
@@ -108,10 +108,10 @@ template <
   typename C_type, typename A_type, typename B_type, typename scalar_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  (::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value),
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
+  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value),
   C_type
   >
 product(::pressio::transpose modeA,
@@ -120,7 +120,7 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
 
@@ -138,8 +138,8 @@ product(::pressio::transpose modeA,
 // **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -148,7 +148,7 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
   		"Types are not scalar compatible");
 
   // get a tpetra multivector that views the data
@@ -179,8 +179,8 @@ product(::pressio::transpose modeA,
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -189,7 +189,7 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
   		"Types are not scalar compatible");
 
   // check traits of the block mv
@@ -217,9 +217,9 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  (::pressio::containers::meta::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<C_type>::value),
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
+  (::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value),
   C_type
   >
 product(::pressio::transpose modeA,
@@ -227,7 +227,7 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();

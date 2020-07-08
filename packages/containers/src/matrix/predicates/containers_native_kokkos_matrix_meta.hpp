@@ -52,7 +52,7 @@
 
 #include <KokkosSparse_CrsMatrix.hpp>
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_sparse_matrix_kokkos : std::false_type {};
@@ -89,6 +89,6 @@ struct is_dense_matrix_kokkos<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

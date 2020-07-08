@@ -58,7 +58,7 @@ template <typename wrapped_type>
 class MultiVector<wrapped_type,
      typename
      std::enable_if<
-       meta::is_multi_vector_tpetra<
+       ::pressio::containers::predicates::is_multi_vector_tpetra<
 	    wrapped_type>::value
        >::type
      >

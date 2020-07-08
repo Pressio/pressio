@@ -57,7 +57,7 @@ struct is_legitimate_r_type : std::false_type {};
 template <typename T>
 struct is_legitimate_r_type<T,
 	 ::pressio::mpl::enable_if_t<
-	   containers::meta::is_matrix_wrapper<T>::value and
+	   containers::predicates::is_matrix_wrapper<T>::value and
 	   containers::details::traits<T>::is_shared_mem and
 	   containers::details::traits<T>::is_dense
 	   >
@@ -70,7 +70,7 @@ struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 template <typename T, typename Q_t>
 struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 	 ::pressio::mpl::enable_if_t<
-	   containers::meta::is_vector_wrapper<T>::value and
+	   containers::predicates::is_vector_wrapper<T>::value and
 	   // the vector type should be from same package as Q
 	   containers::details::traits<T>::wrapped_package_identifier ==
 	   containers::details::traits<Q_t>::wrapped_package_identifier

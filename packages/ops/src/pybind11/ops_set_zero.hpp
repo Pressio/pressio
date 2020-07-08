@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
 set_zero(T & v){
   using traits	 = ::pressio::containers::details::traits<T>;

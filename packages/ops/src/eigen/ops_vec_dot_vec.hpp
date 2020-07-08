@@ -57,7 +57,7 @@ namespace pressio{ namespace ops{
 // void specializiation
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_eigen<vec_type>::value
+  containers::predicates::is_vector_wrapper_eigen<vec_type>::value
   >
 dot(const vec_type & vecA,
     const vec_type & vecB,
@@ -71,7 +71,7 @@ dot(const vec_type & vecA,
 // non-void specialize
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_vector_wrapper_eigen<vec_type>::value,
+  containers::predicates::is_vector_wrapper_eigen<vec_type>::value,
   typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
 dot(const vec_type & vecA, const vec_type & vecB)

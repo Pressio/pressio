@@ -57,7 +57,7 @@ struct explicit_velocity : std::false_type{};
 template<typename T>
 struct explicit_velocity<T,
  typename std::enable_if<
-   containers::meta::is_vector_wrapper<T>::value
+   containers::predicates::is_vector_wrapper<T>::value
    >::type
   > : std::true_type{};
 

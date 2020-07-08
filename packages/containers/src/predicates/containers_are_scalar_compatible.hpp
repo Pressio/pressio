@@ -48,7 +48,7 @@
 #ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 #define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename ... Args>
 struct are_scalar_compatible;
@@ -56,8 +56,8 @@ struct are_scalar_compatible;
 template <typename T1>
 struct are_scalar_compatible<T1>
 {
-  static_assert( pressio::containers::meta::is_wrapper<T1>::value or
-		 pressio::containers::meta::is_expression<T1>::value,
+  static_assert( pressio::containers::predicates::is_wrapper<T1>::value or
+		 pressio::containers::predicates::is_expression<T1>::value,
 		 "args for scalar compatibility check must be pressio wrappers or expressions");
 
   static constexpr auto value = true;
@@ -66,11 +66,11 @@ struct are_scalar_compatible<T1>
 template <typename T1, typename T2>
 struct are_scalar_compatible<T1, T2>
 {
-  static_assert( (pressio::containers::meta::is_wrapper<T1>::value or
-		  pressio::containers::meta::is_expression<T1>::value )
+  static_assert( (pressio::containers::predicates::is_wrapper<T1>::value or
+		  pressio::containers::predicates::is_expression<T1>::value )
 		 and
-		 (pressio::containers::meta::is_wrapper<T2>::value or
-		  pressio::containers::meta::is_expression<T2>::value ),
+		 (pressio::containers::predicates::is_wrapper<T2>::value or
+		  pressio::containers::predicates::is_expression<T2>::value ),
 		 "args for scalar compatibility check must be pressio wrappers or expressions");
 
   static constexpr auto value = std::is_same<
@@ -87,5 +87,5 @@ struct are_scalar_compatible<T1, T2, rest...>
     are_scalar_compatible<T2, rest...>::value;
 };
 
-}}} // namespace pressio::containers::meta
+}}} // namespace pressio::containers::predicates
 #endif

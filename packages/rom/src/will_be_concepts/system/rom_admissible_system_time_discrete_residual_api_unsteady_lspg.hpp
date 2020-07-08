@@ -21,29 +21,29 @@ template<typename T>
 struct admissible_system_time_discrete_residual_api_unsteady_lspg<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
-    ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::ode::meta::has_time_discrete_residual_typedef<T>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
+    ::pressio::ode::predicates::has_state_typedef<T>::value and
+    ::pressio::ode::predicates::has_time_discrete_residual_typedef<T>::value and
     ::pressio::rom::meta::has_dense_matrix_typedef<T>::value 
     and
     ///////////////////////////
     // time-discrete residual 
-    ::pressio::ode::meta::has_const_create_td_residual_method_return_result<
+    ::pressio::ode::predicates::has_const_create_td_residual_method_return_result<
         T, typename T::time_discrete_residual_type>::value 
     and 
-    ::pressio::ode::meta::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
+    ::pressio::ode::predicates::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
         T, 1, ::pressio::ode::types::step_t, 
         typename T::scalar_type, 
         typename T::state_type, 
         typename T::time_discrete_residual_type>::value 
     and 
-    ::pressio::ode::meta::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
+    ::pressio::ode::predicates::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
         T, 2, ::pressio::ode::types::step_t, 
         typename T::scalar_type, 
         typename T::state_type, 
         typename T::time_discrete_residual_type>::value 
     and
-    ::pressio::ode::meta::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
+    ::pressio::ode::predicates::has_const_td_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
         T, 3, ::pressio::ode::types::step_t, 
         typename T::scalar_type, 
         typename T::state_type, 

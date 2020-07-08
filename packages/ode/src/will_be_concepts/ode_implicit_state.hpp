@@ -58,9 +58,9 @@ template<typename T>
 struct implicit_state<
   T,
   typename std::enable_if<
-    containers::meta::is_vector_wrapper<T>::value
+    containers::predicates::is_vector_wrapper<T>::value
 /*#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or containers::meta::is_array_pybind11<T>::value
+    or containers::predicates::is_array_pybind11<T>::value
 #endif*/
     >::type > : std::true_type{};
 

@@ -61,7 +61,7 @@ template<typename matrix_type,
 class Solver<matrix_type, lsv_type, rsv_type, sval_type,
 	     typename
 	     std::enable_if<
-	       containers::meta::is_multi_vector_epetra<
+	       containers::predicates::is_multi_vector_epetra<
 		 typename containers::details::traits<matrix_type>::wrapped_t
 		 >::value
 	       >::type

@@ -58,7 +58,7 @@ template <typename wrapped_type>
 class Vector<wrapped_type,
 	     typename
 	     std::enable_if<
-	       meta::is_vector_tpetra<
+	       ::pressio::containers::predicates::is_vector_tpetra<
 		 wrapped_type>::value
 	       >::type
 	     >

@@ -81,7 +81,7 @@ struct svd_traits<Solver<
 		    sval_type,
 		    typename
 		    std::enable_if<
-		      containers::meta::is_sparse_matrix_epetra<
+		      containers::predicates::is_sparse_matrix_epetra<
 			typename
 			containers::details::traits<matrix_type>::wrapped_t
 			>::value
@@ -117,7 +117,7 @@ struct svd_traits<Solver<
 		    sval_type,
 		    typename
 		    std::enable_if<
-		      containers::meta::is_multi_vector_epetra<
+		      containers::predicates::is_multi_vector_epetra<
 			typename containers::details::traits<matrix_type>::wrapped_t
 			>::value
 		      >::type

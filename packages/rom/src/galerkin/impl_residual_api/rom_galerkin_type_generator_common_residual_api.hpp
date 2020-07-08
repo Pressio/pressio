@@ -102,7 +102,7 @@ struct CommonTypesResidualApi
   // find the order setter in Args
   //-------------------------------
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::ode::meta::impl::IsStepperOrderSetter, Args...>;
+    ::pressio::ode::predicates::IsStepperOrderSetter, Args...>;
   using order_setter = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
   static_assert( !std::is_void<order_setter>::value,
   		 "To use Galerkin with residual api, you need to set the order of the stepper \n \
@@ -115,7 +115,7 @@ at compile time by passing to a template argument as follows: \n \
   // find the total number of states needed
   //-----------------------------------------------------------
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::ode::meta::impl::IsStepperTotalNumStatesSetter, Args...>;
+    ::pressio::ode::predicates::IsStepperTotalNumStatesSetter, Args...>;
   using tot_n_setter = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert( !std::is_void<tot_n_setter>::value,
   		 "\nTo use Galerkin with residual api, you need to set the \

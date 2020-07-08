@@ -55,7 +55,7 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::SpanExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dynamic_vector_wrapper_eigen<v_type>::value
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<v_type>::value
     >
   >
   : public containers_shared_traits<
@@ -110,7 +110,7 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::SpanExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_vector_wrapper_kokkos<v_type>::value
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<v_type>::value
     >
   >
   : public containers_shared_traits<

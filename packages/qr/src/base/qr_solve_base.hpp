@@ -67,7 +67,7 @@ class QRSolveBase
 
 public:
   template <typename vec_t>
-  ::pressio::mpl::enable_if_t< containers::meta::is_vector_wrapper<vec_t>::value >
+  ::pressio::mpl::enable_if_t< containers::predicates::is_vector_wrapper<vec_t>::value >
   solve(const vec_t & rhs, vec_t & y)const {
     this->underlying().solveImpl(rhs, y);
   }

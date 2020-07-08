@@ -11,7 +11,7 @@ TEST_F(tpetraSparseMatR7MultiVectorR7C4Fixture,
   STATIC_ASSERT_IS_MATRIX_SPARSE_DISTRIBUTED_TPETRA(mat_t);
   using mymat_w_t = containers::Matrix<mat_t>;
   static_assert(
-   containers::meta::is_sparse_matrix_wrapper_tpetra<mymat_w_t>::value, " ");
+   containers::predicates::is_sparse_matrix_wrapper_tpetra<mymat_w_t>::value, " ");
 
   fillCrsMatrix();
   A_->fillComplete();

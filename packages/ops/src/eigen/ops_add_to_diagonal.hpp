@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_sparse_matrix_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T>::value
   >
 addToDiagonal(T & o,
 	      typename ::pressio::containers::details::traits<T>::scalar_t value)

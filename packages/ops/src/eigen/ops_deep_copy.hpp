@@ -57,13 +57,13 @@ namespace pressio{ namespace ops{
 //--------------------------------------------------------------------------
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::meta::is_vector_wrapper_eigen<T1>::value or
-   ::pressio::containers::meta::is_matrix_wrapper_eigen<T1>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T1>::value)
+  (::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value or
+   ::pressio::containers::predicates::is_matrix_wrapper_eigen<T1>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value)
   and
-  (::pressio::containers::meta::is_vector_wrapper_eigen<T2>::value or
-   ::pressio::containers::meta::is_matrix_wrapper_eigen<T2>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<T2>::value)
+  (::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value or
+   ::pressio::containers::predicates::is_matrix_wrapper_eigen<T2>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value)
   >
 deep_copy(T2 & dest, const T1 & src){
   *dest.data() = *src.data();

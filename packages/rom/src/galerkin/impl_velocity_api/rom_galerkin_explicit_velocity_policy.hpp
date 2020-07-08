@@ -132,7 +132,7 @@ private:
     typename _fom_rhs_t = fom_rhs_t
   >
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_wrapper<fom_state_t>::value
+    ::pressio::containers::predicates::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
 #endif

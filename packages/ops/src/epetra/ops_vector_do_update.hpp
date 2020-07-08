@@ -57,7 +57,7 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 {
@@ -68,7 +68,7 @@ do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v, const T & v1, const scalar_t  b)
 {
@@ -83,7 +83,7 @@ do_update(T & v, const T & v1, const scalar_t  b)
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
@@ -96,7 +96,7 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v,
 	  const T & v1, const scalar_t &b,
@@ -114,7 +114,7 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
@@ -128,7 +128,7 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v,
 	  const T & v1, const scalar_t &b,
@@ -146,7 +146,7 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
@@ -161,7 +161,7 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 do_update(T & v,
 	  const T & v1, const scalar_t &b,

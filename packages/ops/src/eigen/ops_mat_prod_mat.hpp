@@ -60,11 +60,11 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<B_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<B_type>::value) and
-  ::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
+  ::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -74,7 +74,7 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
   assert( C.extent(0) == A.extent(1) );
@@ -93,12 +93,12 @@ product(::pressio::transpose modeA,
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<B_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<B_type>::value) and
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
@@ -108,7 +108,7 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, B_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
   assert( C.extent(0) == A.extent(0) );
@@ -130,10 +130,10 @@ product(::pressio::nontranspose modeA,
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<C_type>::value)
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -142,7 +142,7 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
   auto & CE = *C.data();
@@ -152,9 +152,9 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::meta::is_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::meta::is_multi_vector_wrapper_eigen<A_type>::value) and
-  ::pressio::containers::meta::is_matrix_wrapper_eigen<C_type>::value,
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  ::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -162,7 +162,7 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, C_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();

@@ -12,7 +12,7 @@ template<typename T>
 struct discrete_time_system_implicit_stepping<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value and
     ::pressio::ode::predicates::has_discrete_time_jacobian_typedef<T>::value and

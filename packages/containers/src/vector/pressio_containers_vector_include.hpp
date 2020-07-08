@@ -2,13 +2,13 @@
 #ifndef pressio_containers_vector_include_HPP
 #define pressio_containers_vector_include_HPP
 
-#include "./predicates/containers_native_eigen_vector_meta.hpp"
-#include "./predicates/containers_native_epetra_vector_meta.hpp"
-#include "./predicates/containers_native_kokkos_vector_meta.hpp"
-#include "./predicates/containers_native_teuchos_vector_meta.hpp"
-#include "./predicates/containers_native_tpetra_block_vector_meta.hpp"
-#include "./predicates/containers_native_tpetra_vector_meta.hpp"
-#include "./predicates/containers_native_arbitrary_vector_meta.hpp"
+#include "./predicates/containers_native_eigen_vector.hpp"
+#include "./predicates/containers_native_epetra_vector.hpp"
+#include "./predicates/containers_native_kokkos_vector.hpp"
+#include "./predicates/containers_native_teuchos_vector.hpp"
+#include "./predicates/containers_native_tpetra_block_vector.hpp"
+#include "./predicates/containers_native_tpetra_vector.hpp"
+#include "./predicates/containers_native_arbitrary_vector.hpp"
 
 #include "./predicates/containers_is_dense_vector_wrapper_teuchos.hpp"
 #include "./predicates/containers_is_vector_wrapper_arbitrary.hpp"

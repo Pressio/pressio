@@ -52,7 +52,7 @@
 
 #include <Teuchos_RCPDecl.hpp>
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T,
 	  typename enable = void>
@@ -71,6 +71,6 @@ struct is_teuchos_rcp<
     >::type
   > : std::true_type{};
 
-}}} // namespace pressio::containers::meta
+}}} // namespace pressio::containers::predicates
 #endif
 #endif

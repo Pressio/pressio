@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
   >
 resize(T & o, typename ::pressio::containers::details::traits<T>::size_t newSz)
 {
@@ -62,7 +62,7 @@ resize(T & o, typename ::pressio::containers::details::traits<T>::size_t newSz)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
   >
 resize(T & o,
        typename ::pressio::containers::details::traits<T>::size_t nR,

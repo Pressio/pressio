@@ -33,7 +33,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using namespace pressio;
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
-    ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
+    ( containers::predicates::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
   using sc_t = typename fix_t::ST;
 
   x_->putScalar(1.22);
@@ -53,7 +53,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
   using namespace pressio;
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(native_t);
   static_assert
-    ( containers::meta::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
+    ( containers::predicates::is_vector_wrapper_tpetra_block<myvec_t>::value, "");
   using sc_t = typename fix_t::ST;
 
   myvec_t B( *x_ );

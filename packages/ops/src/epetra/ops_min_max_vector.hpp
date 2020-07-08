@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value,
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
   typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
 max(const vec_type & a)
@@ -66,7 +66,7 @@ max(const vec_type & a)
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_epetra<vec_type>::value,
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
   typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
 min(const vec_type & a)

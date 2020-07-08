@@ -52,7 +52,7 @@
 
 #include "Epetra_MultiVector.h"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_multi_vector_epetra : std::false_type {};
@@ -65,6 +65,6 @@ struct is_multi_vector_epetra<T,
    >::type
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

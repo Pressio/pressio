@@ -79,7 +79,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_epetra<matrix_t>::value
     >
   >
 {
@@ -91,7 +91,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_tpetra<matrix_t>::value
     >
   >
 {
@@ -103,7 +103,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::TSQR, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_tpetra_block<matrix_t>::value
     >
   >
 {
@@ -115,7 +115,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::ModifiedGramSchmidt, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_epetra<matrix_t>::value
     >
   >
 {
@@ -127,7 +127,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::ModifiedGramSchmidt, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_tpetra<matrix_t>::value
     >
   >
 {
@@ -140,7 +140,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::Householder, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_epetra<matrix_t>::value
     >
   >
 {
@@ -153,7 +153,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::Householder, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_tpetra<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_tpetra<matrix_t>::value
     >
   >{
   using impl_t = impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t, Q_type>;
@@ -166,7 +166,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::Householder, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_dense_matrix_wrapper_eigen<matrix_t>::value
+    containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value
     >
   >
 {
@@ -178,7 +178,7 @@ template <
 struct impl_class_helper<
   matrix_t, qr::Householder, R_t, wrap_Q_type, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_eigen<matrix_t>::value
+    containers::predicates::is_multi_vector_wrapper_eigen<matrix_t>::value
     >
   >
 {
@@ -201,8 +201,8 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value or
-      containers::meta::is_multi_vector_wrapper_eigen<matrix_type>::value
+      containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value or
+      containers::predicates::is_multi_vector_wrapper_eigen<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place>
 {
@@ -236,9 +236,9 @@ struct traits<
 template<
   typename matrix_type, template <typename...> class Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value or
-    containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value or
-    containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value, int > = 0
+    containers::predicates::is_multi_vector_wrapper_epetra<matrix_type>::value or
+    containers::predicates::is_multi_vector_wrapper_tpetra<matrix_type>::value or
+    containers::predicates::is_multi_vector_wrapper_tpetra_block<matrix_type>::value, int > = 0
   >
 struct traits_shared_trilinos_mv{
   using MV_t	 = typename containers::details::traits<matrix_type>::wrapped_t;
@@ -257,7 +257,7 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value
+      containers::predicates::is_multi_vector_wrapper_epetra<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place>,
   traits_shared_trilinos_mv<matrix_type, Q_type>
@@ -292,7 +292,7 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value
+      containers::predicates::is_multi_vector_wrapper_tpetra<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place>,
   traits_shared_trilinos_mv<matrix_type, Q_type>
@@ -331,7 +331,7 @@ struct traits<
   impl::QRSolver<
     matrix_type, algo_t, in_place, void, Q_type>,
     ::pressio::mpl::enable_if_t<
-      containers::meta::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
+      containers::predicates::is_multi_vector_wrapper_tpetra_block<matrix_type>::value
       >
   > : traits_shared_all<matrix_type, algo_t, in_place>,
   traits_shared_trilinos_mv<matrix_type, Q_type>
@@ -379,7 +379,7 @@ struct traits<
 //   impl::QRSolver<
 //     matrix_type, algo_t, in_place, m, n, R_type, Q_type>,
 //     ::pressio::mpl::enable_if_t<
-//       containers::meta::is_multi_vector_wrapper_epetra<matrix_type>::value and
+//       containers::predicates::is_multi_vector_wrapper_epetra<matrix_type>::value and
 //       meta::is_legitimate_r_type<R_type>::value
 //       >
 //   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,
@@ -421,7 +421,7 @@ struct traits<
 //   impl::QRSolver<
 //     matrix_type, algo_t, in_place, m, n, R_type, Q_type>,
 //     ::pressio::mpl::enable_if_t<
-//       containers::meta::is_multi_vector_wrapper_tpetra<matrix_type>::value and
+//       containers::predicates::is_multi_vector_wrapper_tpetra<matrix_type>::value and
 //       meta::is_legitimate_r_type<R_type>::value
 //       >
 //   > : traits_shared_all<matrix_type, algo_t, in_place, m, n>,

@@ -6,34 +6,11 @@
 
 // TEST(ode_explicit_euler, traits){
 //   using namespace pressio;
-
 //   using app_t = ode::testing::fakeAppForTraitsForExp;
 //   using nstate_t = typename app_t::state_type;
 //   using nveloc_t = typename app_t::velocity_type;
 //   using state_t = containers::Vector<nstate_t>;
 //   using res_t = containers::Vector<nveloc_t>;
-
-//   static_assert(
-//     ode::meta::is_legitimate_model_for_explicit_ode<app_t>::value, "");
-//   static_assert(
-//    not ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
-
-//   using stepper_t = ode::ExplicitStepper<
-//     ode::explicitmethods::Euler, state_t, app_t, res_t, double>;
-
-//   // using traits = ode::details::traits<stepper_t>;
-
-//   // static_assert(ode::meta::is_explicit_euler_velocity_standard_policy<
-//   // 		typename traits::velocity_policy_t>::value, "");
-//   // ::testing::StaticAssertTypeEq<typename
-//   // 				traits::state_t, state_t>();
-//   // ::testing::StaticAssertTypeEq<typename
-//   // 				traits::velocity_t,res_t>();
-//   // ::testing::StaticAssertTypeEq<typename
-//   // 				traits::scalar_t,double>();
-//   // ::testing::StaticAssertTypeEq<typename
-//   // 				traits::model_t,app_t>();
-//   // static_assert( traits::order_value == 1, "");
 // }
 
 

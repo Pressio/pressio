@@ -56,7 +56,7 @@
 #include <Tpetra_CrsMatrix_decl.hpp>
 #include "Teuchos_SerialDenseMatrix.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_sparse_matrix_tpetra : std::false_type {};
@@ -128,6 +128,6 @@ struct is_dense_matrix_teuchos_rcp<T,
       > : std::true_type{};
 
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

@@ -62,9 +62,9 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_fstyle_matrix_wrapper_pybind<A_type>::value and
-  containers::meta::is_fstyle_vector_wrapper_pybind<x_type>::value and
-  containers::meta::is_fstyle_vector_wrapper_pybind<y_type>::value
+  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
+  containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -73,7 +73,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
@@ -100,9 +100,9 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_fstyle_matrix_wrapper_pybind<A_type>::value and
-  containers::meta::is_fstyle_vector_wrapper_pybind<x_type>::value and
-  containers::meta::is_fstyle_vector_wrapper_pybind<y_type>::value
+  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
+  containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -111,7 +111,7 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
@@ -140,9 +140,9 @@ product(::pressio::transpose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_fstyle_matrix_wrapper_pybind<A_type>::value and
-  containers::meta::is_fstyle_array_pybind<x_type>::value and
-  containers::meta::is_fstyle_array_pybind<y_type>::value
+  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_array_pybind<x_type>::value and
+  containers::predicates::is_fstyle_array_pybind<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,

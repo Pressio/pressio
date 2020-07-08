@@ -59,8 +59,8 @@ template<
 class QRSolver<
   matrix_type, algo, true, void, Q_type,
   ::pressio::mpl::enable_if_t<
-    containers::meta::is_multi_vector_wrapper<matrix_type>::value or
-    containers::meta::is_matrix_wrapper<matrix_type>::value
+    containers::predicates::is_multi_vector_wrapper<matrix_type>::value or
+    containers::predicates::is_matrix_wrapper<matrix_type>::value
     >
   > : public details::traits< QRSolver<matrix_type, algo,
 				       true, void, Q_type>>::base_compute_t,
@@ -105,7 +105,7 @@ private:
 //   matrix_type, algo, true, R_type, Q_type,
 //   ::pressio::mpl::enable_if_t<
 //     meta::is_legitimate_r_type<R_type>::value and
-//     containers::meta::is_multi_vector_wrapper<matrix_type>::value
+//     containers::predicates::is_multi_vector_wrapper<matrix_type>::value
 //     >
 //   > : public details::traits< QRSolver<matrix_type, algo,
 // 				       true, R_type, Q_type>>::base_compute_t,

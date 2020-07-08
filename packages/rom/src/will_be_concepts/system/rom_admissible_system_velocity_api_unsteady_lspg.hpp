@@ -21,17 +21,17 @@ template<typename T>
 struct admissible_system_velocity_api_unsteady_lspg<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::meta::has_scalar_typedef<T>::value and
-    ::pressio::ode::meta::has_state_typedef<T>::value and
-    ::pressio::ode::meta::has_velocity_typedef<T>::value and
-    ::pressio::ode::meta::has_jacobian_typedef<T>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
+    ::pressio::ode::predicates::has_state_typedef<T>::value and
+    ::pressio::ode::predicates::has_velocity_typedef<T>::value and
+    ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     ::pressio::rom::meta::has_dense_matrix_typedef<T>::value and
     ///////////////////
     /// velocity 
     ///////////////////
-    ::pressio::ode::meta::has_const_create_velocity_method_return_result<
+    ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
       T, typename T::velocity_type>::value and
-    ::pressio::ode::meta::has_const_velocity_method_accept_state_time_result_return_void<
+    ::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
       T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
       >::value and 
     ///////////////////

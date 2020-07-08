@@ -57,10 +57,10 @@ struct implicit_jacobian : std::false_type{};
 template<typename T>
 struct implicit_jacobian<T,
        typename std::enable_if<
-	 containers::meta::is_matrix_wrapper<T>::value or
-	 containers::meta::is_multi_vector_wrapper<T>::value
+	 containers::predicates::is_matrix_wrapper<T>::value or
+	 containers::predicates::is_multi_vector_wrapper<T>::value
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// 	 or containers::meta::is_array_pybind11<T>::value
+// 	 or containers::predicates::is_array_pybind11<T>::value
 // #endif
 	 >::type
        > : std::true_type{};

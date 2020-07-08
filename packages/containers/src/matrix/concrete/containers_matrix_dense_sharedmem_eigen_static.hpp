@@ -54,7 +54,7 @@ namespace pressio{ namespace containers{
 template <typename wrapped_type>
 class Matrix<wrapped_type,
 	     ::pressio::mpl::enable_if_t<
-	       containers::meta::is_dense_static_matrix_eigen<
+	       containers::predicates::is_dense_static_matrix_eigen<
 		 wrapped_type>::value>
 	     >
   : public MatrixSharedMemBase< Matrix<wrapped_type> >

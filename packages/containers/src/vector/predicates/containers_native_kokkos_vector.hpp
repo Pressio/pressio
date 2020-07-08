@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_tpetra_vector_meta.hpp
+// containers_native_kokkos_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,25 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#ifndef CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#ifndef CONTAINERS_NATIVE_KOKKOS_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_KOKKOS_VECTOR_META_HPP_
 
-#include "Tpetra_Vector.hpp"
+#include "Kokkos_Core.hpp"
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_tpetra : std::false_type {};
+struct is_vector_kokkos : std::false_type {};
 
 template <typename T>
-struct is_vector_tpetra<T,
-      typename
-      std::enable_if<
-	std::is_same<T,
-		     Tpetra::Vector<
-		       typename T::impl_scalar_type,
-		       typename T::local_ordinal_type,
-		       typename T::global_ordinal_type,
-		       typename T::node_type
-		       >
-		     >::value
-	>::type
+struct is_vector_kokkos<T,
+	 ::pressio::mpl::enable_if_t<
+	   // kokkos vector is it is a view and has rank=1
+	   Kokkos::is_view<T>::value &&
+	   T::traits::rank==1>
       > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

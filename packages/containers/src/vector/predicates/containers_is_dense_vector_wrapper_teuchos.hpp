@@ -50,7 +50,7 @@
 #ifndef CONTAINERS_IS_DENSEWRAPPER_TEUCHOS_HPP_
 #define CONTAINERS_IS_DENSEWRAPPER_TEUCHOS_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct is_dense_vector_wrapper_teuchos : std::false_type {};
@@ -64,6 +64,6 @@ struct is_dense_vector_wrapper_teuchos<
        >
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
 #endif
 #endif

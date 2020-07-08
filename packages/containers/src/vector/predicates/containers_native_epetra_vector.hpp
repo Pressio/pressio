@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_arbitrary_vector_meta.hpp
+// containers_native_epetra_vector_meta.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,26 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifndef CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
+#define CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
 
-namespace pressio{ namespace containers{ namespace meta {
+#include "Epetra_Vector.h"
+#include "Epetra_MultiVector.h"
+
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_arbitrary : std::false_type {};
+struct is_vector_epetra : std::false_type {};
 
 template <typename T>
-struct is_vector_arbitrary<
-  T,
-  ::pressio::mpl::enable_if_t<
-    !containers::meta::is_vector_eigen<T>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and !containers::meta::is_array_pybind<T>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    and !containers::meta::is_vector_kokkos<T>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-    and !containers::meta::is_vector_epetra<T>::value
-    and !containers::meta::is_dense_vector_teuchos<T>::value
-    and !containers::meta::is_vector_tpetra_block<T>::value
-    and !containers::meta::is_vector_tpetra<T>::value
-#endif
-    >
-  > : std::true_type{};
+struct is_vector_epetra<T,
+      typename
+      std::enable_if<
+	std::is_same<T,Epetra_Vector>::value
+	>::type
+      > : std::true_type{};
 
-
-}}}//end namespace pressio::containers::meta
+}}}//end namespace pressio::containers::predicates
+#endif
 #endif

@@ -19,7 +19,7 @@ TEST(ops_matrix_matrix_product, eigenDenseDense){
   //  std::cout << *B.data();
 
   static_assert(
-   containers::meta::is_dense_matrix_wrapper_eigen<myA_t>::value,"");
+   containers::predicates::is_dense_matrix_wrapper_eigen<myA_t>::value,"");
   
 
   containers::Matrix<Eigen::Matrix<double,3,2>> C2;

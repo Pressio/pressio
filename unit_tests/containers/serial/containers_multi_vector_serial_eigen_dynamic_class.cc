@@ -14,7 +14,7 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
   == pressio::containers::details::WrappedMultiVectorIdentifier::Eigen);
 
   ASSERT_TRUE(
-  pressio::containers::meta::is_multi_vector_wrapper_eigen<myMV_t>::value);
+  pressio::containers::predicates::is_multi_vector_wrapper_eigen<myMV_t>::value);
   
   //construct by passing the size 
   myMV_t A(6,3);

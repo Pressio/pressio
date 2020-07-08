@@ -15,8 +15,8 @@ struct RunTest{
 
   using wmv = ::pressio::containers::MultiVector<k2d_d>;
   static_assert( ::pressio::containers::details::traits<wmv>::is_static == 0, "" );
-  static_assert( ::pressio::containers::meta::is_multi_vector_wrapper_kokkos<wmv>::value, "" );
-  static_assert( !::pressio::containers::meta::is_vector_wrapper_kokkos<wmv>::value, "" );
+  static_assert( ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<wmv>::value, "" );
+  static_assert( !::pressio::containers::predicates::is_vector_wrapper_kokkos<wmv>::value, "" );
 
   RunTest(){
     // create host matrix

@@ -24,24 +24,6 @@ TEST(user_defined_model, admissibleExplicitOde){
   // };
 
   using app_t = ::pressio::ode::testing::fakeAppForTraitsForExp;
-  // static_assert(::pressio::mpl::is_detected<
-		// ode::meta::has_scalar_typedef,
-		// app_t>::value, " ");
-
-  // static_assert(containers::meta::is_detected<
-  // 		ode::meta::has_residual_method_callable_with_two_args,
-  // 		app_t, typename fakeapp::state_type,
-  // 		typename fakeapp::state_type>::value, "");
-
-  // static_assert(containers::meta::is_detected<
-  // 		ode::meta::has_residual_method_callable_with_three_args,
-  // 		app_t,
-  // 		typename fakeapp::state_type,
-  // 		typename fakeapp::state_type,
-  // 		double>::value, "");
-
   static_assert(
     ode::concepts::continuous_time_system_explicit_stepping<app_t>::value, "");
-  // static_assert(
-  //   !ode::meta::is_legitimate_model_for_implicit_ode<app_t>::value, "");
 }

@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_dense_vector_wrapper_teuchos<T>::value
+  ::pressio::containers::predicates::is_dense_vector_wrapper_teuchos<T>::value
   >
 set_zero(T & v){
   using value_type = typename ::pressio::containers::details::traits<T>::scalar_t;

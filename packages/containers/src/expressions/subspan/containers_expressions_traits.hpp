@@ -55,7 +55,7 @@ template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_matrix_wrapper_eigen<matrix_type>::value
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value
     >
   >
   : public containers_shared_traits<
@@ -114,7 +114,7 @@ template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::meta::is_dense_matrix_wrapper_kokkos<matrix_type>::value
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_type>::value
     >
   >
   : public containers_shared_traits<

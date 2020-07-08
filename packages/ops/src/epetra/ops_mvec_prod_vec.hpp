@@ -90,7 +90,7 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value
+  containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -99,7 +99,7 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	::pressio::containers::Vector<Epetra_Vector> & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, x_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type>::value,
 		"Types are not scalar compatible");
   static_assert(mpl::is_same<
 		scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
@@ -115,7 +115,7 @@ product(::pressio::nontranspose mode,
 // y = Eigen vector, passed in
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::meta::is_multi_vector_wrapper_epetra<A_type>::value
+  containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -124,7 +124,7 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	::pressio::containers::VectorSharedMemBase<y_type> & y)
 {
-  static_assert(containers::meta::are_scalar_compatible<A_type, y_type>::value,
+  static_assert(containers::predicates::are_scalar_compatible<A_type, y_type>::value,
 		"Types are not scalar compatible");
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;

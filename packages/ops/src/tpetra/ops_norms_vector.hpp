@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<vec_type>::value &&
   std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
 	       typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
   typename ::pressio::containers::details::traits<vec_type>::mag_t
@@ -66,7 +66,7 @@ norm1(const vec_type & a)
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::meta::is_vector_wrapper_tpetra<vec_type>::value &&
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<vec_type>::value &&
   std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
 	       typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
   typename ::pressio::containers::details::traits<vec_type>::mag_t

@@ -65,7 +65,7 @@ template<
 struct admissible_decoder<
   T, apply_map_operand_t, apply_map_result_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ode::meta::has_jacobian_typedef<T>::value and
+    ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     has_get_reference_to_jacobian<T, typename T::jacobian_type>::value and
     has_apply_mapping_two_args<T, apply_map_operand_t, apply_map_result_t>::value
     >

@@ -57,8 +57,8 @@ template <
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
       mpl::not_same<fom_t, pybind11::object>::value and
-      !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-      !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+      !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+      !::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value,
       int > = 0
 #endif
   >
@@ -77,8 +77,8 @@ void queryFomApplyJacobianUnsteady(const fom_t & fomObj,
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   , mpl::enable_if_t<
 //       mpl::not_same<fom_t, pybind11::object>::value and
-//       !::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-//       !::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+//       !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+//       !::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value,
 //       int > = 0
 // #endif
 //   >
@@ -95,8 +95,8 @@ void queryFomApplyJacobianUnsteady(const fom_t & fomObj,
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename state_t, typename operand_t, typename result_t, typename time_t>
 // mpl::enable_if_t<
-//   ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-//   ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value
+//   ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+//   ::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value
 //   >
 // queryFomApplyJacobianUnsteady(const pybind11::object  & fomObj,
 // 			      const state_t	  & yFOM,
@@ -109,8 +109,8 @@ void queryFomApplyJacobianUnsteady(const fom_t & fomObj,
 
 // template <typename state_t, typename operand_t, typename time_t>
 // mpl::enable_if_t<
-//   ::pressio::containers::meta::is_vector_wrapper_pybind<state_t>::value and
-//   ::pressio::containers::meta::is_matrix_wrapper_pybind<operand_t>::value,
+//   ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+//   ::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value,
 //   typename ::pressio::containers::details::traits<state_t>::wrapped_t
 //   >
 // queryFomApplyJacobianUnsteady(const pybind11::object & fomObj,
