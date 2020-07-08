@@ -45,7 +45,7 @@
 // ************************************************************************
 //@HEADER
 */
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+
 #ifndef CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
 #define CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
 
@@ -89,5 +89,4 @@ struct have_matching_execution_space<T1, T2, rest...>
 };
 
 }}} // namespace pressio::containers::predicates
-#endif
 #endif

@@ -65,8 +65,8 @@ public:
   template <
     typename system_t, typename state_t, 
     mpl::enable_if_t<
-      pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-      pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value,
+      pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+      pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
       int
      > = 0
   >
@@ -81,7 +81,7 @@ public:
   const j_t & getJacobian() const{ return J_; }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
 	       ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -89,7 +89,7 @@ public:
   }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
 	       ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -97,7 +97,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -106,7 +106,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {

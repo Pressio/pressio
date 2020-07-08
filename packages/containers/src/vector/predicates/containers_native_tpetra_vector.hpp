@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
 #define CONTAINERS_NATIVE_TPETRA_VECTOR_META_HPP_
 
@@ -73,5 +72,4 @@ struct is_vector_tpetra<T,
       > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

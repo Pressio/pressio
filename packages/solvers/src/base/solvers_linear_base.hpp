@@ -68,7 +68,7 @@ struct LinearBase {
   template <typename CompatibleMatrixT>
   void resetLinearSystem(const CompatibleMatrixT& A)
   {
-    static_assert(solvers::meta::are_matrix_compatible<
+    static_assert(solvers::predicates::are_matrix_compatible<
 		  MatrixT, CompatibleMatrixT>::value,
 		  "Matrix types not compatible");
 

@@ -49,7 +49,7 @@
 #ifndef SOLVERS_META_META_STATIC_CHECKS_HPP
 #define SOLVERS_META_META_STATIC_CHECKS_HPP
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace predicates {
 
 /**
  * @brief Check whether two matrices are compatible.
@@ -151,5 +151,5 @@ struct are_vector_compatible<
 };
 
 
-}}}//end namespace pressio::solvers::meta
+}}}//end namespace pressio::solvers::predicates
 #endif

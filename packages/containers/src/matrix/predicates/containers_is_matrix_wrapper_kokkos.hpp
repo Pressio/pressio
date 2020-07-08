@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef CONTAINERS_IS_MATRIX_WRAPPER_KOKKOS_HPP_
 #define CONTAINERS_IS_MATRIX_WRAPPER_KOKKOS_HPP_
 
@@ -66,5 +65,4 @@ struct is_matrix_wrapper_kokkos<
   : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_IS_DENSE_MATRIX_WRAPPER_TEUCHOS_HPP_
 #define CONTAINERS_IS_DENSE_MATRIX_WRAPPER_TEUCHOS_HPP_
 
@@ -65,5 +64,4 @@ struct is_dense_matrix_wrapper_teuchos<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

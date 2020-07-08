@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_CONTAINER_OPS_TEUCHOS_FILL_HPP_
 #define OPS_CONTAINER_OPS_TEUCHOS_FILL_HPP_
 
@@ -62,5 +61,4 @@ fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

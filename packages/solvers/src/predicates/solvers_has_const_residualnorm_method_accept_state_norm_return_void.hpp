@@ -2,7 +2,7 @@
 #ifndef solvers_has_const_residualnorm_method_accept_state_norm_return_void_hpp_
 #define solvers_has_const_residualnorm_method_accept_state_norm_return_void_hpp_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace predicates {
   
 
 template <
@@ -35,5 +35,5 @@ struct has_const_residualnorm_method_accept_state_norm_return_void<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::solvers::meta
+}}} // namespace pressio::solvers::predicates
 #endif

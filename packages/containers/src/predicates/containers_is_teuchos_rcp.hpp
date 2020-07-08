@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_META_IS_TEUCHOS_RCP_HPP_
 #define CONTAINERS_META_IS_TEUCHOS_RCP_HPP_
 
@@ -72,5 +71,4 @@ struct is_teuchos_rcp<
   > : std::true_type{};
 
 }}} // namespace pressio::containers::predicates
-#endif
 #endif

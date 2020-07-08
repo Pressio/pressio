@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 #define CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 
@@ -101,4 +100,3 @@ struct is_vector_wrapper_pybind<
 
 }}}//end namespace pressio::containers::predicates
 #endif
-#endif // PRESSIO_ENABLE_TPL_PYBIND11

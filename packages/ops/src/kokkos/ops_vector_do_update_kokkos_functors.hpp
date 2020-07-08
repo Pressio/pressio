@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef OPS_CONTAINER_OPS_VECTOR_DO_UPDATE_KOKKOS_FUNCTOR_HPP_
 #define OPS_CONTAINER_OPS_VECTOR_DO_UPDATE_KOKKOS_FUNCTOR_HPP_
 
@@ -137,5 +136,4 @@ struct DoUpdateFourTermsFunctor {
 
 
 }}}//end namespace pressio::ops::impl
-#endif
 #endif

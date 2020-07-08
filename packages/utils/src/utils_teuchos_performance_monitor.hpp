@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
 #ifndef UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
 #define UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
 
@@ -100,5 +99,4 @@ struct TeuchosPerformanceMonitor{
 };
 
 }} // end of namespace pressio::utils
-#endif
 #endif

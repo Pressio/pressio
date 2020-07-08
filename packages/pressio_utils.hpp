@@ -59,7 +59,9 @@
 #include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
 #include "utils/src/utils_set_stream_precision.hpp"
 
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
 #include "utils/src/utils_teuchos_performance_monitor.hpp"
+#endif
 
 #include "utils/src/io/utils_colorize_print.hpp"
 #include "utils/src/io/utils_print_helper.hpp"

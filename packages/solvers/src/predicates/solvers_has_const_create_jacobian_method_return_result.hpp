@@ -2,7 +2,7 @@
 #ifndef solvers_has_create_jacobian_method_return_results_hpp_
 #define solvers_has_create_jacobian_method_return_results_hpp_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace predicates {
 
 template<typename T, typename jac_t, typename enable = void>
 struct has_const_create_jacobian_method_return_result : std::false_type{};
@@ -18,5 +18,5 @@ struct has_const_create_jacobian_method_return_result
    >
  > : std::true_type{};
 
-}}} // namespace pressio::solvers::meta
+}}} // namespace pressio::solvers::predicates
 #endif

@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
 
@@ -90,5 +89,4 @@ struct is_dense_matrix_kokkos<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

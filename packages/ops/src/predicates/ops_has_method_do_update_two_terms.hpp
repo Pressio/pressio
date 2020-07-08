@@ -49,7 +49,7 @@
 #ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_TWO_TERMS_HPP_
 #define OPS_SRC_META_HAS_METHOD_DO_UPDATE_TWO_TERMS_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace ops{ namespace predicates {
 
 /*
   static void do_update(T1 &, scalar_type, const T2 &, scalar_type, const T3 &, scalar_type)
@@ -106,5 +106,5 @@ struct has_method_do_update_two_terms<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ops::meta
+}}} // namespace pressio::ops::predicates
 #endif

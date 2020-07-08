@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EPETRA_HPP_
 #define CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EPETRA_HPP_
 
@@ -66,5 +65,4 @@ struct is_sparse_matrix_wrapper_epetra<
   : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

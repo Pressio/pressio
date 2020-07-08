@@ -45,6 +45,7 @@
 // ************************************************************************
 //@HEADER
 */
+
 #ifndef OPS_SRC_OPS_EIGEN_MAT_PROD_VECTOR_HPP_
 #define OPS_SRC_OPS_EIGEN_MAT_PROD_VECTOR_HPP_
 

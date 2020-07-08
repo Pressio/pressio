@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef OPS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 #define OPS_CONTAINER_OPS_PYBIND11_DEEP_COPY_HPP_
 
@@ -67,5 +66,4 @@ deep_copy(T & dest, const T & src){
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

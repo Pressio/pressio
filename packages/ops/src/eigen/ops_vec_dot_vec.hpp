@@ -45,6 +45,7 @@
 // ************************************************************************
 //@HEADER
 */
+
 #ifndef OPS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
 #define OPS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
 

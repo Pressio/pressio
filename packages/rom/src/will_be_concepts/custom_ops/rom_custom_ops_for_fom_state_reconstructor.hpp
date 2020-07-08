@@ -66,18 +66,18 @@ template <
 struct custom_ops_for_fom_state_reconstructor<
   T, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_method_deep_copy<
+    ::pressio::ops::predicates::has_method_deep_copy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value
     and
-    ::pressio::ops::meta::has_method_set_zero<
+    ::pressio::ops::predicates::has_method_set_zero<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value
     and
-    ::pressio::ops::meta::has_method_axpy<
+    ::pressio::ops::predicates::has_method_axpy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,

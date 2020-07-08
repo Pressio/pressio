@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
 #ifndef UTILS_SET_STREAM_PRECISION_HPP_
 #define UTILS_SET_STREAM_PRECISION_HPP_
 
@@ -60,6 +59,5 @@ void setStreamPrecision(stream_t & ss){
 }
 
 }}} // end of namespace pressio::utils::impl
-// #endif
 #endif
 

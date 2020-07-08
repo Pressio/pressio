@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 #define CONTAINERS_NATIVE_PYBIND11_ARRAY_HPP_
 
@@ -117,5 +116,4 @@ template <typename T>
 using is_fstyle_array_pybind = is_fstyle_array_pybind11<T>;
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

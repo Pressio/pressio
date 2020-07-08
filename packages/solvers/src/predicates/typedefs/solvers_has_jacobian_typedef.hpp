@@ -3,7 +3,7 @@
 #ifndef solvers_has_jacobian_typedef_HPP_
 #define solvers_has_jacobian_typedef_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct has_jacobian_typedef : std::false_type{};

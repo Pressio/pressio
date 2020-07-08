@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_SRC_OPS_TEUCHOS_NORMS_HPP_
 #define OPS_SRC_OPS_TEUCHOS_NORMS_HPP_
 
@@ -79,5 +78,4 @@ norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

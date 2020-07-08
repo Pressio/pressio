@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_CONTAINER_OPS_TPETRA_DEEP_COPY_HPP_
 #define OPS_CONTAINER_OPS_TPETRA_DEEP_COPY_HPP_
 
@@ -64,5 +63,4 @@ deep_copy(T & dest, const T & src){
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef OPS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 #define OPS_SRC_OPS_PYBIND11_VECTOR_DO_UPDATE_HPP_
 
@@ -130,5 +129,4 @@ do_update(T & v, const scalar_t &a,
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

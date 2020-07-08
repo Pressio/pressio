@@ -63,8 +63,12 @@
 #include "containers/src/predicates/typedefs/containers_has_local_ordinal_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_ordinal_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_scalar_typedef.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "containers/src/predicates/containers_native_pybind_array_meta.hpp"
+#endif
 
 //------------------
 // BASE
@@ -81,19 +85,18 @@
 
 // VECTOR
 #include "containers/src/vector/pressio_containers_vector_include.hpp"
-
 // MATRIX
 #include "containers/src/matrix/pressio_containers_matrix_include.hpp"
-
 // MULTI VECTOR
 #include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
-
 // expressions
 #include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
 // others
 #include "containers/src/predicates/containers_is_wrapper.hpp"
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
+#endif
 #include "containers/src/predicates/containers_are_scalar_compatible.hpp"
 
 #include "containers/src/collection/containers_static_collection.hpp"

@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_DENSE_MATRIX_SHAREDMEM_KOKKOS_HPP_
 
@@ -155,5 +154,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif
 #endif

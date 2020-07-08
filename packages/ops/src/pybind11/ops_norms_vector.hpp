@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef OPS_SRC_OPS_PYBIND11_NORMS_HPP_
 #define OPS_SRC_OPS_PYBIND11_NORMS_HPP_
 
@@ -83,5 +82,4 @@ norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

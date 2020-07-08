@@ -66,7 +66,7 @@ template <
 struct custom_ops_for_linear_decoder<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::meta::has_void_method_product_mat_vec<
+    ::pressio::ops::predicates::has_void_method_product_mat_vec<
       T,
       ::pressio::nontranspose,
       typename ::pressio::containers::details::traits<mat_type>::scalar_t,
@@ -74,7 +74,7 @@ struct custom_ops_for_linear_decoder<
       rom_state_type,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
       >::value and
-    ::pressio::ops::meta::has_void_method_product_mat_vec<
+    ::pressio::ops::predicates::has_void_method_product_mat_vec<
       T,
       ::pressio::nontranspose,
       typename ::pressio::containers::details::traits<mat_type>::scalar_t,

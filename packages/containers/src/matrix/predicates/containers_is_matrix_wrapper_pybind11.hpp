@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_axpy.hpp
+// containers_is_matrix_wrapper_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,56 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
-#define OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
+#ifndef CONTAINERS_IS_MATRIX_WRAPPER_PYBIND_HPP_
+#define CONTAINERS_IS_MATRIX_WRAPPER_PYBIND_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace containers{ namespace predicates {
 
-template <
-  typename T, typename x_t, typename y_t, typename a_t,
-  typename = void
-  >
-struct has_method_axpy
-  : std::false_type{};
+template <typename T, typename enable = void>
+struct is_cstyle_matrix_wrapper_pybind : std::false_type {};
 
-template <
-  typename T, typename x_t, typename y_t, typename a_t
-  >
-struct has_method_axpy<
-  T, x_t, y_t, a_t,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval< T const &>().axpy
-       (
-	std::declval< a_t >(),
-	std::declval< x_t const & >(),
-	std::declval< y_t & >()
-	)
-       )
+template <typename T>
+struct is_cstyle_matrix_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_matrix &&
+    details::traits<T>::wrapped_matrix_identifier==
+		details::WrappedMatrixIdentifier::Pybind and
+    is_cstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
       >::value
     >
   > : std::true_type{};
+// -------------------------------------------------------
 
-}}} //pressio::ops::meta
+template <typename T, typename enable = void>
+struct is_fstyle_matrix_wrapper_pybind : std::false_type {};
+
+template <typename T>
+struct is_fstyle_matrix_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_matrix &&
+    details::traits<T>::wrapped_matrix_identifier==
+		details::WrappedMatrixIdentifier::Pybind and
+    is_fstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
+// -------------------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_matrix_wrapper_pybind : std::false_type {};
+
+template <typename T>
+struct is_matrix_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_cstyle_matrix_wrapper_pybind<T>::value or
+    is_fstyle_matrix_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
+
+}}}//end namespace pressio::containers::predicates
 #endif

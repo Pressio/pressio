@@ -2,7 +2,7 @@
 #ifndef solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void_HPP_
 #define solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace predicates {
 
 template <
   typename T,
@@ -40,5 +40,5 @@ struct has_const_residualandjacobian_method_accept_state_result_norm_return_void
     >
   > : std::true_type{};
 
-}}} // namespace pressio::solvers::meta
+}}} // namespace pressio::solvers::predicates
 #endif

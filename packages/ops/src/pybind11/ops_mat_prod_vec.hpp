@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef OPS_SRC_OPS_PYBIND_MAT_PROD_VECTOR_HPP_
 #define OPS_SRC_OPS_PYBIND_MAT_PROD_VECTOR_HPP_
 
@@ -169,5 +168,4 @@ product(::pressio::nontranspose mode,
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

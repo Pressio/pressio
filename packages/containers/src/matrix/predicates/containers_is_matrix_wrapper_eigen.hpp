@@ -62,9 +62,6 @@ struct is_matrix_wrapper_eigen<
        >
   >
   : std::true_type{};
-//------------------------------------------------------------
-
-
 
 }}}//end namespace pressio::containers::predicates
 #endif

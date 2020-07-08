@@ -178,10 +178,10 @@ struct EulerLSPGWithResidualApi
 
   using ops1_t		= myOpsResidualApi<scalar_t, native_dmat_t>;
   using opsGN_t		= myOpsGN<native_dmat_t, scalar_t>;
-  // static_assert(::pressio::solvers::meta::has_all_needed_methods_for_hessian<
+  // static_assert(::pressio::solvers::predicates::has_all_needed_methods_for_hessian<
   // 		opsGN_t, native_dmat_t, hessian_t, scalar_t >::value,
   // 		"opsGN_t does not have all methods for hessian");
-  // static_assert(::pressio::solvers::meta::has_all_needed_methods_for_gradient<
+  // static_assert(::pressio::solvers::predicates::has_all_needed_methods_for_gradient<
   // 		opsGN_t, native_dmat_t, native_state_t, lspg_state_t, scalar_t >::value,
 		// "opsGN_t does not have all methods for gradient");
 

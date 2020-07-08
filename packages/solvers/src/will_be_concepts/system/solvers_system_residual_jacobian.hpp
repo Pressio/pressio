@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_set_zero.hpp
+// solvers_system_meets_residual_jacobian_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,36 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
-#define OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
+#ifndef SOLVERS_SYSTEM_MEETS_RESIDUAL_JACOBIAN_API_HPP_
+#define SOLVERS_SYSTEM_MEETS_RESIDUAL_JACOBIAN_API_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace solvers{ namespace concepts {
 
-template <typename T, typename target_t, typename enable = void>
-struct has_method_set_zero
-  : std::false_type{};
+template<typename T, typename enable = void>
+struct system_residual_jacobian : std::false_type{};
 
-template <typename T, typename target_t>
-struct has_method_set_zero<
-  T, target_t,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-	       std::declval< T const &>().set_zero
-	       (
-		std::declval<target_t &>()
-		)
-	       )
-      >::value
-    >
-  > : std::true_type{};
+template<typename T>
+struct system_residual_jacobian
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::solvers::predicates::has_scalar_typedef<T>::value   and
+   ::pressio::solvers::predicates::has_state_typedef<T>::value    and
+   ::pressio::solvers::predicates::has_residual_typedef<T>::value and
+   ::pressio::solvers::predicates::has_jacobian_typedef<T>::value and
 
-}}} //pressio::ops::meta
+   ::pressio::solvers::predicates::has_const_create_residual_method_return_result<
+      T, typename T::residual_type>::value and
+
+   ::pressio::solvers::predicates::has_const_create_jacobian_method_return_result<
+      T, typename T::jacobian_type>::value and
+
+   ::pressio::solvers::predicates::has_const_residual_method_accept_state_result_norm_return_void<
+      T, typename T::state_type, typename T::residual_type, typename T::scalar_type>::value and
+
+   ::pressio::solvers::predicates::has_const_jacobian_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::jacobian_type>::value 
+   >
+ > : std::true_type{};
+
+}}} // namespace pressio::solvers::concepts
 #endif

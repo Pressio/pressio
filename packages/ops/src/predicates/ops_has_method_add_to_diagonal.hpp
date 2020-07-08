@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_scale.hpp
+// ops_has_method_add_to_diagonal.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,10 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_HAS_METHOD_SCALE_HPP_
-#define OPS_SRC_META_HAS_METHOD_SCALE_HPP_
+#ifndef OPS_SRC_META_META_HAS_METHOD_ADD_TO_DIAGONAL_HPP_
+#define OPS_SRC_META_META_HAS_METHOD_ADD_TO_DIAGONAL_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
   typename T,
@@ -57,20 +57,20 @@ template <
   typename scalar_t,
   typename = void
   >
-struct has_method_scale : std::false_type{};
+struct has_method_add_to_diagonal : std::false_type{};
 
 template <
   typename T,
   typename arg_t,
   typename sc_t
   >
-struct has_method_scale<
+struct has_method_add_to_diagonal<
   T, arg_t, sc_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const &>().scale
+       std::declval<T const &>().add_to_diagonal
        (
 	std::declval< arg_t & >(),
 	std::declval< const sc_t >()
@@ -80,5 +80,5 @@ struct has_method_scale<
     >
   > : std::true_type{};
 
-}}} //pressio::ops::meta
+}}} //pressio::ops::predicates
 #endif

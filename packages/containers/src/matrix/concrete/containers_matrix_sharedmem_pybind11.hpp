@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #ifndef CONTAINERS_MATRIX_CONCRETE_MATRIX_SHAREDMEM_PYBIND11_HPP_
 #define CONTAINERS_MATRIX_CONCRETE_MATRIX_SHAREDMEM_PYBIND11_HPP_
 
@@ -162,5 +161,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif
 #endif

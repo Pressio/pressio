@@ -50,14 +50,14 @@ struct ValidSystemB {
 TEST(solvers_meta, system_admissible_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemA;
-  static_assert(solvers::meta::system_meets_hessian_gradient_api<system_t>::value, "");
-  static_assert(!solvers::meta::system_meets_fused_hessian_gradient_api<system_t>::value, "");
+  static_assert(solvers::concepts::system_hessian_gradient<system_t>::value, "");
+  static_assert(!solvers::concepts::system_fused_hessian_gradient<system_t>::value, "");
 }
 
 
 TEST(solvers_meta, system_admissible_fused_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemB;
-  static_assert(!solvers::meta::system_meets_hessian_gradient_api<system_t>::value, "");
-  static_assert(solvers::meta::system_meets_fused_hessian_gradient_api<system_t>::value, "");
+  static_assert(!solvers::concepts::system_hessian_gradient<system_t>::value, "");
+  static_assert(solvers::concepts::system_fused_hessian_gradient<system_t>::value, "");
 }

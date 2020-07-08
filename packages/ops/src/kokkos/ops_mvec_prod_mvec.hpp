@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef OPS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_MVEC_HPP_
 #define OPS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_MVEC_HPP_
 
@@ -123,5 +122,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

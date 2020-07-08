@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_NATIVE_TRILINOS_MATRIX_META_HPP_
 #define CONTAINERS_NATIVE_TRILINOS_MATRIX_META_HPP_
 
@@ -129,5 +128,4 @@ struct is_dense_matrix_teuchos_rcp<T,
 
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

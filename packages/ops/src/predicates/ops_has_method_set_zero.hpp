@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_add_to_diagonal.hpp
+// ops_has_method_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,29 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_META_HAS_METHOD_ADD_TO_DIAGONAL_HPP_
-#define OPS_SRC_META_META_HAS_METHOD_ADD_TO_DIAGONAL_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
+#define OPS_SRC_META_OPS_HAS_METHOD_SET_ZERO_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace ops{ namespace predicates {
 
-template <
-  typename T,
-  typename arg_t,
-  typename scalar_t,
-  typename = void
-  >
-struct has_method_add_to_diagonal : std::false_type{};
+template <typename T, typename target_t, typename enable = void>
+struct has_method_set_zero
+  : std::false_type{};
 
-template <
-  typename T,
-  typename arg_t,
-  typename sc_t
-  >
-struct has_method_add_to_diagonal<
-  T, arg_t, sc_t,
+template <typename T, typename target_t>
+struct has_method_set_zero<
+  T, target_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval<T const &>().add_to_diagonal
-       (
-	std::declval< arg_t & >(),
-	std::declval< const sc_t >()
-	)
-       )
+      decltype(
+	       std::declval< T const &>().set_zero
+	       (
+		std::declval<target_t &>()
+		)
+	       )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::ops::meta
+}}} //pressio::ops::predicates
 #endif

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_norm2.hpp
+// ops_has_method_do_update_one_term.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,57 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
-#define OPS_SRC_META_OPS_HAS_METHOD_NORM2_HPP_
+#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
+#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace ops{ namespace predicates {
 
-template <
-  typename T, typename arg_t, typename norm_t,
-  typename enable = void>
-struct has_method_norm2
-  : std::false_type{};
+/*
+ * detect if type T has a static method of the form:
+ *
+ * static void do_update(T1 & , scalar_type, const T2 &, scalar_type)
+ */
 
-template <typename T, typename arg_t, typename norm_t>
-struct has_method_norm2<
-  T, arg_t, norm_t,
+template <typename T,
+	  typename scalar_t,
+	  typename T1,
+	  typename T2,
+	  typename = void>
+struct has_method_do_update_one_term : std::false_type{};
+
+template <typename T,
+	  typename sc_t,
+	  typename T1,
+	  typename T2 >
+struct has_method_do_update_one_term<
+  T, sc_t, T1, T2,
   mpl::enable_if_t<
-    std::is_same<
-      decltype(std::declval< T const &>().norm2( std::declval<arg_t const &>() )), norm_t
+    std::is_void<
+      decltype
+      (
+       std::declval<T const &>().do_update
+       (
+	std::declval< T1 & >(),
+	std::declval<const sc_t>(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>()
+	)
+       )
+      >::value
+    and
+    std::is_void<
+      decltype
+      (
+       std::declval<T const &>().do_update
+       (
+	std::declval< T1 & >(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>()
+	)
+       )
       >::value
     >
   > : std::true_type{};
 
-}}} //pressio::ops::meta
+}}} // namespace pressio::ops::predicates
 #endif

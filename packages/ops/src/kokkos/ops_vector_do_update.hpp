@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef OPS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 #define OPS_SRC_OPS_KOKKOS_VECTOR_DO_UPDATE_HPP_
 
@@ -185,5 +184,4 @@ do_update(T & v,
 
 
 }}//end namespace pressio::ops
-#endif
 #endif

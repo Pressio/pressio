@@ -45,6 +45,7 @@
 // ************************************************************************
 //@HEADER
 */
+
 #ifndef OPS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
 #define OPS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
 

@@ -45,6 +45,7 @@
 // ************************************************************************
 //@HEADER
 */
+
 #ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 #define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
 

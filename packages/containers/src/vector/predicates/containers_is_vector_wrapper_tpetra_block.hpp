@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_IS_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
 #define CONTAINERS_IS_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
 
@@ -65,5 +64,4 @@ struct is_vector_wrapper_tpetra_block<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
 #endif

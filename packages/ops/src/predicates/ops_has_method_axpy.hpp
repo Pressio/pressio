@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_do_update_three_terms.hpp
+// ops_has_method_axpy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,37 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
-#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
+#ifndef OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
+#define OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
-
-/*
-static void do_update(T1 &, scalar_type, 
-const T2 &, scalar_type,
-const T3 &, scalar_type,
-const T4 &, scalar_type)
- */
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
-  typename T,
-  typename scalar_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4,
+  typename T, typename x_t, typename y_t, typename a_t,
   typename = void
   >
-struct has_method_do_update_three_terms : std::false_type{};
+struct has_method_axpy
+  : std::false_type{};
 
 template <
-  typename T,
-  typename sc_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4
+  typename T, typename x_t, typename y_t, typename a_t
   >
-struct has_method_do_update_three_terms<
-  T, sc_t, T1, T2, T3, T4,
+struct has_method_axpy<
+  T, x_t, y_t, a_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const &>().do_update
+       std::declval< T const &>().axpy
        (
-	std::declval< T1 & >(),
-	std::declval<const sc_t>(),
-	std::declval<const T2 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T3 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T4 &>(),
-	std::declval<const sc_t>()
+	std::declval< a_t >(),
+	std::declval< x_t const & >(),
+	std::declval< y_t & >()
 	)
        )
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ops::meta
+}}} //pressio::ops::predicates
 #endif

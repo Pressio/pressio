@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef CONTAINERS_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_TPETRA_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_VECTOR_DISTRIBUTED_TPETRA_HPP_
 
@@ -160,5 +159,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif
 #endif

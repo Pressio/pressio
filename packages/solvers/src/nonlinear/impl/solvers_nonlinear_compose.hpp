@@ -78,8 +78,8 @@ template<
 struct composeCorrector<
   GaussNewton,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>,
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
   system_t, state_t, h_t, g_t, lin_solver_t, ud_ops_t
   >
 {
@@ -97,8 +97,8 @@ template<
 struct composeCorrector<
   GaussNewton,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>,
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
   system_t, state_t, h_t, g_t, lin_solver_t
   >
 {
@@ -116,8 +116,8 @@ template<
 struct composeCorrector<
   GaussNewton,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_hessian_gradient_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_hessian_gradient_api<system_t>::value>,
+    pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
+    pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value>,
   system_t, state_t, h_t, g_t, lin_solver_t
   >
 {
@@ -133,8 +133,8 @@ template<
 struct composeCorrector<
   LM,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>,
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
   system_t, state_t, h_t, g_t, lin_solver_t
   >
 {
@@ -150,8 +150,8 @@ template<typename system_t, typename state_t, typename qr_solver_t>
 struct composeCorrector<
   GaussNewtonQR,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>,
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
   system_t, state_t, qr_solver_t
   >
 {
@@ -166,8 +166,8 @@ template<typename system_t, typename state_t, typename lin_solver_t>
 struct composeCorrector<
   NewtonRaphson,
   mpl::enable_if_t<
-    pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-    pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>,
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
   system_t, state_t, lin_solver_t
   >
 {
@@ -209,11 +209,11 @@ struct compose<
 {
   // // GN or LM with neq need a valid linear solver for hess/grad system
   // using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   ::pressio::solvers::meta::is_legitimate_linear_solver_for_least_squares_solver, Args...>;
+  //   ::pressio::solvers::concepts::linear_solver_for_least_squares_solver, Args...>;
   // using linear_solver_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   // static_assert(!std::is_void<linear_solver_t>::value and ic2::value < sizeof... (Args),
   // 		"A valid linear solver type must be passed to GN with normal equations");
-  static_assert(::pressio::solvers::meta::is_legitimate_linear_solver_for_least_squares_solver<linear_solver_t>::value,
+  static_assert(::pressio::solvers::concepts::linear_solver_for_least_squares_solver<linear_solver_t>::value,
   		"A valid linear solver type must be passed to GN with normal equations");
 
   using scalar_t = typename system_t::scalar_type;
@@ -248,7 +248,7 @@ struct compose<
     >, linear_solver_t, ud_ops_t
   >
 {
-  static_assert(::pressio::solvers::meta::is_legitimate_linear_solver_for_least_squares_solver<linear_solver_t>::value,
+  static_assert(::pressio::solvers::concepts::linear_solver_for_least_squares_solver<linear_solver_t>::value,
   		"A valid linear solver type must be passed to GN with normal equations");
 
   // todo: check that ops type is admissible
@@ -280,7 +280,7 @@ struct compose<system_t, GaussNewtonQR, update_t, looper_t, Args...>
 {
   // verify the sequence contains a valid QR solver type
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::solvers::meta::is_legitimate_qr_solver_for_gn_qr, Args...>;
+    ::pressio::solvers::concepts::qr_solver_for_gn_qr, Args...>;
   using qr_solver_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<qr_solver_t>::value and
 		ic2::value < sizeof... (Args),

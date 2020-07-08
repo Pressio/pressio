@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef OPS_SRC_OPS_KOKKOS_NORMS_HPP_
 #define OPS_SRC_OPS_KOKKOS_NORMS_HPP_
 
@@ -80,5 +79,4 @@ auto norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

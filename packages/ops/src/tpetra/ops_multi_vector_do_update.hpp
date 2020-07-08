@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
 #define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
 
@@ -79,5 +78,4 @@ do_update(T & mv, const T & mv1, const scalar_t & b)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

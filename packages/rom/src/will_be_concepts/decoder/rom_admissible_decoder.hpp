@@ -32,8 +32,9 @@ struct has_apply_mapping_two_args<
       (
        std::declval<T const &>().applyMapping
        (
-	std::declval<arg1_t const &>(), std::declval<arg2_t &>()
-	)
+	     std::declval<arg1_t const &>(), 
+       std::declval<arg2_t &>()
+	     )
        )
       >::value
     >
@@ -51,23 +52,23 @@ struct has_apply_mapping_two_args<
 */
 template<
   typename T,
-  typename apply_map_operand_t,
-  typename apply_map_result_t,
+  typename operand_t,
+  typename result_t,
   typename enable = void
   >
 struct admissible_decoder : std::false_type{};
 
 template<
   typename T,
-  typename apply_map_operand_t,
-  typename apply_map_result_t
+  typename operand_t,
+  typename result_t
   >
 struct admissible_decoder<
-  T, apply_map_operand_t, apply_map_result_t,
+  T, operand_t, result_t,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     has_get_reference_to_jacobian<T, typename T::jacobian_type>::value and
-    has_apply_mapping_two_args<T, apply_map_operand_t, apply_map_result_t>::value
+    has_apply_mapping_two_args<T, operand_t, result_t>::value
     >
   > : std::true_type{};
 

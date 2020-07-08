@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_do_update_four_terms.hpp
+// ops_has_nonvoid_method_product_mat_mat.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,63 +46,43 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
-#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_FOUR_TERMS_HPP_
+#ifndef OPS_SRC_META_OPS_HAS_NONVOID_METHOD_PRODUCT_MAT_MAT_HPP_
+#define OPS_SRC_META_OPS_HAS_NONVOID_METHOD_PRODUCT_MAT_MAT_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
-
-/*
-  static void do_update(T1 &, scalar_type,
-			const T2 &, scalar_type,
-			const T3 &, scalar_type,
-			const T4 &, scalar_type,
-			const T5 &, scalar_type)
- */
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
   typename T,
-  typename scalar_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4,
-  typename T5,
-  typename = void
+  typename modeA_t, typename modeB_t,
+  typename scalar_t, typename matA_t, typename matB_t, typename result_t,
+  typename enable = void
   >
-struct has_method_do_update_four_terms : std::false_type{};
+struct has_nonvoid_method_product_mat_mat
+  : std::false_type{};
 
 template <
-  typename T,
-  typename sc_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4,
-  typename T5
+  typename T, typename scalar_t, typename matA_t, typename matB_t, typename result_t
   >
-struct has_method_do_update_four_terms<
-  T, sc_t, T1, T2, T3, T4, T5,
+struct has_nonvoid_method_product_mat_mat<
+  T,
+  ::pressio::transpose, ::pressio::nontranspose, scalar_t, matA_t, matB_t, result_t,
   mpl::enable_if_t<
-    std::is_void<
+    std::is_same<
       decltype
       (
-       std::declval<T const &>().do_update
+       std::declval< T const &>().template product<result_t>
        (
-	std::declval< T1 & >(),
-	std::declval<const sc_t>(),
-	std::declval<const T2 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T3 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T4 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T5 &>(),
-	std::declval<const sc_t>()
+	std::declval< ::pressio::transpose >(),
+	std::declval< ::pressio::nontranspose >(),
+	std::declval< scalar_t>(),
+	std::declval< matA_t const & >(),
+	std::declval< matB_t const & >()
 	)
-       )
+       ),
+      result_t
       >::value
     >
   > : std::true_type{};
 
-}}} // namespace pressio::ops::meta
+}}} //pressio::ops::predicates
 #endif

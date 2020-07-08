@@ -64,8 +64,8 @@ public:
   template <
    typename system_t, typename state_t,
     mpl::enable_if_t<
-      pressio::solvers::meta::system_meets_hessian_gradient_api<system_t>::value or
-      pressio::solvers::meta::system_meets_fused_hessian_gradient_api<system_t>::value,
+      pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
+      pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value,
       int
      > = 0
   >
@@ -88,7 +88,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_hessian_gradient_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -99,7 +99,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_hessian_gradient_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -131,8 +131,8 @@ public:
   template <
     typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
-      (pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-       pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value) and
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
       std::is_void<_ud_ops_t>::value,
       int
      > = 0
@@ -147,8 +147,8 @@ public:
   template <
    typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
-      (pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-       pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value) and
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
       !std::is_void<_ud_ops_t>::value,
       int
      > = 0
@@ -170,7 +170,7 @@ public:
   const g_t & getGradient() const{ return g_; }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
 	       ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -178,7 +178,7 @@ public:
   }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
 	       ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -186,7 +186,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -197,7 +197,7 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys, const state_t & state,
 		   ::pressio::Norm normType, sc_t & residualNorm)
   {
@@ -272,8 +272,8 @@ public:
   template <
    typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
-      (pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-       pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value) and
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
       std::is_void<_ud_ops_t>::value,
       int
      > = 0
@@ -285,8 +285,8 @@ public:
   template <
    typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
-      (pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value or
-       pressio::solvers::meta::system_meets_fused_residual_jacobian_api<system_t>::value) and
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
       !std::is_void<_ud_ops_t>::value,
       int
      > = 0
@@ -307,7 +307,7 @@ public:
 
 public:
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::meta::system_meets_residual_jacobian_api<system_t>::value>
+  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
 	       ::pressio::Norm normType, sc_t & residualNorm)
   {

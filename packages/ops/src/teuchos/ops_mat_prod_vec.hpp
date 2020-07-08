@@ -46,8 +46,6 @@
 //@HEADER
 */
 
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_CONTAINER_OPS_TEUCHOS_MAT_PROD_VECTOR_HPP_
 #define OPS_CONTAINER_OPS_TEUCHOS_MAT_PROD_VECTOR_HPP_
 
@@ -117,5 +115,4 @@ product(::pressio::transpose mode,
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

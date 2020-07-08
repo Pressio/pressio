@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
 #define OPS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
 
@@ -77,5 +76,4 @@ min(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif

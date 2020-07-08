@@ -49,17 +49,17 @@
 #ifndef SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
 #define SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
 
-namespace pressio{ namespace solvers{ namespace meta {
+namespace pressio{ namespace solvers{ namespace concepts {
 
 template <typename T, typename enable = void>
-struct is_legitimate_linear_solver_for_least_squares_solver
+struct linear_solver_for_least_squares_solver
   : std::false_type{};
 
 template <typename T>
-struct is_legitimate_linear_solver_for_least_squares_solver<
+struct linear_solver_for_least_squares_solver<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::solvers::meta::has_matrix_typedef<T>::value and
+    ::pressio::solvers::predicates::has_matrix_typedef<T>::value and
     // the matrix_type is not void
     !std::is_void<typename T::matrix_type>::value and
     ::pressio::mpl::publicly_inherits_from<
@@ -71,5 +71,5 @@ struct is_legitimate_linear_solver_for_least_squares_solver<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::solvers::meta
+}}} // namespace pressio::solvers::concepts
 #endif

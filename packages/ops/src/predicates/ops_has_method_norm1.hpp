@@ -49,7 +49,7 @@
 #ifndef OPS_SRC_META_OPS_HAS_METHOD_NORM1_HPP_
 #define OPS_SRC_META_OPS_HAS_METHOD_NORM1_HPP_
 
-namespace pressio{ namespace ops{ namespace meta {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
   typename T, typename arg_t, typename norm_t,
@@ -67,5 +67,5 @@ struct has_method_norm1<
     >
   > : std::true_type{};
 
-}}} //pressio::ops::meta
+}}} //pressio::ops::predicates
 #endif

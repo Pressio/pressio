@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
 #define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
 
@@ -231,5 +230,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif
 #endif
