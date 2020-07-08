@@ -74,117 +74,19 @@
 #include "containers/src/base/containers_container_distributed_base.hpp"
 #include "containers/src/base/containers_container_base.hpp"
 
-//------------------
 // VECTOR
-//------------------
-#include "containers/src/vector/meta/containers_native_eigen_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_epetra_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_kokkos_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_teuchos_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_tpetra_block_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_tpetra_vector_meta.hpp"
-#include "containers/src/vector/meta/containers_native_arbitrary_vector_meta.hpp"
+#include "containers/src/vector/pressio_containers_vector_include.hpp"
 
-#include "containers/src/vector/meta/containers_is_dense_vector_wrapper_teuchos.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_arbitrary.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_pybind.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_eigen.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_epetra.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_kokkos.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_tpetra_block.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper_tpetra.hpp"
-#include "containers/src/vector/meta/containers_is_vector_wrapper.hpp"
-
-#include "containers/src/vector/containers_vector_traits.hpp"
-
-#include "containers/src/vector/concrete/containers_vector_arbitrary.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_pybind11.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_epetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra_block.hpp"
-#include "containers/src/vector/concrete/containers_vector_distributed_tpetra.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_eigen_static.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_kokkos.hpp"
-#include "containers/src/vector/concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
-
-//------------------
 // MATRIX
-//------------------
-#include "containers/src/matrix/meta/containers_native_eigen_matrix_meta.hpp"
-#include "containers/src/matrix/meta/containers_native_kokkos_matrix_meta.hpp"
-#include "containers/src/matrix/meta/containers_native_trilinos_matrix_meta.hpp"
-#include "containers/src/matrix/meta/containers_native_arbitrary_matrix_meta.hpp"
+#include "containers/src/matrix/pressio_containers_matrix_include.hpp"
 
-#include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_eigen.hpp"
-#include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_epetra.hpp"
-#include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_kokkos.hpp"
-#include "containers/src/matrix/meta/containers_is_dense_matrix_wrapper_teuchos.hpp"
-#include "containers/src/matrix/meta/containers_is_sparse_matrix_wrapper_eigen.hpp"
-#include "containers/src/matrix/meta/containers_is_sparse_matrix_wrapper_epetra.hpp"
-#include "containers/src/matrix/meta/containers_is_sparse_matrix_wrapper_kokkos.hpp"
-#include "containers/src/matrix/meta/containers_is_sparse_matrix_wrapper_tpetra.hpp"
-#include "containers/src/matrix/meta/containers_is_matrix_wrapper_arbitrary.hpp"
-#include "containers/src/matrix/meta/containers_is_matrix_wrapper_eigen.hpp"
-#include "containers/src/matrix/meta/containers_is_matrix_wrapper_kokkos.hpp"
-#include "containers/src/matrix/meta/containers_is_matrix_wrapper_pybind.hpp"
-#include "containers/src/matrix/meta/containers_is_matrix_wrapper.hpp"
-
-#include "containers/src/matrix/containers_matrix_traits.hpp"
-
-#include "containers/src/matrix/concrete/containers_matrix_arbitrary.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sharedmem_pybind11.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_distributed_epetra.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
-#include "containers/src/matrix/concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
-
-
-//------------------
 // MULTI VECTOR
-//------------------
-#include "containers/src/multi_vector/meta/containers_native_eigen_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/meta/containers_native_epetra_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/meta/containers_native_kokkos_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/meta/containers_native_tpetra_block_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/meta/containers_native_tpetra_multi_vector_meta.hpp"
-#include "containers/src/multi_vector/meta/containers_native_arbitrary_multi_vector_meta.hpp"
+#include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
 
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_tpetra_block.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_kokkos.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_epetra.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_eigen.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper_arbitrary.hpp"
-#include "containers/src/multi_vector/meta/containers_is_multi_vector_wrapper.hpp"
-
-#include "containers/src/multi_vector/containers_multi_vector_traits.hpp"
-
-#include "containers/src/multi_vector/concrete/containers_multi_vector_arbitrary.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_epetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra_block.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_distributed_tpetra.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-#include "containers/src/multi_vector/concrete/containers_multi_vector_sharedmem_kokkos.hpp"
-
-
-//------------------
 // expressions
-//------------------
-#include "containers/src/expressions/span/containers_vector_span_expression.hpp"
-#include "containers/src/expressions/span/containers_expressions_traits.hpp"
-#include "containers/src/expressions/span/containers_span.hpp"
+#include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
-#include "containers/src/expressions/subspan/containers_matrix_subspan_expression.hpp"
-#include "containers/src/expressions/subspan/containers_expressions_traits.hpp"
-#include "containers/src/expressions/subspan/containers_subspan.hpp"
-
-#include "containers/src/meta/generic/containers_is_expression.hpp"
-
-//------------------
 // others
-//------------------
 #include "containers/src/meta/generic/containers_is_wrapper.hpp"
 #include "containers/src/meta/containers_meta_compatibility.hpp"
 #include "containers/src/collection/containers_static_collection.hpp"
