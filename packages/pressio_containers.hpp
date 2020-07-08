@@ -57,9 +57,14 @@
 #include "containers/src/containers_wrapped_types_enum.hpp"
 #include "containers/src/containers_shared_traits.hpp"
 
-#include "containers/src/meta/containers_meta_type_aliases_detection.hpp"
-#include "containers/src/meta/generic/containers_is_teuchos_rcp.hpp"
-#include "containers/src/meta/generic/containers_native_pybind_array_meta.hpp"
+#include "containers/src/predicates/typedefs/containers_has_communicator_typedef.hpp"
+#include "containers/src/predicates/typedefs/containers_has_data_map_typedef.hpp"
+#include "containers/src/predicates/typedefs/containers_has_global_ordinal_typedef.hpp"
+#include "containers/src/predicates/typedefs/containers_has_local_ordinal_typedef.hpp"
+#include "containers/src/predicates/typedefs/containers_has_ordinal_typedef.hpp"
+#include "containers/src/predicates/typedefs/containers_has_scalar_typedef.hpp"
+#include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
+#include "containers/src/predicates/containers_native_pybind_array_meta.hpp"
 
 //------------------
 // BASE
@@ -87,8 +92,10 @@
 #include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
 // others
-#include "containers/src/meta/generic/containers_is_wrapper.hpp"
-#include "containers/src/meta/containers_meta_compatibility.hpp"
+#include "containers/src/predicates/containers_is_wrapper.hpp"
+#include "containers/src/predicates/containers_have_matching_exe_space.hpp"
+#include "containers/src/predicates/containers_are_scalar_compatible.hpp"
+
 #include "containers/src/collection/containers_static_collection.hpp"
 
 #endif
