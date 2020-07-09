@@ -49,7 +49,7 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace concepts {
 
 template<
   typename T,
@@ -66,10 +66,10 @@ template <
 struct custom_ops_for_unsteady_lspg_velocity_api<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::meta::custom_ops_for_fom_state_reconstructor<
+    ::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
       T, fom_state_type>::value
     and
-    ::pressio::rom::meta::custom_ops_for_linear_decoder<
+    ::pressio::rom::concepts::custom_ops_for_linear_decoder<
       T, mat_type, rom_state_type, fom_state_type>::value
     >
   > : std::true_type{};

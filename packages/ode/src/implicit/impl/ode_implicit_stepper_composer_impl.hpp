@@ -192,13 +192,8 @@ struct Composer<
   static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
 		"state, residual and jacobian are not scalar compatible ");
 
-  using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
-  using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
-
   using type = StepperBDF2<scalar_t, state_type, residual_type, jacobian_type,
-			   system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
+			   system_type, aux_stepper_t, residual_policy_type, jacobian_policy_type>;
 };
 
 
@@ -207,32 +202,14 @@ struct Composer<
 /// composer Arbitrary stepper
 ////////////////////////////////////////
 
-template<typename state_t, typename ...Args>
-struct ArbStepperOptionals;
-
-// if we fall here, no ud_ops and standard policies
-template<typename state_t, typename residual_t, typename jacobian_t, typename system_t, typename scalar_t>
-struct ArbStepperOptionals<
-  state_t, residual_t, jacobian_t, system_t, scalar_t
->
-{
-  using residual_policy_type = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_t, system_t, residual_t>;
-  using jacobian_policy_type = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_t, system_t, jacobian_t>;
-  using ud_ops_t = void;
-};
-
 // Composer< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
-// Composer< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
 template<
   typename state_type,
   typename residual_type,
   typename jacobian_type,
   typename system_type,
   typename order_setter_t,
-  typename tot_n_setter_t,
-  typename ...Args
+  typename tot_n_setter_t
   >
 struct Composer<
   ::pressio::ode::implicitmethods::Arbitrary,
@@ -244,19 +221,62 @@ struct Composer<
     ::pressio::ode::predicates::IsStepperOrderSetter<order_setter_t>::value and
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
   >,
-  state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t, Args...>
+  state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t>
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
   static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
     residual_type, jacobian_type>::value,
     "state, residual and jacobian are not scalar compatible ");
 
-  using prop = ArbStepperOptionals<state_type, residual_type, jacobian_type, system_type, scalar_t, Args...>;
-  using residual_policy_t = typename prop::residual_policy_type;
-  using jacobian_policy_t = typename prop::jacobian_policy_type;
+  using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+    state_type, system_type, residual_type>;
+  using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+    state_type, system_type, jacobian_type>;
 
   using type = StepperArbitrary<scalar_t, state_type, residual_type, jacobian_type,
         system_type, order_setter_t, tot_n_setter_t, residual_policy_t, jacobian_policy_t>;
+};
+
+// Composer< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename system_type,
+  typename order_setter_t,
+  typename tot_n_setter_t,
+  typename residual_policy_type,
+  typename jacobian_policy_type  
+>
+struct Composer<
+  ::pressio::ode::implicitmethods::Arbitrary,
+  mpl::enable_if_t<
+    ::pressio::ode::concepts::implicit_state<state_type>::value and
+    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
+    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::predicates::IsStepperOrderSetter<order_setter_t>::value and
+    ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
+    and
+    ::pressio::ode::concepts::implicit_residual_policy<
+      residual_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1, 
+      state_type, residual_type, system_type,
+      typename ::pressio::containers::details::traits<state_type>::scalar_t>::value 
+    and
+    ::pressio::ode::concepts::implicit_jacobian_policy<
+      jacobian_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1, 
+      state_type, jacobian_type, system_type,
+      typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
+  >,
+  state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t, 
+  residual_policy_type, jacobian_policy_type>
+{
+  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
+    residual_type, jacobian_type>::value,
+    "state, residual and jacobian are not scalar compatible ");
+
+  using type = StepperArbitrary<scalar_t, state_type, residual_type, jacobian_type,
+        system_type, order_setter_t, tot_n_setter_t, residual_policy_type, jacobian_policy_type>;
 };
 
 

@@ -49,7 +49,6 @@
 #ifndef PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 #define PRESSIO_APPS_STEADY_LIN_ADV_DIFF_2D_EPETRA_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Epetra_MpiComm.h"
 #include <Epetra_config.h>
 #include "Epetra_Map.h"
@@ -382,5 +381,4 @@ protected:
 };
 
 }} //namespace pressio::apps
-#endif
 #endif

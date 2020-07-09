@@ -49,7 +49,7 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace concepts {
 
 template<
   typename T,
@@ -85,5 +85,5 @@ struct custom_ops_for_linear_decoder<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} // namespace pressio::rom::concepts
 #endif

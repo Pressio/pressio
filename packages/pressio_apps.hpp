@@ -54,11 +54,10 @@
 #include "pressio_containers.hpp"
 #include "pressio_ops.hpp"
 
-#include "apps/src/apps_ConfigDefs.hpp"
-
 // burgers1d
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_eigen_residual_api.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
@@ -66,17 +65,23 @@
 #include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+#endif
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_residual_api_adapter.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_velocity_api_adapter.hpp"
 
+#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+
 // steady 2d adv-diff
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
+#endif
 
 #endif

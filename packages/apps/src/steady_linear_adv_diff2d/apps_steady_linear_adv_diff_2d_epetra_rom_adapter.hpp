@@ -51,7 +51,6 @@
 
 #include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 namespace pressio{ namespace apps{
 
 class SteadyLinAdvDiff2dEpetraRomAdapter
@@ -153,5 +152,4 @@ private:
 };
 
 }} //namespace pressio::apps
-#endif
 #endif

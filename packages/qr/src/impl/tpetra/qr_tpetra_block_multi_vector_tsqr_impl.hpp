@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#if defined PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef QR_TPETRA_BLOCK_MULTI_VECTOR_TSQR_IMPL_HPP_
 #define QR_TPETRA_BLOCK_MULTI_VECTOR_TSQR_IMPL_HPP_
 
@@ -163,5 +162,4 @@ private:
 };
 
 }}} // end namespace pressio::qr::impl
-#endif
 #endif

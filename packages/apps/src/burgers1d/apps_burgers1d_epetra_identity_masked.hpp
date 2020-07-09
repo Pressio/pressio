@@ -51,7 +51,6 @@
 
 #include "apps_burgers1d_epetra.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Epetra_Import.h>
 
 namespace pressio{ namespace apps{
@@ -120,5 +119,4 @@ private:
 };
 
 }} //namespace pressio::apps
-#endif
 #endif

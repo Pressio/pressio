@@ -33,6 +33,6 @@ public:
 TEST(rom_lspg_meta, validVeloAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::admissible_system_velocity_api_unsteady_lspg<app_t>::value,"");
-  static_assert( !rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::concepts::continuous_time_system<app_t>::value,"");
+  static_assert( !rom::concepts::discrete_time_system<app_t>::value,"");
 }

@@ -49,7 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_RESIDUAL_API_ADAPTER_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_RESIDUAL_API_ADAPTER_HPP_
 
-#include "../../apps_ConfigDefs.hpp"
 #include "apps_burgers1d_arb_ds.hpp"
 
 namespace pressio{ namespace apps{

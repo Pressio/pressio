@@ -59,6 +59,8 @@
 
 #include "optimizers/src/optimizers_enums.hpp"
 #include "optimizers/src/optimizers_params.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "optimizers/src/optimizers_unconstrained.hpp"
+#endif
 
 #endif

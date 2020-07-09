@@ -49,7 +49,7 @@
 #ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 #define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace concepts {
 
 template<
   typename T,
@@ -86,5 +86,5 @@ struct custom_ops_for_fom_state_reconstructor<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} // namespace pressio::rom::concepts
 #endif

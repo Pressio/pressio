@@ -64,7 +64,7 @@ public:
   using scalar_type	= double;
   using state_type	= eigVec;
   using velocity_type	= eigVec;
-  using residual_type	= eigVec;
+  using discrete_time_residual_type	= eigVec;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using dense_matrix_type = Eigen::MatrixXd;
 
@@ -85,15 +85,15 @@ public:
     return U0_;
   };
 
-  residual_type createTimeDiscreteResidual() const
+  discrete_time_residual_type createDiscreteTimeResidual() const
   {
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
-    residual_type R(Ncell_);
+    discrete_time_residual_type R(Ncell_);
     R.setConstant(0);
     return R;
   }
 
-  dense_matrix_type createApplyTimeDiscreteJacobianResult(const dense_matrix_type & B) const
+  dense_matrix_type createApplyDiscreteTimeJacobianResult(const dense_matrix_type & B) const
   {
     std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
     dense_matrix_type A(Ncell_, B.cols());
@@ -102,35 +102,35 @@ public:
   }
 
   template <typename step_t, typename ... Args>
-  void timeDiscreteResidual(const step_t & step,
+  void discreteTimeResidual(const step_t & step,
   			    const scalar_type & time,
   			    const scalar_type & dt,
-  			    residual_type & R,
+  			    discrete_time_residual_type & R,
             pressio::Norm normKind,
             scalar_type & normR,
   			    Args && ... states) const
   {
-    this->timeDiscreteResidualImpl(step, time, dt, R,normKind, normR, std::forward<Args>(states)... );
+    this->discreteTimeResidualImpl(step, time, dt, R,normKind, normR, std::forward<Args>(states)... );
   }
 
   template <typename step_t, typename ... Args>
-  void applyTimeDiscreteJacobian(const step_t & step,
+  void applyDiscreteTimeJacobian(const step_t & step,
   				 const scalar_type & time,
   				 const scalar_type & dt,
   				 const dense_matrix_type & B,
   				 dense_matrix_type & A,
   				 Args && ... states) const
   {
-    this->applyTimeDiscreteJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
+    this->applyDiscreteTimeJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
   }
 
 private:
   // case when we only have a single auxiliary state
   template <typename step_t>
-  void timeDiscreteResidualImpl(const step_t & step,
+  void discreteTimeResidualImpl(const step_t & step,
 				const scalar_type & time,
 				const scalar_type & dt,
-				residual_type & R,
+				discrete_time_residual_type & R,
         pressio::Norm normKind,
         scalar_type & normR,
 				const state_type & yn,
@@ -142,10 +142,10 @@ private:
 
   // case when we two auxiliary states (BDF2)
   template <typename step_t>
-  void timeDiscreteResidualImpl(const step_t & step,
+  void discreteTimeResidualImpl(const step_t & step,
 				const scalar_type & time,
 				const scalar_type & dt,
-				residual_type & R,
+				discrete_time_residual_type & R,
         pressio::Norm normKind,
         scalar_type & normR,
 				const state_type & yn,
@@ -159,7 +159,7 @@ private:
 
   // case when we only have a single auxiliary state
   template <typename step_t, typename state_t>
-  void applyTimeDiscreteJacobianImpl(const step_t & step,
+  void applyDiscreteTimeJacobianImpl(const step_t & step,
 				     const scalar_type & time,
 				     const scalar_type & dt,
 				     const dense_matrix_type & B,
@@ -182,7 +182,7 @@ private:
 
   // case when we have two auxiliar states (BDF2)
   template <typename step_t, typename state_t>
-  void applyTimeDiscreteJacobianImpl(const step_t & step,
+  void applyDiscreteTimeJacobianImpl(const step_t & step,
 				     const scalar_type & time,
 				     const scalar_type & dt,
 				     const dense_matrix_type & B,

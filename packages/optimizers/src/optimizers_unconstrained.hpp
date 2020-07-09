@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef OPTIMIZERS_UNCONSTRAINED_HPP_
 #define OPTIMIZERS_UNCONSTRAINED_HPP_
 
@@ -123,5 +122,4 @@ using Unconstrained = impl::UnconstrainedRol<Args...>;
 
 
 }}//end namespace pressio::optimizers
-#endif
 #endif

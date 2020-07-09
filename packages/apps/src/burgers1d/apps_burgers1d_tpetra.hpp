@@ -51,7 +51,6 @@
 
 #include <numeric>
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Tpetra_CrsMatrix.hpp>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
@@ -324,5 +323,4 @@ protected:
 };//end class
 
 }} //namespace pressio::apps
-#endif
 #endif

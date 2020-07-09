@@ -49,7 +49,7 @@
 #ifndef ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 #define ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace predicates {
 
 template <typename T, typename enable = void>
 struct has_dense_matrix_typedef : std::false_type{};
@@ -64,5 +64,5 @@ struct has_dense_matrix_typedef<
     >
   > : std::true_type{};
 
-}}}//end namespace pressio::rom::meta
+}}}//end namespace pressio::rom::predicates
 #endif

@@ -60,6 +60,8 @@
 
 #include "svd/src/svd_solver_traits.hpp"
 #include "svd/src/svd_solver_generic_base.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "svd/src/svd_multi_vector_epetra.hpp"
+#endif
 
 #endif

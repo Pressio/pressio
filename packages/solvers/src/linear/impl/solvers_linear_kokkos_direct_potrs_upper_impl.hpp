@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_HPP_
 #define SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_HPP_
 
@@ -147,5 +146,4 @@ private:
 };
 
 }}}} // end namespace pressio::solvers::linear::impl
-#endif
 #endif

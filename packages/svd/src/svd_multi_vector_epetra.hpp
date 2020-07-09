@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef SVD_MULTI_VECTOR_EPETRA_HPP_
 #define SVD_MULTI_VECTOR_EPETRA_HPP_
 
@@ -158,5 +157,4 @@ private:
 
 }//end namespace svd
 }//end namespace pressio
-#endif
 #endif

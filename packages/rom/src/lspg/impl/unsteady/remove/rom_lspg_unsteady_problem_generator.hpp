@@ -1,0 +1,147 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+// rom_lspg_unsteady_problem_generator.hpp
+//                     		  Pressio
+//                             Copyright 2019
+//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
+
+#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_HPP_
+
+#include "./impl_velocity_api/rom_lspg_unsteady_problem_generator_velocity_api.hpp"
+#include "./impl_residual_api/rom_lspg_unsteady_problem_generator_residual_api.hpp"
+
+namespace pressio{ namespace rom{ namespace lspg{ namespace unsteady{
+
+namespace impl{
+
+template<
+  template <class, class, class, class ...> class lspg_t,
+  bool isPython,
+  typename stepper_tag,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
+struct ProblemHelper{
+  using type = void;
+};
+
+template<
+  template <class, class, class, class ...> class lspg_t,
+  typename stepper_tag,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
+  struct ProblemHelper<lspg_t, false, stepper_tag, fom_type, lspg_state_t, Args...>
+{
+  using type =
+    typename std::conditional<
+    // if meets velocity API
+    ::pressio::rom::concepts::continuous_time_system<fom_type>::value,
+    // then set the proper type
+    impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>,
+    // else
+    void
+    // typename std::conditional<
+    //   //check if meets residual API
+    //   ::pressio::rom::meta::model_meets_residual_api_for_unsteady_lspg<fom_type>::value,
+    //   impl::ProblemGeneratorResidualApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>,
+    //   //otherwise set void
+    //   void
+    //   >::type
+    >::type;
+
+  static_assert( !std::is_void<type>::value,
+		 "The system type you are using does have a valid api. \
+     I cannot instantiate a valid LSPGUnsteadyProblem. \
+     Verify the API of your system class.");
+};
+
+// template<
+//   template <class, class, class, class ...> class lspg_t,
+//   typename stepper_tag,
+//   typename fom_type,
+//   typename lspg_state_t,
+//   typename ...Args
+//   >
+//   struct ProblemHelper<lspg_t, true, stepper_tag, fom_type, lspg_state_t, Args...>
+// {
+//   using type = impl::ProblemGeneratorVelocityApi<lspg_t, stepper_tag, fom_type, lspg_state_t, Args...>;
+// };
+
+}// end namespace pressio::rom::lspg::unsteady::impl
+
+
+template <
+  template <class, class, class, class ...> class lspg_type,
+  class stepper_tag,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
+using Problem =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  typename impl::ProblemHelper<
+  lspg_type, mpl::is_same<fom_type, pybind11::object>::value, stepper_tag, fom_type, lspg_state_t, Args...>::type;
+#else
+  typename impl::ProblemHelper<
+  lspg_type, false, stepper_tag, fom_type, lspg_state_t, Args...>::type;
+#endif
+
+}}//end namespace pressio::rom::lspg::unsteady
+
+/*--- unsteady LSPG --- */
+template <
+  template <class, class, class, class ...> class lspg_type,
+  class stepper_tag,
+  typename fom_type,
+  typename lspg_state_t,
+  typename ...Args
+  >
+using LSPGUnsteadyProblem = ::pressio::rom::lspg::unsteady::Problem<lspg_type, stepper_tag, fom_type, lspg_state_t, Args...>;
+
+}}//end namespace pressio::rom
+#endif

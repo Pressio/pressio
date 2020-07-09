@@ -100,7 +100,7 @@ must be a floating point type");
 represents the FOM state and must be (for now) a pressio vector wrapper.");
 
   // detect for valid ops
-  static_assert(::pressio::rom::meta::custom_ops_for_fom_state_reconstructor<
+  static_assert(::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
 		ops_t, fom_state_type >::value,
 		"You are tring to create a FomStateReconstructor with custom ops. \
 The template arg passed representing the custom ops \

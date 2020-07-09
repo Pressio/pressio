@@ -11,15 +11,15 @@ struct ValidApp
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int32_t>;
-  using time_discrete_residual_type = residual_type;
+  using discrete_time_residual_type = residual_type;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
   template <typename step_t, typename ... Args>
-  void timeDiscreteResidual(const step_t & step,
+  void discreteTimeResidual(const step_t & step,
   			    const scalar_type & time,
   			    const scalar_type & dt,
-  			    residual_type & R,
+  			    discrete_time_residual_type & R,
             pressio::Norm normKind,
             scalar_type & normR,
   			    Args && ... states) const
@@ -28,7 +28,7 @@ public:
   }
 
   template <typename step_t, typename ... Args>
-  void applyTimeDiscreteJacobian(const step_t & step,
+  void applyDiscreteTimeJacobian(const step_t & step,
   				 const scalar_type & time,
   				 const scalar_type & dt,
   				 const dense_matrix_type & B,
@@ -38,13 +38,13 @@ public:
     A.setConstant(2);
   }
 
-  residual_type createTimeDiscreteResidual() const
+  discrete_time_residual_type createDiscreteTimeResidual() const
   {
-    residual_type R(numDof_);
+    discrete_time_residual_type R(numDof_);
     return R;
   }
 
-  dense_matrix_type createApplyTimeDiscreteJacobianResult(const dense_matrix_type & B) const
+  dense_matrix_type createApplyDiscreteTimeJacobianResult(const dense_matrix_type & B) const
   {
     dense_matrix_type A(numDof_, 3);
     return A;
@@ -55,8 +55,8 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
 {
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::meta::admissible_system_time_discrete_residual_api_unsteady_lspg<app_t>::value,"");
-  static_assert( !rom::meta::admissible_system_velocity_api_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::concepts::discrete_time_system<app_t>::value,"");
+  static_assert( !rom::concepts::continuous_time_system<app_t>::value,"");
 
   using scalar_t	= typename app_t::scalar_type;
   using native_state_t  = typename app_t::state_type;

@@ -49,7 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
 
-#include "../../apps_ConfigDefs.hpp"
 #include "apps_burgers1d_arb_ds_custom_vector.hpp"
 #include "apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include <iostream>

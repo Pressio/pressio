@@ -2,7 +2,7 @@
 #ifndef rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result_HPP_
 #define rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace predicates {
   
 template <
   typename T,

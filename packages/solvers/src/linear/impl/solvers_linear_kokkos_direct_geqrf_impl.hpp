@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #ifndef SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
 #define SOLVERS_LINEAR_KOKKOS_DIRECT_GEQRF_HPP
 
@@ -218,5 +217,4 @@ private:
 };
 
 }}}} // end namespace pressio::solvers::linear::impl
-#endif
 #endif

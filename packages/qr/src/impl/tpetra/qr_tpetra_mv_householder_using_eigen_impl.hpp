@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 #define QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
@@ -161,5 +160,4 @@ private:
 };//end class
 
 }}} // end namespace pressio::qr::impl
-#endif
 #endif

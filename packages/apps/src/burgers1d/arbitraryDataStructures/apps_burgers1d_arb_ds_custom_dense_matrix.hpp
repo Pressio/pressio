@@ -49,8 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_CUSTOM_DENSE_MATRIX_HPP_
 #define PRESSIOAPPS_BURGERS1D_ARB_DS_CUSTOM_CUSTOM_DENSE_MATRIX_HPP_
 
-#include "../../apps_ConfigDefs.hpp"
-
 namespace pressio{ namespace apps{ namespace arbds{
 
 template <typename scalar_t>

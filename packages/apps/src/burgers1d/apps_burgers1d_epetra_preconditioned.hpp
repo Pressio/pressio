@@ -49,7 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_EPETRA_PRECONDITIONED_HPP_
 #define PRESSIOAPPS_BURGERS1D_EPETRA_PRECONDITIONED_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "apps_burgers1d_epetra.hpp"
 
 namespace pressio{ namespace apps{
@@ -88,5 +87,4 @@ private:
 };
 
 }} //namespace pressio::apps
-#endif
 #endif

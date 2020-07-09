@@ -49,9 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
 #define PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
 
-// this has to be here because PRESSIO_ENABLE_TPL_TRILINOS is seen after we include configDefs
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
 #include "Epetra_IntVector.h"
@@ -269,5 +266,4 @@ protected:
 
 }} //namespace pressio::apps
 
-#endif
 #endif

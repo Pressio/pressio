@@ -73,13 +73,14 @@
 
 #include "qr/src/impl/eigen/qr_eigen_dense_out_of_place_impl.hpp"
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "qr/src/impl/epetra/qr_epetra_multi_vector_tsqr_impl.hpp"
 #include "qr/src/impl/epetra/qr_epetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/src/impl/epetra/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-
 #include "qr/src/impl/tpetra/qr_tpetra_multi_vector_tsqr_impl.hpp"
 #include "qr/src/impl/tpetra/qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp"
 #include "qr/src/impl/tpetra/qr_tpetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/src/impl/tpetra/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
+#endif
 
 #endif

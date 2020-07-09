@@ -49,9 +49,6 @@
 #ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 #define PRESSIOAPPS_BURGERS1D_KOKKOS_HPP_
 
-// this has to be here because it is seen after we include configDefs
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-
 #include <Kokkos_Core.hpp>
 #include <KokkosSparse_CrsMatrix.hpp>
 #include "apps_burgers1d_kokkos_functors.hpp"
@@ -282,5 +279,4 @@ private:
 };//end class
 
 }} //namespace pressio::apps
-#endif
 #endif

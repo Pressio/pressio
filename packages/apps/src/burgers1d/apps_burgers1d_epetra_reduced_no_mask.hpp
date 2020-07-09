@@ -50,8 +50,6 @@
 #define PRESSIOAPPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
 
 #include "apps_burgers1d_epetra.hpp"
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include <Epetra_Import.h>
 
 namespace pressio{ namespace apps{
@@ -142,5 +140,4 @@ private:
 };
 
 }} //namespace pressio::apps
-#endif
 #endif

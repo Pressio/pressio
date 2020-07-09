@@ -71,7 +71,6 @@ template<typename T, typename ... args>
 using implicit_bdf2_residual_policy =
   implicit_residual_policy<
   T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
-//------------------------------------------------------------------
 
 }}} // namespace pressio::ode::concepts
 #endif

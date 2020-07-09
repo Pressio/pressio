@@ -46,7 +46,6 @@
 //@HEADER
 */
 
-#if defined PRESSIO_ENABLE_TPL_TRILINOS
 #ifndef QR_EPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
 #define QR_EPETRA_MV_MODIFIED_GRAM_SCHMIDT_IMPL_HPP_
 
@@ -141,5 +140,4 @@ private:
 };
 
 }}} // end namespace pressio::qr::impl
-#endif
 #endif

@@ -2,7 +2,7 @@
 #ifndef rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void_HPP_
 #define rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void_HPP_
 
-namespace pressio{ namespace rom{ namespace meta {
+namespace pressio{ namespace rom{ namespace predicates {
 
 template <
   typename T,

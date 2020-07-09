@@ -61,51 +61,56 @@
 
 #include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
+#include "rom/src/predicates/typedefs/rom_has_dense_matrix_typedef.hpp"
 
-//----------------------
-// fom-querying functions
-//----------------------
-#include "rom/src/fom_query/rom_query_fom_velocity_unsteady.hpp"
-#include "rom/src/fom_query/rom_query_fom_apply_jacobian_unsteady.hpp"
-// #include "rom/src/fom_query/rom_query_fom_velocity_steady.hpp"
-// #include "rom/src/fom_query/rom_query_fom_apply_jacobian_steady.hpp"
-// #include "rom/src/fom_query/rom_query_fom_apply_time_discrete_jacobian.hpp"
-// #include "rom/src/fom_query/rom_query_fom_time_discrete_residual.hpp"
-
+// custom ops
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_linear_decoder.hpp"
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_fom_state_reconstructor.hpp"
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_galerkin_velocity_api.hpp"
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_unsteady_lspg_velocity_api.hpp"
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_unsteady_lspg_residual_api.hpp"
 
-// general predicates and concepts
-#include "rom/src/predicates/typedefs/rom_has_dense_matrix_typedef.hpp"
-
-// decoder classes
+// decoder 
+#include "rom/src/predicates/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
+#include "rom/src/predicates/rom_has_const_get_reference_to_jacobian.hpp"
 #include "rom/src/will_be_concepts/decoder/rom_admissible_decoder.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 
 // fom state reconstructor
 #include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
 
+// fom-querying functions
+#include "rom/src/fom_query/rom_query_fom_velocity.hpp"
+#include "rom/src/fom_query/rom_query_fom_apply_jacobian.hpp"
+#include "rom/src/fom_query/rom_query_fom_discrete_time_residual.hpp"
+#include "rom/src/fom_query/rom_query_fom_apply_discrete_time_jacobian.hpp"
+
 //-----------------
-// unsteady LSPG 
+// system concepts
+// continuous time 
+#include "rom/src/predicates/apply_discrete_time_jacobian_methods/rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
+#include "rom/src/predicates/apply_discrete_time_jacobian_methods/rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
+#include "rom/src/will_be_concepts/system/rom_discrete_time_system.hpp"
+// discrete time 
 #include "rom/src/predicates/apply_jacobian_methods/rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp"
 #include "rom/src/predicates/apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void.hpp"
-#include "rom/src/predicates/apply_time_discrete_jacobian_methods/rom_has_const_apply_td_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
-#include "rom/src/predicates/apply_time_discrete_jacobian_methods/rom_has_const_create_apply_td_jacobian_result_method_accept_operand_return_result.hpp"
+#include "rom/src/will_be_concepts/system/rom_continuous_time_system.hpp"
+// steady system
+#include "rom/src/predicates/steady_residual_methods/rom_has_const_create_residual_method_return_result.hpp"
+#include "rom/src/predicates/steady_residual_methods/rom_has_const_residual_method_accept_state_result_return_void.hpp"
+#include "rom/src/predicates/apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_result_return_void.hpp"
+#include "rom/src/will_be_concepts/system/rom_steady_system.hpp"
 
-#include "rom/src/will_be_concepts/system/rom_admissible_system_velocity_api_unsteady_lspg.hpp"
-#include "rom/src/will_be_concepts/system/rom_admissible_system_time_discrete_residual_api_unsteady_lspg.hpp"
+//-----------------
+// unsteady LSPG 
+//-----------------
+#include "rom/src/lspg/rom_compose_lspg.hpp"
+// #include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
 
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_default.hpp"
-#include "rom/src/lspg_unsteady/rom_lspg_unsteady_problem_generator.hpp"
-
-
-//----------------
-// wls
-//----------------
-#include "rom/src/will_be_concepts/system/rom_admissible_system_velocity_api_wls.hpp"
+// //----------------
+// // wls
+// //----------------
+// #include "rom/src/will_be_concepts/system/rom_admissible_system_velocity_api_wls.hpp"
 
 // //----------------
 // // decorators
