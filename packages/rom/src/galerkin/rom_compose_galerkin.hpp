@@ -21,7 +21,7 @@ template<typename stepper_tag, typename system_type, typename galerkin_state_t, 
 struct compose<
 ::pressio::rom::galerkin::impl::Default, 
 mpl::enable_if_t< 
-::pressio::rom::concepts::continuous_time_system<system_type>::value and 
+::pressio::rom::concepts::continuous_time_explicit_system<system_type>::value and 
 (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::explicitmethods::RungeKutta4>::value)
 >, 

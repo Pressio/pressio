@@ -1,15 +1,15 @@
 
-#ifndef ode_continuous_time_api_explicit_ode_HPP_
-#define ode_continuous_time_api_explicit_ode_HPP_
+#ifndef ode_continuous_time_explicit_system_hpp_
+#define ode_continuous_time_explicit_system_hpp_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
 template<typename T, typename enable = void>
-struct continuous_time_system_explicit_stepping : std::false_type{};
+struct continuous_time_explicit_system : std::false_type{};
 
 
 template<typename T>
-struct continuous_time_system_explicit_stepping<
+struct continuous_time_explicit_system<
   T,
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
@@ -26,7 +26,7 @@ struct continuous_time_system_explicit_stepping<
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename T>
-struct continuous_time_system_explicit_stepping<
+struct continuous_time_explicit_system<
   T,
   mpl::enable_if_t<
     ::pressio::mpl::is_same<

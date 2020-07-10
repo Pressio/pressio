@@ -29,7 +29,7 @@ template<typename stepper_tag, typename system_type, typename lspg_state_t, type
 struct compose<
 ::pressio::rom::lspg::impl::Default, 
 mpl::enable_if_t< 
-::pressio::rom::concepts::continuous_time_system<system_type>::value and 
+::pressio::rom::concepts::continuous_time_implicit_system<system_type>::value and 
 (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
 >, 

@@ -55,7 +55,7 @@ template<typename state_type, typename system_type,typename jacobian_type,typena
 class JacobianStandardPolicy;
 
 // ---------------------------------------------------------------
-// partially specialize for when continuous_time_system_implicit_stepping
+// partially specialize for when continuous_time_implicit_system
 // ---------------------------------------------------------------
 template<
   typename state_type,
@@ -69,7 +69,7 @@ class JacobianStandardPolicy<
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
     containers::predicates::is_wrapper<state_type>::value and
     containers::predicates::is_wrapper<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
+    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
     >
   >
 {

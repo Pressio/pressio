@@ -68,7 +68,7 @@ struct Stepper
 		//  "You need a scalar_type in the ExplicitStepper templates");
   using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
 
-  static_assert(::pressio::ode::concepts::continuous_time_system_explicit_stepping<system_t>::value,
+  static_assert(::pressio::ode::concepts::continuous_time_explicit_system<system_t>::value,
        "Invalid system passed to the ExplicitStepper");
 
   // check args for a valid velocity type

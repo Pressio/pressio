@@ -109,6 +109,8 @@
 #include "rom/src/predicates/preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
 
 #include "rom/src/will_be_concepts/system/rom_discrete_time_system.hpp"
+#include "rom/src/will_be_concepts/system/rom_continuous_time_explicit_system.hpp"
+#include "rom/src/will_be_concepts/system/rom_continuous_time_implicit_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_system_preconditionable_rom.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_system_maskable_rom.hpp"

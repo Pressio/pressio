@@ -56,7 +56,7 @@ class ResidualStandardPolicy;
 
 
 // ---------------------------------------------------------------
-// partially specialize for when continuous_time_system_implicit_stepping
+// partially specialize for when continuous_time_implicit_system
 // ---------------------------------------------------------------
 template<
   typename state_type,
@@ -70,7 +70,7 @@ class ResidualStandardPolicy<
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     containers::predicates::is_wrapper<state_type>::value and
     containers::predicates::is_wrapper<residual_type>::value and 
-    ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
+    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
     >
   >
 {

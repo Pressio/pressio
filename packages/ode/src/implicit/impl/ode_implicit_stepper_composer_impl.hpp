@@ -36,7 +36,7 @@ struct Composer<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value
+    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
@@ -143,7 +143,7 @@ struct Composer<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_implicit_stepping<system_type>::value and
+    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value and
     ::pressio::ode::concepts::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
   >,
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
