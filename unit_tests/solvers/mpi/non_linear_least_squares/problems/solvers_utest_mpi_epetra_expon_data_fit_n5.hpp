@@ -102,11 +102,11 @@ struct ExpDataFitN5
     return x[0] + x[1] * exp(-t*x[3]) + x[2]*exp(-t*x[4]);
   }
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     return *R_;
   }
 
-  jacobian_type createJacobianObject(const state_type & x) const{
+  jacobian_type createJacobian() const{
     return *J_;
   }//end jacobian
 

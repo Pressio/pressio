@@ -1,0 +1,2 @@
+
+add_subdirectory(galerkin_explicit_euler)

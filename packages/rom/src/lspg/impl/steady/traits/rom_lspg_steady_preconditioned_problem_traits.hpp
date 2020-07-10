@@ -54,25 +54,27 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 template <
   typename fom_type,
   typename lspg_state_type,
-  typename decoder_type
+  typename decoder_type,
+  typename ...Args
   >
 struct PreconditionedProblemTraits
-  : CommonTraits<fom_type, decoder_type, lspg_state_type>
+  : CommonTraits<fom_type, decoder_type, lspg_state_type, Args...>
 {
 
-  using base_t = ::pressio::rom::lspg::impl::steady::CommonTraits<fom_type, decoder_type, lspg_state_type>;
+  using base_t = ::pressio::rom::lspg::impl::steady::CommonTraits<fom_type, decoder_type, lspg_state_type, Args...>;
 
   using typename base_t::fom_t;
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
-  using typename base_t::fom_velocity_t;
+  using typename base_t::fom_residual_t;
   using typename base_t::lspg_state_t;
   using typename base_t::lspg_residual_t;
   using typename base_t::decoder_t;
   using typename base_t::decoder_jac_t;
   using typename base_t::fom_state_reconstr_t;
   using typename base_t::fom_states_manager_t;
+  using typename base_t::ud_ops_t;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -88,18 +90,16 @@ struct PreconditionedProblemTraits
 
   // policy defining how to compute the LSPG residual
   using lspg_residual_policy_t =
-    ::pressio::rom::decorator::Preconditioned<
+    ::pressio::rom::decorator::PreconditionedResidualPolicy<
     ::pressio::rom::lspg::impl::steady::ResidualPolicy<
-      lspg_residual_t, fom_states_manager_t
-      >
+      lspg_residual_t, fom_states_manager_t, ud_ops_t>
     >;
 
   // policy defining how to compute the LSPG jacobian
   using lspg_jacobian_policy_t	=
-    ::pressio::rom::decorator::Preconditioned<
+    ::pressio::rom::decorator::PreconditionedJacobianPolicy<
     ::pressio::rom::lspg::impl::steady::JacobianPolicy<
-      fom_states_manager_t, lspg_matrix_t, decoder_t
-      >
+      fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t>
     >;
 
   // declare type of system

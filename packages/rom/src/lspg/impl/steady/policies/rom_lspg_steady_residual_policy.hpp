@@ -51,19 +51,35 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename residual_type, typename fom_states_manager_t>
+template <typename residual_type, typename fom_states_manager_t, typename ud_ops_type>
 class ResidualPolicy
 {
 public:
-  static constexpr bool isResidualPolicy_ = true;
+  // static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   ResidualPolicy() = delete;
   ~ResidualPolicy() = default;
 
-  ResidualPolicy(fom_states_manager_t & fomStatesMngr)
+  // 1. void ops
+  template <
+    typename _fom_states_manager_t = fom_states_manager_t,
+    typename _ud_ops_t = ud_ops_type,
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+    >
+  ResidualPolicy(_fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr){}
+
+  // 2. nonvoid ops
+  template <
+    typename _fom_states_manager_t = fom_states_manager_t,
+    typename _ud_ops_t = ud_ops_type,
+    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+    >
+  ResidualPolicy(_fom_states_manager_t & fomStatesMngr, const _ud_ops_t & udOps)
+    : fomStatesMngr_(fomStatesMngr), udOps_{&udOps}{}
 
 public:
 
@@ -74,12 +90,12 @@ public:
     return R;
   }
 
-  template <typename lspg_state_t, typename lspg_residual_t, typename fom_t, typename sc_t>
-  void compute()(const lspg_state_t	& romState,
-		  lspg_residual_t	& romR,
-  		  const fom_t		& app,
+  template <typename lspg_state_t, typename fom_t, typename norm_value_type>
+  void compute(const lspg_state_t	& romState,
+		  residual_type	& romR,
+  		const fom_t		& app,
 		  ::pressio::Norm normKind,
-		  sc_t & normValue) const
+		  norm_value_type & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -92,9 +108,8 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomVelocitySteady(app,
-					   fomStatesMngr_.getCRefToCurrentFomState(),
-					   romR);
+    ::pressio::rom::queryFomResidual(app, 
+      fomStatesMngr_.getCRefToCurrentFomState(), romR);
 
     if (normKind == ::pressio::Norm::L2)
       normValue = ::pressio::ops::norm2(romR);
@@ -111,6 +126,17 @@ public:
 
 protected:
   fom_states_manager_t & fomStatesMngr_;
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // here we do this conditional type because it seems when ud_ops_t= pybind11::object
+  // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
+  typename std::conditional<
+    ::pressio::mpl::is_same<ud_ops_t, pybind11::object>::value, ud_ops_t,
+    const ud_ops_t *
+    >::type udOps_ = {};
+#else
+  const ud_ops_t * udOps_ = {};
+#endif
 
 };//end class
 

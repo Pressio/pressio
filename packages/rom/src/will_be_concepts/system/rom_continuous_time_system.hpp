@@ -25,9 +25,9 @@ struct continuous_time_system<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_velocity_typedef<T>::value and
-    // this is the case when we don't have jacobian and dense matrix
-    // we need also these nagative ones otherwise template is ambiguous
-    !::pressio::ode::predicates::has_jacobian_typedef<T>::value and
+    // when we don't have jacobian and dense matrix we need also to 
+    // assert these false ones otherwise template is ambiguous
+    // !::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     !::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     /// velocity 
     ::pressio::ode::predicates::has_const_create_velocity_method_return_result<

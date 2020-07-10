@@ -51,89 +51,69 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-/* specialize for decorating a jacobian policy */
-template <typename preconditionable>
-class Preconditioned<
-  preconditionable,
-  ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_ == false>
-  > : public preconditionable
+template <typename preconditionable_policy>
+class PreconditionedJacobianPolicy : public preconditionable_policy
 {
 
 public:
-  using typename preconditionable::apply_jac_return_t;
-  using preconditionable::fomStatesMngr_;
+  using typename preconditionable_policy::apply_jac_return_t;
+  using preconditionable_policy::fomStatesMngr_;
 
 public:
-  Preconditioned() = delete;
-  Preconditioned(const preconditionable & obj) : preconditionable(obj){}
+  PreconditionedJacobianPolicy() = delete;
+  PreconditionedJacobianPolicy(const preconditionable_policy & obj) 
+    : preconditionable_policy(obj)
+  {}
 
   template <typename ... Args>
-  Preconditioned(Args && ... args)
-    : preconditionable(std::forward<Args>(args)...){}
+  PreconditionedJacobianPolicy(Args && ... args)
+    : preconditionable_policy(std::forward<Args>(args)...)
+  {}
 
-  ~Preconditioned() = default;
+  ~PreconditionedJacobianPolicy() = default;
 
 public:
-  template <typename ode_state_t, typename app_t>
-  apply_jac_return_t operator()(const ode_state_t & odeState,
-				const app_t & app) const
+  template <typename app_t>
+  apply_jac_return_t create(const app_t & app) const
   {
-    auto jacob = preconditionable::operator()(odeState, app);
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *jacob.data(), 0.);
-    return jacob;
+    return preconditionable_policy::create(app);
   }
 
   //-------------------------------
-  // for unsteady LSPG
+  // unsteady
   //-------------------------------
   template <
     typename stepper_tag,
+    typename prev_states_mgr,
     typename ode_state_t,
     typename app_t,
     typename scalar_t,
     typename ode_jac_t
   >
-  void operator()(const ode_state_t & odeState,
-  		  const app_t & app,
+  void compute(const ode_state_t & odeState,
+      const prev_states_mgr & prevStatesMgr,
+  		const app_t & app,
 		  const scalar_t & t,
 		  const scalar_t & dt,
 		  const ::pressio::ode::types::step_t & step,
 		  ode_jac_t & odeJacobian) const
   {
-    preconditionable::template operator()<stepper_tag>(odeState, app, t, dt, step, odeJacobian);
+    preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr, app, t, dt, step, odeJacobian);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *odeJacobian.data(), t);
+    app.applyPreconditioner(*yFom.data(), t, *odeJacobian.data());
   }
 
-
-  // //-------------------------------
-  // // for steady LSPG
-  // //-------------------------------
-  // template <
-  //   typename state_t,
-  //   typename app_t
-  //   >
-  // apply_jac_return_t operator()(const state_t & stateObj,
-  //                               const app_t & app) const
-  // {
-  //   auto jacob = preconditionable::operator()(stateObj, app);
-  //   const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-  //   app.applyPreconditioner(*yFom.data(), *jacob.data());
-  //   return jacob;
-  // }
-
-  template <
-      typename state_t,
-      typename lspg_jac_t,
-      typename app_t>
-  void operator()(const state_t & stateObj,
-                  lspg_jac_t & romjacob,
-                  const app_t & app) const
+  //-------------------------------
+  // steady 
+  //-------------------------------
+  template <typename state_t, typename jac_t, typename app_t>
+  void compute(const state_t & stateObj,
+               jac_t & jacob,
+               const app_t & app) const
   {
-    preconditionable::template operator()<state_t, lspg_jac_t, app_t>(stateObj, romjacob, app);
+    preconditionable_policy::compute(stateObj, jacob, app);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *romjacob.data());
+    app.applyPreconditioner(*yFom.data(), *jacob.data());
   }
 
 };//end class

@@ -1,3 +1,0 @@
-
-add_subdirectory(lspg_euler_normal_eq)
-add_subdirectory(wls_normal_eq_kokkos_rom)

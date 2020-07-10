@@ -54,7 +54,8 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 template <
   typename fom_type,
   typename decoder_type,
-  typename lspg_state_type
+  typename lspg_state_type,
+  typename ...Args
   >
 struct CommonTraits
 {
@@ -66,22 +67,25 @@ struct CommonTraits
   using fom_t			= fom_type;
   using scalar_t		= typename fom_t::scalar_type;
   using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_velocity_t	= typename fom_t::velocity_type;
+  using fom_native_residual_t	= typename fom_t::residual_type;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t	= ::pressio::containers::Vector<fom_native_velocity_t>;
+  using fom_residual_t	= ::pressio::containers::Vector<fom_native_residual_t>;
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
   // for LSPG, the rom residual type = containers::wrapper of application rhs
   // i.e. the wrapped fom rhs type
-  using lspg_residual_t		= fom_velocity_t;
+  using lspg_residual_t		= fom_residual_t;
 
   // decoder types (passed in)
   using decoder_t		= decoder_type;
   using decoder_jac_t = typename decoder_t::jacobian_type;
+
+  // fro now, later on this needs to be detected from args
+  using ud_ops_t = void;
 
   // fom state reconstructor type
   using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;

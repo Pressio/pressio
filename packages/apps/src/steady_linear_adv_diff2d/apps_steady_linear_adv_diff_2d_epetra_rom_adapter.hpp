@@ -59,8 +59,11 @@ public:
   /* these types exposed because need to be detected */
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
-  using velocity_type	= state_type;
+  using residual_type  = Epetra_Vector;
   using dense_matrix_type = Epetra_MultiVector;
+
+private:
+  using velocity_type = Epetra_Vector;
 
 public:
   template <typename ... Args>
@@ -94,8 +97,20 @@ public:
     return appObj_.getState();
   }
 
-  void velocity(const state_type & yState,
-		velocity_type & rhs) const{
+  residual_type createResidual() const{
+    residual_type R( appObj_.getDataMap() );
+    return R;
+  };
+
+  // computes: A = Jac B where B is a multivector
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  {
+    dense_matrix_type C( appObj_.getDataMap(), B.NumVectors() );
+    return C;
+  };
+
+  void residual(const state_type & yState, residual_type & rhs) const
+  {
     appObj_.assembleMatrix();
     appObj_.fillRhs();
     auto A = appObj_.getMatrix();
@@ -105,12 +120,6 @@ public:
     auto f = appObj_.getForcing();
     rhs.Update(-1., (*f), 1.0);
   }
-
-  velocity_type velocity(const state_type & yState) const{
-    velocity_type R( appObj_.getDataMap() );
-    velocity(yState, R);
-    return R;
-  };
 
   // computes: C = Jac B where B is a multivector
   void applyJacobian(const state_type & yState,
@@ -125,23 +134,16 @@ public:
     A->Multiply(false, B, C);
   }
 
-  // computes: A = Jac B where B is a multivector
-  dense_matrix_type applyJacobian(const state_type & yState,
-				  const dense_matrix_type & B) const
-  {
-    dense_matrix_type C( appObj_.getDataMap(), B.NumVectors() );
-    applyJacobian(yState, B, C);
-    return C;
-  };
-
-
   void applyPreconditioner(const state_type & yState,
-                           dense_matrix_type & C) const {
+                           dense_matrix_type & C) const 
+  {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
+
   void applyPreconditioner(const state_type & yState,
-                           velocity_type & rhs) const {
+                           residual_type & rhs) const 
+  {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }

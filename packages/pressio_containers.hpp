@@ -98,7 +98,6 @@
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
 #endif
 #include "containers/src/predicates/containers_are_scalar_compatible.hpp"
-
 #include "containers/src/collection/containers_static_collection.hpp"
 
 #endif

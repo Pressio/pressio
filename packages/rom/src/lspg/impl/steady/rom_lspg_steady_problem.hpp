@@ -51,11 +51,11 @@
 
 #include "./policies/rom_lspg_steady_residual_policy.hpp"
 #include "./policies/rom_lspg_steady_jacobian_policy.hpp"
+#include "rom_lspg_steady_system.hpp"
 
 #include "./traits/rom_lspg_steady_common_traits.hpp"
 #include "./traits/rom_lspg_steady_default_problem_traits.hpp"
-// #include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
-#include "rom_lspg_steady_system.hpp"
+#include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
@@ -74,10 +74,8 @@ public:
   using lspg_problem_t = lspg_type<system_type, lspg_state_type, decoder_type, Args...>;
 
   using fom_t = typename lspg_problem_t::fom_t;
-  using scalar_t = typename lspg_problem_t::scalar_t;
   using fom_native_state_t = typename lspg_problem_t::fom_native_state_t;
   using fom_state_t = typename lspg_problem_t::fom_state_t;
-  using fom_velocity_t = typename lspg_problem_t::fom_velocity_t;
   using lspg_state_t = typename lspg_problem_t::lspg_state_t;
   using decoder_t = typename lspg_problem_t::decoder_t;
   using fom_state_reconstr_t = typename lspg_problem_t::fom_state_reconstr_t;

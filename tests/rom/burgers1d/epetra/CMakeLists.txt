@@ -1,8 +1,0 @@
-
-add_subdirectory(galerkin_explicit_euler)
-add_subdirectory(lspg_euler_normal_eq)
-add_subdirectory(lspg_euler_gn_qr)
-add_subdirectory(lspg_bdf2_normal_eq)
-add_subdirectory(lspg_bdf2_gn_qr)
-add_subdirectory(lspg_precond_euler_normal_eq)
-add_subdirectory(lspg_dummy_mask_euler_normal_eq)

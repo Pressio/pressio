@@ -79,7 +79,7 @@ struct PreconditionedProblemTraitsContinuousTimeApi
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
-    ::pressio::rom::decorator::Preconditioned<
+    ::pressio::rom::decorator::PreconditionedResidualPolicy<
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
       lspg_residual_t, fom_states_manager_t, ud_ops_t
       >
@@ -87,7 +87,7 @@ struct PreconditionedProblemTraitsContinuousTimeApi
 
   // policy defining how to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	=
-    ::pressio::rom::decorator::Preconditioned<
+    ::pressio::rom::decorator::PreconditionedJacobianPolicy<
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t
       >

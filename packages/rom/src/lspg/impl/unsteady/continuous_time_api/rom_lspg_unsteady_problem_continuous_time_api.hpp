@@ -57,8 +57,8 @@
 
 #include "./traits/rom_lspg_unsteady_common_traits_continuous_time_api.hpp"
 #include "./traits/rom_lspg_unsteady_default_problem_traits_continuous_time_api.hpp"
-// #include "./traits/rom_lspg_unsteady_masked_problem_traits_continuous_time_api.hpp"
-// #include "./traits/rom_lspg_unsteady_preconditioned_problem_traits_continuous_time_api.hpp"
+#include "./traits/rom_lspg_unsteady_preconditioned_problem_traits_continuous_time_api.hpp"
+#include "./traits/rom_lspg_unsteady_masked_problem_traits_continuous_time_api.hpp"
 
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 

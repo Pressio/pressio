@@ -29,23 +29,18 @@ public:
   ~EpetraSkeleton() = default;
 
 public:
+  velocity_type createVelocity() const;
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const;
+
   void velocity(const state_type & u,
 		const scalar_type /* t */,
 		velocity_type & f) const;
-
-  velocity_type velocity(const state_type & u,
-			 const scalar_type t) const;
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
 		     const dense_matrix_type & B,
 		     scalar_type t,
 		     dense_matrix_type & A) const;
-
-  // computes: A = Jac B where B is a multivector
-  dense_matrix_type applyJacobian(const state_type & y,
-				  const dense_matrix_type & B,
-				  scalar_type t) const;
 
 };//end class
 

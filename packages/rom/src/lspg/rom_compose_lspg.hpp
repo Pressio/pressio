@@ -4,6 +4,7 @@
 
 #include "./impl/unsteady/continuous_time_api/rom_lspg_unsteady_problem_continuous_time_api.hpp"
 #include "./impl/unsteady/discrete_time_api/rom_lspg_unsteady_problem_discrete_time_api.hpp"
+#include "./impl/steady/rom_lspg_steady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -39,6 +40,39 @@ stepper_tag, system_type, lspg_state_t, Args...>
             stepper_tag, system_type, lspg_state_t, Args...>;
 };
 
+// unsteady preconditioned lspg continuous time API
+template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+struct compose<
+::pressio::rom::lspg::impl::Preconditioned, 
+mpl::enable_if_t< 
+::pressio::rom::concepts::continuous_time_system_preconditionable_rom<system_type>::value and 
+(std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
+std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
+>, 
+stepper_tag, system_type, lspg_state_t, Args...>
+{
+  using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
+            ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemTraitsContinuousTimeApi, 
+            stepper_tag, system_type, lspg_state_t, Args...>;
+};
+
+// unsteady masked lspg continuous time API
+template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+struct compose<
+::pressio::rom::lspg::impl::Masked, 
+mpl::enable_if_t< 
+::pressio::rom::concepts::continuous_time_system_maskable_rom<system_type>::value and 
+(std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
+std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
+>, 
+stepper_tag, system_type, lspg_state_t, Args...>
+{
+  using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
+            ::pressio::rom::lspg::impl::unsteady::MaskedProblemTraitsContinuousTimeApi, 
+            stepper_tag, system_type, lspg_state_t, Args...>;
+};
+
+
 // unsteady default lspg discrete time api
 template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
 struct compose<
@@ -57,7 +91,7 @@ stepper_tag, system_type, lspg_state_t, Args...>
 //********************
 //***** STEADY *****
 //********************
-// unsteady default lspg continuous time API
+// default 
 template<typename system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Default, 
@@ -66,9 +100,23 @@ mpl::enable_if_t<
 >, 
 system_type, lspg_state_t, Args...>
 {
-  using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
-            ::pressio::rom::lspg::impl::unsteady::DefaultProblemTraitsContinuousTimeApi, 
-            stepper_tag, system_type, lspg_state_t, Args...>;
+  using type = ::pressio::rom::lspg::impl::steady::ProblemSteady<
+            ::pressio::rom::lspg::impl::steady::DefaultProblemTraits, 
+            system_type, lspg_state_t, Args...>;
+};
+
+// preconditionale rom
+template<typename system_type, typename lspg_state_t, typename ...Args>
+struct compose<
+::pressio::rom::lspg::impl::Preconditioned, 
+mpl::enable_if_t< 
+::pressio::rom::concepts::steady_system_preconditionable_rom<system_type>::value 
+>, 
+system_type, lspg_state_t, Args...>
+{
+  using type = ::pressio::rom::lspg::impl::steady::ProblemSteady<
+            ::pressio::rom::lspg::impl::steady::PreconditionedProblemTraits, 
+            system_type, lspg_state_t, Args...>;
 };
 
 }// end impl namespace
@@ -77,11 +125,11 @@ system_type, lspg_state_t, Args...>
 template<typename ...Args>
 using composeDefaultProblem = impl::compose<impl::Default, void, Args...>;
 
-// template<typename ...Args>
-// using composePreconditionedProblem = impl::compose<impl::Preconditioned, void, Args...>;
+template<typename ...Args>
+using composePreconditionedProblem = impl::compose<impl::Preconditioned, void, Args...>;
 
-// template<typename ...Args>
-// using composeMaskedProblem = impl::compose<impl::Masked, void, Args...>;
+template<typename ...Args>
+using composeMaskedProblem = impl::compose<impl::Masked, void, Args...>;
 
 }}}
 #endif

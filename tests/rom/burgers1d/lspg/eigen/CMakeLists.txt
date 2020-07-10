@@ -1,0 +1,4 @@
+add_subdirectory(lspg_euler_normal_eq)
+add_subdirectory(lspg_bdf2_normal_eq)
+add_subdirectory(lspg_euler_normal_eq_discrete_time_api)
+add_subdirectory(lspg_euler_normal_eq_discrete_time_api_user_defined_mapping)

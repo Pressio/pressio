@@ -55,11 +55,16 @@
 
 namespace pressio{ namespace apps{
 
-class Burgers1dEpetraIdentityMask : public Burgers1dEpetra{
+class Burgers1dEpetraIdentityMask : public Burgers1dEpetra
+{
+public:
   using base_t = Burgers1dEpetra;
   using importer_t = Epetra_Import;
+  using base_t::dense_matrix_type;
+  using base_t::velocity_type;
+  using base_t::state_type;
+  using base_t::scalar_type;
 
-public:
   Burgers1dEpetraIdentityMask(std::vector<scalar_type> params,
 			int Ncell, Epetra_MpiComm * comm)
     : base_t(params, Ncell, comm){
@@ -69,22 +74,22 @@ public:
   ~Burgers1dEpetraIdentityMask() = default;
 
 public:
-  template <typename T>
-  void applyMask(const T & src, T & dest, double t) const{
-    dest.Import(src, *importer_, Insert);
-  }
-
-  velocity_type applyMask(const velocity_type & src, double t) const{
+  velocity_type createApplyMaskResult(const velocity_type & src) const
+  {
     velocity_type dest(*maskMap_);
     dest.Import(src, *importer_, Insert);
     return dest;
   }
 
-  Epetra_MultiVector applyMask(const Epetra_MultiVector & src,
-			       double t) const{
-    Epetra_MultiVector dest(*maskMap_, src.NumVectors());
+  dense_matrix_type createApplyMaskResult(const dense_matrix_type & src) const{
+    dense_matrix_type dest(*maskMap_, src.NumVectors());
     dest.Import(src, *importer_, Insert);
     return dest;
+  }
+
+  template <typename T>
+  void applyMask(const T & src, double time, T & dest) const{
+    dest.Import(src, *importer_, Insert);
   }
 
 private:

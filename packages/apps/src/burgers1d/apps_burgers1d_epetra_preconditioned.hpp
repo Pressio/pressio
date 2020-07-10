@@ -68,14 +68,16 @@ public:
 
 public:
   void applyPreconditioner(const state_type & yState,
-                           dense_matrix_type & C,
-			   const scalar_type & time) const {
+            const scalar_type & time,
+            dense_matrix_type & C) const 
+  {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
   void applyPreconditioner(const state_type & yState,
-                           velocity_type & rhs,
-			   const scalar_type & time) const {
+            const scalar_type & time,
+            velocity_type & rhs) const 
+  {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }

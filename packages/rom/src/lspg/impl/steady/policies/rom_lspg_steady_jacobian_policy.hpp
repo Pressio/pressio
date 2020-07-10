@@ -54,13 +54,15 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename decoder_type
+  typename decoder_type,
+  typename ud_ops_type
   >
 class JacobianPolicy
 {
 public:
-  static constexpr bool isResidualPolicy_ = false;
+  // static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   JacobianPolicy() = delete;
@@ -81,7 +83,7 @@ public:
 
   template <typename lspg_state_t, typename lspg_jac_t, typename app_t>
   void compute(const lspg_state_t & romState,
-		  lspg_jac_t & romJJ,
+		    lspg_jac_t & romJJ,
   		  const app_t & app) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -99,7 +101,7 @@ public:
 #endif
 
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    ::pressio::rom::queryFomApplyJacobianSteady(app, fomStatesMngr_.getCRefToCurrentFomState(), basis, romJJ);
+    ::pressio::rom::queryFomApplyJacobian(app, fomStatesMngr_.getCRefToCurrentFomState(), basis, romJJ);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

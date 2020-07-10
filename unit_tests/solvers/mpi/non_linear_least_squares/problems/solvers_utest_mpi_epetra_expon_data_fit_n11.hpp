@@ -113,12 +113,12 @@ struct ExpDataFitN11
     return x[0]*temp1 + x[1]*temp2 + x[2]*temp3 + x[3]*temp4;
   }
 
-  residual_type createResidualObject(const state_type& x) const {
+  residual_type createResidual() const {
     // residual(x, *R_);
     return *R_;
   }
 
-  jacobian_type createJacobianObject(const state_type & x) const{
+  jacobian_type createJacobian() const{
     // jacobian(x, *J_);
     return *J_;
   }//end jacobian

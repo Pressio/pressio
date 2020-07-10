@@ -10,7 +10,6 @@ struct ValidApp
   using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
-  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int32_t>;
   using discrete_time_residual_type = residual_type;
   using dense_matrix_type = Eigen::MatrixXd;
 
@@ -73,16 +72,14 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   typename app_t::state_type yRef;
   lspg_state_t yROM;
 
-  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;
+  static_assert(::pressio::rom::concepts::discrete_time_system<app_t>::value, "");
 
+  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;  
   using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
-  using lspg_problem = pressio::rom::LSPGUnsteadyProblem<
-    pressio::rom::DefaultLSPGUnsteady, ode_name_t, app_t,
-    lspg_state_t, decoder_t, stepper_order, stepper_n_states, scalar_t>;
+  using lspg_problem = pressio::rom::lspg::composeDefaultProblem<
+    ode_name_t, app_t, lspg_state_t, decoder_t, stepper_order, stepper_n_states>::type;
 
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, 0);
   std::cout << &lspgProblem << std::endl;
-
 }

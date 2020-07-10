@@ -1,0 +1,4 @@
+
+add_subdirectory(lspg_euler_gn_qr)
+add_subdirectory(lspg_euler_normal_eq)
+add_subdirectory(lspg_euler_normal_eq_kokkos_rom)

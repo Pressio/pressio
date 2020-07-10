@@ -55,14 +55,16 @@
 
 namespace pressio{ namespace apps{
 
-class Burgers1dArbDs{
+class Burgers1dArbDs
+{
+
 public:
-  using int_t		  = std::size_t;
+  using int_t     = std::size_t;
+
+  // these are detected by pressio
   using scalar_type	  = double;
-  using sc_t		  = scalar_type;
   using state_type	  = arbds::Vector<scalar_type>;
   using velocity_type	  = arbds::Vector<scalar_type>;
-  using dense_matrix_type = arbds::DenseMatrix<scalar_type>;
   using jacobian_type	  = arbds::DenseMatrix<scalar_type>;
 
 public:
@@ -107,15 +109,15 @@ public:
 private:
   void setup()
   {
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
-    constexpr auto two = ::pressio::utils::constants<sc_t>::two();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
     constexpr auto oneHalf = one/two;
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
     dxInv_ = one/dx_;
 
     xGrid_.resize(Ncell_);
     for (int_t i=0; i<Ncell_; ++i)
-      xGrid_(i) = dx_*static_cast<sc_t>(i) + dx_*oneHalf;
+      xGrid_(i) = dx_*static_cast<scalar_type>(i) + dx_*oneHalf;
 
     // init condition
     U_.resize(Ncell_);
@@ -130,8 +132,8 @@ private:
 		     const scalar_type & t,
 		     velocity_type & f) const
   {
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
-    constexpr auto two = ::pressio::utils::constants<sc_t>::two();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
     constexpr auto oneHalf = one/two;
 
     const auto coeff = oneHalf * dxInv_;

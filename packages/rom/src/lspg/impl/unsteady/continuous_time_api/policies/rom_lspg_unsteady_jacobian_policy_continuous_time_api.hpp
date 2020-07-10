@@ -55,14 +55,15 @@ template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
   typename decoder_type,
-  typename ud_ops
+  typename ud_ops_type
   >
 class JacobianPolicyContinuousTimeApi
 {
 
 public:
-  static constexpr bool isResidualPolicy_ = false;
+  // static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   JacobianPolicyContinuousTimeApi() = delete;
@@ -76,7 +77,7 @@ public:
   // 1. void ops
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
-    typename _ud_ops = ud_ops,
+    typename _ud_ops = ud_ops_type,
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
@@ -87,7 +88,7 @@ public:
   // 2. non-void ops
   template <
     typename _apply_jac_return_type = apply_jac_return_type,
-    typename _ud_ops = ud_ops,
+    typename _ud_ops = ud_ops_type,
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
@@ -133,7 +134,7 @@ private:
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
-    typename _ud_ops = ud_ops
+    typename _ud_ops = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
   time_discrete_dispatcher(matrix_t & romJac,
@@ -148,7 +149,7 @@ private:
     typename matrix_t,
     typename scalar_t,
     typename decoder_jac_type,
-    typename _ud_ops = ud_ops
+    typename _ud_ops = ud_ops_type
   >
   ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value >
   time_discrete_dispatcher(matrix_t & romJac,
@@ -211,11 +212,10 @@ protected:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
-    const ud_ops *
-    >::type udOps_ = {};
+    ::pressio::mpl::is_same<ud_ops_type, pybind11::object>::value, 
+    ud_ops_type, const ud_ops_type * >::type udOps_ = {};
 #else
-    const ud_ops * udOps_ = {};
+    const ud_ops_type * udOps_ = {};
 #endif
 
 };

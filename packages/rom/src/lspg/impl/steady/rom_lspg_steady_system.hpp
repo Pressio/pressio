@@ -97,7 +97,7 @@ public:
     return residualEvaluator_.create(app_);
   }
 
-  lspg_jacobian_type createJacobian(const lspg_state_type & romState) const
+  lspg_jacobian_type createJacobian() const
   {
     return jacobianEvaluator_.create(app_);
   }

@@ -155,11 +155,7 @@ public:
     const int numCols = Ncell_;
     const int numEnt = (Ncell_-1)*2 + 1;
 
-    // here we need to create a Jacobian, so use the following.
-    // The data is filled on the host, then copied to device
-
-    state_type_h u_h = Kokkos::create_mirror_view(u);
-
+    // state_type_h u_h = Kokkos::create_mirror_view(u);
     typename jacobian_type::row_map_type::non_const_type ptr ("ptr", numRows+1);
     {
       typename jacobian_type::row_map_type::HostMirror ptr_h = Kokkos::create_mirror_view (ptr);
@@ -186,17 +182,17 @@ public:
     typename jacobian_type::values_type val ("val", numEnt);
     {
       typename jacobian_type::values_type::HostMirror val_h = Kokkos::create_mirror_view (val);
-      val_h[0] = -dxInv_*u_h(0);
-      int k = 0;
-      for (int lclRow = 1; lclRow < numRows; ++lclRow) {
-	val_h[++k] = dxInv_*u_h[lclRow-1];
-	val_h[++k] = -dxInv_*u_h[lclRow];
-      }
+ //      val_h[0] = -dxInv_*u_h(0);
+ //      int k = 0;
+ //      for (int lclRow = 1; lclRow < numRows; ++lclRow) {
+	// val_h[++k] = dxInv_*u_h[lclRow-1];
+	// val_h[++k] = -dxInv_*u_h[lclRow];
+ //      }
       Kokkos::deep_copy (val, val_h);
     }
 
     jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
-    this->jacobian(u, t, JJ);
+    // this->jacobian(u, t, JJ);
     return JJ;
   }
 
@@ -227,7 +223,7 @@ public:
          scalar_type t,
          dense_matrix_type & A) const
   {
-    auto JJ = jacobian(y, t);
+    auto JJ = createJacobian();
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
 

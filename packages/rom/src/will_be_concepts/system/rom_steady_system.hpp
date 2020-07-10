@@ -14,14 +14,13 @@ struct steady_system<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_residual_typedef<T>::value and
-    ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     ///////////////////
     /// residual 
     ///////////////////
-    ::pressio::ode::predicates::has_const_create_residual_method_return_result<
+    ::pressio::rom::predicates::has_const_create_residual_method_return_result<
       T, typename T::residual_type>::value and
-    ::pressio::ode::predicates::has_const_residual_method_accept_state_result_return_void<
+    ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
       T, typename T::state_type, typename T::residual_type
       >::value and 
     ///////////////////

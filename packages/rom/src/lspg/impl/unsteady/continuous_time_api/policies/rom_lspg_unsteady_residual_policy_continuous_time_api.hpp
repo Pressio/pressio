@@ -54,14 +54,15 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 template <
   typename residual_type,
   typename fom_states_manager_t,
-  typename ud_ops
+  typename ud_ops_type
   >
 class ResidualPolicyContinuousTimeApi
 {
 
 public:
-  static constexpr bool isResidualPolicy_ = true;
+  // static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   ResidualPolicyContinuousTimeApi() = delete;
@@ -75,8 +76,8 @@ public:
   // 1. void ops
   template <
     typename _residual_type = residual_type,
-    typename _ud_ops = ud_ops,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value, int > = 0
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(const _residual_type & RIn,
 			    fom_states_manager_t & fomStatesMngr)
@@ -86,13 +87,13 @@ public:
   // 2. non-void ops
   template <
     typename _residual_type = residual_type,
-    typename _ud_ops = ud_ops,
+    typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value, int > = 0
+      !std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(const _residual_type & RIn,
 			    fom_states_manager_t & fomStatesMngr,
-			    const _ud_ops & udOps)
+			    const _ud_ops_t & udOps)
     : R_{RIn}, fomStatesMngr_(fomStatesMngr), udOps_{&udOps}
   {}
 
@@ -129,9 +130,9 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops
+    typename _ud_ops_t = ud_ops_t
   >
-  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
+  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
 			   const scalar_t & dt,
@@ -153,9 +154,9 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops = ud_ops
+    typename _ud_ops_t = ud_ops_t
   >
-  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops>::value >
+  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
 			   const scalar_t & dt,
@@ -240,14 +241,14 @@ protected:
   fom_states_manager_t & fomStatesMngr_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // here we do this conditional type because it seems when ud_ops= pybind11::object
+  // here we do this conditional type because it seems when ud_ops_t= pybind11::object
   // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops, pybind11::object>::value, ud_ops,
-    const ud_ops *
+    ::pressio::mpl::is_same<ud_ops_t, pybind11::object>::value, ud_ops_t,
+    const ud_ops_t *
     >::type udOps_ = {};
 #else
-  const ud_ops * udOps_ = {};
+  const ud_ops_t * udOps_ = {};
 #endif
 
 };//end class

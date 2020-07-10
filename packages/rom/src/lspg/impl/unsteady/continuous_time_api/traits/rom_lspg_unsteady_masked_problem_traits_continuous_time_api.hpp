@@ -63,7 +63,7 @@ struct MaskedProblemTraitsContinuousTimeApi
   using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
         stepper_tag, system_type, lspg_state_type, Args...>;
 
-  using fom_t			= typename common_types_t::fom_t;
+  using system_t			= typename common_types_t::system_t;
   using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
@@ -79,7 +79,7 @@ struct MaskedProblemTraitsContinuousTimeApi
 
   // policy defining how to compute the LSPG time-discrete residual
   using lspg_residual_policy_t =
-    ::pressio::rom::decorator::Masked<
+    ::pressio::rom::decorator::MaskedResidualPolicy<
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
       lspg_residual_t, fom_states_manager_t, ud_ops_t
       >
@@ -87,7 +87,7 @@ struct MaskedProblemTraitsContinuousTimeApi
 
   // policy defining how to compute the LSPG time-discrete jacobian
   using lspg_jacobian_policy_t	=
-    ::pressio::rom::decorator::Masked<
+    ::pressio::rom::decorator::MaskedJacobianPolicy<
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t
       >

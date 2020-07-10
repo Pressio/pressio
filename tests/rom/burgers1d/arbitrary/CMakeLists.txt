@@ -1,4 +1,0 @@
-
-add_subdirectory(galerkin_euler_velocity_api_arb_ds)
-add_subdirectory(lspg_euler_normal_eq_velocity_api_arb_ds)
-# add_subdirectory(lspg_euler_normal_eq_residual_api_arb_ds)

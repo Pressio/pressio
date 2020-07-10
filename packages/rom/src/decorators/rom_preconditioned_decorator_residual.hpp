@@ -51,102 +51,74 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-template <typename preconditionable, typename enable = void>
-class Preconditioned;
-
-
-/* specialize for decorating residual policy */
-template <typename preconditionable>
-class Preconditioned<
-  preconditionable,
-  ::pressio::mpl::enable_if_t<preconditionable::isResidualPolicy_>
-  > : public preconditionable
+template <typename preconditionable_policy>
+class PreconditionedResidualPolicy : public preconditionable_policy
 {
 
-  using typename preconditionable::residual_t;
-  using preconditionable::fomStatesMngr_;
+  using typename preconditionable_policy::residual_t;
+  using preconditionable_policy::fomStatesMngr_;
 
 public:
-  Preconditioned() = delete;
+  PreconditionedResidualPolicy() = delete;
 
-  Preconditioned(const preconditionable & obj)
-    : preconditionable(obj)
+  PreconditionedResidualPolicy(const preconditionable_policy & obj)
+    : preconditionable_policy(obj)
   {}
 
   template <typename ... Args>
-  Preconditioned(Args && ... args)
-    : preconditionable(std::forward<Args>(args)...)
+  PreconditionedResidualPolicy(Args && ... args)
+    : preconditionable_policy(std::forward<Args>(args)...)
   {}
 
-  ~Preconditioned() = default;
+  ~PreconditionedResidualPolicy() = default;
 
 public:
-  //-------------------------------
-  // for unsteady LSPG
-  //-------------------------------
-  template <typename ode_state_t, typename app_t>
-  residual_t operator()(const ode_state_t   & odeState,
-			const app_t	    & app) const
+  template <typename app_t>
+  residual_t create(const app_t & app) const
   {
-    auto result = preconditionable::operator()(odeState, app);
-
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *result.data(), 0.);
-    return result;
+    // const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    // app.applyPreconditioner(*yFom.data(), *result.data(), 0.);
+    return preconditionable_policy::create(app);
   }
-
+  
+  //-------------------------------
+  // unsteady case
+  //-------------------------------
   template <
     typename stepper_tag,
-    typename lspg_res_t,
     typename prev_states_t,
     typename app_t,
     typename scalar_t,
     typename ode_state_t
     >
-  void operator()(const ode_state_t	& odeState,
+  void compute(const ode_state_t	& stateObj,
 		  const prev_states_t	& prevStates,
   		  const app_t		& app,
 		  const scalar_t	& t,
 		  const scalar_t	& dt,
 		  const ::pressio::ode::types::step_t & step,
-		  lspg_res_t		& R,
+		  residual_t & R,
 		  ::pressio::Norm normKind,
 		  scalar_t & normValue) const
   {
-    preconditionable::template operator()<
-      stepper_tag>(odeState, prevStates, app, t, dt, step, R, normKind, normValue);
+    preconditionable_policy::template compute<
+      stepper_tag>(stateObj, prevStates, app, t, dt, step, R, normKind, normValue);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *R.data(), t);
+    app.applyPreconditioner(*yFom.data(), t, *R.data());
   }
 
   //-------------------------------
-  // for steady LSPG
+  // steady case
   //-------------------------------
-  // template <
-  //     typename lspg_state_t,
-  //     typename fom_t>
-  // residual_t operator()(const lspg_state_t  & odeState,
-  // 			const fom_t	    & app) const
-  // {
-  //   auto result = preconditionable::template operator()
-  //     <lspg_state_t, fom_t>(odeState, app);
-
-  //   const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-  //   app.applyPreconditioner(*yFom.data(), *result.data());
-  //   return result;
-  // }
-
-  template <
-      typename lspg_state_t,
-      typename lspg_residual_t,
-      typename fom_t>
-  void operator()(const lspg_state_t  & odeState,
-                  lspg_residual_t & romR,
-                  const fom_t   & app) const
+  template <typename lspg_state_t, typename fom_t, typename norm_val_t>
+  void compute(const lspg_state_t  & stateObj,
+              residual_t & romR,
+              const fom_t   & app,
+              ::pressio::Norm normKind,
+              norm_val_t & normValue) const
   {
-    preconditionable::template operator()
-      <lspg_state_t, lspg_residual_t, fom_t>(odeState, romR, app);
+    preconditionable_policy::compute(stateObj, romR, app, normKind, normValue);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     app.applyPreconditioner(*yFom.data(), *romR.data());
