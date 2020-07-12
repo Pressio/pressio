@@ -131,7 +131,7 @@ struct EulerGalerkinWithVelocityApi
 
   static_assert(pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
 		ops_t, fom_state_t>::value, "");
-  static_assert(pressio::rom::concepts::custom_ops_for_galerkin_velocity_api<
+  static_assert(pressio::rom::concepts::custom_ops_galerkin_continuous_time<
 		ops_t, decoder_jac_t, rom_state_t, fom_state_t>::value, "");
 
   native_state_t fomSol_ = {};

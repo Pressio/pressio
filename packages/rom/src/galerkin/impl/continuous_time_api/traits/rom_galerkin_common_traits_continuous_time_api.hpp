@@ -137,7 +137,7 @@ struct CommonTraitsContinuousTimeApi
   // if we have an admissible user-defined ops
   using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     decoder_jac_t, galerkin_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_for_galerkin_velocity_api, Args...>;
+    ::pressio::rom::concepts::custom_ops_galerkin_continuous_time, Args...>;
   using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type

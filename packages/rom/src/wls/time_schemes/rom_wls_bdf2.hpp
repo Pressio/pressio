@@ -56,10 +56,9 @@ class BDF2{
 
 public:
   static constexpr ::pressio::rom::wls::window_size_t state_stencil_size_ = 2;
-  static constexpr bool is_explicit	   = false;
 
 private:
-  using aux_states_container_t = ::pressio::ode::AuxStatesContainer<is_explicit, fom_state_t, state_stencil_size_>;
+  using aux_states_container_t = ::pressio::ode::AuxStatesManager<fom_state_t, state_stencil_size_>;
 
   ::pressio::rom::wls::rom_size_t romStateSize_;
   mutable aux_states_container_t auxStatesContainer_;
@@ -81,7 +80,7 @@ public:
 
 public:
 /**
-  time_discrete_residual Function overload for velocity API 
+  time_discrete_residual Function overload for conitnuous time api
  */
   template <
     typename fom_type,
@@ -89,7 +88,7 @@ public:
     typename residual_type,
     typename scalar_type
 >
-  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
   time_discrete_residual(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      residual_type & residual,
@@ -100,20 +99,20 @@ public:
     if (step > 0){
       // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
       appObj.velocity(*fomState.data(), t, *residual.data());
-      ::pressio::ode::impl::time_discrete_residual<
-	::pressio::ode::implicitmethods::BDF2>(fomState,residual,auxStatesContainer_,dt);
+      ::pressio::ode::impl::discrete_time_residual(fomState, residual,
+        auxStatesContainer_, dt, ::pressio::ode::implicitmethods::BDF2());
     }
 
     if (step == 0){
       // u^n - u^{n-1}  - dt*f
       appObj.velocity(*fomState.data(), t, *residual.data());
-      ::pressio::ode::impl::time_discrete_residual<
-	::pressio::ode::implicitmethods::Euler>(fomState, residual, auxStatesContainer_, dt);
+      ::pressio::ode::impl::discrete_time_residual(fomState, residual, 
+        auxStatesContainer_, dt, ::pressio::ode::implicitmethods::Euler());
     }
    }
 
   /**
-  time_discrete_residual function overload for residual API 
+  time_discrete_residual function overload for discrete time API 
   */
   template <
     typename fom_type,
@@ -121,7 +120,7 @@ public:
     typename residual_type,
     typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
   time_discrete_residual(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      residual_type & residual,
@@ -134,20 +133,28 @@ public:
       using nm2 = ::pressio::ode::nMinusTwo;
       auto & fomStateNm2 = auxStatesContainer_.get(nm2());
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
-      appObj.timeDiscreteResidual(step,t,dt,*residual.data(),*fomState.data(),*fomStateNm1.data(),*fomStateNm2.data());
+
+      scalar_type normValue = {};
+      appObj.discreteTimeResidual(step, t, dt, 
+          *residual.data(), ::pressio::Norm::L2, normValue,
+          *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
     }
 
     if (step == 0){
       // u^n - u^{n-1}  - dt*f
       using nm1 = ::pressio::ode::nMinusOne;
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
-      appObj.timeDiscreteResidual(step,t,dt,*residual.data(),*fomState.data(),*fomStateNm1.data());
+
+      scalar_type normValue = {};
+      appObj.discreteTimeResidual(step, t, dt, 
+          *residual.data(), ::pressio::Norm::L2, normValue,
+          *fomState.data(), *fomStateNm1.data());
     }
    }
 
 
   /**
-   time_discrete_jacobian function overload for velocity API 
+   time_discrete_jacobian function overload for continuous time API
   */
   template <
     typename fom_type,
@@ -156,7 +163,7 @@ public:
     typename basis_type,
     typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
   time_discrete_jacobian(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      jac_type & Jphi,
@@ -199,10 +206,8 @@ public:
   }
 
 
-
-
   /**
-   time_discrete_jacobian function overload for residual API 
+   time_discrete_jacobian function overload for discrete time API 
   */
   template <
     typename fom_type,
@@ -211,7 +216,7 @@ public:
     typename basis_type,
     typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
   time_discrete_jacobian(const fom_type & appObj,
 			      const fom_state_type & fomState,
 			      jac_type & Jphi,
@@ -226,7 +231,8 @@ public:
       if (arg == 0){
         using nm1 = ::pressio::ode::nMinusOne;
         auto & fomStateNm1 = auxStatesContainer_.get(nm1());
-        appObj.applyTimeDiscreteJacobian(step,t,dt,*phi.data(),0,*Jphi.data(),*fomState.data(),*fomStateNm1.data());
+        appObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(), 
+            *Jphi.data(), *fomState.data(), *fomStateNm1.data());
       }
     }
 
@@ -236,7 +242,8 @@ public:
         using nm2 = ::pressio::ode::nMinusTwo;
         auto & fomStateNm1 = auxStatesContainer_.get(nm1());
         auto & fomStateNm2 = auxStatesContainer_.get(nm2());
-        appObj.applyTimeDiscreteJacobian(step,t,dt,*phi.data(),0,*Jphi.data(),*fomState.data(),*fomStateNm1.data(),*fomStateNm2.data());
+        appObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(), 
+          *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
@@ -252,15 +259,6 @@ public:
       }
     }
   }
-
-
-
-
-
-
-
-
-
 
   bool jacobianNeedsRecomputing(std::size_t i) const{
     return (i==0) ? jacobianZeroNeedsRecomputing_ : jacobianOneNeedsRecomputing_;

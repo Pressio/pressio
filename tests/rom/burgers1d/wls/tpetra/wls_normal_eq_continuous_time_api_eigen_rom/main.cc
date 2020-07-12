@@ -1,7 +1,7 @@
 
 #include "pressio_apps.hpp"
 #include "utils_tpetra.hpp"
-#include "../../wls/wls_burgers_driver_mpi.hpp"
+#include "../../helpers/wls_burgers_driver_mpi.hpp"
 
 int main(int argc, char *argv[])
 {

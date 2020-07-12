@@ -1,4 +1,4 @@
 
 add_subdirectory(galerkin)
 add_subdirectory(lspg)
-# add_subdirectory(wls)
+add_subdirectory(wls)

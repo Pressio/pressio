@@ -1,5 +1,5 @@
 
-#include "../../wls/wls_burgers_driver_serial.hpp"
+#include "../../helpers/wls_burgers_driver_serial.hpp"
 
 int main(int argc, char *argv[])
 {

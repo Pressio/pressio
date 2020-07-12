@@ -100,7 +100,7 @@ struct CommonTraitsDiscreteTimeApi
   // if we have an admissible user-defined ops
   using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     decoder_jac_t, lspg_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_for_unsteady_lspg_residual_api, Args...>;
+    ::pressio::rom::concepts::custom_ops_lspg_discrete_time, Args...>;
   using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type

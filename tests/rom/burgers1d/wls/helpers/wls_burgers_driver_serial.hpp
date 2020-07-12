@@ -41,7 +41,7 @@ constructAppObj(std::size_t fomSize)
 };
 
 template <typename fom_t>
-pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dEigenResidualApi>::value, fom_t >
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dEigenDiscreteTimeApi>::value, fom_t >
 constructAppObj(std::size_t fomSize)
 {
   return fom_t( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);

@@ -1,3 +1,3 @@
 
-add_subdirectory(wls_normal_eq_velocity_api_eigen_rom)
-add_subdirectory(wls_normal_eq_velocity_api_kokkos_rom)
+add_subdirectory(wls_normal_eq_continuous_time_api_eigen_rom)
+add_subdirectory(wls_normal_eq_continuous_time_api_kokkos_rom)

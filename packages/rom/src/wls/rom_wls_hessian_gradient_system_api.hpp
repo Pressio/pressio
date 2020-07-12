@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp
+// rom_wls_hessian_gradient_system_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,18 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_RESIDUAL_API_HPP_
+#ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
+#define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
+#include "./impl/rom_wls_hessian_gradient_system_api_impl.hpp"
 
-template<
-  typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type,
-  typename enable = void
-  >
-struct custom_ops_for_unsteady_lspg_residual_api
-  : std::false_type{};
+namespace pressio{ namespace rom{ namespace wls{
 
-template <
-  typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type
-  >
-struct custom_ops_for_unsteady_lspg_residual_api<
-  T, mat_type, rom_state_type, fom_state_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
-      T, fom_state_type>::value
-    and
-    ::pressio::rom::concepts::custom_ops_for_linear_decoder<
-      T, mat_type, rom_state_type, fom_state_type>::value
-    >
-  > : std::true_type{};
+template<typename ... Args>
+using SystemHessianGradientApi = impl::SystemHessianGradientApi<Args...>;
 
-}}} // namespace pressio::rom::concepts
+template<typename ... Args>
+using SystemHessianAndGradientApi = impl::SystemHessianGradientApi<Args...>;
+
+}}}
 #endif

@@ -44,7 +44,7 @@ std::string checkSol(pressio::apps::Burgers1dEigen & appObj,
 
 
 template <typename decoder_d_t>
-decoder_d_t readBasis( pressio::apps::Burgers1dEigenResidualApi & appObj,
+decoder_d_t readBasis( pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 		       ::pressio::ode::implicitmethods::Euler odeTag,
 		       std::size_t romSize,
 		       std::size_t fomSize)
@@ -55,7 +55,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dEigenResidualApi & appObj,
 }
 
 template <typename decoder_d_t>
-decoder_d_t readBasis(pressio::apps::Burgers1dEigenResidualApi & appObj,
+decoder_d_t readBasis(pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 		      ::pressio::ode::implicitmethods::BDF2 odeTag,
 		      std::size_t romSize,
 		      std::size_t fomSize)
@@ -66,7 +66,7 @@ decoder_d_t readBasis(pressio::apps::Burgers1dEigenResidualApi & appObj,
 }
 
 template<typename y1_t, typename y2_t, typename int_t>
-std::string checkSol(pressio::apps::Burgers1dEigenResidualApi & appObj,
+std::string checkSol(pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 		     const y1_t & yFinal,
 		     const y2_t & trueY,
 		     int_t fomSize)

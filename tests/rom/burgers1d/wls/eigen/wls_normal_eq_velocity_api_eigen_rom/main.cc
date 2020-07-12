@@ -1,11 +1,11 @@
 
-#include "../../wls/wls_burgers_driver_serial.hpp"
+#include "../../helpers/wls_burgers_driver_serial.hpp"
 
 int main(int argc, char *argv[])
 {
   std::string checkStr = "PASSED";
   using fom_t           = pressio::apps::Burgers1dEigen;
-  using fom_residual_api_t           = pressio::apps::Burgers1dEigenResidualApi;
+  using fom_residual_api_t           = pressio::apps::Burgers1dEigenDiscreteTimeApi;
   using scalar_t        = typename fom_t::scalar_type;
   using rom_data_t      = romDataTypeEigen<scalar_t>;
   using ode_tag_euler   = ::pressio::ode::implicitmethods::Euler;
@@ -30,8 +30,6 @@ int main(int argc, char *argv[])
      std::cout << "WLS failed on implicit Euler with residual API" << std::endl;
      checkStr = "FAILED";
   }
-
-
 
   std::cout << checkStr << std::endl;
   return 0;

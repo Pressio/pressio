@@ -123,7 +123,7 @@ public:
   template <
   typename linear_solver_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_detected<::pressio::solvers::meta::has_matrix_typedef, linear_solver_type>::value and
+    ::pressio::mpl::is_detected<::pressio::solvers::predicates::has_matrix_typedef, linear_solver_type>::value and
     !std::is_void<typename linear_solver_type::matrix_type>::value and
     ::pressio::mpl::publicly_inherits_from<
       linear_solver_type,
@@ -173,12 +173,12 @@ public:
     return fomStateReconstructor_;
   }
 
-  hessian_type createHessianObject(const wls_state_type & stateIn) const{
+  hessian_type createHessian() const{
     hessian_type H(wlsProblemSize_, wlsProblemSize_);
     return H;
   }
 
-  gradient_type createGradientObject(const wls_state_type & stateIn) const{
+  gradient_type createGradient() const{
     gradient_type g(wlsProblemSize_);
     return g;
   }
@@ -189,6 +189,9 @@ public:
 			  const pressio::Norm & normType,
 			  scalar_type		      & rnorm) const
   {
+    if (normType != ::pressio::Norm::L2)
+      throw std::runtime_error("cannot call WLS with a norm != L2");
+
     rnorm = pressio::utils::constants<scalar_type>::zero();
     hessianGradientPolicy_(
 			   wls_state,
@@ -207,6 +210,9 @@ public:
 		    const pressio::Norm & normType,
 		    scalar_type		      & rnorm) const
   {
+    if (normType != ::pressio::Norm::L2)
+      throw std::runtime_error("cannot call WLS with a norm != L2");
+
    // missing
   }
 

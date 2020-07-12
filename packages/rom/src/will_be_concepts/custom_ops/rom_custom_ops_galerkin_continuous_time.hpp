@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_hessian_and_gradient_sequential_policy.hpp
+// rom_is_legitimate_custom_ops_for_galerkin_velocity_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,33 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
-#define ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
+#ifndef rom_custom_ops_galerkin_continuous_time_explicit_system_HPP_
+#define rom_custom_ops_galerkin_continuous_time_explicit_system_HPP_
 
-#include "rom_wls_hessian_and_gradient_sequential_policy_impl.hpp"
+namespace pressio{ namespace rom{ namespace concepts {
 
-namespace pressio{ namespace rom{ namespace wls{
+template<
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type,
+  typename enable = void
+  >
+struct custom_ops_galerkin_continuous_time
+  : std::false_type{};
 
-namespace impl{
+template <
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type
+  >
+struct custom_ops_galerkin_continuous_time<
+  T, mat_type, rom_state_type, fom_state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
+      T, fom_state_type>::value
+      and
+    ::pressio::rom::concepts::custom_ops_for_linear_decoder<
+      T, mat_type, rom_state_type, fom_state_type>::value
+      >
+  > : std::true_type{};
 
-template<typename fom_type, typename decoder_type, typename ode_tag, typename hess_structure_tag, typename ...Args>
-struct HessGradSeqPolHelper
-{
-
-  // find if Args contain a valid updating tag for jacobian, if not default = NonFrozen
-  using jacUpdatingTagIC  = ::pressio::mpl::variadic::find_if_unary_pred_t<
-    ::pressio::rom::wls::meta::is_legitimate_jacobian_updating_tag, Args...>;
-  using jac_update_t = ::pressio::mpl::variadic::at_or_t<::pressio::rom::wls::NonFrozenJacobian, jacUpdatingTagIC::value, Args...>;
-
-  // set the container type based on the tag
-  using jac_t	   = typename decoder_type::jacobian_type;
-  using jac_cont_t = typename std::conditional<
-    std::is_same<jac_update_t, ::pressio::rom::wls::NonFrozenJacobian>::value,
-    ::pressio::rom::wls::NonFrozenJacobiansContainer<jac_t>,
-    ::pressio::rom::wls::FrozenJacobiansContainer<jac_t>
-    >::type;
-
-  // find if Args contain a valid precond type, if not default = NoPreconditioner
-  using precIC  = ::pressio::mpl::variadic::find_if_unary_pred_t<::pressio::rom::wls::meta::is_legitimate_preconditioner_type, Args...>;
-  using prec_t = ::pressio::mpl::variadic::at_or_t<::pressio::rom::wls::preconditioners::NoPreconditioner, precIC::value, Args...>;
-
-  // final type
-  using type = ::pressio::rom::wls::impl::HessianGradientSequentialPolicy<fom_type, decoder_type, ode_tag,
-									  hess_structure_tag, prec_t, jac_cont_t>;
-};
-}//end namespace pressio::rom::wls::impl
-
-
-template<typename ...Args>
-using HessianGradientSequentialPolicy = typename impl::HessGradSeqPolHelper<Args...>::type;
-
-}}} // end namespace pressio::rom::wls
+}}} // namespace pressio::rom::concepts
 #endif

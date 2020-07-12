@@ -49,7 +49,7 @@
 #ifndef ROM_WLS_JACOBIANS_CONTAINER_HPP_
 #define ROM_WLS_JACOBIANS_CONTAINER_HPP_
 
-#include "./rom_wls_jacobians_container_impl.hpp"
+#include "./impl/rom_wls_jacobians_container_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace wls{
 

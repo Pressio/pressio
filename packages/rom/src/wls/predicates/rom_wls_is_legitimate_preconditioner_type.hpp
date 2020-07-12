@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_is_legitimate_jacobian_updating_tag.hpp
+// rom_wls_is_legitimate_preconditioner_type.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,19 +46,23 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
-#define ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
+#ifndef ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
+#define ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
 
-namespace pressio{ namespace rom{ namespace wls{ namespace meta{
+namespace pressio{ namespace rom{ namespace wls{ namespace predicates{
 
 template <typename T>
-struct is_legitimate_jacobian_updating_tag : std::false_type{};
+struct is_legitimate_preconditioner_type : std::false_type{};
 
 template <>
-struct is_legitimate_jacobian_updating_tag<FrozenJacobian> : std::true_type{};
+struct is_legitimate_preconditioner_type<
+  ::pressio::rom::wls::preconditioners::NoPreconditioner
+  > : std::true_type{};
 
 template <>
-struct is_legitimate_jacobian_updating_tag<NonFrozenJacobian> : std::true_type{};
+struct is_legitimate_preconditioner_type<
+  ::pressio::rom::wls::preconditioners::AppPreconditioner
+  > : std::true_type{};
 
-}}}} // end namespace pressio::rom::wls::meta
+}}}} // end namespace pressio::rom::wls::predicates
 #endif

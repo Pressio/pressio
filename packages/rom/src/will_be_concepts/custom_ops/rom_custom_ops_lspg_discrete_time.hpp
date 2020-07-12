@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_unsteady_lspg_velocity_api.hpp
+// rom_is_legitimate_custom_ops_for_unsteady_lspg_residual_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_UNSTEADY_LSPG_VELOCITY_API_HPP_
+#ifndef rom_custom_ops_for_lspg_discrete_time_system_hpp_
+#define rom_custom_ops_for_lspg_discrete_time_system_hpp_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -56,14 +56,14 @@ template<
   typename mat_type, typename rom_state_type, typename fom_state_type,
   typename enable = void
   >
-struct custom_ops_for_unsteady_lspg_velocity_api
+struct custom_ops_lspg_discrete_time
   : std::false_type{};
 
 template <
   typename T,
   typename mat_type, typename rom_state_type, typename fom_state_type
   >
-struct custom_ops_for_unsteady_lspg_velocity_api<
+struct custom_ops_lspg_discrete_time<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
@@ -74,5 +74,5 @@ struct custom_ops_for_unsteady_lspg_velocity_api<
     >
   > : std::true_type{};
 
-}}} // namespace pressio::rom::meta
+}}} // namespace pressio::rom::concepts
 #endif

@@ -91,14 +91,14 @@ public:
 				  const fom_state_t & fomState,
 				  window_size_t timeStencilSize,
 				  const window_size_t jacobianUpdateFrequency = 1,
-          typename std::enable_if<::pressio::rom::meta::model_meets_velocity_api_for_wls<U>::value>::type* = 0)
+          typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<U>::value>::type* = 0)
     : romSize_(romSize),
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),
       appObj_(appObj),
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
-      residual_(appObj.velocity( *fomState.data(), ::pressio::utils::constants<scalar_t>::zero()) ),
+      residual_(appObj.createVelocity()),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow , phi_), 
       timeSchemeObj_(romSize_, fomState)
@@ -124,14 +124,14 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
 				  const fom_state_t & fomState,
 				  window_size_t timeStencilSize,
 				  const window_size_t jacobianUpdateFrequency = 1,
-          typename std::enable_if<::pressio::rom::meta::model_meets_residual_api_for_wls<U>::value>::type* = 0)
+          typename std::enable_if<::pressio::rom::concepts::discrete_time_system<U>::value>::type* = 0)
     : romSize_(romSize),
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),
       appObj_(appObj),
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
-      residual_( appObj.createTimeDiscreteResidualObject(*fomState.data()) ),
+      residual_( appObj.createDiscreteTimeResidual() ),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow , phi_), 
       timeSchemeObj_(romSize_, fomState)
@@ -147,8 +147,6 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
     }
   }
 
-
-
 public:
   template <
     typename wls_state_type,
@@ -156,8 +154,7 @@ public:
     typename hess_type,
     typename gradient_type
   >
-  void operator()(
-                  const wls_state_type  & wlsState,
+  void operator()(const wls_state_type  & wlsState,
                   const wls_state_type & wlsStateIC,
                   hess_type & hess,
                   gradient_type & gradient,
@@ -308,7 +305,6 @@ private:
     }// end assembling local component of global Hessian
   }
 
-
   // reconstructs fomStateCurrent_ from the stepNum entry of wlsState
   template <typename wls_state_type, typename fom_state_reconstr_t>
   void setCurrentFomState(const wls_state_type & wlsState,
@@ -318,7 +314,6 @@ private:
     const auto wlsCurrentState = ::pressio::containers::span(wlsState, stepNum*romSize_, romSize_);
     fomStateReconstrObj(wlsCurrentState, fomStateCurrent_);
   }
-
 
   template <typename time_scheme_t>
   void computeJacobiansOverStencil(const time_scheme_t & timeSchemeObj_,
@@ -335,7 +330,6 @@ private:
       Preconditioner(appObj_, fomStateCurrent_, jacLocal, t);
     }
   }
-
 
   // updates residual and Jacobians at a single time step
   template <
