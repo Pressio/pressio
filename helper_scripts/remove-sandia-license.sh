@@ -5,18 +5,18 @@ set -e
 source bash_colors.sh
 
 # check cmd line args
-if [ "$#" -ne 1 ]; then
-  echo "usage: $0 <target-dir> [extension]"
+if [[ "$#" -gt 2 ]] || [[ "$#" -eq 0 ]]; then
+  echo "usage: $0 <target-dir> extension"
+  echo "for example: $0 <target-dir> hpp"
   exit 1
 fi
 
 # store
 targetdir=$1
-licensefile=$2
-
 if [ "$#" -gt 1 ];
 then
-  pattern=$2
+  ext=$2
+  pattern="*.${ext}"
 else
   pattern='*.hpp'
 fi
@@ -33,8 +33,8 @@ do
 
   if ! grep -q 'NTESS' "$file"; then
       if ! grep -q 'Ennio' "$file"; then
-	 echo "found file $file without a Sandia or other license. Terminating."
-	 exit 11
+	 echo "found file $file without a Sandia or other license. Skipping."
+	 #exit 11
       fi
   else
       filetmp=$(mktemp)
