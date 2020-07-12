@@ -89,8 +89,8 @@
 // decorators
 #include "rom/src/decorators/rom_preconditioned_decorator_residual.hpp"
 #include "rom/src/decorators/rom_preconditioned_decorator_jacobian.hpp"
-#include "rom/src/decorators/rom_mask_residual_policy.hpp"
-#include "rom/src/decorators/rom_mask_jacobian_policy.hpp"
+#include "rom/src/decorators/rom_masked_residual_policy.hpp"
+#include "rom/src/decorators/rom_masked_jacobian_policy.hpp"
 
 //---------------------------------
 // system predicates and concepts
