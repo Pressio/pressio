@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_velocity_unsteady.hpp
+// rom_query_fom_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

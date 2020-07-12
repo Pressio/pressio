@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_is_legitimate_custom_ops_for_fom_state_reconstructor.hpp
+// rom_custom_ops_for_fom_state_reconstructor.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

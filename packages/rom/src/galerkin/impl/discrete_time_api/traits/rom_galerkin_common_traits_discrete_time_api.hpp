@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// TBD.hpp
+// rom_galerkin_common_traits_discrete_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

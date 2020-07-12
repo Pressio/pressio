@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_wls_jacobians_container_impl.hpp
+// rom_wls_jacobians_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
