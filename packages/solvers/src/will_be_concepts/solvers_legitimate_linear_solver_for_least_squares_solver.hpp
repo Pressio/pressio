@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_is_legitimate_linear_solver_for_least_squares_solver.hpp
+// solvers_legitimate_linear_solver_for_least_squares_solver.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

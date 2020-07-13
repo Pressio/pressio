@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_system_meets_residual_jacobian_api.hpp
+// solvers_system_residual_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

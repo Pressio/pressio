@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_stop_when_residual_norm_below_tol.hpp
+// solvers_solve_until_residual_norm_below_tol.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

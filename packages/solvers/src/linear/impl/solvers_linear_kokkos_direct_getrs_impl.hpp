@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_linear_kokkos_direct_getrs.hpp
+// solvers_linear_kokkos_direct_getrs_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

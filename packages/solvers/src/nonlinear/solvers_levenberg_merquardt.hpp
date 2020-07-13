@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_levenberg_marquardt.hpp
+// solvers_levenberg_merquardt.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

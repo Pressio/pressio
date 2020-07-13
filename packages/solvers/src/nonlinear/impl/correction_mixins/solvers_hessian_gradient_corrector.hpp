@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_hessian_gradient_corrector_impl.hpp
+// solvers_hessian_gradient_corrector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
