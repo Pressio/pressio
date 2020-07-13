@@ -1,6 +1,5 @@
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#if not defined ROM_TEST_UTILS_EPETRA_HPP_
+#ifndef ROM_TEST_UTILS_EPETRA_HPP_
 #define ROM_TEST_UTILS_EPETRA_HPP_
 
 #include "pressio_utils.hpp"
@@ -49,6 +48,5 @@ auto readBasis(
 
 }}}}// end namespace pressio::rom::test::epetra
 
-#endif
 #endif
 

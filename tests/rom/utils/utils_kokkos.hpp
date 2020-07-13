@@ -1,6 +1,5 @@
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#if not defined ROM_TEST_UTILS_KOKKOS_HPP_
+#ifndef ROM_TEST_UTILS_KOKKOS_HPP_
 #define ROM_TEST_UTILS_KOKKOS_HPP_
 
 #include "pressio_utils.hpp"
@@ -43,6 +42,4 @@ void readBasis(std::string filename,
 }
 
 }}}}// end namespace pressio::rom::test::eigen
-
-#endif
 #endif

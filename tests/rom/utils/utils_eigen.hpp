@@ -1,5 +1,5 @@
 
-#if not defined ROM_TEST_UTILS_EIGEN_HPP_
+#ifndef ROM_TEST_UTILS_EIGEN_HPP_
 #define ROM_TEST_UTILS_EIGEN_HPP_
 
 #include "pressio_utils.hpp"

@@ -1,5 +1,5 @@
 
-#if not defined SOLVERS_UTEST_SERIAL_ROSENBROCK_N3_HPP_
+#ifndef SOLVERS_UTEST_SERIAL_ROSENBROCK_N3_HPP_
 #define SOLVERS_UTEST_SERIAL_ROSENBROCK_N3_HPP_
 
 #include "pressio_solvers.hpp"
