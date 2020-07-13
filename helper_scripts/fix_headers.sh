@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# make sure you have guardonce installed
-# https://github.com/cgmb/guardonce
+# make sure you have guardonce installed: https://github.com/cgmb/guardonce
 
 # this script must be run where it is
-# no args passed
+# no args needed
 
 # rel dir of the packages
 PCK_REL_DIR=${PWD}/../packages
