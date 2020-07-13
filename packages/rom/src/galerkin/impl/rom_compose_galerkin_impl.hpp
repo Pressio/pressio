@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_lspg.hpp
+// rom_compose_galerkin_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,51 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
-#define ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+#ifndef ROM_GALERKIN_IMPL_ROM_COMPOSE_GALERKIN_IMPL_HPP_
+#define ROM_GALERKIN_IMPL_ROM_COMPOSE_GALERKIN_IMPL_HPP_
 
-#include "./impl/rom_compose_lspg_impl.hpp"
+#include "./continuous_time_api/rom_galerkin_problem_continuous_time_api.hpp"
+#include "./discrete_time_api/rom_galerkin_problem_discrete_time_api.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template<typename ...Args>
-using composeDefaultProblem = impl::compose<impl::Default, void, Args...>;
+struct Default{};
 
-template<typename ...Args>
-using composePreconditionedProblem = impl::compose<impl::Preconditioned, void, Args...>;
+template<typename tag, typename ...Args>
+struct compose{
+  using type = void;
+};
 
-template<typename ...Args>
-using composeMaskedProblem = impl::compose<impl::Masked, void, Args...>;
+// default continuous time API
+template<typename stepper_tag, typename system_type, typename galerkin_state_t, typename ...Args>
+struct compose<
+::pressio::rom::galerkin::impl::Default,
+mpl::enable_if_t<
+::pressio::rom::concepts::continuous_time_explicit_system<system_type>::value and
+(std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
+std::is_same< stepper_tag, ::pressio::ode::explicitmethods::RungeKutta4>::value)
+>,
+stepper_tag, system_type, galerkin_state_t, Args...>
+{
+  using type = ::pressio::rom::galerkin::impl::ProblemContinuousTimeApi<
+            ::pressio::rom::galerkin::impl::DefaultProblemTraitsContinuousTimeApi,
+            stepper_tag, system_type, galerkin_state_t, Args...>;
+};
 
-}}}
-#endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+// default discrete time api
+template<typename stepper_tag, typename system_type, typename galerkin_state_t, typename ...Args>
+struct compose<
+::pressio::rom::galerkin::impl::Default,
+mpl::enable_if_t<
+::pressio::rom::concepts::discrete_time_system<system_type>::value and
+std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value
+>,
+stepper_tag, system_type, galerkin_state_t, Args...>
+{
+  using type = ::pressio::rom::galerkin::impl::ProblemDiscreteTimeApi<
+            ::pressio::rom::galerkin::impl::DefaultProblemTraitsDiscreteTimeApi,
+            stepper_tag, system_type, galerkin_state_t, Args...>;
+};
+
+}}}}
+#endif  // ROM_GALERKIN_IMPL_ROM_COMPOSE_GALERKIN_IMPL_HPP_
