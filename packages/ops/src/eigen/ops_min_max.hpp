@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_min_max_vector.hpp
+// ops_min_max.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
