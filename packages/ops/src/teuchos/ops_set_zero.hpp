@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_TEUCHOS_SET_ZERO_HPP_
-#define OPS_CONTAINER_OPS_TEUCHOS_SET_ZERO_HPP_
+#ifndef OPS_TEUCHOS_OPS_SET_ZERO_HPP_
+#define OPS_TEUCHOS_OPS_SET_ZERO_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -62,4 +62,4 @@ set_zero(T & v){
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_TEUCHOS_OPS_SET_ZERO_HPP_

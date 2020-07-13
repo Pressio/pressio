@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_TPETRA_FILL_HPP_
-#define OPS_CONTAINER_OPS_TPETRA_FILL_HPP_
+#ifndef OPS_TPETRA_OPS_FILL_HPP_
+#define OPS_TPETRA_OPS_FILL_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -64,4 +64,4 @@ fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_TPETRA_OPS_FILL_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
-#define ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
+#ifndef ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
+#define ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{  namespace impl{
 
@@ -115,4 +115,4 @@ private:
 };
 
 }}}} //end namespace pressio::rom::wls::impl
-#endif
+#endif  // ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_

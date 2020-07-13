@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_POLICIES_STANDARD_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_POLICIES_STANDARD_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
@@ -98,4 +98,4 @@ public:
 };//end class
 
 }}}}//end namespace pressio::ode::explicitmethods::policy
-#endif
+#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_

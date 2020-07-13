@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_discrete_time_system_HPP_
-#define rom_discrete_time_system_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
+#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -116,4 +116,4 @@ struct discrete_time_system<
 
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_QUERY_FOM_APPLY_JACOBIAN_HPP_
-#define ROM_QUERY_FOM_APPLY_JACOBIAN_HPP_
+#ifndef ROM_FOM_QUERY_ROM_QUERY_FOM_APPLY_JACOBIAN_HPP_
+#define ROM_FOM_QUERY_ROM_QUERY_FOM_APPLY_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -141,4 +141,4 @@ void queryFomApplyJacobian(const fom_t & fomObj,
 // #endif
 
 }} //end namespace pressio::rom
-#endif
+#endif  // ROM_FOM_QUERY_ROM_QUERY_FOM_APPLY_JACOBIAN_HPP_

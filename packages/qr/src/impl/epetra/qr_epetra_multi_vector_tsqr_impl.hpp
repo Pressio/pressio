@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
-#define QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+#ifndef QR_IMPL_EPETRA_QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+#define QR_IMPL_EPETRA_QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
 
 #include "Epetra_TsqrAdaptor.hpp"
 
@@ -163,4 +163,4 @@ private:
 };
 
 }}} // end namespace pressio::qr::impl
-#endif
+#endif  // QR_IMPL_EPETRA_QR_EPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_

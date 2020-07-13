@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_VELOCITIES_CONTAINER_HPP_
-#define ODE_VELOCITIES_CONTAINER_HPP_
+#ifndef ODE_ODE_VELOCITIES_CONTAINER_HPP_
+#define ODE_ODE_VELOCITIES_CONTAINER_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -83,4 +83,4 @@ private:
 };
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_ODE_VELOCITIES_CONTAINER_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SVD_MULTI_VECTOR_EPETRA_HPP_
-#define SVD_MULTI_VECTOR_EPETRA_HPP_
+#ifndef SVD_SVD_MULTI_VECTOR_EPETRA_HPP_
+#define SVD_SVD_MULTI_VECTOR_EPETRA_HPP_
 
 #include <Epetra_Import.h>
 
@@ -157,4 +157,4 @@ private:
 
 }//end namespace svd
 }//end namespace pressio
-#endif
+#endif  // SVD_SVD_MULTI_VECTOR_EPETRA_HPP_

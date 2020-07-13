@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_TYPES_HPP_
-#define ODE_TYPES_HPP_
+#ifndef ODE_ODE_TYPES_HPP_
+#define ODE_ODE_TYPES_HPP_
 
 namespace pressio{ namespace ode{ namespace types {
 
@@ -73,4 +73,4 @@ struct StepperTotalNumberOfStates{
 
 
 }}} // end of namespace pressio::ode::types
-#endif
+#endif  // ODE_ODE_TYPES_HPP_

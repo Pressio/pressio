@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_MAT_PROD_MAT_HPP_
-#define OPS_SRC_OPS_EIGEN_MAT_PROD_MAT_HPP_
+#ifndef OPS_EIGEN_OPS_MAT_PROD_MAT_HPP_
+#define OPS_EIGEN_OPS_MAT_PROD_MAT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -173,4 +173,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_MAT_PROD_MAT_HPP_

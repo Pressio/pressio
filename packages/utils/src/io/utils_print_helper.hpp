@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_PRINT_HELPER_HPP_
-#define UTILS_PRINT_HELPER_HPP_
+#ifndef UTILS_IO_UTILS_PRINT_HELPER_HPP_
+#define UTILS_IO_UTILS_PRINT_HELPER_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
@@ -111,4 +111,4 @@ void print_stdout_if_dp(Args &&... args){
 
 
 }}}//end namespace pressio::utils::io
-#endif
+#endif  // UTILS_IO_UTILS_PRINT_HELPER_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_KOKKOS_DEEP_COPY_HPP_
-#define OPS_CONTAINER_OPS_KOKKOS_DEEP_COPY_HPP_
+#ifndef OPS_KOKKOS_OPS_DEEP_COPY_HPP_
+#define OPS_KOKKOS_OPS_DEEP_COPY_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -69,4 +69,4 @@ deep_copy(T1 & dest, const T2 & src){
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_KOKKOS_OPS_DEEP_COPY_HPP_

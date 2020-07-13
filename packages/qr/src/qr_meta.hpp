@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_META_HPP_
-#define QR_META_HPP_
+#ifndef QR_QR_META_HPP_
+#define QR_QR_META_HPP_
 
 namespace pressio{ namespace qr{ namespace meta {
 
@@ -106,4 +106,4 @@ struct is_legitimate_algo_for_tpetra_mv<algo_t,
 #endif
 
 }}}//end namespace pressio::qr::meta
-#endif
+#endif  // QR_QR_META_HPP_

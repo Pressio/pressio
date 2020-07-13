@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_SHARED_BASE_CONTAINER_BASE_HPP_
-#define CONTAINERS_SHARED_BASE_CONTAINER_BASE_HPP_
+#ifndef CONTAINERS_BASE_CONTAINERS_CONTAINER_BASE_HPP_
+#define CONTAINERS_BASE_CONTAINERS_CONTAINER_BASE_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -75,4 +75,4 @@ public:
 };//end class
 
 }}//end namespace pressio::containers
-#endif
+#endif  // CONTAINERS_BASE_CONTAINERS_CONTAINER_BASE_HPP_

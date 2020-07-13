@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_MINMAX_VECTOR_HPP_
-#define OPS_SRC_OPS_EIGEN_MINMAX_VECTOR_HPP_
+#ifndef OPS_EIGEN_OPS_MIN_MAX_HPP_
+#define OPS_EIGEN_OPS_MIN_MAX_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -74,4 +74,4 @@ auto min(const vec_type & a) -> typename ::pressio::containers::details::traits<
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_MIN_MAX_HPP_

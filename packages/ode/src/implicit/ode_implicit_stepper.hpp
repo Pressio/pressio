@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_METHODS_IMPLICIT_STEPPER_HPP_
-#define ODE_IMPLICIT_METHODS_IMPLICIT_STEPPER_HPP_
+#ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
+#define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
 
 #include "./impl/ode_implicit_stepper_composer_impl.hpp"
 
@@ -58,4 +58,4 @@ using ImplicitStepper =
   typename ::pressio::ode::implicitmethods::impl::Composer<stepper_tag, void, Args...>::type;
 
 }} // end namespace pressio::ode
-#endif
+#endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_

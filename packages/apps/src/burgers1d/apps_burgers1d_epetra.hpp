@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
-#define PRESSIOAPPS_BURGERS1D_EPETRA_HPP_
+#ifndef APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_HPP_
+#define APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_HPP_
 
 #include "Epetra_MpiComm.h"
 #include "Epetra_Map.h"
@@ -266,4 +266,4 @@ protected:
 
 }} //namespace pressio::apps
 
-#endif
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_HPP_

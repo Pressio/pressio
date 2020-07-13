@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
-#define PRESSIO_SOLVERS_LEVENBERG_MARQUARDT_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -87,4 +87,4 @@ template<
 using composeLevenbergMarquardt_t = typename composeLM<system_t, update, looper, Args...>::type;
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_

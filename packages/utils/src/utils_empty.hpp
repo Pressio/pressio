@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_EMPTY_HPP_
-#define UTILS_EMPTY_HPP_
+#ifndef UTILS_UTILS_EMPTY_HPP_
+#define UTILS_UTILS_EMPTY_HPP_
 
 namespace pressio{ namespace utils{ namespace impl{
 
@@ -56,4 +56,4 @@ namespace pressio{ namespace utils{ namespace impl{
 struct empty{};
 
 }}} // end of namespace pressio::utils::impl
-#endif
+#endif  // UTILS_UTILS_EMPTY_HPP_

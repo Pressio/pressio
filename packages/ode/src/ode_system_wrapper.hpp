@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_SYSTEM_WRAPPER_HPP_
-#define ODE_SYSTEM_WRAPPER_HPP_
+#ifndef ODE_ODE_SYSTEM_WRAPPER_HPP_
+#define ODE_ODE_SYSTEM_WRAPPER_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -111,4 +111,4 @@ private:
 #endif
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_ODE_SYSTEM_WRAPPER_HPP_

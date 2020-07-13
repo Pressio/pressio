@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SVD_FORWARD_DECLARATIONS_HPP_
-#define SVD_FORWARD_DECLARATIONS_HPP_
+#ifndef SVD_SVD_FWD_HPP_
+#define SVD_SVD_FWD_HPP_
 
 #include "svd_ConfigDefs.hpp"
 
@@ -63,4 +63,4 @@ class Solver;
   
 } // end namespace svd
 }//end namespace pressio
-#endif
+#endif  // SVD_SVD_FWD_HPP_

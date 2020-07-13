@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
-#define PRESSIO_SOLVERS_LM_GAIN_FACTOR_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
@@ -94,4 +94,4 @@ public:
 };
 
 }}}}
-#endif
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_

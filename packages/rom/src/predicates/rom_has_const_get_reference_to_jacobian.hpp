@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_has_const_get_reference_to_jacobian_HPP_
-#define rom_has_const_get_reference_to_jacobian_HPP_
+#ifndef ROM_PREDICATES_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_
+#define ROM_PREDICATES_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
 
@@ -66,4 +66,4 @@ struct has_const_get_reference_to_jacobian<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::predicates
-#endif
+#endif  // ROM_PREDICATES_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_

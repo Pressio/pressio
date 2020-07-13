@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_BASE_IN_PLACE_BASE_HPP_
-#define QR_BASE_IN_PLACE_BASE_HPP_
+#ifndef QR_BASE_QR_IN_PLACE_BASE_HPP_
+#define QR_BASE_QR_IN_PLACE_BASE_HPP_
 
 namespace pressio{ namespace qr{
 
@@ -77,4 +77,4 @@ private:
 };
 
 }}//end namespace pressio::qr
-#endif
+#endif  // QR_BASE_QR_IN_PLACE_BASE_HPP_

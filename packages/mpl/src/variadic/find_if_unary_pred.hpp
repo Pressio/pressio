@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP
-#define PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP
+#ifndef MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_
+#define MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -85,4 +85,4 @@ using find_if_unary_pred_t = typename find_if_unary_pred<UnaryPredicate, Args...
 
 }}} // namespace 
 
-#endif // PRESSIO_MPL_VARIADIC_FIND_IF_UNARY_HPP
+#endif  // MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_

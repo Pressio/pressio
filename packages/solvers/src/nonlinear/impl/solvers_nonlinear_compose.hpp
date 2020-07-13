@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_COMPOSE_HPP_
-#define PRESSIO_SOLVERS_COMPOSE_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 
 #include "./operators/solvers_hessian_gradient_operators.hpp"
 #include "./operators/solvers_residual_jacobian_operators.hpp"
@@ -320,4 +320,4 @@ struct compose<system_t, NewtonRaphson, update_t, looper_t, linear_solver_t, Arg
 };
 
 }}}}
-#endif
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_

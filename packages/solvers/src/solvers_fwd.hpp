@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_FORWARD_DECLARATIONS_HPP_
-#define SOLVERS_FORWARD_DECLARATIONS_HPP_
+#ifndef SOLVERS_SOLVERS_FWD_HPP_
+#define SOLVERS_SOLVERS_FWD_HPP_
 
 namespace pressio{ namespace solvers{ namespace iterative{ 
 
@@ -78,4 +78,4 @@ class GaussNewtonConservative;
 
 }}//end namespace pressio::solvers
 
-#endif
+#endif  // SOLVERS_SOLVERS_FWD_HPP_

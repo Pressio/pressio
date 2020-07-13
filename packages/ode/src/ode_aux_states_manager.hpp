@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_AUX_STATES_CONTAINER_HPP_
-#define ODE_AUX_STATES_CONTAINER_HPP_
+#ifndef ODE_ODE_AUX_STATES_MANAGER_HPP_
+#define ODE_ODE_AUX_STATES_MANAGER_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -93,4 +93,4 @@ private:
 };
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_ODE_AUX_STATES_MANAGER_HPP_

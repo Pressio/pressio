@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
-#define PRESSIOAPPS_BURGERS1D_ARB_DS_HPP_
+#ifndef APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_HPP_
+#define APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_HPP_
 
 #include "apps_burgers1d_arb_ds_custom_vector.hpp"
 #include "apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
@@ -170,4 +170,4 @@ private:
 };//end class
 
 }} //namespace pressio::apps
-#endif
+#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_query_fom_discrete_time_residual_HPP_
-#define rom_query_fom_discrete_time_residual_HPP_
+#ifndef ROM_FOM_QUERY_ROM_QUERY_FOM_DISCRETE_TIME_RESIDUAL_HPP_
+#define ROM_FOM_QUERY_ROM_QUERY_FOM_DISCRETE_TIME_RESIDUAL_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -97,4 +97,4 @@ void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 }
 
 }} //end namespace pressio::rom
-#endif
+#endif  // ROM_FOM_QUERY_ROM_QUERY_FOM_DISCRETE_TIME_RESIDUAL_HPP_

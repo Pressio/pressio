@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_has_const_apply_mapping_accept_operand_result_return_void_HPP_
-#define rom_has_const_apply_mapping_accept_operand_result_return_void_HPP_
+#ifndef ROM_PREDICATES_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
+#define ROM_PREDICATES_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
 
@@ -72,4 +72,4 @@ struct has_const_apply_mapping_accept_operand_result_return_void<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::predicates
-#endif
+#endif  // ROM_PREDICATES_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef solvers_has_create_residual_method_return_results_hpp_
-#define solvers_has_create_residual_method_return_results_hpp_
+#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
@@ -66,4 +66,4 @@ struct has_const_create_residual_method_return_result
  > : std::true_type{};
 
 }}} // namespace pressio::solvers::predicates
-#endif
+#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_

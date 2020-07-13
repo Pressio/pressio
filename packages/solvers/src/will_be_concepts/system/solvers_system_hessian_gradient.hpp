@@ -47,8 +47,8 @@
 */
 
 
-#ifndef SOLVERS_SYSTEM_MEETS_HESSIAN_GRADIENT_API_HPP_
-#define SOLVERS_SYSTEM_MEETS_HESSIAN_GRADIENT_API_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_HESSIAN_GRADIENT_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_HESSIAN_GRADIENT_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
@@ -79,4 +79,4 @@ struct system_hessian_gradient
  > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_HESSIAN_GRADIENT_HPP_

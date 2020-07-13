@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SVD_CONFIGDEFS_HPP
-#define SVD_CONFIGDEFS_HPP
+#ifndef SVD_SVD_CONFIGDEFS_HPP_
+#define SVD_SVD_CONFIGDEFS_HPP_
 
 namespace pressio{ namespace svd{
   
@@ -84,4 +84,4 @@ enum class svdType{
 };
 
 }} // end namespace pressio::svd
-#endif
+#endif  // SVD_SVD_CONFIGDEFS_HPP_

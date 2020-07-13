@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef pressio_containers_expressions_include_HPP_
-#define pressio_containers_expressions_include_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_
+#define CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_
 
 #include "./span/containers_vector_span_expression.hpp"
 #include "./span/containers_expressions_traits.hpp"
@@ -59,4 +59,4 @@
 
 #include "containers_is_expression.hpp"
 
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_

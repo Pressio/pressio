@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_SHARED_TRAITS_HPP_
-#define CONTAINERS_SHARED_TRAITS_HPP_
+#ifndef CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_
+#define CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details {
 
@@ -82,4 +82,4 @@ struct matrix_shared_traits{
 };
 
 }}} // end namespace pressio::containers::details
-#endif
+#endif  // CONTAINERS_CONTAINERS_SHARED_TRAITS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CALL_COLLECTOR_DISPATCHER_HPP_
-#define ODE_CALL_COLLECTOR_DISPATCHER_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -109,4 +109,4 @@ struct CallCollectorDispatch<
 };
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_

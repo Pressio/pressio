@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_SYSTEM_MEETS_RESIDUAL_JACOBIAN_API_HPP_
-#define SOLVERS_SYSTEM_MEETS_RESIDUAL_JACOBIAN_API_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
@@ -78,4 +78,4 @@ struct system_residual_jacobian
  > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_

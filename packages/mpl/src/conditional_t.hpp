@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_CONDITIONAL_T_HPP_
-#define PRESSIO_MPL_CONDITIONAL_T_HPP_
+#ifndef MPL_CONDITIONAL_T_HPP_
+#define MPL_CONDITIONAL_T_HPP_
 
 namespace pressio{ namespace mpl{
 
@@ -55,4 +55,4 @@ template<bool condition, typename T1, typename T2>
 using conditional_t = typename std::conditional<condition, T1, T2>::type;
 
 }} // namespace pressio::mpl
-#endif
+#endif  // MPL_CONDITIONAL_T_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_EIGEN_ELEMENTWISE_MULTIPLY_HPP_
-#define OPS_CONTAINER_OPS_EIGEN_ELEMENTWISE_MULTIPLY_HPP_
+#ifndef OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -68,4 +68,4 @@ elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
-#define ODE_IS_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -68,4 +68,4 @@ struct legitimate_solver_for_implicit_stepper<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_

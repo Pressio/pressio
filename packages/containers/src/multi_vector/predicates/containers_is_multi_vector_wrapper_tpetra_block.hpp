@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
-#define CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
+#define CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct is_multi_vector_wrapper_tpetra_block<
   : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_BLOCK_HPP_

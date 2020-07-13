@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
-#define CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
+#ifndef CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
+#define CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
 
 namespace pressio{ namespace containers{ namespace details {
 
@@ -119,4 +119,4 @@ enum class WrappedMultiVectorIdentifier{
 };
 
 }}} // end namespace pressio::containers::details
-#endif
+#endif  // CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_

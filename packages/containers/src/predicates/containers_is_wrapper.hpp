@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
-#define CONTAINERS_IS_CONTAINERS_WRAPPER_HPP_
+#ifndef CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
+#define CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -74,4 +74,4 @@ struct not_wrapper<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_

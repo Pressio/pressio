@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_COMMON_TRAITS_VELOCITY_API_HPP_
-#define ROM_LSPG_UNSTEADY_COMMON_TRAITS_VELOCITY_API_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
 
 #include "../../shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
 #include "../../shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
@@ -150,4 +150,4 @@ struct CommonTraitsContinuousTimeApi
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_

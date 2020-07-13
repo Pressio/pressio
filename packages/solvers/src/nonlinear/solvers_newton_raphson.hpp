@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_NEWTON_RAPHSON_HPP_
-#define PRESSIO_SOLVERS_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -70,4 +70,4 @@ template<
 using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, update, looper, Args...>::type;
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_

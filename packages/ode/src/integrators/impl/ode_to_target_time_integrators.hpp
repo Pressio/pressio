@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
-#define ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
 
 #include "ode_call_collector_dispatcher.hpp"
 
@@ -204,4 +204,4 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_

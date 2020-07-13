@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONFIGDEFS_HPP_
-#define CONTAINERS_CONFIGDEFS_HPP_
+#ifndef CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_
+#define CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_
 
 #include <chrono>
 #include <array>
@@ -58,4 +58,4 @@
 #include <pybind11/functional.h>
 #endif
 
-#endif
+#endif  // CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_

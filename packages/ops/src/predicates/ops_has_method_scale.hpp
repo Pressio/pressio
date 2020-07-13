@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_HAS_METHOD_SCALE_HPP_
-#define OPS_SRC_META_HAS_METHOD_SCALE_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_
+#define OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
 
@@ -81,4 +81,4 @@ struct has_method_scale<
   > : std::true_type{};
 
 }}} //pressio::ops::predicates
-#endif
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_

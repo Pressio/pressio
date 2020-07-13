@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_MVEC_HPP_
-#define OPS_SRC_OPS_KOKKOS_MULTI_VECTOR_PROD_MVEC_HPP_
+#ifndef OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_
+#define OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_
 
 #include "KokkosBlas3_gemm.hpp"
 
@@ -122,4 +122,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_

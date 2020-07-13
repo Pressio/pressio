@@ -47,8 +47,8 @@
 */
 
 
-#ifndef ode_continuous_time_implicit_system_HPP_
-#define ode_continuous_time_implicit_system_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_
+#define ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -96,4 +96,4 @@ struct continuous_time_implicit_system<
 #endif
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_

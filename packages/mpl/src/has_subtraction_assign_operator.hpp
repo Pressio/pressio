@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_HAS_SUBTRACTION_ASSIGNMENT_OPERATOR_HPP_
-#define PRESSIO_MPL_HAS_SUBTRACTION_ASSIGNMENT_OPERATOR_HPP_
+#ifndef MPL_HAS_SUBTRACTION_ASSIGN_OPERATOR_HPP_
+#define MPL_HAS_SUBTRACTION_ASSIGN_OPERATOR_HPP_
 
 namespace pressio{ namespace mpl{
 
@@ -66,4 +66,4 @@ struct has_subtraction_assign_op<
   > : std::true_type{};
 
 }} // namespace
-#endif
+#endif  // MPL_HAS_SUBTRACTION_ASSIGN_OPERATOR_HPP_

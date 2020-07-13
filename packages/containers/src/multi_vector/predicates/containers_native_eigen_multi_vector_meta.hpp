@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
-#define CONTAINERS_NATIVE_EIGEN_MULTIVECTOR_META_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_META_HPP_
+#define CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_META_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -71,4 +71,4 @@ Only column-major dense matrices can be wrapped and used as multivectors.");
 };
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_META_HPP_

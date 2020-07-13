@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
-#define ROM_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
+#ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
+#define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
 
 #include "rom_linear_decoder_pressio_ops.hpp"
 #include "rom_linear_decoder_custom_ops.hpp"
@@ -146,4 +146,4 @@ does not have an admissible API for the linear decoder class.");
 };
 
 }}}//end namespace pressio::rom::impl
-#endif
+#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_

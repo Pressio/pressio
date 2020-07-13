@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_ITERATIVE_BASE_HPP
-#define SOLVERS_ITERATIVE_BASE_HPP
+#ifndef SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
+#define SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
 
 namespace pressio { namespace solvers {
 
@@ -106,4 +106,4 @@ protected:
 
 }} //end namespace pressio::solvers
 
-#endif
+#endif  // SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
-#define OPS_SRC_META_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
+#define OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
 
@@ -86,4 +86,4 @@ struct has_void_method_product_mat_mat<
   > : std::true_type{};
 
 }}} //pressio::ops::predicates
-#endif
+#endif  // OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_MAT_HPP_

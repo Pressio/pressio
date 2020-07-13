@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_ARBITRARY_VECTOR_META_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -76,4 +76,4 @@ struct is_vector_arbitrary<
 
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_

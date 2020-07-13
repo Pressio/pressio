@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
-#define ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
+#ifndef ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
+#define ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct has_dense_matrix_typedef<
   > : std::true_type{};
 
 }}}//end namespace pressio::rom::predicates
-#endif
+#endif  // ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_

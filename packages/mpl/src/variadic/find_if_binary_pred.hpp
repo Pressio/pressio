@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_VARIADIC_FIND_IF_BINARY_HPP
-#define PRESSIO_MPL_VARIADIC_FIND_IF_BINARY_HPP
+#ifndef MPL_VARIADIC_FIND_IF_BINARY_PRED_HPP_
+#define MPL_VARIADIC_FIND_IF_BINARY_PRED_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -84,4 +84,4 @@ using find_if_binary_pred_t = typename find_if_binary_pred<attribute_t,
 
 }}} // namespace 
 
-#endif
+#endif  // MPL_VARIADIC_FIND_IF_BINARY_PRED_HPP_

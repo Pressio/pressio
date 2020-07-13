@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_BURGERS1D_GOLD_EXPLICIT_HPP_
-#define PRESSIO_BURGERS1D_GOLD_EXPLICIT_HPP_
+#ifndef APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_
+#define APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_
 
 namespace pressio { namespace apps{ namespace test{
 
@@ -103,4 +103,4 @@ struct Burgers1dExpGoldStatesEuler{
 };//end struct
 
 }}}//end namespace pressio::apps::test
-#endif
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_

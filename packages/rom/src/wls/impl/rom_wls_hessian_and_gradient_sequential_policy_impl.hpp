@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
-#define ROM_WLS_HESSIAN_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
+#ifndef ROM_WLS_IMPL_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
+#define ROM_WLS_IMPL_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_
 
 /*
 This header file contains the class used for computing the hessian and gradients in the WLS system.
@@ -401,7 +401,6 @@ private:
 };
 
 }}}} //end namespace pressio::rom::wls::impl
-#endif
 
 
 
@@ -450,3 +449,4 @@ private:
 //     rnorm += ::pressio::ops::norm2(residual_);
 //   }
 // }//end computeResidualNorm
+#endif  // ROM_WLS_IMPL_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_IMPL_HPP_

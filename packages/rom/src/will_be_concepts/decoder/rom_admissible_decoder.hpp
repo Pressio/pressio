@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_ADMISSIBLE_DECODER_HPP_
-#define ROM_ADMISSIBLE_DECODER_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_
+#define ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -82,4 +82,4 @@ struct admissible_decoder<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_

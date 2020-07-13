@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
-#define UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
+#ifndef UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
+#define UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 
 namespace pressio{ namespace utils{
 
@@ -77,4 +77,4 @@ void readAsciiMatrixStdVecVec(std::string filename,
 
 }}// end namespace pressio::utils
 
-#endif
+#endif  // UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_

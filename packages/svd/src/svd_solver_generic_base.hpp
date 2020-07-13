@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SVD_SOLVER_GENERIC_BASE_HPP_
-#define SVD_SOLVER_GENERIC_BASE_HPP_
+#ifndef SVD_SVD_SOLVER_GENERIC_BASE_HPP_
+#define SVD_SVD_SOLVER_GENERIC_BASE_HPP_
 
 
 namespace pressio{ namespace svd{
@@ -99,4 +99,4 @@ private:
 
 } // end namespace svd
 }//end namespace pressio
-#endif
+#endif  // SVD_SVD_SOLVER_GENERIC_BASE_HPP_

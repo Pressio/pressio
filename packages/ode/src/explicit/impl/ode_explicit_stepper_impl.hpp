@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_METHODS_EXPLICIT_STEPPER_IMPL_HPP_
-#define ODE_EXPLICIT_METHODS_EXPLICIT_STEPPER_IMPL_HPP_
+#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_IMPL_HPP_
+#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_IMPL_HPP_
 
 #include "ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_runge_kutta4_stepper_impl.hpp"
@@ -146,4 +146,4 @@ struct Stepper
 };
 
 }}}} // end namespace pressio::ode::explicitmethods::impl
-#endif
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_IMPL_HPP_

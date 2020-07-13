@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_compose_lspg_HPP_
-#define rom_compose_lspg_HPP_
+#ifndef ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+#define ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
 
 #include "./impl/unsteady/continuous_time_api/rom_lspg_unsteady_problem_continuous_time_api.hpp"
 #include "./impl/unsteady/discrete_time_api/rom_lspg_unsteady_problem_discrete_time_api.hpp"
@@ -179,4 +179,4 @@ template<typename ...Args>
 using composeMaskedProblem = impl::compose<impl::Masked, void, Args...>;
 
 }}}
-#endif
+#endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_

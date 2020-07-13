@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_MANAGER_FOM_STATES_STATIC_HPP_
-#define ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#ifndef ROM_ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#define ROM_ROM_MANAGER_FOM_STATES_STATIC_HPP_
 
 namespace pressio{ namespace rom{
 
@@ -204,4 +204,4 @@ private:
 };
 
 }}//end namespace pressio::rom
-#endif
+#endif  // ROM_ROM_MANAGER_FOM_STATES_STATIC_HPP_

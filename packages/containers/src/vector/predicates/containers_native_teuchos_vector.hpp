@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_TEUCHOS_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_TEUCHOS_VECTOR_META_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_
 
 #include "Teuchos_SerialDenseVector.hpp"
 
@@ -67,4 +67,4 @@ struct is_dense_vector_teuchos<T,
       > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_

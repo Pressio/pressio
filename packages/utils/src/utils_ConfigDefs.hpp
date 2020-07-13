@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_CONFIGDEFS_HPP_
-#define UTILS_CONFIGDEFS_HPP_
+#ifndef UTILS_UTILS_CONFIGDEFS_HPP_
+#define UTILS_UTILS_CONFIGDEFS_HPP_
 
 #include <iomanip>
 #include <fstream>
@@ -57,4 +57,4 @@
 #include <iostream>
 #include <cstdio>
 
-#endif
+#endif  // UTILS_UTILS_CONFIGDEFS_HPP_

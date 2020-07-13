@@ -10,8 +10,8 @@
 //  enniobarbaro@gmail.com
 //
 
-#ifndef PRESSIO_MPL_VARIADIC_SIZE_HPP
-#define PRESSIO_MPL_VARIADIC_SIZE_HPP
+#ifndef MPL_VARIADIC_SIZE_HPP_
+#define MPL_VARIADIC_SIZE_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -32,4 +32,4 @@ struct size : std::integral_constant<std::size_t,sizeof...(Args)>
 
 }}} // namespace pressio::mpl::variadic
 
-#endif 
+#endif  // MPL_VARIADIC_SIZE_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void_HPP_
-#define rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void_HPP_
+#ifndef ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_STATE_OPERAND_TIME_RESULT_RETURN_VOID_HPP_
+#define ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_STATE_OPERAND_TIME_RESULT_RETURN_VOID_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
 
@@ -84,4 +84,4 @@ struct has_const_apply_jacobian_method_accept_state_operand_time_result_return_v
   >: std::true_type{};
 
 }}} 
-#endif
+#endif  // ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_STATE_OPERAND_TIME_RESULT_RETURN_VOID_HPP_

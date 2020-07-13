@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
-#define CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -99,4 +99,4 @@ struct is_vector_wrapper_pybind<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_

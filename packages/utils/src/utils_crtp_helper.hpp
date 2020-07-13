@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_CRTP_HELPER_HPP_
-#define UTILS_CRTP_HELPER_HPP_
+#ifndef UTILS_UTILS_CRTP_HELPER_HPP_
+#define UTILS_UTILS_CRTP_HELPER_HPP_
 
 namespace pressio{ namespace utils{ namespace details {
 
@@ -111,4 +111,4 @@ private:
 
 }}} // end namespace pressio::utils::details
 
-#endif
+#endif  // UTILS_UTILS_CRTP_HELPER_HPP_

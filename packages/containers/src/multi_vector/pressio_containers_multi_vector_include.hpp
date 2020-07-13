@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef pressio_containers_multi_vector_include_HPP_
-#define pressio_containers_multi_vector_include_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
+#define CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./predicates/containers_native_kokkos_multi_vector_meta.hpp"
@@ -87,6 +87,6 @@
 #include "./concrete/containers_multi_vector_arbitrary.hpp"
 #include "./concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
 
-#endif
 
 
+#endif  // CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_

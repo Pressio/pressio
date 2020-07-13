@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_OPS_HAS_METHOD_DEEP_COPY_HPP_
-#define OPS_SRC_META_OPS_HAS_METHOD_DEEP_COPY_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_
+#define OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
 
@@ -74,4 +74,4 @@ struct has_method_deep_copy<
   > : std::true_type{};
 
 }}} //pressio::ops::predicates
-#endif
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EPETRA_VECTOR_DO_UPDATE_HPP_
-#define OPS_SRC_OPS_EPETRA_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_
+#define OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -175,4 +175,4 @@ do_update(T & v,
 
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_

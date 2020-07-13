@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void_HPP_
-#define solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void_HPP_
+#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
@@ -88,4 +88,4 @@ struct has_const_residualandjacobian_method_accept_state_result_norm_return_void
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::predicates
-#endif
+#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUALANDJACOBIAN_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_

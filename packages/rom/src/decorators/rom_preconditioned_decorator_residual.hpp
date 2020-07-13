@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
-#define ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
+#ifndef ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
+#define ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_
 
 namespace pressio{ namespace rom{ namespace decorator{
 
@@ -127,4 +127,4 @@ public:
 };//end class
 
 }}} //end namespace pressio::rom::decorator
-#endif
+#endif  // ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_RESIDUAL_HPP_

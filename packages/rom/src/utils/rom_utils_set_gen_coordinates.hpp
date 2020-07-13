@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_UTILS_SET_GEN_COORDINATES_HPP_
-#define ROM_UTILS_SET_GEN_COORDINATES_HPP_
+#ifndef ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_
+#define ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_
 
 namespace pressio{ namespace rom{ namespace utils{
 
@@ -89,4 +89,4 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 }
 
 }}} //end namespace pressio::rom::utils
-#endif
+#endif  // ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_

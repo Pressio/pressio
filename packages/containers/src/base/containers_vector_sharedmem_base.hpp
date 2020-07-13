@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_BASE_VECTOR_SHAREDMEM_BASE_HPP_
-#define CONTAINERS_VECTOR_BASE_VECTOR_SHAREDMEM_BASE_HPP_
+#ifndef CONTAINERS_BASE_CONTAINERS_VECTOR_SHAREDMEM_BASE_HPP_
+#define CONTAINERS_BASE_CONTAINERS_VECTOR_SHAREDMEM_BASE_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -83,4 +83,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif
+#endif  // CONTAINERS_BASE_CONTAINERS_VECTOR_SHAREDMEM_BASE_HPP_

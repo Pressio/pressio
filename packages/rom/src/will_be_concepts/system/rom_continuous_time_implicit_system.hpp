@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_continuous_time_implicit_system_HPP_
-#define rom_continuous_time_implicit_system_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_
+#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -96,4 +96,4 @@ struct continuous_time_implicit_system<
 
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_META_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
-#define OPS_SRC_META_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
+#define OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
 
@@ -99,4 +99,4 @@ struct has_method_do_update_one_term<
   > : std::true_type{};
 
 }}} // namespace pressio::ops::predicates
-#endif
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_

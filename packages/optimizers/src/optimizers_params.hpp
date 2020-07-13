@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPTIMIZERS_PARAMS_HPP_
-#define OPTIMIZERS_PARAMS_HPP_
+#ifndef OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
+#define OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "ROL_ParameterList.hpp"
@@ -141,4 +141,4 @@ void convertToRolParameterList(const Parameters<scalar_type> & params,
 #endif
 
 }}//end namespace pressio::optimizers
-#endif
+#endif  // OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_

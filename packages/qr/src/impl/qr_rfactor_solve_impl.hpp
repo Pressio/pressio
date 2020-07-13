@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_RFACTOR_SOLVE_HPP_
-#define QR_RFACTOR_SOLVE_HPP_
+#ifndef QR_IMPL_QR_RFACTOR_SOLVE_IMPL_HPP_
+#define QR_IMPL_QR_RFACTOR_SOLVE_IMPL_HPP_
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "Teuchos_SerialDenseMatrix.hpp"
@@ -173,4 +173,4 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 #endif
 
 }}}//end namespace pressio::qr::impl
-#endif
+#endif  // QR_IMPL_QR_RFACTOR_SOLVE_IMPL_HPP_

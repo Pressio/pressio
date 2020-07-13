@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_admissible_USER_DEFINED_OPS_EXPLICIT_RK4_HPP_
-#define ODE_admissible_USER_DEFINED_OPS_EXPLICIT_RK4_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_RK4_HPP_
+#define ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_RK4_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -86,4 +86,4 @@ struct user_defined_ops_for_explicit_rk4<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_RK4_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
-#define UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
+#ifndef UTILS_UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
+#define UTILS_UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_
 
 #include <Teuchos_Comm.hpp>
 #include <Teuchos_DefaultComm.hpp>
@@ -99,4 +99,4 @@ struct TeuchosPerformanceMonitor{
 };
 
 }} // end of namespace pressio::utils
-#endif
+#endif  // UTILS_UTILS_TEUCHOS_PERFORMANCE_MONITOR_HPP_

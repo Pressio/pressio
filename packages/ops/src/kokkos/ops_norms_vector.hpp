@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_KOKKOS_NORMS_HPP_
-#define OPS_SRC_OPS_KOKKOS_NORMS_HPP_
+#ifndef OPS_KOKKOS_OPS_NORMS_VECTOR_HPP_
+#define OPS_KOKKOS_OPS_NORMS_VECTOR_HPP_
 
 #include "KokkosBlas1_nrm1.hpp"
 #include "KokkosBlas1_nrm2.hpp"
@@ -79,4 +79,4 @@ auto norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_KOKKOS_OPS_NORMS_VECTOR_HPP_

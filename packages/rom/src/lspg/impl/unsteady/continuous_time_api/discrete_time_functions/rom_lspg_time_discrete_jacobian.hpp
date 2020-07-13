@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
-#define ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
 
@@ -325,4 +325,4 @@ time_discrete_jacobian(lspg_matrix_type & jphi,
 #endif
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_

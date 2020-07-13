@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_IS_EXPRESSION_HPP_
-#define CONTAINERS_META_IS_EXPRESSION_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#define CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -73,4 +73,4 @@ struct is_expression<
   // > : std::true_type{};
 
 }}} // namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

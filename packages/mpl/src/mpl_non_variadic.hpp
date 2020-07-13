@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_NON_VARIADIC_HPP
-#define PRESSIO_MPL_NON_VARIADIC_HPP
+#ifndef MPL_MPL_NON_VARIADIC_HPP_
+#define MPL_MPL_NON_VARIADIC_HPP_
 
 #include "identity.hpp"
 #include "enable_if_t.hpp"
@@ -68,4 +68,4 @@
 #include "has_subtraction_assign_operator.hpp"
 #include "has_subtraction_operator.hpp"
 
-#endif
+#endif  // MPL_MPL_NON_VARIADIC_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_IS_STD_COMPLEX_HPP_
-#define PRESSIO_MPL_IS_STD_COMPLEX_HPP_
+#ifndef MPL_IS_STD_COMPLEX_HPP_
+#define MPL_IS_STD_COMPLEX_HPP_
 
 namespace pressio{ namespace mpl{ 
 
@@ -66,4 +66,4 @@ struct is_std_complex<T, typename
 		      > : std::true_type{};
 
 }} // namespace pressio::mpl
-#endif
+#endif  // MPL_IS_STD_COMPLEX_HPP_

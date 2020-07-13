@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_SPAN_HPP_
-#define CONTAINERS_SPAN_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -76,4 +76,4 @@ span(T & vecObj, Args&& ... args)
 
 }} //end namespace pressio::containers
 
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_HPP_

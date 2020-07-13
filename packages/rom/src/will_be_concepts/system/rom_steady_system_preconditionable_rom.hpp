@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_steady_system_PRECONDITIONABLE_ROM_HPP_
-#define rom_steady_system_PRECONDITIONABLE_ROM_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
+#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -68,4 +68,4 @@ struct steady_system_preconditionable_rom<
 
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
-#define CONTAINERS_MULTIVECTOR_MULTIVECTOR_TRAITS_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_
+#define CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -314,4 +314,4 @@ struct traits<
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif
+#endif  // CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_

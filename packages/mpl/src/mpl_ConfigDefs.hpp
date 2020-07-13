@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef MPL_CONFIGDEFS_HPP_
-#define MPL_CONFIGDEFS_HPP_
+#ifndef MPL_MPL_CONFIGDEFS_HPP_
+#define MPL_MPL_CONFIGDEFS_HPP_
 
 #include "pressio_cmake_config.h"
 
@@ -57,4 +57,4 @@
 #include <cstddef>
 #include <tuple>
 
-#endif
+#endif  // MPL_MPL_CONFIGDEFS_HPP_

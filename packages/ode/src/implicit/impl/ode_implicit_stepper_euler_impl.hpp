@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
-#define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_EULER_HPP_
+#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
+#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
 
@@ -218,4 +218,4 @@ private:
 };//end class
 
 }}}}
-#endif
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_

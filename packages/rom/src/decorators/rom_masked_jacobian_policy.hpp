@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_MASK_DECORATOR_JACOBIAN_HPP_
-#define ROM_MASK_DECORATOR_JACOBIAN_HPP_
+#ifndef ROM_DECORATORS_ROM_MASKED_JACOBIAN_POLICY_HPP_
+#define ROM_DECORATORS_ROM_MASKED_JACOBIAN_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace decorator{
 
@@ -110,4 +110,4 @@ public:
 };//end class
 
 }}} //end namespace pressio::rom::decorator
-#endif
+#endif  // ROM_DECORATORS_ROM_MASKED_JACOBIAN_POLICY_HPP_

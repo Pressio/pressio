@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
-#define ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#ifndef ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
+#define ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
@@ -141,4 +141,4 @@ protected:
 };//end class
 
 }}}}}
-#endif
+#endif  // ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_

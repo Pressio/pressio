@@ -45,8 +45,8 @@
 // ************************************************************************
 //@HEADER
 */
-#ifndef ROM_WLS_TYPES_HPP_
-#define ROM_WLS_TYPES_HPP_
+#ifndef ROM_WLS_ROM_WLS_TYPES_HPP_
+#define ROM_WLS_ROM_WLS_TYPES_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{
 
@@ -55,4 +55,4 @@ using rom_size_t    = int32_t;
 
 }}} //ending namespace pressio::rom::wls
 
-#endif
+#endif  // ROM_WLS_ROM_WLS_TYPES_HPP_

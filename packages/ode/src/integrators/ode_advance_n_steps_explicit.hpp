@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_advance_N_STEPS_EXPLICIT_HPP_
-#define ODE_INTEGRATORS_advance_N_STEPS_EXPLICIT_HPP_
+#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
+#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
 
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
@@ -143,4 +143,4 @@ It does not meet the API of a valid collector. See requirements in ode_is_legiti
 }
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_

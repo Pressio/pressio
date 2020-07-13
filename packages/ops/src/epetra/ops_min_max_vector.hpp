@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
-#define OPS_SRC_OPS_EPETRA_MINMAX_VECTOR_HPP_
+#ifndef OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_
+#define OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -76,4 +76,4 @@ min(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_

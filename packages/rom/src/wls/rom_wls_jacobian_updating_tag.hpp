@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
-#define ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
+#ifndef ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
+#define ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
 
 
 namespace pressio{ namespace rom{ namespace wls{
@@ -56,4 +56,4 @@ struct FrozenJacobian{};
 struct NonFrozenJacobian{};
 
 }}} // end namespace pressio::rom::wls
-#endif
+#endif  // ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_

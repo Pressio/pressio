@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_continuous_time_system_maskable_rom_HPP_
-#define rom_continuous_time_system_maskable_rom_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_MASKABLE_ROM_HPP_
+#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_MASKABLE_ROM_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -76,4 +76,4 @@ struct continuous_time_system_maskable_rom<
 
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_MASKABLE_ROM_HPP_

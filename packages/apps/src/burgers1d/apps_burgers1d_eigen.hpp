@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
-#define PRESSIOAPPS_BURGERS1D_EIGEN_HPP_
+#ifndef APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_HPP_
+#define APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_HPP_
 
 #include "Eigen/Dense"
 #include "Eigen/SparseCore"
@@ -178,4 +178,4 @@ private:
 };//end class
 
 }} //namespace pressio::apps
-#endif
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_HPP_

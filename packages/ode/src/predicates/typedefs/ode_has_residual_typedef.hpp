@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
-#define ODE_META_HAS_RESIDUAL_TYPEDEF_HPP_
+#ifndef ODE_PREDICATES_TYPEDEFS_ODE_HAS_RESIDUAL_TYPEDEF_HPP_
+#define ODE_PREDICATES_TYPEDEFS_ODE_HAS_RESIDUAL_TYPEDEF_HPP_
 
 namespace pressio{ namespace ode{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct has_residual_typedef<
   > : std::true_type{};
 
 }}}//end namespace pressio::ode::predicates
-#endif
+#endif  // ODE_PREDICATES_TYPEDEFS_ODE_HAS_RESIDUAL_TYPEDEF_HPP_

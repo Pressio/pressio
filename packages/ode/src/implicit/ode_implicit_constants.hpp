@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_CONSTANTS_HPP_
-#define ODE_IMPLICIT_CONSTANTS_HPP_
+#ifndef ODE_IMPLICIT_ODE_IMPLICIT_CONSTANTS_HPP_
+#define ODE_IMPLICIT_ODE_IMPLICIT_CONSTANTS_HPP_
 
 namespace pressio{ namespace ode{ namespace constants{
 
@@ -68,4 +68,4 @@ struct bdf2{
 
 
 }}}// end namespace pressio::ode::constants
-#endif
+#endif  // ODE_IMPLICIT_ODE_IMPLICIT_CONSTANTS_HPP_

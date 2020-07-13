@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_has_const_create_residual_method_return_result_HPP_
-#define rom_has_const_create_residual_method_return_result_HPP_
+#ifndef ROM_PREDICATES_STEADY_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+#define ROM_PREDICATES_STEADY_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
   
@@ -76,4 +76,4 @@ struct has_const_create_residual_method_return_result<
   > : std::true_type{};
 
 }}} 
-#endif
+#endif  // ROM_PREDICATES_STEADY_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
-#define PRESSIO_SOLVERS_GAUSS_NEWTON_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -88,4 +88,4 @@ using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, update, l
 
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_

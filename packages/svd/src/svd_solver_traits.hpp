@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SVD_SOLVER_TRAITS_HPP_
-#define SVD_SOLVER_TRAITS_HPP_
+#ifndef SVD_SVD_SOLVER_TRAITS_HPP_
+#define SVD_SVD_SOLVER_TRAITS_HPP_
 
 namespace pressio{  namespace svd{ namespace details{
 
@@ -141,4 +141,4 @@ struct svd_traits<Solver<
 }//end namespace details
 }//end namespace svd 
 }//end namespace pressio
-#endif
+#endif  // SVD_SVD_SOLVER_TRAITS_HPP_

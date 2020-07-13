@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_PRECONDITIONED_DECORATOR_JACOBIAN_HPP_
-#define ROM_PRECONDITIONED_DECORATOR_JACOBIAN_HPP_
+#ifndef ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_JACOBIAN_HPP_
+#define ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace decorator{
 
@@ -120,4 +120,4 @@ public:
 
 }}} //end namespace pressio::rom::decorator
 
-#endif
+#endif  // ROM_DECORATORS_ROM_PRECONDITIONED_DECORATOR_JACOBIAN_HPP_

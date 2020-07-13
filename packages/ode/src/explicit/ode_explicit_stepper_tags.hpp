@@ -47,8 +47,8 @@
 */
 
 
-#ifndef ode_explicit_stepper_tags_HPP_
-#define ode_explicit_stepper_tags_HPP_
+#ifndef ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
+#define ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
 
 namespace pressio{ namespace ode{ namespace explicitmethods{
 
@@ -57,4 +57,4 @@ struct Euler{};
 struct RungeKutta4{};
 
 }}}
-#endif
+#endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_

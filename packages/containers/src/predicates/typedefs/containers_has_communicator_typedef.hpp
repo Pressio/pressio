@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_META_HAS_COMMUNICATOR_TYPEDEF_HPP_
-#define CONTAINERS_META_HAS_COMMUNICATOR_TYPEDEF_HPP_
+#ifndef CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
+#define CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct has_communicator_typedef<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
-#define ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
+#ifndef ROM_WLS_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
+#define ROM_WLS_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
 
 #include "./impl/rom_wls_hessian_and_gradient_sequential_policy_impl.hpp"
 
@@ -87,4 +87,4 @@ template<typename ...Args>
 using HessianGradientSequentialPolicy = typename impl::HessGradSeqPolHelper<Args...>::type;
 
 }}} // end namespace pressio::rom::wls
-#endif
+#endif  // ROM_WLS_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_

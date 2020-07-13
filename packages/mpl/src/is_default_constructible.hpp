@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_
-#define PRESSIO_MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_
+#ifndef MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_
+#define MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_
 
 namespace pressio { namespace mpl {
 
@@ -57,4 +57,4 @@ struct is_default_constructible
 
 }} // end namespace pressio::mpl
 
-#endif /* PRESSIO_MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_ */
+#endif  // MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_

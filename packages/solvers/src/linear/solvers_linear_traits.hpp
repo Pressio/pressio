@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
-#define SOLVERS_EXPERIMENTAL_LINEAR_TRAITS_HPP
+#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_
+#define SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_
 
 #include <Eigen/Core>
 #include <Eigen/IterativeLinearSolvers>
@@ -208,4 +208,4 @@ struct traits<::pressio::solvers::linear::direct::geqrf> {
 #endif
 
 }}}}//end namespace pressio::solvers::linear::details
-#endif
+#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_

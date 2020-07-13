@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_APPS_BURGERS1D_GOLD_IMPLICIT_HPP_
-#define PRESSIO_APPS_BURGERS1D_GOLD_IMPLICIT_HPP_
+#ifndef APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_IMPLICIT_HPP_
+#define APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_IMPLICIT_HPP_
 
 namespace pressio { namespace apps{ namespace test{
 
@@ -143,4 +143,4 @@ struct Burgers1dImpGoldStatesBDF2{
 };//end struct
 
 }}}//end namespace pressio::apps::test
-#endif
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_IMPLICIT_HPP_

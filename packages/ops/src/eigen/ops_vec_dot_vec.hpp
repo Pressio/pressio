@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
-#define OPS_SRC_OPS_EIGEN_VECTOR_DOT_VECTOR_HPP_
+#ifndef OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_
+#define OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -84,4 +84,4 @@ dot(const vec_type & vecA, const vec_type & vecB)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_

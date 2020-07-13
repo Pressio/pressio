@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
-#define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
+#define OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
 
 #include<KokkosBlas1_axpby.hpp>
 
@@ -78,4 +78,4 @@ do_update(T & mv, const T & mv1, const scalar_t & b)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_

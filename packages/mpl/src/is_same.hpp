@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_MPL_IS_SAME_HPP_
-#define PRESSIO_MPL_IS_SAME_HPP_
+#ifndef MPL_IS_SAME_HPP_
+#define MPL_IS_SAME_HPP_
 
 namespace pressio { namespace mpl {
 
@@ -60,4 +60,4 @@ struct is_same : std::is_same<T1,T2> {};
 
 }} // end namespace pressio::mpl
 
-#endif
+#endif  // MPL_IS_SAME_HPP_

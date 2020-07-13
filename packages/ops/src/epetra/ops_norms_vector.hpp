@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EPETRA_NORMS_HPP_
-#define OPS_SRC_OPS_EPETRA_NORMS_HPP_
+#ifndef OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
+#define OPS_EPETRA_OPS_NORMS_VECTOR_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -78,4 +78,4 @@ norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EPETRA_OPS_NORMS_VECTOR_HPP_

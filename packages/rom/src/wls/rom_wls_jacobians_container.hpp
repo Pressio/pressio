@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_JACOBIANS_CONTAINER_HPP_
-#define ROM_WLS_JACOBIANS_CONTAINER_HPP_
+#ifndef ROM_WLS_ROM_WLS_JACOBIANS_CONTAINER_HPP_
+#define ROM_WLS_ROM_WLS_JACOBIANS_CONTAINER_HPP_
 
 #include "./impl/rom_wls_jacobians_container_impl.hpp"
 
@@ -60,4 +60,4 @@ template<typename ... Args>
 using NonFrozenJacobiansContainer = ::pressio::rom::wls::impl::NonFrozenJacobiansContainer<Args...>;
 
 }}} // end namespace pressio::rom::wls
-#endif
+#endif  // ROM_WLS_ROM_WLS_JACOBIANS_CONTAINER_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_TRAITS_HPP_
-#define QR_TRAITS_HPP_
+#ifndef QR_QR_TRAITS_HPP_
+#define QR_QR_TRAITS_HPP_
 
 namespace pressio{ namespace qr{ namespace details{
 
@@ -361,7 +361,6 @@ struct traits<
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 }}}//end namespace pressio::qr::details
-#endif
 
 
 
@@ -449,3 +448,4 @@ struct traits<
 //   using impl_t		= typename impl_class_helper<matrix_t, algo_t, Q_t,
 // 						     R_type, sc_t, MV_t>::impl_t;
 // };
+#endif  // QR_QR_TRAITS_HPP_

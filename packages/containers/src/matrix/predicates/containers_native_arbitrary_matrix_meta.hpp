@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
-#define CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
+#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
+#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -81,4 +81,4 @@ struct is_matrix_arbitrary<
 
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
-#define ROM_ROM_IS_LEGITIMATE_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
+#define ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -86,4 +86,4 @@ struct custom_ops_for_linear_decoder<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_

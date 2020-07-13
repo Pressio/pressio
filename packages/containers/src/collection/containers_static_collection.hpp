@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_STATIC_COLLECTION_HPP_
-#define CONTAINERS_STATIC_COLLECTION_HPP_
+#ifndef CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_
+#define CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_
 
 #include "containers_static_collection_impl.hpp"
 
@@ -57,4 +57,4 @@ template<typename T, std::size_t n>
 using StaticCollection = ::pressio::containers::impl::StaticCollection<T, n>;
 
 }}//end namespace pressio::containers
-#endif
+#endif  // CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
-#define ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
@@ -64,4 +64,4 @@ struct auxStepperHelper<::pressio::ode::implicitmethods::BDF2, Rest...>
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_AUX_STEPPER_TYPE_HELPER_HPP_

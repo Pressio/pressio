@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
-#define ODE_INTEGRATORS_N_STEPS_INTEGRATORS_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
 
 #include "ode_call_collector_dispatcher.hpp"
 
@@ -227,4 +227,4 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_

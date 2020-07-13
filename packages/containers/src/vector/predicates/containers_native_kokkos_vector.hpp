@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_KOKKOS_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_KOKKOS_VECTOR_META_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_VECTOR_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_VECTOR_HPP_
 
 #include "Kokkos_Core.hpp"
 
@@ -65,4 +65,4 @@ struct is_vector_kokkos<T,
       > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_VECTOR_HPP_

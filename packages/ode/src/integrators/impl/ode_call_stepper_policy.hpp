@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CALL_STEPPER_POLICY_HPP_
-#define ODE_CALL_STEPPER_POLICY_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_CALL_STEPPER_POLICY_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_CALL_STEPPER_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -98,4 +98,4 @@ struct ImplicitDoStepWithGuesser
 };
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_INTEGRATORS_IMPL_ODE_CALL_STEPPER_POLICY_HPP_

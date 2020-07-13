@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_UPDATING_CRITERIA_HPP_
-#define PRESSIO_SOLVERS_UPDATING_CRITERIA_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_
 
 #include "./impl/update_mixins/solvers_default_updater.hpp"
 #include "./impl/update_mixins/solvers_armijo_updater.hpp"
@@ -82,4 +82,4 @@ template<typename ... Args> using Schedule2UpdateLM  = impl::LMSchedule2Updater<
 template<typename ... Args> using schedule2UpdateLM = impl::LMSchedule2Updater<Args...>;
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_

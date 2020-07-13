@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
-#define CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
+#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
+#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_
 
 #include <KokkosSparse_CrsMatrix.hpp>
 
@@ -89,4 +89,4 @@ struct is_dense_matrix_kokkos<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MATRIX_META_HPP_

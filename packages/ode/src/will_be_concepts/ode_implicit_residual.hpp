@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_LEGITIMATE_IMPLICIT_RESIDUAL_TYPE_HPP_
-#define ODE_LEGITIMATE_IMPLICIT_RESIDUAL_TYPE_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_RESIDUAL_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -65,4 +65,4 @@ struct implicit_residual<T,
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_RESIDUAL_HPP_

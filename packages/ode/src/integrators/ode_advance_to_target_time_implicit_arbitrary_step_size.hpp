@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_advance_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
-#define ODE_advance_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#ifndef ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#define ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_to_target_time_integrators.hpp"
@@ -117,4 +117,4 @@ but the state type you are using is not admissible for implicit time-stepping.")
 
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_

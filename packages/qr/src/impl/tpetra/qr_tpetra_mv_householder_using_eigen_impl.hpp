@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
-#define QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
+#ifndef QR_IMPL_TPETRA_QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
+#define QR_IMPL_TPETRA_QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
 
 #include <Eigen/OrderingMethods>
 #include <Eigen/SparseQR>
@@ -160,4 +160,4 @@ private:
 };//end class
 
 }}} // end namespace pressio::qr::impl
-#endif
+#endif  // QR_IMPL_TPETRA_QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_

@@ -47,8 +47,8 @@
 */
 
 
-#ifndef solvers_has_residual_typedef_HPP_
-#define solvers_has_residual_typedef_HPP_
+#ifndef SOLVERS_PREDICATES_TYPEDEFS_SOLVERS_HAS_RESIDUAL_TYPEDEF_HPP_
+#define SOLVERS_PREDICATES_TYPEDEFS_SOLVERS_HAS_RESIDUAL_TYPEDEF_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
@@ -66,4 +66,4 @@ struct has_residual_typedef<
   > : std::true_type{};
 
 }}}
-#endif
+#endif  // SOLVERS_PREDICATES_TYPEDEFS_SOLVERS_HAS_RESIDUAL_TYPEDEF_HPP_

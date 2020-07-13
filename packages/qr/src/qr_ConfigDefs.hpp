@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_CONFIGDEFS_HPP
-#define QR_CONFIGDEFS_HPP
+#ifndef QR_QR_CONFIGDEFS_HPP_
+#define QR_QR_CONFIGDEFS_HPP_
 
 namespace pressio{ namespace qr{ namespace details {
 
@@ -55,4 +55,4 @@ template<typename T, typename enable = void> struct traits{};
 template<typename T>  struct traits<const T> : traits<T> {};
 
 }}}// end namespace pressio::qr::details
-#endif
+#endif  // QR_QR_CONFIGDEFS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
-#define ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
+#ifndef ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
+#define ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
@@ -95,4 +95,4 @@ struct CommonTraits
 };
 
 }}}}}
-#endif
+#endif  // ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_

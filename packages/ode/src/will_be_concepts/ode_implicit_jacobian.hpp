@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_LEGITIMATE_IMPLICIT_JACOBIAN_TYPE_HPP_
-#define ODE_LEGITIMATE_IMPLICIT_JACOBIAN_TYPE_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -66,4 +66,4 @@ struct implicit_jacobian<T,
        > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_

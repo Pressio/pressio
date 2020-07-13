@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_META_HAS_TIME_DISCRETE_jacobian_TYPEDEF_HPP_
-#define ODE_META_HAS_TIME_DISCRETE_jacobian_TYPEDEF_HPP_
+#ifndef ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_
+#define ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_
 
 namespace pressio{ namespace ode{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct has_discrete_time_jacobian_typedef<
   > : std::true_type{};
 
 }}}//end namespace pressio::ode::predicates
-#endif
+#endif  // ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_

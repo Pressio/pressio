@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_advance_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
-#define ODE_INTEGRATORS_advance_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
 #include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_n_steps_integrators.hpp"
@@ -85,4 +85,4 @@ but the state type you are using is not admissible for implicit time-stepping. "
 }
 
 }}//end namespace pressio::ode
-#endif
+#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_

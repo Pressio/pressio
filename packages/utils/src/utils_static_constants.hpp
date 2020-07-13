@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_STATIC_CONSTANTS_HPP_
-#define UTILS_STATIC_CONSTANTS_HPP_
+#ifndef UTILS_UTILS_STATIC_CONSTANTS_HPP_
+#define UTILS_UTILS_STATIC_CONSTANTS_HPP_
 
 namespace pressio{ namespace utils{
 
@@ -62,4 +62,4 @@ struct constants
 };
 
 }} // end of namespace pressio::utils
-#endif
+#endif  // UTILS_UTILS_STATIC_CONSTANTS_HPP_

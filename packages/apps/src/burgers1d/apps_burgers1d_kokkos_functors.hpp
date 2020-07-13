@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIOAPPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
-#define PRESSIOAPPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
+#ifndef APPS_BURGERS1D_APPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
+#define APPS_BURGERS1D_APPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_
 
 #include <Kokkos_Core.hpp>
 #include <KokkosSparse_CrsMatrix.hpp>
@@ -134,4 +134,4 @@ struct JacobianFunctor{
 };
 
 }} //namespace pressio::apps
-#endif
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_KOKKOS_FUNCTORS_HPP_

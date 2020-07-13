@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_BDF2_HPP_
-#define ODE_IMPLICIT_STEPPERS_IMPLICIT_STEPPER_BDF2_HPP_
+#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
+#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
@@ -269,4 +269,4 @@ private:
 };//end class
 
 }}} // end namespace pressio::ode::implicitmethods
-#endif
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_

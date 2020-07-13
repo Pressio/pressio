@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
-#define SOLVERS_IS_LEGITIMATE_LINEAR_SOLVER_FOR_LSQ_SOLVER_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
@@ -72,4 +72,4 @@ struct linear_solver_for_least_squares_solver<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_

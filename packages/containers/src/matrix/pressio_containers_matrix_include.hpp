@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef pressio_containers_matrix_include_HPP
-#define pressio_containers_matrix_include_HPP
+#ifndef CONTAINERS_MATRIX_PRESSIO_CONTAINERS_MATRIX_INCLUDE_HPP_
+#define CONTAINERS_MATRIX_PRESSIO_CONTAINERS_MATRIX_INCLUDE_HPP_
 
 // predicates native
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -99,4 +99,4 @@
 #include "./concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "./concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
 
-#endif
+#endif  // CONTAINERS_MATRIX_PRESSIO_CONTAINERS_MATRIX_INCLUDE_HPP_

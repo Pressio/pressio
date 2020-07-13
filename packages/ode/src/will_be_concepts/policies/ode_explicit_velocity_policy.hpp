@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ode_admissible_explicit_velocity_policy_HPP_
-#define ODE_ode_admissible_explicit_velocity_policy_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
+#define ODE_WILL_BE_CONCEPTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -91,4 +91,4 @@ struct explicit_velocity_policy<
 
 
 }}}//end namespace pressio::containers::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_COLLECTOR_HPP_
-#define ODE_IS_LEGITIMATE_COLLECTOR_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_COLLECTOR_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_COLLECTOR_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -175,4 +175,4 @@ because that would lead to this error too. ");
 };
 
 }}} // namespace pressio::ode::meta
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_COLLECTOR_HPP_

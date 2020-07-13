@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_METHODS_IMPLICIT_STEPPER_IMPL_HPP_
-#define ODE_IMPLICIT_METHODS_IMPLICIT_STEPPER_IMPL_HPP_
+#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_
+#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_
 
 #include "ode_implicit_stepper_euler_impl.hpp"
 #include "ode_implicit_stepper_bdf2_impl.hpp"
@@ -328,4 +328,4 @@ struct Composer<
 
 
 }}}} // end namespace pressio::ode::explicitmethods::impl
-#endif
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_

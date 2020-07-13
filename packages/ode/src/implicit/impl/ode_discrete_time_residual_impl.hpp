@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_TIME_DISCRETE_RESIDUAL_IMPL_HPP_
-#define ODE_TIME_DISCRETE_RESIDUAL_IMPL_HPP_
+#ifndef ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_
+#define ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -108,4 +108,4 @@ void discrete_time_residual(const state_type	& odeCurrentState,
 }
 
 }}}//end namespace pressio::ode::impl
-#endif
+#endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_RESIDUAL_IMPL_HPP_

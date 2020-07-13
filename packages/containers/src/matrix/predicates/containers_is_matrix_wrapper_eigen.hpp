@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
-#define CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
+#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
+#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -64,4 +64,4 @@ struct is_matrix_wrapper_eigen<
   : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_EIGEN_HPP_

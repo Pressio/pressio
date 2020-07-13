@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_SOLVER_HPP_
-#define SOLVERS_LINEAR_SOLVER_HPP_
+#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
+#define SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
 
 #include "./impl/solvers_linear_solver_selector_impl.hpp"
 
@@ -57,4 +57,4 @@ template <typename ... Args>
 using Solver = typename impl::LinearSolverSelector<Args...>::type;
 
 }}}//end namespace pressio::solvers::linear
-#endif
+#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_

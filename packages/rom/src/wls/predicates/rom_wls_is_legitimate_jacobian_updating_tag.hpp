@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
-#define ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
+#ifndef ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
+#define ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{ namespace predicates{
 
@@ -61,4 +61,4 @@ template <>
 struct is_legitimate_jacobian_updating_tag<NonFrozenJacobian> : std::true_type{};
 
 }}}} // end namespace pressio::rom::wls::predicates
-#endif
+#endif  // ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_JACOBIAN_UPDATING_TAG_HPP_

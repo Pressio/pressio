@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
-#define ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
+#ifndef ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
+#define ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
@@ -104,4 +104,4 @@ struct DefaultProblemTraits
 };//end class
 
 }}}}}
-#endif
+#endif  // ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_DEFAULT_PROBLEM_TRAITS_HPP_

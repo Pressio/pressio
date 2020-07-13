@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_LEGITIMATE_TIME_STEP_SIZE_SETTER_HPP_
-#define ODE_IS_LEGITIMATE_TIME_STEP_SIZE_SETTER_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -72,4 +72,4 @@ struct time_step_size_setter<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_

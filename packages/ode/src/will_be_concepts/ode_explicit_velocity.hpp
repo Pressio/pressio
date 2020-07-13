@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_LEGITIMATE_EXPLICIT_VELOCITY_TYPE_HPP_
-#define ODE_LEGITIMATE_EXPLICIT_VELOCITY_TYPE_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_VELOCITY_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_VELOCITY_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -62,4 +62,4 @@ struct explicit_velocity<T,
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_VELOCITY_HPP_

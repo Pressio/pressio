@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_SOLVER_IMPL_HPP_
-#define SOLVERS_LINEAR_SOLVER_IMPL_HPP_
+#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
+#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
 
 #include "solvers_linear_eigen_direct_impl.hpp"
 #include "solvers_linear_eigen_iterative_impl.hpp"
@@ -114,4 +114,4 @@ struct LinearSolverSelector<
 #endif
 
 }}}}// end namespace pressio::solvers::linear::impl
-#endif
+#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_

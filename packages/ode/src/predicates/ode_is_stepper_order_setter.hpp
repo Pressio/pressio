@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_STEPPER_ORDER_SETTER_HPP_
-#define ODE_IS_STEPPER_ORDER_SETTER_HPP_
+#ifndef ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_
+#define ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_
 
 namespace pressio{ namespace ode{ namespace predicates { 
 
@@ -91,4 +91,4 @@ struct IsStepperOrderSetter<
 
 
 }}} // namespace pressio::ode::predicates
-#endif
+#endif  // ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_

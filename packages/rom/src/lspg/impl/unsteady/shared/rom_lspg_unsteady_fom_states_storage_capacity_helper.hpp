@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
-#define ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
@@ -72,4 +72,4 @@ struct fomStatesStorageCapacityHelper<::pressio::ode::implicitmethods::BDF2>{
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_

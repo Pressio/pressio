@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
-#define PRESSIO_SOLVERS_CONVERGENCE_CRITERIA_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CONVERGENCE_CRITERIA_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CONVERGENCE_CRITERIA_HPP_
 
 #include "./impl/solve_until_mixins/solvers_solve_until_max_iters.hpp"
 #include "./impl/solve_until_mixins/solvers_solve_until_correction_norm_below_tol.hpp"
@@ -107,4 +107,4 @@ template<typename ... Args>
 using StopWhenRelativeGradientNormBelowTol	= impl::SolveUntilGradientNormBelowTol<false, Args...>;
 
 }}}
-#endif
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CONVERGENCE_CRITERIA_HPP_

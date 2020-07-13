@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_FORWARD_DECLARATIONS_HPP_
-#define QR_FORWARD_DECLARATIONS_HPP_
+#ifndef QR_QR_FWD_HPP_
+#define QR_QR_FWD_HPP_
 
 namespace pressio{  namespace qr{
 
@@ -170,4 +170,4 @@ using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type, Q
 
 
 }}//end namespace pressio::qr
-#endif
+#endif  // QR_QR_FWD_HPP_

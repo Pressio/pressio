@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPTIMIZERS_ENUMS_HPP_
-#define OPTIMIZERS_ENUMS_HPP_
+#ifndef OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_
+#define OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_
 
 namespace pressio{ namespace optimizers{
 
@@ -58,4 +58,4 @@ enum class stepMethod
 
 constexpr auto default_step_method = stepMethod::lineSearch;
 }}//end namespace pressio::optimizers
-#endif
+#endif  // OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_

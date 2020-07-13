@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_PRECONDITIONERS_IMPL_HPP_
-#define ROM_WLS_PRECONDITIONERS_IMPL_HPP_
+#ifndef ROM_WLS_ROM_WLS_PRECONDITIONERS_HPP_
+#define ROM_WLS_ROM_WLS_PRECONDITIONERS_HPP_
 
 /*
 Preconditioner objects for WLS. These act on the time local residuals and Jacobians
@@ -78,4 +78,4 @@ struct AppPreconditioner{
 };
 
 }}}}//end namespace pressio::rom::wls::preconditioners
-#endif
+#endif  // ROM_WLS_ROM_WLS_PRECONDITIONERS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
-#define OPS_CONTAINER_OPS_KOKKOS_SET_ZERO_HPP_
+#ifndef OPS_KOKKOS_OPS_SET_ZERO_HPP_
+#define OPS_KOKKOS_OPS_SET_ZERO_HPP_
 
 #include <KokkosBlas1_fill.hpp>
 
@@ -66,4 +66,4 @@ set_zero(T & v){
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_KOKKOS_OPS_SET_ZERO_HPP_

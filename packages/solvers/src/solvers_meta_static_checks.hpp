@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_META_META_STATIC_CHECKS_HPP
-#define SOLVERS_META_META_STATIC_CHECKS_HPP
+#ifndef SOLVERS_SOLVERS_META_STATIC_CHECKS_HPP_
+#define SOLVERS_SOLVERS_META_STATIC_CHECKS_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
@@ -152,4 +152,4 @@ struct are_vector_compatible<
 
 
 }}}//end namespace pressio::solvers::predicates
-#endif
+#endif  // SOLVERS_SOLVERS_META_STATIC_CHECKS_HPP_

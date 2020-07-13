@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ADMISSIBLE_USER_DEFINED_OPS_EXPLICIT_EULER_HPP_
-#define ODE_ADMISSIBLE_USER_DEFINED_OPS_EXPLICIT_EULER_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_EULER_HPP_
+#define ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_EULER_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -77,4 +77,4 @@ struct user_defined_ops_for_explicit_euler<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_EULER_HPP_

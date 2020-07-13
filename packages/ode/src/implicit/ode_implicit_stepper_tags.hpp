@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STEPPER_TAGS_HPP_
-#define ODE_IMPLICIT_STEPPER_TAGS_HPP_
+#ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
+#define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
@@ -63,4 +63,4 @@ using Euler = BDF1;
 struct Arbitrary{};
 
 }}} 
-#endif
+#endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_

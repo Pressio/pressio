@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_MASK_DECORATOR_RESIDUAL_HPP_
-#define ROM_MASK_DECORATOR_RESIDUAL_HPP_
+#ifndef ROM_DECORATORS_ROM_MASKED_RESIDUAL_POLICY_HPP_
+#define ROM_DECORATORS_ROM_MASKED_RESIDUAL_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace decorator{
 
@@ -158,4 +158,4 @@ private:
 };//end class
 
 }}} //end namespace pressio::rom::decorator
-#endif
+#endif  // ROM_DECORATORS_ROM_MASKED_RESIDUAL_POLICY_HPP_

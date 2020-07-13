@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_FORWARD_DECLARATIONS_HPP_
-#define CONTAINERS_FORWARD_DECLARATIONS_HPP_
+#ifndef CONTAINERS_CONTAINERS_FWD_HPP_
+#define CONTAINERS_CONTAINERS_FWD_HPP_
 
 namespace pressio{
 
@@ -120,4 +120,4 @@ struct SpanExpr;
 }
 
 }} // end namespace pressio::containers
-#endif
+#endif  // CONTAINERS_CONTAINERS_FWD_HPP_

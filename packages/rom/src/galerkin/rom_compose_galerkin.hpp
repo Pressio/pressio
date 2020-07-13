@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_compose_galerkin_HPP_
-#define rom_compose_galerkin_HPP_
+#ifndef ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_
+#define ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_
 
 #include "./impl/continuous_time_api/rom_galerkin_problem_continuous_time_api.hpp"
 #include "./impl/discrete_time_api/rom_galerkin_problem_discrete_time_api.hpp"
@@ -100,4 +100,4 @@ template<typename ...Args>
 using composeDefaultProblem = impl::compose<impl::Default, void, Args...>;
 
 }}}
-#endif
+#endif  // ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_

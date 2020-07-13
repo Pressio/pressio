@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
-#define CONTAINERS_WRAPPERS_HAVE_SAME_SCALAR_HPP_
+#ifndef CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
+#define CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -89,4 +89,4 @@ struct are_scalar_compatible<T1, T2, rest...>
 };
 
 }}} // namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_

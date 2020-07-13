@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef pressio_containers_vector_include_HPP
-#define pressio_containers_vector_include_HPP
+#ifndef CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
+#define CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 
 #include "./predicates/containers_native_eigen_vector.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -97,4 +97,4 @@
 #endif
 #include "./concrete/containers_vector_arbitrary.hpp"
 
-#endif
+#endif  // CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_

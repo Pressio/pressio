@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_TAGS_HPP
-#define SOLVERS_LINEAR_TAGS_HPP
+#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
+#define SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_
 
 namespace pressio{ namespace solvers{ namespace linear {
 
@@ -76,4 +76,4 @@ namespace direct{
 
 }}}//end namespace pressio::solvers::linear
 
-#endif
+#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_TAGS_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef rom_custom_ops_galerkin_continuous_time_explicit_system_HPP_
-#define rom_custom_ops_galerkin_continuous_time_explicit_system_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_GALERKIN_CONTINUOUS_TIME_HPP_
+#define ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_GALERKIN_CONTINUOUS_TIME_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -75,4 +75,4 @@ struct custom_ops_galerkin_continuous_time<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::concepts
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_CUSTOM_OPS_ROM_CUSTOM_OPS_GALERKIN_CONTINUOUS_TIME_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_TPETRA_BLOCK_DEEP_COPY_HPP_
-#define OPS_CONTAINER_OPS_TPETRA_BLOCK_DEEP_COPY_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_
+#define OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -63,4 +63,4 @@ deep_copy(T & dest, const T & src){
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
-#define OPS_SRC_OPS_HAS_METHOD_AXPY_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_
+#define OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
 
@@ -79,4 +79,4 @@ struct has_method_axpy<
   > : std::true_type{};
 
 }}} //pressio::ops::predicates
-#endif
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_

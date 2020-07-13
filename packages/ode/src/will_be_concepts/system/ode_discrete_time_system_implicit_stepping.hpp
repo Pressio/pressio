@@ -47,8 +47,8 @@
 */
 
 
-#ifndef ode_discrete_time_system_implicit_stepping_HPP_
-#define ode_discrete_time_system_implicit_stepping_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_IMPLICIT_STEPPING_HPP_
+#define ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_IMPLICIT_STEPPING_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -106,4 +106,4 @@ struct discrete_time_system_implicit_stepping<
 #endif
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_IMPLICIT_STEPPING_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
-#define CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_
 
 namespace pressio{ namespace containers{ namespace expressions{
 
@@ -225,4 +225,4 @@ public:
 
 
 }}} //end namespace pressio::containers::expressions
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_VECTOR_SPAN_EXPRESSION_HPP_

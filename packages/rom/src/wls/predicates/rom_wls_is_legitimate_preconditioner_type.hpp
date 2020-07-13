@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
-#define ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
+#ifndef ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
+#define ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{ namespace predicates{
 
@@ -65,4 +65,4 @@ struct is_legitimate_preconditioner_type<
   > : std::true_type{};
 
 }}}} // end namespace pressio::rom::wls::predicates
-#endif
+#endif  // ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_

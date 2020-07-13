@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_IN_PLACE_HPP_
-#define QR_IN_PLACE_HPP_
+#ifndef QR_IMPL_QR_IN_PLACE_HPP_
+#define QR_IMPL_QR_IN_PLACE_HPP_
 
 namespace pressio{ namespace qr{ namespace impl{
 
@@ -151,4 +151,4 @@ private:
 
 
 }}} // end namespace pressio::qr::impl
-#endif
+#endif  // QR_IMPL_QR_IN_PLACE_HPP_

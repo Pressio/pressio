@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
-#define OPS_SRC_OPS_TPETRA_MULTI_VECTOR_PROD_MULTI_VECTOR_HPP_
+#ifndef OPS_TPETRA_OPS_MVEC_PROD_MVEC_HPP_
+#define OPS_TPETRA_OPS_MVEC_PROD_MVEC_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -230,4 +230,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_TPETRA_OPS_MVEC_PROD_MVEC_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_MATRIX_TRAITS_HPP_
-#define CONTAINERS_MATRIX_MATRIX_TRAITS_HPP_
+#ifndef CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_
+#define CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -480,4 +480,4 @@ struct traits<
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif
+#endif  // CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_

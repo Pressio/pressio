@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_TRAITS_SPAN_HPP_
-#define CONTAINERS_EXPRESSIONS_TRAITS_SPAN_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -157,4 +157,4 @@ struct traits<
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_

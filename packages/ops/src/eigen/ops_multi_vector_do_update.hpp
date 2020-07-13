@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
-#define OPS_SRC_OPS_EIGEN_MULTI_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_EIGEN_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
+#define OPS_EIGEN_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -79,4 +79,4 @@ do_update(T & mv, const T & mv1, const scalar_t & b)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_MULTI_VECTOR_DO_UPDATE_HPP_

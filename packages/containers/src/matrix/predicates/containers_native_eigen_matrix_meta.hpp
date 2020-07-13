@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
-#define CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
+#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
+#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_
 
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
@@ -207,4 +207,4 @@ struct sparse_sharedmem_eigen_same_storage<
 //----------------------------------------------------------------------
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_EIGEN_MATRIX_META_HPP_

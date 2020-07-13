@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_EXP_GALERKIN_PROBLEM_GENERATOR_RESIDUAL_API_IMPL_HPP_
-#define PRESSIO_ROM_EXP_GALERKIN_PROBLEM_GENERATOR_RESIDUAL_API_IMPL_HPP_
+#ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_PROBLEM_DISCRETE_TIME_API_HPP_
+#define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_PROBLEM_DISCRETE_TIME_API_HPP_
 
 #include "./policies/rom_galerkin_residual_policy_discrete_time_api.hpp"
 #include "./policies/rom_galerkin_jacobian_policy_discrete_time_api.hpp"
@@ -133,4 +133,4 @@ public:
 };
 
 }}}}//end namespace
-#endif
+#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_PROBLEM_DISCRETE_TIME_API_HPP_

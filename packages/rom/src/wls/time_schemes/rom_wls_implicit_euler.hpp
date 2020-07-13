@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_IMPLICIT_EULER_HPP_
-#define ROM_WLS_IMPLICIT_EULER_HPP_
+#ifndef ROM_WLS_TIME_SCHEMES_ROM_WLS_IMPLICIT_EULER_HPP_
+#define ROM_WLS_TIME_SCHEMES_ROM_WLS_IMPLICIT_EULER_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{ namespace impl{
 
@@ -232,4 +232,4 @@ public:
 };
 
 }}}}} // end namespace pressio::rom::wls::ode::impl
-#endif
+#endif  // ROM_WLS_TIME_SCHEMES_ROM_WLS_IMPLICIT_EULER_HPP_

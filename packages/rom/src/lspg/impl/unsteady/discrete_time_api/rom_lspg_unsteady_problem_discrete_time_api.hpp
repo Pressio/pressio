@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
-#define PRESSIO_ROM_LSPG_UNSTEADY_PROBLEM_GENERATOR_RESIDUAL_api_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_DISCRETE_TIME_API_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_DISCRETE_TIME_API_HPP_
 
 #include "./policies/rom_lspg_unsteady_residual_policy_discrete_time_api.hpp"
 #include "./policies/rom_lspg_unsteady_jacobian_policy_discrete_time_api.hpp"
@@ -168,4 +168,4 @@ public:
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_DISCRETE_TIME_API_HPP_

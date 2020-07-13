@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef QR_ALGORITHMS_TAGS_HPP_
-#define QR_ALGORITHMS_TAGS_HPP_
+#ifndef QR_QR_ALGORITHMS_TAGS_HPP_
+#define QR_QR_ALGORITHMS_TAGS_HPP_
 
 namespace pressio{ namespace qr{
 
@@ -63,4 +63,4 @@ struct TSQR{};
 #endif
 
 }} // end namespace pressio::qr
-#endif
+#endif  // QR_QR_ALGORITHMS_TAGS_HPP_

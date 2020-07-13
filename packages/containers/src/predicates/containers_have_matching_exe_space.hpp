@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
-#define CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
+#ifndef CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
+#define CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -89,4 +89,4 @@ struct have_matching_execution_space<T1, T2, rest...>
 };
 
 }}} // namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_HAVE_MATCHING_EXE_SPACE_HPP_

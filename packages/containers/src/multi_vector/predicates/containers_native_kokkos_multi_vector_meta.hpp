@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
+#define CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -65,4 +65,4 @@ struct is_multi_vector_kokkos<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_MULTI_VECTOR_PREDICATES_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_META_HPP_

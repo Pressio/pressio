@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ode_implicitly_steppable_HPP_
-#define ode_implicitly_steppable_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_STEPPABLE_ODE_IMPLICITLY_STEPPABLE_HPP_
+#define ODE_WILL_BE_CONCEPTS_STEPPABLE_ODE_IMPLICITLY_STEPPABLE_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -80,4 +80,4 @@ struct implicitly_steppable<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_STEPPABLE_ODE_IMPLICITLY_STEPPABLE_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_KOKKOS_SCALE_HPP_
-#define OPS_CONTAINER_OPS_KOKKOS_SCALE_HPP_
+#ifndef OPS_KOKKOS_OPS_SCALE_HPP_
+#define OPS_KOKKOS_OPS_SCALE_HPP_
 
 #include <KokkosBlas1_scal.hpp>
 
@@ -65,4 +65,4 @@ scale(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_KOKKOS_OPS_SCALE_HPP_

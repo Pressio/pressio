@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_META_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_HPP_
 
 #include <Tpetra_Experimental_BlockVector_decl.hpp>
 
@@ -72,4 +72,4 @@ struct is_vector_tpetra_block<T,
       > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_TPETRA_BLOCK_VECTOR_HPP_

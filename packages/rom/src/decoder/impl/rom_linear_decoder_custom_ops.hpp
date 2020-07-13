@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
-#define ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
+#ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
+#define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
 
 namespace pressio{ namespace rom{ namespace impl{
 
@@ -85,4 +85,4 @@ public:
 };//end
 
 }}}//end namespace pressio::rom::impl
-#endif
+#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_

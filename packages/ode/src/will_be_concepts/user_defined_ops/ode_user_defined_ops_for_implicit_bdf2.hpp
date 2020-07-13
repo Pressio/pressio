@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_BDF2_HPP_
-#define ODE_IS_VALID_USER_DEFINED_OPS_IMPLICIT_BDF2_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_BDF2_HPP_
+#define ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_BDF2_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
@@ -95,4 +95,4 @@ struct user_defined_ops_for_implicit_bdf2<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif
+#endif  // ODE_WILL_BE_CONCEPTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_BDF2_HPP_

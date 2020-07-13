@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
-#define PRESSIO_ROM_LSPG_STEADY_PROBLEM_GENERATOR_HPP_
+#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_
+#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_
 
 #include "./policies/rom_lspg_steady_residual_policy.hpp"
 #include "./policies/rom_lspg_steady_jacobian_policy.hpp"
@@ -118,4 +118,4 @@ public:
 };
 
 }}}}}
-#endif
+#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_

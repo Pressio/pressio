@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_LINEAR_DECODER_HPP_
-#define ROM_DECODER_LINEAR_DECODER_HPP_
+#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
 
 #include "./impl/rom_linear_decoder_specializer.hpp"
 
@@ -65,4 +65,4 @@ using LinearDecoder =
 					  Args...>::type;
 
 }} // end namespace pressio::rom
-#endif
+#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_

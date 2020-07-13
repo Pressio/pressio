@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPTIMIZERS_UNCONSTRAINED_HPP_
-#define OPTIMIZERS_UNCONSTRAINED_HPP_
+#ifndef OPTIMIZERS_OPTIMIZERS_UNCONSTRAINED_HPP_
+#define OPTIMIZERS_OPTIMIZERS_UNCONSTRAINED_HPP_
 
 #include "ROL_OptimizationSolver.hpp"
 #include "ROL_RandomVector.hpp"
@@ -122,4 +122,4 @@ using Unconstrained = impl::UnconstrainedRol<Args...>;
 
 
 }}//end namespace pressio::optimizers
-#endif
+#endif  // OPTIMIZERS_OPTIMIZERS_UNCONSTRAINED_HPP_

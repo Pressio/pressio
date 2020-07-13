@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
-#define SOLVERS_LINEAR_EIGEN_ITERATIVE_HPP
+#ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
+#define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_
 
 namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
@@ -121,4 +121,4 @@ private:
 };
 
 }}}} // end namespace pressio::solvers::iterarive::impl
-#endif
+#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_EIGEN_ITERATIVE_IMPL_HPP_

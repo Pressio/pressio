@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
-#define ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
+#ifndef ROM_WLS_ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
+#define ROM_WLS_ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
 
 #include "./impl/rom_wls_hessian_gradient_system_api_impl.hpp"
 
@@ -60,4 +60,4 @@ template<typename ... Args>
 using SystemHessianAndGradientApi = impl::SystemHessianGradientApi<Args...>;
 
 }}}
-#endif
+#endif  // ROM_WLS_ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_

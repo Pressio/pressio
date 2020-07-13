@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WLS_SELECT_ODE_HELPER_HPP_
-#define ROM_WLS_SELECT_ODE_HELPER_HPP_
+#ifndef ROM_WLS_TIME_SCHEMES_ROM_WLS_SELECT_TIMESCHEME_HELPER_HPP_
+#define ROM_WLS_TIME_SCHEMES_ROM_WLS_SELECT_TIMESCHEME_HELPER_HPP_
 
 namespace pressio{ namespace rom{ namespace wls{ namespace timeschemes{
 
@@ -76,4 +76,4 @@ template <typename ode_tag, typename fom_state_t>
 using timescheme_t = typename impl::DefaultHelper<ode_tag,fom_state_t>::type;
 
 }}}} //ena namespace pressio::rom::wls::timeschemes::helpers
-#endif
+#endif  // ROM_WLS_TIME_SCHEMES_ROM_WLS_SELECT_TIMESCHEME_HELPER_HPP_

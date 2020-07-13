@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONTAINER_OPS_EIGEN_SET_ZERO_HPP_
-#define OPS_CONTAINER_OPS_EIGEN_SET_ZERO_HPP_
+#ifndef OPS_EIGEN_OPS_SET_ZERO_HPP_
+#define OPS_EIGEN_OPS_SET_ZERO_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -64,4 +64,4 @@ set_zero(T & v)
 }
 
 }}//end namespace pressio::ops
-#endif
+#endif  // OPS_EIGEN_OPS_SET_ZERO_HPP_

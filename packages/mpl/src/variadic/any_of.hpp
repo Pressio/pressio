@@ -10,8 +10,8 @@
 //  enniobarbaro@gmail.com
 //
 
-#ifndef PRESSIO_MPL_VARIADIC_ANY_OF_HPP
-#define PRESSIO_MPL_VARIADIC_ANY_OF_HPP
+#ifndef MPL_VARIADIC_ANY_OF_HPP_
+#define MPL_VARIADIC_ANY_OF_HPP_
 
 namespace pressio{ namespace mpl{ namespace variadic {
 
@@ -44,4 +44,4 @@ struct any_of<Predicate>
 
 }}} // namespace 
 
-#endif 
+#endif  // MPL_VARIADIC_ANY_OF_HPP_

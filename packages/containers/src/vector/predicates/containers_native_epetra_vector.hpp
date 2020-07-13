@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
-#define CONTAINERS_NATIVE_EPETRA_VECTOR_META_HPP_
+#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_EPETRA_VECTOR_HPP_
+#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_EPETRA_VECTOR_HPP_
 
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
@@ -66,4 +66,4 @@ struct is_vector_epetra<T,
       > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif
+#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_EPETRA_VECTOR_HPP_

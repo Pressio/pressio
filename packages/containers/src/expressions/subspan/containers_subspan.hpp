@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_SUBSPAN_HPP_
-#define CONTAINERS_SUBSPAN_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
+#define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -76,4 +76,4 @@ subspan(T & obj, Args&& ... args)
 
 }} //end namespace pressio::containers
 
-#endif
+#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
