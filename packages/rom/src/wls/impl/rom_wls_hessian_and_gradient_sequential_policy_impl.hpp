@@ -192,7 +192,8 @@ public:
     Preconditioner(appObj_, fomStateCurrent_, residual_, t);
 
     //increment the norm
-    rnorm += ::pressio::ops::norm2(residual_);
+    rNormHelper_ = ::pressio::ops::norm2(residual_);
+    rnorm += rNormHelper_*rNormHelper_;
 
     // compute jacobian over stencil
     if (innerLoopCounter_ % jacobianUpdateFrequency_ == 0)
@@ -261,6 +262,75 @@ public:
       }//end loop over stepsInWindow
     innerLoopCounter_ += 1;
   }//end operator()
+
+
+  template <
+    typename wls_state_type,
+    typename fom_state_reconstr_t
+  >
+  void computeResidualNorm(const wls_state_type  & wlsState,
+                  const wls_state_type & wlsStateIC,
+                  const fom_state_reconstr_t & fomStateReconstrObj,
+                  const scalar_t dt,
+                  const window_size_t numStepsInWindow,
+                  const scalar_t ts ,
+                  const window_size_t step_s,
+                  scalar_t & rnorm) const
+  {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    window_size_t stepNumLocal = 0;
+    scalar_t t = ts + stepNumLocal*dt;
+    window_size_t stepNumGlobal = step_s + stepNumLocal;
+    //get access to the state at the first window
+    setCurrentFomState(wlsState, 0, fomStateReconstrObj);
+
+    //reconstruct the FOM states from the previous window/ICs
+    timeSchemeObj_.updateStatesFirstStep(wlsStateIC, fomStateReconstrObj);
+
+    //compute the time discrete residual
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("residual");
+#endif
+    timeSchemeObj_.time_discrete_residual(appObj_,fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+    timer->stop("residual");
+#endif
+    Preconditioner(appObj_, fomStateCurrent_, residual_, t);
+
+    //increment the norm
+    rNormHelper_ = ::pressio::ops::norm2(residual_);
+    rnorm += rNormHelper_*rNormHelper_;
+
+    for (window_size_t stepNumLocal = 1; stepNumLocal < numStepsInWindow; stepNumLocal++)
+      {
+      // === reconstruct FOM states ========
+      timeSchemeObj_.updateStatesNStep(fomStateCurrent_);
+      setCurrentFomState(wlsState,stepNumLocal,fomStateReconstrObj);
+
+      // == Evaluate residual ============
+      t = ts + stepNumLocal*dt;
+      window_size_t step;
+      step = step_s + stepNumLocal;
+
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      auto timer = Teuchos::TimeMonitor::getStackedTimer();
+      timer->start("residual");
+#endif
+      timeSchemeObj_.time_discrete_residual(appObj_,fomStateCurrent_, residual_, t, dt, step);
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer->stop("residual");
+#endif
+      rNormHelper_ = ::pressio::ops::norm2(residual_);
+      rnorm += rNormHelper_*rNormHelper_;
+
+      }//end loop over stepsInWindow
+    innerLoopCounter_ += 1;
+    rnorm = std::sqrt(rnorm);
+  }//end computeResidualNorm()
+
+
 
 
 private:
@@ -368,8 +438,8 @@ private:
 
       Preconditioner(appObj_,fomStateCurrent_,residual_,t);
 
-      rnorm += ::pressio::ops::norm2(residual_);
-
+      rNormHelper_ = ::pressio::ops::norm2(residual_);
+      rnorm += rNormHelper_*rNormHelper_;
       if (innerLoopCounter_ % jacobianUpdateFrequency_ == 0){
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("jacobian");
@@ -383,6 +453,7 @@ private:
 
 private:
   mutable window_size_t innerLoopCounter_ = 0;
+  mutable scalar_t rNormHelper_;
   rom_size_t romSize_;
   window_size_t jacStencilSize_;
   window_size_t jacobianUpdateFrequency_;
@@ -401,6 +472,12 @@ private:
 };
 
 }}}} //end namespace pressio::rom::wls::impl
+
+
+
+
+
+
 
 
 
