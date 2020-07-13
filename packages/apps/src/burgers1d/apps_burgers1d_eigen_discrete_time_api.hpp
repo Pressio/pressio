@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// apps_burgers1d_eigen_residual_api.hpp
+// apps_burgers1d_eigen_discrete_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
