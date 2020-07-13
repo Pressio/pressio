@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_legitimate_explicit_velocity.hpp
+// ode_explicit_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_legitimate_auxiliary_stepper_for_implicit_ode.hpp
+// ode_auxiliary_stepper_for_bdf2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

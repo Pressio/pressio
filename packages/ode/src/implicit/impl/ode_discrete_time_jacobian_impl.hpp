@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_time_discrete_jacobian.hpp
+// ode_discrete_time_jacobian_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

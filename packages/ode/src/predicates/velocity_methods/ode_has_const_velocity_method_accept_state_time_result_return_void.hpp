@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_has_velocity_method_accepting_state_time_result_returning_void.hpp
+// ode_has_const_velocity_method_accept_state_time_result_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

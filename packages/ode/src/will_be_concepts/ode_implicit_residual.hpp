@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_legitimate_implicit_residual_type.hpp
+// ode_implicit_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
