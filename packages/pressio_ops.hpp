@@ -53,7 +53,6 @@
 #include "pressio_utils.hpp"
 #include "pressio_containers.hpp"
 
-#include "ops/src/ops_ConfigDefs.hpp"
 #include "ops/src/ops_fwd.hpp"
 
 // predicates
