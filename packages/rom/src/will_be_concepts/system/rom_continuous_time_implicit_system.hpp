@@ -54,16 +54,6 @@ namespace pressio{ namespace rom{ namespace concepts {
 template<typename T, typename enable = void>
 struct continuous_time_implicit_system : std::false_type{};
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename T>
-// struct continuous_time_implicit_system<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::mpl::is_same<T, pybind11::object>::value
-//     >
-//   > : std::true_type{};
-// #endif
-
 template<typename T>
 struct continuous_time_implicit_system<
   T,
@@ -74,26 +64,31 @@ struct continuous_time_implicit_system<
     ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
     ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     ///////////////////
-    /// velocity 
+    /// velocity
     ///////////////////
     ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
       T, typename T::velocity_type>::value and
     ::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
       T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
-      >::value and 
+      >::value and
     ///////////////////
     /// apply jacobian
     ///////////////////
     ::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
       T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value and
     ::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
-      T, 
+      T,
       typename T::state_type,  typename T::dense_matrix_type,
       typename T::scalar_type, typename T::dense_matrix_type
       >::value
     >
   > : std::true_type{};
 
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<>
+struct continuous_time_implicit_system<pybind11::object, void> : std::true_type{};
+#endif
 
 }}} // namespace pressio::rom::concepts
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_IMPLICIT_SYSTEM_HPP_
