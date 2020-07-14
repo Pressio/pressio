@@ -213,7 +213,16 @@ public:
     if (normType != ::pressio::Norm::L2)
       throw std::runtime_error("cannot call WLS with a norm != L2");
 
-   // missing
+    rnorm = pressio::utils::constants<scalar_type>::zero();
+    hessianGradientPolicy_.computeResidualNorm(
+			   wls_state,
+			   wlsStateIC_,
+			   fomStateReconstructor_,
+			   dt_,
+			   numStepsInWindow_,
+			   windowStartTime_,
+			   step_s_,
+			   rnorm);
   }
 
   // method to advance one window. We may want to put this into some type of window stepper class
