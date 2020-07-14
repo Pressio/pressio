@@ -76,8 +76,8 @@ private:
   using velocity_storage_t  = VelocitiesContainer<velocity_type, 4>;
   using system_wrapper_t    = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
+  const ops_t * udOps_ = nullptr;
   state_type tmpState_;
-  velocity_storage_t veloAuxStorage_;
   system_wrapper_t sys_;
 
   typename std::conditional<
@@ -86,7 +86,7 @@ private:
     const velocity_policy_type & 
   >::type policy_;
 
-  const ops_t * udOps_ = nullptr;
+  velocity_storage_t veloAuxStorage_;
 
 public:
   ExplicitRungeKutta4StepperImpl() = delete;
@@ -119,12 +119,12 @@ public:
                                  const system_type & model, 
                                  const velocity_policy_type & policy,
                                  const _ops_t & udOps)
-    : tmpState_{state},
+    : udOps_(&udOps),
+      tmpState_{state},
       sys_(model), 
       policy_(policy), 
-      veloAuxStorage_(policy_.create(model)),
-      udOps_(&udOps)
-  {}  
+      veloAuxStorage_(policy_.create(model))
+    {}  
 
   // the following cnstr is only enabled if 
   // policy is default constructible and we are using pressio ops
@@ -157,11 +157,11 @@ public:
   ExplicitRungeKutta4StepperImpl(const state_type & state, 
                                  const system_type & model, 
                                  const _ops_t & udOps)
-    : tmpState_{state},
+    : udOps_(&udOps),
+      tmpState_{state},
       sys_(model), 
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(model)),
-      udOps_(&udOps)
+      veloAuxStorage_(policy_.create(model))
   {}
 
 public:
