@@ -51,13 +51,6 @@
 
 namespace pressio{ namespace ode{ namespace concepts {
 
-/*
- * for now, we enable if a vector is wrapped into containers::Vector
- * or if it is pybind::array, we can relax this later.
- * Note however that this does not preclude working with
- * arbitrary types for which do not have concrete containers in pressio,
- * since vector wrappers exist also for generic types.
- */
 template<typename T, typename enable = void>
 struct explicit_state : std::false_type{};
 

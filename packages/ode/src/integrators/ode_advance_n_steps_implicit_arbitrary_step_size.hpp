@@ -60,17 +60,17 @@ template<
   typename time_type,
   typename solver_type,
   typename step_size_cb_t
->
+  >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable<stepper_type, state_type, time_type, solver_type>::value and
   ::pressio::ode::concepts::time_step_size_setter<step_size_cb_t, types::step_t, time_type>::value
->
+  >
 advanceNSteps(stepper_type & stepper,
-		     state_type		 & odeStateInOut,
-		     const time_type	 start_time,
-		     const types::step_t num_steps,
-		     solver_type	 & solver,
-		     step_size_cb_t	 && dtManager)
+	      state_type & odeStateInOut,
+	      const time_type start_time,
+	      const types::step_t num_steps,
+	      solver_type & solver,
+	      step_size_cb_t && dtManager)
 {
 
   static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,

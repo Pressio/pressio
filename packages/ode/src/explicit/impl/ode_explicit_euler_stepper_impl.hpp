@@ -60,7 +60,7 @@ template<
   typename standard_velocity_policy_type,
   typename ops_t
   >
-class ExplicitEulerStepperImpl 
+class ExplicitEulerStepperImpl
 {
 
 public:
@@ -77,8 +77,8 @@ private:
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
-    const standard_velocity_policy_type, 
-    const velocity_policy_type & 
+    const standard_velocity_policy_type,
+    const velocity_policy_type &
   >::type policy_;
 
   velocity_storage_t veloAuxStorage_;
@@ -94,63 +94,63 @@ public:
 
   // the following cnstr is enabled if we are using pressio ops
   template <
-    typename _ops_t = ops_t, 
+    typename _ops_t = ops_t,
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
   >
-  ExplicitEulerStepperImpl(const state_type & state, 
-                           const system_type & model, 
+  ExplicitEulerStepperImpl(const state_type & state,
+                           const system_type & model,
                            const velocity_policy_type & policy)
-    : sys_(model), 
-      policy_(policy), 
+    : sys_(model),
+      policy_(policy),
       veloAuxStorage_(policy_.create(model))
-  {}  
+  {}
 
   // the following cnstr is enabled if we are using user-defined ops
   template <
-    typename _ops_t = ops_t, 
+    typename _ops_t = ops_t,
     mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
   >
-  ExplicitEulerStepperImpl(const state_type & state, 
-                           const system_type & model, 
+  ExplicitEulerStepperImpl(const state_type & state,
+                           const system_type & model,
                            const velocity_policy_type & policy,
                            const _ops_t & udOps)
-    : sys_(model), 
-      policy_(policy), 
+    : sys_(model),
+      policy_(policy),
       veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
-  {}  
+  {}
 
-  // the following cnstr is only enabled if 
+  // the following cnstr is only enabled if
   // policy is default constructible and we are using pressio ops
   template <
     typename _vel_pol_t = velocity_policy_type,
-    typename _ops_t = ops_t, 
-    mpl::enable_if_t< 
-      std::is_void<_ops_t>::value and 
-      std::is_default_constructible<_vel_pol_t>::value, 
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<
+      std::is_void<_ops_t>::value and
+      std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
   >
-  ExplicitEulerStepperImpl(const state_type & state, 
+  ExplicitEulerStepperImpl(const state_type & state,
                            const system_type & model)
-    : sys_(model), 
+    : sys_(model),
       policy_(), // default construct policy
       veloAuxStorage_(policy_.create(model))
   {}
 
-  // the following cnstr is only enabled if 
+  // the following cnstr is only enabled if
   // policy is default constructible and we are using user-defined ops
   template <
     typename _vel_pol_t = velocity_policy_type,
-    typename _ops_t = ops_t, 
-    mpl::enable_if_t< 
-      !std::is_void<_ops_t>::value and 
-      std::is_default_constructible<_vel_pol_t>::value, 
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<
+      !std::is_void<_ops_t>::value and
+      std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
   >
-  ExplicitEulerStepperImpl(const state_type & state, 
-                           const system_type & model, 
+  ExplicitEulerStepperImpl(const state_type & state,
+                           const system_type & model,
                            const _ops_t & udOps)
-    : sys_(model), 
+    : sys_(model),
       policy_(), // default construct policy
       veloAuxStorage_(policy_.create(model)),
       udOps_(&udOps)
@@ -158,17 +158,17 @@ public:
 
 public:
   types::stepper_order_t order() const
-  { 
-    return order_value; 
+  {
+    return order_value;
   }
 
   /* user does NOT provide custom ops, so we use ops */
   template<typename _ops_t = ops_t>
   mpl::enable_if_t< std::is_void<_ops_t>::value >
   doStep(state_type & stateInOut,
-	       const scalar_type & time,
-	       const scalar_type & dt,
-	       const types::step_t & step)
+	 const scalar_type & time,
+	 const scalar_type & dt,
+	 const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
@@ -180,11 +180,11 @@ public:
 
   /* user provides custom ops */
   template<typename _ops_t = ops_t>
-  mpl::enable_if_t<!std::is_void<_ops_t>::value> 
+  mpl::enable_if_t<!std::is_void<_ops_t>::value>
   doStep(state_type & stateInOut,
-  	     const scalar_type & time,
-  	     const scalar_type & dt,
-  	     const types::step_t & step)
+	 const scalar_type & time,
+	 const scalar_type & dt,
+	 const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     policy_.compute(stateInOut, auxRhs0, sys_.get(), time);
