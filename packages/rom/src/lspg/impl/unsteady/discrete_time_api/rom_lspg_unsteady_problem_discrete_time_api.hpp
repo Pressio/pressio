@@ -67,12 +67,6 @@ template <
 class ProblemDiscreteTimeApi
 {
 
-//   /* here, the fom_type must satisfy the residual api */
-//   static_assert( ::pressio::rom::concepts::admissible_system_time_discrete_residual_api_unsteady_lspg<fom_type>::value,
-// 		 "\nYou are trying to generate an unsteady LSPG problem \n \
-// requiring a fom adapter class to meet the residual api. \n \
-// However, the fom/adapter type you passed does not meet that api. \n \
-// Verify the fom/adapter class you are using.");
 public:
   // define the type holding types for the problem
   using lspg_problem_t = lspg_type<stepper_tag, fom_type, lspg_state_type, Args...>;
