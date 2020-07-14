@@ -80,8 +80,8 @@ public:
     constexpr auto ten  = static_cast<scalar_t>(10);
     constexpr auto seven  = static_cast<scalar_t>(7);
     constexpr auto negSeven  = ::pressio::utils::constants<scalar_t>::negOne()*seven;
-    constexpr auto tenToSev  = std::pow(ten, seven);
-    constexpr auto tenToNegSev  = std::pow(ten, negSeven);
+    const auto tenToSev  = std::pow(ten, seven);
+    const auto tenToNegSev  = std::pow(ten, negSeven);
 
     const auto mu	    = T::getLMDampParam();
     const auto & correction = T::viewCorrection();
