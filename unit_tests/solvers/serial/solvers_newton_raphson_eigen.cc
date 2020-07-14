@@ -54,7 +54,6 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   using problem_t  = ValidSystem;
   using state_t	   = problem_t::state_type;
   using jacobian_t = problem_t::jacobian_type;
-  using scalar_t   = double;
 
   problem_t sys;
   // my solution vector
