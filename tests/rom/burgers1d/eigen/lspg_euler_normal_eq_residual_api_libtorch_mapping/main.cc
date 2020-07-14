@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
   constexpr int romSize = 8;
 
   // create decoder obj
-  // TODO: add decoder file to repo
   decoder_t decoderObj(romSize, numCell, "basis.pt");
 
   // for this problem, my reference state = initial state
