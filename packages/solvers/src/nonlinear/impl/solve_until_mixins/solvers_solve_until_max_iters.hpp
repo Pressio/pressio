@@ -75,7 +75,6 @@ public:
     {
       T::computeCorrection(sys, state);
       T::updateState(sys, state);
-      const auto & correction = T::viewCorrection();
     }
   }
 

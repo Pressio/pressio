@@ -71,6 +71,27 @@ using LM = LevenbergMarquardt;
 template<typename tag, typename ... Args>
 struct composeCorrector;
 
+
+// *** GAUSS-NEWTON residual-jacobian API ***
+template<
+  typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t
+  >
+struct composeCorrector<
+  GaussNewton,
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
+  system_t, state_t, h_t, g_t, lin_solver_t
+  >
+{
+  using r_t = typename system_t::residual_type;
+  using j_t = typename system_t::jacobian_type;
+  static constexpr auto norm = pressio::Norm::L2;
+  using operators_t = HessianGradientOperatorsRJApi<h_t, g_t, r_t, j_t>;
+  using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
+};
+
+// *** GAUSS-NEWTON residual-jacobian API with ud_ops ***
 template<
   typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t,
   typename ud_ops_t
@@ -90,26 +111,7 @@ struct composeCorrector<
   using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
 };
 
-
-template<
-  typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t
-  >
-struct composeCorrector<
-  GaussNewton,
-  mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
-  system_t, state_t, h_t, g_t, lin_solver_t
-  >
-{
-  using r_t = typename system_t::residual_type;
-  using j_t = typename system_t::jacobian_type;
-  static constexpr auto norm = pressio::Norm::L2;
-  using operators_t = HessianGradientOperatorsRJApi<h_t, g_t, r_t, j_t>;
-  using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
-};
-
-
+// *** GAUSS-NEWTON hessian-gradient API ***
 template<
   typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t
   >
@@ -126,7 +128,24 @@ struct composeCorrector<
   using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
 };
 
+// *** GAUSS-NEWTON with QR solver ***
+template<typename system_t, typename state_t, typename qr_solver_t>
+struct composeCorrector<
+  GaussNewtonQR,
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
+  system_t, state_t, qr_solver_t
+  >
+{
+  using r_t = typename system_t::residual_type;
+  using j_t = typename system_t::jacobian_type;
+  static constexpr auto norm = pressio::Norm::L2;
+  using operators_t = ResidualJacobianOperators<r_t, j_t>;
+  using type	    = QRCorrector<operators_t, state_t, qr_solver_t, norm>;
+};
 
+// *** LEVENBERG-MARQUARDT Residual-jacobian API ***
 template<
   typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t
   >
@@ -145,23 +164,24 @@ struct composeCorrector<
   using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
 };
 
-
-template<typename system_t, typename state_t, typename qr_solver_t>
+// *** LEVENBERG-MARQUARDT hessian-gradient API ***
+template<
+  typename system_t, typename state_t, typename h_t, typename g_t, typename lin_solver_t
+  >
 struct composeCorrector<
-  GaussNewtonQR,
+  LM,
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>,
-  system_t, state_t, qr_solver_t
+    pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
+    pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value>,
+  system_t, state_t, h_t, g_t, lin_solver_t
   >
 {
-  using r_t = typename system_t::residual_type;
-  using j_t = typename system_t::jacobian_type;
   static constexpr auto norm = pressio::Norm::L2;
-  using operators_t = ResidualJacobianOperators<r_t, j_t>;
-  using type	    = QRCorrector<operators_t, state_t, qr_solver_t, norm>;
+  using operators_t = LMHessianGradientOperatorsHGApi<h_t, g_t>;
+  using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
 };
 
+// *** Newton-Raphson API ***
 template<typename system_t, typename state_t, typename lin_solver_t>
 struct composeCorrector<
   NewtonRaphson,
@@ -303,7 +323,7 @@ template<
   typename system_t,
   template<typename...> class update_t,
   template<typename...> class looper_t,
-  typename linear_solver_t,  
+  typename linear_solver_t,
   typename ... Args
   >
 struct compose<system_t, NewtonRaphson, update_t, looper_t, linear_solver_t, Args...>

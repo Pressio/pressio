@@ -69,12 +69,11 @@ private:
 public:
   template <typename system_t, typename ...Args>
   LMSchedule1Updater(const system_t & sys, const state_t & state, Args &&... args)
-    : gainFactorEval_(state), T(sys, state, std::forward<Args>(args)...){}
+    : T(sys, state, std::forward<Args>(args)...), gainFactorEval_(state){}
 
   template<typename system_t>
   void updateState(const system_t & sys, state_t & state)
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 

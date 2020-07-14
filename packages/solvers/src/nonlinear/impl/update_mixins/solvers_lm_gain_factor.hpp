@@ -67,7 +67,6 @@ public:
 		   const scalar_t & mu,
 		   hess_grad_correc_t & correctionObj)
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 

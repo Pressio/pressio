@@ -111,7 +111,6 @@ public:
 
 
 
-
 template <typename h_t, typename g_t, typename r_t, typename j_t, typename ud_ops_t = void>
 class HessianGradientOperatorsRJApi
 {
@@ -244,9 +243,83 @@ private:
     // scale because of sign convention
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }
-
 };
 
+
+
+template <typename h_t, typename g_t>
+class LMHessianGradientOperatorsHGApi
+{
+  using sc_t = typename ::pressio::containers::details::traits<h_t>::scalar_t;
+
+  HessianGradientOperatorsHGApi<h_t, g_t> HGOpHGApi_;
+
+  // lmH contains H + lm*diag(H)
+  h_t lmH_;
+
+  // damping factor for LM
+  sc_t dampParam_ = pressio::utils::constants<sc_t>::one();
+
+public:
+  LMHessianGradientOperatorsHGApi() = delete;
+
+  template <
+   typename system_t, typename state_t,
+    mpl::enable_if_t<
+      pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
+      pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value,
+      int
+     > = 0
+  >
+  LMHessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
+    : HGOpHGApi_(system, state),
+      lmH_(HGOpHGApi_.getHessian())
+  {}
+
+public:
+  h_t & getHessian(){ return lmH_; }
+  g_t & getGradient(){ return HGOpHGApi_.getGradient(); }
+  const h_t & getHessian() const { return lmH_; }
+  const g_t & getGradient() const{ return HGOpHGApi_.getGradient(); }
+
+  const h_t & getHessianBeforeLMDiagonalScaling() const { return HGOpHGApi_.getHessian(); }
+  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
+  sc_t getLMDampParam() const{ return dampParam_; }
+
+  template< typename system_t, typename state_t>
+  void residualNorm(const system_t & system, const state_t & state,
+		    ::pressio::Norm normType, sc_t & residualNorm)
+  {
+    system.residualNorm(state, normType, residualNorm);
+  }
+
+  template<typename system_t, typename state_t>
+  mpl::enable_if_t<pressio::solvers::concepts::system_hessian_gradient<system_t>::value>
+  computeOperators(const system_t & sys, const state_t & state,
+		   ::pressio::Norm normType, sc_t & residualNorm)
+  {
+    HGOpHGApi_.computeOperators(sys, state, normType, residualNorm);
+    computeLMHessian();
+  }
+
+  template<typename system_t, typename state_t>
+  mpl::enable_if_t<pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value>
+  computeOperators(const system_t & sys, const state_t & state,
+		   ::pressio::Norm normType, sc_t & residualNorm)
+  {
+    HGOpHGApi_.computeOperators(sys, state, normType, residualNorm);
+    computeLMHessian();
+  }
+
+private:
+  void computeLMHessian(){
+    // compute lmH = H + mu*diag(H)
+    const auto & H = HGOpHGApi_.getHessian();
+    ::pressio::ops::deep_copy(lmH_, H);
+    // this needs to be replaces with a daxpy when we have the diagonal view
+    lmH_.data()->diagonal() = lmH_.data()->diagonal() + dampParam_*lmH_.data()->diagonal();
+  }
+};
 
 
 
