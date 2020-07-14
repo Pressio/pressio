@@ -1,3 +1,4 @@
+configure_file(../../basis/decoder_ncell100_romsize8_t30_dt_001_implicit_euler.pt basis.pt COPYONLY)
 
 find_package(Torch REQUIRED)
 #find_package(OpenMP REQUIRED)

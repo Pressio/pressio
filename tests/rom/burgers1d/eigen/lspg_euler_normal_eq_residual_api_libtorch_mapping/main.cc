@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
   // create decoder obj
   // TODO: add decoder file to repo
-  decoder_t decoderObj(romSize, numCell, "/scratch/cpp_autoencoder/burgers1d/traced_model.pt");
+  decoder_t decoderObj(romSize, numCell, "basis.pt");
 
   // for this problem, my reference state = initial state
   native_state_t yRef(numCell);
