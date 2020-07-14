@@ -79,7 +79,7 @@ public:
   using galerkin_native_state_t	= typename problem_t::galerkin_native_state_t;
   using decoder_t		= typename problem_t::decoder_t;
   using fom_state_reconstr_t	= typename problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename problem_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename problem_t::fom_states_manager_t;
   using ud_ops_t		= typename problem_t::ud_ops_t;
 
   using residual_policy_t	= typename problem_t::residual_policy_t;
@@ -159,30 +159,30 @@ public:
       stepperObj_(yROM, appObj, residualPolicy_)
   {}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /*
-//    * ud_ops_t == void and state_type is wrapper of pybind11::array
-//   */
-//   template <
-//     typename _ud_ops_t = ud_ops_t,
-//     ::pressio::mpl::enable_if_t<
-//       std::is_void<_ud_ops_t>::value and
-//       ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value, 
-//       int > = 0
-//   >
-//   ProblemContinuousTimeApi(const fom_t   & appObj,
-// 			      fom_native_state_t	    yFomRefNative,
-// 			      const decoder_t	    & decoder,
-// 			      galerkin_native_state_t  yROM,
-// 			      scalar_t		    t0)
-//     : fomStateReference_(yFomRefNative),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
-//       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-//       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-//       stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
-//   {}
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /*
+   * ud_ops_t == void and state_type is wrapper of pybind11::array
+  */
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      std::is_void<_ud_ops_t>::value and
+      ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value,
+      int > = 0
+  >
+  ProblemContinuousTimeApi(const fom_t   & appObj,
+			      fom_native_state_t	    yFomRefNative,
+			      const decoder_t	    & decoder,
+			      galerkin_native_state_t  yROM,
+			      scalar_t		    t0)
+    : fomStateReference_(yFomRefNative),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
+      stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
+  {}
+#endif
 
 };
 

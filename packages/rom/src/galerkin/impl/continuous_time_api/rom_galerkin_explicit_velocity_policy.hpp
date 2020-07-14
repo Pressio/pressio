@@ -88,7 +88,7 @@ public:
     typename _fom_rhs_t = fom_rhs_t,
     typename _ud_ops = ud_ops,
     ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops>::value, int 
+      !std::is_void<_ud_ops>::value, int
       > = 0
     >
   ExplicitVelocityPolicy(const _fom_rhs_t & fomRhs,
@@ -107,16 +107,15 @@ public:
     // this is called once
     galerkin_state_t result(phi_.extent(1));
     ::pressio::ops::set_zero(result);
-    // this->compute_impl(romState, result, app, t);
     return result;
   }
 
   /* for now, the ROM state and ROM velocity must be of the same type */
   template <typename fom_t, typename scalar_t>
-  void compute(const galerkin_state_t & romState, 
-              galerkin_state_t & romRhs,
-  		        const fom_t	& app,
-		          const scalar_t & t) const
+  void compute(const galerkin_state_t & romState,
+	       galerkin_state_t & romRhs,
+	       const fom_t	& app,
+	       const scalar_t & t) const
   {
     this->compute_impl(romState, romRhs, app, t);
   }
@@ -126,20 +125,20 @@ private:
   // query fom velocity
   //--------------------------------------------
   template<
-    typename scalar_t,
-    typename fom_t,
-    typename fom_state_t,
-    typename _fom_rhs_t = fom_rhs_t
+  typename scalar_t,
+  typename fom_t,
+  typename fom_state_t,
+  typename _fom_rhs_t = fom_rhs_t
   >
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_wrapper<fom_state_t>::value
+  ::pressio::containers::predicates::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
+  and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
 #endif
   >
   queryFomVelocity(const fom_t & app,
-			const fom_state_t & fomState,
-			const scalar_t & time) const
+		   const fom_state_t & fomState,
+		   const scalar_t & time) const
   {
     app.velocity(*fomState.data(), time, *fomRhs_.data());
   }
@@ -150,13 +149,13 @@ private:
     typename fom_t,
     typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t
-  >
+    >
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::is_same<fom_t, pybind11::object>::value
-  >
+    >
   queryFomVelocity(const fom_t & app,
-			const fom_state_t & fomState,
-			const scalar_t & time) const
+		   const fom_state_t & fomState,
+		   const scalar_t & time) const
   {
     *fomRhs_.data() = app.attr("velocity")(*fomState.data(), time);
   }

@@ -59,7 +59,7 @@ struct ExtractNativeHelper<
   fom_t, galerkin_state_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
-    and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
+     !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
     >
 #endif
   >
