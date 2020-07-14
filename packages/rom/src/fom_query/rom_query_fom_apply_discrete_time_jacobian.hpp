@@ -51,18 +51,8 @@
 
 namespace pressio{ namespace rom{
 
-// template <class fom_state_t, class fom_t, class operand_t>
-// auto queryFomApplyTimeDiscreteJacobian(const fom_state_t & fomCurrentState,
-// 				       const fom_t & fomObj,
-// 				       const operand_t & B)
-//   -> decltype(fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(), *B.data()))
-// {
-//   return fomObj.createApplyTimeDiscreteJacobianObject(*fomCurrentState.data(),
-// 						      *B.data());
-// }
-
 template <
-  class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
+  typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename operand_t, typename result_t
   >
 void queryFomApplyDiscreteTimeJacobian(const fom_state_t & state_n,
 				       const fom_state_t & state_nm1,
@@ -81,7 +71,7 @@ void queryFomApplyDiscreteTimeJacobian(const fom_state_t & state_n,
 }
 
 template <
-  class fom_state_t, class fom_t, class step_t, class time_t, class operand_t, class result_t
+  typename fom_state_t, typename fom_t, typename step_t, typename time_t, typename operand_t, typename result_t
   >
 void queryFomApplyDiscreteTimeJacobian(const fom_state_t & state_n,
 				       const fom_state_t & state_nm1,

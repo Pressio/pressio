@@ -51,13 +51,16 @@
 
 namespace pressio{ namespace rom{
 
+//------------------------------------------
+// for native c++
+//------------------------------------------
 template <typename fom_t, typename state_t, typename rhs_t, typename time_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   mpl::enable_if_t<
-  mpl::not_same<fom_t, pybind11::object>::value and
-  !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-  !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
-  int > = 0
+    mpl::not_same<fom_t, pybind11::object>::value and
+    !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+    !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
+  >
 #else
   void
 #endif
@@ -69,58 +72,25 @@ queryFomVelocity(const fom_t & fomObj,
   fomObj.velocity(*yFOM.data(), t, *rhs.data());
 }
 
-// //------------------------------------------
-// // enabled when interfacing with python
-// //------------------------------------------
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <
-//   typename state_t, typename rhs_t, typename time_t,
-//   mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-//     ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
-//     int > = 0
-//   >
-// static void queryFomVelocityUnsteady(const pybind11::object & fomObj,
-//             const state_t & yFOM,
-//             rhs_t & rhs,
-//             const time_t & t)
-// {
-//  *rhs.data() = fomObj.attr("velocity")(*yFOM.data(), t);
-// }
-
-
 //------------------------------------------
-// enabled for native c++
+// for python
 //------------------------------------------
-// template <
-//   typename fom_t, typename state_t, typename time_t
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   , mpl::enable_if_t<
-//       mpl::not_same<fom_t, pybind11::object>::value and
-//       !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value,
-//       int > = 0
-// #endif
-//   >
-// auto queryFomVelocityUnsteady(const fom_t & fomObj,
-//             const state_t & yFOM,
-//             const time_t & t)
-//   -> decltype(fomObj.velocity(*yFOM.data(), t))
-// {
-//   return fomObj.velocity(*yFOM.data(), t);
-// }
-
-// template <typename state_t, typename time_t>
-// static mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value,
-//   typename ::pressio::containers::details::traits<state_t>::wrapped_t
-//   >
-// queryFomVelocityUnsteady(const pybind11::object & fomObj,
-// 			 const state_t & yFOM,
-// 			 const time_t & t)
-// {
-//  return fomObj.attr("velocity")(*yFOM.data(), t);
-// }
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <
+  typename state_t, typename rhs_t, typename time_t,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
+    int > = 0
+  >
+void queryFomVelocityUnsteady(const pybind11::object & fomObj,
+            const state_t & yFOM,
+            rhs_t & rhs,
+            const time_t & t)
+{
+ *rhs.data() = fomObj.attr("velocity")(*yFOM.data(), t);
+}
+#endif
 
 }} //end namespace pressio::rom
 #endif  // ROM_FOM_QUERY_ROM_QUERY_FOM_VELOCITY_HPP_
