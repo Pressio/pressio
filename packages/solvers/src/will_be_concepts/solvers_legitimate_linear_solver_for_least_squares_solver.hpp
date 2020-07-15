@@ -52,8 +52,12 @@
 namespace pressio{ namespace solvers{ namespace concepts {
 
 template <typename T, typename enable = void>
-struct linear_solver_for_least_squares_solver
-  : std::false_type{};
+struct linear_solver_for_least_squares_solver : std::false_type{};
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <>
+struct linear_solver_for_least_squares_solver<pybind11::object> : std::true_type{};
+#endif
 
 template <typename T>
 struct linear_solver_for_least_squares_solver<
