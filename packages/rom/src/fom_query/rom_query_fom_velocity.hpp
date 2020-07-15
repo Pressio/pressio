@@ -56,39 +56,37 @@ namespace pressio{ namespace rom{
 //------------------------------------------
 template <typename fom_t, typename state_t, typename rhs_t, typename time_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  mpl::enable_if_t<
-    mpl::not_same<fom_t, pybind11::object>::value and
-    !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-    !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
+mpl::enable_if_t<
+  mpl::not_same<fom_t, pybind11::object>::value and
+  !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+  !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
   >
 #else
-  void
+void
 #endif
 queryFomVelocity(const fom_t & fomObj,
-       const state_t & yFOM,
-       rhs_t & rhs,
-       const time_t & t)
+		 const state_t & fomState,
+		 rhs_t & rhs,
+		 const time_t & time)
 {
-  fomObj.velocity(*yFOM.data(), t, *rhs.data());
+  fomObj.velocity(*fomState.data(), time, *rhs.data());
 }
 
 //------------------------------------------
 // for python
 //------------------------------------------
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <
-  typename state_t, typename rhs_t, typename time_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value,
-    int > = 0
-  >
-void queryFomVelocityUnsteady(const pybind11::object & fomObj,
-            const state_t & yFOM,
-            rhs_t & rhs,
-            const time_t & t)
+template <typename state_t, typename rhs_t, typename time_t>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
+>
+queryFomVelocity(const pybind11::object & fomObj,
+		 const state_t & fomState,
+		 rhs_t & rhs,
+		 const time_t & time)
 {
- *rhs.data() = fomObj.attr("velocity")(*yFOM.data(), t);
+  *rhs.data() = fomObj.attr("velocity")(*fomState.data(), time);
 }
 #endif
 
