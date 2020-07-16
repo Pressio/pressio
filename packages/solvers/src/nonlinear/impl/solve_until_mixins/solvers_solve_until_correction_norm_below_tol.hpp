@@ -62,6 +62,7 @@ class SolveUntilCorrectionNormBelowTol
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
 
 public:
   SolveUntilCorrectionNormBelowTol() = delete;
@@ -73,6 +74,8 @@ public:
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
+    sc_t initialNorm = {};
+    sc_t relativeNorm = {};
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
@@ -81,6 +84,14 @@ public:
 
       const auto & correction = T::viewCorrection();
       const auto correctionNorm = ::pressio::ops::norm2(correction);
+      if (iStep_==1) initialNorm = correctionNorm;
+      relativeNorm = correctionNorm/initialNorm;
+
+
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenCorrectionNormsPrintRest(*this, iStep_, correctionNorm, relativeNorm);
+  #endif 
+
       if (correctionNorm < iterative_base_t::tolerance_)
         break;
     }

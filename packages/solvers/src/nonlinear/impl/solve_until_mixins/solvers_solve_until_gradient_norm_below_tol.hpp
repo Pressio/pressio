@@ -55,12 +55,14 @@ template<bool absolute, typename sc_t, typename T>
 class SolveUntilGradientNormBelowTol
   : public T,
     public IterativeBase< SolveUntilGradientNormBelowTol<absolute, sc_t, T>, sc_t >
-{
+{ 
   using this_t = SolveUntilGradientNormBelowTol<absolute, sc_t, T>;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   using typename iterative_base_t::iteration_t;
-
+  
   iteration_t iStep_ = {};
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
+
 public:
   SolveUntilGradientNormBelowTol() = delete;
 
@@ -71,8 +73,9 @@ public:
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-
-    sc_t norm0 = {};
+    sc_t initialNorm = {};
+    sc_t absoluteNorm = {};
+    sc_t relativeNorm = {};
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
@@ -80,17 +83,21 @@ public:
       T::updateState(sys, state);
 
       const auto & g = T::getGradient();
-      const auto norm = ::pressio::ops::norm2(g);
+      absoluteNorm = ::pressio::ops::norm2(g);
+      if (iStep_==1) initialNorm = absoluteNorm;
+      relativeNorm = absoluteNorm/initialNorm;
 
-      if (iStep_==1) norm0 = norm;
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenGradientNormsPrintRest(*this, iStep_, absoluteNorm, relativeNorm);
+  #endif 
 
       if (absolute){
-      	if (norm < iterative_base_t::tolerance_)
-      	  break;
+        if (absoluteNorm < iterative_base_t::tolerance_)
+          break;
       }
       else{
-      	if (norm/norm0 < iterative_base_t::tolerance_)
-      	  break;
+        if (relativeNorm < iterative_base_t::tolerance_)
+          break;
       }
     }
   }

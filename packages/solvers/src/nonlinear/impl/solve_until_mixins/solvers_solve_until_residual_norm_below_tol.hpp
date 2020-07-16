@@ -61,6 +61,7 @@ class SolveUntilResidualNormBelowTol
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
 
 public:
   SolveUntilResidualNormBelowTol() = delete;
@@ -81,7 +82,13 @@ public:
       T::updateState(sys, state);
 
       const auto resNorm = T::residualNormCurrentCorrectionStep();
+
       if (iStep_==1) resNorm0 = resNorm;
+
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenResidualNormsPrintRest(*this, iStep_, resNorm, resNorm/resNorm0);
+  #endif 
+
 
       if (absolute){
 	if (resNorm < iterative_base_t::tolerance_)

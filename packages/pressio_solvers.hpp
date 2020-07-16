@@ -89,6 +89,7 @@
 #include "solvers/src/predicates/solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_fused_residual_jacobian.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_residual_jacobian.hpp"
+#include "solvers/src/nonlinear/impl/solvers_printer.hpp"
 #include "solvers/src/nonlinear/solvers_updating_criteria.hpp"
 #include "solvers/src/nonlinear/solvers_convergence_criteria.hpp"
 
