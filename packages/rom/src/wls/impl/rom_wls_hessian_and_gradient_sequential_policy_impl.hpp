@@ -261,6 +261,7 @@ public:
 
       }//end loop over stepsInWindow
     innerLoopCounter_ += 1;
+    rnorm = std::sqrt(rnorm);
   }//end operator()
 
 
