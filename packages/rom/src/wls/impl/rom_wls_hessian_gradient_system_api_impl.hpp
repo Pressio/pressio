@@ -238,6 +238,13 @@ public:
     windowStartTime_	= windowIndex*dt_*numStepsInWindow_;
     step_s_		= windowIndex*numStepsInWindow_;
 
+    // set initial guess over window (needed to avoid bad initial guesses that yield NaN)
+    for (window_size_t i =0; i < numStepsInWindow_; i++){
+      auto wlsViewAssign = ::pressio::containers::span(wlsState,i*romSize_,romSize_);
+      auto wlsViewCopy = ::pressio::containers::span(wlsStateIC_,(timeStencilSize_ - 1)*romSize_,romSize_);
+      ::pressio::ops::deep_copy(wlsViewAssign, wlsViewCopy);
+    }
+
     // solve system
     solver.solve(*this, wlsState);
 
