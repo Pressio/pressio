@@ -57,7 +57,7 @@ template<
   typename residual_t,
   typename jacobian_t,
   typename system_type,
-  typename residual_policy_t, 
+  typename residual_policy_t,
   typename jacobian_policy_t
   >
 class StepperBDF1
@@ -95,14 +95,14 @@ public:
   StepperBDF1 & operator=(StepperBDF1 && other)  = delete;
 
   StepperBDF1(const state_type & state,
-	  const system_type & systemObj,
-	  const residual_policy_t & resPolicyObj,
-	  const jacobian_policy_t  & jacPolicyObj)
-    : sys_{systemObj}, 
-      auxStates_{state}, 
+	      const system_type & systemObj,
+	      const residual_policy_t & resPolicyObj,
+	      const jacobian_policy_t  & jacPolicyObj)
+    : sys_{systemObj},
+      auxStates_{state},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}
-    {}
+  {}
 
   // cstr for standard residual and jacob policies
   template <
@@ -114,10 +114,10 @@ public:
       int> = 0
     >
   StepperBDF1(const state_type & state,
-	  const system_type & systemObj) 
-    : sys_{systemObj}, 
+	      const system_type & systemObj)
+    : sys_{systemObj},
       auxStates_{state}
-    {}
+  {}
 
 public:
   ::pressio::ode::types::stepper_order_t order() const
@@ -133,7 +133,7 @@ public:
 	      solver_type & solver)
   {
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value, 
+      solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF1 stepper");
 
     using nm1 = ode::nMinusOne;
@@ -154,7 +154,7 @@ public:
 	      guess_callback_t && guesserCb)
   {
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value, 
+      solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF1 stepper");
 
     using nm1 = ode::nMinusOne;
@@ -187,7 +187,7 @@ public:
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     this->jacobian_obj_.template compute<
-      tag_name>(odeState, this->auxStates_, this->sys_.get(), 
+      tag_name>(odeState, this->auxStates_, this->sys_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
 

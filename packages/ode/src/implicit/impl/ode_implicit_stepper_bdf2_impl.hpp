@@ -58,7 +58,7 @@ template<
   typename jacobian_t,
   typename system_type,
   typename aux_stepper_t,
-  typename residual_policy_t, 
+  typename residual_policy_t,
   typename jacobian_policy_t
   >
 class StepperBDF2
@@ -95,17 +95,17 @@ public:
   StepperBDF2 & operator=(StepperBDF2 && other)  = delete;
 
   StepperBDF2(const state_type & state,
-	  const system_type & systemObj,
-	  const residual_policy_t & resPolicyObj,
-	  const jacobian_policy_t & jacPolicyObj,
-	  aux_stepper_t & auxStepper)
-    : auxStepper_{auxStepper}, 
-      sys_{systemObj}, 
-      auxStates_{state}, 
+	      const system_type & systemObj,
+	      const residual_policy_t & resPolicyObj,
+	      const jacobian_policy_t & jacPolicyObj,
+	      aux_stepper_t & auxStepper)
+    : auxStepper_{auxStepper},
+      sys_{systemObj},
+      auxStates_{state},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}
-    {}
-      
+  {}
+
   // cstr for standard residual and jacob policies
   template <
     typename T1 = residual_policy_t,
@@ -113,16 +113,16 @@ public:
     ::pressio::mpl::enable_if_t<
       mpl::is_same<T1, standard_res_policy_t>::value and
       mpl::is_same<T2, standard_jac_policy_t>::value,
-    int> = 0
+      int> = 0
     >
   StepperBDF2(const state_type & state,
-	  const system_type & systemObj,
-	  aux_stepper_t & auxStepper)
+	      const system_type & systemObj,
+	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
-      sys_{systemObj}, 
+      sys_{systemObj},
       auxStates_{state}
-    {}
-     
+  {}
+
 public:
   ::pressio::ode::types::stepper_order_t order() const
   {
@@ -137,7 +137,7 @@ public:
 	      solver_type & solver)
   {
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value, 
+      solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF2 stepper");
 
     using nm1 = ode::nMinusOne;
@@ -180,7 +180,7 @@ public:
 	      guess_callback_t && guesserCb)
   {
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value, 
+      solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF2 stepper");
 
     using nm1 = ode::nMinusOne;
@@ -236,7 +236,7 @@ public:
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     this->jacobian_obj_.template compute<
-      tag_name>(odeState, this->auxStates_, this->sys_.get(), 
+      tag_name>(odeState, this->auxStates_, this->sys_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
 
