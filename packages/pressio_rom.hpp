@@ -70,11 +70,14 @@
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_lspg_continuous_time.hpp"
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_lspg_discrete_time.hpp"
 
-// decoder 
+// decoder
 #include "rom/src/predicates/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
 #include "rom/src/predicates/rom_has_const_get_reference_to_jacobian.hpp"
 #include "rom/src/will_be_concepts/decoder/rom_admissible_decoder.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "rom/src/decoder/rom_py_decoder.hpp"
+#endif
 
 // fom state reconstructor
 #include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
@@ -118,7 +121,7 @@
 #include "rom/src/will_be_concepts/system/rom_steady_system_preconditionable_rom.hpp"
 
 //-----------------
-// LSPG 
+// LSPG
 //-----------------
 #include "rom/src/lspg/rom_compose_lspg.hpp"
 //----------------
