@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   // define LSPG type
   using lspg_problem_type = pressio::rom::lspg::composePreconditionedProblem<
     fom_adapter_t, lspg_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
+  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj);
 
   using rom_system_t = typename lspg_problem_type::lspg_system_t;
 
