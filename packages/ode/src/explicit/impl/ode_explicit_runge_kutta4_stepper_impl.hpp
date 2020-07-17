@@ -63,7 +63,7 @@ template<
 class ExplicitRungeKutta4StepperImpl
 {
 
-  using this_t = ExplicitRungeKutta4StepperImpl<scalar_type, state_type, system_type, 
+  using this_t = ExplicitRungeKutta4StepperImpl<scalar_type, state_type, system_type,
     velocity_type, velocity_policy_type, standard_velocity_policy_type, ops_t>;
 
 public:
@@ -78,12 +78,12 @@ private:
 
   const ops_t * udOps_ = nullptr;
   state_type tmpState_;
-  system_wrapper_t sys_;
+  system_wrapper_t systemObj_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
-    const standard_velocity_policy_type, 
-    const velocity_policy_type & 
+    const standard_velocity_policy_type,
+    const velocity_policy_type &
   >::type policy_;
 
   velocity_storage_t veloAuxStorage_;
@@ -98,76 +98,76 @@ public:
 
   // the following cnstr is enabled if we are using pressio ops
   template <
-    typename _ops_t = ops_t, 
+    typename _ops_t = ops_t,
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
   >
-  ExplicitRungeKutta4StepperImpl(const state_type & state, 
-                                 const system_type & model, 
+  ExplicitRungeKutta4StepperImpl(const state_type & state,
+                                 const system_type & systemObj,
                                  const velocity_policy_type & policy)
-    : tmpState_{state}, 
-      sys_(model), 
-      policy_(policy), 
-      veloAuxStorage_(policy_.create(model))
-  {}  
+    : tmpState_{state},
+      systemObj_(systemObj),
+      policy_(policy),
+      veloAuxStorage_(policy_.create(systemObj))
+  {}
 
   // the following cnstr is enabled if we are using user-defined ops
   template <
-    typename _ops_t = ops_t, 
+    typename _ops_t = ops_t,
     mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
   >
-  ExplicitRungeKutta4StepperImpl(const state_type & state, 
-                                 const system_type & model, 
+  ExplicitRungeKutta4StepperImpl(const state_type & state,
+                                 const system_type & systemObj,
                                  const velocity_policy_type & policy,
                                  const _ops_t & udOps)
     : udOps_(&udOps),
       tmpState_{state},
-      sys_(model), 
-      policy_(policy), 
-      veloAuxStorage_(policy_.create(model))
-    {}  
+      systemObj_(systemObj),
+      policy_(policy),
+      veloAuxStorage_(policy_.create(systemObj))
+    {}
 
-  // the following cnstr is only enabled if 
+  // the following cnstr is only enabled if
   // policy is default constructible and we are using pressio ops
   template <
     typename _vel_pol_t = velocity_policy_type,
-    typename _ops_t = ops_t, 
-    mpl::enable_if_t< 
-      std::is_void<_ops_t>::value and 
-      std::is_default_constructible<_vel_pol_t>::value, 
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<
+      std::is_void<_ops_t>::value and
+      std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
   >
-  ExplicitRungeKutta4StepperImpl(const state_type & state, 
-                                 const system_type & model)
+  ExplicitRungeKutta4StepperImpl(const state_type & state,
+                                 const system_type & systemObj)
     : tmpState_{state},
-      sys_(model), 
+      systemObj_(systemObj),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(model))
+      veloAuxStorage_(policy_.create(systemObj))
   {}
 
-  // the following cnstr is only enabled if 
+  // the following cnstr is only enabled if
   // policy is default constructible and we are using user-defined ops
   template <
     typename _vel_pol_t = velocity_policy_type,
-    typename _ops_t = ops_t, 
-    mpl::enable_if_t< 
-      !std::is_void<_ops_t>::value and 
-      std::is_default_constructible<_vel_pol_t>::value, 
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<
+      !std::is_void<_ops_t>::value and
+      std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
   >
-  ExplicitRungeKutta4StepperImpl(const state_type & state, 
-                                 const system_type & model, 
+  ExplicitRungeKutta4StepperImpl(const state_type & state,
+                                 const system_type & systemObj,
                                  const _ops_t & udOps)
     : udOps_(&udOps),
       tmpState_{state},
-      sys_(model), 
+      systemObj_(systemObj),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(model))
+      veloAuxStorage_(policy_.create(systemObj))
   {}
 
 public:
   types::stepper_order_t order() const
-  { 
-    return order_value; 
+  {
+    return order_value;
   }
 
   void doStep(state_type & stateInOut,
@@ -190,19 +190,19 @@ public:
     const scalar_type dt3 = dt / three;
 
     // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_.compute(stateInOut, auxRhs0, sys_.get(), t);
+    policy_.compute(stateInOut, auxRhs0, systemObj_.get(), t);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_.compute(tmpState_, auxRhs1, sys_.get(), t_phalf);
+    policy_.compute(tmpState_, auxRhs1, systemObj_.get(), t_phalf);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
-    policy_.compute(tmpState_, auxRhs2, sys_.get(), t_phalf);
+    policy_.compute(tmpState_, auxRhs2, systemObj_.get(), t_phalf);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_.compute(tmpState_, auxRhs3, sys_.get(), t + dt);
+    policy_.compute(tmpState_, auxRhs3, systemObj_.get(), t + dt);
     this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
   }//end doStep
 

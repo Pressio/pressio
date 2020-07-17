@@ -52,18 +52,18 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
 template <
-  typename fom_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename decoder_type,
   typename ...Args
   >
 struct PreconditionedProblemTraits
-  : CommonTraits<fom_type, decoder_type, lspg_state_type, Args...>
+  : CommonTraits<fom_system_type, decoder_type, lspg_state_type, Args...>
 {
 
-  using base_t = ::pressio::rom::lspg::impl::steady::CommonTraits<fom_type, decoder_type, lspg_state_type, Args...>;
+  using base_t = ::pressio::rom::lspg::impl::steady::CommonTraits<fom_system_type, decoder_type, lspg_state_type, Args...>;
 
-  using typename base_t::fom_t;
+  using typename base_t::fom_system_t;
   using typename base_t::scalar_t;
   using typename base_t::fom_native_state_t;
   using typename base_t::fom_state_t;
@@ -104,7 +104,7 @@ struct PreconditionedProblemTraits
 
   // declare type of system
   using lspg_system_t   = ::pressio::rom::lspg::impl::steady::System<
-    scalar_t, fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
+    scalar_t, fom_system_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class

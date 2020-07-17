@@ -62,34 +62,34 @@ struct compose{
 };
 
 // default continuous time API
-template<typename stepper_tag, typename system_type, typename galerkin_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename galerkin_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::galerkin::impl::Default,
 mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_explicit_system<system_type>::value and
+::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value and
 (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::explicitmethods::RungeKutta4>::value)
 >,
-stepper_tag, system_type, galerkin_state_t, Args...>
+stepper_tag, fom_system_type, galerkin_state_t, Args...>
 {
   using type = ::pressio::rom::galerkin::impl::ProblemContinuousTimeApi<
             ::pressio::rom::galerkin::impl::DefaultProblemTraitsContinuousTimeApi,
-            stepper_tag, system_type, galerkin_state_t, Args...>;
+            stepper_tag, fom_system_type, galerkin_state_t, Args...>;
 };
 
 // default discrete time api
-template<typename stepper_tag, typename system_type, typename galerkin_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename galerkin_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::galerkin::impl::Default,
 mpl::enable_if_t<
-::pressio::rom::concepts::discrete_time_system<system_type>::value and
+::pressio::rom::concepts::discrete_time_system<fom_system_type>::value and
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value
 >,
-stepper_tag, system_type, galerkin_state_t, Args...>
+stepper_tag, fom_system_type, galerkin_state_t, Args...>
 {
   using type = ::pressio::rom::galerkin::impl::ProblemDiscreteTimeApi<
             ::pressio::rom::galerkin::impl::DefaultProblemTraitsDiscreteTimeApi,
-            stepper_tag, system_type, galerkin_state_t, Args...>;
+            stepper_tag, fom_system_type, galerkin_state_t, Args...>;
 };
 
 }}}}

@@ -71,11 +71,11 @@ public:
   {}
 
 public:
-  template <typename app_t>
-  apply_jac_return_t create(const app_t & app) const
+  template <typename fom_system_t>
+  apply_jac_return_t create(const fom_system_t & fomSystem) const
   {
-    JJ_ = maskable_policy::create(app);
-    return apply_jac_return_t(app.createApplyMaskResult(*JJ_.data()));
+    JJ_ = maskable_policy::create(fomSystem);
+    return apply_jac_return_t(fomSystem.createApplyMaskResult(*JJ_.data()));
   }
 
   // unsteady case
@@ -83,28 +83,28 @@ public:
     typename stepper_tag,
     typename state_t,
     typename prev_states_mgr,
-    typename app_t,
+    typename fom_system_t,
     typename time_type,
     typename jac_t
-  >
+    >
   void compute(const state_t & state,
-      const prev_states_mgr & prevStatesMgr,
-		  const app_t & app,
-		  const time_type & time,
-		  const time_type & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  jac_t & odeJJ) const
+	       const prev_states_mgr & prevStatesMgr,
+	       const fom_system_t & systemObj,
+	       const time_type & time,
+	       const time_type & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       jac_t & odeJJ) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr, app, time, dt, step, JJ_);
-    app.applyMask(*JJ_.data(), time, *odeJJ.data());
+    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr, systemObj, time, dt, step, JJ_);
+    systemObj.applyMask(*JJ_.data(), time, *odeJJ.data());
   }
 
   // steady case
-  template <typename state_t, typename jac_t, typename app_t>
-  void compute(const state_t & state, jac_t & odeJJ, const app_t & app) const
+  template <typename state_t, typename jac_t, typename fom_system_t>
+  void compute(const state_t & state, jac_t & odeJJ, const fom_system_t & systemObj) const
   {
-    maskable_policy::compute(state, JJ_, app);
-    app.applyMask(*JJ_.data(), *odeJJ.data());    
+    maskable_policy::compute(state, JJ_, systemObj);
+    systemObj.applyMask(*JJ_.data(), *odeJJ.data());
   }
 
 };//end class

@@ -67,14 +67,14 @@ struct has_const_create_apply_discrete_time_jacobian_result_method_accept_operan
       result_t,
       decltype(
 	       std::declval<T const>().createApplyDiscreteTimeJacobianResult
-          (
-            std::declval<operand_t const & >()
-          )
+	       (
+		std::declval<operand_t const & >()
+		)
 	       )
       >::value
     >
   > : std::true_type{};
 
 
-}}} 
+}}}
 #endif  // ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_DISCRETE_TIME_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_

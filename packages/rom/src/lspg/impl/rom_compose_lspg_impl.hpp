@@ -70,98 +70,98 @@ struct compose{
 //********************
 
 // unsteady default lspg continuous time API
-template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Default,
 mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_implicit_system<system_type>::value and
+::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value and
 (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
 >,
-stepper_tag, system_type, lspg_state_t, Args...>
+stepper_tag, fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
             ::pressio::rom::lspg::impl::unsteady::DefaultProblemTraitsContinuousTimeApi,
-            stepper_tag, system_type, lspg_state_t, Args...>;
+            stepper_tag, fom_system_type, lspg_state_t, Args...>;
 };
 
 // unsteady preconditioned lspg continuous time API
-template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Preconditioned,
 mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_system_preconditionable_rom<system_type>::value and
+::pressio::rom::concepts::continuous_time_system_preconditionable_rom<fom_system_type>::value and
 (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
 >,
-stepper_tag, system_type, lspg_state_t, Args...>
+stepper_tag, fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
             ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemTraitsContinuousTimeApi,
-            stepper_tag, system_type, lspg_state_t, Args...>;
+            stepper_tag, fom_system_type, lspg_state_t, Args...>;
 };
 
 // unsteady masked lspg continuous time API
-template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Masked,
 mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_system_maskable_rom<system_type>::value and
+::pressio::rom::concepts::continuous_time_system_maskable_rom<fom_system_type>::value and
 (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Euler>::value or
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value)
 >,
-stepper_tag, system_type, lspg_state_t, Args...>
+stepper_tag, fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::unsteady::ProblemContinuousTimeApi<
             ::pressio::rom::lspg::impl::unsteady::MaskedProblemTraitsContinuousTimeApi,
-            stepper_tag, system_type, lspg_state_t, Args...>;
+            stepper_tag, fom_system_type, lspg_state_t, Args...>;
 };
 
 
 // unsteady default lspg discrete time api
-template<typename stepper_tag, typename system_type, typename lspg_state_t, typename ...Args>
+template<typename stepper_tag, typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Default,
 mpl::enable_if_t<
-::pressio::rom::concepts::discrete_time_system<system_type>::value and
+::pressio::rom::concepts::discrete_time_system<fom_system_type>::value and
 std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value
 >,
-stepper_tag, system_type, lspg_state_t, Args...>
+stepper_tag, fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::unsteady::ProblemDiscreteTimeApi<
             ::pressio::rom::lspg::impl::unsteady::DefaultProblemTraitsDiscreteTimeApi,
-            stepper_tag, system_type, lspg_state_t, Args...>;
+            stepper_tag, fom_system_type, lspg_state_t, Args...>;
 };
 
 //********************
 //***** STEADY *****
 //********************
 // default
-template<typename system_type, typename lspg_state_t, typename ...Args>
+template<typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Default,
 mpl::enable_if_t<
-::pressio::rom::concepts::steady_system<system_type>::value
+::pressio::rom::concepts::steady_system<fom_system_type>::value
 >,
-system_type, lspg_state_t, Args...>
+fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::steady::ProblemSteady<
             ::pressio::rom::lspg::impl::steady::DefaultProblemTraits,
-            system_type, lspg_state_t, Args...>;
+            fom_system_type, lspg_state_t, Args...>;
 };
 
 // preconditionale rom
-template<typename system_type, typename lspg_state_t, typename ...Args>
+template<typename fom_system_type, typename lspg_state_t, typename ...Args>
 struct compose<
 ::pressio::rom::lspg::impl::Preconditioned,
 mpl::enable_if_t<
-::pressio::rom::concepts::steady_system_preconditionable_rom<system_type>::value
+::pressio::rom::concepts::steady_system_preconditionable_rom<fom_system_type>::value
 >,
-system_type, lspg_state_t, Args...>
+fom_system_type, lspg_state_t, Args...>
 {
   using type = ::pressio::rom::lspg::impl::steady::ProblemSteady<
             ::pressio::rom::lspg::impl::steady::PreconditionedProblemTraits,
-            system_type, lspg_state_t, Args...>;
+            fom_system_type, lspg_state_t, Args...>;
 };
 
 }}}}

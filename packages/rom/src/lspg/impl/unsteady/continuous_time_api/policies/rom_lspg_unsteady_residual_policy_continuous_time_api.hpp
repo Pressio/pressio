@@ -98,8 +98,8 @@ public:
   {}
 
 public:
-  template <typename system_t>
-  residual_t create(const system_t & app) const
+  template <typename fom_system_t>
+  residual_t create(const fom_system_t & fomSystemObj) const
   {
     return R_;
   }
@@ -108,12 +108,12 @@ public:
     typename stepper_tag,
     typename lspg_state_t,
     typename prev_states_t,
-    typename system_t,
+    typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
 	       const prev_states_t & romPrevStates,
-	       const system_t & app,
+	       const fom_system_t & fomSystemObj,
 	       const scalar_t & t,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
@@ -121,7 +121,7 @@ public:
 	       ::pressio::Norm normKind,
 	       scalar_t & normValue) const
   {
-    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app,
+    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, fomSystemObj,
 				    t, dt, step, normKind, normValue);
   }
 
@@ -178,15 +178,15 @@ private:
     typename stepper_tag,
     typename lspg_state_t,
     typename prev_states_t,
-    typename system_t,
+    typename fom_system_t,
     typename scalar_t
   >
-  void compute_impl(const lspg_state_t		     & romState,
-		    residual_t			     & romR,
-		    const prev_states_t		     & romPrevStates,
-		    const system_t			     & app,
-		    const scalar_t		     & t,
-		    const scalar_t		     & dt,
+  void compute_impl(const lspg_state_t & romState,
+		    residual_t & romR,
+		    const prev_states_t & romPrevStates,
+		    const fom_system_t  & fomSystemObj,
+		    const scalar_t & t,
+		    const scalar_t & dt,
 		    const ::pressio::ode::types::step_t & step,
 		    ::pressio::Norm normKind,
 		    scalar_t & normValue) const
@@ -215,7 +215,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    ::pressio::rom::queryFomVelocity(app, fomStatesMngr_.getCRefToCurrentFomState(), romR, t);
+    ::pressio::rom::queryFomVelocity(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(), romR, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

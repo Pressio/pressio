@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
 1.01905007725692e+00,
 1.02105354928633e+00};
 
-  if (residFomSol.size() != gold.size()) 
+  if ((std::size_t)residFomSol.size() != gold.size()) 
     checkStr = "FAILED";
 
   // check the reconstructed fom state

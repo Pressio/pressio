@@ -49,20 +49,20 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template <
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename ... Args
   >
 struct DefaultProblemTraitsDiscreteTimeApi
 {
   // pick the common types holder
-  using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsDiscreteTimeApi<stepper_tag, fom_type, lspg_state_type, Args...>;
+  using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsDiscreteTimeApi<stepper_tag, fom_system_type, lspg_state_type, Args...>;
 
-  using fom_t			= typename common_types_t::fom_t;
+  using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_native_residual_t	= typename common_types_t::fom_native_residual_t;
@@ -91,7 +91,7 @@ struct DefaultProblemTraitsDiscreteTimeApi
 
   // declare type of stepper object
   using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_type,
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_system_type,
     stepper_order_t, tot_n_setter_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class

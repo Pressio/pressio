@@ -58,7 +58,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <
   template <class ...> class galerkin_type,
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename rom_state_type,
   typename ...Args
   >
@@ -67,9 +67,9 @@ class ProblemContinuousTimeApi
 
 public:
   // define the type holding types for the problem
-  using problem_t = galerkin_type<stepper_tag, fom_type, rom_state_type, Args...>;
+  using problem_t = galerkin_type<stepper_tag, fom_system_type, rom_state_type, Args...>;
 
-  using fom_t			= typename problem_t::fom_t;
+  using fom_system_t		= typename problem_t::fom_system_t;
   using scalar_t		= typename problem_t::scalar_t;
   using fom_native_state_t	= typename problem_t::fom_native_state_t;
   using fom_state_t		= typename problem_t::fom_state_t;
@@ -108,7 +108,7 @@ public:
 
   /*
    * ud_ops_t = void, C++ types
-  */
+   */
   template <
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
@@ -118,23 +118,23 @@ public:
       and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
       , int> = 0
-  >
-  ProblemContinuousTimeApi(const fom_t   & appObj,
-			      const fom_native_state_t & yFomRefNative,
-			      const decoder_t	    & decoder,
-			      galerkin_state_t	    & yROM,
-			      scalar_t		    t0)
-    : fomStateReference_(yFomRefNative),
+    >
+  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+			   const fom_native_state_t & fomNativeReferenceState,
+			   const decoder_t	    & decoder,
+			   galerkin_state_t	    & romStateIn,
+			   scalar_t		    t0)
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_(appObj.createVelocity()),
+      fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(yROM, appObj, residualPolicy_)
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
   {}
 
   /*
    * ud_ops_t != void, C++ types
-  */
+   */
   template <
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
@@ -144,43 +144,43 @@ public:
       and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
 #endif
       , int> = 0
-  >
-  ProblemContinuousTimeApi(const fom_t   & appObj,
-			      const fom_native_state_t & yFomRefNative,
-			      const decoder_t	    & decoder,
-			      galerkin_state_t	    & yROM,
-			      scalar_t		    t0,
-			      const _ud_ops_t & udOps)
-    : fomStateReference_(yFomRefNative),
+    >
+  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+			   const fom_native_state_t & fomNativeReferenceState,
+			   const decoder_t	    & decoder,
+			   galerkin_state_t	    & romStateIn,
+			   scalar_t		    t0,
+			   const _ud_ops_t	    & udOps)
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
-      fomVelocityRef_(appObj.createVelocity()),
+      fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
-      stepperObj_(yROM, appObj, residualPolicy_)
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
   {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /*
    * ud_ops_t == void and state_type is wrapper of pybind11::array
-  */
+   */
   template <
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
       ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value,
       int > = 0
-  >
-  ProblemContinuousTimeApi(const fom_t   & appObj,
-			      fom_native_state_t	    yFomRefNative,
-			      const decoder_t	    & decoder,
-			      galerkin_native_state_t  yROM,
-			      scalar_t		    t0)
-    : fomStateReference_(yFomRefNative),
+    >
+  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+			   fom_native_state_t	    & fomNativeReferenceState,
+			   const decoder_t	    & decoder,
+			   galerkin_native_state_t  & romStateIn,
+			   scalar_t		    t0)
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( appObj.attr("velocity")(*fomStateReference_.data(), t0) ),
+      fomVelocityRef_( fomSystemObj.attr("velocity")(*fomStateReference_.data(), t0) ),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(galerkin_state_t(yROM), appObj, residualPolicy_)
+      stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, residualPolicy_)
   {}
 #endif
 

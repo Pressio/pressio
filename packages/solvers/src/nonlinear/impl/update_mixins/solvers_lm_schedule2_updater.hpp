@@ -74,7 +74,6 @@ public:
   template<typename system_t>
   void updateState(const system_t & sys, state_t & state)
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
     constexpr auto ten  = static_cast<scalar_t>(10);

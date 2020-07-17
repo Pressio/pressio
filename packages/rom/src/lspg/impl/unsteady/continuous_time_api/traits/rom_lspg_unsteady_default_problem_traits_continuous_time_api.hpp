@@ -53,7 +53,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 
 template <
   typename stepper_tag,
-  typename system_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename ... Args
   >
@@ -61,9 +61,9 @@ struct DefaultProblemTraitsContinuousTimeApi
 {
   // pick the common types holder
   using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
-        stepper_tag, system_type, lspg_state_type, Args...>;
+        stepper_tag, fom_system_type, lspg_state_type, Args...>;
 
-  using system_t			= typename common_types_t::system_t;
+  using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
@@ -74,7 +74,7 @@ struct DefaultProblemTraitsContinuousTimeApi
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy to compute the LSPG time-discrete residual
@@ -88,12 +88,12 @@ struct DefaultProblemTraitsContinuousTimeApi
   static_assert( !std::is_void<lspg_jacobian_policy_t>::value, "");
 
   using aux_stepper_t = typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, system_type,
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_system_type,
     lspg_residual_policy_t, lspg_jacobian_policy_t>::type;
 
-  using lspg_stepper_t = 
-     ::pressio::ode::ImplicitStepper<stepper_tag, lspg_state_t, lspg_residual_t, 
-      lspg_matrix_t, system_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
+  using lspg_stepper_t =
+     ::pressio::ode::ImplicitStepper<stepper_tag, lspg_state_t, lspg_residual_t,
+      lspg_matrix_t, fom_system_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
 };//end class
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

@@ -72,16 +72,16 @@ template <
 struct has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
   T, state_t, operand_t, time_type, result_t,
   ::pressio::mpl::void_t<
-  decltype(
-	   std::declval<T const>().applyJacobian(
-					    std::declval<state_t const&>(),
-              std::declval<operand_t const&>(),
-					    std::declval<time_type const &>(),
-					    std::declval<result_t &>()
-					    )
-	   )
+    decltype(
+	     std::declval<T const>().applyJacobian(
+						   std::declval<state_t const&>(),
+						   std::declval<operand_t const&>(),
+						   std::declval<time_type const &>(),
+						   std::declval<result_t &>()
+						   )
+	     )
     >
   >: std::true_type{};
 
-}}} 
+}}}
 #endif  // ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_STATE_OPERAND_TIME_RESULT_RETURN_VOID_HPP_

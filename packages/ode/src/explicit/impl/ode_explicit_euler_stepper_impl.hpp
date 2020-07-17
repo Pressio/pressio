@@ -73,7 +73,7 @@ private:
   using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
   using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
-  system_wrapper_t sys_;
+  system_wrapper_t systemObj_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
@@ -98,11 +98,11 @@ public:
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
   >
   ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & model,
+                           const system_type & systemObj,
                            const velocity_policy_type & policy)
-    : sys_(model),
+    : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.create(model))
+      veloAuxStorage_(policy_.create(systemObj))
   {}
 
   // the following cnstr is enabled if we are using user-defined ops
@@ -111,12 +111,12 @@ public:
     mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
   >
   ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & model,
+                           const system_type & systemObj,
                            const velocity_policy_type & policy,
                            const _ops_t & udOps)
-    : sys_(model),
+    : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.create(model)),
+      veloAuxStorage_(policy_.create(systemObj)),
       udOps_(&udOps)
   {}
 
@@ -131,10 +131,10 @@ public:
       int > = 0
   >
   ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & model)
-    : sys_(model),
+                           const system_type & systemObj)
+    : systemObj_(systemObj),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(model))
+      veloAuxStorage_(policy_.create(systemObj))
   {}
 
   // the following cnstr is only enabled if
@@ -148,11 +148,11 @@ public:
       int > = 0
   >
   ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & model,
+                           const system_type & systemObj,
                            const _ops_t & udOps)
-    : sys_(model),
+    : systemObj_(systemObj),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(model)),
+      veloAuxStorage_(policy_.create(systemObj)),
       udOps_(&udOps)
   {}
 
@@ -172,7 +172,7 @@ public:
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
-    policy_.compute(stateInOut, auxRhs0, sys_.get(), time);
+    policy_.compute(stateInOut, auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
@@ -187,7 +187,7 @@ public:
 	 const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
-    policy_.compute(stateInOut, auxRhs0, sys_.get(), time);
+    policy_.compute(stateInOut, auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);

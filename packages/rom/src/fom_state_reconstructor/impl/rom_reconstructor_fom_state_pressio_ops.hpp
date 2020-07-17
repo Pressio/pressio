@@ -60,29 +60,29 @@ struct FomStateReconstructorPressioOps
 {
   FomStateReconstructorPressioOps() = delete;
 
-  FomStateReconstructorPressioOps(const fom_state_type & yFomIn,
+  FomStateReconstructorPressioOps(const fom_state_type & fomStateIn,
 				  const decoder_type & decoder)
-    : yFomReference_(yFomIn),
+    : fomStateReference_(fomStateIn),
       decoderObj_(decoder)
   {}
 
   template <typename rom_state_t>
-  void operator()(const rom_state_t & romY,
-		  fom_state_type    & yOut) const
+  void operator()(const rom_state_t & romState,
+		  fom_state_type    & fomState) const
   {
-    // map current romY to FOM state
-    decoderObj_.applyMapping(romY, yOut);
+    // map current romState to FOM state
+    decoderObj_.applyMapping(romState, fomState);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    // yOut = yOut + yFomReference_;
-    ops::do_update(yOut, one, yFomReference_, one);
+    // fomState = fomState + fomStateReference_;
+    ops::do_update(fomState, one, fomStateReference_, one);
   }
 
   template <typename rom_state_t>
-  fom_state_type operator()(const rom_state_t & romY) const{
-    auto yOut(yFomReference_);
-    ::pressio::ops::set_zero(yOut);
-    this->operator()(romY,yOut);
-    return yOut;
+  fom_state_type operator()(const rom_state_t & romState) const{
+    auto fomState(fomStateReference_);
+    ::pressio::ops::set_zero(fomState);
+    this->operator()(romState,fomState);
+    return fomState;
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -92,17 +92,17 @@ struct FomStateReconstructorPressioOps
     ::pressio::containers::predicates::is_array_pybind<rom_state_t>::value,
     typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
     >
-  evaluate(const rom_state_t & romY) const{
-    ::pressio::containers::Vector<rom_state_t> romView(romY, ::pressio::view());
-    fom_state_type yOut(yFomReference_);
-    ::pressio::ops::set_zero(yOut);
-    this->operator()(romView, yOut);
-    return *yOut.data();
+  evaluate(const rom_state_t & romState) const{
+    ::pressio::containers::Vector<rom_state_t> romView(romState, ::pressio::view());
+    fom_state_type fomState(fomStateReference_);
+    ::pressio::ops::set_zero(fomState);
+    this->operator()(romView, fomState);
+    return *fomState.data();
   }
 #endif
 
 private:
-  const fom_state_type & yFomReference_	= {};
+  const fom_state_type & fomStateReference_	= {};
   const decoder_type   & decoderObj_	= {};
 
 };//end class

@@ -61,7 +61,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <
   template <class ...> class galerkin_type,
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename rom_state_type,
   typename rom_jacobian_type,
   typename ...Args
@@ -70,9 +70,9 @@ class ProblemDiscreteTimeApi
 {
 
 public:
-  using problem_t	= galerkin_type<stepper_tag, fom_type, rom_state_type, rom_jacobian_type, Args...>;
+  using problem_t	= galerkin_type<stepper_tag, fom_system_type, rom_state_type, rom_jacobian_type, Args...>;
 
-  using fom_t		= typename problem_t::fom_t;
+  using fom_system_t		= typename problem_t::fom_system_t;
   using scalar_t	= typename problem_t::scalar_t;
   using fom_nat_state_t = typename problem_t::fom_native_state_t;
   using fom_state_t	= typename problem_t::fom_state_t;
@@ -112,11 +112,11 @@ public:
 public:
   ProblemDiscreteTimeApi() = delete;
 
-  ProblemDiscreteTimeApi(const fom_t & appObj,
-			      const fom_nat_state_t & fomStateReferenceNative,
-			      decoder_t	 & decoder,
-			      rom_state_t & yROM,
-			      scalar_t	t0)
+  ProblemDiscreteTimeApi(const fom_system_t & appObj,
+			 const fom_nat_state_t & fomStateReferenceNative,
+			 decoder_t	 & decoder,
+			 rom_state_t & romStateIn,
+			 scalar_t	t0)
     : step0_{},
       t0_{t0},
       dt0_{},
@@ -127,7 +127,7 @@ public:
       residualPolicy_(fomStatesMngr_, decoder, appObj),
       jacobianPolicy_(fomStatesMngr_, decoder, appObj),
       // stepper
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+      stepperObj_(romStateIn, appObj, residualPolicy_, jacobianPolicy_)
   {}
 
 };

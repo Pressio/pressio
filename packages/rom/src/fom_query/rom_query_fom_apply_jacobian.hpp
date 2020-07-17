@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace rom{
 
-template <typename fom_t, typename state_t, typename operand_t, typename result_t, typename time_type>
+template <typename fom_system_t, typename state_t, typename operand_t, typename result_t, typename time_type>
 mpl::enable_if_t<
-  !::pressio::ops::predicates::is_object_pybind<fom_t>::value
+  !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
   and !::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value
 #endif
   >
-queryFomApplyJacobian(const fom_t & fomObj,
+queryFomApplyJacobian(const fom_system_t & fomObj,
 		      const state_t & fomState,
 		      const operand_t & operand,
 		      result_t & result,
@@ -68,15 +68,15 @@ queryFomApplyJacobian(const fom_t & fomObj,
   fomObj.applyJacobian(*fomState.data(), *operand.data(), time, *result.data());
 }
 
-template <typename fom_t, typename state_t, typename operand_t, typename result_t>
+template <typename fom_system_t, typename state_t, typename operand_t, typename result_t>
 mpl::enable_if_t<
-  !::pressio::ops::predicates::is_object_pybind<fom_t>::value
+  !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
   and !::pressio::containers::predicates::is_matrix_wrapper_pybind<operand_t>::value
 #endif
   >
-queryFomApplyJacobian(const fom_t & fomObj,
+queryFomApplyJacobian(const fom_system_t & fomObj,
 		      const state_t & fomState,
 		      const operand_t & operand,
 		      result_t & result)

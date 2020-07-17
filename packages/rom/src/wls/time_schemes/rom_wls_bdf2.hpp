@@ -79,54 +79,54 @@ public:
   {}
 
 public:
-/**
-  time_discrete_residual Function overload for conitnuous time api
- */
+  /**
+     time_discrete_residual Function overload for conitnuous time api
+  */
   template <
-    typename fom_type,
-    typename fom_state_type,
-    typename residual_type,
-    typename scalar_type
->
+  typename fom_type,
+  typename fom_state_type,
+  typename residual_type,
+  typename scalar_type
+  >
   typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
-  time_discrete_residual(const fom_type & appObj,
-			      const fom_state_type & fomState,
-			      residual_type & residual,
-			      const scalar_type & t,
-			      const scalar_type & dt,
-			      const pressio::rom::wls::window_size_t & step) const
+  time_discrete_residual(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 residual_type & residual,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step) const
   {
     if (step > 0){
       // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
-      appObj.velocity(*fomState.data(), t, *residual.data());
+      fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
-        auxStatesContainer_, dt, ::pressio::ode::implicitmethods::BDF2());
+						   auxStatesContainer_, dt, ::pressio::ode::implicitmethods::BDF2());
     }
 
     if (step == 0){
       // u^n - u^{n-1}  - dt*f
-      appObj.velocity(*fomState.data(), t, *residual.data());
-      ::pressio::ode::impl::discrete_time_residual(fomState, residual, 
-        auxStatesContainer_, dt, ::pressio::ode::implicitmethods::Euler());
+      fomSystemObj.velocity(*fomState.data(), t, *residual.data());
+      ::pressio::ode::impl::discrete_time_residual(fomState, residual,
+						   auxStatesContainer_, dt, ::pressio::ode::implicitmethods::Euler());
     }
-   }
+  }
 
   /**
-  time_discrete_residual function overload for discrete time API 
+     time_discrete_residual function overload for discrete time API
   */
   template <
     typename fom_type,
     typename fom_state_type,
     typename residual_type,
     typename scalar_type
-  >
+    >
   typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
-  time_discrete_residual(const fom_type & appObj,
-			      const fom_state_type & fomState,
-			      residual_type & residual,
-			      const scalar_type & t,
-			      const scalar_type & dt,
-			      const pressio::rom::wls::window_size_t & step) const
+  time_discrete_residual(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 residual_type & residual,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step) const
   {
     if (step > 0){
       using nm1 = ::pressio::ode::nMinusOne;
@@ -135,9 +135,9 @@ public:
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
 
       scalar_type normValue = {};
-      appObj.discreteTimeResidual(step, t, dt, 
-          *residual.data(), ::pressio::Norm::L2, normValue,
-          *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
+      fomSystemObj.discreteTimeResidual(step, t, dt,
+				  *residual.data(), ::pressio::Norm::L2, normValue,
+				  *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
     }
 
     if (step == 0){
@@ -146,15 +146,15 @@ public:
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
 
       scalar_type normValue = {};
-      appObj.discreteTimeResidual(step, t, dt, 
-          *residual.data(), ::pressio::Norm::L2, normValue,
-          *fomState.data(), *fomStateNm1.data());
+      fomSystemObj.discreteTimeResidual(step, t, dt,
+				  *residual.data(), ::pressio::Norm::L2, normValue,
+				  *fomState.data(), *fomStateNm1.data());
     }
-   }
+  }
 
 
   /**
-   time_discrete_jacobian function overload for continuous time API
+     time_discrete_jacobian function overload for continuous time API
   */
   template <
     typename fom_type,
@@ -162,22 +162,22 @@ public:
     typename jac_type,
     typename basis_type,
     typename scalar_type
-  >
+    >
   typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
-  time_discrete_jacobian(const fom_type & appObj,
-			      const fom_state_type & fomState,
-			      jac_type & Jphi,
-			      const basis_type & phi,
-			      const scalar_type & t,
-			      const scalar_type & dt,
-			      const pressio::rom::wls::window_size_t & step,
-			      int arg=0 ) const
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
   {
 
     // u^n - u^{n-1} - dt*f ;
     if (step == 0){
       if (arg == 0){
-        appObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
+        fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //1
         ::pressio::ops::do_update(Jphi, -dt, phi, cn);
       }
@@ -185,7 +185,7 @@ public:
 
     if (step > 0){
       if (arg == 0){
-        appObj.applyJacobian(*fomState.data(),*phi.data(),t,*(Jphi).data());
+        fomSystemObj.applyJacobian(*fomState.data(),*phi.data(),t,*(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // 1
         const auto cfdt   = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //2/3
         ::pressio::ops::do_update(Jphi, cfdt, phi, cn);
@@ -207,7 +207,7 @@ public:
 
 
   /**
-   time_discrete_jacobian function overload for discrete time API 
+     time_discrete_jacobian function overload for discrete time API
   */
   template <
     typename fom_type,
@@ -215,24 +215,24 @@ public:
     typename jac_type,
     typename basis_type,
     typename scalar_type
-  >
+    >
   typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
-  time_discrete_jacobian(const fom_type & appObj,
-			      const fom_state_type & fomState,
-			      jac_type & Jphi,
-			      const basis_type & phi,
-			      const scalar_type & t,
-			      const scalar_type & dt,
-			      const pressio::rom::wls::window_size_t & step,
-			      int arg=0 ) const
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
   {
     // u^n - u^{n-1} - dt*f ;
     if (step == 0){
       if (arg == 0){
         using nm1 = ::pressio::ode::nMinusOne;
         auto & fomStateNm1 = auxStatesContainer_.get(nm1());
-        appObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(), 
-            *Jphi.data(), *fomState.data(), *fomStateNm1.data());
+        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
+					       *Jphi.data(), *fomState.data(), *fomStateNm1.data());
       }
     }
 
@@ -242,8 +242,8 @@ public:
         using nm2 = ::pressio::ode::nMinusTwo;
         auto & fomStateNm1 = auxStatesContainer_.get(nm1());
         auto & fomStateNm2 = auxStatesContainer_.get(nm2());
-        appObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(), 
-          *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
+        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
+					       *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes

@@ -53,7 +53,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename rom_state_type,
   typename ...Args
   >
@@ -61,9 +61,9 @@ struct DefaultProblemTraitsContinuousTimeApi
 {
   // pick the common types holder
   using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-        fom_type, rom_state_type, Args...>;
+        fom_system_type, rom_state_type, Args...>;
 
-  using fom_t			= typename common_types_t::fom_t;
+  using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
@@ -74,17 +74,17 @@ struct DefaultProblemTraitsContinuousTimeApi
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy for evaluating the ode velocity
   using residual_policy_t =
-    ::pressio::rom::galerkin::impl::ExplicitVelocityPolicy<rom_state_type, 
+    ::pressio::rom::galerkin::impl::ExplicitVelocityPolicy<rom_state_type,
     fom_states_manager_t, fom_velocity_t, decoder_t, ud_ops_t>;
 
   // declare type of stepper object
   using stepper_t = ::pressio::ode::ExplicitStepper<
-    stepper_tag, rom_state_type, fom_t, galerkin_residual_t, residual_policy_t>;
+    stepper_tag, rom_state_type, fom_system_t, galerkin_residual_t, residual_policy_t>;
 
 };//end class
 

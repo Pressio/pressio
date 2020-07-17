@@ -55,12 +55,12 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename system_t, typename lspg_state_t, typename enable = void>
+template <typename fom_system_t, typename lspg_state_t, typename enable = void>
 struct ExtractNativeHelper;
 
-template <typename system_t, typename lspg_state_t>
+template <typename fom_system_t, typename lspg_state_t>
 struct ExtractNativeHelper<
-  system_t, lspg_state_t
+  fom_system_t, lspg_state_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
      !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
@@ -68,14 +68,14 @@ struct ExtractNativeHelper<
 #endif
   >
 {
-  using fom_native_state_t    = typename system_t::state_type;
-  using fom_native_velocity_t = typename system_t::velocity_type;
+  using fom_native_state_t    = typename fom_system_t::state_type;
+  using fom_native_velocity_t = typename fom_system_t::velocity_type;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename system_t, typename lspg_state_t>
+template <typename fom_system_t, typename lspg_state_t>
 struct ExtractNativeHelper<
-  system_t, lspg_state_t,
+  fom_system_t, lspg_state_t,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
     >
@@ -90,7 +90,7 @@ struct ExtractNativeHelper<
 
 template <
   typename stepper_tag,
-  typename system_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename ...Args>
 struct CommonTraitsContinuousTimeApi
@@ -98,9 +98,9 @@ struct CommonTraitsContinuousTimeApi
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using system_t		= system_type;
-  using fom_native_state_t	= typename ExtractNativeHelper<system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_velocity_t	= typename ExtractNativeHelper<system_t, lspg_state_type>::fom_native_velocity_t;
+  using fom_system_t		= fom_system_type;
+  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
+  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_velocity_t;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;

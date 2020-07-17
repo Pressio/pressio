@@ -60,7 +60,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 template <
   template <class, class, class, class ...> class lspg_type,
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename ...Args
   >
@@ -69,9 +69,9 @@ class ProblemDiscreteTimeApi
 
 public:
   // define the type holding types for the problem
-  using lspg_problem_t = lspg_type<stepper_tag, fom_type, lspg_state_type, Args...>;
+  using lspg_problem_t = lspg_type<stepper_tag, fom_system_type, lspg_state_type, Args...>;
 
-  using fom_t			= typename lspg_problem_t::fom_t;
+  using fom_system_t		= typename lspg_problem_t::fom_system_t;
   using scalar_t		= typename lspg_problem_t::scalar_t;
   using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
   using fom_native_residual_t	= typename lspg_problem_t::fom_native_residual_t;
@@ -79,7 +79,7 @@ public:
 
   using decoder_t		= typename lspg_problem_t::decoder_t;
   using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename lspg_problem_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename lspg_problem_t::fom_states_manager_t;
   using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
 
   using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
@@ -115,14 +115,14 @@ public:
 public:
 
   template <
-   typename _ud_ops_t = ud_ops_t,
-   mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
-   >
-  ProblemDiscreteTimeApi(const fom_t & appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      decoder_t	 & decoder,
-			      lspg_state_t & yROM,
-			      scalar_t	t0)
+  typename _ud_ops_t = ud_ops_t,
+  mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+  >
+  ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+			 const fom_native_state_t & fomStateReferenceNative,
+			 decoder_t	 & decoder,
+			 lspg_state_t & yROM,
+			 scalar_t	t0)
     : step0_{},
       t0_{t0},
       dt0_{},
@@ -133,19 +133,19 @@ public:
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       // construct stepper
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
   {}
 
   template <
-   typename _ud_ops_t = ud_ops_t,
-   mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
-  >
-  ProblemDiscreteTimeApi(const fom_t & appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      decoder_t & decoder,
-			      lspg_state_t & yROM,
-			      scalar_t t0,
-			      const _ud_ops_t & udOps)
+    typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+    >
+  ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+			 const fom_native_state_t & fomStateReferenceNative,
+			 decoder_t & decoder,
+			 lspg_state_t & yROM,
+			 scalar_t t0,
+			 const _ud_ops_t & udOps)
     : step0_{},
       t0_{t0},
       dt0_{},
@@ -156,7 +156,7 @@ public:
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       // construct stepper
-      stepperObj_(yROM, appObj, residualPolicy_, jacobianPolicy_)
+      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
   {}
 
 };

@@ -69,7 +69,7 @@ public:
 
   template <typename ... Args>
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
-			   Args && ... args)
+			 Args && ... args)
     : fomStateReconstrObj_(fomStateReconstr),
       data_( std::forward<Args>(args)... ){
     this->resetContainersToZero();
@@ -77,8 +77,8 @@ public:
 
   template <typename ... Args>
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
-         const ud_ops_t * udOps,
-         Args && ... args)
+			 const ud_ops_t * udOps,
+			 Args && ... args)
     : udOps_(udOps),
       fomStateReconstrObj_(fomStateReconstr),
       data_( std::forward<Args>(args)... ){
@@ -110,7 +110,7 @@ public:
 
   /* this method reconstructs the current FOM state */
   template <typename rom_state_t>
-  void reconstructCurrentFomState(const rom_state_t & romY)
+  void reconstructCurrentFomState(const rom_state_t & romStateIn)
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -118,7 +118,7 @@ public:
 #endif
 
     static_assert( n>=1, "Cannot call reconstructCurrentFomState if n < 1");
-    fomStateReconstrObj_(romY, data_(0));
+    fomStateReconstrObj_(romStateIn, data_(0));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom state");
@@ -175,7 +175,6 @@ public:
     // then, reconstrct the FOM state at t-1
     fomStateReconstrObj_(romStateIn, data_(1));
   }
-
 
 private:
   template <typename _ud_ops_t = ud_ops_t>

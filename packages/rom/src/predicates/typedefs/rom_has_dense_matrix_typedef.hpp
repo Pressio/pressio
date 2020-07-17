@@ -58,9 +58,7 @@ template <typename T>
 struct has_dense_matrix_typedef<
   T,
   mpl::enable_if_t<
-    !std::is_void<
-      typename T::dense_matrix_type
-      >::value
+    !std::is_void<typename T::dense_matrix_type>::value
     >
   > : std::true_type{};
 

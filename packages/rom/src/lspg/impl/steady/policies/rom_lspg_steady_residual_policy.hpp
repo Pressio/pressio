@@ -81,27 +81,27 @@ public:
     : fomStatesMngr_(fomStatesMngr), udOps_{&udOps}{}
 
 public:
-  template <typename fom_t>
-  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_t>::value, residual_t >
-  create(const fom_t & app) const
+  template <typename fom_system_t>
+  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, residual_t >
+  create(const fom_system_t & fomSystemObj) const
   {
-    return residual_t(app.createResidual());
+    return residual_t(fomSystemObj.createResidual());
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template <typename fom_t>
-  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_t>::value, residual_t >
-  create(const fom_t & app) const
+  template <typename fom_system_t>
+  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, residual_t >
+  create(const fom_system_t & fomSystemObj) const
   {
     const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();
-    return residual_t(app.attr("residual")(*currentFom.data()));
+    return residual_t(fomSystemObj.attr("residual")(*currentFom.data()));
   }
 #endif
 
-  template <typename lspg_state_t, typename fom_t, typename norm_value_type>
+  template <typename lspg_state_t, typename fom_system_t, typename norm_value_type>
   void compute(const lspg_state_t & romState,
-	       residual_type & romR,
-	       const fom_t & app,
+	       residual_type & romResidual,
+	       const fom_system_t & fomSystemObj,
 	       ::pressio::Norm normKind,
 	       norm_value_type & normValue) const
   {
@@ -116,12 +116,12 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomResidual(app, fomStatesMngr_.getCRefToCurrentFomState(), romR);
+    ::pressio::rom::queryFomResidual(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(), romResidual);
 
     if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(romR);
+      normValue = ::pressio::ops::norm2(romResidual);
     else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(romR);
+      normValue = ::pressio::ops::norm1(romResidual);
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
 

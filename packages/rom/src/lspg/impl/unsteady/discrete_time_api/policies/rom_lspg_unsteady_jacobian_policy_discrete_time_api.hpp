@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template<
   typename fom_states_manager_t,
@@ -68,45 +68,45 @@ public:
   ~JacobianPolicyDiscreteTimeApi() = default;
 
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
-			    const decoder_type & decoder)
+				const decoder_type & decoder)
     : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
 public:
-  template <typename system_t>
-  apply_jac_return_t create(const system_t & system) const
+  template <typename fom_system_t>
+  apply_jac_return_t create(const fom_system_t & fomSystemObj) const
   {
     // // this is only called once
     // fomStatesMngr_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    apply_jac_return_t romJac(system.createApplyDiscreteTimeJacobianResult(*phi.data()));
+    apply_jac_return_t romJac(fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
   }
 
   template <
     typename ode_tag, typename lspg_state_t, typename lspg_prev_states_t, typename lspg_jac_t,
-    typename system_t, typename scalar_t
-  >
-  void compute(const lspg_state_t			& romState,
-		  const lspg_prev_states_t		& romPrevStates,
-  		  const system_t				& system,
-		  const scalar_t			& time,
-		  const scalar_t			& dt,
-		  const ::pressio::ode::types::step_t	& step,
-		  lspg_jac_t				& romJac) const
+    typename fom_system_t, typename scalar_t
+    >
+  void compute(const lspg_state_t & romState,
+	       const lspg_prev_states_t	& romPrevStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       lspg_jac_t & romJac) const
   {
-    this->compute_impl(romState, romPrevStates, system, time, dt, step, romJac);
+    this->compute_impl(romState, romPrevStates, fomSystemObj, time, dt, step, romJac);
   }
 
 private:
   // we have here n = 1 prev rom states
   template<
-    typename lspg_state_t, typename lspg_prev_states_t, typename system_t,
+    typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t,
     typename scalar_t, typename lspg_jac_t
     >
   mpl::enable_if_t< lspg_prev_states_t::size()==1 >
   compute_impl(const lspg_state_t			& romState,
 		    const lspg_prev_states_t		& romPrevStates,
-  		    const system_t			        & system,
+  		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t	& step,
@@ -120,18 +120,18 @@ private:
     const auto & phi = decoderObj_.getReferenceToJacobian();
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, system, time, dt, step, phi, romJac);
+    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj, time, dt, step, phi, romJac);
   }
 
   // we have here n = 2 prev rom states
   template<
-    typename lspg_state_t, typename lspg_prev_states_t, typename system_t,
+    typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t,
     typename scalar_t, typename lspg_jac_t
   >
   mpl::enable_if_t< lspg_prev_states_t::size()==2 >
   compute_impl(const lspg_state_t			& romState,
 		    const lspg_prev_states_t		& romPrevStates,
-  		    const system_t			        & system,
+  		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t	& step,
@@ -146,7 +146,7 @@ private:
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2, system, time, dt, step, phi, romJac);
+    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2, fomSystemObj, time, dt, step, phi, romJac);
   }
 
 protected:

@@ -61,7 +61,7 @@ public:
 
 public:
   PreconditionedJacobianPolicy() = delete;
-  PreconditionedJacobianPolicy(const preconditionable_policy & obj) 
+  PreconditionedJacobianPolicy(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
   {}
 
@@ -73,10 +73,10 @@ public:
   ~PreconditionedJacobianPolicy() = default;
 
 public:
-  template <typename app_t>
-  apply_jac_return_t create(const app_t & app) const
+  template <typename fom_system_t>
+  apply_jac_return_t create(const fom_system_t & systemObj) const
   {
-    return preconditionable_policy::create(app);
+    return preconditionable_policy::create(systemObj);
   }
 
   //-------------------------------
@@ -85,35 +85,36 @@ public:
   template <
     typename stepper_tag,
     typename prev_states_mgr,
-    typename ode_state_t,
-    typename app_t,
+    typename state_t,
+    typename fom_system_t,
     typename scalar_t,
-    typename ode_jac_t
-  >
-  void compute(const ode_state_t & odeState,
-      const prev_states_mgr & prevStatesMgr,
-  		const app_t & app,
-		  const scalar_t & t,
-		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  ode_jac_t & odeJacobian) const
+    typename jac_t
+    >
+  void compute(const state_t & odeState,
+	       const prev_states_mgr & prevStatesMgr,
+	       const fom_system_t & systemObj,
+	       const scalar_t & t,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       jac_t & odeJacobian) const
   {
-    preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr, app, t, dt, step, odeJacobian);
+    preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr,
+							   systemObj, t, dt, step, odeJacobian);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), t, *odeJacobian.data());
+    systemObj.applyPreconditioner(*yFom.data(), t, *odeJacobian.data());
   }
 
   //-------------------------------
-  // steady 
+  // steady
   //-------------------------------
-  template <typename state_t, typename jac_t, typename app_t>
+  template <typename state_t, typename jac_t, typename fom_system_t>
   void compute(const state_t & stateObj,
                jac_t & jacob,
-               const app_t & app) const
+               const fom_system_t & systemObj) const
   {
-    preconditionable_policy::compute(stateObj, jacob, app);
+    preconditionable_policy::compute(stateObj, jacob, systemObj);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    app.applyPreconditioner(*yFom.data(), *jacob.data());
+    systemObj.applyPreconditioner(*yFom.data(), *jacob.data());
   }
 
 };//end class

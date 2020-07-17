@@ -51,12 +51,12 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename fom_t, typename lspg_state_t, typename enable = void>
+template <typename fom_system_t, typename lspg_state_t, typename enable = void>
 struct ExtractNativeHelper;
 
-template <typename fom_t, typename lspg_state_t>
+template <typename fom_system_t, typename lspg_state_t>
 struct ExtractNativeHelper<
-  fom_t, lspg_state_t
+  fom_system_t, lspg_state_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   ,mpl::enable_if_t<
      !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
@@ -64,14 +64,14 @@ struct ExtractNativeHelper<
 #endif
   >
 {
-  using fom_native_state_t    = typename fom_t::state_type;
-  using fom_native_residual_t = typename fom_t::residual_type;
+  using fom_native_state_t    = typename fom_system_t::state_type;
+  using fom_native_residual_t = typename fom_system_t::residual_type;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_t, typename lspg_state_t>
+template <typename fom_system_t, typename lspg_state_t>
 struct ExtractNativeHelper<
-  fom_t, lspg_state_t,
+  fom_system_t, lspg_state_t,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
     >
@@ -85,7 +85,7 @@ struct ExtractNativeHelper<
 
 
 template <
-  typename fom_type,
+  typename fom_system_type,
   typename decoder_type,
   typename lspg_state_type,
   typename ...Args
@@ -95,10 +95,9 @@ struct CommonTraits
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_t			= fom_type;
-
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_residual_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_residual_t;
+  using fom_system_t		= fom_system_type;
+  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
+  using fom_native_residual_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_residual_t;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;

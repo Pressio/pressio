@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_system_wrapper.hpp
+// rom_wls_hessian_and_gradient_sequential_policy_helper_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,68 +46,44 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_SYSTEM_WRAPPER_HPP_
-#define ODE_ODE_SYSTEM_WRAPPER_HPP_
+#ifndef ROM_WLS_IMPL_POLICIES_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HELPER_IMPL_HPP_
+#define ROM_WLS_IMPL_POLICIES_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HELPER_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace impl{
+#include "rom_wls_hessian_and_gradient_sequential_policy_impl.hpp"
+
+namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
 template<
-  typename system_type,
-  typename enable = void
+  typename fom_system_type,
+  typename decoder_type,
+  typename ode_tag,
+  typename hess_structure_tag,
+  typename ...Args
   >
-struct OdeSystemWrapper;
-
-
-template<typename system_type>
-struct OdeSystemWrapper<
-  system_type
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  , mpl::enable_if_t<
-      ::pressio::mpl::not_same<system_type, pybind11::object >::value
-      >
-#endif
-  >
+struct HessGradSeqPolHelper
 {
-  OdeSystemWrapper(const system_type & system)
-    : data_(system){}
+  // find if Args contain a valid updating tag for jacobian, if not default = NonFrozen
+  using jacUpdatingTagIC  = ::pressio::mpl::variadic::find_if_unary_pred_t<
+    ::pressio::rom::wls::predicates::is_legitimate_jacobian_updating_tag, Args...>;
+  using jac_update_t = ::pressio::mpl::variadic::at_or_t<::pressio::rom::wls::NonFrozenJacobian,
+							  jacUpdatingTagIC::value, Args...>;
 
-  OdeSystemWrapper() = delete;
-  ~OdeSystemWrapper() = default;
+  // set the container type based on the tag
+  using jac_t	   = typename decoder_type::jacobian_type;
+  using jac_cont_t = typename std::conditional<
+    std::is_same<jac_update_t, ::pressio::rom::wls::NonFrozenJacobian>::value,
+    ::pressio::rom::wls::NonFrozenJacobiansContainer<jac_t>,
+    ::pressio::rom::wls::FrozenJacobiansContainer<jac_t>
+    >::type;
 
-  const system_type & get() const{
-    return data_;
-  }
+  // find if Args contain a valid precond type, if not default = NoPreconditioner
+  using precIC  = ::pressio::mpl::variadic::find_if_unary_pred_t<::pressio::rom::wls::predicates::is_legitimate_preconditioner_type, Args...>;
+  using prec_t = ::pressio::mpl::variadic::at_or_t<::pressio::rom::wls::preconditioners::NoPreconditioner, precIC::value, Args...>;
 
-private:
-  const system_type & data_;
+  // final type
+  using type = ::pressio::rom::wls::impl::HessianGradientSequentialPolicy<
+    fom_system_type, decoder_type, ode_tag, hess_structure_tag, prec_t, jac_cont_t>;
 };
 
-
-/* for some reason to be determined, when we deal with
- * python objects, we need to pass by copy
- */
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename system_type>
-struct OdeSystemWrapper<
-  system_type,
-  mpl::enable_if_t<
-    ::pressio::mpl::is_same<system_type, pybind11::object >::value
-    >
-  >
-{
-  OdeSystemWrapper(const system_type & system) : data_(system){}
-
-  OdeSystemWrapper() = delete;
-  ~OdeSystemWrapper() = default;
-
-  const system_type & get() const{
-    return data_;
-  }
-
-private:
-    system_type data_;
-};
-#endif
-
-}}}//end namespace pressio::ode::impl
-#endif  // ODE_ODE_SYSTEM_WRAPPER_HPP_
+}}}} //end namespace pressio::rom::wls::impl
+#endif  // ROM_WLS_IMPL_POLICIES_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HELPER_IMPL_HPP_

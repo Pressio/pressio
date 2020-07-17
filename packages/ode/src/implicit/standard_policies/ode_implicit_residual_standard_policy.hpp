@@ -99,7 +99,14 @@ public:
   {
     system.velocity(*odeCurrentState.data(), t, *R.data());
     ::pressio::ode::impl::discrete_time_residual(odeCurrentState, R, prevStatesMgr, 
-      dt, normKind, normValue, ode_tag());
+      dt, ode_tag());
+
+    if (normKind==::pressio::Norm::L1)
+      normValue = ::pressio::ops::norm1(R);
+    else if (normKind==::pressio::Norm::L2)
+      normValue = ::pressio::ops::norm2(R);
+    else
+      throw std::runtime_error("Invalid norm");
   }
 };//end class
 

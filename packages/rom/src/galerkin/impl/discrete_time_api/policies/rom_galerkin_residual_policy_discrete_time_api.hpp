@@ -72,40 +72,40 @@ public:
 			    const decoder_type & decoder,
 			    const app_t & appObj)
     : fomStatesMngr_(fomStatesMngr),
-      phi_(decoder.getReferenceToJacobian()),
+      decoderJacobian_(decoder.getReferenceToJacobian()),
       fomR_(appObj.createDiscreteTimeResidual())
     {}
 
 public:
-  template <typename fom_t>
-  residual_t create(const fom_t & app) const
+  template <typename fom_system_t>
+  residual_t create(const fom_system_t & fomSystemObj) const
   {
-    residual_t R(phi_.extent(1));
+    residual_t R(decoderJacobian_.extent(1));
     // fomStatesMngr_.reconstructCurrentFomState(romState);
-    // fom_residual_type fomR(::pressio::rom::queryFomTimeDiscreteResidual(fomStatesMngr_.getCRefToCurrentFomState(), app));
+    // fom_residual_type fomR(::pressio::rom::queryFomTimeDiscreteResidual(fomStatesMngr_.getCRefToCurrentFomState(), fomSystemObj));
     // constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     // constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    // ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR, zero, R);
+    // ::pressio::ops::product(::pressio::transpose(), one, decoderJacobian_, fomR, zero, R);
     return R;
   }
 
-  template <typename ode_tag, typename rom_state_t, typename rom_prev_states_t, typename fom_t>
+  template <typename ode_tag, typename rom_state_t, typename rom_prev_states_t, typename fom_system_t>
   void compute(const rom_state_t & romState,
-              const rom_prev_states_t & romPrevStates,
-              const fom_t & app,
-              const scalar_t & time,
-              const scalar_t & dt,
-              const ::pressio::ode::types::step_t & step,
-              residual_t & romR,
-	            ::pressio::Norm normKind,
-	            scalar_t & normValue) const
+	       const rom_prev_states_t & romPrevStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & romResidual,
+	       ::pressio::Norm normKind,
+	       scalar_t & normValue) const
   {
-    this->compute_impl(romState, romPrevStates, app, time, dt, step, romR, normKind);
+    this->compute_impl(romState, romPrevStates, fomSystemObj, time, dt, step, romResidual, normKind);
 
     if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(romR);
+      normValue = ::pressio::ops::norm2(romResidual);
     else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(romR);
+      normValue = ::pressio::ops::norm1(romResidual);
     else
       throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
@@ -134,38 +134,38 @@ private:
   }
 
   // we have here n = 1 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t>
+  template <typename rom_state_t, typename rom_prev_states_t, typename fom_system_t, typename scalar_t>
   mpl::enable_if_t< rom_prev_states_t::size()==1 >
   compute_impl(const rom_state_t		        & romState,
 		    const rom_prev_states_t		& romPrevStates,
-		    const fom_t			        & app,
+		    const fom_system_t			& fomSystemObj,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t & step,
-		    residual_t			        & romR,
+		    residual_t			        & romResidual,
         ::pressio::Norm normKind) const
   {
     scalar_t fomRNormValue = {};
     doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, app, time, dt, step, fomR_, normKind, fomRNormValue);
+    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj, time, dt, step, fomR_, normKind, fomRNormValue);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR_, zero, romR);
+    ::pressio::ops::product(::pressio::transpose(), one, decoderJacobian_, fomR_, zero, romResidual);
   }
 
   // we have here n = 2 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_t, typename scalar_t>
+  template <typename rom_state_t, typename rom_prev_states_t, typename fom_system_t, typename scalar_t>
   mpl::enable_if_t< rom_prev_states_t::size()==2 >
   compute_impl(const rom_state_t			& romState,
 		    const rom_prev_states_t		& romPrevStates,
-		    const fom_t			        & app,
+		    const fom_system_t		        & fomSystemObj,
 		    const scalar_t		        & time,
 		    const scalar_t			& dt,
 		    const ::pressio::ode::types::step_t & step,
-		    residual_t			        & romR,
+		    residual_t			        & romResidual,
         ::pressio::Norm normKind) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
@@ -174,11 +174,11 @@ private:
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
-    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, app, time, dt, step, fomR_, normKind, fomRNormValue);
+    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj, time, dt, step, fomR_, normKind, fomRNormValue);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomR_, zero, romR);
+    ::pressio::ops::product(::pressio::transpose(), one, decoderJacobian_, fomR_, zero, romResidual);
   }
 
 private:
@@ -190,7 +190,7 @@ private:
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   fom_states_manager_t & fomStatesMngr_;
-  const typename decoder_type::jacobian_type & phi_;
+  const typename decoder_type::jacobian_type & decoderJacobian_;
   mutable fom_residual_type fomR_;
 };
 

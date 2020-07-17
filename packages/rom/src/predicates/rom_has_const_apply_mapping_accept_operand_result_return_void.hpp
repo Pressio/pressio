@@ -63,9 +63,9 @@ struct has_const_apply_mapping_accept_operand_result_return_void<
       (
        std::declval<T const &>().applyMapping
        (
-	     std::declval<operand_t const &>(), 
-         std::declval<result_t &>()
-	    )
+	std::declval<operand_t const &>(),
+	std::declval<result_t &>()
+	)
        )
       >::value
     >

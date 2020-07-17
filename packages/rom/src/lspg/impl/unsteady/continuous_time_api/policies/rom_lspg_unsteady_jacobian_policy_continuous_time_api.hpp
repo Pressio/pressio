@@ -102,8 +102,8 @@ public:
   {}
 
 public:
-  template <typename system_t>
-  apply_jac_return_t create(const system_t & app) const
+  template <typename fom_system_t>
+  apply_jac_return_t create(const fom_system_t & fomSystemObj) const
   {
     return JJ_;
   }
@@ -113,18 +113,18 @@ public:
     typename prev_states_mgr,
     typename lspg_state_t,
     typename lspg_jac_t,
-    typename system_t,
+    typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
 	       const prev_states_mgr & prevStatesMgr,
-	       const system_t	& app,
+	       const fom_system_t	& fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       lspg_jac_t & romJac) const
   {
-    this->compute_impl<stepper_tag>(romState, romJac, app, time, dt, step);
+    this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj, time, dt, step);
   }
 
 private:
@@ -163,12 +163,12 @@ private:
     typename stepper_tag,
     typename lspg_state_t,
     typename lspg_jac_t,
-    typename system_t,
+    typename fom_system_t,
     typename scalar_t
     >
   void compute_impl(const lspg_state_t & romState,
 		    lspg_jac_t	     & romJac,
-		    const system_t	     & app,
+		    const fom_system_t & fomSystemObj,
 		    const scalar_t   & t,
 		    const scalar_t   & dt,
 		    const ::pressio::ode::types::step_t & step) const
@@ -187,7 +187,7 @@ private:
     timer->start("fom apply jac");
 #endif
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    ::pressio::rom::queryFomApplyJacobian(app, fomStatesMngr_.getCRefToCurrentFomState(),
+    ::pressio::rom::queryFomApplyJacobian(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(),
 						  basis, romJac, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

@@ -57,7 +57,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 
 template <
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename ...Args
   >
@@ -66,9 +66,9 @@ struct CommonTraitsDiscreteTimeApi
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_t			= fom_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_residual_t	= typename fom_t::discrete_time_residual_type;
+  using fom_system_t		= fom_system_type;
+  using fom_native_state_t	= typename fom_system_t::state_type;
+  using fom_native_residual_t	= typename fom_system_t::discrete_time_residual_type;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;

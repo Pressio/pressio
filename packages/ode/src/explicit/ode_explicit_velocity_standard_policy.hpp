@@ -51,10 +51,9 @@
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
-
 template<
   typename state_type,
-  typename model_type,
+  typename system_type,
   typename velocity_type = state_type,
   typename enable = void>
 class VelocityStandardPolicy;
@@ -81,18 +80,18 @@ public:
   VelocityStandardPolicy() = default;
   ~VelocityStandardPolicy() = default;
 
-  state_type create(const system_type & model) const
+  state_type create(const system_type & system) const
   {
-    return state_type(model.createVelocity());
+    return state_type(system.createVelocity());
   }
 
   template < typename scalar_type>
   void compute(const state_type & state,
-		  state_type & f,
-		  const system_type & model,
-		  const scalar_type & time) const
+	       state_type & f,
+	       const system_type & system,
+	       const scalar_type & time) const
   {
-    model.velocity(*state.data(), time, *f.data());
+    system.velocity(*state.data(), time, *f.data());
   }
 
 };//end class

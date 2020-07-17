@@ -63,19 +63,17 @@ class MaskedResidualPolicy : public maskable_policy
 
 public:
   MaskedResidualPolicy() = delete;
-  MaskedResidualPolicy(const maskable_policy & obj) : maskable_policy(obj)
-  {}
+  MaskedResidualPolicy(const maskable_policy & obj) : maskable_policy(obj){}
 
   template <typename ... Args>
-  MaskedResidualPolicy(Args && ... args) : maskable_policy(std::forward<Args>(args)...)
-  {}
+  MaskedResidualPolicy(Args && ... args) : maskable_policy(std::forward<Args>(args)...){}
 
 public:
-  template <typename app_t>
-  residual_t create(const app_t	& app) const
+  template <typename fom_system_t>
+  residual_t create(const fom_system_t & systemObj) const
   {
-    R_ = maskable_policy::create(app);
-    return residual_t(app.createApplyMaskResult(*R_.data()));
+    R_ = maskable_policy::create(systemObj);
+    return residual_t(systemObj.createApplyMaskResult(*R_.data()));
   }
 
   //-------------------------------
@@ -85,52 +83,52 @@ public:
     typename stepper_tag,
     typename state_t,
     typename prev_states_t,
-    typename app_t,
+    typename fom_system_t,
     typename time_type,
     typename norm_value_type
-  >
+    >
   void compute(const state_t & state,
-		  const prev_states_t & prevStates,
-  		const app_t	& app,
-		  const time_type & time,
-		  const time_type & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  residual_t & R,
-		  ::pressio::Norm normKind,
-		  norm_value_type & normValue) const
+	       const prev_states_t & prevStates,
+	       const fom_system_t & systemObj,
+	       const time_type & time,
+	       const time_type & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & R,
+	       ::pressio::Norm normKind,
+	       norm_value_type & normValue) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStates, app, time, 
-        dt, step, R_, normKind, normValue);
+    maskable_policy::template compute<stepper_tag>(state, prevStates, systemObj, time,
+						   dt, step, R_, normKind, normValue);
 
-    app.applyMask(*R_.data(), time, *R.data());
+    systemObj.applyMask(*R_.data(), time, *R.data());
 
-    // need to compute norm since after the mask the object is a different 
+    // need to compute norm since after the mask the object is a different
     comouteNormOfMaskedResidual(R, normKind, normValue);
   }
 
   //-------------------------------
   // steady case
   //-------------------------------
-  template <typename state_t, typename app_t, typename norm_value_type>
+  template <typename state_t, typename fom_system_t, typename norm_value_type>
   void compute(const state_t & state,
-      residual_t & R,
-      const app_t & app,
-      ::pressio::Norm normKind,
-      norm_value_type & normValue) const
+	       residual_t & R,
+	       const fom_system_t & systemObj,
+	       ::pressio::Norm normKind,
+	       norm_value_type & normValue) const
   {
-    maskable_policy::compute(state, R_, app, normKind, normValue);
+    maskable_policy::compute(state, R_, systemObj, normKind, normValue);
 
-    app.applyMask(*R_.data(), *R.data());
+    systemObj.applyMask(*R_.data(), *R.data());
 
-    // need to compute norm since after the mask the object is a different 
+    // need to compute norm since after the mask the object is a different
     comouteNormOfMaskedResidual(R, normKind, normValue);
   }
 
 private:
   template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
-  comouteNormOfMaskedResidual(const residual_t & R, 
-                              ::pressio::Norm normKind, 
+  comouteNormOfMaskedResidual(const residual_t & R,
+                              ::pressio::Norm normKind,
                               norm_value_type & normValue) const
   {
     if (normKind == ::pressio::Norm::L2)
@@ -143,8 +141,8 @@ private:
 
   template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
-  comouteNormOfMaskedResidual(const residual_t & R, 
-                              ::pressio::Norm normKind, 
+  comouteNormOfMaskedResidual(const residual_t & R,
+                              ::pressio::Norm normKind,
                               norm_value_type & normValue) const
   {
     if (normKind == ::pressio::Norm::L2)

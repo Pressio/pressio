@@ -53,7 +53,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 
 template<
   typename scalar_t,
-  typename app_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename lspg_residual_type,
   typename lspg_jacobian_type,
@@ -63,8 +63,8 @@ template<
 class System
 {
   typename std::conditional<
-    ::pressio::ops::predicates::is_object_pybind<app_type>::value,
-    const app_type, const app_type & >::type app_;
+    ::pressio::ops::predicates::is_object_pybind<fom_system_type>::value,
+    const fom_system_type, const fom_system_type & >::type fomSystemObj_;
 
   const residual_policy_type & residualEvaluator_;
   const jacobian_policy_type & jacobianEvaluator_;
@@ -82,14 +82,14 @@ public:
   System() = delete;
   ~System() = default;
 
-  System(const app_type & appIn,
+  System(const fom_system_type & fomSystemObj,
 	 const residual_policy_type & resPolicyObj,
 	 const jacobian_policy_type & jacPolicyObj)
-    : app_(appIn),
+    : fomSystemObj_(fomSystemObj),
       residualEvaluator_(resPolicyObj),
       jacobianEvaluator_(jacPolicyObj),
-      R_(residualEvaluator_.create(app_)),
-      J_(jacobianEvaluator_.create(app_))
+      R_(residualEvaluator_.create(fomSystemObj_)),
+      J_(jacobianEvaluator_.create(fomSystemObj_))
     {}
 
 public:
@@ -108,12 +108,12 @@ public:
 		::pressio::Norm normKind,
 		scalar_type & nrmValue) const
   {
-    residualEvaluator_.template compute(romState, R, app_, normKind, nrmValue);
+    residualEvaluator_.template compute(romState, R, fomSystemObj_, normKind, nrmValue);
   }
 
   void jacobian(const lspg_state_type & romState, lspg_jacobian_type & J) const
   {
-    jacobianEvaluator_.template compute(romState, J, app_);
+    jacobianEvaluator_.template compute(romState, J, fomSystemObj_);
   }
 
   // the following are needed to interface with the optimizers

@@ -50,7 +50,7 @@
 #define ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
 
 namespace pressio{ namespace rom{ namespace predicates {
-  
+
 template <
   typename T,
   typename operand_t,
@@ -71,14 +71,14 @@ struct has_const_create_apply_jacobian_result_method_accept_operand_return_resul
     std::is_same<
       result_t,
       decltype(
-         std::declval<T const>().createApplyJacobianResult
-          (
-          std::declval<operand_t const &>()
-          )
-         )
+	       std::declval<T const>().createApplyJacobianResult
+	       (
+		std::declval<operand_t const &>()
+		)
+	       )
       >::value
     >
   > : std::true_type{};
 
-}}} 
+}}}
 #endif  // ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_

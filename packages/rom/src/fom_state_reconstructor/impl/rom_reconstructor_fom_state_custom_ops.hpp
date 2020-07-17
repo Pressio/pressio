@@ -61,34 +61,34 @@ struct FomStateReconstructorCustomOps
 {
   FomStateReconstructorCustomOps() = delete;
 
-  FomStateReconstructorCustomOps(const fom_state_type & yFomIn,
+  FomStateReconstructorCustomOps(const fom_state_type & fomStateIn,
 				 const decoder_type & decoder,
 				 const ops_type & udOps)
-    : yFomReference_(yFomIn), decoderObj_(decoder), udOps_{udOps}
+    : fomStateReference_(fomStateIn), decoderObj_(decoder), udOps_{udOps}
   {}
 
   template <typename rom_state_t>
-  void operator()(const rom_state_t & romY,
-		  fom_state_type    & yOut) const
+  void operator()(const rom_state_t & romState,
+		  fom_state_type    & fomState) const
   {
-    // map current romY to FOM state
-    decoderObj_.applyMapping(romY, yOut);
+    // map current romState to FOM state
+    decoderObj_.applyMapping(romState, fomState);
 
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    // yOut = yOut + yFomReference_;
-    udOps_.axpy(one, *yFomReference_.data(), *yOut.data());
+    // fomState = fomState + fomStateReference_;
+    udOps_.axpy(one, *fomStateReference_.data(), *fomState.data());
   }
 
   template <typename rom_state_t>
-  fom_state_type operator()(const rom_state_t & romY) const{
-    auto yOut(yFomReference_);
-    udOps_.set_zero(*yOut.data());
-    this->template operator()(romY,yOut);
-    return yOut;
+  fom_state_type operator()(const rom_state_t & romState) const{
+    auto fomState(fomStateReference_);
+    udOps_.set_zero(*fomState.data());
+    this->template operator()(romState,fomState);
+    return fomState;
   }
 
 private:
-  const fom_state_type & yFomReference_;
+  const fom_state_type & fomStateReference_;
   const decoder_type   & decoderObj_;
   const ops_type & udOps_;
 

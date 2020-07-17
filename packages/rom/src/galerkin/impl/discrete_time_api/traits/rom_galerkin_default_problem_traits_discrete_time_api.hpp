@@ -53,7 +53,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <
   typename stepper_tag,
-  typename fom_type,
+  typename fom_system_type,
   typename rom_state_type,
   typename rom_jacobian_type,
   typename ... Args
@@ -62,9 +62,9 @@ struct DefaultProblemTraitsDiscreteTimeApi
 {
   // pick the common types holder
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
-        fom_type, rom_state_type, rom_jacobian_type, Args...>;
+        fom_system_type, rom_state_type, rom_jacobian_type, Args...>;
 
-  using fom_t			= typename common_types::fom_t;
+  using fom_system_t		= typename common_types::fom_system_t;
   using scalar_t		= typename common_types::scalar_t;
   using fom_native_state_t	= typename common_types::fom_native_state_t;
   using fom_native_residual_t	= typename common_types::fom_native_residual_t;
@@ -94,7 +94,7 @@ struct DefaultProblemTraitsDiscreteTimeApi
 
   // stepper object
   using stepper_t = ::pressio::ode::ImplicitStepper<
-    stepper_tag, rom_state_t, rom_residual_t, rom_jacobian_t, fom_type,
+    stepper_tag, rom_state_t, rom_residual_t, rom_jacobian_t, fom_system_type,
     stepper_order_t, tot_n_setter_t, residual_policy_t, jacobian_policy_t>;
 
 };//end class

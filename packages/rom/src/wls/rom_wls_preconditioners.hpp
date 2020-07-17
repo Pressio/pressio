@@ -56,8 +56,8 @@ Preconditioner objects for WLS. These act on the time local residuals and Jacobi
 namespace pressio{ namespace rom{ namespace wls{ namespace preconditioners{
 
 struct NoPreconditioner{
-  template <typename app_t, typename fom_state_t, typename operand_t, typename scalar_t>
-  void operator()(const app_t &appObj,
+  template <typename fom_system_t, typename fom_state_t, typename operand_t, typename scalar_t>
+  void operator()(const fom_system_t &fomSystemObj,
 		  const fom_state_t & yFom,
 		  operand_t & operand,
 		  const scalar_t & t) const
@@ -67,13 +67,13 @@ struct NoPreconditioner{
 };
 
 struct AppPreconditioner{
-  template <typename app_t, typename fom_state_t, typename operand_t, typename scalar_t>
-  void operator()(const app_t & appObj,
+  template <typename fom_system_t, typename fom_state_t, typename operand_t, typename scalar_t>
+  void operator()(const fom_system_t & fomSystemObj,
 		  const fom_state_t & yFom,
 		  operand_t & operand,
 		  const scalar_t &t) const
   {
-    appObj.applyPreconditioner(*yFom.data(), *operand.data(), t);
+    fomSystemObj.applyPreconditioner(*yFom.data(), *operand.data(), t);
   }
 };
 

@@ -61,7 +61,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 
 template <
   template <class ...> class lspg_type,
-  typename system_type,
+  typename fom_system_type,
   typename lspg_state_type,
   typename decoder_type,
   typename ...Args
@@ -71,9 +71,9 @@ class ProblemSteady
 
 public:
   // define the type holding types for the problem
-  using lspg_problem_t = lspg_type<system_type, lspg_state_type, decoder_type, Args...>;
+  using lspg_problem_t = lspg_type<fom_system_type, lspg_state_type, decoder_type, Args...>;
 
-  using fom_t = typename lspg_problem_t::fom_t;
+  using fom_system_t = typename lspg_problem_t::fom_system_t;
   using fom_native_state_t = typename lspg_problem_t::fom_native_state_t;
   using fom_state_t = typename lspg_problem_t::fom_state_t;
   using lspg_state_t = typename lspg_problem_t::lspg_state_t;
@@ -103,41 +103,41 @@ public:
   }
 
 public:
-  /* specialize for when the fom_t is regular c++ */
+  /* specialize for when the fom_system_t is regular c++ */
   template <
-    typename _fom_t = fom_t,
+    typename _fom_system_t = fom_system_t,
     ::pressio::mpl::enable_if_t<
-      !::pressio::ops::predicates::is_object_pybind<_fom_t>::value,
+      !::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value,
       int> = 0
   >
-  ProblemSteady(const _fom_t & appObj,
-  		const fom_native_state_t & yFomRefNative,
+  ProblemSteady(const _fom_system_t & fomSystemObj,
+  		const fom_native_state_t & fomNativeReferenceState,
   		const decoder_t	& decoder)
-    : fomStateReference_(yFomRefNative),
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
-      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
+      systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
   {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /* specialize for when the fom_t is python object */
+  /* specialize for when the fom_system_t is python object */
   template <
-    typename _fom_t = fom_t,
+    typename _fom_system_t = fom_system_t,
     ::pressio::mpl::enable_if_t<
-      ::pressio::ops::predicates::is_object_pybind<_fom_t>::value,
+      ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value,
       int > = 0
   >
-  ProblemSteady(const _fom_t & appObj,
-		const fom_native_state_t yFomRefNative,
+  ProblemSteady(const _fom_system_t & fomSystemObj,
+		const fom_native_state_t fomNativeReferenceState,
 		const decoder_t	& decoder)
-    : fomStateReference_(yFomRefNative),
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
-      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
+      systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
   {}
 #endif
 

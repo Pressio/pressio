@@ -68,14 +68,15 @@ template <
 struct has_const_residual_method_accept_state_result_return_void<
   T, state_t, result_t,
   ::pressio::mpl::void_t<
-  decltype(
-	   std::declval<T const>().residual(
-					    std::declval<state_t const&>(),
-					    std::declval<result_t &>()
-					    )
-	   )
+    decltype(
+	     std::declval<T const>().residual
+	     (
+	      std::declval<state_t const&>(),
+	      std::declval<result_t &>()
+	      )
+	     )
     >
   >: std::true_type{};
 
-}}} 
+}}}
 #endif  // ROM_PREDICATES_STEADY_RESIDUAL_METHODS_ROM_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_

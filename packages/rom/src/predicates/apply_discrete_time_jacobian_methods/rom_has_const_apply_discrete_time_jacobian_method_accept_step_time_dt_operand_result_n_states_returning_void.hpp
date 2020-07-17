@@ -66,13 +66,13 @@ struct has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand
     std::is_void<
       decltype(
 	       std::declval<T const>().applyDiscreteTimeJacobian(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<operand_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>()
-							    )
+								 std::declval<step_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<operand_t const &>(),
+								 std::declval<result_t &>(),
+								 std::declval<state_t const&>()
+								 )
 	       )
       >::value
     >
@@ -86,14 +86,14 @@ struct has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand
     std::is_void<
       decltype(
 	       std::declval<T const>().applyDiscreteTimeJacobian(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<operand_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>()
-							    )
+								 std::declval<step_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<operand_t const &>(),
+								 std::declval<result_t &>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>()
+								 )
 	       )
       >::value
     >
@@ -107,19 +107,19 @@ struct has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand
     std::is_void<
       decltype(
 	       std::declval<T const>().applyDiscreteTimeJacobian(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<operand_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>()
-							    )
+								 std::declval<step_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<sc_t const &>(),
+								 std::declval<operand_t const &>(),
+								 std::declval<result_t &>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>(),
+								 std::declval<state_t const&>()
+								 )
 	       )
       >::value
     >
   > : std::true_type{};
 
-}}} 
+}}}
 #endif  // ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_DISCRETE_TIME_JACOBIAN_METHOD_ACCEPT_STEP_TIME_DT_OPERAND_RESULT_N_STATES_RETURNING_VOID_HPP_

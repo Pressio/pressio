@@ -126,38 +126,38 @@ private:
   //--------------------------------------------
   template<
   typename scalar_t,
-  typename fom_t,
+  typename fom_system_t,
   typename fom_state_t,
   typename _fom_rhs_t = fom_rhs_t
   >
   ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_wrapper<fom_state_t>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and ::pressio::mpl::not_same<fom_t, pybind11::object>::value
+  and ::pressio::mpl::not_same<fom_system_t, pybind11::object>::value
 #endif
   >
-  queryFomVelocity(const fom_t & app,
+  queryFomVelocity(const fom_system_t & fomSystemObj,
 		   const fom_state_t & fomState,
 		   const scalar_t & time) const
   {
-    app.velocity(*fomState.data(), time, *fomRhs_.data());
+    fomSystemObj.velocity(*fomState.data(), time, *fomRhs_.data());
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template<
     typename scalar_t,
-    typename fom_t,
+    typename fom_system_t,
     typename fom_state_t,
     typename _fom_rhs_t = fom_rhs_t
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_same<fom_t, pybind11::object>::value
+    ::pressio::mpl::is_same<fom_system_t, pybind11::object>::value
     >
-  queryFomVelocity(const fom_t & app,
+  queryFomVelocity(const fom_system_t & fomSystemObj,
 		   const fom_state_t & fomState,
 		   const scalar_t & time) const
   {
-    *fomRhs_.data() = app.attr("velocity")(*fomState.data(), time);
+    *fomRhs_.data() = fomSystemObj.attr("velocity")(*fomState.data(), time);
   }
 #endif
 
@@ -190,10 +190,10 @@ private:
     udOps_->product(::pressio::transpose(), one, *phi_.data(), *fomRhs_.data(), zero, result);
   }
 
-  template <typename fom_t, typename scalar_t>
+  template <typename fom_system_t, typename scalar_t>
   void compute_impl(const galerkin_state_t  & romState,
 		    galerkin_state_t	    & romRhs,
-		    const fom_t		    & app,
+		    const fom_system_t	    & fomSystemObj,
 		    const scalar_t	    & t) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -207,7 +207,7 @@ private:
     timer->start("fom eval rhs");
 #endif
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    (*this).template queryFomVelocity<scalar_t>(app, yFom, t);
+    (*this).template queryFomVelocity<scalar_t>(fomSystemObj, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

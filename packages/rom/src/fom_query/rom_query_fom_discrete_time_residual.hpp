@@ -52,12 +52,12 @@
 namespace pressio{ namespace rom{
 
 template <
-  typename fom_state_t, typename fom_t, typename step_t,
+  typename fom_state_t, typename fom_system_t, typename step_t,
   typename time_t, typename norm_t, typename result_t
   >
 void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const fom_state_t & state_nm1,
-				  const fom_t   & fomObj,
+				  const fom_system_t   & fomObj,
 				  const time_t  & time,
 				  const time_t  & dt,
 				  const step_t  & step,
@@ -70,13 +70,13 @@ void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 }
 
 template <
-  typename fom_state_t, typename fom_t, typename step_t,
+  typename fom_state_t, typename fom_system_t, typename step_t,
   typename time_t, typename norm_t, typename result_t
   >
 void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const fom_state_t & state_nm1,
 				  const fom_state_t & state_nm2,
-				  const fom_t   & fomObj,
+				  const fom_system_t & fomObj,
 				  const time_t  & time,
 				  const time_t  & dt,
 				  const step_t  & step,

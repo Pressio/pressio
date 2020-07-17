@@ -65,12 +65,12 @@ private:
   using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
   using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
 
-  matrix_type phi_ = {};
+  matrix_type mappingJacobian_ = {};
 
 public:
   LinearDecoderWithPressioOps() = delete;
-  LinearDecoderWithPressioOps(const jacobian_type & matIn) : phi_(matIn){}
-  LinearDecoderWithPressioOps(const jacobian_native_t & matIn) : phi_(matIn){}
+  LinearDecoderWithPressioOps(const jacobian_type & matIn) : mappingJacobian_(matIn){}
+  LinearDecoderWithPressioOps(const jacobian_native_t & matIn) : mappingJacobian_(matIn){}
 
   // applyMapping is templated because operand_t can be rom_state_type but
   // can also be an expression based on rom_state_type (e.g. for WLS)
@@ -79,11 +79,11 @@ public:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::nontranspose(), one, phi_, operand, zero, result);
+    ::pressio::ops::product(::pressio::nontranspose(), one, mappingJacobian_, operand, zero, result);
   }
 
   const jacobian_type & getReferenceToJacobian() const{
-    return phi_;
+    return mappingJacobian_;
   }
 };//end
 
