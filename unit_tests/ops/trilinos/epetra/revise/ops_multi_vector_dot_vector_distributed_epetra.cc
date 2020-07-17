@@ -9,9 +9,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
   assert(numProc_ == 3);
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;
-  STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mvec_t);
   using vec_t = containers::Vector<Epetra_Vector>;
-  STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
   mvec_t MV(*mv_);
   vec_t b(*x_);
 
@@ -46,9 +44,9 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   c2.data()->resize(4);
 
   {  
-  constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
-  constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
-  ::pressio::ops::product(::pressio::transpose(), alpha, MV, b, beta, c2);
+  // constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+  // constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
+  ::pressio::ops::product(::pressio::transpose(), 1., MV, b, 0., c2);
   EXPECT_EQ( c2.extent(0), 4);
   EXPECT_NEAR(c2[0], 4.4, 1e-12);
   EXPECT_NEAR(c2[1], 5.2, 1e-12);

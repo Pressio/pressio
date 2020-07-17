@@ -3,8 +3,8 @@
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 #include <Teuchos_CommHelpers.hpp>
-#include "pressio_containers.hpp"
 #include <Tpetra_Map_decl.hpp>
+#include "pressio_ops.hpp"
 
   /*
     MultiVector A
@@ -131,8 +131,8 @@ TEST(ops, TpetraMultiVectorDotMultiVector){
 
 
   eig_mat_w C2(4,2);
-  constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
-  constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::transpose(), 
     ::pressio::nontranspose(), alpha, A, B, beta, C2);
 

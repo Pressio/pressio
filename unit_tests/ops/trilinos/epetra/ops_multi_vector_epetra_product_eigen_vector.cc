@@ -9,7 +9,6 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   using namespace pressio;
 
   using mvec_t = containers::MultiVector<Epetra_MultiVector>;
-  STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mvec_t);
   mvec_t MV(*mv_);
 
   EXPECT_EQ( MV.numVectors(), 4 );
@@ -45,14 +44,15 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   using eigv_t = Eigen::Matrix<double,4,1>;
   eigv_t bn;
   using vec_t = containers::Vector<eigv_t>;
-  STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
   vec_t b(bn);
   b[0] = 1.;
   b[1] = 2.;
   b[2] = 3.;
   b[3] = 4.;
 
-  auto res = ops::product(MV, b);
+  using res_t = containers::Vector<Epetra_Vector>;
+  res_t res(*x_);
+  ops::product(::pressio::nontranspose(), 1., MV, b, 0., res);
   res.data()->Print(std::cout);
 
   if (rank_==0){

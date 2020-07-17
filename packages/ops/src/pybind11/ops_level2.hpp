@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_mat_prod_vec.hpp
+// ops_level2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

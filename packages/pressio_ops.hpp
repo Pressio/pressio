@@ -104,6 +104,7 @@
 #include "ops/src/kokkos/ops_vector_do_update_kokkos_functors.hpp"
 #include "ops/src/kokkos/ops_vector_do_update.hpp"
 #include "ops/src/kokkos/ops_multi_vector_do_update.hpp"
+#include "ops/src/kokkos/ops_dot.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -116,6 +117,7 @@
 #include "ops/src/epetra/ops_level3.hpp"
 #include "ops/src/epetra/ops_norms_vector.hpp"
 #include "ops/src/epetra/ops_vector_do_update.hpp"
+#include "ops/src/epetra/ops_dot.hpp"
 
 // teuchos
 #include "ops/src/teuchos/ops_set_zero.hpp"
@@ -134,6 +136,7 @@
 #include "ops/src/tpetra/ops_norms_vector.hpp"
 #include "ops/src/tpetra/ops_vector_do_update.hpp"
 #include "ops/src/tpetra/ops_multi_vector_do_update.hpp"
+#include "ops/src/tpetra/ops_dot.hpp"
 
 // Tpetra block
 #include "ops/src/tpetra_block/ops_set_zero.hpp"

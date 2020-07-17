@@ -64,7 +64,7 @@ TEST(epetraMultiVector,
   TT(2,0)=5.; TT(2,1)=6.; TT(2,2)=10.; TT(2,3)=10.;
   TT(3,0)=2.; TT(3,1)=7.; TT(3,2)=10.; TT(3,3)=15.;
 
-  auto C = ops::dot_self<mvec_t, eig_mat_w>(A);
+  auto C = ops::product<eig_mat_w>(::pressio::transpose(), ::pressio::nontranspose(), 1., A);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<4; j++){
       EXPECT_NEAR( TT(i,j), C(i,j), 1e-12);
@@ -72,7 +72,7 @@ TEST(epetraMultiVector,
   }
 
   eig_mat_w C2(4,4);
-  ops::dot_self(A,C2);
+  ops::product(::pressio::transpose(), ::pressio::nontranspose(), 1., A, 1., C2);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<4; j++){
       EXPECT_NEAR( TT(i,j), C2(i,j), 1e-12);

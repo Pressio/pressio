@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_level2.hpp
+// ops_dot.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,73 +46,34 @@
 //@HEADER
 */
 
-#ifndef OPS_TEUCHOS_OPS_LEVEL2_HPP_
-#define OPS_TEUCHOS_OPS_LEVEL2_HPP_
+#ifndef OPS_KOKKOS_OPS_DOT_HPP_
+#define OPS_KOKKOS_OPS_DOT_HPP_
+
+#include <KokkosBlas1_fill.hpp>
 
 namespace pressio{ namespace ops{
 
-/*
- * y = beta * y + alpha*op(A)*x
- *
-*/
-
-//-------------------------------
-// specialize for op(A) = A
-//-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
   >
-product(::pressio::nontranspose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const x_type & x,
-	const scalar_type beta,
-	y_type & y)
+dot(const T & a, const T & b,
+    typename ::pressio::containers::details::traits<T>::scalar_t & result)
 {
-
-  assert( y.extent(0) == A.numRows() );
-  assert( x.extent(0) == A.numCols() );
-
-  using ord_t = typename A_type::ordinalType;
-  for (ord_t i=0;i<A.numRows(); ++i){
-    y(i) = {};
-    for (ord_t j=0; j<A.numCols(); ++j){
-      y(i) += A(i,j)*x(j);
-    }
-  }
+  assert(a.extent(0) == b.extent(0));
+  result = KokkosBlas::dot(*a.data(), *b.data() );
 }
 
-//-------------------------------
-// specialize for op(A) = A^T
-//-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value,
+  typename ::pressio::containers::details::traits<T>::scalar_t
   >
-product(::pressio::transpose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const x_type & x,
-	const scalar_type beta,
-	y_type & y)
+dot(const T & a, const T & b)
 {
-
-  assert( y.extent(0) == A.numCols() );
-  assert( x.extent(0) == A.numRows() );
-
-  using ord_t = typename A_type::ordinalType;
-  for (ord_t j=0; j<A.numCols(); ++j){
-    y(j) = {};
-    for (ord_t i=0;i<A.numRows(); ++i){
-      y(j) += A(i,j)*x(i);
-    }
-  }
+  assert(a.extent(0) == b.extent(0));
+  return KokkosBlas::dot(*a.data(), *b.data() );
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TEUCHOS_OPS_LEVEL2_HPP_
+#endif  // OPS_KOKKOS_OPS_DOT_HPP_

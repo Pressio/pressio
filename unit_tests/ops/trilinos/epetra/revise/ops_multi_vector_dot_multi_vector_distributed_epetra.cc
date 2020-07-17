@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 #include "pressio_ops.hpp"
 
-
 TEST(epetraMultiVector,
        MVDotMV){
 
@@ -89,7 +88,7 @@ TEST(epetraMultiVector,
   TT(2,0) = 4.0; TT(2,1) = 5.0;
   TT(3,0) = 5.0; TT(3,1) = 6.0;
 
-  auto C = ops::dot<mvec_t, eig_mat_w>(A,B);
+  auto C = ops::product<eig_mat_w>(::pressio::transpose(), ::pressio::nontranspose(), 1., A, B);
   for (auto i=0; i<4; i++){
     for (auto j=0; j<2; j++){
       EXPECT_NEAR( TT(i,j), C(i,j), 1e-12);
