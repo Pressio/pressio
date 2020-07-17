@@ -97,7 +97,7 @@ TEST(solvers_nonlinear_least_squares,
     pressio::solvers::nonlinear::StopWhenRelativeGradientNormBelowTol,
     linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
-  GNSolver.setTolerance(0.1);
+  GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
 
   std::cout << std::setprecision(14) << *x.data() << std::endl;
