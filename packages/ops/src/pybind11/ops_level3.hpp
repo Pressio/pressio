@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_MAT_PROD_MAT_HPP_
-#define OPS_PYBIND11_OPS_MAT_PROD_MAT_HPP_
+#ifndef OPS_PYBIND11_OPS_LEVEL3_HPP_
+#define OPS_PYBIND11_OPS_LEVEL3_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -119,4 +119,4 @@ product(::pressio::transpose modeA,
 
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_MAT_PROD_MAT_HPP_
+#endif  // OPS_PYBIND11_OPS_LEVEL3_HPP_

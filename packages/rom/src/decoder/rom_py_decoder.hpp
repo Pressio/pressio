@@ -14,4 +14,4 @@ template <
 using PyDecoder = impl::PyDecoder<matrix_type, rom_state_type, fom_state_type, Args...>;
 
 }} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#endif  // ROM_DECODER_ROM_PY_DECODER_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_mat_prod_vec.hpp
+// ops_vec_dot_vec.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,73 +46,38 @@
 //@HEADER
 */
 
-#ifndef OPS_TEUCHOS_OPS_MAT_PROD_VEC_HPP_
-#define OPS_TEUCHOS_OPS_MAT_PROD_VEC_HPP_
+#ifndef OPS_EIGEN_OPS_DOT_HPP_
+#define OPS_EIGEN_OPS_DOT_HPP_
 
 namespace pressio{ namespace ops{
 
-/*
- * y = beta * y + alpha*op(A)*x
- *
-*/
-
-//-------------------------------
-// specialize for op(A) = A
-//-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+// void specializiation
+template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  containers::predicates::is_vector_wrapper_eigen<vec_type>::value
   >
-product(::pressio::nontranspose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const x_type & x,
-	const scalar_type beta,
-	y_type & y)
+dot(const vec_type & vecA,
+    const vec_type & vecB,
+    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
 {
-
-  assert( y.extent(0) == A.numRows() );
-  assert( x.extent(0) == A.numCols() );
-
-  using ord_t = typename A_type::ordinalType;
-  for (ord_t i=0;i<A.numRows(); ++i){
-    y(i) = {};
-    for (ord_t j=0; j<A.numCols(); ++j){
-      y(i) += A(i,j)*x(j);
-    }
-  }
+  assert(vecA.extent(0) == vecB.extent(0));
+  result = vecA.data()->dot(*vecB.data());
 }
 
-//-------------------------------
-// specialize for op(A) = A^T
-//-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+
+// non-void specialize
+template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  containers::predicates::is_vector_wrapper_eigen<vec_type>::value,
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t
   >
-product(::pressio::transpose mode,
-	const scalar_type alpha,
-	const A_type & A,
-	const x_type & x,
-	const scalar_type beta,
-	y_type & y)
+dot(const vec_type & vecA, const vec_type & vecB)
 {
-
-  assert( y.extent(0) == A.numCols() );
-  assert( x.extent(0) == A.numRows() );
-
-  using ord_t = typename A_type::ordinalType;
-  for (ord_t j=0; j<A.numCols(); ++j){
-    y(j) = {};
-    for (ord_t i=0;i<A.numRows(); ++i){
-      y(j) += A(i,j)*x(i);
-    }
-  }
+  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
+  sc_t result = {};
+  dot(vecA, vecB, result);
+  return result;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TEUCHOS_OPS_MAT_PROD_VEC_HPP_
+#endif  // OPS_EIGEN_OPS_DOT_HPP_

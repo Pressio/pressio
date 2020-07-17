@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_BLOCK_OPS_MVEC_PROD_MVEC_HPP_
-#define OPS_TPETRA_BLOCK_OPS_MVEC_PROD_MVEC_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_
+#define OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -236,4 +236,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_MVEC_PROD_MVEC_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_

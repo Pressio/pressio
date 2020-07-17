@@ -62,4 +62,4 @@ public:
 };//end
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
+#endif  // ROM_DECODER_IMPL_ROM_PY_DECODER_HPP_

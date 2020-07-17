@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vec_dot_vec.hpp
+// ops_mat_prod_vec.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,42 +46,73 @@
 //@HEADER
 */
 
-#ifndef OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_
-#define OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_
+#ifndef OPS_EIGEN_OPS_LEVEL2_HPP_
+#define OPS_EIGEN_OPS_LEVEL2_HPP_
 
 namespace pressio{ namespace ops{
 
 /*
- * vector dot vector
- */
+ * y = beta * y + alpha*op(A)*x
+ *
+*/
 
-// void specializiation
-template <typename vec_type>
+//-------------------------------
+// specialize for op(A) = A
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_eigen<vec_type>::value
+  (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
+  containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >
-dot(const vec_type & vecA,
-    const vec_type & vecB,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  assert(vecA.extent(0) == vecB.extent(0));
-  result = vecA.data()->dot(*vecB.data());
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
+
+  assert( y.extent(0) == A.extent(0) );
+  assert( x.extent(0) == A.extent(1) );
+  const auto & AE = *A.data();
+  const auto & xE = *x.data();
+  auto & yE = *y.data();
+
+  yE = beta * yE + alpha * AE * xE;
 }
 
-
-// non-void specialize
-template <typename vec_type>
+//-------------------------------
+// specialize for op(A) = A^T
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_eigen<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
+   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
+  containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >
-dot(const vec_type & vecA, const vec_type & vecB)
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  sc_t result = {};
-  dot(vecA, vecB, result);
-  return result;
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
+
+  assert( y.extent(0) == A.extent(1) );
+  assert( x.extent(0) == A.extent(0) );
+
+  auto & yE	  = *y.data();
+  const auto & xE = *x.data();
+  const auto & AE = *A.data();
+  yE = beta * yE + alpha * AE.transpose() * xE;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_VEC_DOT_VEC_HPP_
+#endif  // OPS_EIGEN_OPS_LEVEL2_HPP_

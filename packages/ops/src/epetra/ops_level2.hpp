@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_EPETRA_OPS_MVEC_PROD_VEC_HPP_
-#define OPS_EPETRA_OPS_MVEC_PROD_VEC_HPP_
+#ifndef OPS_EPETRA_OPS_LEVEL2_HPP_
+#define OPS_EPETRA_OPS_LEVEL2_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -141,4 +141,4 @@ product(::pressio::transpose mode,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_MVEC_PROD_VEC_HPP_
+#endif  // OPS_EPETRA_OPS_LEVEL2_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_mvec_prod_mvec.hpp
+// ops_mat_prod_mat.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,12 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_
-#define OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_
-
-#include "KokkosBlas3_gemm.hpp"
+#ifndef OPS_EIGEN_OPS_LEVEL3_HPP_
+#define OPS_EIGEN_OPS_LEVEL3_HPP_
 
 namespace pressio{ namespace ops{
 
 /*
- * for tpetra:
- *
  * C = beta * C + alpha*op(A)*op(B)
  *
 */
@@ -65,9 +61,11 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<B_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
+  ::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -80,19 +78,63 @@ product(::pressio::transpose modeA,
   static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  const char ctA = 'T';
-  const char ctB = 'N';
-  KokkosBlas::gemm(&ctA, &ctB, alpha, *A.data(), *B.data(), beta, *C.data());
+  assert( C.extent(0) == A.extent(1) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(0) == B.extent(0) );
+
+  const auto & AE = *A.data();
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
+  CE = beta * CE + alpha * AE.transpose() * BE;
 }
 
 
-/*----------------------------------------
-* special case A==B (for now use impl above)
-------------------------------------------*/
+//-------------------------------------------
+// specialize for op(A) = A and op(B) = B
+//-------------------------------------------
+template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<B_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
+  >
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+		"Types are not scalar compatible");
+
+  assert( C.extent(0) == A.extent(0) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(1) == B.extent(0) );
+
+  const auto & AE = *A.data();
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
+
+  CE = beta * CE + alpha * AE * BE;
+}
+
+
+
+/***********************************
+* special case A==B and op(A) = transpose
+**********************************/
+
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -101,13 +143,19 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  product(modeA, modeB, alpha, A, A, beta, C);
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
+
+  auto & CE = *C.data();
+  const auto & AE = *A.data();
+  CE = beta * CE + alpha * AE.transpose() * AE;
 }
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value,
+  (::pressio::containers::predicates::is_matrix_wrapper_eigen<A_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
+  ::pressio::containers::predicates::is_matrix_wrapper_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -115,11 +163,14 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
+
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
-  C_type C(A.numVectors(), A.numVectors());
+  C_type C(A.extent(1), A.extent(1));
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_MVEC_PROD_MVEC_HPP_
+#endif  // OPS_EIGEN_OPS_LEVEL3_HPP_

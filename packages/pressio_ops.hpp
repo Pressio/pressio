@@ -71,7 +71,7 @@
 #include "ops/src/predicates/ops_has_method_do_update_three_terms.hpp"
 #include "ops/src/predicates/ops_has_method_do_update_four_terms.hpp"
 
-// ops_is_object_pybind: not within preproc direc because we need to use it 
+// ops_is_object_pybind: not within preproc direc because we need to use it
 // even when pybind is disabled
 #include "ops/src/predicates/ops_is_object_pybind.hpp"
 
@@ -84,11 +84,11 @@
 #include "ops/src/eigen/ops_deep_copy.hpp"
 #include "ops/src/eigen/ops_add_to_diagonal.hpp"
 #include "ops/src/eigen/ops_min_max.hpp"
-#include "ops/src/eigen/ops_mat_prod_vec.hpp"
-#include "ops/src/eigen/ops_mat_prod_mat.hpp"
+#include "ops/src/eigen/ops_level2.hpp"
+#include "ops/src/eigen/ops_level3.hpp"
 #include "ops/src/eigen/ops_multi_vector_do_update.hpp"
 #include "ops/src/eigen/ops_norms_vector.hpp"
-#include "ops/src/eigen/ops_vec_dot_vec.hpp"
+#include "ops/src/eigen/ops_dot.hpp"
 #include "ops/src/eigen/ops_vector_do_update.hpp"
 #include "ops/src/eigen/ops_elementwise_multiply.hpp"
 
@@ -98,8 +98,8 @@
 #include "ops/src/kokkos/ops_scale.hpp"
 #include "ops/src/kokkos/ops_fill.hpp"
 #include "ops/src/kokkos/ops_deep_copy.hpp"
-#include "ops/src/kokkos/ops_mvec_prod_mvec.hpp"
-#include "ops/src/kokkos/ops_mvec_prod_vec.hpp"
+#include "ops/src/kokkos/ops_level2.hpp"
+#include "ops/src/kokkos/ops_level3.hpp"
 #include "ops/src/kokkos/ops_norms_vector.hpp"
 #include "ops/src/kokkos/ops_vector_do_update_kokkos_functors.hpp"
 #include "ops/src/kokkos/ops_vector_do_update.hpp"
@@ -112,32 +112,35 @@
 #include "ops/src/epetra/ops_fill.hpp"
 #include "ops/src/epetra/ops_deep_copy.hpp"
 #include "ops/src/epetra/ops_min_max_vector.hpp"
-#include "ops/src/epetra/ops_mvec_prod_mvec.hpp"
-#include "ops/src/epetra/ops_mvec_prod_vec.hpp"
+#include "ops/src/epetra/ops_level2.hpp"
+#include "ops/src/epetra/ops_level3.hpp"
 #include "ops/src/epetra/ops_norms_vector.hpp"
 #include "ops/src/epetra/ops_vector_do_update.hpp"
+
 // teuchos
 #include "ops/src/teuchos/ops_set_zero.hpp"
 #include "ops/src/teuchos/ops_fill.hpp"
 #include "ops/src/teuchos/ops_deep_copy.hpp"
 #include "ops/src/teuchos/ops_norms_vector.hpp"
 #include "ops/src/teuchos/ops_vector_do_update.hpp"
-#include "ops/src/teuchos/ops_mat_prod_vec.hpp"
+#include "ops/src/teuchos/ops_level2.hpp"
+
 // Tpetra
 #include "ops/src/tpetra/ops_set_zero.hpp"
 #include "ops/src/tpetra/ops_fill.hpp"
 #include "ops/src/tpetra/ops_deep_copy.hpp"
-#include "ops/src/tpetra/ops_mvec_prod_mvec.hpp"
-#include "ops/src/tpetra/ops_mvec_prod_vec.hpp"
+#include "ops/src/tpetra/ops_level2.hpp"
+#include "ops/src/tpetra/ops_level3.hpp"
 #include "ops/src/tpetra/ops_norms_vector.hpp"
 #include "ops/src/tpetra/ops_vector_do_update.hpp"
 #include "ops/src/tpetra/ops_multi_vector_do_update.hpp"
+
 // Tpetra block
 #include "ops/src/tpetra_block/ops_set_zero.hpp"
 #include "ops/src/tpetra_block/ops_fill.hpp"
 #include "ops/src/tpetra_block/ops_deep_copy.hpp"
-#include "ops/src/tpetra_block/ops_mvec_prod_mvec.hpp"
-#include "ops/src/tpetra_block/ops_mvec_prod_vec.hpp"
+#include "ops/src/tpetra_block/ops_level2.hpp"
+#include "ops/src/tpetra_block/ops_level3.hpp"
 #include "ops/src/tpetra_block/ops_norms_vector.hpp"
 #include "ops/src/tpetra_block/ops_vector_do_update.hpp"
 #include "ops/src/tpetra_block/ops_multi_vector_do_update.hpp"
@@ -149,8 +152,8 @@
 #include "ops/src/pybind11/ops_deep_copy.hpp"
 #include "ops/src/pybind11/ops_norms_vector.hpp"
 #include "ops/src/pybind11/ops_vector_do_update.hpp"
-#include "ops/src/pybind11/ops_mat_prod_vec.hpp"
-#include "ops/src/pybind11/ops_mat_prod_mat.hpp"
+#include "ops/src/pybind11/ops_level2.hpp"
+#include "ops/src/pybind11/ops_level3.hpp"
 #include "ops/src/pybind11/ops_scale.hpp"
 #endif
 
