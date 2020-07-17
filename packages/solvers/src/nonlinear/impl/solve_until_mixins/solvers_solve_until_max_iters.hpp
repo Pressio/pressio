@@ -73,14 +73,14 @@ public:
   void solve(const system_t & sys, state_t & state)
   {
     iteration_t iStep = 0;
+    T::computeCorrection(sys, state);
     while (++iStep <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
-
   #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       solverStatusPrinter.print(*this, iStep);
   #endif 
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
 
     }
   }

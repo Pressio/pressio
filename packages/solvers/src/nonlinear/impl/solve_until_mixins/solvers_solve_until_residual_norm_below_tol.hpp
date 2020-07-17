@@ -76,10 +76,17 @@ public:
 
     sc_t resNorm0 = {};
     iStep_ = 0;
+
+    // Compute the correction for the least squares system
+    // Order is as follows:
+	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   2.) Compute statistics pertaining to step n and print
+    //   3.) check convergence criteria
+    //   4.) Update state if needed
+
+    T::computeCorrection(sys, state);
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
 
       const auto resNorm = T::residualNormCurrentCorrectionStep();
 
@@ -98,7 +105,10 @@ public:
 	if (resNorm/resNorm0 < iterative_base_t::tolerance_)
 	  break;
       }
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
     }
+
   }
 
 private:

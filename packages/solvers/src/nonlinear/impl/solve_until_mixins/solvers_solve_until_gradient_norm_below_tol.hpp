@@ -77,20 +77,34 @@ public:
     sc_t absoluteNorm = {};
     sc_t relativeNorm = {};
     iStep_ = 0;
+
+
+    // Compute the correction for the least squares system
+    // Order is as follows:
+	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   2.) Compute statistics pertaining to step n and print
+    //   3.) check convergence criteria
+    //   4.) Update state if needed
+
+
+    // initially compute the residual, gradient, and correction at step 0
+    T::computeCorrection(sys, state); //
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
-
-      const auto & g = T::getGradient();
+      //get reference to gradient and compute norm. 
+      //note that this will grab results obtained from the last time 
+      //computeCorrection was called
+      const auto & g = T::getGradient(); 
       absoluteNorm = ::pressio::ops::norm2(g);
       if (iStep_==1) initialNorm = absoluteNorm;
       relativeNorm = absoluteNorm/initialNorm;
 
+      //if debug, print statistics from 
   #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       solverStatusPrinter.givenGradientNormsPrintRest(*this, iStep_, absoluteNorm, relativeNorm);
   #endif 
 
+      //check convergence
       if (absolute){
         if (absoluteNorm < iterative_base_t::tolerance_)
           break;
@@ -99,6 +113,8 @@ public:
         if (relativeNorm < iterative_base_t::tolerance_)
           break;
       }
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
     }
   }
 
