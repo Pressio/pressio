@@ -59,6 +59,8 @@ class SolveUntilCorrectionNormBelowTol
 {
   using this_t = SolveUntilCorrectionNormBelowTol<sc_t, T>;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
+  // friend iterative_base_t so it can access my private methods
+  friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
