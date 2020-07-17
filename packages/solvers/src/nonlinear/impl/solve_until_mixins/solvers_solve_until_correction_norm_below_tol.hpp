@@ -71,7 +71,32 @@ public:
     : T(std::forward<Args>(args)...){}
 
   template<typename system_t, typename state_t>
-  void solve(const system_t & sys, state_t & state)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  mpl::enable_if_t< !::pressio::containers::predicates::is_array_pybind<state_t>::value>
+#else
+  void
+#endif
+  solve(const system_t & sys, state_t & state)
+  {
+    this->solveImpl(sys, state);
+  }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template<typename system_t, typename state_t>
+  mpl::enable_if_t<::pressio::containers::predicates::is_array_pybind<state_t>::value>
+  solve(const system_t & sys, state_t & state)
+  {
+    // here we want to view the state since we want to modify its data,
+    // which is numpy array owned by the user inside their Python code.
+    // upon exit of this function, the original state is changed.
+    ::pressio::containers::Vector<state_t> stateView(state, ::pressio::view());
+    this->solveImpl(sys, stateView);
+  }
+#endif
+
+private:
+  template<typename system_t, typename state_t>
+  void solveImpl(const system_t & sys, state_t & state)
   {
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
@@ -86,11 +111,9 @@ public:
     }
   }
 
-private:
   iteration_t getNumIterationsExecutedImpl() const {
     return iStep_;
-  }  
-
+  }
 };
 
 }}}}
