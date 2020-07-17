@@ -55,15 +55,13 @@ namespace pressio{ namespace rom{
 // for native c++
 //------------------------------------------
 template <typename fom_t, typename state_t, typename rhs_t, typename time_t>
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 mpl::enable_if_t<
-  mpl::not_same<fom_t, pybind11::object>::value and
-  !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-  !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
-  >
-#else
-void
+  !::pressio::ops::predicates::is_object_pybind<fom_t>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
+  and !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
 #endif
+  >
 queryFomVelocity(const fom_t & fomObj,
 		 const state_t & fomState,
 		 rhs_t & rhs,
