@@ -81,8 +81,8 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
-			    const _apply_jac_return_type & applyJacObj,
-			    const decoder_type & decoder)
+				  const _apply_jac_return_type & applyJacObj,
+				  const decoder_type & decoder)
     : JJ_(applyJacObj), fomStatesMngr_(fomStatesMngr),  decoderObj_(decoder){}
 
   // 2. non-void ops
@@ -92,9 +92,9 @@ public:
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
-			    const _apply_jac_return_type & applyJacObj,
-			    const decoder_type & decoder,
-			    const _ud_ops & udOps)
+				  const _apply_jac_return_type & applyJacObj,
+				  const decoder_type & decoder,
+				  const _ud_ops & udOps)
     : JJ_(applyJacObj),
       fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
@@ -102,7 +102,6 @@ public:
   {}
 
 public:
-
   template <typename system_t>
   apply_jac_return_t create(const system_t & app) const
   {
@@ -112,34 +111,34 @@ public:
   template <
     typename stepper_tag,
     typename prev_states_mgr,
-    typename lspg_state_t, 
-    typename lspg_jac_t, 
-    typename system_t, 
+    typename lspg_state_t,
+    typename lspg_jac_t,
+    typename system_t,
     typename scalar_t
-  >
+    >
   void compute(const lspg_state_t & romState,
-        const prev_states_mgr & prevStatesMgr,
-  		  const system_t	& app,
-		  const scalar_t & time,
-		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  lspg_jac_t & romJac) const
+	       const prev_states_mgr & prevStatesMgr,
+	       const system_t	& app,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       lspg_jac_t & romJac) const
   {
     this->compute_impl<stepper_tag>(romState, romJac, app, time, dt, step);
   }
 
 private:
   template <
-    typename stepper_tag,
-    typename matrix_t,
-    typename scalar_t,
-    typename decoder_jac_type,
-    typename _ud_ops = ud_ops_type
+  typename stepper_tag,
+  typename matrix_t,
+  typename scalar_t,
+  typename decoder_jac_type,
+  typename _ud_ops = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
   time_discrete_dispatcher(matrix_t & romJac,
-				scalar_t  dt,
-				const decoder_jac_type & phi) const
+			   scalar_t  dt,
+			   const decoder_jac_type & phi) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<stepper_tag>(romJac, dt, phi);
   }
@@ -150,11 +149,11 @@ private:
     typename scalar_t,
     typename decoder_jac_type,
     typename _ud_ops = ud_ops_type
-  >
+    >
   ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value >
   time_discrete_dispatcher(matrix_t & romJac,
-				scalar_t dt,
-				const decoder_jac_type & phi) const
+			   scalar_t dt,
+			   const decoder_jac_type & phi) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<stepper_tag>(romJac, dt, phi, udOps_);
   }
@@ -212,7 +211,7 @@ protected:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops_type, pybind11::object>::value, 
+    ::pressio::mpl::is_same<ud_ops_type, pybind11::object>::value,
     ud_ops_type, const ud_ops_type * >::type udOps_ = {};
 #else
     const ud_ops_type * udOps_ = {};

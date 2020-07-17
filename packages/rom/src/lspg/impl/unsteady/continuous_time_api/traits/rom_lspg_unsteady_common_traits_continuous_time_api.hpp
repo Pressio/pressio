@@ -98,7 +98,7 @@ struct CommonTraitsContinuousTimeApi
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using system_t			= system_type;
+  using system_t		= system_type;
   using fom_native_state_t	= typename ExtractNativeHelper<system_t, lspg_state_type>::fom_native_state_t;
   using fom_native_velocity_t	= typename ExtractNativeHelper<system_t, lspg_state_type>::fom_native_velocity_t;
 
