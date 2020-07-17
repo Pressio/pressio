@@ -171,9 +171,9 @@ public:
       int > = 0
     >
   ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-			   fom_native_state_t	    & fomNativeReferenceState,
+			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
-			   galerkin_native_state_t  & romStateIn,
+			   const galerkin_native_state_t & romStateIn,
 			   scalar_t		    t0)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),

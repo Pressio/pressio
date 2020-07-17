@@ -50,9 +50,9 @@
 #define ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
 
 #include "ode_call_collector_dispatcher.hpp"
+#include "ode_integrators_printing_helpers.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
-
 
 /*
  * A valid collector object is available
@@ -86,14 +86,10 @@ struct IntegratorNStepsWithCollectorAndConstDt
     collector_dispatch::execute(collector, zero, time, yIn);
 
     step_t step = 1;
-    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    printStartOfAdvancing();
     for( ; step <= numSteps ; ++step)
     {
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-      auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
-#endif
+      printStepTime(step, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -111,8 +107,6 @@ struct IntegratorNStepsWithCollectorAndConstDt
 #endif
   }//end ()
 };
-
-
 
 
 /*
@@ -139,14 +133,10 @@ struct IntegratorNStepsWithConstDt
     time_type time = start_time;
     step_t step = 1;
 
-    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    printStartOfAdvancing();
     for( ; step <= numSteps ; ++step)
     {
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-      auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
-#endif
+      printStepTime(step, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -164,8 +154,6 @@ struct IntegratorNStepsWithConstDt
 #endif
   }//end ()
 };
-
-
 
 
 /*
@@ -196,17 +184,13 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     // dtManager(zero, time, dt);
 
     step_t step	   = 1;
-    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    printStartOfAdvancing();
     for( ; step <= numSteps ; ++step)
     {
       // call the dt manager to set the dt to use at the beginning
       dtManager(step, time, dt);
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-      auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
-#endif
+      printStepTime(step, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -224,7 +208,6 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #endif
   }//end ()
 };
-
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_

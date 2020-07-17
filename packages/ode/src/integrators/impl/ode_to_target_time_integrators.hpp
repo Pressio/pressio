@@ -50,6 +50,7 @@
 #define ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
 
 #include "ode_call_collector_dispatcher.hpp"
+#include "ode_integrators_printing_helpers.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -60,7 +61,6 @@ namespace pressio{ namespace ode{ namespace impl{
 template <typename DoStepPolicy_t>
 struct IntegratorToTargetTimeWithTimeStepSizeSetter
 {
-
   template <typename time_type, typename dt_setter, typename ... Args>
   static void execute(const time_type	& start_time,
 		      const time_type	& final_time,
@@ -85,7 +85,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
     time_type dt = {};
 
     step_t step	   = 1;
-    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    printStartOfAdvancing();
     constexpr auto eps = std::numeric_limits<time_type>::epsilon();
     bool condition = true;
     while (condition)
@@ -93,11 +93,8 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
       // call the dt manager to set the dt to use for current step
       dtManager(step, time, dt);
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-      auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, " t=", time, reset, "\n");
-#endif
+      // print (only if debug_print is on)
+      printStepTime(step, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -119,8 +116,6 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
 #endif
   }//end ()
 };
-
-
 
 
 /*
@@ -166,7 +161,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
     collector_dispatch::execute(collector, zero, time, odeStateInOut);
 
     step_t step	   = 1;
-    ::pressio::utils::io::print_stdout("\nstarting time loop","\n");
+    printStartOfAdvancing();
     constexpr auto eps = std::numeric_limits<time_type>::epsilon();
     bool condition = true;
     while (condition)
@@ -174,11 +169,8 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
       // call the dt manager to set the dt to use for current step
       dtManager(step, time, dt);
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      auto fmt = utils::io::bg_grey() + utils::io::bold() + utils::io::red();
-      auto reset = utils::io::reset();
-      ::pressio::utils::io::print_stdout(fmt, "time step =", step, reset, "\n");
-#endif
+      // print (only if debug_print is on)
+      printStepTime(step, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -201,7 +193,6 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 #endif
   }//end ()
 };
-
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
