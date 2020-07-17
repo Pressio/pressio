@@ -59,8 +59,9 @@ class SolveUntilMaxIters
   using this_t = SolveUntilMaxIters<sc_t, T>;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   using typename iterative_base_t::iteration_t;
-
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
   ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
+  #endif 
 
 public:
   SolveUntilMaxIters() = delete;

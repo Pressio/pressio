@@ -61,8 +61,9 @@ class SolveUntilResidualNormBelowTol
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
   ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
-
+  #endif
 public:
   SolveUntilResidualNormBelowTol() = delete;
 
