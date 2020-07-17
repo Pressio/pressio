@@ -51,6 +51,39 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
+template <typename fom_t, typename lspg_state_t, typename enable = void>
+struct ExtractNativeHelper;
+
+template <typename fom_t, typename lspg_state_t>
+struct ExtractNativeHelper<
+  fom_t, lspg_state_t
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  ,mpl::enable_if_t<
+     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
+    >
+#endif
+  >
+{
+  using fom_native_state_t    = typename fom_t::state_type;
+  using fom_native_residual_t = typename fom_t::residual_type;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename fom_t, typename lspg_state_t>
+struct ExtractNativeHelper<
+  fom_t, lspg_state_t,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
+    >
+  >
+{
+  using fom_native_state_t     = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
+  using fom_native_residual_t = fom_native_state_t;
+};
+#endif
+// ------------------------------------------------------------------------------------
+
+
 template <
   typename fom_type,
   typename decoder_type,
@@ -59,15 +92,13 @@ template <
   >
 struct CommonTraits
 {
-  static_assert(::pressio::containers::predicates::is_vector_wrapper<lspg_state_type>::value,
-		"the state type for steady lspg must be a vector wrapper");
+  // the scalar type
+  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-
-  // these are native types of the full-order model (fom)
   using fom_t			= fom_type;
-  using scalar_t		= typename fom_t::scalar_type;
-  using fom_native_state_t	= typename fom_t::state_type;
-  using fom_native_residual_t	= typename fom_t::residual_type;
+
+  using fom_native_state_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_state_t;
+  using fom_native_residual_t	= typename ExtractNativeHelper<fom_t, lspg_state_type>::fom_native_residual_t;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;

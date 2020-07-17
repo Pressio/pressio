@@ -103,17 +103,43 @@ public:
   }
 
 public:
-  ProblemSteady(const fom_t		    & appObj,
-		   const fom_native_state_t & yFomRefNative,
-		   const decoder_t	    & decoder,
-		   lspg_state_t		    & romState)
+  /* specialize for when the fom_t is regular c++ */
+  template <
+    typename _fom_t = fom_t,
+    ::pressio::mpl::enable_if_t<
+      !::pressio::ops::predicates::is_object_pybind<_fom_t>::value,
+      int> = 0
+  >
+  ProblemSteady(const _fom_t & appObj,
+  		const fom_native_state_t & yFomRefNative,
+  		const decoder_t	& decoder)
     : fomStateReference_(yFomRefNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
-      systemObj_(appObj, residualPolicy_, jacobianPolicy_, romState)
+      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
   {}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /* specialize for when the fom_t is python object */
+  template <
+    typename _fom_t = fom_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::ops::predicates::is_object_pybind<_fom_t>::value,
+      int > = 0
+  >
+  ProblemSteady(const _fom_t & appObj,
+		const fom_native_state_t yFomRefNative,
+		const decoder_t	& decoder)
+    : fomStateReference_(yFomRefNative),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      residualPolicy_(fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, decoder),
+      systemObj_(appObj, residualPolicy_, jacobianPolicy_)
+  {}
+#endif
 
 };
 

@@ -55,7 +55,6 @@ template <typename residual_type, typename fom_states_manager_t, typename ud_ops
 class ResidualPolicy
 {
 public:
-  // static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
   using ud_ops_t = ud_ops_type;
 
@@ -82,20 +81,29 @@ public:
     : fomStatesMngr_(fomStatesMngr), udOps_{&udOps}{}
 
 public:
-
   template <typename fom_t>
-  residual_t create(const fom_t & app) const
+  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_t>::value, residual_t >
+  create(const fom_t & app) const
   {
-    residual_t R(app.createResidual());
-    return R;
+    return residual_t(app.createResidual());
   }
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <typename fom_t>
+  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_t>::value, residual_t >
+  create(const fom_t & app) const
+  {
+    const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();
+    return residual_t(app.attr("residual")(*currentFom.data()));
+  }
+#endif
+
   template <typename lspg_state_t, typename fom_t, typename norm_value_type>
-  void compute(const lspg_state_t	& romState,
-		  residual_type	& romR,
-  		const fom_t		& app,
-		  ::pressio::Norm normKind,
-		  norm_value_type & normValue) const
+  void compute(const lspg_state_t & romState,
+	       residual_type & romR,
+	       const fom_t & app,
+	       ::pressio::Norm normKind,
+	       norm_value_type & normValue) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -108,8 +116,7 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomResidual(app, 
-      fomStatesMngr_.getCRefToCurrentFomState(), romR);
+    ::pressio::rom::queryFomResidual(app, fomStatesMngr_.getCRefToCurrentFomState(), romR);
 
     if (normKind == ::pressio::Norm::L2)
       normValue = ::pressio::ops::norm2(romR);
@@ -123,6 +130,7 @@ public:
     timer->stop("lspg residual");
 #endif
   }
+
 
 protected:
   fom_states_manager_t & fomStatesMngr_;
