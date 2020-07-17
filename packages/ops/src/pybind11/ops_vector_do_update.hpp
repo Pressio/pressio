@@ -104,6 +104,27 @@ do_update(T & v, const scalar_t &a,
   }
 }
 
+//----------------------------------------------------------------------
+//  overloads for computing:
+//  V = b * V1 + c * V2
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+  >
+do_update(T & v, const T & v1, const scalar_t &b,
+    const T & v2, const scalar_t &c)
+{
+  // assert(v.extent(0)==v1.extent(0)==v2.extent(0));
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  auto v_proxy   = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  const auto v2_proxy = v2.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
+    v_proxy(i) = b*v1_proxy(i) + c*v2_proxy(i);
+  }
+}
+
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -125,6 +146,31 @@ do_update(T & v, const scalar_t &a,
   const auto v3_proxy = v3.data()->unchecked();
   for (ord_t i=0; i<v.extent(0); ++i){
     v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i);
+  }
+}
+
+//----------------------------------------------------------------------
+//  overloads for computing:
+//  V = a * V + b * V1 + c * V2 + d * V3 + e * V4
+//----------------------------------------------------------------------
+template< typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+  >
+do_update(T & v, const scalar_t &a,
+    const T & v1, const scalar_t &b,
+    const T & v2, const scalar_t &c,
+    const T & v3, const scalar_t &d,
+    const T & v4, const scalar_t &e)
+{
+  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  auto v_proxy   = v.data()->mutable_unchecked();
+  const auto v1_proxy = v1.data()->unchecked();
+  const auto v2_proxy = v2.data()->unchecked();
+  const auto v3_proxy = v3.data()->unchecked();
+  const auto v4_proxy = v4.data()->unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i){
+    v_proxy(i) = a*v_proxy(i) + b*v1_proxy(i) + c*v2_proxy(i) + d*v3_proxy(i) + e*v4_proxy(i);
   }
 }
 

@@ -76,7 +76,7 @@ product(::pressio::transpose modeA,
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
     "Types are not scalar compatible");
 
-  // // we know that operators passed in are f-style arrays, so use eigenmap to manage them 
+  // // we know that operators passed in are f-style arrays, so use eigenmap to manage them
   // // and perform computations (this should be cheaper than using scipy blas below)
   // using mat_t = Eigen::Matrix<scalar_type, -1, -1, Eigen::ColMajor>;
   // Eigen::Map<const mat_t> Am(A.data()->data(), A.extent(0), A.extent(1));
