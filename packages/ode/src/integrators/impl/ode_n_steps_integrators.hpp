@@ -86,7 +86,7 @@ struct IntegratorNStepsWithCollectorAndConstDt
     collector_dispatch::execute(collector, zero, time, yIn);
 
     step_t step = 1;
-    printStartOfAdvancing();
+    printStartOfAdvancing("AdvanceNStepsWithConstDt");
     for( ; step <= numSteps ; ++step)
     {
       printStepTime(step, time);
@@ -133,7 +133,7 @@ struct IntegratorNStepsWithConstDt
     time_type time = start_time;
     step_t step = 1;
 
-    printStartOfAdvancing();
+    printStartOfAdvancing("AdvanceNStepsWithConstDt");
     for( ; step <= numSteps ; ++step)
     {
       printStepTime(step, time);
@@ -184,7 +184,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     // dtManager(zero, time, dt);
 
     step_t step	   = 1;
-    printStartOfAdvancing();
+    printStartOfAdvancing("AdvanceNStepsWithDtCallback");
     for( ; step <= numSteps ; ++step)
     {
       // call the dt manager to set the dt to use at the beginning

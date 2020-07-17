@@ -85,7 +85,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetter
     time_type dt = {};
 
     step_t step	   = 1;
-    printStartOfAdvancing();
+    printStartOfAdvancing("AdvanceToTargetTimeWithDtCallback");
     constexpr auto eps = std::numeric_limits<time_type>::epsilon();
     bool condition = true;
     while (condition)
@@ -161,7 +161,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
     collector_dispatch::execute(collector, zero, time, odeStateInOut);
 
     step_t step	   = 1;
-    printStartOfAdvancing();
+    printStartOfAdvancing("AdvanceToTargetTimeWithDtCallback");
     constexpr auto eps = std::numeric_limits<time_type>::epsilon();
     bool condition = true;
     while (condition)

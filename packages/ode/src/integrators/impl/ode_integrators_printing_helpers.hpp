@@ -63,13 +63,14 @@ void printStepTime(const ::pressio::ode::types::step_t & step,
 #endif
 }
 
-void printStartOfAdvancing()
+template<typename ...Args>
+void printStartOfAdvancing(Args && ... args)
 {
   using namespace ::pressio::utils::io;
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
   print_stdout("\n");
   print_stdout(blue(), "-------------------------------------------------\n", reset());
-  print_stdout(bg_grey() + blue(), "ode:advancer:starting time loop", reset(), "\n");
+  print_stdout(bg_grey() + blue(), "ode:", std::forward<Args>(args)..., reset(), "\n");
   print_stdout(blue(), "-------------------------------------------------\n", reset());
 #endif
 }
