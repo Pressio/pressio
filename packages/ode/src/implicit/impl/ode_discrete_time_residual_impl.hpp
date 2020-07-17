@@ -64,10 +64,12 @@ template <
   >
 // mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
 void discrete_time_residual(const state_type	& odeCurrentState,
-		       residual_type & R,
-		       const pre_states_type & prevStates,
-		       const scalar_type & dt,
-           ::pressio::ode::implicitmethods::Euler)
+			    residual_type & R,
+			    const pre_states_type & prevStates,
+			    const scalar_type & dt,
+			    ::pressio::Norm normKind,
+			    scalar_type & normValue,
+			    ::pressio::ode::implicitmethods::Euler)
 {
   using nm1 = ode::nMinusOne;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
@@ -75,6 +77,13 @@ void discrete_time_residual(const state_type	& odeCurrentState,
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   // R = y_n - y_n-1 - dt*f()
   ::pressio::ops::do_update(R, cf, odeCurrentState, cn, prevStates.get(nm1()), cnm1);
+
+  if (normKind==::pressio::Norm::L1)
+    normValue = ::pressio::ops::norm1(R);
+  else if (normKind==::pressio::Norm::L2)
+    normValue = ::pressio::ops::norm2(R);
+  else
+    throw std::runtime_error("Invalid norm");
 }
 
 template <
@@ -85,10 +94,12 @@ template <
   >
 // mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
 void discrete_time_residual(const state_type	& odeCurrentState,
-		       residual_type & R,
-		       const pre_states_type & prevStates,
-		       const scalar_type & dt,
-           ::pressio::ode::implicitmethods::BDF2)
+			    residual_type & R,
+			    const pre_states_type & prevStates,
+			    const scalar_type & dt,
+			    ::pressio::Norm normKind,
+			    scalar_type & normValue,
+			    ::pressio::ode::implicitmethods::BDF2)
 {
   using nm1 = ode::nMinusOne;
   using nm2 = ode::nMinusTwo;
@@ -105,6 +116,13 @@ void discrete_time_residual(const state_type	& odeCurrentState,
 			    odeCurrentState, cn,
 			    prevStates.get(nm1()), cnm1,
 			    prevStates.get(nm2()), cnm2);
+
+  if (normKind==::pressio::Norm::L1)
+    normValue = ::pressio::ops::norm1(R);
+  else if (normKind==::pressio::Norm::L2)
+    normValue = ::pressio::ops::norm2(R);
+  else
+    throw std::runtime_error("Invalid norm");
 }
 
 }}}//end namespace pressio::ode::impl

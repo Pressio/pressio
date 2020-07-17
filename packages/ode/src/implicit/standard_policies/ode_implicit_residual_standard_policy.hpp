@@ -98,7 +98,8 @@ public:
 	     scalar_type & normValue) const
   {
     system.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::discrete_time_residual(odeCurrentState, R, prevStatesMgr, dt, ode_tag());
+    ::pressio::ode::impl::discrete_time_residual(odeCurrentState, R, prevStatesMgr, 
+      dt, normKind, normValue, ode_tag());
   }
 };//end class
 
