@@ -60,7 +60,7 @@ public:
   template <typename solver_t, typename step_t>
   void givenGradientNormsPrintRest(const solver_t & solver, step_t iStep, const sc_t & absGNorm, const sc_t & relGNorm)
   {   
-      const auto correctionNorm = solver.correctionNormFromCurrentCorrectionStep();
+      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
       const auto resNorm = solver.residualNormCurrentCorrectionStep();
       if (iStep == 1) resNorm0_ = resNorm;
       printImpl(iStep, correctionNorm, resNorm, resNorm/resNorm0_, absGNorm, relGNorm);
@@ -86,7 +86,7 @@ public:
   template <typename solver_t, typename step_t>
   void givenResidualNormsPrintRest(const solver_t & solver, step_t iStep, const sc_t & absResNorm, const sc_t & relResNorm)
   {   
-      const auto correctionNorm = solver.correctionNormFromCurrentCorrectionStep();
+      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
       const auto absGNorm = solver.gradientNormCurrentCorrectionStep();
       if (iStep == 1) gNorm0_ = absGNorm;
       printImpl(iStep, correctionNorm, absResNorm, relResNorm, absGNorm, absGNorm/gNorm0_);
@@ -95,7 +95,7 @@ public:
   template <typename solver_t, typename step_t>
   void print(const solver_t & solver, step_t iStep)
   {   
-      const auto correctionNorm = solver.correctionNormFromCurrentCorrectionStep();
+      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
       const auto absGNorm = solver.gradientNormCurrentCorrectionStep();
       const auto absResNorm = solver.residualNormCurrentCorrectionStep();
       if (iStep == 1) gNorm0_ = absGNorm;

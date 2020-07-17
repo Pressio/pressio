@@ -92,7 +92,7 @@ public:
   }
 
   const state_t & viewCorrection() const{ return correction_; }
-  const sc_t correctionNormFromCurrentCorrectionStep() const{ return correctionNorm_; }
+  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNorm_; }
   const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNorm_; }
   const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
 

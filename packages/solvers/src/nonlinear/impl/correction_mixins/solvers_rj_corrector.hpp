@@ -83,21 +83,15 @@ public:
 
     auto & r = T::getResidual();
     auto & J = T::getJacobian();
-
     // solve: R correction = Q^T Residual
     solverObj_.solve(J, r, correction_);
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 
-    std::cout << std::fixed
-    	      << std::setprecision(15)
-    	      << residualNorm_ << " "
-    	      << pressio::ops::norm2(correction_)
-    	      << std::endl;
   }
 
   const state_t & viewCorrection() const{ return correction_; }
-  const sc_t correctionNormFromCurrentCorrectionStep() const{ return correctionNorm_; }
+  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNorm_; }
   const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNorm_; }
   const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
 
