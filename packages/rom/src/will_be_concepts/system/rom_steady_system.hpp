@@ -63,13 +63,13 @@ struct steady_system<
     ::pressio::ode::predicates::has_residual_typedef<T>::value and
     ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     ///////////////////
-    /// residual 
+    /// residual
     ///////////////////
     ::pressio::rom::predicates::has_const_create_residual_method_return_result<
       T, typename T::residual_type>::value and
     ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
       T, typename T::state_type, typename T::residual_type
-      >::value and 
+      >::value and
     ///////////////////
     /// apply jacobian
     ///////////////////
@@ -80,6 +80,12 @@ struct steady_system<
       >::value
     >
   > : std::true_type{};
+
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<>
+struct steady_system<pybind11::object, void> : std::true_type{};
+#endif
 
 
 }}} // namespace pressio::rom::concepts
