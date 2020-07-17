@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_system.hpp
+// ops_scale.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,24 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+#ifndef OPS_PYBIND11_OPS_SCALE_HPP_
+#define OPS_PYBIND11_OPS_SCALE_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
+namespace pressio{ namespace ops{
 
-template<typename T, typename enable = void>
-struct steady_system : std::false_type{};
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value 
+  >
+scale(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
+{
+  using traits	 = ::pressio::containers::details::traits<T>;
+  using scalar_t = typename traits::scalar_t;
+  using ord_t	 = typename traits::ordinal_t;
+  auto proxy = v.data()->mutable_unchecked();
+  for (ord_t i=0; i<v.extent(0); ++i)
+    proxy(i) *= value;
+}
 
-template<typename T>
-struct steady_system<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
-    ::pressio::ode::predicates::has_state_typedef<T>::value and
-    ::pressio::ode::predicates::has_residual_typedef<T>::value and
-    ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
-    ///////////////////
-    /// residual
-    ///////////////////
-    ::pressio::rom::predicates::has_const_create_residual_method_return_result<
-      T, typename T::residual_type>::value and
-    ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
-      T, typename T::state_type, typename T::residual_type
-      >::value and
-    ///////////////////
-    /// apply jacobian
-    ///////////////////
-    ::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-      T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value and
-    ::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-      T, typename T::state_type,  typename T::dense_matrix_type, typename T::dense_matrix_type
-      >::value
-    >
-  > : std::true_type{};
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<>
-struct steady_system<pybind11::object, void> : std::true_type{};
-#endif
-
-
-}}} // namespace pressio::rom::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_SCALE_HPP_

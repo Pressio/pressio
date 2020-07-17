@@ -64,6 +64,10 @@ struct GaussNewtonQR{};
 struct LevenbergMarquardt{};
 using LM = LevenbergMarquardt;
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+struct GaussNewtonPy{};
+#endif
+
 
 // ----------------------------------------------------------------------------
 // *** COMPOSE CORRECTOR ***
@@ -90,6 +94,7 @@ struct composeCorrector<
   using operators_t = HessianGradientOperatorsRJApi<h_t, g_t, r_t, j_t>;
   using type	    = HessianGradientCorrector<operators_t, state_t, lin_solver_t, norm>;
 };
+
 
 // *** GAUSS-NEWTON residual-jacobian API with ud_ops ***
 template<
@@ -209,7 +214,8 @@ template<
   template< typename...> class update,
   template< typename...> class looper,
   typename ... Args>
-struct compose{
+struct compose
+{
   using type = void;
 };
 
@@ -239,7 +245,7 @@ struct compose<
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
   // gradient is same as state_t
-  using grad_t = state_t; // the gradient is same type as state
+  using grad_t = state_t;
   // hessian_t is extracted from linear solver
   using hess_t = typename linear_solver_t::matrix_type;
 
@@ -248,9 +254,41 @@ struct compose<
 
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-
   using type = looper_t<scalar_t, update_mixin>;
 };
+
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename system_t,
+  template<typename...> class update_t,
+  template<typename...> class looper_t,
+  typename hessian_t
+  >
+struct compose<
+  system_t, GaussNewton, update_t, looper_t,
+  mpl::enable_if_t<
+    // when dealing with pressio4py and the GN solver is created for solving steady or unsteady LSPG,
+    // the system_t is NOT a pybind object.
+    // The system class is a python object only if one is trying to use this GaussNewton
+    // to solve a nonlinear system that is writte in python. For that case, I would say they are
+    // better off using other Python libraries for solvers, so disable that scenario for now.
+    !::pressio::ops::predicates::is_object_pybind<system_t>::value and
+    ::pressio::containers::predicates::is_matrix_wrapper_pybind<hessian_t>::value>,
+  pybind11::object, hessian_t
+  >
+{
+  using scalar_t = typename system_t::scalar_type;
+  using state_t = typename system_t::state_type;
+  using grad_t = state_t;
+  using linear_solver_t = pybind11::object;
+
+  using corr_mixin = typename composeCorrector<
+    GaussNewton, void, system_t, state_t, hessian_t, grad_t, linear_solver_t>::type;
+  using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
+  using type = looper_t<scalar_t, update_mixin>;
+};
+#endif
 
 
 template<
@@ -264,7 +302,8 @@ template<
 struct compose<
   system_t, tag, update_t, looper_t,
   mpl::enable_if_t<
-    std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
+    !::pressio::containers::predicates::is_wrapper<ud_ops_t>::value
     >, linear_solver_t, ud_ops_t
   >
 {
@@ -276,16 +315,14 @@ struct compose<
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
   // gradient is same as state_t
-  using grad_t = state_t; // the gradient is same type as state
+  using grad_t = state_t;
   // hessian_t is extracted from linear solver
   using hess_t = typename linear_solver_t::matrix_type;
 
   using corr_mixin = typename composeCorrector<
     tag, void, system_t, state_t, hess_t, grad_t, linear_solver_t, ud_ops_t>::type;
-
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-
   using type = looper_t<scalar_t, update_mixin>;
 };
 
@@ -311,10 +348,8 @@ struct compose<system_t, GaussNewtonQR, update_t, looper_t, Args...>
   using state_t = typename system_t::state_type;
 
   using corr_mixin = typename composeCorrector<GaussNewtonQR, void, system_t, state_t, qr_solver_t>::type;
-
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-
   using type = looper_t<scalar_t, update_mixin>;
 };
 
@@ -330,12 +365,9 @@ struct compose<system_t, NewtonRaphson, update_t, looper_t, linear_solver_t, Arg
 {
   using scalar_t = typename system_t::scalar_type;
   using state_t  = typename system_t::state_type;
-
   using corr_mixin = typename composeCorrector<NewtonRaphson, void, system_t, state_t, linear_solver_t>::type;
-
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-
   using type = looper_t<scalar_t, update_mixin>;
 };
 

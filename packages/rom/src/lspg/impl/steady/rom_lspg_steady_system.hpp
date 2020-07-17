@@ -52,6 +52,7 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
 template<
+  typename scalar_t,
   typename app_type,
   typename lspg_state_type,
   typename lspg_residual_type,
@@ -61,7 +62,10 @@ template<
   >
 class System
 {
-  const app_type & app_;
+  typename std::conditional<
+    ::pressio::ops::predicates::is_object_pybind<app_type>::value,
+    const app_type, const app_type & >::type app_;
+
   const residual_policy_type & residualEvaluator_;
   const jacobian_policy_type & jacobianEvaluator_;
   mutable lspg_residual_type R_;
@@ -69,7 +73,7 @@ class System
 
 public:
   // these need to be public because are detected by solver
-  using scalar_type = typename app_type::scalar_type;
+  using scalar_type	= scalar_t;
   using state_type	= lspg_state_type;
   using residual_type	= lspg_residual_type;
   using jacobian_type	= lspg_jacobian_type;
@@ -78,11 +82,9 @@ public:
   System() = delete;
   ~System() = default;
 
-  template <typename lspg_state_t>
   System(const app_type & appIn,
 	 const residual_policy_type & resPolicyObj,
-	 const jacobian_policy_type & jacPolicyObj,
-	 lspg_state_t	& yROM)
+	 const jacobian_policy_type & jacPolicyObj)
     : app_(appIn),
       residualEvaluator_(resPolicyObj),
       jacobianEvaluator_(jacPolicyObj),
@@ -91,15 +93,14 @@ public:
     {}
 
 public:
-
   lspg_residual_type createResidual() const
   {
-    return residualEvaluator_.create(app_);
+    return R_;
   }
 
   lspg_jacobian_type createJacobian() const
   {
-    return jacobianEvaluator_.create(app_);
+    return J_;
   }
 
   void residual(const lspg_state_type & romState,
@@ -134,5 +135,5 @@ public:
   }
 };//end class
 
-}}}}} 
+}}}}}
 #endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_

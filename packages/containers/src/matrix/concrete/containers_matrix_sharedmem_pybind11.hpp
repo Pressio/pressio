@@ -93,6 +93,13 @@ public:
     }
   }
 
+  // use only if you know what you are doing
+  // it is currently used only in specific places
+  Matrix(wrap_t src, ::pressio::view)
+    : data_{src}{
+    assert( data_.ndim() == 2 );
+  }
+
   // copy cnstr
   Matrix(Matrix const & other)
     : data_({ other.extent(0), other.extent(1) })

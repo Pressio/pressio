@@ -52,8 +52,7 @@
 namespace pressio{ namespace solvers{ namespace concepts {
 
 template <typename T, typename enable = void>
-struct linear_solver_for_least_squares_solver
-  : std::false_type{};
+struct linear_solver_for_least_squares_solver : std::false_type{};
 
 template <typename T>
 struct linear_solver_for_least_squares_solver<
@@ -63,10 +62,7 @@ struct linear_solver_for_least_squares_solver<
     // the matrix_type is not void
     !std::is_void<typename T::matrix_type>::value and
     ::pressio::mpl::publicly_inherits_from<
-      T,
-      ::pressio::solvers::LinearBase<
-      typename T::matrix_type, T
-	>
+      T, ::pressio::solvers::LinearBase<typename T::matrix_type, T>
       >::value
     >
   > : std::true_type{};

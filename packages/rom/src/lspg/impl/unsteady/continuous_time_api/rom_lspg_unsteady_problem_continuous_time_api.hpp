@@ -61,7 +61,7 @@
 #include "./traits/rom_lspg_unsteady_masked_problem_traits_continuous_time_api.hpp"
 
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template <
   template <class, class, class, class ...> class lspg_type,
@@ -76,7 +76,7 @@ public:
   // define the type holding types for the problem
   using lspg_problem_t = lspg_type<stepper_tag, system_type, lspg_state_type, Args...>;
 
-  using system_t			= typename lspg_problem_t::system_t;
+  using system_t		= typename lspg_problem_t::system_t;
   using scalar_t		= typename lspg_problem_t::scalar_t;
   using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
   using fom_state_t		= typename lspg_problem_t::fom_state_t;
@@ -84,7 +84,7 @@ public:
   using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
   using decoder_t		= typename lspg_problem_t::decoder_t;
   using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename lspg_problem_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename lspg_problem_t::fom_states_manager_t;
   using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
   using lspg_matrix_t		= typename lspg_problem_t::lspg_matrix_t;
   using lspg_residual_policy_t	= typename lspg_problem_t::lspg_residual_policy_t;
@@ -134,18 +134,16 @@ public:
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
+      !::pressio::ops::predicates::is_object_pybind<_system_t>::value and
       std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !std::is_same< _system_t, pybind11::object >::value
-#endif
-    , int > = 0
+      std::is_void<_ud_ops_t>::value,
+      int > = 0
   >
   ProblemContinuousTimeApi(const _system_t	& appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      const decoder_t & decoder,
-			      lspg_state_t	 & yROM,
-			      scalar_t	 t0)
+			   const fom_native_state_t & fomStateReferenceNative,
+			   const decoder_t & decoder,
+			   lspg_state_t	 & yROM,
+			   scalar_t	 t0)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(appObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
@@ -172,19 +170,17 @@ public:
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
+      !::pressio::ops::predicates::is_object_pybind<_system_t>::value and
       std::is_void<_aux_stepper_t>::value and
-      !std::is_void<_ud_ops_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !std::is_same< _system_t, pybind11::object >::value
-#endif
-      , int > = 0
+      !std::is_void<_ud_ops_t>::value,
+      int > = 0
   >
   ProblemContinuousTimeApi(const _system_t & appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      const decoder_t & decoder,
-			      lspg_state_t & yROM,
-			      scalar_t t0,
-			      const _ud_ops_t & udOps)
+			   const fom_native_state_t & fomStateReferenceNative,
+			   const decoder_t & decoder,
+			   lspg_state_t & yROM,
+			   scalar_t t0,
+			   const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(appObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
@@ -211,18 +207,16 @@ public:
     typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
+      !::pressio::ops::predicates::is_object_pybind<_system_t>::value and
       !std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !std::is_same< _system_t, pybind11::object >::value
-#endif
-      , int > = 0
-  >
-  ProblemContinuousTimeApi(const _system_t	 & appObj,
-			      const fom_native_state_t & fomStateReferenceNative,
-			      const decoder_t	 & decoder,
-			      lspg_state_t	 & yROM,
-			      scalar_t  t0)
+      std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  ProblemContinuousTimeApi(const _system_t & appObj,
+			   const fom_native_state_t & fomStateReferenceNative,
+			   const decoder_t & decoder,
+			   lspg_state_t	& yROM,
+			   scalar_t t0)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(appObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
@@ -239,39 +233,38 @@ public:
   {}
 
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /*- the system_t is a pybind11::object
-//    * - aux stepper is NOT needed (e.g. for BDF1)
-//    * - ud_ops_t == void
-//    */
-//   template <
-//     typename _system_t = system_t,
-//     typename _lspg_state_t = lspg_state_t,
-//     typename _aux_stepper_t = aux_stepper_t,
-//     typename _ud_ops_t = ud_ops_t,
-//     ::pressio::mpl::enable_if_t<
-//       std::is_same< _system_t, pybind11::object >::value and
-//       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
-//       std::is_void<_aux_stepper_t>::value and
-//       std::is_void<_ud_ops_t>::value,
-//       int > = 0
-//   >
-//   ProblemContinuousTimeApi(const _system_t       & appObj,
-// 			      const fom_native_state_t fomStateReferenceIn,
-// 			      const decoder_t    & decoder,
-// 			      typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
-// 			      scalar_t       t0)
-//     : fomStateReference_(fomStateReferenceIn),
-//       fomVelocityRef_( ::pressio::rom::queryFomVelocityUnsteady(appObj, fomStateReference_, t0) ),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-//       jPhiMatrix_(::pressio::rom::queryFomApplyJacobianUnsteady(appObj, fomStateReference_,
-// 								decoder.getReferenceToJacobian(), t0)),
-//       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
-//       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-//       stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
-//   {}
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /*- the system_t is a pybind11::object
+   * - aux stepper is NOT needed (e.g. for BDF1)
+   * - ud_ops_t == void
+   */
+  template <
+    typename _system_t = system_t,
+    typename _lspg_state_t = lspg_state_t,
+    typename _aux_stepper_t = aux_stepper_t,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::ops::predicates::is_object_pybind<_system_t>::value and
+      ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
+      std::is_void<_aux_stepper_t>::value and
+      std::is_void<_ud_ops_t>::value,
+      int > = 0
+  >
+  ProblemContinuousTimeApi(const _system_t & appObj,
+			   const fom_native_state_t fomStateReferenceIn,
+			   const decoder_t & decoder,
+			   typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
+			   scalar_t t0)
+    : fomStateReference_(fomStateReferenceIn),
+      fomVelocityRef_( appObj.attr("velocity")(fomStateReferenceIn, t0) ),
+      fomStateReconstructor_(fomStateReference_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      jPhiMatrix_( appObj.attr("applyJacobian")(fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
+      residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+      jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
+      stepperObj_(_lspg_state_t(yROM), appObj, residualPolicy_, jacobianPolicy_)
+  {}
+#endif
 
 };
 

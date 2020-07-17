@@ -59,9 +59,9 @@ struct implicit_state<
   T,
   typename std::enable_if<
     containers::predicates::is_vector_wrapper<T>::value
-/*#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
     or containers::predicates::is_array_pybind11<T>::value
-#endif*/
+#endif
     >::type > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts

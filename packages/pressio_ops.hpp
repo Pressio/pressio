@@ -71,6 +71,11 @@
 #include "ops/src/predicates/ops_has_method_do_update_three_terms.hpp"
 #include "ops/src/predicates/ops_has_method_do_update_four_terms.hpp"
 
+// ops_is_object_pybind: not within preproc direc because we need to use it 
+// even when pybind is disabled
+#include "ops/src/predicates/ops_is_object_pybind.hpp"
+
+
 // Eigen
 #include "ops/src/eigen/ops_set_zero.hpp"
 #include "ops/src/eigen/ops_scale.hpp"
@@ -145,6 +150,8 @@
 #include "ops/src/pybind11/ops_norms_vector.hpp"
 #include "ops/src/pybind11/ops_vector_do_update.hpp"
 #include "ops/src/pybind11/ops_mat_prod_vec.hpp"
+#include "ops/src/pybind11/ops_mat_prod_mat.hpp"
+#include "ops/src/pybind11/ops_scale.hpp"
 #endif
 
 #endif

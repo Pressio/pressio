@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template <
   typename residual_type,
@@ -80,7 +80,7 @@ public:
     ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(const _residual_type & RIn,
-			    fom_states_manager_t & fomStatesMngr)
+				  fom_states_manager_t & fomStatesMngr)
     : R_{RIn}, fomStatesMngr_(fomStatesMngr)
   {}
 
@@ -92,8 +92,8 @@ public:
       !std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(const _residual_type & RIn,
-			    fom_states_manager_t & fomStatesMngr,
-			    const _ud_ops_t & udOps)
+				  fom_states_manager_t & fomStatesMngr,
+				  const _ud_ops_t & udOps)
     : R_{RIn}, fomStatesMngr_(fomStatesMngr), udOps_{&udOps}
   {}
 
@@ -110,16 +110,16 @@ public:
     typename prev_states_t,
     typename system_t,
     typename scalar_t
-  >
+    >
   void compute(const lspg_state_t & romState,
-  		  const prev_states_t & romPrevStates,
-  		  const system_t & app,
-		  const scalar_t & t,
-		  const scalar_t & dt,
-		  const ::pressio::ode::types::step_t & step,
-		  residual_t & romR,
-		  ::pressio::Norm normKind,
-		  scalar_t & normValue) const
+	       const prev_states_t & romPrevStates,
+	       const system_t & app,
+	       const scalar_t & t,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & romR,
+	       ::pressio::Norm normKind,
+	       scalar_t & normValue) const
   {
     this->compute_impl<stepper_tag>(romState, romR, romPrevStates, app,
 				    t, dt, step, normKind, normValue);
@@ -127,10 +127,10 @@ public:
 
 private:
   template <
-    typename stepper_tag,
-    typename fom_state_cont_type,
-    typename scalar_t,
-    typename _ud_ops_t = ud_ops_t
+  typename stepper_tag,
+  typename fom_state_cont_type,
+  typename scalar_t,
+  typename _ud_ops_t = ud_ops_t
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,

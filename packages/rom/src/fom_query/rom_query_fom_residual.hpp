@@ -51,13 +51,40 @@
 
 namespace pressio{ namespace rom{
 
+//------------------------------------------
+// for native c++
+//------------------------------------------
 template <typename fom_t, typename state_t, typename result_t>
-void queryFomResidual(const fom_t & fomObj,
-			    const state_t & yFOM,
-			    result_t & R)
+mpl::enable_if_t<
+  !::pressio::ops::predicates::is_object_pybind<fom_t>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
+  and !::pressio::containers::predicates::is_vector_wrapper_pybind<result_t>::value
+#endif
+  >
+queryFomResidual(const fom_t & fomObj,
+		 const state_t & yFOM,
+		 result_t & R)
 {
   fomObj.residual(*yFOM.data(), *R.data());
 }
+
+//------------------------------------------
+// for python
+//------------------------------------------
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename state_t, typename result_t>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<result_t>::value
+>
+queryFomResidual(const pybind11::object & fomObj,
+		 const state_t & fomState,
+		 result_t & R)
+{
+  *R.data() = fomObj.attr("residual")(*fomState.data());
+}
+#endif
 
 }} //end namespace pressio::rom
 #endif  // ROM_FOM_QUERY_ROM_QUERY_FOM_RESIDUAL_HPP_

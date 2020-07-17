@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_system.hpp
+// ops_is_object_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,18 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+#ifndef OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
+#define OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
+namespace pressio{ namespace ops{ namespace predicates {
 
-template<typename T, typename enable = void>
-struct steady_system : std::false_type{};
-
-template<typename T>
-struct steady_system<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
-    ::pressio::ode::predicates::has_state_typedef<T>::value and
-    ::pressio::ode::predicates::has_residual_typedef<T>::value and
-    ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
-    ///////////////////
-    /// residual
-    ///////////////////
-    ::pressio::rom::predicates::has_const_create_residual_method_return_result<
-      T, typename T::residual_type>::value and
-    ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
-      T, typename T::state_type, typename T::residual_type
-      >::value and
-    ///////////////////
-    /// apply jacobian
-    ///////////////////
-    ::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-      T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value and
-    ::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-      T, typename T::state_type,  typename T::dense_matrix_type, typename T::dense_matrix_type
-      >::value
-    >
-  > : std::true_type{};
-
+template <typename T, typename enable = void>
+struct is_object_pybind : std::false_type {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<>
-struct steady_system<pybind11::object, void> : std::true_type{};
+template <>
+struct is_object_pybind<pybind11::object> : std::true_type {};
 #endif
 
-
-}}} // namespace pressio::rom::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+}}}//end namespace pressio::ops::predicates
+#endif  // OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_

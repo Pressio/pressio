@@ -104,7 +104,7 @@ struct PreconditionedProblemTraits
 
   // declare type of system
   using lspg_system_t   = ::pressio::rom::lspg::impl::steady::System<
-    fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
+    scalar_t, fom_t, lspg_state_type, lspg_residual_t, lspg_matrix_t,
     lspg_residual_policy_t, lspg_jacobian_policy_t>;
 
 };//end class

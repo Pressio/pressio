@@ -59,7 +59,11 @@ class HessianGradientCorrector : public T
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
   state_t correction_ = {};
-  lin_solver_t & solverObj_;
+
+  typename std::conditional<
+    ::pressio::ops::predicates::is_object_pybind<lin_solver_t>::value,
+    lin_solver_t, lin_solver_t &>::type solverObj_;
+
   sc_t residualNorm_ = {};
 
 public:
@@ -73,17 +77,34 @@ public:
 			   lin_solver_t & solverObj,
 			   Args && ... args)
     : T(system, state, std::forward<Args>(args)...),
-      correction_(state), solverObj_(solverObj){}
+      correction_(state),
+      solverObj_(solverObj)
+  {}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // this is the overload use for pressio4py since the state object passed to the constructor
+  // is not a wrapper bbut a native pybind array, so we need to use the wrapped type.
+  // However, this is only true for the constructor. For the actual computation below,
+  // the state is wrapper type.
+  template <typename system_t, typename ...Args>
+  HessianGradientCorrector(const system_t & system,
+			   const typename ::pressio::containers::details::traits<state_t>::wrapped_t & state,
+			   lin_solver_t & solverObj,
+			   Args && ... args)
+    : T(system, state_t(state) /*the parent needs a wrapped object*/, std::forward<Args>(args)...),
+      correction_(state),
+      solverObj_(solverObj)
+  {}
+#endif
 
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys, state_t & state)
   {
     T::computeOperators(sys, state, normType, residualNorm_);
-
     auto & H = T::getHessian();
     auto & g = T::getGradient();
-    solverObj_.solveAllowMatOverwrite(H, g, correction_);
+    this->doLinearSolve(H, g);
 
     std::cout << std::fixed
     	      << std::setprecision(15)
@@ -100,6 +121,27 @@ public:
   void residualNorm(const system_t & system, const state_t & state, sc_t & result){
     T::residualNorm(system, state, normType, result);
   }
+
+private:
+  template <typename H_t, typename g_t, typename _lin_solver_t = lin_solver_t>
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  mpl::enable_if_t<!std::is_same<_lin_solver_t, pybind11::object>::value>
+#else
+  void
+#endif
+  doLinearSolve(H_t & H, const g_t & g)
+  {
+    solverObj_.solveAllowMatOverwrite(H, g, correction_);
+  }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <typename H_t, typename g_t, typename _lin_solver_t = lin_solver_t>
+  mpl::enable_if_t<std::is_same<_lin_solver_t, pybind11::object>::value>
+  doLinearSolve(H_t & H, const g_t & g)
+  {
+    solverObj_.attr("solve")(*H.data(), *g.data(), *correction_.data());
+  }
+#endif
 
 };
 

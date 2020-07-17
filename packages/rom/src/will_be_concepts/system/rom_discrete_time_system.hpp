@@ -54,16 +54,6 @@ namespace pressio{ namespace rom{ namespace concepts {
 template<typename T, typename enable = void>
 struct discrete_time_system : std::false_type{};
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<typename T>
-// struct rom_discrete_time_system<
-//   T,
-//   mpl::enable_if_t<
-//     ::pressio::mpl::is_same<T, pybind11::object>::value
-//     >
-//   > : std::true_type{};
-// #endif
-
 template<typename T>
 struct discrete_time_system<
   T,

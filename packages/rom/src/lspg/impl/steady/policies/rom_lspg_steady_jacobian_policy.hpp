@@ -73,18 +73,30 @@ public:
     : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
 public:
-  template <typename app_t>
-  apply_jac_return_t create(const app_t	& app) const
+
+  template <typename fom_t>
+  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_t>::value, apply_jac_return_t >
+  create(const fom_t & app) const
   {
     const auto & basis = decoderObj_.getReferenceToJacobian();
-    apply_jac_return_t JJ(app.createApplyJacobianResult(*basis.data()));
-    return JJ;
+    return apply_jac_return_t(app.createApplyJacobianResult(*basis.data()));
   }
 
-  template <typename lspg_state_t, typename lspg_jac_t, typename app_t>
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <typename fom_t>
+  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_t>::value, apply_jac_return_t >
+  create(const fom_t & app) const
+  {
+    const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & basis = decoderObj_.getReferenceToJacobian();
+    return apply_jac_return_t(app.attr("applyJacobian")(*currentFom.data(), *basis.data()));
+  }
+#endif
+
+  template <typename lspg_state_t, typename lspg_jac_t, typename fom_t>
   void compute(const lspg_state_t & romState,
-		    lspg_jac_t & romJJ,
-  		  const app_t & app) const
+	       lspg_jac_t & romJJ,
+	       const fom_t & app) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
