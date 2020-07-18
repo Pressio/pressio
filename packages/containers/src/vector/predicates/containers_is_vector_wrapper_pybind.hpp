@@ -98,5 +98,8 @@ struct is_vector_wrapper_pybind<
     >
   > : std::true_type{};
 
+template<typename T>
+using is_vector_wrapper_pybind11 = is_vector_wrapper_pybind<T>;
+
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_

@@ -97,5 +97,9 @@ struct is_matrix_wrapper_pybind<
     >
   > : std::true_type{};
 
+
+template<typename T>
+using is_matrix_wrapper_pybind11 = is_matrix_wrapper_pybind<T>;
+
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_PYBIND11_HPP_
