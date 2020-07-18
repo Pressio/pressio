@@ -51,37 +51,41 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ops_t
-  >
+template <typename matrix_type, typename fom_state_type, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
   using jacobian_type  = matrix_type;
 
 private:
-  using scalar_t   = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
-  matrix_type phi_ = {};
+  using scalar_t   = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
+  matrix_type mappingJacobian_ = {};
   const ops_t & udOps_;
 
 public:
   LinearDecoderWithCustomOps() = delete;
   LinearDecoderWithCustomOps(const jacobian_type & matIn, const ops_t & udOps)
-    : phi_(matIn), udOps_{udOps}{}
+    : mappingJacobian_(matIn), udOps_{udOps}{}
 
-  template <typename operand_t>
-  void applyMapping(const operand_t & operand, fom_state_type & result) const
+  // applyMapping is templated because gen_coords_t is something that behaves like a vector
+  // e.g. for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
+  template <typename gen_coords_t>
+  void applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    udOps_.product(::pressio::nontranspose(), one, *phi_.data(), operand, zero, *result.data());
+    udOps_.product(::pressio::nontranspose(), one, *mappingJacobian_.data(), operand, zero, *result.data());
   }
 
   const jacobian_type & getReferenceToJacobian() const{
-    return phi_;
+    return mappingJacobian_;
   }
+
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    //no op
+  }
+
 };//end
 
 }}}//end namespace pressio::rom::impl

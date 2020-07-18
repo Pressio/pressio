@@ -53,16 +53,8 @@
 
 namespace pressio{ namespace rom{
 
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ... Args>
-using LinearDecoder =
-  typename impl::LinearDecoderSpecializer<matrix_type,
-					  rom_state_type,
-					  fom_state_type,
-					  Args...>::type;
+template <typename ... Args>
+using LinearDecoder = typename impl::LinearDecoderSpecializer<void, Args...>::type;
 
 }} // end namespace pressio::rom
 #endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_

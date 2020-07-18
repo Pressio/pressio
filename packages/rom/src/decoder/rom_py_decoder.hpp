@@ -53,12 +53,8 @@
 
 namespace pressio{ namespace rom{
 
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type,
-  typename ... Args>
-using PyDecoder = impl::PyDecoder<matrix_type, rom_state_type, fom_state_type, Args...>;
+template <typename ... Args>
+using PyDecoder = impl::PyDecoder<void, Args...>;
 
 }} // end namespace pressio::rom
 #endif  // ROM_DECODER_ROM_PY_DECODER_HPP_

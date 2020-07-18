@@ -51,18 +51,23 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type
+template <typename ...Args>
+struct PyDecoder;
+
+template <typename matrix_type, typename fom_state_type>
+struct PyDecoder<
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_matrix_wrapper_pybind11<matrix_type>::value and
+    ::pressio::containers::predicates::is_vector_wrapper_pybind11<fom_state_type>::value
+    >,
+  matrix_type, fom_state_type
   >
-struct PyDecoder
 {
   using jacobian_type  = matrix_type;
   enum mappingKind{ Null, Linear, Custom };
 
 private:
-  using scalar_t	  = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
+  using scalar_t	  = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
   using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
   using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
 
@@ -105,6 +110,20 @@ public:
 
   const jacobian_type & getReferenceToJacobian() const{
     return mappingJacobian_;
+  }
+
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    if (kind_ == mappingKind::Linear){
+      // no op
+    }
+    else if(kind_ == mappingKind::Custom)
+    {
+      customMapper_.attr("updateJacobian")(*genCoordinates.data());
+    }
+    else
+      throw std::runtime_error("Invalid mapping kind enum");
   }
 };//end
 

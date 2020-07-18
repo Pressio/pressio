@@ -51,19 +51,15 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <
-  typename matrix_type,
-  typename rom_state_type,
-  typename fom_state_type
-  >
+template <typename matrix_type, typename fom_state_type>
 struct LinearDecoderWithPressioOps
 {
   using jacobian_type  = matrix_type;
 
 private:
-  using scalar_t	  = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
-  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
+  using scalar_t	  = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
   using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
+  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
 
   matrix_type mappingJacobian_ = {};
 
@@ -72,10 +68,10 @@ public:
   LinearDecoderWithPressioOps(const jacobian_type & matIn) : mappingJacobian_(matIn){}
   LinearDecoderWithPressioOps(const jacobian_native_t & matIn) : mappingJacobian_(matIn){}
 
-  // applyMapping is templated because operand_t can be rom_state_type but
-  // can also be an expression based on rom_state_type (e.g. for WLS)
-  template <typename operand_t, typename fom_state_t = fom_state_type>
-  void applyMapping(const operand_t & operand, fom_state_t & result) const
+  // applyMapping is templated because gen_coords_t is something that behaves like a vector
+  // e.g. for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
+  template <typename gen_coords_t, typename fom_state_t = fom_state_type>
+  void applyMapping(const gen_coords_t & operand, fom_state_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -85,7 +81,13 @@ public:
   const jacobian_type & getReferenceToJacobian() const{
     return mappingJacobian_;
   }
-};//end
+
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    //no op
+  }
+};
 
 }}}//end namespace pressio::rom::impl
 #endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
