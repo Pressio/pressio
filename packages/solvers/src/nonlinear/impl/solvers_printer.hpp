@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_PRINTER_SOLVERS_PRINTER_
-#define SOLVERS_NONLINEAR_IMPL_PRINTER_SOLVERS_PRINTER_
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 template <typename sc_t>
@@ -184,4 +184,4 @@ private:
 
 }}}}
 
-#endif //SOLVERS_NONLINEAR_IMPL_PRINTER_SOLVERS_PRINTER_
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
