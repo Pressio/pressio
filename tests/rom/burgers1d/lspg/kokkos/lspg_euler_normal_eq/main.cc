@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
   // using decoder_jac_h_t	= pressio::containers::MultiVector<native_mv_t_h>;
 
   // device decoder type
-  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, lspg_state_d_t, fom_state_t_d>;
+  using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, fom_state_t_d>;
 
   std::string checkStr {"PASSED"};
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();

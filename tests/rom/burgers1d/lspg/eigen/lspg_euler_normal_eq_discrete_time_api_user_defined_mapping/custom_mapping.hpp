@@ -43,6 +43,12 @@ public:
   const jacobian_type & getReferenceToJacobian() const{
     return jac_;
   }
+
+  template <typename rom_state_type>
+  void updateJacobian(const rom_state_type &) const
+  {
+    // no op, the Jacobian is fixed
+  }
 };//end
 
 #endif

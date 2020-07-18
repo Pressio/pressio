@@ -64,7 +64,7 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using decoder_jac_t	= pressio::containers::MultiVector<typename app_t::dense_matrix_type>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   app_t appobj;
   decoder_jac_t phi(Eigen::MatrixXd(appobj.numDof_,3));

@@ -187,7 +187,7 @@ struct EulerLSPGWithResidualApi
 
   using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t, ops1_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t, ops1_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};

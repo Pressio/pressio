@@ -125,7 +125,7 @@ struct EulerGalerkinWithVelocityApi
 
   using fom_state_t	= pressio::containers::Vector<native_state_t>;
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, rom_state_t, fom_state_t, ops_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t, ops_t>;
 
   static_assert(pressio::rom::concepts::continuous_time_system<fom_t>::value, "");
 

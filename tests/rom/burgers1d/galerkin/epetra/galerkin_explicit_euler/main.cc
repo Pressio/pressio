@@ -29,7 +29,7 @@ const std::vector<double> bdf1Sol
   using rom_state_t = pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, rom_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 

@@ -76,7 +76,7 @@ std::string doRun()
   using decoder_jac_t	= pressio::containers::MultiVector<fom_dmat_t>;
   using wls_state_t	= typename rom_data_t::wls_state_t;
   using wls_hessian_t	= typename rom_data_t::wls_hessian_t;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, wls_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   // app object
   constexpr std::size_t fomSize = 20;

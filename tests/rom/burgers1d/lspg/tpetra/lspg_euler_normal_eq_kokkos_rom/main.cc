@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
 
   // linear decoder
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 

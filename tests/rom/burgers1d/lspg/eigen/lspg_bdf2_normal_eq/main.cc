@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 
   using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
   using decoder_jac_t	= pressio::containers::MultiVector<eig_dyn_mat>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 

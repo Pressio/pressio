@@ -16,7 +16,7 @@ struct EulerLSPGWithResidualApi
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
@@ -100,7 +100,7 @@ struct EulerLSPGWithVelocityApi
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, lspg_state_t, fom_state_t>;
+  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   native_state_t fomSol_ = {};
   lspg_state_t yROM_ = {};
