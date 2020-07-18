@@ -64,7 +64,9 @@ class SolveUntilCorrectionNormBelowTol
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
-
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
+  #endif
 public:
   SolveUntilCorrectionNormBelowTol() = delete;
 
@@ -100,16 +102,40 @@ private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & sys, state_t & state)
   {
+    sc_t initialNorm = {};
+    sc_t relativeNorm = {};
     iStep_ = 0;
+
+    // Compute the correction for the least squares system
+    // Order is as follows:
+	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   2.) Compute statistics pertaining to step n and print
+    //   3.) check convergence criteria
+    //   4.) Update state if needed
+
+
+    // initially compute the residual, gradient, and correction at step 0
+    T::computeCorrection(sys, state);
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
-
+      //get reference to gradient and compute norm. 
+      //note that this will grab results obtained from the last time 
+      //computeCorrection was called
       const auto & correction = T::viewCorrection();
       const auto correctionNorm = ::pressio::ops::norm2(correction);
+      if (iStep_==1) initialNorm = correctionNorm;
+      relativeNorm = correctionNorm/initialNorm;
+
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenCorrectionNormsPrintRest(*this, iStep_, correctionNorm, relativeNorm);
+  #endif 
+
       if (correctionNorm < iterative_base_t::tolerance_)
         break;
+
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
+
     }
   }
 

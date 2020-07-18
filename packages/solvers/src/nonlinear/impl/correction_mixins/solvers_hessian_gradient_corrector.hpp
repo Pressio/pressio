@@ -65,6 +65,8 @@ class HessianGradientCorrector : public T
     lin_solver_t, lin_solver_t &>::type solverObj_;
 
   sc_t residualNorm_ = {};
+  sc_t gradientNorm_ = {};
+  sc_t correctionNorm_ = {};
 
 public:
   static constexpr auto normType_ = normType;
@@ -106,15 +108,13 @@ public:
     auto & g = T::getGradient();
     this->doLinearSolve(H, g);
 
-    std::cout << std::fixed
-    	      << std::setprecision(15)
-    	      << residualNorm_ << " "
-    	      << pressio::ops::norm2(g) << " "
-    	      << pressio::ops::norm2(correction_)
-    	      << std::endl;
+    correctionNorm_ = pressio::ops::norm2(correction_);
+    gradientNorm_ = pressio::ops::norm2(g);
   }
 
   const state_t & viewCorrection() const{ return correction_; }
+  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNorm_; }
+  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNorm_; }
   const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
 
   template< typename system_t>

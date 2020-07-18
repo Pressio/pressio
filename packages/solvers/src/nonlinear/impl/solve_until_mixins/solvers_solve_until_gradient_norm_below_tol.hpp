@@ -55,14 +55,17 @@ template<bool absolute, typename sc_t, typename T>
 class SolveUntilGradientNormBelowTol
   : public T,
     public IterativeBase< SolveUntilGradientNormBelowTol<absolute, sc_t, T>, sc_t >
-{
+{ 
   using this_t = SolveUntilGradientNormBelowTol<absolute, sc_t, T>;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   // friend iterative_base_t so it can access my private methods
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
-
+  
   iteration_t iStep_ = {};
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
+  #endif
 public:
   SolveUntilGradientNormBelowTol() = delete;
 
@@ -73,27 +76,48 @@ public:
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-
-    sc_t norm0 = {};
+    sc_t initialNorm = {};
+    sc_t absoluteNorm = {};
+    sc_t relativeNorm = {};
     iStep_ = 0;
+
+
+    // Compute the correction for the least squares system
+    // Order is as follows:
+	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   2.) Compute statistics pertaining to step n and print
+    //   3.) check convergence criteria
+    //   4.) Update state if needed
+
+
+    // initially compute the residual, gradient, and correction at step 0
+    T::computeCorrection(sys, state); //
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
+      //get reference to gradient and compute norm. 
+      //note that this will grab results obtained from the last time 
+      //computeCorrection was called
+      const auto & g = T::getGradient(); 
+      absoluteNorm = ::pressio::ops::norm2(g);
+      if (iStep_==1) initialNorm = absoluteNorm;
+      relativeNorm = absoluteNorm/initialNorm;
 
-      const auto & g = T::getGradient();
-      const auto norm = ::pressio::ops::norm2(g);
+      //if debug, print statistics from 
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenGradientNormsPrintRest(*this, iStep_, absoluteNorm, relativeNorm);
+  #endif 
 
-      if (iStep_==1) norm0 = norm;
-
+      //check convergence
       if (absolute){
-      	if (norm < iterative_base_t::tolerance_)
-      	  break;
+        if (absoluteNorm < iterative_base_t::tolerance_)
+          break;
       }
       else{
-      	if (norm/norm0 < iterative_base_t::tolerance_)
-      	  break;
+        if (relativeNorm < iterative_base_t::tolerance_)
+          break;
       }
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
     }
   }
 

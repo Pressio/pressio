@@ -27,7 +27,7 @@ TEST(solvers_nonlinear_least_squares, gn_res_jac_api_rosenbrock4){
   solver GNSolver(problem, x, linSolver);
 
 
-  GNSolver.setTolerance(1e-1);
+  GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
   state = *x.data();
   std::cout << std::setprecision(14) << state << std::endl;
@@ -65,7 +65,7 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
     lin_solver_t>;
   solver GNSolver(problem, x, linSolver);
 
-  GNSolver.setTolerance(1e-1);
+  GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
   state = *x.data();
   std::cout << std::setprecision(14) << state << std::endl;

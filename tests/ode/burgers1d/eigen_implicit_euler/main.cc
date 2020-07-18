@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
     pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
-
+  NonLinSolver.setTolerance(1e-11);
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;

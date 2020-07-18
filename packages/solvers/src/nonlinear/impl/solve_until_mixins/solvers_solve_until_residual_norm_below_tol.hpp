@@ -63,7 +63,9 @@ class SolveUntilResidualNormBelowTol
   using typename iterative_base_t::iteration_t;
 
   iteration_t iStep_ = {};
-
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
+  #endif
 public:
   SolveUntilResidualNormBelowTol() = delete;
 
@@ -77,13 +79,26 @@ public:
 
     sc_t resNorm0 = {};
     iStep_ = 0;
+
+    // Compute the correction for the least squares system
+    // Order is as follows:
+	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   2.) Compute statistics pertaining to step n and print
+    //   3.) check convergence criteria
+    //   4.) Update state if needed
+
+    T::computeCorrection(sys, state);
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
-      T::computeCorrection(sys, state);
-      T::updateState(sys, state);
 
       const auto resNorm = T::residualNormCurrentCorrectionStep();
+
       if (iStep_==1) resNorm0 = resNorm;
+
+  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.givenResidualNormsPrintRest(*this, iStep_, resNorm, resNorm/resNorm0);
+  #endif 
+
 
       if (absolute){
 	if (resNorm < iterative_base_t::tolerance_)
@@ -93,7 +108,10 @@ public:
 	if (resNorm/resNorm0 < iterative_base_t::tolerance_)
 	  break;
       }
+      T::updateState(sys, state);
+      T::computeCorrection(sys, state);
     }
+
   }
 
 private:
