@@ -58,6 +58,8 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
   problem_t sys;
   // my solution vector
   state_t y(2);
+  // initial condition
+  y[0] = 0.001; y[1] = 0.0001;
 
   // linear system
   using lin_solver_t = linear::Solver<linear::iterative::LSCG, jacobian_t>;

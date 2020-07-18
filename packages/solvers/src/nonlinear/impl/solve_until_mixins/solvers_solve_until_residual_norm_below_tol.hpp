@@ -76,30 +76,28 @@ public:
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-
     sc_t resNorm0 = {};
     iStep_ = 0;
 
-    // Compute the correction for the least squares system
     // Order is as follows:
-	  //   1.) Compute Jacobians, residual, etc., at step n and solve system to obtain correction
+    //   1.) Compute operators at step n and obtain correction
     //   2.) Compute statistics pertaining to step n and print
     //   3.) check convergence criteria
     //   4.) Update state if needed
 
-    T::computeCorrection(sys, state);
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
+      // 1.
+      T::computeCorrection(sys, state);
 
+      // 2.
       const auto resNorm = T::residualNormCurrentCorrectionStep();
-
       if (iStep_==1) resNorm0 = resNorm;
-
-  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       solverStatusPrinter.givenResidualNormsPrintRest(*this, iStep_, resNorm, resNorm/resNorm0);
-  #endif 
+#endif
 
-
+      // 3.
       if (absolute){
 	if (resNorm < iterative_base_t::tolerance_)
 	  break;
@@ -108,16 +106,16 @@ public:
 	if (resNorm/resNorm0 < iterative_base_t::tolerance_)
 	  break;
       }
-      T::updateState(sys, state);
-      T::computeCorrection(sys, state);
-    }
 
+      // 4.
+      T::updateState(sys, state);
+    }
   }
 
 private:
   iteration_t getNumIterationsExecutedImpl() const {
     return iStep_;
-  }  
+  }
 };
 
 }}}}

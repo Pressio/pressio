@@ -81,7 +81,7 @@ public:
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 
-    const auto & p_k   = T::viewCorrection();
+    const auto & p_k   = T::getCorrection();
     const auto & g_k   = T::getGradient();
     const auto fx_k    = T::residualNormCurrentCorrectionStep();
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);

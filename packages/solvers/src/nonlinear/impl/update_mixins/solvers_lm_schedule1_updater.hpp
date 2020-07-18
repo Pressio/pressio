@@ -78,7 +78,7 @@ public:
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
     const auto mu	    = T::getLMDampParam();
-    const auto & correction = T::viewCorrection();
+    const auto & correction = T::getCorrection();
 
     // *** compute gain factor (rho) ***
     const auto rho = gainFactorEval_.compute(sys, state, mu, *this);

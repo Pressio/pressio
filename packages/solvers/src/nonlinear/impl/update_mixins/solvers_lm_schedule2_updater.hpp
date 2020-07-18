@@ -69,13 +69,12 @@ private:
 public:
   template <typename system_t, typename ...Args>
   LMSchedule2Updater(const system_t & sys, const state_t & state, Args &&... args)
-    : gainFactorEval_(state), T(sys, state, std::forward<Args>(args)...){}
+    : T(sys, state, std::forward<Args>(args)...), gainFactorEval_(state){}
 
   template<typename system_t>
   void updateState(const system_t & sys, state_t & state)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
     constexpr auto ten  = static_cast<scalar_t>(10);
     constexpr auto seven  = static_cast<scalar_t>(7);
     constexpr auto negSeven  = ::pressio::utils::constants<scalar_t>::negOne()*seven;
@@ -83,7 +82,7 @@ public:
     const auto tenToNegSev  = std::pow(ten, negSeven);
 
     const auto mu	    = T::getLMDampParam();
-    const auto & correction = T::viewCorrection();
+    const auto & correction = T::getCorrection();
 
     // *** compute gain factor (rho) ***
     const auto rho = gainFactorEval_.compute(sys, state, mu, *this);

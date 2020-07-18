@@ -75,6 +75,7 @@ public:
   {}
 
 public:
+  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -82,7 +83,7 @@ public:
 
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, const state_t & state,
-		    ::pressio::Norm normType, sc_t & residualNorm)
+		    ::pressio::Norm normType, sc_t & residualNorm) const
   {
     system.residualNorm(state, normType, residualNorm);
   }
@@ -118,7 +119,7 @@ class HessianGradientOperatorsRJApi
   static constexpr auto pnT = ::pressio::nontranspose();
   using sc_t = typename ::pressio::containers::details::traits<h_t>::scalar_t;
 
-  r_t r_;
+  mutable r_t r_;
   j_t J_;
   g_t g_;
   h_t H_;
@@ -163,6 +164,7 @@ public:
   {}
 
 public:
+  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -171,7 +173,7 @@ public:
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm)
+	       ::pressio::Norm normType, sc_t & residualNorm) const
   {
     system.residual(state, r_, normType, residualNorm);
   }
@@ -277,6 +279,7 @@ public:
   {}
 
 public:
+  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpHGApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
@@ -288,7 +291,7 @@ public:
 
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, const state_t & state,
-		    ::pressio::Norm normType, sc_t & residualNorm)
+		    ::pressio::Norm normType, sc_t & residualNorm) const
   {
     system.residualNorm(state, normType, residualNorm);
   }
@@ -369,6 +372,7 @@ public:
       lmH_(HGOpRJApi_.getHessian()){}
 
 public:
+ const bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpRJApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
@@ -382,7 +386,7 @@ public:
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm)
+	       ::pressio::Norm normType, sc_t & residualNorm) const
   {
     HGOpRJApi_.residualNorm(system, state, normType, residualNorm);
   }

@@ -70,10 +70,8 @@ public:
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
-    const auto & correction = correctionObj.viewCorrection();
+    const auto & correction = correctionObj.getCorrection();
     const auto & g	    = correctionObj.getGradient();
-
-    //const auto HDiagV = T::getHessianDiagViewBeforeChange();
     const auto & H = correctionObj.getHessianBeforeLMDiagonalScaling();
 
     // denom

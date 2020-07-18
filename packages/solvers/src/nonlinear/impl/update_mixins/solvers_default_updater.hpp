@@ -65,7 +65,7 @@ public:
   {
     using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
     // default update: y = y + alpha*correction
-    const auto & correction = T::viewCorrection();
+    const auto & correction = T::getCorrection();
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::do_update(state, one, correction, one);
   }

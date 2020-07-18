@@ -56,6 +56,11 @@ class ResidualJacobianOperators
 {
   using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
 
+  // this is used for residualNorm method so that we don't modify the real operator r_
+  // which must be the same once computeOperators is called.
+  mutable r_t auxR_;
+
+  // r_,J_ are the actual main operators
   r_t r_;
   j_t J_;
 
@@ -63,7 +68,7 @@ public:
   ResidualJacobianOperators() = delete;
 
   template <
-    typename system_t, typename state_t, 
+    typename system_t, typename state_t,
     mpl::enable_if_t<
       pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
@@ -71,10 +76,12 @@ public:
      > = 0
   >
   ResidualJacobianOperators(const system_t & system, const state_t & state)
-    : r_( system.createResidual() ),
+    : auxR_( system.createResidual() ),
+      r_( system.createResidual() ),
       J_( system.createJacobian() ){}
 
 public:
+  const bool computesGradient() const { return false; }
   r_t & getResidual(){ return r_; }
   j_t & getJacobian(){ return J_; }
   const r_t & getResidual() const{ return r_; }
@@ -83,9 +90,9 @@ public:
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm)
+	       ::pressio::Norm normType, sc_t & residualNorm) const
   {
-    system.residual(state, r_, normType, residualNorm);
+    system.residual(state, auxR_, normType, residualNorm);
   }
 
   template< typename system_t, typename state_t>

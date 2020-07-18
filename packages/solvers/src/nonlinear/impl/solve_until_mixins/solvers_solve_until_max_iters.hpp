@@ -61,9 +61,11 @@ class SolveUntilMaxIters
   // friend iterative_base_t so it can access my private methods
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
-  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
-  #endif 
+
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  using printer_t = ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t>;
+  printer_t solverStatusPrinter = {};
+#endif
 
 public:
   SolveUntilMaxIters() = delete;
@@ -76,15 +78,15 @@ public:
   void solve(const system_t & sys, state_t & state)
   {
     iteration_t iStep = 0;
-    T::computeCorrection(sys, state);
     while (++iStep <= iterative_base_t::maxIters_)
     {
-  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      solverStatusPrinter.print(*this, iStep);
-  #endif 
-      T::updateState(sys, state);
       T::computeCorrection(sys, state);
 
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+      solverStatusPrinter.print(*this, iStep);
+#endif
+
+      T::updateState(sys, state);
     }
   }
 

@@ -51,77 +51,133 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 template <typename sc_t>
-class NonlinearLeastSquaresDefaultMetricsPrinter{
+class NonlinearLeastSquaresDefaultMetricsPrinter
+{
+
 private:
-  sc_t gNorm0_ = {};
-  sc_t resNorm0_ = {};
+  sc_t gradientNorm0_ = {};
+  sc_t residualNorm0_ = {};
 
 public:
   template <typename solver_t, typename step_t>
-  void givenGradientNormsPrintRest(const solver_t & solver, step_t iStep, const sc_t & absGNorm, const sc_t & relGNorm)
-  {   
-      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
-      const auto resNorm = solver.residualNormCurrentCorrectionStep();
-      if (iStep == 1) resNorm0_ = resNorm;
-      printImpl(iStep, correctionNorm, resNorm, resNorm/resNorm0_, absGNorm, relGNorm);
-  }
-
-  template <typename solver_t, typename step_t>
-  void givenCorrectionNormsPrintRest(const solver_t & solver, step_t iStep, const sc_t & absCorrectionNorm, const sc_t & relCorrectionNorm)
-  {   
-      const auto absGNorm = solver.gradientNormCurrentCorrectionStep();
-      const auto absResNorm = solver.residualNormCurrentCorrectionStep();
-      if (iStep == 1){
-        gNorm0_ = absGNorm;
-        resNorm0_ = absResNorm;
-      }
-      const auto relResNorm = absResNorm/resNorm0_;
-      const auto relGNorm = absGNorm/gNorm0_;
-
-      printImpl(iStep, absCorrectionNorm, absResNorm, relResNorm, absGNorm, relGNorm);
-  }
-
-
-
-  template <typename solver_t, typename step_t>
-  void givenResidualNormsPrintRest(const solver_t & solver, step_t iStep, const sc_t & absResNorm, const sc_t & relResNorm)
-  {   
-      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
-      const auto absGNorm = solver.gradientNormCurrentCorrectionStep();
-      if (iStep == 1) gNorm0_ = absGNorm;
-      printImpl(iStep, correctionNorm, absResNorm, relResNorm, absGNorm, absGNorm/gNorm0_);
-  }
-
-  template <typename solver_t, typename step_t>
   void print(const solver_t & solver, step_t iStep)
-  {   
-      const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
-      const auto absGNorm = solver.gradientNormCurrentCorrectionStep();
-      const auto absResNorm = solver.residualNormCurrentCorrectionStep();
-      if (iStep == 1) gNorm0_ = absGNorm;
-      if (iStep == 1) resNorm0_ = absResNorm;
+  {
+    const auto correctionNorm	   = solver.correctionNormCurrentCorrectionStep();
+    const auto absResNorm	   = solver.residualNormCurrentCorrectionStep();
+    if (iStep == 1) residualNorm0_ = absResNorm;
 
-      printImpl(iStep, correctionNorm, absResNorm, absResNorm/resNorm0_, absGNorm, absGNorm/gNorm0_);
+    if (solver.computesGradient()){
+      const auto absGNorm	      = solver.gradientNormCurrentCorrectionStep();
+      if (iStep == 1) gradientNorm0_  = absGNorm;
+      printImpl(iStep, correctionNorm, absResNorm, absResNorm/residualNorm0_, absGNorm, absGNorm/gradientNorm0_);
+    }
+    else{
+      printImpl(iStep, correctionNorm, absResNorm, absResNorm/residualNorm0_);
+    }
   }
 
+  template <typename solver_t, typename step_t>
+  void givenGradientNormsPrintRest(const solver_t & solver,
+				   step_t iStep,
+				   const sc_t & absGNorm,
+				   const sc_t & relGNorm)
+  {
+    const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
+    const auto resNorm	      = solver.residualNormCurrentCorrectionStep();
+
+    if (iStep == 1) residualNorm0_ = resNorm;
+    printImpl(iStep, correctionNorm, resNorm, resNorm/residualNorm0_, absGNorm, relGNorm);
+  }
+
+  template <typename solver_t, typename step_t>
+  void givenCorrectionNormsPrintRest(const solver_t & solver,
+				     step_t iStep,
+				     const sc_t & absCorrectionNorm,
+				     const sc_t & relCorrectionNorm)
+  {
+    const auto absResNorm = solver.residualNormCurrentCorrectionStep();
+    if (iStep == 1) residualNorm0_ = absResNorm;
+
+    if (solver.computesGradient()){
+      const auto absGNorm   = solver.gradientNormCurrentCorrectionStep();
+      if (iStep == 1) gradientNorm0_  = absGNorm;
+      printImpl(iStep, absCorrectionNorm, absResNorm, absResNorm/residualNorm0_, absGNorm, absGNorm/gradientNorm0_);
+    }
+    else{
+      printImpl(iStep, absCorrectionNorm, absResNorm, absResNorm/residualNorm0_);
+    }
+  }
+
+  template <typename solver_t, typename step_t>
+  void givenResidualNormsPrintRest(const solver_t & solver,
+				   step_t iStep,
+				   const sc_t & absResNorm,
+				   const sc_t & relResNorm)
+  {
+    const auto correctionNorm = solver.correctionNormCurrentCorrectionStep();
+
+    if (solver.computesGradient()){
+      const auto absGNorm	      = solver.gradientNormCurrentCorrectionStep();
+      if (iStep == 1) gradientNorm0_  = absGNorm;
+      printImpl(iStep, correctionNorm, absResNorm, relResNorm, absGNorm, absGNorm/gradientNorm0_);
+    }
+    else{
+      printImpl(iStep, correctionNorm, absResNorm, relResNorm);
+    }
+  }
 
 private:
   template <typename step_t>
-  void printImpl(step_t iStep, 
+  void printImpl(step_t iStep,
                  const sc_t & correctionNorm,
-                 const sc_t & absResNorm, const sc_t & relResNorm, 
-                 const sc_t & absGNorm,   const sc_t & relGNorm) const 
+                 const sc_t & absResNorm, const sc_t & relResNorm,
+                 const sc_t & absGNorm,   const sc_t & relGNorm) const
   {
-      auto fmt = utils::io::cyan() + utils::io::bold();      
-      ::pressio::utils::io::print_stdout(fmt, std::scientific,
-            " Nonlinear iteration no. =" , iStep,
-            utils::io::reset(),
-            " Residual l2 norm (abs) =", absResNorm,
-            " Residual l2 norm (rel) =", relResNorm,
-            " Gradient l2 norm (abs) =", absGNorm,
-            " Gradient l2 norm (rel) =", relGNorm,
-            " Correction l2 norm =", correctionNorm,
-            "\n");
+    using namespace ::pressio::utils::io;
+    constexpr auto one = static_cast<sc_t>(1);
+
+    // generic format for metrics
+    const auto fmt = utils::io::cyan();// + utils::io::bold();
+
+    // use color to highlight if relative residual norm is decreasing (green) or increasing (yellow)
+    const auto fmtResRelNorm = relResNorm <= one ? (relResNorm < one ? green() : fmt ) : yellow();
+    // use color to highlight if relative gradient norm is decreasing (green) or increasing (yellow)
+    const auto fmtGradRelNorm = relGNorm <= one ? (relGNorm < one ? green() : fmt ) : yellow();
+
+    ::pressio::utils::io::print_stdout(std::scientific,
+				       fmt,
+				       "NonlinearIter =" , iStep,
+				       " ||Residual||_l2 (abs) =", absResNorm,
+				       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
+				       fmt,
+				       "||Gradient||_l2 (abs) = ", absGNorm,
+				       " ||Gradient||_l2 (rel) =", fmtGradRelNorm, relGNorm, reset(),
+				       fmt,
+				       "||Correction||_l2 =", correctionNorm,
+				       reset(),
+				       "\n");
+  }
+
+  template <typename step_t>
+  void printImpl(step_t iStep, const sc_t & correctionNorm,
+                 const sc_t & absResNorm, const sc_t & relResNorm) const
+  {
+    using namespace ::pressio::utils::io;
+    constexpr auto one = static_cast<sc_t>(1);
+    // generic format for metrics
+    const auto fmt = utils::io::cyan();// + utils::io::bold();
+    // use color to highlight if relative residual norm is decreasing (green) or increasing (yellow)
+    const auto fmtResRelNorm = relResNorm <= one ? (relResNorm < one ? green() : fmt ) : yellow();
+
+    ::pressio::utils::io::print_stdout(std::scientific,
+				       fmt,
+				       "NonlinearIter =" , iStep,
+				       " ||Residual||_l2 (abs) =", absResNorm,
+				       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
+				       fmt,
+				       "||Correction||_l2 =", correctionNorm,
+				       reset(),
+				       "\n");
   }
 
 };
@@ -129,4 +185,3 @@ private:
 }}}}
 
 #endif //SOLVERS_NONLINEAR_IMPL_PRINTER_SOLVERS_PRINTER_
-

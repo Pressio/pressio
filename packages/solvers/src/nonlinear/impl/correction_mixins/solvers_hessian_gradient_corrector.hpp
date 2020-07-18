@@ -64,9 +64,9 @@ class HessianGradientCorrector : public T
     ::pressio::ops::predicates::is_object_pybind<lin_solver_t>::value,
     lin_solver_t, lin_solver_t &>::type solverObj_;
 
-  sc_t residualNorm_ = {};
-  sc_t gradientNorm_ = {};
-  sc_t correctionNorm_ = {};
+  sc_t residNormCurrCorrStep_ = {};
+  sc_t gradientNormCurrCorrStep_ = {};
+  sc_t correctionNormCurrCorrStep_ = {};
 
 public:
   static constexpr auto normType_ = normType;
@@ -103,22 +103,23 @@ public:
   template <typename system_t>
   void computeCorrection(const system_t & sys, state_t & state)
   {
-    T::computeOperators(sys, state, normType, residualNorm_);
+    T::computeOperators(sys, state, normType, residNormCurrCorrStep_);
     auto & H = T::getHessian();
     auto & g = T::getGradient();
     this->doLinearSolve(H, g);
 
-    correctionNorm_ = pressio::ops::norm2(correction_);
-    gradientNorm_ = pressio::ops::norm2(g);
+    correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
+    gradientNormCurrCorrStep_ = pressio::ops::norm2(g);
   }
 
-  const state_t & viewCorrection() const{ return correction_; }
-  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNorm_; }
-  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNorm_; }
-  const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
+  const state_t & getCorrection() const{ return correction_; }
+  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNormCurrCorrStep_; }
+  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNormCurrCorrStep_; }
+  const sc_t residualNormCurrentCorrectionStep() const{ return residNormCurrCorrStep_; }
 
   template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result){
+  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const
+  {
     T::residualNorm(system, state, normType, result);
   }
 

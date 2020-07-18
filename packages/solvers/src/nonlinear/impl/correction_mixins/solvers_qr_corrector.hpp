@@ -63,10 +63,9 @@ class QRCorrector : public T
   state_t g_ = {};
 
   qr_solver_t & solverObj_;
-  sc_t residualNorm_ = {};
-  sc_t gradientNorm_ = {};
-  sc_t correctionNorm_ = {};
-
+  sc_t residNormCurrCorrStep_ = {};
+  sc_t gradientNormCurrCorrStep_ = {};
+  sc_t correctionNormCurrCorrStep_ = {};
 
 public:
   static constexpr auto normType_ = normType;
@@ -75,14 +74,14 @@ public:
 
   template <typename system_t>
   QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
-    : T(system, state), correction_(state), QTResid_(state), g_(state), solverObj_(solverObj){}
+    : T(system, state), correction_(state), QTResid_(state), g_(state), solverObj_(solverObj)
+  {}
 
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys, state_t & state)
   {
-    T::computeOperators(sys, state, normType, residualNorm_);
-
+    T::computeOperators(sys, state, normType, residNormCurrCorrStep_);
     auto & r = T::getResidual();
     auto & J = T::getJacobian();
 
@@ -98,19 +97,19 @@ public:
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 
-    gradientNorm_ = pressio::ops::norm2(g_);
+    correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
+    gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);
   }
 
-
-
+  const state_t & getCorrection() const{ return correction_; }
+  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNormCurrCorrStep_; }
+  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNormCurrCorrStep_; }
   const state_t & getGradient() const{ return g_; }
-  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNorm_; }
-  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNorm_; }
-  const state_t & viewCorrection() const{ return correction_; }
-  const sc_t residualNormCurrentCorrectionStep() const{ return residualNorm_; }
+  const sc_t residualNormCurrentCorrectionStep() const{ return residNormCurrCorrStep_; }
 
   template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result){
+  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const
+  {
     T::residualNorm(system, state, normType, result);
   }
 
