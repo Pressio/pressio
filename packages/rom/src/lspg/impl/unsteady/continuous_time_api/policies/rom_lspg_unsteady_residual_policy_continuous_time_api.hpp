@@ -60,7 +60,6 @@ class ResidualPolicyContinuousTimeApi
 {
 
 public:
-  // static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
   using ud_ops_t = ud_ops_type;
 
@@ -114,15 +113,15 @@ public:
   void compute(const lspg_state_t & romState,
 	       const prev_states_t & romPrevStates,
 	       const fom_system_t & fomSystemObj,
-	       const scalar_t & t,
+	       const scalar_t & time,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::types::step_t & timeStep,
 	       residual_t & romR,
 	       ::pressio::Norm normKind,
 	       scalar_t & normValue) const
   {
     this->compute_impl<stepper_tag>(romState, romR, romPrevStates, fomSystemObj,
-				    t, dt, step, normKind, normValue);
+				    time, dt, timeStep, normKind, normValue);
   }
 
 private:
@@ -185,9 +184,9 @@ private:
 		    residual_t & romR,
 		    const prev_states_t & romPrevStates,
 		    const fom_system_t  & fomSystemObj,
-		    const scalar_t & t,
+		    const scalar_t & time,
 		    const scalar_t & dt,
-		    const ::pressio::ode::types::step_t & step,
+		    const ::pressio::ode::types::step_t & timeStep,
 		    ::pressio::Norm normKind,
 		    scalar_t & normValue) const
   {
@@ -196,33 +195,36 @@ private:
     timer->start("lspg residual");
 #endif
 
-    /* the currrent FOM has to be recomputed every time regardless
-     * of whether the step changes since we might be inside a non-linear solve
+    /* the currrent FOM has to be recomputed every time regardless of
+     * whether the timeStep changes since we might be inside a non-linear solve
      * where the time step does not change but this residual method
      * is called multiple times.
      */
     fomStatesMngr_.reconstructCurrentFomState(romState);
 
-    /* the previous FOM states should only be recomputed when the time step changes
-     * we do not need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates(0)
+    /* the previous FOM states should only be recomputed when time step changes.
+     * no need to reconstruct all the FOM states, we just need to reconstruct
+     * the state at the previous step (i.e. t-dt)
      */
-    if (storedStep_ != step){
+    if (storedStep_ != timeStep){
       fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
-      storedStep_ = step;
+      storedStep_ = timeStep;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    ::pressio::rom::queryFomVelocity(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(), romR, t);
+    ::pressio::rom::queryFomVelocity(fomSystemObj,
+				     fomStatesMngr_.getCRefToCurrentFomState(),
+				     romR, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt, normKind, normValue);
+    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt,
+						normKind, normValue);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
@@ -241,8 +243,9 @@ protected:
   fom_states_manager_t & fomStatesMngr_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // here we do this conditional type because it seems when ud_ops_t= pybind11::object
-  // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
+  // here we do this conditional type because it seems when
+  // ud_ops_t= pybind11::object it only works if we copy the object.
+  // Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
     ::pressio::mpl::is_same<ud_ops_t, pybind11::object>::value, ud_ops_t,
     const ud_ops_t *

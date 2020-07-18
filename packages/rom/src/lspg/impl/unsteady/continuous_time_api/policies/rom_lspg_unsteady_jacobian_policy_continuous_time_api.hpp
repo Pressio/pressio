@@ -61,7 +61,6 @@ class JacobianPolicyContinuousTimeApi
 {
 
 public:
-  // static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
   using ud_ops_t = ud_ops_type;
 
@@ -83,7 +82,11 @@ public:
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
 				  const _apply_jac_return_type & applyJacObj,
 				  const decoder_type & decoder)
-    : JJ_(applyJacObj), fomStatesMngr_(fomStatesMngr),  decoderObj_(decoder){}
+    : JJ_(applyJacObj),
+      fomStatesMngr_(fomStatesMngr),
+      decoderObj_(decoder),
+      decoderJacobian_(decoder.getReferenceToJacobian())
+  {}
 
   // 2. non-void ops
   template <
@@ -98,6 +101,7 @@ public:
     : JJ_(applyJacObj),
       fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
+      decoderJacobian_(decoder.getReferenceToJacobian()),
       udOps_{&udOps}
   {}
 
@@ -118,13 +122,14 @@ public:
     >
   void compute(const lspg_state_t & romState,
 	       const prev_states_mgr & prevStatesMgr,
-	       const fom_system_t	& fomSystemObj,
+	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::types::step_t & timeStep,
 	       lspg_jac_t & romJac) const
   {
-    this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj, time, dt, step);
+    this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
+				    time, dt, timeStep);
   }
 
 private:
@@ -132,32 +137,27 @@ private:
   typename stepper_tag,
   typename matrix_t,
   typename scalar_t,
-  typename decoder_jac_type,
   typename _ud_ops = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(matrix_t & romJac,
-			   scalar_t  dt,
-			   const decoder_jac_type & phi) const
+  time_discrete_dispatcher(matrix_t & romJac, scalar_t  dt) const
   {
-    ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<stepper_tag>(romJac, dt, phi);
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
+      stepper_tag>(romJac, dt, decoderJacobian_);
   }
 
   template <
     typename stepper_tag,
     typename matrix_t,
     typename scalar_t,
-    typename decoder_jac_type,
     typename _ud_ops = ud_ops_type
     >
   ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(matrix_t & romJac,
-			   scalar_t dt,
-			   const decoder_jac_type & phi) const
+  time_discrete_dispatcher(matrix_t & romJac, scalar_t dt) const
   {
-    ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<stepper_tag>(romJac, dt, phi, udOps_);
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
+      stepper_tag>(romJac, dt, decoderJacobian_, udOps_);
   }
-
 
   template <
     typename stepper_tag,
@@ -167,11 +167,11 @@ private:
     typename scalar_t
     >
   void compute_impl(const lspg_state_t & romState,
-		    lspg_jac_t	     & romJac,
+		    lspg_jac_t & romJac,
 		    const fom_system_t & fomSystemObj,
 		    const scalar_t   & t,
 		    const scalar_t   & dt,
-		    const ::pressio::ode::types::step_t & step) const
+		    const ::pressio::ode::types::step_t & timeStep) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -186,16 +186,16 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
-    const auto & basis = decoderObj_.getReferenceToJacobian();
-    ::pressio::rom::queryFomApplyJacobian(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(),
-						  basis, romJac, t);
+    const auto & currentFomState = fomStatesMngr_.getCRefToCurrentFomState();
+    ::pressio::rom::queryFomApplyJacobian(fomSystemObj, currentFomState,
+					  decoderJacobian_, romJac, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
     timer->start("time discrete jacob");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(romJac, dt, basis);
+    this->time_discrete_dispatcher<stepper_tag>(romJac, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");
@@ -203,11 +203,11 @@ private:
 #endif
   }
 
-
 protected:
   mutable apply_jac_return_t JJ_ = {};
   fom_states_manager_t & fomStatesMngr_;
   const decoder_type & decoderObj_ = {};
+  const typename decoder_type::jacobian_type & decoderJacobian_ = {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<
