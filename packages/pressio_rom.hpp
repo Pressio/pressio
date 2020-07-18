@@ -62,6 +62,8 @@
 #include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
 #include "rom/src/predicates/typedefs/rom_has_dense_matrix_typedef.hpp"
+#include "rom/src/will_be_concepts/rom_fom_state.hpp"
+#include "rom/src/will_be_concepts/rom_rom_state.hpp"
 
 // custom ops
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_for_linear_decoder.hpp"
@@ -71,9 +73,11 @@
 #include "rom/src/will_be_concepts/custom_ops/rom_custom_ops_lspg_discrete_time.hpp"
 
 // decoder
-#include "rom/src/predicates/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
-#include "rom/src/predicates/rom_has_const_get_reference_to_jacobian.hpp"
+#include "rom/src/predicates/decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
+#include "rom/src/predicates/decoder/rom_has_const_get_reference_to_jacobian.hpp"
+#include "rom/src/predicates/decoder/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
 #include "rom/src/will_be_concepts/decoder/rom_admissible_decoder.hpp"
+#include "rom/src/will_be_concepts/decoder/rom_decoder_jacobian.hpp"
 #include "rom/src/decoder/rom_linear_decoder.hpp"
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "rom/src/decoder/rom_py_decoder.hpp"

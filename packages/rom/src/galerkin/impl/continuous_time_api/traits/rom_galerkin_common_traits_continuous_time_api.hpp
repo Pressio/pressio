@@ -128,7 +128,7 @@ struct CommonTraitsContinuousTimeApi
 
   // verify the sequence contains a valid decoder type
   using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    galerkin_state_t, fom_state_t, ::pressio::rom::concepts::admissible_decoder, Args...>;
+    galerkin_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
 		"A valid decoder type must be passed to define a ROM Galerkin problem");

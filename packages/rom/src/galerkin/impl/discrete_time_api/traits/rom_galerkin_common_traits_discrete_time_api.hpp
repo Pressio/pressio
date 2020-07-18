@@ -77,7 +77,7 @@ struct CommonTraitsDiscreteTimeApi
 
   // verify that args contains a valid decoder type
   using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    rom_state_t, fom_state_t, ::pressio::rom::concepts::admissible_decoder, Args...>;
+    rom_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
   using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
   static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
 		"A valid decoder type must be passed");

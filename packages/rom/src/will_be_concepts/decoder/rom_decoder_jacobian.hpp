@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_admissible_decoder.hpp
+// rom_decoder_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,21 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_
-#define ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_DECODER_ROM_DECODER_JACOBIAN_HPP_
+#define ROM_WILL_BE_CONCEPTS_DECODER_ROM_DECODER_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
-/*
- * A type is a legitimate decoder for LSPG if:
- *
- * - has a jacobian_typedef
- * - has a getReferenceToJacobian
- * - template applyMapping(operand_t, result_t)
- *
-*/
-template<
-  typename T,
-  typename operand_t,
-  typename result_t,
-  typename enable = void
-  >
-struct decoder : std::false_type{};
+template<typename T, typename enable = void>
+struct decoder_jacobian : std::false_type{};
 
-template<
-  typename T,
-  typename operand_t,
-  typename result_t
-  >
-struct decoder<
-  T, operand_t, result_t,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
-    ::pressio::rom::predicates::has_const_get_reference_to_jacobian<T, typename T::jacobian_type>::value and
-    ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<T, operand_t, result_t>::value and
-    ::pressio::rom::predicates::has_const_update_jacobian_method_accept_operand_return_void<T, operand_t>::value
-    >
+template<typename T>
+struct decoder_jacobian<T,
+ typename std::enable_if<
+   ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
+   ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+   >::type
   > : std::true_type{};
 
-}}} // namespace pressio::rom::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_DECODER_ROM_ADMISSIBLE_DECODER_HPP_
+}}} // namespace pressio::ode::concepts
+#endif  // ROM_WILL_BE_CONCEPTS_DECODER_ROM_DECODER_JACOBIAN_HPP_
