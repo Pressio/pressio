@@ -4,28 +4,15 @@ option(PRESSIO_ENABLE_TPL_TRILINOS "Enable Trilinos TPL" OFF)
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   message("Enabling Trilinos since PRESSIO_ENABLE_TPL_TRILINOS=${PRESSIO_ENABLE_TPL_TRILINOS}")
 
-  # if we need to build tests, then setup trilinos
+  # if we need to build tests, then find trilinos
   if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
 
-    if( (NOT TRILINOS_INC_DIR OR NOT TRILINOS_LIB_DIR)
-	AND (NOT TRILINOS_INCLUDE_DIR OR NOT TRILINOS_LIBRARIES_DIR))
+    if (NOT TRILINOS_ROOT)
       message(FATAL_ERROR
-	"You enabled PRESSIO_ENABLE_TPL_TRILINOS but did not specify how to find it.
+	"You enabled PRESSIO_ENABLE_TPL_TRILINOS but did not set TRILINOS_ROOT.
         Please reconfigure with:
-          -DTRILINOS_INC_DIR=<full-path-to-headers>
-          -DTRILINOS_LIB_DIR=<full-path-to-libs>
-          or
-          -TRILINOS_INCLUDE_DIR=<full-path-to-headers>
-          -TRILINOS_LIBRARIES_DIR=<full-path-to-libs>
+          -D TRILINOS_ROOT=<full-path-to-trilinos-install>
           ")
-    endif()
-
-    if(NOT TRILINOS_INC_DIR AND TRILINOS_INCLUDE_DIR)
-      set(TRILINOS_INC_DIR ${TRILINOS_INCLUDE_DIR})
-    endif()
-
-    if(NOT TRILINOS_LIB_DIR AND TRILINOS_LIBRARIES_DIR)
-      set(TRILINOS_LIB_DIR ${TRILINOS_LIBRARIES_DIR})
     endif()
 
     set(TRILINOS_LIB_NAMES kokkosalgorithms
@@ -57,8 +44,8 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
       kokkosalgorithms
       teuchosparameterlist)
 
-    include_directories(${TRILINOS_INC_DIR})
-    link_directories(${TRILINOS_LIB_DIR})
-    link_libraries(${TRILINOS_LIB_NAMES})
+    include_directories(${TRILINOS_ROOT}/include)
+    link_directories(${TRILINOS_ROOT}/lib ${TRILINOS_ROOT}/lib64)
+    link_libraries(${TRILINOS_LIBRARIES_NAMES})
   endif()
 endif()
