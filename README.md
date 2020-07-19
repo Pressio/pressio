@@ -23,14 +23,14 @@ For a description of `pressio` code structure, see [here](https://github.com/Pre
 
 ## Building and Installing
 
-### if you only want to use `pressio` from your code
+### If you only want to use `pressio` from your code
 In this case, since `pressio` is header-only, there is **no building process needed**.
 You clone the `pressio` repo, and within your code you include the `pressio/packages` to find the `pressio` headers.
 However, since `pressio` uses preprocessor directives to selectively enable/disable code for target TPLs, when you build your code you need to have these preprocessor directives defined.
 For example, if your code uses Trilinos, to enabled the Trilinos-related code in `pressio` you need to have `PRESSIO_ENABLE_TPL_TRILINOS` defined *before* you include
 the `pressio` headers. The list of CMake options to enable can be found [here](./list_of_cmake_optional_vars_to_enable.md).
 
-### if you only want to build the unit and regression tests in `pressio`
+### If you want to build the unit and regression tests in `pressio`
 Sample cmake configure lines can be found [here](https://github.com/Pressio/pressio/wiki/Sample-CMake-configure-lines-for-pressio).
 
 Follow [this](https://github.com/Pressio/pressio/wiki/Serial-build-of-Pressio-with-tests-enabled) for a basic *serial* build that uses only GTest and Eigen and it is done with `pressio-builder` (which automatically builds) Gtest, Eigen for you.

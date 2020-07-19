@@ -49,7 +49,7 @@
 #ifndef OPS_KOKKOS_OPS_DOT_HPP_
 #define OPS_KOKKOS_OPS_DOT_HPP_
 
-#include <KokkosBlas1_fill.hpp>
+#include <KokkosBlas1_dot.hpp>
 
 namespace pressio{ namespace ops{
 
