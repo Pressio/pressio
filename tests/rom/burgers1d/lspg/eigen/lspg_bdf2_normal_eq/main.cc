@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   using ode_tag = pressio::ode::implicitmethods::BDF2;
-  using lspg_problem = pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, lspg_state_t, decoder_t>::type;
+  using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, lspg_state_t, decoder_t>::type;
   using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
 

@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
-  using lspg_problem_type = pressio::rom::lspg::composeDefaultProblem<
+  using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
     fom_adapter_t, lspg_state_t, decoder_t>::type;
   lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj);
 
