@@ -46,6 +46,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
 
     include_directories(${TRILINOS_ROOT}/include)
     link_directories(${TRILINOS_ROOT}/lib ${TRILINOS_ROOT}/lib64)
-    link_libraries(${TRILINOS_LIBRARIES_NAMES})
+    link_libraries(${TRILINOS_LIB_NAMES})
   endif()
 endif()

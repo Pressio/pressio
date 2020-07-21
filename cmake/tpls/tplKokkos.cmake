@@ -6,14 +6,8 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
 
   if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
 
-    if(PRESSIO_ENABLE_TPL_TRILINOS)
-      # when trilinos is also enabled, look for Kokkos inside there
-      # so use the libraries that are built by trilinos
-      # and don't worry about include and lib_dir since these are set
-      # by the tplTrilinos.cmake
-      set(KOKKOS_LIB_NAMES kokkosalgorithms  kokkoscontainers kokkoscore kokkoskernels)
-
-    else()
+    # # when trilinos is also enabled it links kokkos too, see tplTrilinos.cmake
+    if(NOT PRESSIO_ENABLE_TPL_TRILINOS)
       # if kokkos is used as standalone lib, then we are more specific
       # user needs to defined: KOKKOS_ROOT_DIR and KOKKOS_KERNELS_ROOT_DIR
       if (NOT KOKKOS_ROOT OR NOT KOKKOS_KERNELS_ROOT)
