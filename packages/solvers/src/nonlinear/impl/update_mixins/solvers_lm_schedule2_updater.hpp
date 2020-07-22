@@ -71,6 +71,10 @@ public:
   LMSchedule2Updater(const system_t & sys, const state_t & state, Args &&... args)
     : T(sys, state, std::forward<Args>(args)...), gainFactorEval_(state){}
 
+  void resetForNewCall(){
+    T::resetForNewCall();
+  }
+
   template<typename system_t>
   void updateState(const system_t & sys, state_t & state)
   {

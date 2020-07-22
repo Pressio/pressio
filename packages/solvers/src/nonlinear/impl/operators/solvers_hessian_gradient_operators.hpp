@@ -81,6 +81,10 @@ public:
   const h_t & getHessian() const { return H_; }
   const g_t & getGradient() const{ return g_; }
 
+  void resetForNewCall(){
+    //no op
+  }
+
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, const state_t & state,
 		    ::pressio::Norm normType, sc_t & residualNorm) const
@@ -169,6 +173,10 @@ public:
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
   const g_t & getGradient() const{ return g_; }
+
+  void resetForNewCall(){
+    //no op
+  }
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
@@ -289,6 +297,10 @@ public:
   void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
   sc_t getLMDampParam() const{ return dampParam_; }
 
+  void resetForNewCall(){
+    dampParam_ = pressio::utils::constants<sc_t>::one();
+  }
+
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, const state_t & state,
 		    ::pressio::Norm normType, sc_t & residualNorm) const
@@ -383,6 +395,10 @@ public:
   sc_t getLMDampParam() const{ return dampParam_; }
 
 public:
+  void resetForNewCall(){
+    dampParam_ = pressio::utils::constants<sc_t>::one();
+  }
+
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,

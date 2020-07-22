@@ -173,6 +173,9 @@ private:
       // 4.
       T::updateState(sys, state);
     }
+
+    // when we are done with a solver, reset params to default
+    T::resetForNewCall();
   }
 
   bool stopLoop(const iteration_t & iStep) const

@@ -87,6 +87,10 @@ public:
   const r_t & getResidual() const{ return r_; }
   const j_t & getJacobian() const{ return J_; }
 
+  void resetForNewCall(){
+    //no op
+  }
+
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system, const state_t & state,

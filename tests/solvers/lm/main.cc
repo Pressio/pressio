@@ -90,6 +90,33 @@ int main() {
     solver2.solve(sys, x1);
   }
 
+  // LM with default update, multiple solves
+  // if we call solve twice in a row starting from same initial condition
+  // we should get the same answer. if we don't it means the solver does 
+  // not reset its parameters correctly.
+  vector_w_t x2a(2);
+  vector_w_t x2b(2);
+  {
+    using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
+      system_t, pressio::solvers::nonlinear::LMDefaultUpdate, linear_solver_t>;
+
+    lmsolver solver1(sys, x2a, linSolverObj);
+    solver1.setMaxIterations(4);
+
+    x2a[0] = 0.5; x2a[1] = -2.;
+    solver1.solve(sys, x2a);
+
+    x2b[0] = 0.5; x2b[1] = -2.;
+    solver1.solve(sys, x2b);
+
+    const bool b1 = abs(x2a[0] - x2b[0]) < 1e-13;
+    const bool b2 = abs(x2a[1] - x2b[1]) < 1e-13;
+    if (!b1 or !b2){
+      checkStr = "FAILED";
+      std::cout << "LM sequential solves failed" << std::endl;
+    }
+  }
+
   // check solution
   vector_w_t xstar(2);
   xstar[0] = 11.412779;
