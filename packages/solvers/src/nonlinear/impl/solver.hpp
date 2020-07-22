@@ -49,7 +49,21 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio{ namespace solvers{ namespace nonlinear{
+
+enum class stop
+  {
+   whenCorrectionAbsoluteNormBelowTolerance, // this is the default
+   whenCorrectionRelativeNormBelowTolerance,
+   whenResidualAbsoluteNormBelowTolerance,
+   whenResidualRelativeNormBelowTolerance,
+   whenGradientAbsoluteNormBelowTolerance,
+   whenGradientRelativeNormBelowTolerance,
+   afterMaxIters
+  };
+
+
+namespace impl{
 
 template<typename T, typename sc_t>
 class Solver
@@ -63,20 +77,8 @@ class Solver
   using typename iterative_base_t::iteration_t;
   using printer_t = NonlinearLeastSquaresDefaultMetricsPrinter<sc_t>;
 
-public:
-  enum class stop
-    {
-     whenCorrectionAbsoluteNormBelowTolerance, // this is the default
-     whenCorrectionRelativeNormBelowTolerance,
-     whenResidualAbsoluteNormBelowTolerance,
-     whenResidualRelativeNormBelowTolerance,
-     whenGradientAbsoluteNormBelowTolerance,
-     whenGradientRelativeNormBelowTolerance,
-     afterMaxIters
-    };
-
 private:
-  stop stopping_ = Solver::stop::whenCorrectionAbsoluteNormBelowTolerance;
+  stop stopping_ = stop::whenCorrectionAbsoluteNormBelowTolerance;
   iteration_t iStep_ = {};
   std::array<sc_t, 6> norms_;
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
