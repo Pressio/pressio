@@ -56,18 +56,16 @@ namespace pressio{ namespace solvers{ namespace nonlinear{
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, update, looper, Args...>;
+using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, update, Args...>;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, update, looper, Args...>::type;
+using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, update, Args...>::type;
 
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_solve_until_correction_norm_below_tol.hpp
+// solver.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,62 @@
 //@HEADER
 */
 
-
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVE_UNTIL_MIXINS_SOLVERS_SOLVE_UNTIL_CORRECTION_NORM_BELOW_TOL_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVE_UNTIL_MIXINS_SOLVERS_SOLVE_UNTIL_CORRECTION_NORM_BELOW_TOL_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename sc_t, typename T>
-class SolveUntilCorrectionNormBelowTol
+template<typename T, typename sc_t>
+class Solver
   : public T,
-    public IterativeBase< SolveUntilCorrectionNormBelowTol<sc_t, T>, sc_t >
+    public IterativeBase< Solver<T, sc_t>, sc_t >
 {
-  using this_t = SolveUntilCorrectionNormBelowTol<sc_t, T>;
+
+  using this_t = Solver<T, sc_t>;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
-  // friend iterative_base_t so it can access my private methods
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
+  using printer_t = NonlinearLeastSquaresDefaultMetricsPrinter<sc_t>;
 
-  iteration_t iStep_ = {};
-  #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  ::pressio::solvers::nonlinear::impl::NonlinearLeastSquaresDefaultMetricsPrinter<sc_t> solverStatusPrinter = {};
-  #endif
 public:
-  SolveUntilCorrectionNormBelowTol() = delete;
+  enum class stop
+    {
+     whenCorrectionAbsoluteNormBelowTolerance, // this is the default
+     whenCorrectionRelativeNormBelowTolerance,
+     whenResidualAbsoluteNormBelowTolerance,
+     whenResidualRelativeNormBelowTolerance,
+     whenGradientAbsoluteNormBelowTolerance,
+     whenGradientRelativeNormBelowTolerance,
+     afterMaxIters
+    };
+
+private:
+  stop stopping_ = stop::whenCorrectionAbsoluteNormBelowTolerance;
+  iteration_t iStep_ = {};
+  std::array<sc_t, 6> norms_;
+#ifdef PRESSIO_ENABLE_DEBUG_PRINT
+   printer_t solverStatusPrinter = {};
+#endif
+
+public:
+  Solver() = delete;
 
   template <typename ...Args>
-  SolveUntilCorrectionNormBelowTol(Args &&... args)
+  Solver(stop stopping, Args &&... args)
+    : T(std::forward<Args>(args)...),
+      stopping_(stopping_){}
+
+  template <typename ...Args>
+  Solver(Args &&... args)
     : T(std::forward<Args>(args)...){}
+
+  void setStoppingCriterion(stop value){
+    stopping_ = value;
+  }
+
+  stop getStoppingCriterion() const{
+    return stopping_;
+  }
 
   template<typename system_t, typename state_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -102,16 +131,11 @@ private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & sys, state_t & state)
   {
-    sc_t initialNorm = {};
-    sc_t relativeNorm = {};
+    sc_t residualNorm0 = {};
+    sc_t correctionNorm0 = {};
+    sc_t gradientNorm0 = {};
+
     iStep_ = 0;
-
-    // Order is as follows:
-    //   1.) Compute operators at step n and obtain correction
-    //   2.) Compute statistics pertaining to step n and print
-    //   3.) check convergence criteria
-    //   4.) Update state if needed
-
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
       // 1.
@@ -119,20 +143,61 @@ private:
 
       // 2.
       const auto correctionNorm = T::correctionNormCurrentCorrectionStep();
-      if (iStep_==1) initialNorm = correctionNorm;
-      relativeNorm = correctionNorm/initialNorm;
+      const auto residualNorm	= T::residualNormCurrentCorrectionStep();
+      const auto gradientNorm	= T::gradientNormCurrentCorrectionStep();
+      if (iStep_==1) {
+	residualNorm0   = residualNorm;
+	correctionNorm0 = correctionNorm;
+	gradientNorm0   = gradientNorm;
+      }
+
+      norms_[0] = correctionNorm;
+      norms_[1] = correctionNorm/correctionNorm0;
+      norms_[2] = residualNorm;
+      norms_[3] = residualNorm/residualNorm0;
+      norms_[4] = gradientNorm;
+      norms_[5] = gradientNorm/gradientNorm0;
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      solverStatusPrinter.givenCorrectionNormsPrintRest(*this, iStep_, correctionNorm, relativeNorm);
+      solverStatusPrinter.print(*this, iStep_,
+				norms_[0], norms_[1],
+				norms_[2], norms_[3],
+				norms_[4], norms_[5]);
 #endif
 
       // 3.
-      if (correctionNorm < iterative_base_t::tolerance_)
-	break;
+      if (stop(iStep_)) break;
 
       // 4.
       T::updateState(sys, state);
     }
+  }
+
+  bool stop(const iteration_t & iStep) const
+  {
+    switch (stopping_)
+      {
+      case stop::afterMaxIters:
+    	return iStep == iterative_base_t::maxIters_;
+
+      case stop::whenCorrectionAbsoluteNormBelowTolerance:
+    	return norms_[0] < iterative_base_t::tolerance_;
+      case stop::whenCorrectionRelativeNormBelowTolerance:
+    	return norms_[1] < iterative_base_t::tolerance_;
+
+      case stop::whenResidualAbsoluteNormBelowTolerance:
+    	return norms_[2] < iterative_base_t::tolerance_;
+      case stop::whenResidualRelativeNormBelowTolerance:
+    	return norms_[3] < iterative_base_t::tolerance_;
+
+      case stop::whenGradientAbsoluteNormBelowTolerance:
+    	return norms_[4] < iterative_base_t::tolerance_;
+      case stop::whenGradientRelativeNormBelowTolerance:
+    	return norms_[5] < iterative_base_t::tolerance_;
+
+      default:
+	return false;
+      };
   }
 
   iteration_t getNumIterationsExecutedImpl() const {
@@ -141,4 +206,4 @@ private:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_SOLVE_UNTIL_MIXINS_SOLVERS_SOLVE_UNTIL_CORRECTION_NORM_BELOW_TOL_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_

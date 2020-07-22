@@ -32,7 +32,6 @@ TEST(solvers_nonlin_lsq,
   qr_solver_type qrSolver;
   using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
     problem_t, pressio::solvers::nonlinear::armijoUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     qr_solver_type>;
   gn_t GNSolver(problem, x, qrSolver);
 
@@ -65,7 +64,6 @@ TEST(solvers_nonlin_lsq,
   qr_solver_type qrSolver;
   using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
     problem_t, pressio::solvers::nonlinear::armijoUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     qr_solver_type>;
   gn_t GNSolver(problem, x, qrSolver);
 

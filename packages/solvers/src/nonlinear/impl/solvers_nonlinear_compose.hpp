@@ -54,7 +54,7 @@
 #include "./correction_mixins/solvers_hessian_gradient_corrector.hpp"
 #include "./correction_mixins/solvers_qr_corrector.hpp"
 #include "./correction_mixins/solvers_rj_corrector.hpp"
-
+#include "solver.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
@@ -212,7 +212,6 @@ template<
   typename system_t,
   typename tag,
   template< typename...> class update,
-  template< typename...> class looper,
   typename ... Args>
 struct compose
 {
@@ -223,11 +222,10 @@ template<
   typename system_t,
   typename tag,
   template<typename...> class update_t,
-  template<typename...> class looper_t,
   typename linear_solver_t
   >
 struct compose<
-  system_t, tag, update_t, looper_t,
+  system_t, tag, update_t,
   mpl::enable_if_t<
     std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value
     >, linear_solver_t
@@ -254,7 +252,7 @@ struct compose<
 
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = looper_t<scalar_t, update_mixin>;
+  using type = Solver<update_mixin, scalar_t>;
 };
 
 
@@ -262,11 +260,10 @@ struct compose<
 template<
   typename system_t,
   template<typename...> class update_t,
-  template<typename...> class looper_t,
   typename hessian_t
   >
 struct compose<
-  system_t, GaussNewton, update_t, looper_t,
+  system_t, GaussNewton, update_t,
   mpl::enable_if_t<
     // when dealing with pressio4py and the GN solver is created for solving steady or unsteady LSPG,
     // the system_t is NOT a pybind object.
@@ -286,7 +283,7 @@ struct compose<
   using corr_mixin = typename composeCorrector<
     GaussNewton, void, system_t, state_t, hessian_t, grad_t, linear_solver_t>::type;
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = looper_t<scalar_t, update_mixin>;
+  using type = Solver<update_mixin, scalar_t>;
 };
 #endif
 
@@ -295,12 +292,11 @@ template<
   typename system_t,
   typename tag,
   template<typename...> class update_t,
-  template<typename...> class looper_t,
   typename linear_solver_t,
   typename ud_ops_t
   >
 struct compose<
-  system_t, tag, update_t, looper_t,
+  system_t, tag, update_t,
   mpl::enable_if_t<
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
     !::pressio::containers::predicates::is_wrapper<ud_ops_t>::value
@@ -323,17 +319,15 @@ struct compose<
     tag, void, system_t, state_t, hess_t, grad_t, linear_solver_t, ud_ops_t>::type;
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = looper_t<scalar_t, update_mixin>;
+  using type = Solver<update_mixin, scalar_t>;
 };
-
 
 template<
   typename system_t,
   template<typename...> class update_t,
-  template<typename...> class looper_t,
   typename ... Args
   >
-struct compose<system_t, GaussNewtonQR, update_t, looper_t, Args...>
+struct compose<system_t, GaussNewtonQR, update_t, Args...>
 {
   // verify the sequence contains a valid QR solver type
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
@@ -350,25 +344,23 @@ struct compose<system_t, GaussNewtonQR, update_t, looper_t, Args...>
   using corr_mixin = typename composeCorrector<GaussNewtonQR, void, system_t, state_t, qr_solver_t>::type;
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = looper_t<scalar_t, update_mixin>;
+  using type = Solver<update_mixin, scalar_t>;
 };
-
 
 template<
   typename system_t,
   template<typename...> class update_t,
-  template<typename...> class looper_t,
   typename linear_solver_t,
   typename ... Args
   >
-struct compose<system_t, NewtonRaphson, update_t, looper_t, linear_solver_t, Args...>
+struct compose<system_t, NewtonRaphson, update_t, linear_solver_t, Args...>
 {
   using scalar_t = typename system_t::scalar_type;
   using state_t  = typename system_t::state_type;
   using corr_mixin = typename composeCorrector<NewtonRaphson, void, system_t, state_t, linear_solver_t>::type;
   // TODO: assert that the update is admissible for the tag
   using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = looper_t<scalar_t, update_mixin>;
+  using type = Solver<update_mixin, scalar_t>;
 };
 
 }}}}

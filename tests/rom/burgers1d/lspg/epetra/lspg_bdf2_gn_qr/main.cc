@@ -65,10 +65,7 @@ int main(int argc, char *argv[]){
   qr_solver_type qrSolver;
 
   using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::armijoUpdate,
-    pressio::solvers::nonlinear::DefaultConvergence,
-    qr_solver_type>;
+    lspg_stepper_t, pressio::solvers::nonlinear::armijoUpdate, qr_solver_type>;
   gnsolver_t solver(lspgProblem.getStepperRef(), yROM, qrSolver);
   solver.setTolerance(1e-13);
     // I know this should converge in few iters at every step

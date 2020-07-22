@@ -67,7 +67,6 @@ TEST(solvers_nonlinear, NewtonRaphsonEigen)
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(sys, y, linearSolverObj);
 

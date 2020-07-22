@@ -37,7 +37,6 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
@@ -94,7 +93,6 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
    nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 

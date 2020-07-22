@@ -233,7 +233,6 @@ struct Bdf1Solver
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   // using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
@@ -280,7 +279,6 @@ struct CustomBdf1Solver
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
 
   app_t appObj_		= {};

@@ -69,7 +69,6 @@ int main() {
 
     using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
       system_t, pressio::solvers::nonlinear::LMDefaultUpdate,
-      pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
       linear_solver_t>;
     lmsolver solver1(sys, x0, linSolverObj);
 
@@ -85,7 +84,6 @@ int main() {
 
     using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt<
       system_t, pressio::solvers::nonlinear::LMUpdateSchedule2,
-      pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
       linear_solver_t>::type;
     lmsolver solver2(sys, x0, linSolverObj);
     solver2.setTolerance(1e-15);
