@@ -59,7 +59,7 @@ TEST(solvers_nonlinear_least_squares,
     linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
   auto criterion = pressio::solvers::nonlinear::stop::whenGradientAbsoluteNormBelowTolerance;
-  GNSolver.setStoppingCriterion();
+  GNSolver.setStoppingCriterion(criterion);
   // 1e3 is chosen to test the convergence condition
   GNSolver.setTolerance(1e3);
   GNSolver.solve(problem, x);

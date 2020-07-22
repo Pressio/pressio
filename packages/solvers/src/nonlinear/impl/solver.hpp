@@ -168,14 +168,14 @@ private:
 #endif
 
       // 3.
-      if (stop(iStep_)) break;
+      if (stopLoop(iStep_)) break;
 
       // 4.
       T::updateState(sys, state);
     }
   }
 
-  bool stop(const iteration_t & iStep) const
+  bool stopLoop(const iteration_t & iStep) const
   {
     switch (stopping_)
       {
