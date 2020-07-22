@@ -94,7 +94,8 @@ TEST(solvers_nonlinear_least_squares,
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
     linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
-  GNSolver.setStoppingCriterion(solver::stop::whenGradientRelativeNormBelowTolerance);
+  auto criterion = pressio::solvers::nonlinear::stop::whenGradientRelativeNormBelowTolerance;
+  GNSolver.setStoppingCriterion(criterion);
   GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
 
