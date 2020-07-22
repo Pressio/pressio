@@ -67,6 +67,7 @@
 #include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "apps/src/euler1d/apps_euler1d_kokkos.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
 #endif
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
