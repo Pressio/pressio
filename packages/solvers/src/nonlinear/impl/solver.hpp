@@ -76,7 +76,7 @@ public:
     };
 
 private:
-  stop stopping_ = this_t::stop::whenCorrectionAbsoluteNormBelowTolerance;
+  stop stopping_ = Solver<T, sc_t>::stop::whenCorrectionAbsoluteNormBelowTolerance;
   iteration_t iStep_ = {};
   std::array<sc_t, 6> norms_;
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
