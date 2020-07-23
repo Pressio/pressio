@@ -3,6 +3,8 @@ set(SRC1
   #
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_serial_eigen_span.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_dense_serial_eigen_subspan.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_dense_serial_eigen_diag_expressions.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_dense_serial_eigen_diag_ops.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_multi_vector_serial_eigen_dynamic_class.cc
   #
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_serial_printer.cc

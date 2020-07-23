@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_fwd.hpp
+// containers_diag.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,82 +46,34 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONTAINERS_FWD_HPP_
-#define CONTAINERS_CONTAINERS_FWD_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
+#define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
 
-namespace pressio{
+namespace pressio{ namespace containers{
 
-struct view{};
-
-struct matrixFull{};
-struct matrixUpperTriangular{};
-struct matrixLowerTriangular{};
-
-namespace containers{
-
-namespace details {
-template<typename T, typename enable = void>
-struct traits;
-
-template<typename T>
-struct traits<const T> : traits<T> {};
-}//end namespace containers::details
-
-template<typename derived_type>
-class ContainerBase;
-
-template<typename derived_type>
-class ContainerDistributedBase;
-template<typename derived_type>
-class ContainerSharedMemBase;
-
-template<typename derived_type>
-class MatrixDistributedBase;
-template<typename derived_type>
-class MatrixSharedMemBase;
-
-template<typename derived_type>
-class MultiVectorDistributedBase;
-template<typename derived_type>
-class MultiVectorSharedMemBase;
-
-template<typename derived_type>
-class VectorDistributedBase;
-template<typename derived_type>
-class VectorSharedMemBase;
-
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Vector;
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class MultiVector;
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Matrix;
-
-
-namespace expressions{
-
-template <typename derived_type>
-class BaseExpr{};
-
-template <typename mat_t, typename enable = void>
-struct SubspanExpr;
-
-template <typename vec_t, typename enable = void>
-struct SpanExpr;
-
-template <typename mat_t, typename enable = void>
-struct DiagExpr;
-
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::diag_const_ret_t
+  >
+diag(const T & obj)
+{
+  using return_t = typename details::traits<T>::diag_const_ret_t;
+  return return_t(obj);
 }
 
-}} // end namespace pressio::containers
-#endif  // CONTAINERS_CONTAINERS_FWD_HPP_
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::diag_ret_t
+  >
+diag(T & obj)
+{
+  using return_t = typename details::traits<T>::diag_ret_t;
+  return return_t(obj);
+}
+
+
+}} //end namespace pressio::containers
+
+#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
