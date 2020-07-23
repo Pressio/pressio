@@ -1,7 +1,6 @@
 
 #include <gtest/gtest.h>
 #include "pressio_ops.hpp"
-#include "pressio_containers.hpp"
 namespace{
 
   void tester(int i){
