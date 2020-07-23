@@ -78,6 +78,14 @@
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
 
+
+// euler1d
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "apps/src/euler1d/apps_euler1d_tpetra.hpp"
+#endif
+
+
+
 // steady 2d adv-diff
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
