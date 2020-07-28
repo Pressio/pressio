@@ -6,16 +6,13 @@
 #include <iostream>
 #include <fstream>
 
-namespace pressio{ namespace apps{ namespace euler1d{ namespace tpetra{
+namespace pressio{ namespace apps{ namespace euler1d{ namespace tpetra{ namespace hyper{
 
 
-int index_map(int i1,int i2){
-    return i1 + 3*i2;
-}
 
 
 template<typename flux_t,typename state_t>
-void roeflux_kernel(int i, flux_t  & F, const state_t & UL, const state_t & UR, const int N_cell){
+void roeflux_kernel( flux_t  & F, const state_t & UL, const state_t & UR){
 // PURPOSE: This function calculates the flux for the Euler equations
 // using the Roe flux function
 // INPUTS:
@@ -147,27 +144,6 @@ class PressioInterface
     template<typename T> using stdrcp = std::shared_ptr<T>;
     using crs_graph_type = Tpetra::CrsGraph<>;
 
-  protected:
-    Teuchos::RCP<Teuchos::FancyOStream> wrappedCout_;
-    rcpcomm_t comm_{};
-    rcpmap_t gridMap_{};
- 
-    int myRank_{};
-    int totRanks_{};
-    lo_t NumMyElem_{};
-    std::vector<go_t> myGel_{};
-  
-    mutable stdrcp<nativeVec> U_{}; 
-    mutable stdrcp<nativeVec> U_tmp_{}; 
-    mutable stdrcp<nativeVec> V_tmp_{}; 
-    mutable stdrcp<nativeVec> V_tmp2_{}; 
-    stdrcp<Tpetra::Vector<>> xGrid_{}; // mesh points coordinates
-
-
-//    mutable stdrcp<nativeVec> U0_{}; // initial state vector
-//    stdrcp<jacobian_type> Jac_{};
-
-
   private:
     scalar_t dx_;
     //mutable state_t U_tmp_;
@@ -175,6 +151,36 @@ class PressioInterface
     //mutable state_t V_tmp2_;
     int N_cell_;
     int romSize_;
+    const int N_sample_mesh_plus_stencil_ = 131;
+    const int N_sample_mesh_ = 50;
+
+
+  protected:
+    Teuchos::RCP<Teuchos::FancyOStream> wrappedCout_;
+    rcpcomm_t comm_{};
+    rcpmap_t hyperMap_{};
+    rcpmap_t hyperMapWithStencil_{};
+
+    int myRank_{};
+    int totRanks_{};
+    lo_t NumMyElem_{};
+    lo_t NumMyElemHyper_{};
+
+    std::vector<go_t> myGel_{};
+    std::vector<go_t> myGelHyper_{};
+ 
+
+    mutable stdrcp<nativeVec> Us_{}; 
+
+
+    mutable stdrcp<nativeVec> U_{}; 
+    mutable stdrcp<nativeVec> U_tmp_{}; 
+    mutable stdrcp<nativeVec> V_tmp_{}; 
+    mutable stdrcp<nativeVec> V_tmp2_{}; 
+    stdrcp<Tpetra::Vector<>> xGrid_{}; // mesh points coordinates
+    Kokkos::View<go_t*> sampleIndices_; 
+
+
 
   public:
     using scalar_type	= scalar_t;
@@ -187,127 +193,126 @@ class PressioInterface
     
   public:
     PressioInterface(int N_cell, scalar_t dx, int romSize, rcpcomm_t comm) : 
-      N_cell_(N_cell),dx_(dx),romSize_(romSize), comm_(comm){this->setup();}
+      sampleIndices_("siv",N_sample_mesh_), N_cell_(N_cell),dx_(dx),romSize_(romSize), comm_(comm){this->setup();}
  
     //========== 
     void velocity(const state_t & U, const scalar_t & t, velocity_type & V) const {
-
-      /*
-      double U_left[2];
-      double *U_left_pointer;
-      U_left[0] = 0.;
-      U_left[1] = 1.;
-      *U_left_pointer = U_left;
-      function(U_left);
-      function(U_left_pointer);
-      */
-
-
+      // U is on the sample mesh
+      //  note that U is ordered on the sample mesh
+      // V is not
       double U_left[3];
-      double *U_left_pointer;
+      double *U_left_pointer = nullptr;
       double U_right[3];
-      double *U_right_pointer;
-      double *UL;
-      double *UR;
-      double *V_view;
+      double *U_right_pointer = nullptr;
+      double *UL = nullptr;
+      double *UR = nullptr;
+      double *V_view = nullptr;
 
       double FL[3];
       double FR[3];
 
+      // First grid point is on the sample mesh by design
       U.getLocalRowView(0,UL);
-      U.getLocalRowView(1,UR);
       U_left[0] = UL[0];
       U_left[1] = -UL[1];
       U_left[2] = UL[2];
       U_left_pointer = U_left;
-      roeflux_kernel(0,FL,U_left_pointer,UL,N_cell_);
-      
-      for (int i=0; i < N_cell_ -1 ; i++){
-        U.getLocalRowView(i,UL);
-        U.getLocalRowView(i+1,UR);
-        roeflux_kernel(i+1,FR,UL,UR,N_cell_);
+      roeflux_kernel(FL,U_left_pointer,UL);
+      U.getLocalRowView(1,UR);
+      roeflux_kernel(FR,UL,UR);
+      V.getLocalRowView(0,V_view);      
+      for (int j=0;j<3;j++){
+        V_view[j] = -1./dx_*(FR[j] - FL[j]);
+      }
+      //================= 
+      for (int i=1; i < N_sample_mesh_ - 1 ; i++){
+        U.getLocalRowView(sampleIndices_(i-1),UL);
+        U.getLocalRowView(sampleIndices_(i),UR);
+        roeflux_kernel(FL,UL,UR);
+        U.getLocalRowView(sampleIndices_(i),UL);
+        U.getLocalRowView(sampleIndices_(i+1),UR);
+        roeflux_kernel(FR,UL,UR);
         V.getLocalRowView(i,V_view); 
         for (int j=0;j<3;j++){
           V_view[j] = -1./dx_*(FR[j] - FL[j]);
-          FL[j] = FR[j];
         }
       }
 
+      U.getLocalRowView(sampleIndices_(N_sample_mesh_-2),UL);
+      U.getLocalRowView(sampleIndices_(N_sample_mesh_-1),UR);
       U_right[0] = UR[0];
       U_right[1] = -UR[1];
       U_right[2] = UR[2];
       U_right_pointer = U_right; 
-      roeflux_kernel(N_cell_ - 1,FR,UR,U_right_pointer,N_cell_);
-      V.getLocalRowView(N_cell_ - 1,V_view); 
+      roeflux_kernel(FR,UR,U_right_pointer);
+      V.getLocalRowView(N_sample_mesh_ - 1,V_view); 
       for (int j=0;j<3;j++){
         V_view[j] = -1./dx_*(FR[j] - FL[j]);
       }
-      
     }
-    /*
 
-    */
     
     void applyJacobian(const state_t &U, const dense_matrix_type & A,scalar_t t, dense_matrix_type &JA)const{
+      // A will be on the sample mesh with stencil
       double eps = 1.e-5;
-      //Kokkos::deep_copy( U_tmp_, U );     
-      state_t Up(*gridMap_,3);
-      velocity_type V0(*gridMap_,3);
-      velocity_type V_perturb(*gridMap_,3);
+      state_t Up(*hyperMapWithStencil_,3);
+      velocity_type V0(*hyperMap_,3);
+      velocity_type V_perturb(*hyperMap_,3);
+      Up.putScalar(0.);
+      V_perturb.putScalar(0.);
 
       velocity(U,t,V0);
-      
+      double *Av;
+      A.getLocalRowView(sampleIndices_(0),1,Av);
       for (int k=0; k < romSize_; k++){
-//        for (int i=0; i < N_cell_; i++){
-        int i = 0;
-        for (auto const & it : myGel_){
-          double *Uview;
-          double *Upview;
-          double *Aview;
-          U.getLocalRowView(i,Uview);
-          Up.getLocalRowView(i,Upview);
-          A.getLocalRowView(i,k,Aview);
+
+        for (int i=0; i < N_sample_mesh_  ; i++){
+
+        double *Uview = nullptr;
+        double *Upview = nullptr;
+        double *Aview = nullptr;
+
+          U.getLocalRowView(sampleIndices_(i),Uview);
+          Up.getLocalRowView(sampleIndices_(i),Upview);
+          A.getLocalRowView(sampleIndices_(i),k,Aview);
           for (int j=0;j<3;j++){
             Upview[j] = Uview[j] + eps*Aview[j];
           }
-          i++;
         }
         velocity(Up,t,V_perturb);
-        i = 0;
-        for (auto const & it : myGel_){
-            double *V0_view;
-            double *V_perturb_view;
-            double *JA_view;
-            V0.getLocalRowView(i,V0_view);
-            V_perturb.getLocalRowView(i,V_perturb_view);
-            JA.getLocalRowView(i,k,JA_view);
-            for (int j=0; j < 3; j++){
-              JA_view[j] = 1./eps*(V_perturb_view[j] - V0_view[j] ) ;
-            }
-          i++;
+
+        for (int i=0; i < N_sample_mesh_  ; i++){
+          double *V0_view = nullptr;
+          double *V_perturb_view = nullptr;
+          double *JA_view = nullptr;
+          V0.getLocalRowView(i,V0_view);
+          V_perturb.getLocalRowView(i,V_perturb_view);
+          JA.getLocalRowView(i,k,JA_view);
+          for (int j=0; j < 3; j++){
+            JA_view[j] = 1./eps*(V_perturb_view[j] - V0_view[j] ) ;
           }
         }
-      }
 
-    
+      }
+    }
+
 
     //========
     velocity_type createVelocity() const {
-      velocity_type V(*gridMap_,3);
+      velocity_type V(*hyperMap_,3);
       return V;
     }
 
     dense_matrix_type createApplyJacobianResult(const dense_matrix_type & A) const
     {
-      dense_matrix_type JA(*gridMap_, 3, A.getNumVectors() );
+      dense_matrix_type JA(*hyperMap_, 3, A.getNumVectors() );
       return JA;
     }
 
 
-    rcpmap_t getGridMap(){
-      return gridMap_;
+    rcpmap_t getHyperMapWithStencil(){
+      return hyperMapWithStencil_;
     };
-
 
 protected:
   void setup(){
@@ -319,76 +324,74 @@ protected:
     totRanks_ =  comm_->getSize();
 
     // distribute cells
-    gridMap_ = Teuchos::rcp(new map_t(N_cell_, 0, comm_));
+    //gridMap_ = Teuchos::rcp(new map_t(N_cell_, 0, comm_));
 
-    NumMyElem_ = gridMap_->getNodeNumElements();
-    auto minGId = gridMap_->getMinGlobalIndex();
+
+
+    //stateMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+
+    // init condition
+
+
+    std::ifstream sample_mesh_ind_file("sample_mesh_relative_indices.txt");
+  
+    for (int i =0; i < N_sample_mesh_ ; i++){
+      sample_mesh_ind_file >> sampleIndices_(i);
+    }
+    sample_mesh_ind_file.close();
+  
+    //Teuchos::ArrayView<int> sampleIndicesView( sampleIndices_);
+  
+    hyperMap_ = Teuchos::rcp(new map_t(N_sample_mesh_,sampleIndices_,0, comm_));
+    hyperMapWithStencil_ = Teuchos::rcp(new map_t(N_sample_mesh_plus_stencil_,0, comm_));
+    //hyperMap_ = Tpetra::createNonContigMap<lo_t,go_t>(sampleIndices_,comm_);
+    Us_ = std::make_shared<nativeVec>(*hyperMapWithStencil_,3);
+    U_ = std::make_shared<nativeVec>(*hyperMap_,3);
+    U_->putScalar(1.);
+    Us_->putScalar(2.);
+
+    double vals[3]; 
+    vals[0] = 11;
+    vals[1] = 12;
+    vals[2] = 13;
+    double * valsp = vals;
+    U_->replaceLocalValues(2,valsp);
+    NumMyElem_ = hyperMapWithStencil_->getNodeNumElements();
+    auto minGId = hyperMapWithStencil_->getMinGlobalIndex();
     myGel_.resize(NumMyElem_);
     std::iota(myGel_.begin(), myGel_.end(), minGId);
 
 
-    //stateMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
-     // grid
-    xGrid_ = std::make_shared<Tpetra::Vector<>>(gridMap_);
-    auto xGridv = xGrid_->getDataNonConst();
-    lo_t i=0;
-    for (auto const & it : myGel_){
-      xGridv[i] = dx_*it + dx_*0.5;
-      i++;
+    NumMyElemHyper_ = hyperMap_->getNodeNumElements();
+    auto minGIdHyper = hyperMap_->getMinGlobalIndex();
+    myGelHyper_.resize(NumMyElemHyper_);
+    std::iota(myGelHyper_.begin(), myGelHyper_.end(), minGIdHyper);
+    for (auto it : myGelHyper_){
+       double * test;
+       U_->getGlobalRowView(sampleIndices_(it),test);
+     }
+
+
+
+
     };
-    //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
-
-    // init condition
-    U_ = std::make_shared<nativeVec>(*gridMap_,3);
-    U_->putScalar(0.0);
-
-    U_tmp_ = std::make_shared<nativeVec>(*gridMap_,3);
-    U_tmp_->putScalar(0.0);
-
-    V_tmp_ = std::make_shared<nativeVec>(*gridMap_,3);
-    V_tmp_->putScalar(0.0);
-
-    V_tmp2_= std::make_shared<nativeVec>(*gridMap_,3);
-    V_tmp2_->putScalar(0.0);
-
-  };
 
 public:
 
+  //template<typename x_typ
   nativeVec getShockTubeIC(){
-    auto xGridv = xGrid_->getData();
-    double gamma = 1.4;
-    double rhoL = 1;
-    double pL = 1.; 
-    double rhoR = 0.125;
-    double pR = 0.1;
-    int i = 0;
-    //auto Udata = U_->getDataNonConst();
-    for (auto const & it : myGel_){
-      double * uVal;
-      double * uVal2;
-
-      U_->getLocalRowView(i,uVal);
-
-      if (xGridv[i] < 0.5){
-        double valin[3];
-        uVal[0] = rhoL;
-        uVal[1]  = 0.;
-        uVal[2] = pL/(gamma - 1.) ; // + 0.5*rhoU^2/rho
- 
-      }
-      else{
-        uVal[0] = rhoR;
-        uVal[1]  = 0.;
-        uVal[2] = pR/(gamma - 1.) ; // + 0.5*rhoU^2/rho
-
-      U_->getLocalRowView(i,uVal2);
-      }
-      i++;
+    std::ifstream U0_file("U0_SampleMeshPlusStencil.txt");
+    for (int i=0; i < N_sample_mesh_plus_stencil_; i++){
+      double * Uview;
+      Us_->getLocalRowView(i,Uview);
+      for (int j=0; j < 3; j++){
+        U0_file >> Uview[j];
+      }  
     }
-    return *U_;
+    U0_file.close();
+    return *Us_;
   }
-
 };
-}}}}
+}}}}}
 

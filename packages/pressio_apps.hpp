@@ -81,7 +81,8 @@
 
 // euler1d
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/src/euler1d/apps_euler1d_tpetra.hpp"
+#include "apps/src/euler1d/apps_euler1d_tpetra_block.hpp"
+#include "apps/src/euler1d/apps_euler1d_tpetra_block_hyper.hpp"
 #endif
 
 
