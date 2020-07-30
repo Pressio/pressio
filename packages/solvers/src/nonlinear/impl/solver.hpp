@@ -146,19 +146,23 @@ private:
       // 2.
       const auto correctionNorm = T::correctionNormCurrentCorrectionStep();
       const auto residualNorm	= T::residualNormCurrentCorrectionStep();
-      const auto gradientNorm	= T::gradientNormCurrentCorrectionStep();
       if (iStep_==1) {
 	residualNorm0   = residualNorm;
 	correctionNorm0 = correctionNorm;
-	gradientNorm0   = gradientNorm;
       }
 
       norms_[0] = correctionNorm;
       norms_[1] = correctionNorm/correctionNorm0;
       norms_[2] = residualNorm;
       norms_[3] = residualNorm/residualNorm0;
-      norms_[4] = gradientNorm;
-      norms_[5] = gradientNorm/gradientNorm0;
+
+      if (T::computesGradient()){
+	const auto gradientNorm	= T::gradientNormCurrentCorrectionStep();
+	if (iStep_==1) gradientNorm0 = gradientNorm;
+
+	norms_[4] = gradientNorm;
+	norms_[5] = gradientNorm/gradientNorm0;
+      }
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       solverStatusPrinter.print(*this, iStep_,
