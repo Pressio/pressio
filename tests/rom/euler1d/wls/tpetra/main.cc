@@ -42,7 +42,7 @@ int main( int argc, char* argv[] )
     fom_t::state_t U = appObj.getShockTubeIC();
     fom_t::state_t V = appObj.createVelocity();
     fom_t::state_t U0 = appObj.createVelocity();
-
+    /*
     double tmp_val;
     std::ifstream file("basis.txt");
     auto gridMap = appObj.getGridMap();
@@ -139,8 +139,8 @@ int main( int argc, char* argv[] )
     checkStr = "FAILED";  
   }
   std::cout << checkStr << std::endl; 
-
-    /* This code can be used to run the FOM with rk4 and save to solution.txt 
+  */
+    // This code can be used to run the FOM with rk4 and save to solution.txt 
     double rk4const[ 4 ];
     rk4const[0] = 1./4.;
     rk4const[1] = 2./4.;
@@ -148,16 +148,16 @@ int main( int argc, char* argv[] )
     rk4const[3] = 1.;
     int save_freq = 8;
     int counter = 0;
-    std::ofstream myfile ("solution.txt"); 
+    //std::ofstream myfile ("solution.txt"); 
     while (t <= et - dt/2.){
       fom_t::state_t U0(U,Teuchos::DataAccess::Copy);
       if (counter%save_freq == 0){
         for (int i = 0;i < N_cell; i++){
           double *uLocal;
-          U.getLocalRowView(i,uLocal);
-          myfile << uLocal[0] << std::endl;
-          myfile << uLocal[1] << std::endl;
-          myfile << uLocal[2] << std::endl;
+          //U.getLocalRowView(i,uLocal);
+          //myfile << uLocal[0] << std::endl;
+          //myfile << uLocal[1] << std::endl;
+          //myfile << uLocal[2] << std::endl;
         }
       }
     
@@ -179,8 +179,8 @@ int main( int argc, char* argv[] )
       counter += 1;
       std::cout << t << std::endl;
     }
-    myfile.close(); 
-   */
+    //myfile.close(); 
+   
 
   
 

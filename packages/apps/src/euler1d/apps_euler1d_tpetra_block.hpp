@@ -202,6 +202,20 @@ class PressioInterface
       double FL[3];
       double FR[3];
 
+
+      if( myRank_ < totRanks_ - 1 ){
+        U.getLocalRowView(NumMyElem_ - 1,UR);
+        MPI_Send(UR, 1, MPI_DOUBLE,
+  		myRank_+1, tag_, *comm_->getRawMpiComm() );
+      }
+      if( myRank_ > 0 ){
+        MPI_Status status;
+        MPI_Recv(U_left, 1, MPI_DOUBLE,
+  	       myRank_-1, tag_,
+  	       *comm_->getRawMpiComm(), &status);    }
+
+
+
       U.getLocalRowView(0,UL);
       U.getLocalRowView(1,UR);
       U_left[0] = UL[0];
