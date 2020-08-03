@@ -15,7 +15,7 @@ int index_map(int i1,int i2){
 
 
 template<typename flux_t,typename state_t>
-void roeflux_kernel(int i, flux_t  & F, const state_t & UL, const state_t & UR, const int N_cell){
+void roeflux_kernel( flux_t  & F, const state_t & UL, const state_t & UR){
 // PURPOSE: This function calculates the flux for the Euler equations
 // using the Roe flux function
 // INPUTS:
@@ -197,50 +197,69 @@ class PressioInterface
       double *U_right_pointer;
       double *UL;
       double *UR;
+      double *ULp;
+      double *URp;
       double *V_view;
 
       double FL[3];
       double FR[3];
 
 
+      int tag_ = 1;
+      U.getLocalRowView(0,UL);
       if( myRank_ < totRanks_ - 1 ){
         U.getLocalRowView(NumMyElem_ - 1,UR);
-        MPI_Send(UR, 1, MPI_DOUBLE,
+        MPI_Send(UR, 3, MPI_DOUBLE,
   		myRank_+1, tag_, *comm_->getRawMpiComm() );
       }
       if( myRank_ > 0 ){
         MPI_Status status;
-        MPI_Recv(U_left, 1, MPI_DOUBLE,
+        MPI_Recv(U_left, 3, MPI_DOUBLE,
   	       myRank_-1, tag_,
-  	       *comm_->getRawMpiComm(), &status);    }
+  	       *comm_->getRawMpiComm(), &status);    
+      }
+      else{
+        U_left[0] = UL[0];
+        U_left[1] = -UL[1];
+        U_left[2] = UL[2];
+      }
+      //std::cout << "test " << U_left[0]  << " " << myRank_ << std::endl;
 
-
-
-      U.getLocalRowView(0,UL);
-      U.getLocalRowView(1,UR);
-      U_left[0] = UL[0];
-      U_left[1] = -UL[1];
-      U_left[2] = UL[2];
       U_left_pointer = U_left;
-      roeflux_kernel(0,FL,U_left_pointer,UL,N_cell_);
+      roeflux_kernel(FL,U_left_pointer,UL);
       
-      for (int i=0; i < N_cell_ -1 ; i++){
+      for (int i=0; i < NumMyElem_ - 1 ; i++){
         U.getLocalRowView(i,UL);
         U.getLocalRowView(i+1,UR);
-        roeflux_kernel(i+1,FR,UL,UR,N_cell_);
+        roeflux_kernel(FR,UL,UR);
         V.getLocalRowView(i,V_view); 
         for (int j=0;j<3;j++){
           V_view[j] = -1./dx_*(FR[j] - FL[j]);
           FL[j] = FR[j];
         }
       }
-
-      U_right[0] = UR[0];
-      U_right[1] = -UR[1];
-      U_right[2] = UR[2];
+      
+      tag_ = 2;
+      U.getLocalRowView(NumMyElem_ - 1,UR);
+      if( myRank_ > 0){
+        U.getLocalRowView(0,UL);
+        MPI_Send(UL, 3, MPI_DOUBLE,
+  		myRank_-1, tag_, *comm_->getRawMpiComm() );
+      }
+      if( myRank_ < totRanks_ - 1){
+        MPI_Status status;
+        MPI_Recv(U_right, 3, MPI_DOUBLE,
+  	       myRank_+1, tag_,
+  	       *comm_->getRawMpiComm(), &status);    
+      }
+      else{
+        U_right[0] = UR[0];
+        U_right[1] = -UR[1];
+        U_right[2] = UR[2];
+      }
       U_right_pointer = U_right; 
-      roeflux_kernel(N_cell_ - 1,FR,UR,U_right_pointer,N_cell_);
-      V.getLocalRowView(N_cell_ - 1,V_view); 
+      roeflux_kernel(FR,UR,U_right_pointer);
+      V.getLocalRowView(NumMyElem_ - 1,V_view); 
       for (int j=0;j<3;j++){
         V_view[j] = -1./dx_*(FR[j] - FL[j]);
       }
@@ -311,6 +330,9 @@ class PressioInterface
     };
 
 
+   int getNumMyElem() const{
+     return NumMyElem_;
+   }
 protected:
   void setup(){
     using Teuchos::rcpFromRef;
@@ -368,10 +390,8 @@ public:
     //auto Udata = U_->getDataNonConst();
     for (auto const & it : myGel_){
       double * uVal;
-      double * uVal2;
 
       U_->getLocalRowView(i,uVal);
-
       if (xGridv[i] < 0.5){
         double valin[3];
         uVal[0] = rhoL;
@@ -384,7 +404,6 @@ public:
         uVal[1]  = 0.;
         uVal[2] = pR/(gamma - 1.) ; // + 0.5*rhoU^2/rho
 
-      U_->getLocalRowView(i,uVal2);
       }
       i++;
     }
