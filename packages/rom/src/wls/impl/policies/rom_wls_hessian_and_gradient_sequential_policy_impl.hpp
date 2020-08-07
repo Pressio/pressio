@@ -276,8 +276,6 @@ public:
 			   const window_size_t step_s,
 			   scalar_t & rnorm) const
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     window_size_t stepNumLocal = 0;
     scalar_t t = ts + stepNumLocal*dt;
     window_size_t stepNumGlobal = step_s + stepNumLocal;
@@ -325,7 +323,6 @@ public:
       rnorm += rNormHelper_*rNormHelper_;
 
       }//end loop over stepsInWindow
-    innerLoopCounter_ += 1;
     rnorm = std::sqrt(rnorm);
   }//end computeResidualNorm()
 
