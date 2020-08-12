@@ -117,6 +117,10 @@ struct SubspanExpr;
 
 template <typename vec_t, typename enable = void>
 struct SpanExpr;
+
+template <typename mat_t, typename enable = void>
+struct DiagExpr;
+
 }
 
 }} // end namespace pressio::containers

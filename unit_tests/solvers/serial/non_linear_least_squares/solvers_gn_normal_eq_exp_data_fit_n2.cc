@@ -22,9 +22,7 @@ TEST(solvers_nonlinear_least_squares,
 
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
-    linear_solver_t>;
+    problem_t, pressio::solvers::nonlinear::DefaultUpdate, linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
@@ -58,10 +56,10 @@ TEST(solvers_nonlinear_least_squares,
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenAbsoluteGradientNormBelowTol,
     linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
-
+  auto criterion = pressio::solvers::nonlinear::stop::whenGradientAbsoluteNormBelowTolerance;
+  GNSolver.setStoppingCriterion(criterion);
   // 1e3 is chosen to test the convergence condition
   GNSolver.setTolerance(1e3);
   GNSolver.solve(problem, x);
@@ -94,9 +92,10 @@ TEST(solvers_nonlinear_least_squares,
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenRelativeGradientNormBelowTol,
     linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
+  auto criterion = pressio::solvers::nonlinear::stop::whenGradientRelativeNormBelowTolerance;
+  GNSolver.setStoppingCriterion(criterion);
   GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
 

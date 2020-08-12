@@ -56,35 +56,30 @@ namespace pressio{ namespace solvers{ namespace nonlinear{
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeLM = impl::compose<system_t, impl::LM, update, looper, void, Args...>;
+using composeLM = impl::compose<system_t, impl::LM, update, void, Args...>;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeLevenbergMarquardt = composeLM<system_t, update, looper, Args...>;
-
+using composeLevenbergMarquardt = composeLM<system_t, update, Args...>;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeLM_t = typename composeLM<system_t, update, looper, Args...>::type;
+using composeLM_t = typename composeLM<system_t, update, Args...>::type;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeLevenbergMarquardt_t = typename composeLM<system_t, update, looper, Args...>::type;
+using composeLevenbergMarquardt_t = typename composeLM<system_t, update, Args...>::type;
 
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_

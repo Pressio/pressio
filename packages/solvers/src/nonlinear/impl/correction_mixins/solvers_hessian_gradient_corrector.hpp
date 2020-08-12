@@ -112,6 +112,10 @@ public:
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g);
   }
 
+  void resetForNewCall(){
+    T::resetForNewCall();
+  }
+
   const state_t & getCorrection() const{ return correction_; }
   const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNormCurrCorrStep_; }
   const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNormCurrCorrStep_; }

@@ -64,6 +64,10 @@ public:
   ArmijoUpdater(const sys_t & sys, const state_t & state, Args &&... args)
     : T(sys, state, std::forward<Args>(args)...), trialState_(state){}
 
+  void resetForNewCall(){
+    T::resetForNewCall();
+  }
+
   template<typename system_t>
   void updateState(const system_t & system, state_t & state)
   {

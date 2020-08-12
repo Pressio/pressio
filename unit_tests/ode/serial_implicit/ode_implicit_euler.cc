@@ -30,7 +30,6 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
@@ -73,7 +72,6 @@ TEST(ode_implicit_euler, guesserLambda){
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
   NonLinSolver.setMaxIterations(0);
@@ -131,7 +129,6 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 

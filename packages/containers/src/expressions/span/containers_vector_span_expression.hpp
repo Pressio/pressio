@@ -201,13 +201,13 @@ public:
   }
 
   // TODO: enable only on host
-  ref_t operator[](std::size_t i){
+  ref_t operator[](size_t i){
     assert(i < extent_);
     return nativeExprObj_(i);
   }
 
   // TODO: enable only on host
-  const_ref_t operator[](std::size_t i) const
+  const_ref_t operator[](size_t i) const
   {
     assert(i < extent_);
     return nativeExprObj_(i);

@@ -60,6 +60,10 @@ public:
   template <typename ...Args>
   DefaultUpdater(Args &&... args) : T(std::forward<Args>(args)...){}
 
+  void resetForNewCall(){
+    T::resetForNewCall();
+  }
+
   template<typename system_t>
   void updateState(const system_t & sys, state_t & state)
   {

@@ -244,7 +244,6 @@ struct EulerLSPGWithResidualApi
     using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     lspg_stepper_t,
     pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::DefaultConvergence,
     linear_solver_t, opsGN_t>;
     // using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t, opsGN_t>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);

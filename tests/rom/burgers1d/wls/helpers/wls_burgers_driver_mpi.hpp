@@ -91,7 +91,6 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     wls_system_t,
     pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::DefaultConvergence,
     linear_solver_t>;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
   GNSolver.setTolerance(1e-13);
