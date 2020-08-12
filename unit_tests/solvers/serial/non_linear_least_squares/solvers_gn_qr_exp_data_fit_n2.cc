@@ -18,7 +18,6 @@ TEST(solvers_nonlinear_least_squares, gn_qr_exp_data_fit_n2){
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     qr_solver_type>;
   solver GNsolver(problem, x, qrSolver);
   GNsolver.setTolerance(1e-8);
@@ -50,10 +49,8 @@ TEST(solvers_nonlinear_least_squares, gn_qr_only_2_steps_exp_data_fit_n2)
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopAfterMaxIters,
     qr_solver_type>;
   solver GNsolver(problem, x, qrSolver);
-
   // setting 2 max iters so the solver will exit afte 2 steps
   GNsolver.setMaxIterations(2);
   GNsolver.solve(problem, x);

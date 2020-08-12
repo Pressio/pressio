@@ -91,7 +91,6 @@
 #include "solvers/src/will_be_concepts/system/solvers_system_residual_jacobian.hpp"
 #include "solvers/src/nonlinear/impl/solvers_printer.hpp"
 #include "solvers/src/nonlinear/solvers_updating_criteria.hpp"
-#include "solvers/src/nonlinear/solvers_convergence_criteria.hpp"
 
 // *** non-linear least-squares *** //
 #include "solvers/src/predicates/solvers_has_const_create_hessian_method_return_result.hpp"

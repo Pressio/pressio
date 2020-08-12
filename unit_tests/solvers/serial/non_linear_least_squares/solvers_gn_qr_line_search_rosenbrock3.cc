@@ -20,7 +20,6 @@ TEST(solvers_nonlinear_least_squares,
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
     problem_t, pressio::solvers::nonlinear::armijoUpdate,
-    pressio::solvers::nonlinear::StopAfterMaxIters,
     qr_solver_t>;
   solver GNsolver(problem, x, qrSolver);
   GNsolver.setTolerance(1e-8);

@@ -55,7 +55,7 @@ template <typename T, typename enable = void>
 struct is_expression : std::false_type{};
 
 template <typename T>
-struct is_expression< 
+struct is_expression<
 ::pressio::containers::expressions::SubspanExpr<T>
 > : std::true_type{};
 
@@ -64,13 +64,10 @@ struct is_expression<
 ::pressio::containers::expressions::SpanExpr<T>
 > : std::true_type{};
 
-  // T,
-  // ::pressio::mpl::enable_if_t<
-  //   ::pressio::mpl::publicly_inherits_from<
-  //     T, ::pressio::containers::expressions::BaseExpr<T>
-  //     >::value
-  //   >
-  // > : std::true_type{};
+template <typename T>
+struct is_expression<
+::pressio::containers::expressions::DiagExpr<T>
+> : std::true_type{};
 
 }}} // namespace pressio::containers::predicates
 #endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

@@ -2,13 +2,31 @@
 cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(pressio C CXX)
 
+# setting where other cmake commands are
 set(CMAKE_MODULE_PATH
   ${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/cmake/tpls)
 
-#=====================================================================
-# do some guarding here for specific cases
-#=====================================================================
+# include commands for coloring prints
+include(colors)
 
+#=====================================================================
+# versioning
+#=====================================================================
+set(Pressio_VERSION_MAJOR 0)
+set(Pressio_VERSION_MINOR 4)
+set(Pressio_VERSION_PATCH 1)
+set(Pressio_VERSION
+  "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
+math(EXPR PRESSIO_VERSION
+  "${Pressio_VERSION_MAJOR} * 10000 + ${Pressio_VERSION_MINOR} * 100 + ${Pressio_VERSION_PATCH}")
+
+message("${Yellow}----------------------------------${ColourReset}")
+message("${Yellow} Pressio version = ${Pressio_VERSION} ${ColourReset}")
+message("${Yellow}----------------------------------${ColourReset}")
+
+#=====================================================================
+# guard here for specific cases
+#=====================================================================
 # guard against in-source builds
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "In-source builds are not allowed.
@@ -50,8 +68,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(packages)
 
 #=====================================================================
-# some optional and TPLs
-# note that linking to TPLs is only needed when building tests
+# TPLs: note that linking to TPLs is only needed when building tests
 #=====================================================================
 if( cmake_build_type_tolower STREQUAL "debug" AND NOT PRESSIO_ENABLE_DEBUG_PRINT)
   message( "CMAKE_BUILD_TYPE==Debug, setting so PRESSIO_ENABLE_DEBUG_PRINT=ON" )
@@ -64,16 +81,8 @@ if(PRESSIO_ENABLE_DEBUG_PRINT)
   message("")
 endif()
 
-
 option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
-
-# # ALL_INC/LIB_DIR contain include/lib directories as we add TPLs
-# # we set these variables based on which TPLs are enabled.
-# # ALL_INC/LIB_DIR are then used for creating target executables
-# set(ALL_INC_DIR "")
-# set(ALL_LINK_DIR "")
-# set(ALL_LINK_LIB "")
 include(tplEigen)
 include(tplMPI)
 include(tplTrilinos)
@@ -121,26 +130,23 @@ install(FILES
 add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pressioUninstall.cmake)
 
-
 #=====================================================================
 # log to screen
 #=====================================================================
 message(STATUS "")
-message(STATUS "Configured pressio")
-message(STATUS "")
-
-string(TOLOWER "${CMAKE_GENERATOR}" cmake_generator_tolower)
-if(cmake_generator_tolower MATCHES "makefile")
-  message(STATUS "Things you can do now:")
-  message(STATUS "----------------|--------------------------------------------------------")
-  message(STATUS "Command         |   Description")
-  message(STATUS "----------------|--------------------------------------------------------")
-  message(STATUS "make install    | Install headers to:")
-  message(STATUS "                |    ${CMAKE_INSTALL_PREFIX}/include")
-  message(STATUS "                | Change the install location using:")
-  message(STATUS "                |    cmake . -DCMAKE_INSTALL_PREFIX=yourprefix")
-  message(STATUS "                | ")
-  message(STATUS "make uninstall  | Removes files installed by make install")
-  message(STATUS "----------------|--------------------------------------------------------")
-endif()
-message(STATUS "")
+message(STATUS "${Green}Configure completed ${ColourReset}")
+# string(TOLOWER "${CMAKE_GENERATOR}" cmake_generator_tolower)
+# if(cmake_generator_tolower MATCHES "makefile")
+#   message(STATUS "Things you can do now:")
+#   message(STATUS "----------------|--------------------------------------------------------")
+#   message(STATUS "Command         |   Description")
+#   message(STATUS "----------------|--------------------------------------------------------")
+#   message(STATUS "make install    | Install headers to:")
+#   message(STATUS "                |    ${CMAKE_INSTALL_PREFIX}/include")
+#   message(STATUS "                | Change the install location using:")
+#   message(STATUS "                |    cmake . -DCMAKE_INSTALL_PREFIX=yourprefix")
+#   message(STATUS "                | ")
+#   message(STATUS "make uninstall  | Removes files installed by make install")
+#   message(STATUS "----------------|--------------------------------------------------------")
+# endif()
+# message(STATUS "")

@@ -56,36 +56,35 @@ namespace pressio{ namespace solvers{ namespace nonlinear{
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewton = impl::compose<system_t, impl::GaussNewton, update, looper, void, Args...>;
+using composeGaussNewton = impl::compose<
+  system_t, impl::GaussNewton, update, void, Args...>;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewton_t = typename composeGaussNewton<system_t, update, looper, Args...>::type;
+using composeGaussNewton_t = typename composeGaussNewton<
+  system_t, update, Args...>::type;
 
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewtonQR = impl::compose<system_t, impl::GaussNewtonQR, update, looper, void, Args...>;
+using composeGaussNewtonQR = impl::compose<
+  system_t, impl::GaussNewtonQR, update, void, Args...>;
 
 template<
   typename system_t,
   template<typename...> class update,
-  template<typename...> class looper,
   typename ... Args
   >
-using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, update, looper, Args...>::type;
-
+using composeGaussNewtonQR_t = typename composeGaussNewtonQR<
+  system_t, update, Args...>::type;
 
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_

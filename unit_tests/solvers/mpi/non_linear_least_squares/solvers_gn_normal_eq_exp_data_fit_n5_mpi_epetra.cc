@@ -34,7 +34,6 @@ TEST(solvers_nonlin_lsq,
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
 
@@ -70,7 +69,6 @@ TEST(solvers_nonlin_lsq,
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::armijoUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
   GNSolver.setTolerance(1e-8);
@@ -106,7 +104,6 @@ TEST(solvers_nonlin_lsq,
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
 

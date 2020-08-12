@@ -72,7 +72,6 @@ struct EulerLSPGWithResidualApi
     using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
       lspg_stepper_t,
       pressio::solvers::nonlinear::DefaultUpdate,
-      pressio::solvers::nonlinear::DefaultConvergence,
       linear_solver_t>;
     nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
@@ -153,7 +152,6 @@ struct EulerLSPGWithVelocityApi
     using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
       lspg_stepper_t,
       pressio::solvers::nonlinear::DefaultUpdate,
-      pressio::solvers::nonlinear::DefaultConvergence,
       linear_solver_t>;
     nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);

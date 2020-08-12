@@ -22,7 +22,6 @@ TEST(solvers_nonlinear_least_squares, gn_res_jac_api_rosenbrock4){
 
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   solver GNSolver(problem, x, linSolver);
 
@@ -61,7 +60,6 @@ TEST(solvers_nonlinear_least_squares, gn_hess_grad_api_rosenbrock4){
 
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
     problem_t, pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     lin_solver_t>;
   solver GNSolver(problem, x, linSolver);
 
