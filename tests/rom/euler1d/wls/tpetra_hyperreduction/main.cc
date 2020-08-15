@@ -114,17 +114,9 @@ if (method == 0){
     // create the wls state
     rom_state_t  wlsState(wlsSize);
 
-    // NL solver
-    // 
-    //using gn_t = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-    //    wls_system_t, pressio::solvers::nonlinear::LMDefaultUpdate,
-    //    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
-    //    linear_solver_t>;
-    //
     using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
       wls_system_t,
       pressio::solvers::nonlinear::DefaultUpdate,
-      pressio::solvers::nonlinear::ConvergedWhenRelativeGradientNormBelowTol,
       linear_solver_t>;
 
     gn_t GNSolver(wlsSystem, wlsState, linear_solver);
@@ -181,7 +173,6 @@ if (method == 1){
   using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     lspg_stepper_t,
     pressio::solvers::nonlinear::DefaultUpdate,
-    pressio::solvers::nonlinear::StopWhenCorrectionNormBelowTol,
     linear_solver_t>;
   nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
