@@ -101,7 +101,6 @@ public:
 			 const scalar_type & dt,
 			 const window_size_t & step) const
   {
-
     const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt  
 
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
@@ -118,13 +117,14 @@ public:
     const auto gIDy = fomStateMap->getMyGlobalIndices();
 
     // get my global elements
+    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
+    auto Unm1View = (*Unm1.data()).getVectorView();
+
     for (size_t i=0; i<residualView.getLocalLength(); i++){
 //      const auto lid = hyperMap->getGlobalElement(i);
       const auto lid = fomStateMap->getLocalElement(gIDr[i]);
       auto Rd = residualView.getDataNonConst()[i];
       auto Ud = fomStateView.getData()[lid];
-      auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
-      auto Unm1View = (*Unm1.data()).getVectorView();
       auto Unm1d = Unm1View.getData()[lid];
       Rd = Ud - Unm1d + cfdt*Rd;
       residualView.replaceLocalValue(i,Rd);
@@ -246,7 +246,6 @@ public:
 
       //::pressio::ops::do_update(Jphi, cfdt, phi, cn);
     }
-
     //only perform computation once since this never changes
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
