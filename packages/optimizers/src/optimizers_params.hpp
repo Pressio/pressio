@@ -49,9 +49,9 @@
 #ifndef OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
 #define OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "ROL_ParameterList.hpp"
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// #include "ROL_ParameterList.hpp"
+// #endif
 
 namespace pressio{ namespace optimizers{
 
@@ -108,37 +108,37 @@ public:
   // }
 };
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template <typename scalar_type>
-void convertToRolParameterList(const Parameters<scalar_type> & params,
-			       ROL::ParameterList & rolParList)
-{
-  rolParList.sublist("Status Test").set("Iteration Limit", params.getMaxIterations());
-  rolParList.sublist("Status Test").set("Gradient Tolerance", params.getGradientNormOptimalityTolerance());
-  rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// template <typename scalar_type>
+// void convertToRolParameterList(const Parameters<scalar_type> & params,
+// 			       ROL::ParameterList & rolParList)
+// {
+//   rolParList.sublist("Status Test").set("Iteration Limit", params.getMaxIterations());
+//   rolParList.sublist("Status Test").set("Gradient Tolerance", params.getGradientNormOptimalityTolerance());
+//   rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
 
-  const auto e = params.getStepMethod();
-  switch (e)
-    {
-    case ::pressio::optimizers::stepMethod::lineSearch:
-      {
-	rolParList.sublist("Step").set("Type","Line Search");
-	rolParList.sublist("Step").sublist("Line Search").set("Subproblem Solver","Truncated CG");
-	break;
-      }
-    case ::pressio::optimizers::stepMethod::trustRegion:
-      {
-	rolParList.sublist("Step").set("Type","Trust Region");
-	rolParList.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
-	break;
-      }
-    default:
-      {
-	break;
-      }
-    };
-}
-#endif
+//   const auto e = params.getStepMethod();
+//   switch (e)
+//     {
+//     case ::pressio::optimizers::stepMethod::lineSearch:
+//       {
+// 	rolParList.sublist("Step").set("Type","Line Search");
+// 	rolParList.sublist("Step").sublist("Line Search").set("Subproblem Solver","Truncated CG");
+// 	break;
+//       }
+//     case ::pressio::optimizers::stepMethod::trustRegion:
+//       {
+// 	rolParList.sublist("Step").set("Type","Trust Region");
+// 	rolParList.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
+// 	break;
+//       }
+//     default:
+//       {
+// 	break;
+//       }
+//     };
+// }
+// #endif
 
 }}//end namespace pressio::optimizers
 #endif  // OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
