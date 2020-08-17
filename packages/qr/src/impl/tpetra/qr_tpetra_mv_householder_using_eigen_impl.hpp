@@ -100,8 +100,10 @@ public:
     auto rows = A.extent(0);
     auto cols = A.numVectors();
     auto ArowMap = A.data()->getMap();
+    // Teuchos::RCP<const Teuchos::Comm<int> > comm =
+    //   Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
     Teuchos::RCP<const Teuchos::Comm<int> > comm =
-      Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
+      Teuchos::rcp (new Teuchos::SerialComm<int> ());
 
     // convert it to replicated eptra matrix
     using local_map_t = Tpetra::Map<LO_t, GO_t, node_t>;
