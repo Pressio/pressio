@@ -42,4 +42,8 @@ While we improve the tutorials, please look at the subdirectory `pressio/tests`
 
 * Pressio is work-in-progress. At the time of this writing, it is a fairly young project and things are obviously evolving. Several package would benefit from substantial work on testing and documentation, and this is ongoing. However, `pressio` is functional and has been already tested/deployed on large-scale applications.
 
+## Documentation
+
+To enable documentation, download the m.css c++ template and run ./doxygen /path/to/conf.py. 
+
 *This document is in progress, more details soon.*
