@@ -116,6 +116,10 @@ public:
     return stepperObj_;
   }
 
+  const fom_native_state_t & viewCurrentFomState() const{
+    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+  }
+
   const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
