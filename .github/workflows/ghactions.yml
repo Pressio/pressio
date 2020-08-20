@@ -46,15 +46,12 @@ jobs:
         echo $TERM
         cd ${{ env.PRESSIO_REPOS }}/pressio-builder
         ./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=../../pressio_builds
-    - name: Display repositories...
-      run: echo $PARENT_DIR_ENV
     - name: Run main_pressio script
       env:
         CC: ${{ matrix.config.cc }}
         CXX: ${{ matrix.config.cxx }}
       run: |
         export TERM=xterm
-        echo $TERM
         cd ${{ env.PRESSIO_REPOS }}/pressio-builder
         ./main_pressio.sh -dryrun=no -pressio-src=${{ env.WORKSPACE_PARENT_DIR }}/pressio -target-dir=${{ env.PRESSIO_BUILDS }} -cmake-generator-name=default_with_tests -eigen-path=${{ env.PRESSIO_BUILDS }}/eigen/install -gtest-path=${{ env.PRESSIO_BUILDS }}/gtest/install
     - name: Run CTest
