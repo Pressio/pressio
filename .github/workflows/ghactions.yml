@@ -1,0 +1,64 @@
+name: Github Actions for Pressio
+
+on: [push]
+    
+jobs: 
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+          config:
+          - {
+              name: "Ubuntu Latest GCC",
+              build_type: "Debug", cc: "gcc", cxx: "g++"
+            }
+          - {
+              name: "Ubuntu Latest Clang",
+              build_type: "Debug", cc: "clang", cxx: "clang++"
+            }
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Creating environnement...
+      run: |
+        cd ..
+        mkdir pressio_repos
+        mkdir pressio_builds
+        PARENT_DIR=$(pwd)
+        echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR  
+        echo ::set-env name=PRESSIO_REPOS::$PARENT_DIR/pressio_repos
+        echo ::set-env name=PRESSIO_BUILDS::$PARENT_DIR/pressio_builds
+    - name: Cloning Pressio Builder...
+      run: |
+        cd ${{ env.PRESSIO_REPOS }}
+        git clone git://github.com/Pressio/pressio-builder.git
+        cd pressio-builder
+        git checkout master
+    - name: display environment variables...
+      run: echo $WORKSPACE_PARENT_DIR
+    - name: Run main_tpls script
+      env:
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
+      run: |
+        export TERM=xterm
+        echo $TERM
+        cd ${{ env.PRESSIO_REPOS }}/pressio-builder
+        ./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=../../pressio_builds
+    - name: Display repositories...
+      run: echo $PARENT_DIR_ENV
+    - name: Run main_pressio script
+      env:
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
+      run: |
+        export TERM=xterm
+        echo $TERM
+        cd ${{ env.PRESSIO_REPOS }}/pressio-builder
+        ./main_pressio.sh -dryrun=no -pressio-src=${{ env.WORKSPACE_PARENT_DIR }}/pressio -target-dir=${{ env.PRESSIO_BUILDS }} -cmake-generator-name=default_with_tests -eigen-path=${{ env.PRESSIO_BUILDS }}/eigen/install -gtest-path=${{ env.PRESSIO_BUILDS }}/gtest/install
+    - name: Run CTest
+      run: |
+        cd ${{ env.PRESSIO_BUILDS }}/pressio/build
+        ctest
+              
