@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_n_steps_implicit_arbitrary_step_size.hpp
+// ode_dummy_collector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,21 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
-#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
 
-#include "./impl/ode_call_stepper_policy.hpp"
-#include "./impl/ode_n_steps_integrators.hpp"
+namespace pressio{ namespace ode{ namespace impl{
 
-namespace pressio{ namespace ode{
-
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename solver_type,
-  typename step_size_cb_t
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
-    stepper_type, state_type, time_type, solver_type
-    >::value and
-  ::pressio::ode::concepts::time_step_size_setter<
-    step_size_cb_t, types::step_t, time_type>::value
-  >
-advanceNSteps(stepper_type & stepper,
-	      state_type & odeStateInOut,
-	      const time_type start_time,
-	      const types::step_t num_steps,
-	      solver_type & solver,
-	      step_size_cb_t && dtManager)
+template <typename time_type, typename state_type>
+struct DummyCollector
 {
+  void operator()(const ::pressio::ode::types::step_t & step,
+		  const time_type & time,
+		  const state_type & stateIn)
+  {
+    // no op
+  }
+};
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping. ");
-
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  advancer_t::execute<step_policy>(num_steps, start_time,
-				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
-}
-
-}}//end namespace pressio::ode
-#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+}}}//end namespace pressio::ode::impl
+#endif  // ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_

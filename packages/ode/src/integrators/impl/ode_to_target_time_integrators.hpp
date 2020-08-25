@@ -54,79 +54,11 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-/*
- * time step size setter is passed by user
- * this is within the impl namespace, so should not be used outside
- */
-template <typename DoStepPolicy_t>
 struct IntegratorToTargetTimeWithTimeStepSizeSetter
-{
-  template <typename time_type, typename dt_setter, typename ... Args>
-  static void execute(const time_type	& start_time,
-		      const time_type	& final_time,
-		      dt_setter		&& dtManager,
-		      Args		&& ... args)
-  {
-
-    using step_t = ::pressio::ode::types::step_t;
-
-    if (final_time < start_time)
-      throw std::runtime_error("You cannot call an integrator with a final time < start time.");
-
-    if (final_time == start_time)
-      return;
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time loop");
-#endif
-
-    time_type time = start_time;
-    time_type dt = {};
-
-    step_t step	   = 1;
-    printStartOfAdvancing("AdvanceToTargetTimeWithDtCallback");
-    constexpr auto eps = std::numeric_limits<time_type>::epsilon();
-    bool condition = true;
-    while (condition)
-    {
-      // call the dt manager to set the dt to use for current step
-      dtManager(step, time, dt);
-
-      // print (only if debug_print is on)
-      printStepTime(step, time);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
-      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
-      time += dt;
-      // use numeric limits to avoid tricky roundoff accumulation
-      if ( std::abs(time - final_time) <= eps ) condition = false;
-
-      step++;
-    }
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("time loop");
-#endif
-  }//end ()
-};
-
-
-/*
- * time step size setter and collctor are passed
- * this is within the impl namespace, so should not be used outside
- */
-template <typename DoStepPolicy_t>
-struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 {
 
   template <
+    typename stepPolicy,
     typename time_type,
     typename collector_t,
     typename dt_setter,
@@ -157,7 +89,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 
     time_type time = start_time;
     time_type dt = {};
-    // // pass initial condition to collector object
+    // pass initial condition to collector object
     collector_dispatch::execute(collector, zero, time, odeStateInOut);
 
     step_t step	   = 1;
@@ -175,7 +107,7 @@ struct IntegratorToTargetTimeWithTimeStepSizeSetterAndCollector
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      DoStepPolicy_t::execute(time, dt, step, odeStateInOut, std::forward<Args>(args)...);
+      stepPolicy::execute(time, dt, step, odeStateInOut, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
