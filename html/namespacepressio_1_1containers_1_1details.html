@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>pressio::containers::details namespace | Pressio</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon-dark.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li>
+              <a href="pages.html">Introduction</a>
+              <ol>
+                <li><a href="md_pages_test1.html">About</a></li>
+                <li><a href="md_pages_test2.html">Introduction</a></li>
+              </ol>
+            </li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="2">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="modules.html">Modules</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="namespacepressio.html">pressio</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespacepressio_1_1containers.html">containers</a>::<wbr/></span>details <span class="m-thin">namespace</span>
+        </h1>
+        <p><span></span></p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#enum-members">Enums</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <section id="nested-classes">
+          <h2><a href="#nested-classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <div class="m-doc-template">template&lt;typename container_type, typename wrapped_type, bool is_vector_b, bool is_matrix_b, bool is_multi_vector_b, WrappedPackageIdentifier wpid, bool is_shared_mem_b&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1containers__shared__traits.html" class="m-doc">containers_shared_traits</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;bool is_sparse_b&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1matrix__shared__traits.html" class="m-doc">matrix_shared_traits</a>
+            </dt>
+            <dd>common traits of matrices</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, typename enable = void&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits.html" class="m-doc">traits</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename v_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01_1_1pressio_1_1containers_1_1expressions_1_f7f49e541bde2d29f062b17ac64e42ca.html" class="m-doc">traits&lt;::pressio::containers::expressions::SpanExpr&lt;v_type&gt;, ::pressio::mpl::enable_if_t&lt;::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen&lt;v_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename matrix_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01_1_1pressio_1_1containers_1_1expressions_1_6d1741388dd067dddb8a8cfe1c8f570e.html" class="m-doc">traits&lt;::pressio::containers::expressions::SubspanExpr&lt;matrix_type&gt;, ::pressio::mpl::enable_if_t&lt;::pressio::containers::predicates::is_dense_matrix_wrapper_eigen&lt;matrix_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01const_01T_01_4.html" class="m-doc">traits&lt;const T&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Matrix_3_01wrapped__type_01_4_00_01mpl_1_1e540aef7efdca046796f7cee86961ff6c.html" class="m-doc">traits&lt;Matrix&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_dense_matrix_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Matrix_3_01wrapped__type_01_4_00_01mpl_1_1e0a0bea68ac8efc0a9f78ca723277d718.html" class="m-doc">traits&lt;Matrix&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_matrix_arbitrary&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Matrix_3_01wrapped__type_01_4_00_01mpl_1_1ecb58adbd2007f8a313cd76ffd10686af.html" class="m-doc">traits&lt;Matrix&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_sparse_matrix_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01MultiVector_3_01wrapped__type_01_4_00_01_1_2e9e9758bb4a3214d0778516f468e4ea.html" class="m-doc">traits&lt;MultiVector&lt;wrapped_type&gt;, ::pressio::mpl::enable_if_t&lt;::pressio::containers::predicates::is_dynamic_multi_vector_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01MultiVector_3_01wrapped__type_01_4_00_01_1_6c97f56369a05edb23e947cc0c8f040f.html" class="m-doc">traits&lt;MultiVector&lt;wrapped_type&gt;, ::pressio::mpl::enable_if_t&lt;::pressio::containers::predicates::is_multi_vector_arbitrary&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Vector_3_01wrapped__type_01_4_00_01_1_1pres64575a71b40958fca44a972ab5162cf4.html" class="m-doc">traits&lt;Vector&lt;wrapped_type&gt;, ::pressio::mpl::enable_if_t&lt;containers::predicates::is_dynamic_column_vector_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Vector_3_01wrapped__type_01_4_00_01mpl_1_1ec7261537dd54a7e922b1154645b16e26.html" class="m-doc">traits&lt;Vector&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_dynamic_row_vector_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Vector_3_01wrapped__type_01_4_00_01mpl_1_1e1829e0af3fc5399cdd2046f5f0db3897.html" class="m-doc">traits&lt;Vector&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_static_column_vector_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Vector_3_01wrapped__type_01_4_00_01mpl_1_1edb2ef1bbeb2aa58d401ef70e4227a1ec.html" class="m-doc">traits&lt;Vector&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_static_row_vector_eigen&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename wrapped_type&gt;</div>
+              struct <a href="structpressio_1_1containers_1_1details_1_1traits_3_01Vector_3_01wrapped__type_01_4_00_01mpl_1_1e4775686d1174527c4f5a6497d1583c1b.html" class="m-doc">traits&lt;Vector&lt;wrapped_type&gt;, mpl::enable_if_t&lt;containers::predicates::is_vector_arbitrary&lt;wrapped_type&gt;::value&gt;&gt;</a>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="enum-members">
+          <h2><a href="#enum-members">Enums</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="containers__wrapped__types__enum_8hpp.html#acde71ba2c8768470afae99b531819829" class="m-doc">WrappedPackageIdentifier</a> { </span><span class="m-doc-wrap"><a href="#acde71ba2c8768470afae99b531819829aec0fc0100c4fc1ce4eea230c3dc10360" class="m-doc">Undefined</a>,
+              <a href="#acde71ba2c8768470afae99b531819829a1b2efdb21877547bdee38ea88f1cf833" class="m-doc">Eigen</a>,
+              <a href="#acde71ba2c8768470afae99b531819829a2d67b96da4fe122759324d57ed92aa8b" class="m-doc">Trilinos</a>,
+              <a href="#acde71ba2c8768470afae99b531819829a8f76b9cae77c98519b9d797b65f0d965" class="m-doc">Kokkos</a>,
+              <a href="#acde71ba2c8768470afae99b531819829a95a215d559862a18720ed639229f237a" class="m-doc">Pybind</a>,
+              <a href="#acde71ba2c8768470afae99b531819829a3c1fc46575f79b15fc8990642387d07f" class="m-doc">Arbitrary</a> }</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="containers__wrapped__types__enum_8hpp.html#aea96f386b6a9280b57e98767e861229c" class="m-doc">WrappedVectorIdentifier</a> { </span><span class="m-doc-wrap"><a href="#aea96f386b6a9280b57e98767e861229caec0fc0100c4fc1ce4eea230c3dc10360" class="m-doc">Undefined</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229cabcbb76ef6c13ec461901ddaa6a4beac2" class="m-doc">Epetra</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229caf6063e2a4fc2ff36fb7f70566be97b21" class="m-doc">Tpetra</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca8f1cf7a7f3100eec0d0572f08a5417aa" class="m-doc">TpetraBlock</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca1b2efdb21877547bdee38ea88f1cf833" class="m-doc">Eigen</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca97ec1a9f888bed27fd8749f8b55d564c" class="m-doc">EigenRowStatic</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca3994f9823bd7923fecc2beeefd1575da" class="m-doc">EigenColStatic</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca2ecde887befddb502c8d060d3aa91a80" class="m-doc">EigenRowDynamic</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229caa23d7fec8409ede5ed106e41bf40e146" class="m-doc">EigenColDynamic</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca331ef3235f1de193446ed11cc5074bdb" class="m-doc">TeuchosSerialDense</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca8f76b9cae77c98519b9d797b65f0d965" class="m-doc">Kokkos</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca95a215d559862a18720ed639229f237a" class="m-doc">Pybind</a>,
+              <a href="#aea96f386b6a9280b57e98767e861229ca3c1fc46575f79b15fc8990642387d07f" class="m-doc">Arbitrary</a> }</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="containers__wrapped__types__enum_8hpp.html#ac8f1e85a9bb3dffdd47a746898826ea2" class="m-doc">WrappedMatrixIdentifier</a> { </span><span class="m-doc-wrap"><a href="#ac8f1e85a9bb3dffdd47a746898826ea2aec0fc0100c4fc1ce4eea230c3dc10360" class="m-doc">Undefined</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2aed0e5c261b25ad34028c8205decffe2e" class="m-doc">CrsEpetra</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a6445d05a9db739b2da296e3b04a6f37b" class="m-doc">DenseEpetra</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2aab332be56408c0e26b0f4de00d99dba3" class="m-doc">SparseEpetra</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a8a9a25976542c8a30a7c9143f1ab6142" class="m-doc">SparseTpetra</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a758a827555426444e6d746bbbdbd4376" class="m-doc">CrsKokkos</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a986563f57db4733fe4ae57b09af3fbb5" class="m-doc">DenseKokkos</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a331ef3235f1de193446ed11cc5074bdb" class="m-doc">TeuchosSerialDense</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2aa4b2a7387d0d621d80345d6df22eb200" class="m-doc">DenseEigen</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a1d5843654eb68966d00783733b725f8d" class="m-doc">SparseEigen</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a95a215d559862a18720ed639229f237a" class="m-doc">Pybind</a>,
+              <a href="#ac8f1e85a9bb3dffdd47a746898826ea2a3c1fc46575f79b15fc8990642387d07f" class="m-doc">Arbitrary</a> }</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="containers__wrapped__types__enum_8hpp.html#af11739338ae667813397dab2f7485c1d" class="m-doc">WrappedMultiVectorIdentifier</a> { </span><span class="m-doc-wrap"><a href="#af11739338ae667813397dab2f7485c1daec0fc0100c4fc1ce4eea230c3dc10360" class="m-doc">Undefined</a>,
+              <a href="#af11739338ae667813397dab2f7485c1dabcbb76ef6c13ec461901ddaa6a4beac2" class="m-doc">Epetra</a>,
+              <a href="#af11739338ae667813397dab2f7485c1daf6063e2a4fc2ff36fb7f70566be97b21" class="m-doc">Tpetra</a>,
+              <a href="#af11739338ae667813397dab2f7485c1da8f1cf7a7f3100eec0d0572f08a5417aa" class="m-doc">TpetraBlock</a>,
+              <a href="#af11739338ae667813397dab2f7485c1da8f76b9cae77c98519b9d797b65f0d965" class="m-doc">Kokkos</a>,
+              <a href="#af11739338ae667813397dab2f7485c1da1b2efdb21877547bdee38ea88f1cf833" class="m-doc">Eigen</a>,
+              <a href="#af11739338ae667813397dab2f7485c1da3c1fc46575f79b15fc8990642387d07f" class="m-doc">Arbitrary</a> }</span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.18 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

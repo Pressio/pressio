@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>pressio::solvers::linear::impl::KokkosDirect&lt;::pressio::solvers::linear::direct::potrsU, MatrixT&gt; class | Pressio</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon-dark.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li>
+              <a href="pages.html">Introduction</a>
+              <ol>
+                <li><a href="md_pages_test1.html">About</a></li>
+                <li><a href="md_pages_test2.html">Introduction</a></li>
+              </ol>
+            </li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="2">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="modules.html">Modules</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="solvers__linear__kokkos__direct__potrs__upper__impl_8hpp.html">&lt;packages/solvers/src/linear/impl/solvers_linear_kokkos_direct_potrs_upper_impl.hpp&gt;</a></div>
+          <div class="m-doc-template">template&lt;typename MatrixT&gt;</div>
+          <span class="m-breadcrumb"><a href="namespacepressio.html">pressio</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespacepressio_1_1solvers.html">solvers</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespacepressio_1_1solvers_1_1linear.html">linear</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespacepressio_1_1solvers_1_1linear_1_1impl.html">impl</a>::<wbr/></span>KokkosDirect&lt;::pressio::solvers::linear::direct::potrsU, MatrixT&gt; <span class="m-thin">class</span>
+        </h1>
+        <p><span></span></p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#pub-types">Public types</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-attribs">Public variables</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <section id="base-classes">
+          <h2><a href="#base-classes">Base classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <div class="m-doc-template">template&lt;typename MatrixT, typename Derived&gt;</div>
+              struct <a href="structpressio_1_1solvers_1_1LinearBase.html" class="m-doc">pressio::solvers::LinearBase&lt;MatrixT, KokkosDirect&lt;::pressio::solvers::linear::direct::potrsU, MatrixT&gt;&gt;</a>
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section id="pub-types">
+          <h2><a href="#pub-types">Public types</a></h2>
+          <dl class="m-doc">
+            <dt id="a143d0b982cbb517b6e47a898943ed0ec">
+              using <a href="#a143d0b982cbb517b6e47a898943ed0ec" class="m-doc-self">solver_tag</a> = ::<a href="structpressio_1_1solvers_1_1linear_1_1direct_1_1potrsU.html" class="m-doc">pressio::<wbr />solvers::<wbr />linear::<wbr />direct::<wbr />potrsU</a>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a03cd23fc5d6bfa6a2b7cfac8d0da9e3a">
+              using <a href="#a03cd23fc5d6bfa6a2b7cfac8d0da9e3a" class="m-doc-self">solver_traits</a> = <a href="structpressio_1_1solvers_1_1linear_1_1details_1_1traits.html" class="m-doc">linear::<wbr />details::<wbr />traits</a>&lt;<a href="structpressio_1_1solvers_1_1linear_1_1direct_1_1potrsU.html" class="m-doc">solver_<wbr />tag</a>&gt;
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a778069cc30c847acd325ba51a9007cc2">
+              using <a href="#a778069cc30c847acd325ba51a9007cc2" class="m-doc-self">this_t</a> = <a href="classpressio_1_1solvers_1_1linear_1_1impl_1_1KokkosDirect.html" class="m-doc">KokkosDirect</a>&lt;<a href="structpressio_1_1solvers_1_1linear_1_1direct_1_1potrsU.html" class="m-doc">solver_<wbr />tag</a>, MatrixT&gt;
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a21dd0c1015432945b42d39987ac62d59">
+              using <a href="#a21dd0c1015432945b42d39987ac62d59" class="m-doc-self">matrix_type</a> = MatrixT
+            </dt>
+            <dd><span></span></dd>
+            <dt id="ac5ea1c83a974344f839d0c4085fa91c7">
+              using <a href="#ac5ea1c83a974344f839d0c4085fa91c7" class="m-doc-self">native_mat_t</a> = typename <a href="structpressio_1_1containers_1_1details_1_1traits.html" class="m-doc">containers::<wbr />details::<wbr />traits</a>&lt;MatrixT&gt;::wrapped_t
+            </dt>
+            <dd><span></span></dd>
+            <dt id="aa67624d44724ba97de508c59c40aba6c">
+              using <a href="#aa67624d44724ba97de508c59c40aba6c" class="m-doc-self">scalar_t</a> = typename <a href="structpressio_1_1containers_1_1details_1_1traits.html" class="m-doc">containers::<wbr />details::<wbr />traits</a>&lt;MatrixT&gt;::scalar_t
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a1c97654a08f39ebb2ebe02ff5e6ad588">
+              using <a href="#a1c97654a08f39ebb2ebe02ff5e6ad588" class="m-doc-self">exe_space</a> = typename <a href="structpressio_1_1containers_1_1details_1_1traits.html" class="m-doc">containers::<wbr />details::<wbr />traits</a>&lt;MatrixT&gt;::execution_space
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a2cebdf326128260cbba9b6231413cb99">
+              using <a href="#a2cebdf326128260cbba9b6231413cb99" class="m-doc-self">base_t</a> = <a href="structpressio_1_1solvers_1_1LinearBase.html" class="m-doc">LinearBase</a>&lt;MatrixT, <a href="classpressio_1_1solvers_1_1linear_1_1impl_1_1KokkosDirect.html" class="m-doc">this_<wbr />t</a>&gt;
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt id="a28b43112a193ca7cea4cd28dc573b514">
+              <span class="m-doc-wrap-bumper"><a href="#a28b43112a193ca7cea4cd28dc573b514" class="m-doc-self">KokkosDirect</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="aac1b53ef66a91307a47681c6dac2e461">
+              <span class="m-doc-wrap-bumper"><a href="#aac1b53ef66a91307a47681c6dac2e461" class="m-doc-self">KokkosDirect</a>(</span><span class="m-doc-wrap">const <a href="classpressio_1_1solvers_1_1linear_1_1impl_1_1KokkosDirect.html" class="m-doc">KokkosDirect</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a727126a6867ce9ca36728237b88349cf">
+              <span class="m-doc-wrap-bumper"><a href="#a727126a6867ce9ca36728237b88349cf" class="m-doc-self">~KokkosDirect</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="pub-attribs">
+          <h2><a href="#pub-attribs">Public variables</a></h2>
+          <dl class="m-doc">
+            <dt id="a77f4d64d222e92f3456eff8dd61a68f5">
+              friend <a href="#a77f4d64d222e92f3456eff8dd61a68f5" class="m-doc-self">base_t</a>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.18 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>
