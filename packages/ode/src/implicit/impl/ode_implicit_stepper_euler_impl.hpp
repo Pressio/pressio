@@ -142,7 +142,20 @@ public:
     this->t_ = time;
     this->step_ = step;
     ::pressio::ops::deep_copy(odeState_nm1, odeState);
-    solver.solve(*this, odeState);
+
+    try{
+      solver.solve(*this, odeState);
+    }
+    catch (::pressio::eh::nonlinear_solve_failure const & e)
+    {
+      // the state before attempting solution was stored in y_n-1,
+      // so revert odeState to that
+      auto & rollBackState = this->auxStates_.get(ode::nMinusOne());
+      ::pressio::ops::deep_copy(odeState, rollBackState);
+
+      // now throw
+      throw ::pressio::eh::time_step_failure();
+    }
   }
 
   template<typename solver_type, typename guess_callback_t>
@@ -164,7 +177,21 @@ public:
     this->step_ = step;
     ::pressio::ops::deep_copy(odeState_nm1, odeState);
     guesserCb(step, time, odeState);
-    solver.solve(*this, odeState);
+
+
+    try{
+      solver.solve(*this, odeState);
+    }
+    catch (::pressio::eh::nonlinear_solve_failure const & e)
+    {
+      // the state before attempting solution was stored in y_n-1,
+      // so revert odeState to that
+      auto & rollBackState = this->auxStates_.get(ode::nMinusOne());
+      ::pressio::ops::deep_copy(odeState, rollBackState);
+
+      // now throw
+      throw ::pressio::eh::time_step_failure();
+    }
   }
 
   residual_t createResidual() const{
