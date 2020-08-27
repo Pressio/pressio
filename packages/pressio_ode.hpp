@@ -72,7 +72,9 @@
 
 #include "ode/src/will_be_concepts/ode_collector.hpp"
 #include "ode/src/will_be_concepts/ode_guesser.hpp"
-#include "ode/src/will_be_concepts/ode_time_step_size_setter.hpp"
+#include "ode/src/will_be_concepts/ode_time_step_size_manager.hpp"
+
+#include "ode/src/ode_exceptions.hpp"
 
 // --------------
 // explicit
