@@ -141,7 +141,12 @@ private:
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
       // 1.
-      T::computeCorrection(sys, state);
+      try{
+	T::computeCorrection(sys, state);
+      }
+      catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
+	throw ::pressio::eh::nonlinear_solve_failure();
+      }
 
       // 2.
       const auto correctionNorm = T::correctionNormCurrentCorrectionStep();
