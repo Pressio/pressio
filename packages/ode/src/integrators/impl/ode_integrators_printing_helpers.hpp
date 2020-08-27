@@ -54,24 +54,35 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename ...Args>
 void printStartOfAdvancing(Args && ... args)
 {
-  using namespace ::pressio::utils::io;
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+  using namespace ::pressio::utils::io;
   print_stdout("\n");
-  print_stdout(blue(), "-------------------------------------------------\n", reset());
-  print_stdout(bg_grey() + blue(), "ode:", std::forward<Args>(args)..., reset(), "\n");
-  print_stdout(blue(), "-------------------------------------------------\n", reset());
+  print_stdout(blue(),
+	       "-------------------------------------------------\n",
+	       reset());
+  print_stdout(bg_grey() + blue(),
+	       "ode:", std::forward<Args>(args)..., reset(), "\n");
+  print_stdout(blue(),
+	       "-------------------------------------------------",
+	       reset());
+  print_stdout("\n");
 #endif
 }
 
 template <typename time_type>
 void printStepTime(const ::pressio::ode::types::step_t & step,
-		   const time_type & time)
+		   const time_type & time,
+		   const time_type & dt)
 {
-  using namespace ::pressio::utils::io;
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  //auto fmt = bg_grey() + bold() + green();
+  using namespace ::pressio::utils::io;
   auto fmt = blue();
-  print_stdout(fmt, "time step=", step, " starts at time=", time, reset(), "\n");
+  print_stdout(fmt,
+	       std::left,
+	       "time step=", step,
+	       ": starts at time=", time,
+	       " dt=", dt,
+	       reset(), "\n");
 #endif
 }
 

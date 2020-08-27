@@ -128,11 +128,11 @@
 // LSPG
 //-----------------
 #include "rom/src/lspg/rom_compose_lspg.hpp"
+
 //----------------
 // galerkin
 //----------------
 #include "rom/src/galerkin/rom_compose_galerkin.hpp"
-
 
 //----------------
 // wls

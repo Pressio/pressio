@@ -1,2 +1,3 @@
 
 add_subdirectory(burgers1d)
+add_subdirectory(integrate_to_time_with_time_step_recovery)
