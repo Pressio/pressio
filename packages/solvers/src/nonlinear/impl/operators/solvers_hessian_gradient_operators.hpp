@@ -75,7 +75,7 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
+  bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -168,7 +168,7 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
+  bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -287,7 +287,7 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
+  bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpHGApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
@@ -384,7 +384,7 @@ public:
       lmH_(HGOpRJApi_.getHessian()){}
 
 public:
- const bool computesGradient() const { return true; }
+ bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpRJApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
