@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_n_steps_implicit_arbitrary_step_size.hpp
+// ode_exceptions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,71 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
-#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#ifndef ODE_ODE_EXCEPTIONS_HPP_
+#define ODE_ODE_EXCEPTIONS_HPP_
 
-#include "./impl/ode_call_stepper_policy.hpp"
-#include "./impl/ode_n_steps_integrators.hpp"
+#include <exception>
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace eh{
 
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename solver_type,
-  typename step_size_cb_t
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
-    stepper_type, state_type, time_type, solver_type
-    >::value and
-  ::pressio::ode::concepts::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value
-  >
-advanceNSteps(stepper_type & stepper,
-	      state_type & odeStateInOut,
-	      const time_type start_time,
-	      const types::step_t num_steps,
-	      solver_type & solver,
-	      step_size_cb_t && dtManager)
+class time_step_failure
+  : public std::exception
 {
+  std::string myerr_ = "Time step failed";
+  std::string append_ = {};
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping. ");
+public:
+  time_step_failure() = default;
 
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  advancer_t::execute<step_policy>(num_steps, start_time,
-				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
-}
+  explicit time_step_failure(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
 
-}}//end namespace pressio::ode
-#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
+
+class velocity_failure_unrecoverable
+  : public std::exception
+{
+  std::string myerr_ = "Velocity evaluation failed";
+  std::string append_ = {};
+
+public:
+  velocity_failure_unrecoverable() = default;
+
+  explicit velocity_failure_unrecoverable(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
+
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
+
+class discrete_time_residual_failure_unrecoverable
+  : public std::exception
+{
+  std::string myerr_ = "discreteTimeResidual failed";
+  std::string append_ = {};
+
+public:
+  discrete_time_residual_failure_unrecoverable() = default;
+
+  explicit discrete_time_residual_failure_unrecoverable(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
+
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
+}}//end namespace pressio::eh
+#endif  // ODE_ODE_EXCEPTIONS_HPP_

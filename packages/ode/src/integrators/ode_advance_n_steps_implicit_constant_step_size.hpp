@@ -55,9 +55,15 @@
 namespace pressio{ namespace ode{
 
 // basic version
-template<typename stepper_type, typename state_type, typename time_type, typename solver_type>
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type
+  >
 mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<stepper_type, state_type, time_type, solver_type>::value
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   and !::pressio::containers::predicates::is_array_pybind<state_type>::value
 #endif
@@ -70,27 +76,34 @@ advanceNSteps(stepper_type & stepper,
 	      solver_type & solver)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
+  static_assert
+    (::pressio::ode::concepts::implicit_state<state_type>::value,
+     "You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver);
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
+  collector_t collector;
+  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateInOut,
+				   collector, stepper, solver);
 }
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-/* for pybind, we cannot use:
- * implicitmethods::StepperBase<stepper_type> & stepper
- * because the stepper is passed from Python so it does not know which overload to use
- * and we get a type error since it sees the stepper as an python object
- */
 
-template<typename stepper_type, typename native_python_state_type, typename time_type, typename solver_type>
+template<
+  typename stepper_type,
+  typename native_python_state_type,
+  typename time_type,
+  typename solver_type
+  >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable<
-    stepper_type, ::pressio::containers::Vector<native_python_state_type>, time_type, solver_type>::value and
+    stepper_type,
+    ::pressio::containers::Vector<native_python_state_type>,
+    time_type, solver_type
+    >::value and
   ::pressio::containers::predicates::is_array_pybind<native_python_state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -107,12 +120,17 @@ but the state type you are using is not admissible for implicit time-stepping.")
 
   // here we want to view the odeStateInOut since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
-  // upon exit of this function, the original odeStateInOut is changed since odeStateView only views it.
-  ::pressio::containers::Vector<native_python_state_type> odeStateView(odeStateInOut, ::pressio::view());
+  // upon exit of this function, the original odeStateInOut is
+  // changed since odeStateView only views it.
+  using vec_wrapper_t = ::pressio::containers::Vector<native_python_state_type>;
+  vec_wrapper_t odeStateView(odeStateInOut, ::pressio::view());
 
-  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  advancer_t::execute(numSteps, startTime, dt, odeStateView, stepper, solver);
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  using collector_t = ::pressio::ode::impl::DummyCollector<time_type, vec_wrapper_t>;
+  collector_t collector;
+  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateView,
+				   collector, stepper, solver);
 }
 #endif
 
@@ -126,8 +144,10 @@ template<
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type>::value and
+  ::pressio::ode::concepts::collector<
+    collector_type, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
@@ -142,9 +162,10 @@ advanceNSteps(stepper_type & stepper,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
-  advancer_t::execute(numSteps, startTime, dt, odeStateInOut, collector, stepper, solver);
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateInOut,
+				   collector, stepper, solver);
 }
 
 
@@ -175,10 +196,13 @@ advanceNSteps(stepper_type & stepper,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
-  using advancer_t	 = impl::IntegratorNStepsWithConstDt<do_step_policy_t>;
-  advancer_t::execute(numSteps, startTime, dt, odeStateInOut, stepper, solver,
-		      std::forward<guess_callback_t>(guessCb));
+  using step_policy = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
+  collector_t collector;
+  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateInOut,
+				   collector, stepper, solver,
+				   std::forward<guess_callback_t>(guessCb));
 }
 
 
@@ -193,8 +217,10 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable_with_guesser<
-    stepper_type, state_type, time_type, solver_type, guess_callback_t>::value and
-  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value and
+    stepper_type, state_type, time_type, solver_type, guess_callback_t>::value
+  and
+  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value
+  and
   ::pressio::ode::concepts::is_legitimate_guesser<
     guess_callback_t, types::step_t, time_type, state_type>::value
   >
@@ -212,10 +238,11 @@ advanceNSteps(stepper_type & stepper,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using do_step_policy_t = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
-  using advancer_t	 = impl::IntegratorNStepsWithCollectorAndConstDt<collector_type, do_step_policy_t>;
-  advancer_t::execute(numSteps, startTime, dt, odeStateInOut, collector, stepper,
-		      solver, std::forward<guess_callback_t>(guessCb));
+  using step_policy = impl::ImplicitDoStepWithGuesser<solver_type, guess_callback_t>;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateInOut,
+				   collector, stepper, solver,
+				   std::forward<guess_callback_t>(guessCb));
 }
 
 // with guesser and collector passed in different order
@@ -229,8 +256,10 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable_with_guesser<
-    stepper_type, state_type, time_type, solver_type, guess_callback_t>::value and
-  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value and
+    stepper_type, state_type, time_type, solver_type, guess_callback_t>::value
+  and
+  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value
+  and
   ::pressio::ode::concepts::is_legitimate_guesser<
     guess_callback_t, types::step_t, time_type, state_type>::value
   >

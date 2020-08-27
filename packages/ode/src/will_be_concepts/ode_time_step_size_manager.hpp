@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_n_steps_implicit_arbitrary_step_size.hpp
+// ode_time_step_size_manager.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,50 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
-#define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+#define ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 
-#include "./impl/ode_call_stepper_policy.hpp"
-#include "./impl/ode_n_steps_integrators.hpp"
+namespace pressio{ namespace ode{ namespace concepts {
 
-namespace pressio{ namespace ode{
+template <typename T, typename step_t, typename time_type, typename enable = void>
+struct time_step_size_manager
+  : std::false_type{};
 
-template<
-  typename stepper_type,
-  typename state_type,
-  typename time_type,
-  typename solver_type,
-  typename step_size_cb_t
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
-    stepper_type, state_type, time_type, solver_type
-    >::value and
-  ::pressio::ode::concepts::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value
-  >
-advanceNSteps(stepper_type & stepper,
-	      state_type & odeStateInOut,
-	      const time_type start_time,
-	      const types::step_t num_steps,
-	      solver_type & solver,
-	      step_size_cb_t && dtManager)
-{
+template <typename T, typename step_t, typename time_type>
+struct time_step_size_manager<
+  T, step_t, time_type,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>()
+	       (
+		std::declval<step_t const &>(),    //step
+		std::declval<time_type const &>(), //time
+		std::declval<time_type &>()        //dt
+		)
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping. ");
+template <typename T, typename step_t, typename time_type>
+struct time_step_size_manager<
+  T, step_t, time_type,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T const>()
+	       (
+		std::declval<step_t const &>(),    //step
+		std::declval<time_type const &>(), //time
+		std::declval<time_type &>(),       //dt
+		std::declval<time_type &>(),       //min dt
+		std::declval<time_type &>()        //dt reduction factor
+		)
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  advancer_t::execute<step_policy>(num_steps, start_time,
-				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
-}
-
-}}//end namespace pressio::ode
-#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+}}} // namespace pressio::ode::concepts
+#endif  // ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_

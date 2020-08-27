@@ -102,6 +102,7 @@ public:
     : auxStepper_{auxStepper},
       sys_{systemObj},
       auxStates_{state},
+      recoveryState_{state},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}
   {}
@@ -120,7 +121,8 @@ public:
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       sys_{systemObj},
-      auxStates_{state}
+      auxStates_{state},
+      recoveryState_{state}
   {}
 
 public:
@@ -140,34 +142,11 @@ public:
       solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF2 stepper");
 
-    using nm1 = ode::nMinusOne;
-    using nm2 = ode::nMinusTwo;
+    auto dummyGuesser =
+      [](const types::step_t &, const scalar_t &, state_type &)
+      { /*no op*/ };
 
-    this->dt_ = dt;
-    this->t_ = t;
-    this->step_ = step;
-
-    // first step, use auxiliary stepper
-    if (step == 1){
-      // step ==1 means that we are going from y_0 to y_1
-      // auxStates_(0) now holds y_0
-      ::pressio::ops::deep_copy(this->auxStates_.get(nm1()), odeState);
-      // advnace the ode state
-      auxStepper_.doStep(odeState, t, dt, step, solver);
-    }
-    if (step >= 2)
-    {
-      // step == 2 means that we are going from y_1 to y_2, so:
-      //		y_n-2 = y_0 and y_n-1 = y_1
-      // step == 3 means that we are going from y_2 to y_3, so:
-      //		y_n-2 = y_1 and y_n-1 = y_2
-
-      auto & odeState_nm1 = this->auxStates_.get(nm1());
-      auto & odeState_nm2 = this->auxStates_.get(nm2());
-      ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
-      ::pressio::ops::deep_copy(odeState_nm1, odeState);
-      solver.solve(*this, odeState);
-    }
+    this->doStep(odeState, t, dt, step, solver, dummyGuesser);
   }
 
   // overload for when we have a guesser callback
@@ -195,8 +174,7 @@ public:
       // step ==1 means that we are going from y_0 to y_1
       // auxStates_(0) now holds y_0
       ::pressio::ops::deep_copy(this->auxStates_.get(nm1()), odeState);
-      // advnace the ode state
-      auxStepper_(odeState, t, dt, step, solver);
+      auxStepper_.doStep(odeState, t, dt, step, solver);
     }
     if (step >= 2)
     {
@@ -207,10 +185,28 @@ public:
 
       auto & odeState_nm1 = this->auxStates_.get(nm1());
       auto & odeState_nm2 = this->auxStates_.get(nm2());
+      ::pressio::ops::deep_copy(recoveryState_, odeState_nm2);
       ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState);
-      guesserCb(step, t, odeState);
-      solver.solve(*this, odeState);
+
+      try{
+	guesserCb(step, t, odeState);
+	solver.solve(*this, odeState);
+      }
+      catch (::pressio::eh::nonlinear_solve_failure const & e)
+	{
+	  // the state before attempting solution was stored in y_n-1,
+	  // so revert odeState to that
+	  ::pressio::ops::deep_copy(odeState, odeState_nm1);
+
+	  // copy y_n-2 into y_n-1
+	  ::pressio::ops::deep_copy(odeState_nm1, odeState_nm2);
+	  //copy safestate to y_n-2
+	  ::pressio::ops::deep_copy(odeState_nm2, recoveryState_);
+
+	  // now throw
+	  throw ::pressio::eh::time_step_failure();
+	}
     }
   }
 
@@ -248,6 +244,9 @@ private:
   types::step_t step_  = {};
   system_wrapper_t sys_;
   aux_states_t auxStates_;
+
+  // state object to ensure the strong guarantee for handling excpetions
+  state_type recoveryState_;
 
   // conditionally set the type of the object knowing how to compute residual
   // if we have a standard policy, then it takes a copy

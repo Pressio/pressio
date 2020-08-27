@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_time_step_size_setter.hpp
+// solvers_exceptions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,51 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
+#ifndef SOLVERS_SOLVERS_EXCEPTIONS_HPP_
+#define SOLVERS_SOLVERS_EXCEPTIONS_HPP_
 
-namespace pressio{ namespace ode{ namespace concepts {
+#include <exception>
 
-template <typename T, typename step_t, typename time_type, typename enable = void>
-struct time_step_size_setter
-  : std::false_type{};
+namespace pressio{ namespace eh{
 
-template <typename T, typename step_t, typename time_type>
-struct time_step_size_setter<
-  T, step_t, time_type,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>()(
-               std::declval<step_t const &>(),    //step
-               std::declval<time_type const &>(), //time
-               std::declval<time_type &>()        // dt
-               )
-         )
-      >::value
-    >
-  > : std::true_type{};
+class nonlinear_solve_failure
+  : public std::exception
+{
+  std::string myerr_ = "Nonlinear solve failed";
+  std::string append_ = {};
 
-}}} // namespace pressio::ode::concepts
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
+public:
+  nonlinear_solve_failure() = default;
+
+  explicit nonlinear_solve_failure(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
+
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
+
+class residual_evaluation_failure_unrecoverable
+  : public std::exception
+{
+  std::string myerr_ = "Residual evaluation failed";
+  std::string append_ = {};
+
+public:
+  residual_evaluation_failure_unrecoverable() = default;
+
+  explicit residual_evaluation_failure_unrecoverable(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
+
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
+}}//end namespace pressio::eh
+#endif  // SOLVERS_SOLVERS_EXCEPTIONS_HPP_

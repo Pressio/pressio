@@ -58,6 +58,7 @@
 
 #include "solvers/src/solvers_fwd.hpp"
 #include "solvers/src/solvers_meta_static_checks.hpp"
+#include "solvers/src/solvers_exceptions.hpp"
 
 // base classes
 #include "solvers/src/base/solvers_iterative_base.hpp"

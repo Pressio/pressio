@@ -51,15 +51,12 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-//this is within the impl namespace, so should not be used outside
 template <
   typename collector_type, typename time_type, typename state_type,
   typename enable = void
   >
 struct CallCollectorDispatch;
 
-
-// this is within the impl namespace, so should not be used outside
 // specialize for when collector accepts a native type
 template <
   typename collector_type, typename time_type, typename state_type
@@ -83,8 +80,6 @@ struct CallCollectorDispatch<
   }
 };
 
-
-//this is within the impl namespace, so should not be used outside
 // specialize for when collector accepts a pressio container directly
 template <
   typename collector_type, typename time_type, typename state_type
