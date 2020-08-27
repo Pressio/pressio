@@ -75,15 +75,11 @@ class Solver
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
-  using printer_t = NonlinearLeastSquaresDefaultMetricsPrinter<sc_t>;
 
 private:
   stop stopping_ = stop::whenCorrectionAbsoluteNormBelowTolerance;
   iteration_t iStep_ = {};
   std::array<sc_t, 6> norms_;
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-   printer_t solverStatusPrinter = {};
-#endif
 
 public:
   Solver() = delete;
@@ -161,7 +157,7 @@ private:
       norms_[2] = residualNorm;
       norms_[3] = residualNorm/residualNorm0;
 
-      if (T::computesGradient()){
+      if (T::hasGradientComputation()){
 	const auto gradientNorm	= T::gradientNormCurrentCorrectionStep();
 	if (iStep_==1) gradientNorm0 = gradientNorm;
 
@@ -170,10 +166,15 @@ private:
       }
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      solverStatusPrinter.print(*this, iStep_,
-				norms_[0], norms_[1],
-				norms_[2], norms_[3],
-				norms_[4], norms_[5]);
+      if (T::hasGradientComputation()){
+	impl::printNonlinearLeastSquaresDefaultMetrics
+	  (iStep_, norms_[0], norms_[1], norms_[2],
+	   norms_[3], norms_[4], norms_[5]);
+      }
+      else{
+	impl::printNonlinearLeastSquaresDefaultMetrics
+	  (iStep_, norms_[0], norms_[1], norms_[2], norms_[3]);
+      }
 #endif
 
       // 3.

@@ -50,98 +50,75 @@
 #define SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
-template <typename sc_t>
-class NonlinearLeastSquaresDefaultMetricsPrinter
+
+template <typename step_t, typename sc_t>
+void printNonlinearLeastSquaresDefaultMetrics(step_t iStep,
+					      const sc_t & absCorrectionNorm,
+					      const sc_t & relCorrectionNorm,
+					      const sc_t & absResNorm,
+					      const sc_t & relResNorm,
+					      const sc_t & absGNorm,
+					      const sc_t & relGNorm)
 {
+  using namespace ::pressio::utils::io;
+  constexpr auto one = static_cast<sc_t>(1);
 
-private:
-  sc_t residualNorm0_ = {};
-  sc_t gradientNorm0_ = {};
+  // generic format for metrics
+  const auto fmt = utils::io::cyan();// + utils::io::bold();
 
-public:
-  template <typename solver_t, typename step_t>
-  void print(const solver_t & solver, step_t iStep,
-	     const sc_t & absoluteCorrecNorm,   const sc_t & relativeCorrecNorm,
-	     const sc_t & absoluteResidualNorm,	const sc_t & relativeResidualNorm,
-	     const sc_t & absoluteGradientNorm, const sc_t & relativeGradientNorm)
-  {
-    if (solver.computesGradient()){
-      printImpl(iStep,
-		absoluteCorrecNorm,
-		absoluteResidualNorm, relativeResidualNorm,
-		absoluteGradientNorm, relativeGradientNorm);
-    }
-    else{
-      printImpl(iStep, absoluteCorrecNorm,
-		absoluteResidualNorm, relativeResidualNorm);
-    }
-  }
+  // use color to highlight if relative residual norm is
+  // decreasing (green) or increasing (yellow)
+  const auto fmtResRelNorm = relResNorm <= one ?
+    (relResNorm < one ? green() : fmt ) : yellow();
 
-private:
-  template <typename step_t>
-  void printImpl(step_t iStep,
-                 const sc_t & correctionNorm,
-                 const sc_t & absResNorm, const sc_t & relResNorm,
-                 const sc_t & absGNorm,   const sc_t & relGNorm) const
-  {
-    using namespace ::pressio::utils::io;
-    constexpr auto one = static_cast<sc_t>(1);
+  // use color to highlight if relative gradient norm is
+  // decreasing (green) or increasing (yellow)
+  const auto fmtGradRelNorm = relGNorm <= one ?
+    (relGNorm < one ? green() : fmt ) : yellow();
 
-    // generic format for metrics
-    const auto fmt = utils::io::cyan();// + utils::io::bold();
+  ::pressio::utils::io::print_stdout
+      (
+       std::scientific,
+       fmt,
+       "NonlinearIter =" , iStep,
+       " ||Residual||_l2 (abs) =", absResNorm,
+       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
+       fmt,
+       "||Gradient||_l2 (abs) = ", absGNorm,
+       " ||Gradient||_l2 (rel) =", fmtGradRelNorm, relGNorm, reset(),
+       fmt,
+       "||Correction||_l2 =", absCorrectionNorm,
+       reset(),
+       "\n");
+}
 
-    // use color to highlight if relative residual norm is
-    // decreasing (green) or increasing (yellow)
-    const auto fmtResRelNorm = relResNorm <= one ?
-      (relResNorm < one ? green() : fmt ) : yellow();
+template <typename step_t, typename sc_t>
+void printNonlinearLeastSquaresDefaultMetrics(step_t iStep,
+					      const sc_t & absCorrectionNorm,
+					      const sc_t & relCorrectionNorm,
+					      const sc_t & absResNorm,
+					      const sc_t & relResNorm)
+{
+  using namespace ::pressio::utils::io;
+  constexpr auto one = static_cast<sc_t>(1);
+  // generic format for metrics
+  const auto fmt = utils::io::cyan();// + utils::io::bold();
+  // use color to highlight if relative residual norm is
+  // decreasing (green) or increasing (yellow)
+  const auto fmtResRelNorm = relResNorm <= one ?
+    (relResNorm < one ? green() : fmt ) : yellow();
 
-    // use color to highlight if relative gradient norm is
-    // decreasing (green) or increasing (yellow)
-    const auto fmtGradRelNorm = relGNorm <= one ?
-      (relGNorm < one ? green() : fmt ) : yellow();
-
-    ::pressio::utils::io::print_stdout
-	(
-	 std::scientific,
-	 fmt,
-	 "NonlinearIter =" , iStep,
-	 " ||Residual||_l2 (abs) =", absResNorm,
-	 " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
-	 fmt,
-	 "||Gradient||_l2 (abs) = ", absGNorm,
-	 " ||Gradient||_l2 (rel) =", fmtGradRelNorm, relGNorm, reset(),
-	 fmt,
-	 "||Correction||_l2 =", correctionNorm,
-	 reset(),
-	 "\n");
-  }
-
-  template <typename step_t>
-  void printImpl(step_t iStep, const sc_t & correctionNorm,
-                 const sc_t & absResNorm, const sc_t & relResNorm) const
-  {
-    using namespace ::pressio::utils::io;
-    constexpr auto one = static_cast<sc_t>(1);
-    // generic format for metrics
-    const auto fmt = utils::io::cyan();// + utils::io::bold();
-    // use color to highlight if relative residual norm is
-    // decreasing (green) or increasing (yellow)
-    const auto fmtResRelNorm = relResNorm <= one ?
-      (relResNorm < one ? green() : fmt ) : yellow();
-
-    ::pressio::utils::io::print_stdout
-	(std::scientific,
-	 fmt,
-	 "NonlinearIter =" , iStep,
-	 " ||Residual||_l2 (abs) =", absResNorm,
-	 " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
-	 fmt,
-	 "||Correction||_l2 =", correctionNorm,
-	 reset(),
-	 "\n");
-  }
-
-};
+  ::pressio::utils::io::print_stdout
+      (std::scientific,
+       fmt,
+       "NonlinearIter =" , iStep,
+       " ||Residual||_l2 (abs) =", absResNorm,
+       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
+       fmt,
+       "||Correction||_l2 =", absCorrectionNorm,
+       reset(),
+       "\n");
+}
 
 }}}}
 
