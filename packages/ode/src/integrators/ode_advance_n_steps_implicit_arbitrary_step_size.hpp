@@ -65,7 +65,7 @@ template<
   ::pressio::ode::concepts::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type
     >::value and
-  ::pressio::ode::concepts::time_step_size_setter<
+  ::pressio::ode::concepts::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value
   >
 advanceNSteps(stepper_type & stepper,

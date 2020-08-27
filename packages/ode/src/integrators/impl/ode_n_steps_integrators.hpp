@@ -90,7 +90,7 @@ struct IntegratorNStepsWithConstDt
     printStartOfAdvancing("AdvanceNStepsWithConstDt");
     for( ; step <= numSteps ; ++step)
     {
-      printStepTime(step, time);
+      printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
@@ -143,7 +143,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     {
       // call the dt manager to set the dt to use at the beginning
       dtManager(step, time, dt);
-      printStepTime(step, time);
+      printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");

@@ -64,7 +64,7 @@ template<
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::time_step_size_setter<
+  ::pressio::ode::concepts::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value
   >
 advanceToTargetTime(stepper_type	& stepper,
@@ -75,16 +75,17 @@ advanceToTargetTime(stepper_type	& stepper,
 		    step_size_cb_t	&& dtManager)
 {
   static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
+		"You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
   using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorToTargetTimeWithTimeStepSizeSetter;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
   collector_t collector;
-  advancer_t::execute<step_policy>(start_time, final_time, collector,
-				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
+
+  impl::integrateToTargetTimeWithTimeStepSizeManager<false, step_policy>
+    (start_time, final_time, collector,
+     std::forward<step_size_cb_t>(dtManager),
+     odeStateInOut, stepper, solver);
 }
 
 template<
@@ -98,9 +99,10 @@ template<
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::concepts::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::time_step_size_setter<
+  ::pressio::ode::concepts::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value and
-  ode::concepts::collector<collector_type, time_type, state_type>::value>
+  ode::concepts::collector<collector_type, time_type, state_type>::value
+  >
 advanceToTargetTime(stepper_type	& stepper,
 		    state_type		& odeStateInOut,
 		    const time_type	start_time,
@@ -112,16 +114,52 @@ advanceToTargetTime(stepper_type	& stepper,
 
   static_assert
     (::pressio::ode::concepts::implicit_state<state_type>::value,
-     "You are trying to call advanceNSteps with an implicit stepper \
+     "You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
   using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorToTargetTimeWithTimeStepSizeSetter;
-  advancer_t::execute<step_policy>(start_time, final_time, collector,
-				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
+  impl::integrateToTargetTimeWithTimeStepSizeManager<false, step_policy>
+    (start_time, final_time, collector,
+     std::forward<step_size_cb_t>(dtManager),
+     odeStateInOut, stepper, solver);
 }
 
+
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename step_size_cb_t,
+  typename collector_type
+  >
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type>::value and
+  ::pressio::ode::concepts::time_step_size_manager<
+    step_size_cb_t, types::step_t, time_type>::value and
+  ode::concepts::collector<collector_type, time_type, state_type>::value>
+advanceToTargetTimeWithTimeStepRecovery(stepper_type	& stepper,
+					state_type	& odeStateInOut,
+					const time_type	start_time,
+					const time_type	final_time,
+					solver_type	& solver,
+					step_size_cb_t	&& dtManager,
+					collector_type	& collector)
+{
+
+  static_assert
+    (::pressio::ode::concepts::implicit_state<state_type>::value,
+     "You are trying to call advanceToTargetTime with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping.");
+
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+
+  impl::integrateToTargetTimeWithTimeStepSizeManager<true, step_policy>
+    (start_time, final_time, collector,
+     std::forward<step_size_cb_t>(dtManager),
+     odeStateInOut, stepper, solver);
+}
 
 }}//end namespace pressio::ode
 #endif  // ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
