@@ -3,14 +3,21 @@ MAIN_PROJECT_URL: "Pressio"
 
 
 LINKS_NAVBAR1 = [
-    ("Introduction", 'pages', [
-        ("<a href=\"md_pages_about.html\">About</a>", ),
-        ("<a href=\"md_pages_introduction.html\">Introduction</a>",)
-    ])
+    ("<a href=\"md_pages_user_guide.html\">User Guide</a>", [
+        ("<a href=\"md_pages_build_and_install.html\">Build and Installation</a>", ),
+        ("<a href=\"md_pages_basic_usage.html\">Basic Usage</a>",),
+        ("<a href=\"md_pages_advanced_usage.html\">Advanced Usage</a>",),
+        ("<a href=\"md_pages_API.html\">API</a>",)
+    ]),
+    ("<a href=\"md_pages_tutorials.html\">Tutorials</a>", [
+        ("<a href=\"md_pages_quickstart.html\">Quickstart</a>", ),
+        ("<a href=\"md_pages_examples.html\">Examples</a>",)
+    ]),
+	("<a href=\"md_pages_team.html\">Team</a>",[])
 ]
 LINKS_NAVBAR2 = [
     ('Classes', 'annotated', []),
-    ('Modules', 'modules', [])
+    ('Namespaces', 'namespaces', [])
 ]
 
 PLUGINS = ['m.htmlsanity', 'm.math', 'm.code']
