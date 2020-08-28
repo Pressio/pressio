@@ -53,7 +53,8 @@ namespace pressio{ namespace containers{
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_matrix_wrapper<T>::value and (0 < sizeof...(Args)),
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+  and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_const_ret_t
   >
 subspan(const T & obj, Args&& ... args)
@@ -64,7 +65,8 @@ subspan(const T & obj, Args&& ... args)
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_matrix_wrapper<T>::value and (0 < sizeof...(Args)),
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+  and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_ret_t
   >
 subspan(T & obj, Args&& ... args)
@@ -73,7 +75,5 @@ subspan(T & obj, Args&& ... args)
   return return_t(obj, std::forward<Args>(args)... );
 }
 
-
 }} //end namespace pressio::containers
-
 #endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_

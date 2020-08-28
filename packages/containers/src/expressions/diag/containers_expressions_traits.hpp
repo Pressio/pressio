@@ -65,11 +65,13 @@ struct traits<
   WrappedPackageIdentifier::Eigen, true>
 {
 
-  static constexpr auto wrapped_vector_identifier = WrappedVectorIdentifier::EigenColStatic;
+  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::EigenColStatic;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
 
-  using wrapped_t = typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
-  using scalar_t  = typename ::pressio::containers::details::traits<matrix_type>::scalar_t;
-  using ordinal_t = typename ::pressio::containers::details::traits<matrix_type>::ordinal_t;
+  using wrapped_t = typename traits<matrix_type>::wrapped_t;
+  using scalar_t  = typename traits<matrix_type>::scalar_t;
+  using ordinal_t = typename traits<matrix_type>::ordinal_t;
   using size_t    = ordinal_t;
 
   // the reference type is conditional because the native expression
@@ -84,7 +86,7 @@ struct traits<
 
   // type of the native expression
   using _native_expr_t = decltype(std::declval<wrapped_t>().diagonal( ) );
-  using _const_native_expr_t = decltype(std::declval<const wrapped_t>().diagonal() );
+  using _const_native_expr_t=decltype(std::declval<const wrapped_t>().diagonal());
 
   using native_expr_t = typename std::conditional<
     std::is_const<matrix_type>::value,
@@ -92,15 +94,9 @@ struct traits<
     _native_expr_t
   >::type;
 
-  static constexpr bool is_static = ( _native_expr_t::RowsAtCompileTime != Eigen::Dynamic &&
-                                      _native_expr_t::ColsAtCompileTime != Eigen::Dynamic );
-  static constexpr bool is_dynamic  = !is_static;
-
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;
 };
-
-
 
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
