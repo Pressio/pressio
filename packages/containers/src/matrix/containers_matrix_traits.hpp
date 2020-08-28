@@ -405,7 +405,7 @@ struct traits<
 {
 
   static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
+      wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -427,6 +427,9 @@ struct traits<
 
   using subspan_ret_t = expressions::SubspanExpr<Matrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const Matrix<wrapped_type>>;
+
+  using diag_ret_t = expressions::DiagExpr<Matrix<wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr< const Matrix<wrapped_type>>;
 
   static constexpr bool has_host_execution_space =
     (false
