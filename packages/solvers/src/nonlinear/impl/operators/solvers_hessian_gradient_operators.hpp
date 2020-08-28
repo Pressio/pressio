@@ -328,8 +328,11 @@ private:
     // compute lmH = H + mu*diag(H)
     const auto & H = HGOpHGApi_.getHessian();
     ::pressio::ops::deep_copy(lmH_, H);
-    // this needs to be replaces with a daxpy when we have the diagonal view
-    lmH_.data()->diagonal() = lmH_.data()->diagonal() + dampParam_*lmH_.data()->diagonal();
+
+    const auto diagH   = ::pressio::containers::diag(H);
+    auto diaglmH = ::pressio::containers::diag(lmH_);
+    constexpr auto one  = pressio::utils::constants<sc_t>::one();
+    ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
   }
 };
 
@@ -412,8 +415,11 @@ public:
     // compute lmH = H + mu*diag(H)
     const auto & H = HGOpRJApi_.getHessian();
     ::pressio::ops::deep_copy(lmH_, H);
-    // this needs to be replaces with a daxpy when we have the diagonal view
-    lmH_.data()->diagonal() = lmH_.data()->diagonal() + dampParam_*lmH_.data()->diagonal();
+
+    const auto diagH   = ::pressio::containers::diag(H);
+    auto diaglmH = ::pressio::containers::diag(lmH_);
+    constexpr auto one  = pressio::utils::constants<sc_t>::one();
+    ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
   }
 };
 
