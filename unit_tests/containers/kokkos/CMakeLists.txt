@@ -7,3 +7,5 @@ add_serial_utest_kokkos(containers_vector_sharedmem_kokkos_static_dynamic
   containers_vector_sharedmem_kokkos_static_dynamic.cc)
 add_serial_utest_kokkos(containers_expressions_are_static
   containers_expressions_are_static.cc)
+add_serial_utest_kokkos(containers_matrix_dense_kokkos_diag_expression
+  containers_matrix_dense_kokkos_diag_expression.cc)
