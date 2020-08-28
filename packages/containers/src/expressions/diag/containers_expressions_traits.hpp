@@ -98,5 +98,45 @@ struct traits<
   using data_return_t = native_expr_t *;
 };
 
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename matrix_type>
+struct traits<
+  ::pressio::containers::expressions::DiagExpr<matrix_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  ::pressio::containers::expressions::DiagExpr<matrix_type>,
+  typename details::traits<matrix_type>::wrapped_t,
+  true, false, false,
+  WrappedPackageIdentifier::Kokkos,
+  true>
+{
+
+  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::Kokkos;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using wrapped_t	= typename traits<matrix_type>::wrapped_t;
+  using execution_space = typename traits<matrix_type>::execution_space;
+  using device_t	= typename traits<matrix_type>::device_t;
+  using device_type	= typename traits<matrix_type>::device_t;
+  using memory_space	= typename traits<matrix_type>::memory_space;
+  using scalar_t	= typename traits<matrix_type>::scalar_t;
+  using ordinal_t	= typename traits<matrix_type>::ordinal_t;
+  using size_t		= ordinal_t;
+
+  using reference_t = scalar_t &;
+  using const_reference_t = scalar_t const &;
+
+  // no native data type because kokkos does not have this yet
+  using native_expr_t = void;
+  using const_data_return_t = void;//native_expr_t const *;
+  using data_return_t = void;//native_expr_t *;
+};
+#endif
+
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
