@@ -66,14 +66,13 @@ struct traits<
   true
   >
 {
-  static constexpr auto wrapped_vector_identifier = details::traits<v_type>::wrapped_vector_identifier;
+  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::EigenColStatic;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = !is_static;
 
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
-  using scalar_t  = typename ::pressio::containers::details::traits<v_type>::scalar_t;
-  using ordinal_t = typename ::pressio::containers::details::traits<v_type>::ordinal_t;
+  using wrapped_t = typename traits<v_type>::wrapped_t;
+  using scalar_t  = typename traits<v_type>::scalar_t;
+  using ordinal_t = typename traits<v_type>::ordinal_t;
   using size_t    = ordinal_t;
 
   // the reference type is conditionnal because the native expression
@@ -88,10 +87,12 @@ struct traits<
 
   // type of the native expression
   using _native_expr_t = decltype(
-    std::declval<wrapped_t>().segment( std::declval<size_t>(), std::declval<size_t>() )
+    std::declval<wrapped_t>().segment( std::declval<size_t>(),
+				       std::declval<size_t>() )
     );
   using _const_native_expr_t = decltype(
-    std::declval<const wrapped_t>().segment( std::declval<size_t>(), std::declval<size_t>() )
+    std::declval<const wrapped_t>().segment( std::declval<size_t>(),
+					     std::declval<size_t>() )
     );
   using native_expr_t = typename std::conditional<
     std::is_const<v_type>::value,
@@ -121,16 +122,18 @@ struct traits<
   true //true because kokkos is for shared mem
   >
 {
-   static constexpr auto wrapped_vector_identifier = details::traits<v_type>::wrapped_vector_identifier;
+  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::Kokkos;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = !is_static;
 
-  using wrapped_t = typename ::pressio::containers::details::traits<v_type>::wrapped_t;
-  using execution_space = typename ::pressio::containers::details::traits<v_type>::execution_space;
-  using device_t = typename ::pressio::containers::details::traits<v_type>::device_t;
-  using device_type = typename ::pressio::containers::details::traits<v_type>::device_t;
-  using scalar_t  = typename ::pressio::containers::details::traits<v_type>::scalar_t;
-  using ordinal_t = typename ::pressio::containers::details::traits<v_type>::ordinal_t;
-  using size_t    = ordinal_t;
-  using pair_t = std::pair<size_t, size_t>;
+  using wrapped_t	= typename traits<v_type>::wrapped_t;
+  using execution_space = typename traits<v_type>::execution_space;
+  using device_t	= typename traits<v_type>::device_t;
+  using device_type	= typename traits<v_type>::device_t;
+  using scalar_t	= typename traits<v_type>::scalar_t;
+  using ordinal_t	= typename traits<v_type>::ordinal_t;
+  using size_t		= ordinal_t;
+  using pair_t		= std::pair<size_t, size_t>;
 
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
@@ -147,9 +150,6 @@ struct traits<
     _const_native_expr_t,
     _native_expr_t
   >::type;
-
-  static constexpr bool is_static = native_expr_t::traits::rank_dynamic==0;
-  static constexpr bool is_dynamic  = !is_static;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;

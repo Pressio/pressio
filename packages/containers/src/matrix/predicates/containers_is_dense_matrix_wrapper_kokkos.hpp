@@ -52,6 +52,38 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
+struct is_dynamic_dense_matrix_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_dynamic_dense_matrix_wrapper_kokkos<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_matrix &&
+       containers::details::traits<T>::is_dynamic &&
+       (containers::details::traits<T>::wrapped_matrix_identifier==
+	containers::details::WrappedMatrixIdentifier::DenseKokkos)
+       >
+  >
+  : std::true_type{};
+
+
+
+template <typename T, typename enable = void>
+struct is_static_dense_matrix_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_static_dense_matrix_wrapper_kokkos<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_matrix &&
+       containers::details::traits<T>::is_static &&
+       (containers::details::traits<T>::wrapped_matrix_identifier==
+	containers::details::WrappedMatrixIdentifier::DenseKokkos)
+       >
+  >
+  : std::true_type{};
+
+
+
+template <typename T, typename enable = void>
 struct is_dense_matrix_wrapper_kokkos : std::false_type {};
 
 template <typename T>

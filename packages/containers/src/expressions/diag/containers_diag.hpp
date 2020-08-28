@@ -73,7 +73,5 @@ diag(T & obj)
   return return_t(obj);
 }
 
-
 }} //end namespace pressio::containers
-
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
