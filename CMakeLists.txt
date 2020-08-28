@@ -56,7 +56,7 @@ endif()
 #  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
 #endif()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
