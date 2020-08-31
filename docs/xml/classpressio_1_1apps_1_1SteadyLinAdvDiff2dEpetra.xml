@@ -1,0 +1,865 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra" kind="class" language="C++" prot="public">
+    <compoundname>pressio::apps::SteadyLinAdvDiff2dEpetra</compoundname>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a8b8a67ed499a035720b75ebb2fa018ac" prot="protected" static="no">
+        <type>Epetra_Vector</type>
+        <definition>using pressio::apps::SteadyLinAdvDiff2dEpetra::nativeVec =  Epetra_Vector</definition>
+        <argsstring></argsstring>
+        <name>nativeVec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="106" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1abcc8f3774b1eb29ec05e27d1b5155d5c" prot="protected" static="no">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; T &gt;</type>
+        <definition>using pressio::apps::SteadyLinAdvDiff2dEpetra::rcp =  std::shared_ptr&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>rcp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="107" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4625ae6d968f78d0ab0f6407e8e490d3" prot="protected" static="no">
+        <type>Epetra_CrsMatrix</type>
+        <definition>using pressio::apps::SteadyLinAdvDiff2dEpetra::nativeMatrix =  Epetra_CrsMatrix</definition>
+        <argsstring></argsstring>
+        <name>nativeMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="108" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5e80ba174140b09a6e1405df580b0eed" prot="protected" static="no">
+        <type>double</type>
+        <definition>using pressio::apps::SteadyLinAdvDiff2dEpetra::scalar_type =  double</definition>
+        <argsstring></argsstring>
+        <name>scalar_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="109" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2a51d5f37658ad54246293f1b89605b3" prot="protected" static="no" mutable="no">
+        <type>const int</type>
+        <definition>const int pressio::apps::SteadyLinAdvDiff2dEpetra::maxNonZeroPerRow_</definition>
+        <argsstring></argsstring>
+        <name>maxNonZeroPerRow_</name>
+        <initializer>= 5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="338" column="13" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="338" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1affc67a778a9d5cbc4c272f15f7e51eca" prot="protected" static="no" mutable="no">
+        <type>const scalar_type</type>
+        <definition>const scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::solveTolerance_</definition>
+        <argsstring></argsstring>
+        <name>solveTolerance_</name>
+        <initializer>= 1e-12</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="339" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="339" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab9d7086f74b499f1715c1d1b5cd5d3fe" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Lx_</definition>
+        <argsstring></argsstring>
+        <name>Lx_</name>
+        <initializer>= 1.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="340" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="340" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa55c8d5d825306a0db366804d15f1290" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Ly_</definition>
+        <argsstring></argsstring>
+        <name>Ly_</name>
+        <initializer>= 2.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="341" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="341" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ae7c02a3b31e7655fe8e7bfb9effd5262" prot="protected" static="no" mutable="no">
+        <type>std::array&lt; scalar_type, 2 &gt;</type>
+        <definition>std::array&lt;scalar_type,2&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::xAxis_</definition>
+        <argsstring></argsstring>
+        <name>xAxis_</name>
+        <initializer>{{0., 1.}}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="342" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="342" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ca58f61ed6312fdba71efb2a0165364" prot="protected" static="no" mutable="no">
+        <type>std::array&lt; scalar_type, 2 &gt;</type>
+        <definition>std::array&lt;scalar_type,2&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::yAxis_</definition>
+        <argsstring></argsstring>
+        <name>yAxis_</name>
+        <initializer>{{0., 2.}}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="343" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="343" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ac25298bd4bfd6e0e3cd2faa4437a7d91" prot="protected" static="no" mutable="no">
+        <type>Epetra_MpiComm &amp;</type>
+        <definition>Epetra_MpiComm&amp; pressio::apps::SteadyLinAdvDiff2dEpetra::comm_</definition>
+        <argsstring></argsstring>
+        <name>comm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="345" column="19" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="345" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af6787941aae453cc9fc03ca50341761a" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::Nx_</definition>
+        <argsstring></argsstring>
+        <name>Nx_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="347" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="347" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a6f439d49f8f6f125c775cad8989b7436" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::Ny_</definition>
+        <argsstring></argsstring>
+        <name>Ny_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="348" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="348" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a74a8414c8891fdc6dcbb5335e95cbc7c" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::NxDof_</definition>
+        <argsstring></argsstring>
+        <name>NxDof_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="352" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="352" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb7c6a996a2ba5c82bda0288634e6367" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::NyDof_</definition>
+        <argsstring></argsstring>
+        <name>NyDof_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="353" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="353" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1add659bb8ced429072ce2cac0e93293cb" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Pr_</definition>
+        <argsstring></argsstring>
+        <name>Pr_</name>
+        <initializer>{2.}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="355" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="355" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ef0891884839618f856f1050b2f97bd" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Re_</definition>
+        <argsstring></argsstring>
+        <name>Re_</name>
+        <initializer>{30.}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="356" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="356" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a73ded570734f1ea6f81cbba0319ee4cf" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::invPrRe_</definition>
+        <argsstring></argsstring>
+        <name>invPrRe_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="357" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="357" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a39193036ca3cfa1791f5325d92ffaeb4" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Tleft_</definition>
+        <argsstring></argsstring>
+        <name>Tleft_</name>
+        <initializer>{0.0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="358" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="358" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ad26f30677a98f1aa11c5c8d247299c" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::Tright_</definition>
+        <argsstring></argsstring>
+        <name>Tright_</name>
+        <initializer>{1.0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="359" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="359" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab98d87ab28c80b1ae8b6a212f3b96577" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dx_</definition>
+        <argsstring></argsstring>
+        <name>dx_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="361" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="361" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7a1b79ddeed8a0b69ba1f57261b02279" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dy_</definition>
+        <argsstring></argsstring>
+        <name>dy_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="362" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4da8f748f8945e40601c20316da4641c" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dxSqInv_</definition>
+        <argsstring></argsstring>
+        <name>dxSqInv_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="363" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="363" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad6a74bd2a25d011d84f9b0229eaac060" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dySqInv_</definition>
+        <argsstring></argsstring>
+        <name>dySqInv_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="364" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="364" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a63505bce03f6e0241289e2227f342617" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dx2Inv_</definition>
+        <argsstring></argsstring>
+        <name>dx2Inv_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="365" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="365" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af230f517f9772a8277319403c5420eb4" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::SteadyLinAdvDiff2dEpetra::dy2Inv_</definition>
+        <argsstring></argsstring>
+        <name>dy2Inv_</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="366" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="366" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2fff24a29bf65cbd5cec12c46baab728" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; Epetra_Map &gt;</type>
+        <definition>rcp&lt;Epetra_Map&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::myMap_</definition>
+        <argsstring></argsstring>
+        <name>myMap_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="368" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="368" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0669a8313ecd0a28aab25c7a2ea6de13" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::numGlobalDof_</definition>
+        <argsstring></argsstring>
+        <name>numGlobalDof_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="369" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="369" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a012ca8365b3de93ef0549e9a55fccf7c" prot="protected" static="no" mutable="no">
+        <type>int *</type>
+        <definition>int* pressio::apps::SteadyLinAdvDiff2dEpetra::MyGlobalDof_</definition>
+        <argsstring></argsstring>
+        <name>MyGlobalDof_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="370" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="370" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd860170c62bbb1db76f0f9a29a4c5d0" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::dofPerProc_</definition>
+        <argsstring></argsstring>
+        <name>dofPerProc_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="371" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="371" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4698edfbca415f7bb9ebd2a053a543dc" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::x_</definition>
+        <argsstring></argsstring>
+        <name>x_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="373" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="373" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1adafcf59823f47f31921656224ec8920b" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::y_</definition>
+        <argsstring></argsstring>
+        <name>y_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="374" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="374" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb06905b7634cd40794da5be3a094db5" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::u_</definition>
+        <argsstring></argsstring>
+        <name>u_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="375" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="375" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0c5a008c75ca78227b85874960c19f77" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::v_</definition>
+        <argsstring></argsstring>
+        <name>v_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="376" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="376" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a32b5f8f6f2c569fa2bc627b9ee61345e" prot="protected" static="no" mutable="yes">
+        <type>rcp&lt; nativeMatrix &gt;</type>
+        <definition>rcp&lt;nativeMatrix&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::A_</definition>
+        <argsstring></argsstring>
+        <name>A_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="377" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="377" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3fd3a1fb590de08a0b35711427dda8f7" prot="protected" static="no" mutable="yes">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::T_</definition>
+        <argsstring></argsstring>
+        <name>T_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="378" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="378" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a1e8ee40ae4c3624895bd695754ac00ab" prot="protected" static="no" mutable="yes">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::f_</definition>
+        <argsstring></argsstring>
+        <name>f_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="379" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="379" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a77cfd969da2601d19d7d2bfcb50a1ad9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::SteadyLinAdvDiff2dEpetra::SteadyLinAdvDiff2dEpetra</definition>
+        <argsstring>(Epetra_MpiComm &amp;comm, int Nx, int Ny, scalar_type Pr=2., scalar_type Re=30., scalar_type Tleft=0.0, scalar_type Tright=1.0)</argsstring>
+        <name>SteadyLinAdvDiff2dEpetra</name>
+        <param>
+          <type>Epetra_MpiComm &amp;</type>
+          <declname>comm</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>Nx</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>Ny</declname>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>Pr</declname>
+          <defval>2.</defval>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>Re</declname>
+          <defval>30.</defval>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>Tleft</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>Tright</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="118" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="118" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd8a4e82bc263adff8b5fce3af951fc4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::createMap</definition>
+        <argsstring>()</argsstring>
+        <name>createMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="150" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="150" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7decff49dfb4959e81f0b08859515311" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Epetra_Map const  &amp;</type>
+        <definition>Epetra_Map const&amp; pressio::apps::SteadyLinAdvDiff2dEpetra::getDataMap</definition>
+        <argsstring>() const</argsstring>
+        <name>getDataMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="156" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="156" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af819370ff473c2fd180fdd31e2d09820" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::assembleMatrix</definition>
+        <argsstring>() const</argsstring>
+        <name>assembleMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="160" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="160" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f08239d945a79f6d70fb16dd420a823" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::fillRhs</definition>
+        <argsstring>() const</argsstring>
+        <name>fillRhs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="250" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="250" bodyend="271"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a27044fb7b8af70d0d0c4cc5362737b59" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::solve</definition>
+        <argsstring>()</argsstring>
+        <name>solve</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="273" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="273" bodyend="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa3d81e6d42fc2311b86bd486e49c6840" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::printStateToFile</definition>
+        <argsstring>(std::string fileName)</argsstring>
+        <name>printStateToFile</name>
+        <param>
+          <type>std::string</type>
+          <declname>fileName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="281" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="281" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a80bc3b7e82de4cab43b4c46741322358" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::getNumGlobalDofs</definition>
+        <argsstring>() const</argsstring>
+        <name>getNumGlobalDofs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="292" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="292" bodyend="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a12ce67be393dd11835338db85b0e2d58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int pressio::apps::SteadyLinAdvDiff2dEpetra::getNumLocalDofs</definition>
+        <argsstring>() const</argsstring>
+        <name>getNumLocalDofs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="293" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="293" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad1bb9bfbe1bcd54d9ca9aa15ac9f77f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; nativeVec &gt;</type>
+        <definition>std::shared_ptr&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::getX</definition>
+        <argsstring>() const</argsstring>
+        <name>getX</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="296" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="296" bodyend="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f4aaa48ad6d58c23339f76abd2981aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; nativeVec &gt;</type>
+        <definition>std::shared_ptr&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::getY</definition>
+        <argsstring>() const</argsstring>
+        <name>getY</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="299" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="299" bodyend="299"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7e85ee1a93667d09d5eb1667b9461726" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; nativeVec &gt;</type>
+        <definition>std::shared_ptr&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::getState</definition>
+        <argsstring>() const</argsstring>
+        <name>getState</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="302" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="302" bodyend="302"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3c1bcfd90cd8a1de9f89d5d666e8a562" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; nativeMatrix &gt;</type>
+        <definition>std::shared_ptr&lt;nativeMatrix&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::getMatrix</definition>
+        <argsstring>() const</argsstring>
+        <name>getMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="305" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="305" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab5333e961022f667cb32f1aea6e1cee5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; nativeVec &gt;</type>
+        <definition>std::shared_ptr&lt;nativeVec&gt; pressio::apps::SteadyLinAdvDiff2dEpetra::getForcing</definition>
+        <argsstring>() const</argsstring>
+        <name>getForcing</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="308" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="308" bodyend="308"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a91ff639de92d3f420501cee7b9aec00b" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::localIDToLiLj</definition>
+        <argsstring>(int ID, int &amp;li, int &amp;lj) const</argsstring>
+        <name>localIDToLiLj</name>
+        <param>
+          <type>int</type>
+          <declname>ID</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>li</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>lj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="139" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="139" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad548691d5cbd78143b5f2f257587f4ac" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::globalIDToGiGj</definition>
+        <argsstring>(int ID, int &amp;gi, int &amp;gj) const</argsstring>
+        <name>globalIDToGiGj</name>
+        <param>
+          <type>int</type>
+          <declname>ID</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>gi</declname>
+        </param>
+        <param>
+          <type>int &amp;</type>
+          <declname>gj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="143" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="143" bodyend="146"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa640eca4577f7a3a736e6a6f61891b5f" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::SteadyLinAdvDiff2dEpetra::setup</definition>
+        <argsstring>()</argsstring>
+        <name>setup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="311" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="311" bodyend="335"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" line="104" column="1" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp" bodystart="104" bodyend="381"/>
+    <listofallmembers>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a32b5f8f6f2c569fa2bc627b9ee61345e" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>A_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af819370ff473c2fd180fdd31e2d09820" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>assembleMatrix</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ac25298bd4bfd6e0e3cd2faa4437a7d91" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>comm_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd8a4e82bc263adff8b5fce3af951fc4" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>createMap</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd860170c62bbb1db76f0f9a29a4c5d0" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dofPerProc_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a63505bce03f6e0241289e2227f342617" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dx2Inv_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab98d87ab28c80b1ae8b6a212f3b96577" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dx_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4da8f748f8945e40601c20316da4641c" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dxSqInv_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af230f517f9772a8277319403c5420eb4" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dy2Inv_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7a1b79ddeed8a0b69ba1f57261b02279" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dy_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad6a74bd2a25d011d84f9b0229eaac060" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>dySqInv_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a1e8ee40ae4c3624895bd695754ac00ab" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>f_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f08239d945a79f6d70fb16dd420a823" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>fillRhs</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7decff49dfb4959e81f0b08859515311" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getDataMap</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab5333e961022f667cb32f1aea6e1cee5" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getForcing</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3c1bcfd90cd8a1de9f89d5d666e8a562" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getMatrix</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a80bc3b7e82de4cab43b4c46741322358" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getNumGlobalDofs</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a12ce67be393dd11835338db85b0e2d58" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getNumLocalDofs</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7e85ee1a93667d09d5eb1667b9461726" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getState</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad1bb9bfbe1bcd54d9ca9aa15ac9f77f8" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getX</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f4aaa48ad6d58c23339f76abd2981aa" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>getY</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad548691d5cbd78143b5f2f257587f4ac" prot="private" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>globalIDToGiGj</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a73ded570734f1ea6f81cbba0319ee4cf" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>invPrRe_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a91ff639de92d3f420501cee7b9aec00b" prot="private" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>localIDToLiLj</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab9d7086f74b499f1715c1d1b5cd5d3fe" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Lx_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa55c8d5d825306a0db366804d15f1290" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Ly_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2a51d5f37658ad54246293f1b89605b3" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>maxNonZeroPerRow_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a012ca8365b3de93ef0549e9a55fccf7c" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>MyGlobalDof_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2fff24a29bf65cbd5cec12c46baab728" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>myMap_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4625ae6d968f78d0ab0f6407e8e490d3" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>nativeMatrix</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a8b8a67ed499a035720b75ebb2fa018ac" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>nativeVec</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0669a8313ecd0a28aab25c7a2ea6de13" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>numGlobalDof_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af6787941aae453cc9fc03ca50341761a" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Nx_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a74a8414c8891fdc6dcbb5335e95cbc7c" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>NxDof_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a6f439d49f8f6f125c775cad8989b7436" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Ny_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb7c6a996a2ba5c82bda0288634e6367" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>NyDof_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1add659bb8ced429072ce2cac0e93293cb" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Pr_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa3d81e6d42fc2311b86bd486e49c6840" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>printStateToFile</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1abcc8f3774b1eb29ec05e27d1b5155d5c" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>rcp</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ef0891884839618f856f1050b2f97bd" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Re_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5e80ba174140b09a6e1405df580b0eed" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>scalar_type</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa640eca4577f7a3a736e6a6f61891b5f" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>setup</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a27044fb7b8af70d0d0c4cc5362737b59" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>solve</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1affc67a778a9d5cbc4c272f15f7e51eca" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>solveTolerance_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a77cfd969da2601d19d7d2bfcb50a1ad9" prot="public" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>SteadyLinAdvDiff2dEpetra</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3fd3a1fb590de08a0b35711427dda8f7" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>T_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a39193036ca3cfa1791f5325d92ffaeb4" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Tleft_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ad26f30677a98f1aa11c5c8d247299c" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>Tright_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb06905b7634cd40794da5be3a094db5" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>u_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0c5a008c75ca78227b85874960c19f77" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>v_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4698edfbca415f7bb9ebd2a053a543dc" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>x_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ae7c02a3b31e7655fe8e7bfb9effd5262" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>xAxis_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1adafcf59823f47f31921656224ec8920b" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>y_</name></member>
+      <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ca58f61ed6312fdba71efb2a0165364" prot="protected" virt="non-virtual"><scope>pressio::apps::SteadyLinAdvDiff2dEpetra</scope><name>yAxis_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="dir_35ea8b8a3f9870a2e7625856aecc0c7b" kind="dir">
+    <compoundname>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d</compoundname>
+    <innerdir refid="dir_787e4ffc55b9c9f879444103fcb85362">/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/arbitraryDataStructures</innerdir>
+    <innerfile refid="apps__burgers1d__eigen_8hpp">apps_burgers1d_eigen.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__eigen__discrete__time__api_8hpp">apps_burgers1d_eigen_discrete_time_api.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__epetra_8hpp">apps_burgers1d_epetra.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__epetra__identity__masked_8hpp">apps_burgers1d_epetra_identity_masked.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__epetra__masked_8hpp">apps_burgers1d_epetra_masked.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__epetra__preconditioned_8hpp">apps_burgers1d_epetra_preconditioned.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__epetra__reduced__no__mask_8hpp">apps_burgers1d_epetra_reduced_no_mask.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__gold__states__explicit_8hpp">apps_burgers1d_gold_states_explicit.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__gold__states__implicit_8hpp">apps_burgers1d_gold_states_implicit.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__kokkos_8hpp">apps_burgers1d_kokkos.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__kokkos__functors_8hpp">apps_burgers1d_kokkos_functors.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__tpetra_8hpp">apps_burgers1d_tpetra.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__tpetra__block_8hpp">apps_burgers1d_tpetra_block.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/"/>
+  </compounddef>
+</doxygen>

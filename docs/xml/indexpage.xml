@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>Overview</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><anchor id="index_1md_pages_about"/> Pressio is a collection of repositories providing reduced-order models (ROMs) capabilties. Specifically, the whole Pressio framework currently includes the following repositories:</para>
+<para><itemizedlist>
+<listitem><para><computeroutput>pressio</computeroutput>: the main C++ repo containing the ROM algorithms and supporting functionalities;</para>
+</listitem><listitem><para><computeroutput>pressio-tutorials</computeroutput>: C++ tutorials explaining how to use <computeroutput>pressio</computeroutput> and its functionalities;</para>
+</listitem><listitem><para><computeroutput>pressio-builder</computeroutput>: an auxiliary repo with bash helper scripts for configuring/building/installing <computeroutput>pressio</computeroutput>, and <computeroutput>pressio-tutorials</computeroutput>. </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

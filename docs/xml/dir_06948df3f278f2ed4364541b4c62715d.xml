@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="dir_06948df3f278f2ed4364541b4c62715d" kind="dir">
+    <compoundname>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps</compoundname>
+    <innerdir refid="dir_69ebb01dbe8e68f66c7907b775931f13">/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/"/>
+  </compounddef>
+</doxygen>

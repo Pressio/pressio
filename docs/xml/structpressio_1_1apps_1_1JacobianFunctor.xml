@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structpressio_1_1apps_1_1JacobianFunctor" kind="struct" language="C++" prot="public">
+    <compoundname>pressio::apps::JacobianFunctor</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename u_t</type>
+      </param>
+      <param>
+        <type>typename crs_mat_t</type>
+      </param>
+      <param>
+        <type>typename sc_t</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1JacobianFunctor_1aee75629ec51e2c21c980ecc04300947a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::Ncell_</definition>
+        <argsstring></argsstring>
+        <name>Ncell_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="99" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1JacobianFunctor_1add3d8f936130392b32aa28194b152e26" prot="public" static="no" mutable="no">
+        <type>sc_t</type>
+        <definition>sc_t pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::dxInv_</definition>
+        <argsstring></argsstring>
+        <name>dxInv_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="100" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1JacobianFunctor_1a11c6555b88ffdffbc61acb7fb6c7e36e" prot="public" static="no" mutable="no">
+        <type>u_t</type>
+        <definition>u_t pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::u_</definition>
+        <argsstring></argsstring>
+        <name>u_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="101" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1JacobianFunctor_1abf7148a32af80da55ac4a20ef2ecf9e8" prot="public" static="no" mutable="no">
+        <type>crs_mat_t</type>
+        <definition>crs_mat_t pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::J_</definition>
+        <argsstring></argsstring>
+        <name>J_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="102" column="13" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structpressio_1_1apps_1_1JacobianFunctor_1a1475e40978324c4ffb9dc8caa1e70617" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::JacobianFunctor</definition>
+        <argsstring>(int Ncell, sc_t dxInv, u_t y, crs_mat_t Jin)</argsstring>
+        <name>JacobianFunctor</name>
+        <param>
+          <type>int</type>
+          <declname>Ncell</declname>
+        </param>
+        <param>
+          <type>sc_t</type>
+          <declname>dxInv</declname>
+        </param>
+        <param>
+          <type>u_t</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>crs_mat_t</type>
+          <declname>Jin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="104" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="104" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1JacobianFunctor_1a7a7097efb43bb3df7e41ee718d7bb891" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>KOKKOS_INLINE_FUNCTION void</type>
+        <definition>KOKKOS_INLINE_FUNCTION void pressio::apps::JacobianFunctor&lt; u_t, crs_mat_t, sc_t &gt;::operator()</definition>
+        <argsstring>(const int &amp;iRow) const</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const int &amp;</type>
+          <declname>iRow</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="114" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="114" bodyend="133"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" line="98" column="1" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos_functors.hpp" bodystart="98" bodyend="134"/>
+    <listofallmembers>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1add3d8f936130392b32aa28194b152e26" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>dxInv_</name></member>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1abf7148a32af80da55ac4a20ef2ecf9e8" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>J_</name></member>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a1475e40978324c4ffb9dc8caa1e70617" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>JacobianFunctor</name></member>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1aee75629ec51e2c21c980ecc04300947a" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>Ncell_</name></member>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a7a7097efb43bb3df7e41ee718d7bb891" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>operator()</name></member>
+      <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a11c6555b88ffdffbc61acb7fb6c7e36e" prot="public" virt="non-virtual"><scope>pressio::apps::JacobianFunctor</scope><name>u_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

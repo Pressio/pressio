@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="namespacepressio_1_1apps_1_1test" kind="namespace" language="C++">
+    <compoundname>pressio::apps::test</compoundname>
+    <innerclass refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler" prot="public">pressio::apps::test::Burgers1dExpGoldStatesEuler</innerclass>
+    <innerclass refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF1" prot="public">pressio::apps::test::Burgers1dImpGoldStatesBDF1</innerclass>
+    <innerclass refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF2" prot="public">pressio::apps::test::Burgers1dImpGoldStatesBDF2</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" line="52" column="30"/>
+  </compounddef>
+</doxygen>

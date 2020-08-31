@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler" kind="struct" language="C++" prot="public">
+    <compoundname>pressio::apps::test::Burgers1dExpGoldStatesEuler</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1ae3fea71f8cbf431cba0f42b4c1c7042b" prot="public" static="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>using pressio::apps::test::Burgers1dExpGoldStatesEuler::result_t =  std::vector&lt;double&gt;</definition>
+        <argsstring></argsstring>
+        <name>result_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" line="55" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1a82232d987ad66416f3a448fc42eb03fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>result_t</type>
+        <definition>static result_t pressio::apps::test::Burgers1dExpGoldStatesEuler::get</definition>
+        <argsstring>(int N, double dt, double final_t=35., double mu1=5.0, double mu2=0.02, double mu3=0.02)</argsstring>
+        <name>get</name>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>dt</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>final_t</declname>
+          <defval>35.</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>mu1</declname>
+          <defval>5.0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>mu2</declname>
+          <defval>0.02</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>mu3</declname>
+          <defval>0.02</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" line="57" column="19" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" bodystart="57" bodyend="102"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" line="54" column="1" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp" bodystart="54" bodyend="103"/>
+    <listofallmembers>
+      <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1a82232d987ad66416f3a448fc42eb03fd" prot="public" virt="non-virtual"><scope>pressio::apps::test::Burgers1dExpGoldStatesEuler</scope><name>get</name></member>
+      <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1ae3fea71f8cbf431cba0f42b4c1c7042b" prot="public" virt="non-virtual"><scope>pressio::apps::test::Burgers1dExpGoldStatesEuler</scope><name>result_t</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

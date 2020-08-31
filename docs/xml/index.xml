@@ -1,0 +1,619 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.18">
+  <compound refid="classpressio_1_1apps_1_1Burgers1dArbDs" kind="class"><name>pressio::apps::Burgers1dArbDs</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a11955bfedf64a4fd4af4392cb22c0b0a" kind="typedef"><name>int_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a22385fb8f5e16dae14a03ffcc8a21e8a" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a470369101b87d4635d83ee994fa44f68" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1afcb75b31e0427861c91ca3268637b05d" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a76e29e3961773f0f11210ee1a22b4da7" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a4573785061cf0009ff3a2d8033011002" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a8f4b42c232dd82694f38e042252d8b29" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1acf4470c451a5ac0d14f9419c1aaa4492" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a7073e4cd26c17a58506906731b793bc8" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ab34b89ebeabc7ec6fcfa538e21614e32" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a7779309126ac71b0c40cbe9abb63fc84" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a080ee26778eb9ddcba21c4812d5eef57" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1adb35c77b75cc263fe797ab5f6645e9b3" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a6f818cca4f031de63ca4eeef9ce0dc1d" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a14c1b3dcf54f5f867d8bb9a9fe709229" kind="function"><name>Burgers1dArbDs</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ac7de13bf31ec3519f0326bd447283a55" kind="function"><name>Burgers1dArbDs</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ab070b7031fed7ae75b183ffcb73a0bd8" kind="function"><name>meshSize</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a22d03a20430b310514859537cf98b5c5" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ae7a9d7906dca67445dd9c3f8652b453e" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1afa801411600669a98c78c83c48aea778" kind="function"><name>createJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ae064dc4369c6151e41aa4eac9ce28fe6" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1acaff51514c3f15127c9f2e777233c06b" kind="function"><name>jacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1ab71216bc629ab6ae4df5191af6f43f1b" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1aaf0690f11f4165490dbd05e52795b85d" kind="function"><name>velocity_impl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDs_1a479071cad19b6e27dbe1ab3e6e7510c9" kind="function"><name>jacobian_impl</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter" kind="class"><name>pressio::apps::Burgers1dArbDsContinuousTimeApiAdapter</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1aa12f525a503c1bfcfc936196427e2438" kind="typedef"><name>int_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1ae576a67947abf391a072e7d7da7b8c2c" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a66da2215d4daa84ee1cb3de6f47f05dc" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1ab438de1c7b13520273dba81dabbc3742" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1add5d2ed44a7199ebce9109b9836d015d" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a2cbcfc11df88c9ff8fc1276f4eb0eb05" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a1791ee9ff74c444a74f6dccf6fa0e42a" kind="variable"><name>appObj_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1aae98e295d60f8d343e0047e20a0772e4" kind="variable"><name>f_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1aa8cd12446274b742998d1bdb6f39f2a5" kind="variable"><name>JJ_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a9c020fa6a8a68ceacd0f0c30973e2718" kind="function"><name>Burgers1dArbDsContinuousTimeApiAdapter</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a659024867428a15ce1b4bdb771b6f627" kind="function"><name>Burgers1dArbDsContinuousTimeApiAdapter</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a28fc76c29fa56c8479222bc2c105d937" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a40a736aa45f4606676cac6f9ca530824" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1a781b58d4a0a0ff9935ecc56f9af5a1bb" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsContinuousTimeApiAdapter_1acd9b98e9adf760fe16a79a86b95b92f1" kind="function"><name>applyJacobian</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter" kind="class"><name>pressio::apps::Burgers1dArbDsDiscreteTimeApiAdapter</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a03b2ddee475e750d2f799896f58f96b6" kind="typedef"><name>int_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a7342390d3f5c1fd0d962bb8cca4847ed" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a4d90cbc7f97e8bd90a56d0a375431f81" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a2dcdcbddb01a363e2bb8ae8ba8baef23" kind="typedef"><name>discrete_time_residual_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a5de9bfbb629a4998e514529c585c4e0b" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1ac9c4dc315cd666dd4f045e8e63f7228b" kind="variable"><name>appObj_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1af31c9acde22e5aa7ffc6339b3c05acf7" kind="variable"><name>f_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a82242aecf6e3d7d6f987e82f055c549c" kind="variable"><name>JJ_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a46ad6a49ccc8c6e070f162cc2ec965cb" kind="function"><name>Burgers1dArbDsDiscreteTimeApiAdapter</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1ab5a711bae8453f05fbdcff84d689b492" kind="function"><name>Burgers1dArbDsDiscreteTimeApiAdapter</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1aac26d5c36971e97a9cdad69a8fd61ecc" kind="function"><name>createDiscreteTimeResidual</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a11d4412cfa1d5413c2fe8cbf3f97d804" kind="function"><name>createApplyDiscreteTimeJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1ac7e60c002feb0fe22d41ac900e98d7ba" kind="function"><name>discreteTimeResidual</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1a7eaf0fd06d89a8f9659e6408e507acca" kind="function"><name>applyDiscreteTimeJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1aa227ca0280e86cdd30de5887511c51f3" kind="function"><name>timeDiscreteResidualImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dArbDsDiscreteTimeApiAdapter_1af858f933d9af208607acac5c090517c3" kind="function"><name>applyTimeDiscreteJacobianImpl</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEigen" kind="class"><name>pressio::apps::Burgers1dEigen</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1ac891c072afdb168fadee1b370faf3ff9" kind="typedef"><name>eigVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1aec7276e93a7c2255897eb222cefb63b2" kind="typedef"><name>ui_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a4affbe56ca67107a106e3c4936a380ce" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a7a6d02ff3d338d7b0bd04f8a48c6716d" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a35e68c3f9b91792627072748d1656ede" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a68f2c8fa327e73ae0353091babf662b6" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a922abea98e23bd1a897d18ed4f0b15fe" kind="typedef"><name>eig_sp_mat</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a479d9a56c6e79f97186c746d18882db3" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a83694508cb65f49208675f93d1ff36ac" kind="typedef"><name>Tr</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1ade0f980ac0ea017b2d163bf102af4705" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1af1601f19356d0f050197f61b0e505f93" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1aef26d98cf4922daa4a5c1729d1d1c3f6" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a67ef5bd6aa7b4b261c27d9f87c4213d0" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a0e5bdc72c27c40dcb737bfd84b15d86e" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a9383cc3ff147aaa7344a1bcd494d885d" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a1219def83bc7435e5dae3ba6d942e90c" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1abcb900010b393ca132b4d2d3bc08ad93" kind="variable"><name>tripletList</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a2e08fe9d24fdbac52d7614625b15d851" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a1347a4edbe176c322764e427bf41d87d" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a1bcd5bca350a8dae188e72d15799cd6a" kind="function"><name>Burgers1dEigen</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a7dfb1158efa08a4d7e12340d8abd8ccb" kind="function"><name>Burgers1dEigen</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a9cdba6ccd1de5864f4a9eecf119af149" kind="function"><name>~Burgers1dEigen</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1ada1130da28b415719544c54b22b20cc8" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1ae4c00ca60340c40f4d51543a196e289b" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a939873108cdf3e8a007667353bfff178" kind="function"><name>createJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a023942a0dcc995e51797e6f1f3f1b139" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1ac6f55295403eca21bd125c76deb2e4c4" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a729ce85c0ae5659447bd34a4637d2c89" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1a47c4f04b762eb7171124afa3b42c7903" kind="function"><name>jacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigen_1aeb16b425b2ea73cb7a7a8229fe6a9af0" kind="function"><name>setup</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi" kind="class"><name>pressio::apps::Burgers1dEigenDiscreteTimeApi</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a3a6a5ef6d1a83435762075b912f92a26" kind="typedef"><name>eigVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a7c1b5fb28f1e157166a7581267e8b85e" kind="typedef"><name>ui_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a53f2099d5590ce818297e9729938133e" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a701a905e1c2d4db17887df691780d36c" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1aa0c281486534e1ab3687211bd59433d2" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a6c7fda150d38c275d92dd25595769e7b" kind="typedef"><name>discrete_time_residual_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1afbf79467ceb54646faba45956b9ba4c1" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a94222ae7e1a16864f15fe2eb37790684" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a30d38e4da6bb92d5bb6fd517c7ef2cd4" kind="typedef"><name>Tr</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a9c41ca51449091c5a81b95ac5321d238" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ae2c83e8846217f2d1ecf4d5025e2a71e" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ae617494e907473b9108ef8b418001c69" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ab35769240c8b421fb020f00adf9d2c5f" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a6c55bbc18c778ef67a9a9d1af4fbb961" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a7c6812436a1c3fa30d593911f8a82dfc" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a9a2769bb64e9018f4b0451d4f6b7136c" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a1587f4c5d7a5b3726f350eb7ec513214" kind="variable"><name>tripletList</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a3e66a661713de03068ca9342ad179dcf" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a3c5dd8a47f7bdb4a573e30d7017752e2" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1acd211063ddd1d20c1771b234af434de4" kind="function"><name>Burgers1dEigenDiscreteTimeApi</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1aa84f22e3b8e8edd834246a76083bfc35" kind="function"><name>Burgers1dEigenDiscreteTimeApi</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ac9c404ee192a163858131d4b1fe1c7b2" kind="function"><name>~Burgers1dEigenDiscreteTimeApi</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1adf6d19ad3681a07c12c06dcaac4a63c8" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1aa9f5d27dbba98c740526b4fdf2718c08" kind="function"><name>createDiscreteTimeResidual</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a3166f440d1816322d2b669b78162d974" kind="function"><name>createApplyDiscreteTimeJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a68a1a0f93dcb87f6e0101de048159a45" kind="function"><name>discreteTimeResidual</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a70245af2788e9f3729acc57b3d5d4efc" kind="function"><name>applyDiscreteTimeJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ac5b7ab9ceeb914f94eb1cac224077002" kind="function"><name>discreteTimeResidualImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ab80c5c347c64d49940b2b63c79196157" kind="function"><name>discreteTimeResidualImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a78f754048a214be07e92807194516f77" kind="function"><name>applyDiscreteTimeJacobianImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1afb258ed51c16abeed24a7c5839ddda6d" kind="function"><name>applyDiscreteTimeJacobianImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ae6262e84f39fcb34d96135037f08aa98" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a685e8b60ca1774bb8e4634bddcac140e" kind="function"><name>velocityImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1a650d7e5ce7faddc3af1a54d175779489" kind="function"><name>velocityImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ae0f114d5766221f3a4dd697de7542005" kind="function"><name>jacobianImpl</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEigenDiscreteTimeApi_1ad9dd54ef019f772ba87af7a0b3271083" kind="function"><name>jacobianImpl</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEpetra" kind="class"><name>pressio::apps::Burgers1dEpetra</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a57ded7b8880e182076b195afc54acd5b" kind="typedef"><name>nativeVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a42502dcce1494ee276fdbfb83c3261f0" kind="typedef"><name>rcp</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a80bcf46567766bba2ac5aa492986ff71" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aeeebac250660d8b08f9e76c75ac42adf" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa3a32cf352a83f96c75769ddd501ab83" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a64b5cb59ac9592cfa4e83d5600d666e1" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a17f359592247fd081ddda2fa5643d916" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aff9693efbe224d0c1321f028451ab0d4" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a33d21b9232c186494a54c85ebe043330" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aabaa49d4f9dac9e6ac888c9a976b90c0" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a6df560afd006851a50320b487faed67b" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a9ada7de77c658a626371d6b6d1bae225" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a3d2918a9321f4a15e89f8f7b94764a7e" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a7b33c48a161d1361409d01d94152587f" kind="variable"><name>nonZrPerRow_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a799e590c30662b3b4e155a1456842eaf" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a9a908036fea4c64d669a40a4986c3237" kind="variable"><name>comm_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ace287634198d9b5f8517edd4bda7a499" kind="variable"><name>dataMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a59647a29e6d611ad8e1b039cbf35ccd8" kind="variable"><name>myRank_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aec335ea941b1fb16f2a705248eb4c1f7" kind="variable"><name>totRanks_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a5c0f995a8f0d492351a0ce93243f629b" kind="variable"><name>NumMyElem_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a14639cb64dd98be93e22696ac6fd3d52" kind="variable"><name>myGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1af4f57b791b1333991ec2481b938fb32d" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a4ec1beaf923c9e0c5753d5da83b81285" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a10b53b46fe15fcb9829a6c634cc7edfb" kind="variable"><name>Jac_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a6b3d49d029451bc3d843759adad529dc" kind="function"><name>Burgers1dEpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1acc53ca3a542189f5aeea5f552561efeb" kind="function"><name>Burgers1dEpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a0dd885f11eb6234488e9165eb841f5ad" kind="function"><name>~Burgers1dEpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ab527cfb4510adf5a9d0635366583542d" kind="function"><name>getDataMap</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a2b43ad1f2f0fc5c2ef042a65b5403de1" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa6a5553cefb70606b866e8718643e211" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a732a2524e792d753eed64becabdb6d4b" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ad4dfa638437ac3cbba2ae85646f2d511" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a4cdc28443de631417212a8743cd78206" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa380ed1635ba92d1badb69cca7bfcb09" kind="function"><name>jacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ac3d47a251d74de4585cbda29310483ea" kind="function"><name>setup</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask" kind="class"><name>pressio::apps::Burgers1dEpetraIdentityMask</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a8dd1da855d0159214136bab1a9cb4568" kind="typedef"><name>base_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1af9d34fbff9d7b77d3447fa31a075a031" kind="typedef"><name>importer_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a64b5cb59ac9592cfa4e83d5600d666e1" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1aa3a32cf352a83f96c75769ddd501ab83" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1aeeebac250660d8b08f9e76c75ac42adf" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a80bcf46567766bba2ac5aa492986ff71" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1ac6e82b4af8f31dd052ff5ee68b131aa5" kind="variable"><name>maskMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1abe237628a11afdb62f2ea9d8ca923a1c" kind="variable"><name>myMaskGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a0b3f0f7ecc9c8f366481e4042deb6895" kind="variable"><name>importer_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1ab4701988e6fd4e2ba575ead2f62e97d4" kind="function"><name>Burgers1dEpetraIdentityMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a47f558b158de0bea480e390563d3e5d8" kind="function"><name>~Burgers1dEpetraIdentityMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1a820ffea2ffade39847d90664faab1bec" kind="function"><name>createApplyMaskResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1afb3e6cbe74ec492922e028947e9a2559" kind="function"><name>createApplyMaskResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1aef733e147789839bd263aae65999e4ea" kind="function"><name>applyMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1aa3a9bc59d7d55886b1cea8ff115a9782" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask_1ad2a186d9a2df2630f943f0fb46345a17" kind="function"><name>createMaskMap</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked" kind="class"><name>pressio::apps::Burgers1dEpetraMasked</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a85400e36fbaf9b40ba87d284eb512c8a" kind="typedef"><name>base_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a465ed8dda38a60589efafeceb3c70ccb" kind="typedef"><name>importer_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a64b5cb59ac9592cfa4e83d5600d666e1" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1aa3a32cf352a83f96c75769ddd501ab83" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1aeeebac250660d8b08f9e76c75ac42adf" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a80bcf46567766bba2ac5aa492986ff71" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a8c7a069dd85f35a3115a7219a370a2c8" kind="variable"><name>maskMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a445b5c59247d788e09781d56bca389b2" kind="variable"><name>myMaskGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a6c60dd0d0c324945e40a9425dca00464" kind="variable"><name>importer_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a8d3937f4f0d12a93455e4d3342ce7556" kind="function"><name>Burgers1dEpetraMasked</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a24a2b10bd17a43429b0027ec71574984" kind="function"><name>~Burgers1dEpetraMasked</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a370b731b3be78859dff3ef032158956e" kind="function"><name>createApplyMaskResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a0577368d29033f9e951266e3f88e5eff" kind="function"><name>createApplyMaskResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a9e5613742ab97d1c132c01675b8463f0" kind="function"><name>applyMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a76add8023d00677c57796e931e159a70" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked_1a132adb83ae8114c5c8cb11dd0e178d66" kind="function"><name>createMaskMap</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned" kind="class"><name>pressio::apps::Burgers1dEpetraPreconditioned</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1a951fde439e6ae27222cbfc84e50bbd69" kind="typedef"><name>base_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1aeb0454163dded5be3bced1fdf93d6c33" kind="typedef"><name>importer_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1a0c39cebd2b649f1426993aca90114f8e" kind="function"><name>Burgers1dEpetraPreconditioned</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1a434b90b3bb473c53269349df92523615" kind="function"><name>~Burgers1dEpetraPreconditioned</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1ab5daf1462ef12d87701b26bc247938a0" kind="function"><name>applyPreconditioner</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1a599f9df241f788e1ffbc598a48f3d806" kind="function"><name>applyPreconditioner</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned_1a7a839e150f0cfd2e5934deb3c5548312" kind="function"><name>setup</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask" kind="class"><name>pressio::apps::Burgers1dEpetraReducedNoMask</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a21b4a563867f9d0d496f64a6a8f4bd34" kind="typedef"><name>base_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a7fce9830c90fb3a61225ecf35ed221b8" kind="typedef"><name>importer_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1ae58d01dfeef6b2dfb53a347cc5d94bd1" kind="variable"><name>maskMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a344932dd78bb90c6537b63802d33ff4c" kind="variable"><name>myMaskGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1ab4365d9397484615548c75166b7eb65c" kind="variable"><name>importer_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1aafa25eeb10de8c197585c6edfa7e92d2" kind="function"><name>Burgers1dEpetraReducedNoMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1ae3234033118029536e090c88d470a6ab" kind="function"><name>~Burgers1dEpetraReducedNoMask</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1abb5aac140060b4759b84a81038ac05dc" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a326cc99c86f1dcea8aa9ca22795014ff" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a815518dbdf17e70b82bd1e9c981f494d" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1a1c016717bbd2a386990e615a25eef0da" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1ac823daa8302fda308303fc26d1fe2575" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask_1afa046851897545976d51c8b385bba787" kind="function"><name>createMaskMap</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler" kind="struct"><name>pressio::apps::test::Burgers1dExpGoldStatesEuler</name>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1ae3fea71f8cbf431cba0f42b4c1c7042b" kind="typedef"><name>result_t</name></member>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dExpGoldStatesEuler_1a82232d987ad66416f3a448fc42eb03fd" kind="function"><name>get</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF1" kind="struct"><name>pressio::apps::test::Burgers1dImpGoldStatesBDF1</name>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF1_1a39fe87ec6b6f6302292a6bb8fbd89533" kind="typedef"><name>result_t</name></member>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF1_1accdadfdde0c55b103a8708e0167bd145" kind="function"><name>get</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF2" kind="struct"><name>pressio::apps::test::Burgers1dImpGoldStatesBDF2</name>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF2_1aec3784e3bafe9d49cb47dc7da097630f" kind="typedef"><name>result_t</name></member>
+    <member refid="structpressio_1_1apps_1_1test_1_1Burgers1dImpGoldStatesBDF2_1aa5d07be34e455dac9fee6b8c763ab415" kind="function"><name>get</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1Burgers1dKokkos" kind="struct"><name>pressio::apps::Burgers1dKokkos</name>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a4f68c74cedfb32ecb07627e9d85656ff" kind="typedef"><name>sc_t</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a4b4c0eb95c320a93315ef0de2e213c94" kind="typedef"><name>params_t</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a50810b468409842580ff8dab4861195a" kind="typedef"><name>ui_t</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a9ad236ed6f8e6d7c4302ea6d3cc4b13e" kind="typedef"><name>klr</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab8165d116a4e700e7ce9184582918c56" kind="typedef"><name>kll</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1afa0c958333a42e5dab375ca5f6421bc5" kind="typedef"><name>execution_space</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac051460b49fc52166422862590eba418" kind="typedef"><name>k1dLl_d</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5a986c179a809641c954619c36a4a518" kind="typedef"><name>k1dLl_h</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1ef56b34f9e413fb602724c29e7cab12" kind="typedef"><name>h_layout1</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5ca3701c1f068521bbd489da6ffa6aa6" kind="typedef"><name>d_layout1</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab27ab87d7c672ae9c074332c09708910" kind="typedef"><name>k2dLl_d</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aa23ebc79ef980d85225b44bd765f77cc" kind="typedef"><name>k2dLl_h</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1afc3b2c6e885ac76e4e4d7535d9abf089" kind="typedef"><name>h_layout2</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aeee8d0f8e88cc54627054edd1616c805" kind="typedef"><name>d_layout2</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a806b6c524f061aa72d1417d18d2f9300" kind="typedef"><name>ord_t</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a45075fcf2a8097aae0bec67646b4ba17" kind="typedef"><name>crs_mat</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ae30f59c05c56490593947b74e3f89808" kind="typedef"><name>state_type_d</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a460fe544ef2870a3d26e0787000a427d" kind="typedef"><name>state_type_h</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a12b76eebbec351a1020d257e9cdec9c8" kind="typedef"><name>velocity_type_d</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab3873905e09ad883529bfb3c919acd50" kind="typedef"><name>velocity_type_h</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aad07fac7de0f96eaaac8728dfd1cb595" kind="typedef"><name>mv_d</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac3446e04edb0f22b5bf26f1e95757b17" kind="typedef"><name>mv_h</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5b98c7853dde91e9584bb3a3af758e9a" kind="typedef"><name>scalar_type</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a38d0cd5b21e8eb9dc9dfbe7644adb79f" kind="typedef"><name>state_type</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af054ad7afcc01db5f6ea37b61efd27b3" kind="typedef"><name>velocity_type</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af05f9f7d597fd14696a326459846be9a" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a703e72ee1b264a18c50a96f9c643cdab" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1adf8edc5da82c7132ab8a20e21e33e72d" kind="variable"><name>mu_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a34d5f068ce6d6131889114000252c99e" kind="variable"><name>xL_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aff132e5ab07fa795d939624c70038b61" kind="variable"><name>xR_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a9b1940cacad26dba0d7529782e624bd7" kind="variable"><name>Ncell_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a30306cc07dabe7667d394bc3ff481d6d" kind="variable"><name>dx_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1528114192bbec6d6bdaddb70634a1e9" kind="variable"><name>dxInv_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af4d3914bf6b1d46cf45ef8514676041f" kind="variable"><name>x_d_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a2efffb6bb8fb2506b478d1c360dc7477" kind="variable"><name>x_h_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac37b8e20a9833dfddb797ed25253301b" kind="variable"><name>U_d_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ae3efa74249c96eb69278d2c3179f9e80" kind="variable"><name>U_h_</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a2e411349f6bd89654e01384f87b51b09" kind="function"><name>Burgers1dKokkos</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1adecf32553dbb5dd79867c8142ada6d7b" kind="function"><name>Burgers1dKokkos</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a30f01f67022e587541654c89f71a26aa" kind="function"><name>~Burgers1dKokkos</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a6e1d1be99686b710af20120a7c858c72" kind="function"><name>getInitialState</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aefc8062edb22f54bdcdffb7b415170cb" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a33e5e8a22af782f42eeff9f53c065ca4" kind="function"><name>createVelocity</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1d100491d3d2dd7e06f27cb281f0eb8a" kind="function"><name>velocity</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af99b641c2bc3f7e3c22a5d513a54f4d6" kind="function"><name>createJacobian</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a860c9a065dcb9368297c5d30b6831e70" kind="function"><name>jacobian</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a7f8f5175ca1b0d534c794e719179e3f8" kind="function"><name>applyJacobian</name></member>
+    <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ace165b227296247ebc1c3583e97ec9f6" kind="function"><name>setup</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dTpetra" kind="class"><name>pressio::apps::Burgers1dTpetra</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a879d9ba2b3c2ccba5e60956b76fdcaa1" kind="typedef"><name>map_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1afb68593e37851f86e3d70996acd71cbd" kind="typedef"><name>nativeVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a5e1fe5f8c0f6c5f8deeb3483234e0860" kind="typedef"><name>go_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ae262138e9b83271dfb91730249573a34" kind="typedef"><name>lo_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1aee62d664bd3a411090f13efeac744675" kind="typedef"><name>tcomm_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a5a886876e701645b24e3ee0e1767882c" kind="typedef"><name>rcpcomm_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a4e791697b4589af996e361b945b0bb39" kind="typedef"><name>rcpmap_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ae2a72404271a32a783eb748886e56d95" kind="typedef"><name>stdrcp</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a593d3437e0155c6ec4aa0916b68e213d" kind="typedef"><name>crs_graph_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a66609155eb6bf1b1203add18e4532b28" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ac43e2c04ffc031dfa17068af4e631301" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1abaee4fd217c356d3165aef36481f6b74" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a580abb6f9b7dce5f86eeef117d87a0a3" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a0d067ea1417ce055818a636ef0132fc7" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a1ab3319027de274f75479ea5784795eb" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1adefcfecb5c480b6e7a270f186876bba8" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1acea42cdce11ff2898237a0526df328d7" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a7ce3d4d753f3f424c0591d5961534fd3" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1aeb9c7ff66a8a94cd3e1f5cf628ce26e4" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a0b3334ba25992bf8173aa0432cf7310b" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a19b39cf52b41b9ad61285f8a1ef84a5f" kind="variable"><name>nonZrPerRow_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1acb9f76a387f98a2e1b560af12c43857f" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ab8f96ae0f69886f002981329863f2ddb" kind="variable"><name>wrappedCout_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a6e7c4c8a96355c66a721855072b12921" kind="variable"><name>comm_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ac2b5a500ded5f4e779676234b3e799fc" kind="variable"><name>dataMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1aefc8500d9df9389330ef0e4dc858e831" kind="variable"><name>myRank_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a6092da493911b5d3120af27866099e72" kind="variable"><name>totRanks_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a62e4521d73a09285864e875759440107" kind="variable"><name>NumMyElem_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a17ad52304ccf90cf6010c099aec9aa95" kind="variable"><name>myGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a843ea4c9db8e68637bbe2d5222d75e02" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a25695f44514f5fa5af6f3eb7a2ea7d6d" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a80040cd185313ff189cebba39c490428" kind="variable"><name>Jac_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ab4f4db6abef1252b53b51ec1e2c0d23a" kind="function"><name>Burgers1dTpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1aba028c6f1c68fab7cc99b8e04cc63752" kind="function"><name>Burgers1dTpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ad43f522372f14b33d34e07a6e328afb3" kind="function"><name>~Burgers1dTpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1adbdd253f69f2be9f9a6156e0e6fae488" kind="function"><name>getDataMap</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1abd6cc7228e971baf6593ac2a34f36faf" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1af51d925c31120c411c4c99bf4f3afea4" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a8e8af6c6c5e3ddf3089d885eda57cfc9" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a48062c32dd4b970798c3ee3b2c077454" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a41a4eda460745f8e1b9b6e8a7ae59477" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a9fe7ec59950d765c107b058800ed2e72" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ae02e2ed043ecfda5b88d6595aa41fade" kind="function"><name>computeJacobianReplace</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1ab5340f2122ea557f21da00070b966d7a" kind="function"><name>assembleGraph</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetra_1a3b3cbd83e4d84ad594dea2fda8e9ace3" kind="function"><name>exchangeFlux</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock" kind="class"><name>pressio::apps::Burgers1dTpetraBlock</name>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aab83225a7dd5ad9a95e4b4b9c6810207" kind="typedef"><name>map_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aeac0db50bc09fd7d59557bf851ecf11e" kind="typedef"><name>nativeBlockVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a58f2f3e3616a71fae03d860569a772cd" kind="typedef"><name>nativeVec</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1acde434c27534e39239a90d2ee2c8f855" kind="typedef"><name>go_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ae7d5b16f941d9abf104a9e3da685ce57" kind="typedef"><name>lo_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a002ff55bc4d698d743f2f70221c89e6e" kind="typedef"><name>tcomm_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a81e2ef2757506bc506538a6845a7350d" kind="typedef"><name>rcpcomm_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ad46bf3680733b85c5a21fd431396fb3d" kind="typedef"><name>rcpmap_t</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a6f7c8dad988c4a62bffea2dd89f3a41a" kind="typedef"><name>stdrcp</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1af6d7699d35b68f8160fc5bb7ad355a17" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aa0b96ee35ca34bcdc9d8f57ac045caae" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1adbd3e3eec57833a2c5ee4b1affecad5e" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1afeebab96208481c8afb6a77d9a6d3cf3" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a3fa67eb6a6aeb05bc928152246a27f00" kind="typedef"><name>jacobian_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aa1e5560062880920226376ea2ae5865d" kind="typedef"><name>crs_graph_type</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a6b76fa53ecdecb0d030d476670597b41" kind="variable"><name>mu_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a969d54a083c6f453e6113e72c8b88b49" kind="variable"><name>xL_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ac569b21db90137987a1abfc030aa3d65" kind="variable"><name>xR_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ab9ad157b54b56fee32d3e09eb3558bc4" kind="variable"><name>blockSize</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1acd36e8507bdaa491463d56b74bc760d7" kind="variable"><name>Ncell_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ad6d463d0cabd863c674aa9ac7bb7b020" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a2edf453be5e0efeea8f58bf3f5c16df7" kind="variable"><name>dxInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a80477cacb3c23ff03f4f01c5c867500e" kind="variable"><name>nonZrPerRow_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ac9e6edc791bb3997de132caf3585a4c8" kind="variable"><name>xGrid_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ac1916d4e0844d3fa10957e1114557fe4" kind="variable"><name>wrappedCout_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a246f16317c963ec82af0fb4c13f858d0" kind="variable"><name>comm_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1af1a88a71148dda496a5fb716941fc9ab" kind="variable"><name>dataMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1af1ac659bf6396d98387ad15c601f793b" kind="variable"><name>myRank_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1af1ebc1ea555f047918226476baa595f3" kind="variable"><name>totRanks_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ab485d1408148a04fe26521ad3f98be8b" kind="variable"><name>NumMyElem_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1abbdeccb3b28c1692f1f29881d0206f9c" kind="variable"><name>myGel_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ad4089c9006ba8d72e12df0e39d636c99" kind="variable"><name>U_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a3f89fdd53cb29869d9d7932d68966ad4" kind="variable"><name>U0_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a972f0f0ac203b7360648617e56456723" kind="variable"><name>Jac_</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a452ee5a24583416f81d718b4ca0209d5" kind="function"><name>Burgers1dTpetraBlock</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a16b38dcfd034e19a10c9a4d5db4207be" kind="function"><name>getDataMap</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aacce1865aa2d5d55c938e6d70fa44f6d" kind="function"><name>getInitialState</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1afdd4df83bf5a6af32b983f11567545fe" kind="function"><name>velocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a5fd5fadbe578e483f7ac257190d91e04" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a5778b6b6c14e504c6a25a2d66a186d76" kind="function"><name>createVelocity</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a02c0db2f548ef95d605c403bad856dfc" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1a9bfc7c12c6acdeb1e8be304b5308f079" kind="function"><name>setup</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1af8478dc8139bb9e5ccad07ab31f6d9b6" kind="function"><name>computeJacobianUpdate</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1aaf4131c16748789a5586b6992e179bad" kind="function"><name>assembleGraph</name></member>
+    <member refid="classpressio_1_1apps_1_1Burgers1dTpetraBlock_1ab193c0f261b3a848121593f46b7c7982" kind="function"><name>exchangeFlux</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix" kind="class"><name>pressio::apps::arbds::DenseMatrix</name>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a8f409ed6a08c4ab2df6bf55da71f67c5" kind="typedef"><name>value_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a4ee2c9a3a74dfc1114acdde21379d9fe" kind="typedef"><name>size_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a63b34188915edb55300791ebf4541fcc" kind="typedef"><name>index_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a0562d9ece8e6390d252e282af48da715" kind="typedef"><name>data_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a44a22677c5c4831c662258e776adf523" kind="variable"><name>data_</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1aab8047c772f4feb1f31c74d7fed2b303" kind="variable"><name>numRows_</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a023086933f95f441d5a0832943e8040c" kind="variable"><name>numCols_</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1af06770c21fd6ddfe6d3c421441ceecb3" kind="function"><name>DenseMatrix</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a596c0a09829a61f18fbc79503006be2f" kind="function"><name>resize</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a3d308f99211167b04e43ea0d131c30ee" kind="function"><name>extent</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a0189b717a5474f8e44c8480132c1214f" kind="function"><name>operator()</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a18f437be0846fdaafa7477065f614e50" kind="function"><name>operator()</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1adc56718417d26f908b523251dbc0ddc7" kind="function"><name>data</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1DenseMatrix_1a70c86c9b145191ea44ee6bcbc8bb0fdf" kind="function"><name>data</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1JacobianFunctor" kind="struct"><name>pressio::apps::JacobianFunctor</name>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1aee75629ec51e2c21c980ecc04300947a" kind="variable"><name>Ncell_</name></member>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1add3d8f936130392b32aa28194b152e26" kind="variable"><name>dxInv_</name></member>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a11c6555b88ffdffbc61acb7fb6c7e36e" kind="variable"><name>u_</name></member>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1abf7148a32af80da55ac4a20ef2ecf9e8" kind="variable"><name>J_</name></member>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a1475e40978324c4ffb9dc8caa1e70617" kind="function"><name>JacobianFunctor</name></member>
+    <member refid="structpressio_1_1apps_1_1JacobianFunctor_1a7a7097efb43bb3df7e41ee718d7bb891" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra" kind="class"><name>pressio::apps::SteadyLinAdvDiff2dEpetra</name>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a8b8a67ed499a035720b75ebb2fa018ac" kind="typedef"><name>nativeVec</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1abcc8f3774b1eb29ec05e27d1b5155d5c" kind="typedef"><name>rcp</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4625ae6d968f78d0ab0f6407e8e490d3" kind="typedef"><name>nativeMatrix</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5e80ba174140b09a6e1405df580b0eed" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2a51d5f37658ad54246293f1b89605b3" kind="variable"><name>maxNonZeroPerRow_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1affc67a778a9d5cbc4c272f15f7e51eca" kind="variable"><name>solveTolerance_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab9d7086f74b499f1715c1d1b5cd5d3fe" kind="variable"><name>Lx_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa55c8d5d825306a0db366804d15f1290" kind="variable"><name>Ly_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ae7c02a3b31e7655fe8e7bfb9effd5262" kind="variable"><name>xAxis_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ca58f61ed6312fdba71efb2a0165364" kind="variable"><name>yAxis_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ac25298bd4bfd6e0e3cd2faa4437a7d91" kind="variable"><name>comm_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af6787941aae453cc9fc03ca50341761a" kind="variable"><name>Nx_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a6f439d49f8f6f125c775cad8989b7436" kind="variable"><name>Ny_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a74a8414c8891fdc6dcbb5335e95cbc7c" kind="variable"><name>NxDof_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb7c6a996a2ba5c82bda0288634e6367" kind="variable"><name>NyDof_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1add659bb8ced429072ce2cac0e93293cb" kind="variable"><name>Pr_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ef0891884839618f856f1050b2f97bd" kind="variable"><name>Re_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a73ded570734f1ea6f81cbba0319ee4cf" kind="variable"><name>invPrRe_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a39193036ca3cfa1791f5325d92ffaeb4" kind="variable"><name>Tleft_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a5ad26f30677a98f1aa11c5c8d247299c" kind="variable"><name>Tright_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab98d87ab28c80b1ae8b6a212f3b96577" kind="variable"><name>dx_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7a1b79ddeed8a0b69ba1f57261b02279" kind="variable"><name>dy_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4da8f748f8945e40601c20316da4641c" kind="variable"><name>dxSqInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad6a74bd2a25d011d84f9b0229eaac060" kind="variable"><name>dySqInv_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a63505bce03f6e0241289e2227f342617" kind="variable"><name>dx2Inv_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af230f517f9772a8277319403c5420eb4" kind="variable"><name>dy2Inv_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2fff24a29bf65cbd5cec12c46baab728" kind="variable"><name>myMap_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0669a8313ecd0a28aab25c7a2ea6de13" kind="variable"><name>numGlobalDof_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a012ca8365b3de93ef0549e9a55fccf7c" kind="variable"><name>MyGlobalDof_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd860170c62bbb1db76f0f9a29a4c5d0" kind="variable"><name>dofPerProc_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a4698edfbca415f7bb9ebd2a053a543dc" kind="variable"><name>x_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1adafcf59823f47f31921656224ec8920b" kind="variable"><name>y_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aeb06905b7634cd40794da5be3a094db5" kind="variable"><name>u_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a0c5a008c75ca78227b85874960c19f77" kind="variable"><name>v_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a32b5f8f6f2c569fa2bc627b9ee61345e" kind="variable"><name>A_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3fd3a1fb590de08a0b35711427dda8f7" kind="variable"><name>T_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a1e8ee40ae4c3624895bd695754ac00ab" kind="variable"><name>f_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a77cfd969da2601d19d7d2bfcb50a1ad9" kind="function"><name>SteadyLinAdvDiff2dEpetra</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1acd8a4e82bc263adff8b5fce3af951fc4" kind="function"><name>createMap</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7decff49dfb4959e81f0b08859515311" kind="function"><name>getDataMap</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1af819370ff473c2fd180fdd31e2d09820" kind="function"><name>assembleMatrix</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f08239d945a79f6d70fb16dd420a823" kind="function"><name>fillRhs</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a27044fb7b8af70d0d0c4cc5362737b59" kind="function"><name>solve</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa3d81e6d42fc2311b86bd486e49c6840" kind="function"><name>printStateToFile</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a80bc3b7e82de4cab43b4c46741322358" kind="function"><name>getNumGlobalDofs</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a12ce67be393dd11835338db85b0e2d58" kind="function"><name>getNumLocalDofs</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad1bb9bfbe1bcd54d9ca9aa15ac9f77f8" kind="function"><name>getX</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a2f4aaa48ad6d58c23339f76abd2981aa" kind="function"><name>getY</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a7e85ee1a93667d09d5eb1667b9461726" kind="function"><name>getState</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a3c1bcfd90cd8a1de9f89d5d666e8a562" kind="function"><name>getMatrix</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ab5333e961022f667cb32f1aea6e1cee5" kind="function"><name>getForcing</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1a91ff639de92d3f420501cee7b9aec00b" kind="function"><name>localIDToLiLj</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1ad548691d5cbd78143b5f2f257587f4ac" kind="function"><name>globalIDToGiGj</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetra_1aa640eca4577f7a3a736e6a6f61891b5f" kind="function"><name>setup</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter" kind="class"><name>pressio::apps::SteadyLinAdvDiff2dEpetraRomAdapter</name>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a836049dd989d65b40900a9028146c8f4" kind="typedef"><name>scalar_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a56dda0bf7ecaeaf872bf7a7d5cc9559b" kind="typedef"><name>state_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1abf7895578bc9bc53223fa62bf95b2452" kind="typedef"><name>residual_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1ad714d9636c11924b7e17e1b3df5cb6d5" kind="typedef"><name>dense_matrix_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a19de6980856d5f2e1a44dbb890d6b555" kind="typedef"><name>velocity_type</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a179c7e5a2569ee1eac307f22527d0f2e" kind="variable"><name>appObj_</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a21ac44a1ffa8074baf767882f191a747" kind="function"><name>SteadyLinAdvDiff2dEpetraRomAdapter</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a4ed37f80c38f3c52af1fa5803f887053" kind="function"><name>getDataMap</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a68d212f0324542976cc8ab4a458238aa" kind="function"><name>printStateToFile</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a9cae86fccca785fbdc10d848f299cf2a" kind="function"><name>getState</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a54ad87f32c67abc318a461fadfae2d48" kind="function"><name>createResidual</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1ae86ace5d837feac3966d6456017a802e" kind="function"><name>createApplyJacobianResult</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a48c7953471583b3786f9a3dd4807b5e1" kind="function"><name>residual</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1a2ff3f0457d4daf45651c90ddd93e73e4" kind="function"><name>applyJacobian</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1aacfe241efa0fce7683ee1bf85f67e617" kind="function"><name>applyPreconditioner</name></member>
+    <member refid="classpressio_1_1apps_1_1SteadyLinAdvDiff2dEpetraRomAdapter_1ac36376717ea6311598107af1d0e0c678" kind="function"><name>applyPreconditioner</name></member>
+  </compound>
+  <compound refid="classpressio_1_1apps_1_1arbds_1_1Vector" kind="class"><name>pressio::apps::arbds::Vector</name>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a5e6899a7b1ca35b009b3d39703591500" kind="typedef"><name>value_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a2e55cb35ad7a516d23407d10a10717c1" kind="typedef"><name>size_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1aecfcbedeb1e8ecbdd8607f0703ea9d98" kind="typedef"><name>index_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1acbb665099f0c15b46bd3ae5d92b819f4" kind="typedef"><name>data_type</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a578a57b266c9c5abb2197934cd25b79e" kind="variable"><name>data_</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a1285224f28e62b97be4e7908ac02b5f4" kind="function"><name>Vector</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a75761132c07ca8deb5ef3fc3111a3380" kind="function"><name>Vector</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1af8f9a5e11f714527d795ab442b82a0f6" kind="function"><name>resize</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a5cdeb860df702ecb64049753c67781ba" kind="function"><name>extent</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a931164e4801b65542987ca648613e648" kind="function"><name>operator()</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a1151f4033d2806721a42fab9fb2112b4" kind="function"><name>operator()</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a13ad456ae8810c71d90469c354ef0d18" kind="function"><name>data</name></member>
+    <member refid="classpressio_1_1apps_1_1arbds_1_1Vector_1a54cdeb96a9b6041460b65a575d420060" kind="function"><name>data</name></member>
+  </compound>
+  <compound refid="structpressio_1_1apps_1_1VelocityFunctor" kind="struct"><name>pressio::apps::VelocityFunctor</name>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1a406bf2cbdcdc096c43a1e262eff0faba" kind="variable"><name>mu0_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1aae6770dda70b994e66a6673794f03f53" kind="variable"><name>mu1_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1a097576f51daea1ab223cfc850b0e6163" kind="variable"><name>mu2_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1acaa08b5c59b83f069303fffa3d7c66e4" kind="variable"><name>Ncell_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1a0de7b91cdda2939ed553fa21cf53d500" kind="variable"><name>dxInv_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1aa65d2250a388e2d41d3337b2a507ee4d" kind="variable"><name>x_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1ab349aa001a35e48408aad039ed2a32f6" kind="variable"><name>u_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1a19febbb00b18d35c8f6568f73c85af7d" kind="variable"><name>r_</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1a3f700b9ffe4a4f4c4036c2eda4eff617" kind="function"><name>VelocityFunctor</name></member>
+    <member refid="structpressio_1_1apps_1_1VelocityFunctor_1aca53de7c0ea7f0751ba9f6be45c1991c" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="namespacepressio" kind="namespace"><name>pressio</name>
+  </compound>
+  <compound refid="namespacepressio_1_1apps" kind="namespace"><name>pressio::apps</name>
+  </compound>
+  <compound refid="namespacepressio_1_1apps_1_1arbds" kind="namespace"><name>pressio::apps::arbds</name>
+  </compound>
+  <compound refid="namespacepressio_1_1apps_1_1test" kind="namespace"><name>pressio::apps::test</name>
+  </compound>
+  <compound refid="about_8md" kind="file"><name>about.md</name>
+  </compound>
+  <compound refid="advanced__usage_8md" kind="file"><name>advanced_usage.md</name>
+  </compound>
+  <compound refid="API_8md" kind="file"><name>API.md</name>
+  </compound>
+  <compound refid="basic__usage_8md" kind="file"><name>basic_usage.md</name>
+  </compound>
+  <compound refid="build__and__install_8md" kind="file"><name>build_and_install.md</name>
+  </compound>
+  <compound refid="examples_8md" kind="file"><name>examples.md</name>
+  </compound>
+  <compound refid="quickstart_8md" kind="file"><name>quickstart.md</name>
+  </compound>
+  <compound refid="team_8md" kind="file"><name>team.md</name>
+  </compound>
+  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
+  </compound>
+  <compound refid="user__guide_8md" kind="file"><name>user_guide.md</name>
+  </compound>
+  <compound refid="apps__burgers1d__eigen_8hpp" kind="file"><name>apps_burgers1d_eigen.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__eigen__discrete__time__api_8hpp" kind="file"><name>apps_burgers1d_eigen_discrete_time_api.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__epetra_8hpp" kind="file"><name>apps_burgers1d_epetra.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__epetra__identity__masked_8hpp" kind="file"><name>apps_burgers1d_epetra_identity_masked.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__epetra__masked_8hpp" kind="file"><name>apps_burgers1d_epetra_masked.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__epetra__preconditioned_8hpp" kind="file"><name>apps_burgers1d_epetra_preconditioned.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__epetra__reduced__no__mask_8hpp" kind="file"><name>apps_burgers1d_epetra_reduced_no_mask.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__gold__states__explicit_8hpp" kind="file"><name>apps_burgers1d_gold_states_explicit.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__gold__states__implicit_8hpp" kind="file"><name>apps_burgers1d_gold_states_implicit.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__kokkos_8hpp" kind="file"><name>apps_burgers1d_kokkos.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__kokkos__functors_8hpp" kind="file"><name>apps_burgers1d_kokkos_functors.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__tpetra_8hpp" kind="file"><name>apps_burgers1d_tpetra.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__tpetra__block_8hpp" kind="file"><name>apps_burgers1d_tpetra_block.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__arb__ds_8hpp" kind="file"><name>apps_burgers1d_arb_ds.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__arb__ds__continuous__time__api__adapter_8hpp" kind="file"><name>apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__arb__ds__custom__dense__matrix_8hpp" kind="file"><name>apps_burgers1d_arb_ds_custom_dense_matrix.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__arb__ds__custom__vector_8hpp" kind="file"><name>apps_burgers1d_arb_ds_custom_vector.hpp</name>
+  </compound>
+  <compound refid="apps__burgers1d__arb__ds__discrete__time__api__adapter_8hpp" kind="file"><name>apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp</name>
+  </compound>
+  <compound refid="apps__steady__linear__adv__diff__2d__epetra_8hpp" kind="file"><name>apps_steady_linear_adv_diff_2d_epetra.hpp</name>
+  </compound>
+  <compound refid="apps__steady__linear__adv__diff__2d__epetra__rom__adapter_8hpp" kind="file"><name>apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp</name>
+  </compound>
+  <compound refid="README_8md" kind="file"><name>README.md</name>
+  </compound>
+  <compound refid="md_pages_advanced_usage" kind="page"><name>md_pages_advanced_usage</name>
+  </compound>
+  <compound refid="md_pages_API" kind="page"><name>md_pages_API</name>
+  </compound>
+  <compound refid="md_pages_basic_usage" kind="page"><name>md_pages_basic_usage</name>
+  </compound>
+  <compound refid="md_pages_build_and_install" kind="page"><name>md_pages_build_and_install</name>
+  </compound>
+  <compound refid="md_pages_examples" kind="page"><name>md_pages_examples</name>
+  </compound>
+  <compound refid="md_pages_quickstart" kind="page"><name>md_pages_quickstart</name>
+  </compound>
+  <compound refid="md_pages_team" kind="page"><name>md_pages_team</name>
+  </compound>
+  <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
+  </compound>
+  <compound refid="md_pages_user_guide" kind="page"><name>md_pages_user_guide</name>
+  </compound>
+  <compound refid="md__Users_kchowdh_Research_pressio_repos_pressio_README" kind="page"><name>md__Users_kchowdh_Research_pressio_repos_pressio_README</name>
+  </compound>
+  <compound refid="dir_06948df3f278f2ed4364541b4c62715d" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps</name>
+  </compound>
+  <compound refid="dir_787e4ffc55b9c9f879444103fcb85362" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/arbitraryDataStructures</name>
+  </compound>
+  <compound refid="dir_35ea8b8a3f9870a2e7625856aecc0c7b" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d</name>
+  </compound>
+  <compound refid="dir_93501a11e921083efbd154e0cdff5f10" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages</name>
+  </compound>
+  <compound refid="dir_ef3b2545113449f8f25e623a543d64e3" kind="dir"><name>pages</name>
+  </compound>
+  <compound refid="dir_69ebb01dbe8e68f66c7907b775931f13" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src</name>
+  </compound>
+  <compound refid="dir_dc35f87974f55b5cd7ec64a8fb23236a" kind="dir"><name>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

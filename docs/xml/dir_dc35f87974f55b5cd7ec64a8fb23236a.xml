@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="dir_dc35f87974f55b5cd7ec64a8fb23236a" kind="dir">
+    <compoundname>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d</compoundname>
+    <innerfile refid="apps__steady__linear__adv__diff__2d__epetra_8hpp">apps_steady_linear_adv_diff_2d_epetra.hpp</innerfile>
+    <innerfile refid="apps__steady__linear__adv__diff__2d__epetra__rom__adapter_8hpp">apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/steady_linear_adv_diff2d/"/>
+  </compounddef>
+</doxygen>

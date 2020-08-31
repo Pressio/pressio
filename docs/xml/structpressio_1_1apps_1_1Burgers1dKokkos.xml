@@ -1,0 +1,748 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structpressio_1_1apps_1_1Burgers1dKokkos" kind="struct" language="C++" prot="public">
+    <compoundname>pressio::apps::Burgers1dKokkos</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a4f68c74cedfb32ecb07627e9d85656ff" prot="public" static="no">
+        <type>double</type>
+        <definition>using pressio::apps::Burgers1dKokkos::sc_t =  double</definition>
+        <argsstring></argsstring>
+        <name>sc_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="62" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a4b4c0eb95c320a93315ef0de2e213c94" prot="public" static="no">
+        <type>std::array&lt; sc_t, 3 &gt;</type>
+        <definition>using pressio::apps::Burgers1dKokkos::params_t =  std::array&lt;sc_t, 3&gt;</definition>
+        <argsstring></argsstring>
+        <name>params_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="63" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a50810b468409842580ff8dab4861195a" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>using pressio::apps::Burgers1dKokkos::ui_t =  unsigned int</definition>
+        <argsstring></argsstring>
+        <name>ui_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="64" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a9ad236ed6f8e6d7c4302ea6d3cc4b13e" prot="public" static="no">
+        <type>Kokkos::LayoutRight</type>
+        <definition>using pressio::apps::Burgers1dKokkos::klr =  Kokkos::LayoutRight</definition>
+        <argsstring></argsstring>
+        <name>klr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="66" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ab8165d116a4e700e7ce9184582918c56" prot="public" static="no">
+        <type>Kokkos::LayoutLeft</type>
+        <definition>using pressio::apps::Burgers1dKokkos::kll =  Kokkos::LayoutLeft</definition>
+        <argsstring></argsstring>
+        <name>kll</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="67" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1afa0c958333a42e5dab375ca5f6421bc5" prot="public" static="no">
+        <type>Kokkos::DefaultExecutionSpace</type>
+        <definition>using pressio::apps::Burgers1dKokkos::execution_space =  Kokkos::DefaultExecutionSpace</definition>
+        <argsstring></argsstring>
+        <name>execution_space</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="78" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ac051460b49fc52166422862590eba418" prot="public" static="no">
+        <type>Kokkos::View&lt; sc_t *, kll, execution_space &gt;</type>
+        <definition>using pressio::apps::Burgers1dKokkos::k1dLl_d =  Kokkos::View&lt;sc_t*, kll, execution_space&gt;</definition>
+        <argsstring></argsstring>
+        <name>k1dLl_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="80" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a5a986c179a809641c954619c36a4a518" prot="public" static="no">
+        <type>k1dLl_d::host_mirror_type</type>
+        <definition>using pressio::apps::Burgers1dKokkos::k1dLl_h =  k1dLl_d::host_mirror_type</definition>
+        <argsstring></argsstring>
+        <name>k1dLl_h</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="81" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a1ef56b34f9e413fb602724c29e7cab12" prot="public" static="no">
+        <type>typename k1dLl_h::traits::array_layout</type>
+        <definition>using pressio::apps::Burgers1dKokkos::h_layout1 =  typename k1dLl_h::traits::array_layout</definition>
+        <argsstring></argsstring>
+        <name>h_layout1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="83" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a5ca3701c1f068521bbd489da6ffa6aa6" prot="public" static="no">
+        <type>typename k1dLl_d::traits::array_layout</type>
+        <definition>using pressio::apps::Burgers1dKokkos::d_layout1 =  typename k1dLl_d::traits::array_layout</definition>
+        <argsstring></argsstring>
+        <name>d_layout1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="84" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ab27ab87d7c672ae9c074332c09708910" prot="public" static="no">
+        <type>Kokkos::View&lt; sc_t **, kll, execution_space &gt;</type>
+        <definition>using pressio::apps::Burgers1dKokkos::k2dLl_d =  Kokkos::View&lt;sc_t**, kll, execution_space&gt;</definition>
+        <argsstring></argsstring>
+        <name>k2dLl_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="88" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1aa23ebc79ef980d85225b44bd765f77cc" prot="public" static="no">
+        <type>k2dLl_d::host_mirror_type</type>
+        <definition>using pressio::apps::Burgers1dKokkos::k2dLl_h =  k2dLl_d::host_mirror_type</definition>
+        <argsstring></argsstring>
+        <name>k2dLl_h</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="89" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1afc3b2c6e885ac76e4e4d7535d9abf089" prot="public" static="no">
+        <type>typename k2dLl_h::traits::array_layout</type>
+        <definition>using pressio::apps::Burgers1dKokkos::h_layout2 =  typename k2dLl_h::traits::array_layout</definition>
+        <argsstring></argsstring>
+        <name>h_layout2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="91" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1aeee8d0f8e88cc54627054edd1616c805" prot="public" static="no">
+        <type>typename k2dLl_d::traits::array_layout</type>
+        <definition>using pressio::apps::Burgers1dKokkos::d_layout2 =  typename k2dLl_d::traits::array_layout</definition>
+        <argsstring></argsstring>
+        <name>d_layout2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="92" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a806b6c524f061aa72d1417d18d2f9300" prot="public" static="no">
+        <type>int</type>
+        <definition>using pressio::apps::Burgers1dKokkos::ord_t =  int</definition>
+        <argsstring></argsstring>
+        <name>ord_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="96" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a45075fcf2a8097aae0bec67646b4ba17" prot="public" static="no">
+        <type>KokkosSparse::CrsMatrix&lt; sc_t, ord_t, execution_space, void, int &gt;</type>
+        <definition>using pressio::apps::Burgers1dKokkos::crs_mat =  KokkosSparse::CrsMatrix&lt;sc_t, ord_t, execution_space, void, int&gt;</definition>
+        <argsstring></argsstring>
+        <name>crs_mat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="97" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ae30f59c05c56490593947b74e3f89808" prot="public" static="no">
+        <type>k1dLl_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::state_type_d =  k1dLl_d</definition>
+        <argsstring></argsstring>
+        <name>state_type_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="99" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a460fe544ef2870a3d26e0787000a427d" prot="public" static="no">
+        <type>k1dLl_h</type>
+        <definition>using pressio::apps::Burgers1dKokkos::state_type_h =  k1dLl_h</definition>
+        <argsstring></argsstring>
+        <name>state_type_h</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="100" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a12b76eebbec351a1020d257e9cdec9c8" prot="public" static="no">
+        <type>state_type_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::velocity_type_d =  state_type_d</definition>
+        <argsstring></argsstring>
+        <name>velocity_type_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="101" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ab3873905e09ad883529bfb3c919acd50" prot="public" static="no">
+        <type>state_type_h</type>
+        <definition>using pressio::apps::Burgers1dKokkos::velocity_type_h =  state_type_h</definition>
+        <argsstring></argsstring>
+        <name>velocity_type_h</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="102" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1aad07fac7de0f96eaaac8728dfd1cb595" prot="public" static="no">
+        <type>k2dLl_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::mv_d =  k2dLl_d</definition>
+        <argsstring></argsstring>
+        <name>mv_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="103" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ac3446e04edb0f22b5bf26f1e95757b17" prot="public" static="no">
+        <type>k2dLl_h</type>
+        <definition>using pressio::apps::Burgers1dKokkos::mv_h =  k2dLl_h</definition>
+        <argsstring></argsstring>
+        <name>mv_h</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="104" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a5b98c7853dde91e9584bb3a3af758e9a" prot="public" static="no">
+        <type>sc_t</type>
+        <definition>using pressio::apps::Burgers1dKokkos::scalar_type =  sc_t</definition>
+        <argsstring></argsstring>
+        <name>scalar_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="106" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a38d0cd5b21e8eb9dc9dfbe7644adb79f" prot="public" static="no">
+        <type>state_type_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::state_type =  state_type_d</definition>
+        <argsstring></argsstring>
+        <name>state_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="107" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1af054ad7afcc01db5f6ea37b61efd27b3" prot="public" static="no">
+        <type>state_type_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::velocity_type =  state_type_d</definition>
+        <argsstring></argsstring>
+        <name>velocity_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="108" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1af05f9f7d597fd14696a326459846be9a" prot="public" static="no">
+        <type>mv_d</type>
+        <definition>using pressio::apps::Burgers1dKokkos::dense_matrix_type =  mv_d</definition>
+        <argsstring></argsstring>
+        <name>dense_matrix_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="109" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a703e72ee1b264a18c50a96f9c643cdab" prot="public" static="no">
+        <type>crs_mat</type>
+        <definition>using pressio::apps::Burgers1dKokkos::jacobian_type =  crs_mat</definition>
+        <argsstring></argsstring>
+        <name>jacobian_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="110" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1adf8edc5da82c7132ab8a20e21e33e72d" prot="private" static="no" mutable="no">
+        <type>params_t</type>
+        <definition>params_t pressio::apps::Burgers1dKokkos::mu_</definition>
+        <argsstring></argsstring>
+        <name>mu_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="251" column="12" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="251" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a34d5f068ce6d6131889114000252c99e" prot="private" static="no" mutable="no">
+        <type>const sc_t</type>
+        <definition>const sc_t pressio::apps::Burgers1dKokkos::xL_</definition>
+        <argsstring></argsstring>
+        <name>xL_</name>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="254" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="254" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1aff132e5ab07fa795d939624c70038b61" prot="private" static="no" mutable="no">
+        <type>const sc_t</type>
+        <definition>const sc_t pressio::apps::Burgers1dKokkos::xR_</definition>
+        <argsstring></argsstring>
+        <name>xR_</name>
+        <initializer>= 100.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="256" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a9b1940cacad26dba0d7529782e624bd7" prot="private" static="no" mutable="no">
+        <type>ui_t</type>
+        <definition>ui_t pressio::apps::Burgers1dKokkos::Ncell_</definition>
+        <argsstring></argsstring>
+        <name>Ncell_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="259" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a30306cc07dabe7667d394bc3ff481d6d" prot="private" static="no" mutable="no">
+        <type>sc_t</type>
+        <definition>sc_t pressio::apps::Burgers1dKokkos::dx_</definition>
+        <argsstring></argsstring>
+        <name>dx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="261" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="261" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a1528114192bbec6d6bdaddb70634a1e9" prot="private" static="no" mutable="no">
+        <type>sc_t</type>
+        <definition>sc_t pressio::apps::Burgers1dKokkos::dxInv_</definition>
+        <argsstring></argsstring>
+        <name>dxInv_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="263" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1af4d3914bf6b1d46cf45ef8514676041f" prot="private" static="no" mutable="no">
+        <type>k1dLl_d</type>
+        <definition>k1dLl_d pressio::apps::Burgers1dKokkos::x_d_</definition>
+        <argsstring></argsstring>
+        <name>x_d_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="266" column="11" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a2efffb6bb8fb2506b478d1c360dc7477" prot="private" static="no" mutable="no">
+        <type>k1dLl_h</type>
+        <definition>k1dLl_h pressio::apps::Burgers1dKokkos::x_h_</definition>
+        <argsstring></argsstring>
+        <name>x_h_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="268" column="11" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ac37b8e20a9833dfddb797ed25253301b" prot="private" static="no" mutable="yes">
+        <type>state_type</type>
+        <definition>state_type pressio::apps::Burgers1dKokkos::U_d_</definition>
+        <argsstring></argsstring>
+        <name>U_d_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="271" column="22" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="271" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ae3efa74249c96eb69278d2c3179f9e80" prot="private" static="no" mutable="yes">
+        <type>state_type_h</type>
+        <definition>state_type_h pressio::apps::Burgers1dKokkos::U_h_</definition>
+        <argsstring></argsstring>
+        <name>U_h_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="273" column="24" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="273" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a2e411349f6bd89654e01384f87b51b09" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dKokkos::Burgers1dKokkos</definition>
+        <argsstring>(params_t params, ui_t Ncell=1000)</argsstring>
+        <name>Burgers1dKokkos</name>
+        <param>
+          <type>params_t</type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type>ui_t</type>
+          <declname>Ncell</declname>
+          <defval>1000</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="113" column="12" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="113" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1adecf32553dbb5dd79867c8142ada6d7b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dKokkos::Burgers1dKokkos</definition>
+        <argsstring>()=delete</argsstring>
+        <name>Burgers1dKokkos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="124" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a30f01f67022e587541654c89f71a26aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dKokkos::~Burgers1dKokkos</definition>
+        <argsstring>()=default</argsstring>
+        <name>~Burgers1dKokkos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="125" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a6e1d1be99686b710af20120a7c858c72" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>state_type const</type>
+        <definition>state_type const pressio::apps::Burgers1dKokkos::getInitialState</definition>
+        <argsstring>() const</argsstring>
+        <name>getInitialState</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="128" column="20" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="128" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1aefc8062edb22f54bdcdffb7b415170cb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>dense_matrix_type</type>
+        <definition>dense_matrix_type pressio::apps::Burgers1dKokkos::createApplyJacobianResult</definition>
+        <argsstring>(const dense_matrix_type &amp;B) const</argsstring>
+        <name>createApplyJacobianResult</name>
+        <param>
+          <type>const dense_matrix_type &amp;</type>
+          <declname>B</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="132" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="132" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a33e5e8a22af782f42eeff9f53c065ca4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>velocity_type</type>
+        <definition>velocity_type pressio::apps::Burgers1dKokkos::createVelocity</definition>
+        <argsstring>() const</argsstring>
+        <name>createVelocity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="138" column="17" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="138" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a1d100491d3d2dd7e06f27cb281f0eb8a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dKokkos::velocity</definition>
+        <argsstring>(const state_type &amp;u, const scalar_type, velocity_type &amp;rhs) const</argsstring>
+        <name>velocity</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>u</declname>
+        </param>
+        <param>
+          <type>const</type>
+          <declname>scalar_type</declname>
+        </param>
+        <param>
+          <type>velocity_type &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="143" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="143" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1af99b641c2bc3f7e3c22a5d513a54f4d6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>jacobian_type</type>
+        <definition>jacobian_type pressio::apps::Burgers1dKokkos::createJacobian</definition>
+        <argsstring>() const</argsstring>
+        <name>createJacobian</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="152" column="17" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="152" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a860c9a065dcb9368297c5d30b6831e70" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dKokkos::jacobian</definition>
+        <argsstring>(const state_type &amp;u, const scalar_type t, jacobian_type &amp;jac) const</argsstring>
+        <name>jacobian</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>u</declname>
+        </param>
+        <param>
+          <type>const scalar_type</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>jacobian_type &amp;</type>
+          <declname>jac</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="199" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="199" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1a7f8f5175ca1b0d534c794e719179e3f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dKokkos::applyJacobian</definition>
+        <argsstring>(const state_type &amp;y, const dense_matrix_type &amp;B, scalar_type t, dense_matrix_type &amp;A) const</argsstring>
+        <name>applyJacobian</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const dense_matrix_type &amp;</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>dense_matrix_type &amp;</type>
+          <declname>A</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="221" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="221" bodyend="232"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="structpressio_1_1apps_1_1Burgers1dKokkos_1ace165b227296247ebc1c3583e97ec9f6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dKokkos::setup</definition>
+        <argsstring>()</argsstring>
+        <name>setup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="235" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="235" bodyend="247"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" line="60" column="1" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_kokkos.hpp" bodystart="60" bodyend="275"/>
+    <listofallmembers>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a7f8f5175ca1b0d534c794e719179e3f8" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>applyJacobian</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a2e411349f6bd89654e01384f87b51b09" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>Burgers1dKokkos</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1adecf32553dbb5dd79867c8142ada6d7b" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>Burgers1dKokkos</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aefc8062edb22f54bdcdffb7b415170cb" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>createApplyJacobianResult</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af99b641c2bc3f7e3c22a5d513a54f4d6" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>createJacobian</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a33e5e8a22af782f42eeff9f53c065ca4" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>createVelocity</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a45075fcf2a8097aae0bec67646b4ba17" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>crs_mat</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5ca3701c1f068521bbd489da6ffa6aa6" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>d_layout1</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aeee8d0f8e88cc54627054edd1616c805" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>d_layout2</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af05f9f7d597fd14696a326459846be9a" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>dense_matrix_type</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a30306cc07dabe7667d394bc3ff481d6d" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>dx_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1528114192bbec6d6bdaddb70634a1e9" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>dxInv_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1afa0c958333a42e5dab375ca5f6421bc5" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>execution_space</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a6e1d1be99686b710af20120a7c858c72" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>getInitialState</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1ef56b34f9e413fb602724c29e7cab12" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>h_layout1</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1afc3b2c6e885ac76e4e4d7535d9abf089" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>h_layout2</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a860c9a065dcb9368297c5d30b6831e70" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>jacobian</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a703e72ee1b264a18c50a96f9c643cdab" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>jacobian_type</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac051460b49fc52166422862590eba418" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>k1dLl_d</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5a986c179a809641c954619c36a4a518" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>k1dLl_h</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab27ab87d7c672ae9c074332c09708910" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>k2dLl_d</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aa23ebc79ef980d85225b44bd765f77cc" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>k2dLl_h</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab8165d116a4e700e7ce9184582918c56" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>kll</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a9ad236ed6f8e6d7c4302ea6d3cc4b13e" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>klr</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1adf8edc5da82c7132ab8a20e21e33e72d" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>mu_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aad07fac7de0f96eaaac8728dfd1cb595" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>mv_d</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac3446e04edb0f22b5bf26f1e95757b17" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>mv_h</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a9b1940cacad26dba0d7529782e624bd7" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>Ncell_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a806b6c524f061aa72d1417d18d2f9300" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>ord_t</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a4b4c0eb95c320a93315ef0de2e213c94" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>params_t</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a4f68c74cedfb32ecb07627e9d85656ff" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>sc_t</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a5b98c7853dde91e9584bb3a3af758e9a" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>scalar_type</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ace165b227296247ebc1c3583e97ec9f6" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>setup</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a38d0cd5b21e8eb9dc9dfbe7644adb79f" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>state_type</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ae30f59c05c56490593947b74e3f89808" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>state_type_d</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a460fe544ef2870a3d26e0787000a427d" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>state_type_h</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ac37b8e20a9833dfddb797ed25253301b" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>U_d_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ae3efa74249c96eb69278d2c3179f9e80" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>U_h_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a50810b468409842580ff8dab4861195a" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>ui_t</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a1d100491d3d2dd7e06f27cb281f0eb8a" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>velocity</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af054ad7afcc01db5f6ea37b61efd27b3" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>velocity_type</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a12b76eebbec351a1020d257e9cdec9c8" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>velocity_type_d</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1ab3873905e09ad883529bfb3c919acd50" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>velocity_type_h</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1af4d3914bf6b1d46cf45ef8514676041f" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>x_d_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a2efffb6bb8fb2506b478d1c360dc7477" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>x_h_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a34d5f068ce6d6131889114000252c99e" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>xL_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1aff132e5ab07fa795d939624c70038b61" prot="private" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>xR_</name></member>
+      <member refid="structpressio_1_1apps_1_1Burgers1dKokkos_1a30f01f67022e587541654c89f71a26aa" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dKokkos</scope><name>~Burgers1dKokkos</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

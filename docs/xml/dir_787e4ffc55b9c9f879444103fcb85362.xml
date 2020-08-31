@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="dir_787e4ffc55b9c9f879444103fcb85362" kind="dir">
+    <compoundname>/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/arbitraryDataStructures</compoundname>
+    <innerfile refid="apps__burgers1d__arb__ds_8hpp">apps_burgers1d_arb_ds.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__arb__ds__continuous__time__api__adapter_8hpp">apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__arb__ds__custom__dense__matrix_8hpp">apps_burgers1d_arb_ds_custom_dense_matrix.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__arb__ds__custom__vector_8hpp">apps_burgers1d_arb_ds_custom_vector.hpp</innerfile>
+    <innerfile refid="apps__burgers1d__arb__ds__discrete__time__api__adapter_8hpp">apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/arbitraryDataStructures/"/>
+  </compounddef>
+</doxygen>

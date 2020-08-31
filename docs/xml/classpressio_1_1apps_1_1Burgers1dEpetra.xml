@@ -1,0 +1,611 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="classpressio_1_1apps_1_1Burgers1dEpetra" kind="class" language="C++" prot="public">
+    <compoundname>pressio::apps::Burgers1dEpetra</compoundname>
+    <derivedcompoundref refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask" prot="public" virt="non-virtual">pressio::apps::Burgers1dEpetraIdentityMask</derivedcompoundref>
+    <derivedcompoundref refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked" prot="public" virt="non-virtual">pressio::apps::Burgers1dEpetraMasked</derivedcompoundref>
+    <derivedcompoundref refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned" prot="public" virt="non-virtual">pressio::apps::Burgers1dEpetraPreconditioned</derivedcompoundref>
+    <derivedcompoundref refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask" prot="public" virt="non-virtual">pressio::apps::Burgers1dEpetraReducedNoMask</derivedcompoundref>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a57ded7b8880e182076b195afc54acd5b" prot="protected" static="no">
+        <type>Epetra_Vector</type>
+        <definition>using pressio::apps::Burgers1dEpetra::nativeVec =  Epetra_Vector</definition>
+        <argsstring></argsstring>
+        <name>nativeVec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="64" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a42502dcce1494ee276fdbfb83c3261f0" prot="protected" static="no">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; T &gt;</type>
+        <definition>using pressio::apps::Burgers1dEpetra::rcp =  std::shared_ptr&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>rcp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="65" column="14" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a80bcf46567766bba2ac5aa492986ff71" prot="public" static="no">
+        <type>double</type>
+        <definition>using pressio::apps::Burgers1dEpetra::scalar_type =  double</definition>
+        <argsstring></argsstring>
+        <name>scalar_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="69" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aeeebac250660d8b08f9e76c75ac42adf" prot="public" static="no">
+        <type>Epetra_Vector</type>
+        <definition>using pressio::apps::Burgers1dEpetra::state_type =  Epetra_Vector</definition>
+        <argsstring></argsstring>
+        <name>state_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="70" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aa3a32cf352a83f96c75769ddd501ab83" prot="public" static="no">
+        <type>state_type</type>
+        <definition>using pressio::apps::Burgers1dEpetra::velocity_type =  state_type</definition>
+        <argsstring></argsstring>
+        <name>velocity_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="71" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a64b5cb59ac9592cfa4e83d5600d666e1" prot="public" static="no">
+        <type>Epetra_MultiVector</type>
+        <definition>using pressio::apps::Burgers1dEpetra::dense_matrix_type =  Epetra_MultiVector</definition>
+        <argsstring></argsstring>
+        <name>dense_matrix_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="72" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a17f359592247fd081ddda2fa5643d916" prot="public" static="no">
+        <type>Epetra_CrsMatrix</type>
+        <definition>using pressio::apps::Burgers1dEpetra::jacobian_type =  Epetra_CrsMatrix</definition>
+        <argsstring></argsstring>
+        <name>jacobian_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="73" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aff9693efbe224d0c1321f028451ab0d4" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; scalar_type &gt;</type>
+        <definition>std::vector&lt;scalar_type&gt; pressio::apps::Burgers1dEpetra::mu_</definition>
+        <argsstring></argsstring>
+        <name>mu_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="245" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="242" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a33d21b9232c186494a54c85ebe043330" prot="protected" static="no" mutable="no">
+        <type>const scalar_type</type>
+        <definition>const scalar_type pressio::apps::Burgers1dEpetra::xL_</definition>
+        <argsstring></argsstring>
+        <name>xL_</name>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="246" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aabaa49d4f9dac9e6ac888c9a976b90c0" prot="protected" static="no" mutable="no">
+        <type>const scalar_type</type>
+        <definition>const scalar_type pressio::apps::Burgers1dEpetra::xR_</definition>
+        <argsstring></argsstring>
+        <name>xR_</name>
+        <initializer>= 100.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="247" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a6df560afd006851a50320b487faed67b" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::Burgers1dEpetra::Ncell_</definition>
+        <argsstring></argsstring>
+        <name>Ncell_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="248" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="248" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a9ada7de77c658a626371d6b6d1bae225" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::Burgers1dEpetra::dx_</definition>
+        <argsstring></argsstring>
+        <name>dx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="249" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a3d2918a9321f4a15e89f8f7b94764a7e" prot="protected" static="no" mutable="no">
+        <type>scalar_type</type>
+        <definition>scalar_type pressio::apps::Burgers1dEpetra::dxInv_</definition>
+        <argsstring></argsstring>
+        <name>dxInv_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="250" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a7b33c48a161d1361409d01d94152587f" prot="protected" static="no" mutable="no">
+        <type>const int</type>
+        <definition>const int pressio::apps::Burgers1dEpetra::nonZrPerRow_</definition>
+        <argsstring></argsstring>
+        <name>nonZrPerRow_</name>
+        <initializer>= 2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="251" column="13" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="251" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a799e590c30662b3b4e155a1456842eaf" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::Burgers1dEpetra::xGrid_</definition>
+        <argsstring></argsstring>
+        <name>xGrid_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="253" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a9a908036fea4c64d669a40a4986c3237" prot="protected" static="no" mutable="no">
+        <type>Epetra_MpiComm *</type>
+        <definition>Epetra_MpiComm* pressio::apps::Burgers1dEpetra::comm_</definition>
+        <argsstring></argsstring>
+        <name>comm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="255" column="19" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1ace287634198d9b5f8517edd4bda7a499" prot="protected" static="no" mutable="no">
+        <type>rcp&lt; Epetra_Map &gt;</type>
+        <definition>rcp&lt;Epetra_Map&gt; pressio::apps::Burgers1dEpetra::dataMap_</definition>
+        <argsstring></argsstring>
+        <name>dataMap_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="256" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a59647a29e6d611ad8e1b039cbf35ccd8" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::Burgers1dEpetra::myRank_</definition>
+        <argsstring></argsstring>
+        <name>myRank_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="257" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aec335ea941b1fb16f2a705248eb4c1f7" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::Burgers1dEpetra::totRanks_</definition>
+        <argsstring></argsstring>
+        <name>totRanks_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="258" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="258" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a5c0f995a8f0d492351a0ce93243f629b" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pressio::apps::Burgers1dEpetra::NumMyElem_</definition>
+        <argsstring></argsstring>
+        <name>NumMyElem_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="259" column="7" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a14639cb64dd98be93e22696ac6fd3d52" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; pressio::apps::Burgers1dEpetra::myGel_</definition>
+        <argsstring></argsstring>
+        <name>myGel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="260" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="260" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1af4f57b791b1333991ec2481b938fb32d" prot="protected" static="no" mutable="yes">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::Burgers1dEpetra::U_</definition>
+        <argsstring></argsstring>
+        <name>U_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="262" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a4ec1beaf923c9e0c5753d5da83b81285" prot="protected" static="no" mutable="yes">
+        <type>rcp&lt; nativeVec &gt;</type>
+        <definition>rcp&lt;nativeVec&gt; pressio::apps::Burgers1dEpetra::U0_</definition>
+        <argsstring></argsstring>
+        <name>U0_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="263" column="15" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a10b53b46fe15fcb9829a6c634cc7edfb" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; Epetra_CrsMatrix &gt;</type>
+        <definition>std::shared_ptr&lt;Epetra_CrsMatrix&gt; pressio::apps::Burgers1dEpetra::Jac_</definition>
+        <argsstring></argsstring>
+        <name>Jac_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="264" column="19" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a6b3d49d029451bc3d843759adad529dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dEpetra::Burgers1dEpetra</definition>
+        <argsstring>(std::vector&lt; scalar_type &gt; params, int Ncell, Epetra_MpiComm *comm)</argsstring>
+        <name>Burgers1dEpetra</name>
+        <param>
+          <type>std::vector&lt; scalar_type &gt;</type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>Ncell</declname>
+        </param>
+        <param>
+          <type>Epetra_MpiComm *</type>
+          <declname>comm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="76" column="3" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="76" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1acc53ca3a542189f5aeea5f552561efeb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dEpetra::Burgers1dEpetra</definition>
+        <argsstring>()=delete</argsstring>
+        <name>Burgers1dEpetra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="82" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a0dd885f11eb6234488e9165eb841f5ad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>pressio::apps::Burgers1dEpetra::~Burgers1dEpetra</definition>
+        <argsstring>()=default</argsstring>
+        <name>~Burgers1dEpetra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="83" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1ab527cfb4510adf5a9d0635366583542d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Epetra_Map const  &amp;</type>
+        <definition>Epetra_Map const&amp; pressio::apps::Burgers1dEpetra::getDataMap</definition>
+        <argsstring>()</argsstring>
+        <name>getDataMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="86" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="86" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a2b43ad1f2f0fc5c2ef042a65b5403de1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>state_type const  &amp;</type>
+        <definition>state_type const&amp; pressio::apps::Burgers1dEpetra::getInitialState</definition>
+        <argsstring>() const</argsstring>
+        <name>getInitialState</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="90" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="90" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aa6a5553cefb70606b866e8718643e211" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>velocity_type</type>
+        <definition>velocity_type pressio::apps::Burgers1dEpetra::createVelocity</definition>
+        <argsstring>() const</argsstring>
+        <name>createVelocity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="94" column="17" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="94" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a732a2524e792d753eed64becabdb6d4b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>dense_matrix_type</type>
+        <definition>dense_matrix_type pressio::apps::Burgers1dEpetra::createApplyJacobianResult</definition>
+        <argsstring>(const dense_matrix_type &amp;B) const</argsstring>
+        <name>createApplyJacobianResult</name>
+        <param>
+          <type>const dense_matrix_type &amp;</type>
+          <declname>B</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="100" column="21" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="100" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1ad4dfa638437ac3cbba2ae85646f2d511" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dEpetra::velocity</definition>
+        <argsstring>(const state_type &amp;u, const scalar_type, velocity_type &amp;rhs) const</argsstring>
+        <name>velocity</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>u</declname>
+        </param>
+        <param>
+          <type>const</type>
+          <declname>scalar_type</declname>
+        </param>
+        <param>
+          <type>velocity_type &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="105" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="105" bodyend="137"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1a4cdc28443de631417212a8743cd78206" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dEpetra::applyJacobian</definition>
+        <argsstring>(const state_type &amp;y, const dense_matrix_type &amp;B, scalar_type t, dense_matrix_type &amp;A) const</argsstring>
+        <name>applyJacobian</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const dense_matrix_type &amp;</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>scalar_type</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>dense_matrix_type &amp;</type>
+          <declname>A</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="141" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="141" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1aa380ed1635ba92d1badb69cca7bfcb09" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dEpetra::jacobian</definition>
+        <argsstring>(const state_type &amp;u, const scalar_type, jacobian_type &amp;jac) const</argsstring>
+        <name>jacobian</name>
+        <param>
+          <type>const state_type &amp;</type>
+          <declname>u</declname>
+        </param>
+        <param>
+          <type>const</type>
+          <declname>scalar_type</declname>
+        </param>
+        <param>
+          <type>jacobian_type &amp;</type>
+          <declname>jac</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="157" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="157" bodyend="211"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classpressio_1_1apps_1_1Burgers1dEpetra_1ac3d47a251d74de4585cbda29310483ea" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pressio::apps::Burgers1dEpetra::setup</definition>
+        <argsstring>()</argsstring>
+        <name>setup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="215" column="8" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="215" bodyend="242"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="4">
+        <label>pressio::apps::Burgers1dEpetraPreconditioned</label>
+        <link refid="classpressio_1_1apps_1_1Burgers1dEpetraPreconditioned"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>pressio::apps::Burgers1dEpetraReducedNoMask</label>
+        <link refid="classpressio_1_1apps_1_1Burgers1dEpetraReducedNoMask"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>pressio::apps::Burgers1dEpetraMasked</label>
+        <link refid="classpressio_1_1apps_1_1Burgers1dEpetraMasked"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>pressio::apps::Burgers1dEpetra</label>
+        <link refid="classpressio_1_1apps_1_1Burgers1dEpetra"/>
+      </node>
+      <node id="2">
+        <label>pressio::apps::Burgers1dEpetraIdentityMask</label>
+        <link refid="classpressio_1_1apps_1_1Burgers1dEpetraIdentityMask"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" line="62" column="1" bodyfile="/Users/kchowdh/Research/pressio_repos/pressio/packages/apps/src/burgers1d/apps_burgers1d_epetra.hpp" bodystart="62" bodyend="265"/>
+    <listofallmembers>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a4cdc28443de631417212a8743cd78206" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>applyJacobian</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a6b3d49d029451bc3d843759adad529dc" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>Burgers1dEpetra</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1acc53ca3a542189f5aeea5f552561efeb" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>Burgers1dEpetra</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a9a908036fea4c64d669a40a4986c3237" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>comm_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a732a2524e792d753eed64becabdb6d4b" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>createApplyJacobianResult</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa6a5553cefb70606b866e8718643e211" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>createVelocity</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ace287634198d9b5f8517edd4bda7a499" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>dataMap_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a64b5cb59ac9592cfa4e83d5600d666e1" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>dense_matrix_type</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a9ada7de77c658a626371d6b6d1bae225" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>dx_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a3d2918a9321f4a15e89f8f7b94764a7e" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>dxInv_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ab527cfb4510adf5a9d0635366583542d" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>getDataMap</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a2b43ad1f2f0fc5c2ef042a65b5403de1" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>getInitialState</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a10b53b46fe15fcb9829a6c634cc7edfb" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>Jac_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa380ed1635ba92d1badb69cca7bfcb09" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>jacobian</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a17f359592247fd081ddda2fa5643d916" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>jacobian_type</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aff9693efbe224d0c1321f028451ab0d4" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>mu_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a14639cb64dd98be93e22696ac6fd3d52" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>myGel_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a59647a29e6d611ad8e1b039cbf35ccd8" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>myRank_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a57ded7b8880e182076b195afc54acd5b" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>nativeVec</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a6df560afd006851a50320b487faed67b" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>Ncell_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a7b33c48a161d1361409d01d94152587f" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>nonZrPerRow_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a5c0f995a8f0d492351a0ce93243f629b" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>NumMyElem_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a42502dcce1494ee276fdbfb83c3261f0" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>rcp</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a80bcf46567766bba2ac5aa492986ff71" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>scalar_type</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ac3d47a251d74de4585cbda29310483ea" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>setup</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aeeebac250660d8b08f9e76c75ac42adf" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>state_type</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aec335ea941b1fb16f2a705248eb4c1f7" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>totRanks_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a4ec1beaf923c9e0c5753d5da83b81285" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>U0_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1af4f57b791b1333991ec2481b938fb32d" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>U_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1ad4dfa638437ac3cbba2ae85646f2d511" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>velocity</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aa3a32cf352a83f96c75769ddd501ab83" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>velocity_type</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a799e590c30662b3b4e155a1456842eaf" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>xGrid_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a33d21b9232c186494a54c85ebe043330" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>xL_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1aabaa49d4f9dac9e6ac888c9a976b90c0" prot="protected" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>xR_</name></member>
+      <member refid="classpressio_1_1apps_1_1Burgers1dEpetra_1a0dd885f11eb6234488e9165eb841f5ad" prot="public" virt="non-virtual"><scope>pressio::apps::Burgers1dEpetra</scope><name>~Burgers1dEpetra</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
