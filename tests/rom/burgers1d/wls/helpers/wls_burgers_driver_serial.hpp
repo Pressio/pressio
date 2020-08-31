@@ -89,7 +89,7 @@ std::string doRun()
   const fom_state_t & fomStateReference = fomStateInitCond;
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
-  constexpr pressio::rom::wls::window_size_t numStepsInWindow = 5;
+  constexpr pressio::rom::wls::window_size_t numStepsInWindow = 1;
   constexpr pressio::rom::wls::rom_size_t wlsSize = romSize*numStepsInWindow;
   constexpr scalar_t finalTime = 0.1;
   constexpr pressio::rom::wls::window_size_t numWindows = (finalTime/dt)/numStepsInWindow;
@@ -108,7 +108,7 @@ std::string doRun()
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
 
   // create policy and wls system
-  int jacobianUpdateFrequency = 2;
+  int jacobianUpdateFrequency = 1;
   policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
   wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
 
@@ -117,13 +117,19 @@ std::string doRun()
   pressio::ops::set_zero(wlsState);
 
   // NL solver
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+  //using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+  //  wls_system_t,
+  //  pressio::solvers::nonlinear::DefaultUpdate,
+  //  linear_solver_t>;
+
+  using gn_t = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
     wls_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
+    pressio::solvers::nonlinear::LMUpdateSchedule2,
     linear_solver_t>;
+
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
   GNSolver.setTolerance(1e-13);
-  GNSolver.setMaxIterations(5);
+  GNSolver.setMaxIterations(50);
 
   //  solve wls problem
   auto startTime = std::chrono::high_resolution_clock::now();

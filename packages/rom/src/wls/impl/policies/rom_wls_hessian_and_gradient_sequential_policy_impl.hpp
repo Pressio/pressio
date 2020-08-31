@@ -131,7 +131,7 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
       residual_( fomSystemObj.createDiscreteTimeResidual() ),
-      J_(fomSystemObj.createApplyJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
+      J_(fomSystemObj.createApplyDiscreteTimeJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow , J_),
       timeSchemeObj_(romSize_, fomState)

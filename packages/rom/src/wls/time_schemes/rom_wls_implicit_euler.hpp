@@ -83,8 +83,34 @@ public:
   {}
 
 public:
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+  // time scheem loop for tpetra(block) data structures
+    template< typename scalar_type, typename fom_state_view_t,
+            typename residualView_t, typename step_t>
+    void time_discrete_residual_from_views(const fom_state_view_t & fomStateView,const fom_state_view_t & Unm1View, residualView_t & residualView,
+                                           const step_t & step,const scalar_type & dt) const{
+      const auto hyperMap = residualView.getMap();
+      const auto gIDr = hyperMap->getMyGlobalIndices();
+      const auto fomStateMap = fomStateView.getMap();
+      const auto gIDy = fomStateMap->getMyGlobalIndices();
+      auto Rdv = residualView.getDataNonConst();
+      auto Udv = fomStateView.getData();
+      auto Unm1dv = Unm1View.getData();
+      const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt  
+      // get my global elements
+      for (size_t i=0; i<residualView.getLocalLength(); i++){
+        const auto lid = fomStateMap->getLocalElement(gIDr[i]);
+        auto Rd = Rdv[i];
+        auto Ud = Udv[lid];
+        auto Unm1d = Unm1dv[lid];
+        Rd = Ud - Unm1d + cfdt*Rd;
+        residualView.replaceLocalValue(i,Rd);
+      }
+    }
+
+
   /**
-     time_discrete_residual Function overload for continuous time API
+     time_discrete_residual Function overload for continuous time API w/ tpetra block
   */
   template <
   typename fom_type,
@@ -102,35 +128,178 @@ public:
 			 const window_size_t & step) const
   {
     const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt  
-
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
-
     auto residualNative = *residual.data();
     auto residualView = residualNative.getVectorView();
-    const auto hyperMap = residualView.getMap();
-    const auto gIDr = hyperMap->getMyGlobalIndices();
-
-
     auto fomStateNative = *fomState.data();
     auto fomStateView = fomStateNative.getVectorView();
+    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
+    auto Unm1View = (*Unm1.data()).getVectorView();
+    time_discrete_residual_from_views(fomStateView,Unm1View,residualView,step,dt);
+  }
+
+  /**
+     time_discrete_residual Function overload for continuous time API w/ tpetra
+  */
+  template <
+  typename fom_type,
+  typename fom_state_type,
+  typename residual_type,
+  typename scalar_type
+  >
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+                           ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value==true>::type
+  time_discrete_residual(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 residual_type & residual,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const window_size_t & step) const
+  {
+    const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt  
+    fomSystemObj.velocity(*fomState.data(),t,*residual.data());
+    auto residualView = *residual.data();
+    auto fomStateView = *fomState.data();
+    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
+    auto Unm1View = *Unm1.data();
+    time_discrete_residual_from_views(fomStateView,Unm1View,residualView,step,dt);
+  }
+
+  /**
+     time_discrete_jacobian function overload for continuous time API w/ tpetra block
+  */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename fom_state_view_type,
+    typename jac_view_type,
+    typename basis_view_type,
+    typename scalar_type
+    >
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
+  time_discrete_jacobian_from_views(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 const fom_state_view_type & fomStateView,
+			 jac_type & Jphi,
+			 jac_view_type & JphiView,
+			 const basis_type & phi,
+			 const basis_view_type & phiView,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const ::pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
+  {
+    const auto hyperMap = JphiView.getMap();
+    const auto gIDJphi = hyperMap->getMyGlobalIndices();
+
     const auto fomStateMap = fomStateView.getMap();
     const auto gIDy = fomStateMap->getMyGlobalIndices();
 
-    // get my global elements
-    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
-    auto Unm1View = (*Unm1.data()).getVectorView();
+    if (arg == 0){
+      fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
+      constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; //      1
+      const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
 
-    for (size_t i=0; i<residualView.getLocalLength(); i++){
-//      const auto lid = hyperMap->getGlobalElement(i);
-      const auto lid = fomStateMap->getLocalElement(gIDr[i]);
-      auto Rd = residualView.getDataNonConst()[i];
-      auto Ud = fomStateView.getData()[lid];
-      auto Unm1d = Unm1View.getData()[lid];
-      Rd = Ud - Unm1d + cfdt*Rd;
-      residualView.replaceLocalValue(i,Rd);
 
+      // get my global elements
+      for (size_t i=0; i<JphiView.getLocalLength(); i++){
+        const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
+        for (size_t k=0 ; k < Jphi.extent(1); k++){
+          auto Jphid = JphiView.getDataNonConst(k)[i];
+          auto phid = phiView.getData(k)[lid];
+          Jphid = cfdt*Jphid + phid;
+          JphiView.replaceLocalValue(i,k,Jphid);
+        }
+      }
+    }
+
+    //only perform computation once since this never changes
+    if (arg == 1 && jacobianNeedsRecomputing_){
+      constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
+      // get my global elements
+      for (size_t i=0; i<JphiView.getLocalLength(); i++){
+        for (size_t k=0 ; k < Jphi.extent(1); k++){
+          const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
+          auto phid = phiView.getData(k)[lid];
+          JphiView.replaceLocalValue(i,k,cnm1*phid);
+        }
+      }
+      jacobianNeedsRecomputing_ = true;
     }
   }
+
+
+
+
+
+  /**
+     time_discrete_jacobian function overload for continuous time API w/ tpetra block
+  */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+    >
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+                          ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true>::type
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const ::pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
+  {
+
+    auto JphiNative = *Jphi.data();
+    auto JphiView = JphiNative.getMultiVectorView();
+
+    auto phiNative = *phi.data();
+    auto phiView = phiNative.getMultiVectorView();
+
+    auto fomStateNative = *fomState.data();
+    auto fomStateView = fomStateNative.getVectorView();
+
+    time_discrete_jacobian_from_views(fomSystemObj,fomState,fomStateView,Jphi,JphiView,phi,phiView,t,dt,step,arg);
+
+  }
+
+
+  /**
+     time_discrete_jacobian function overload for continuous time API w/ tpetra
+  */
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+    >
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+                          ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value == true>::type
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const ::pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
+  {
+    auto JphiView = *Jphi.data();
+    auto phiView = *phi.data();
+    auto fomStateView = *fomState.data();
+    time_discrete_jacobian_from_views(fomSystemObj,fomState,fomStateView,Jphi,JphiView,phi,phiView,t,dt,step,arg);
+  }
+
+
+#endif
+
 
   /**
      time_discrete_residual Function overload for continuous time API
@@ -188,78 +357,8 @@ public:
   }
 
 
-  /**
-     time_discrete_jacobian function overload for continuous time API
-  */
-  template <
-    typename fom_type,
-    typename fom_state_type,
-    typename jac_type,
-    typename basis_type,
-    typename scalar_type
-    >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
-                          ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true>::type
-  time_discrete_jacobian(const fom_type & fomSystemObj,
-			 const fom_state_type & fomState,
-			 jac_type & Jphi,
-			 const basis_type & phi,
-			 const scalar_type & t,
-			 const scalar_type & dt,
-			 const ::pressio::rom::wls::window_size_t & step,
-			 int arg=0 ) const
-  {
-
-    auto JphiNative = *Jphi.data();
-    auto JphiView = JphiNative.getMultiVectorView();
-
-    auto phiNative = *phi.data();
-    auto phiView = phiNative.getMultiVectorView();
-
-    const auto hyperMap = JphiView.getMap();
-    const auto gIDJphi = hyperMap->getMyGlobalIndices();
 
 
-    auto fomStateNative = *fomState.data();
-    auto fomStateView = fomStateNative.getVectorView();
-    const auto fomStateMap = fomStateView.getMap();
-    const auto gIDy = fomStateMap->getMyGlobalIndices();
-
-    // u^n - u^{n-1} - f ;
-    if (arg == 0){
-      fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
-      constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; //      1
-      const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
-
-
-      // get my global elements
-      for (size_t i=0; i<JphiView.getLocalLength(); i++){
-        for (size_t k=0 ; k < Jphi.extent(1); k++){
-          const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
-          auto Jphid = JphiView.getDataNonConst(k)[i];
-          auto phid = phiView.getData(k)[lid];
-          Jphid = cfdt*Jphid + phid;
-          JphiView.replaceLocalValue(i,k,Jphid);
-        }
-      }
-
-
-      //::pressio::ops::do_update(Jphi, cfdt, phi, cn);
-    }
-    //only perform computation once since this never changes
-    if (arg == 1 && jacobianNeedsRecomputing_){
-      constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
-      // get my global elements
-      for (size_t i=0; i<JphiView.getLocalLength(); i++){
-        for (size_t k=0 ; k < Jphi.extent(1); k++){
-          const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
-          auto phid = phiView.getData(k)[lid];
-          JphiView.replaceLocalValue(i,k,cnm1*phid);
-        }
-      }
-      jacobianNeedsRecomputing_ = true;
-    }
-  }
 
 
   /**
