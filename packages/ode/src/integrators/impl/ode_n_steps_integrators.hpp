@@ -51,19 +51,20 @@
 
 #include "ode_call_collector_dispatcher.hpp"
 #include "ode_integrators_printing_helpers.hpp"
+#include "ode_dummy_collector.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
-/*
- * A valid collector object is available
- * this is within the impl namespace, so should not be used outside
- * we leave it up to the caller to make sure collector type is admissible
- */
-template <typename collector_type, typename DoStepPolicy_t>
-struct IntegratorNStepsWithCollectorAndConstDt
+struct IntegratorNStepsWithConstDt
 {
 
-  template <typename time_type, typename state_type, typename ... Args>
+  template <
+    typename stepPolicy,
+    typename time_type,
+    typename state_type,
+    typename collector_type,
+    typename ... Args
+    >
   static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      const time_type			  & dt,
@@ -89,12 +90,12 @@ struct IntegratorNStepsWithCollectorAndConstDt
     printStartOfAdvancing("AdvanceNStepsWithConstDt");
     for( ; step <= numSteps ; ++step)
     {
-      printStepTime(step, time);
+      printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      DoStepPolicy_t::execute(time, dt, step, yIn, std::forward<Args>(args)...);
+      stepPolicy::execute(time, dt, step, yIn, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
@@ -109,69 +110,25 @@ struct IntegratorNStepsWithCollectorAndConstDt
 };
 
 
-/*
- * No collector object is passed by user
- * this is within the impl namespace, so should not be used outside
- */
-template <typename DoStepPolicy_t>
-struct IntegratorNStepsWithConstDt
-{
-
-  template <typename time_type, typename ... Args>
-  static void execute(const ::pressio::ode::types::step_t & numSteps,
-		      const time_type			  & start_time,
-		      const time_type			  & dt,
-		      Args				  && ... args)
-  {
-    using step_t = ::pressio::ode::types::step_t;
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time loop");
-#endif
-
-    time_type time = start_time;
-    step_t step = 1;
-
-    printStartOfAdvancing("AdvanceNStepsWithConstDt");
-    for( ; step <= numSteps ; ++step)
-    {
-      printStepTime(step, time);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->start("time step");
-#endif
-      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-      timer->stop("time step");
-#endif
-
-      time = start_time + static_cast<time_type>(step) * dt;
-    }
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("time loop");
-#endif
-  }//end ()
-};
-
 
 /*
- * time step size setter is passed by user
- * this is within the impl namespace, so should not be used outside
+ * time step size setter is passed
  */
-template <typename DoStepPolicy_t>
 struct IntegratorNStepsWithTimeStepSizeSetter
 {
 
-  template <typename time_type, typename dt_setter, typename ... Args>
+  template <
+    typename stepPolicy,
+    typename time_type,
+    typename dt_setter,
+    typename ... Args
+    >
   static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      dt_setter				  && dtManager,
 		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
-    // constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -180,22 +137,18 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 
     time_type time = start_time;
     time_type dt = {};
-    // // call the dt manager to set the dt to use at the beginning
-    // dtManager(zero, time, dt);
-
     step_t step	   = 1;
     printStartOfAdvancing("AdvanceNStepsWithDtCallback");
     for( ; step <= numSteps ; ++step)
     {
       // call the dt manager to set the dt to use at the beginning
       dtManager(step, time, dt);
-
-      printStepTime(step, time);
+      printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      DoStepPolicy_t::execute(time, dt, step, std::forward<Args>(args)...);
+      stepPolicy::execute(time, dt, step, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
@@ -206,7 +159,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
 #endif
-  }//end ()
+  }
 };
 
 }}}//end namespace pressio::ode::impl

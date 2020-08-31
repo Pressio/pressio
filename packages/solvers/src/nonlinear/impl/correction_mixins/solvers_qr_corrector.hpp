@@ -101,15 +101,31 @@ public:
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);
   }
 
+  bool hasGradientComputation() const { return true; }
+
   void resetForNewCall(){
     T::resetForNewCall();
   }
 
-  const state_t & getCorrection() const{ return correction_; }
-  const sc_t correctionNormCurrentCorrectionStep() const{ return correctionNormCurrCorrStep_; }
-  const sc_t gradientNormCurrentCorrectionStep() const{ return gradientNormCurrCorrStep_; }
-  const state_t & getGradient() const{ return g_; }
-  const sc_t residualNormCurrentCorrectionStep() const{ return residNormCurrCorrStep_; }
+  const state_t & getCorrection() const{
+    return correction_;
+  }
+
+  const sc_t & correctionNormCurrentCorrectionStep() const{
+    return correctionNormCurrCorrStep_;
+  }
+
+  const sc_t & gradientNormCurrentCorrectionStep() const{
+    return gradientNormCurrCorrStep_;
+  }
+
+  const state_t & getGradient() const{
+    return g_;
+  }
+
+  const sc_t & residualNormCurrentCorrectionStep() const{
+    return residNormCurrCorrStep_;
+  }
 
   template< typename system_t>
   void residualNorm(const system_t & system, const state_t & state, sc_t & result) const

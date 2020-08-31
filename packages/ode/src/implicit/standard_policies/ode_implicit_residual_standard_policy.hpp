@@ -69,7 +69,7 @@ class ResidualStandardPolicy<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     containers::predicates::is_wrapper<state_type>::value and
-    containers::predicates::is_wrapper<residual_type>::value and 
+    containers::predicates::is_wrapper<residual_type>::value and
     ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
     >
   >
@@ -97,9 +97,15 @@ public:
 	     ::pressio::Norm normKind,
 	     scalar_type & normValue) const
   {
+    try{
     system.velocity(*odeCurrentState.data(), t, *R.data());
-    ::pressio::ode::impl::discrete_time_residual(odeCurrentState, R, prevStatesMgr, 
-      dt, ode_tag());
+    ::pressio::ode::impl::discrete_time_residual(odeCurrentState,
+						 R, prevStatesMgr,
+						 dt, ode_tag());
+    }
+    catch (::pressio::eh::velocity_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
 
     if (normKind==::pressio::Norm::L1)
       normValue = ::pressio::ops::norm1(R);
@@ -142,22 +148,32 @@ public:
     return R;
   }
 
+  //-------------------------------
+  // specialize for n == 1
+  //-------------------------------
   template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
   mpl::enable_if_t< prev_states_mgr_type::size()==1>
   compute(const state_type & odeCurrentState,
-      const prev_states_mgr_type & prevStatesMgr,
-      const system_type & system,
-      const scalar_type & t,
-      const scalar_type & dt,
-      const types::step_t & step,
-      residual_type & R,
-      ::pressio::Norm normKind,
-      scalar_type & normValue) const
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t & step,
+	  residual_type & R,
+	  ::pressio::Norm normKind,
+	  scalar_type & normValue) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
-    system.template discreteTimeResidual(step, t, dt,
-          *R.data(), normKind, normValue,
-          *odeCurrentState.data(), *ynm1.data());
+
+    try{
+      system.template discreteTimeResidual(step, t, dt, *R.data(),
+					   normKind, normValue,
+					   *odeCurrentState.data(),
+					   *ynm1.data());
+    }
+    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
   }
 
   //-------------------------------
@@ -166,21 +182,60 @@ public:
   template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
   mpl::enable_if_t< prev_states_mgr_type::size()==2>
   compute(const state_type & odeCurrentState,
-      const prev_states_mgr_type & prevStatesMgr,
-      const system_type & system,
-      const scalar_type & t,
-      const scalar_type & dt,
-      const types::step_t & step,
-      residual_type & R,
-      ::pressio::Norm normKind,
-      scalar_type & normValue) const
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t & step,
+	  residual_type & R,
+	  ::pressio::Norm normKind,
+	  scalar_type & normValue) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
     const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
 
-    system.template discreteTimeResidual(step, t, dt,
-          *R.data(), normKind, normValue,
-          *odeCurrentState.data(), *ynm1.data(),*ynm2.data());
+    try{
+      system.template discreteTimeResidual(step, t, dt, *R.data(),
+					   normKind, normValue,
+					   *odeCurrentState.data(),
+					   *ynm1.data(), *ynm2.data());
+    }
+    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
+  }
+
+
+  //-------------------------------
+  // specialize for n == 3
+  //-------------------------------
+  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_mgr_type::size()==3>
+  compute(const state_type & odeCurrentState,
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t & step,
+	  residual_type & R,
+	  ::pressio::Norm normKind,
+	  scalar_type & normValue) const
+  {
+    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
+    const auto & ynm3 = prevStatesMgr.get(ode::nMinusThree());
+
+    try{
+      system.template discreteTimeResidual(step, t, dt, *R.data(),
+					   normKind, normValue,
+					   *odeCurrentState.data(),
+					   *ynm1.data(),
+					   *ynm2.data(),
+					   *ynm3.data());
+    }
+    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
   }
 };//end class
 

@@ -52,6 +52,38 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
+struct is_dynamic_vector_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_dynamic_vector_wrapper_kokkos
+<
+  T,
+  ::pressio::mpl::enable_if_t<
+    containers::details::traits<T>::is_vector &&
+    containers::details::traits<T>::is_dynamic &&
+    (containers::details::traits<T>::wrapped_vector_identifier==
+     containers::details::WrappedVectorIdentifier::Kokkos)
+    >
+  > : std::true_type{};
+
+
+template <typename T, typename enable = void>
+struct is_static_vector_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_static_vector_wrapper_kokkos
+<
+  T,
+  ::pressio::mpl::enable_if_t<
+    containers::details::traits<T>::is_vector &&
+    containers::details::traits<T>::is_static &&
+    (containers::details::traits<T>::wrapped_vector_identifier==
+     containers::details::WrappedVectorIdentifier::Kokkos)
+    >
+  > : std::true_type{};
+
+
+template <typename T, typename enable = void>
 struct is_vector_wrapper_kokkos : std::false_type {};
 
 template <typename T>

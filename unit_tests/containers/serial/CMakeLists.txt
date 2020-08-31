@@ -9,6 +9,8 @@ set(SRC1
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_serial_printer.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_vector_serial_eigen_dynamic_class.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/containers_matrix_dense_serial_eigen_class.cc
+  #
+  ${CMAKE_CURRENT_SOURCE_DIR}/containers_expressions_are_static.cc
   )
 add_serial_utest(containers_serial "${SRC1}")
 

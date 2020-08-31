@@ -224,6 +224,7 @@ public:
          dense_matrix_type & A) const
   {
     auto JJ = createJacobian();
+    jacobian(y,t,JJ);
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
 

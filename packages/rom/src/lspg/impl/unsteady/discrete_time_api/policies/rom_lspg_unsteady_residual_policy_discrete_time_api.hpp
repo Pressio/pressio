@@ -91,13 +91,9 @@ public:
 	       ::pressio::Norm	normKind,
 	       scalar_t	& normValue) const
   {
-    this->compute_impl(romState, romPrevStates, fomSystemObj, time, dt, step, romR, normKind, normValue);
-    // if (normKind == ::pressio::Norm::L2)
-    //   normValue = ::pressio::ops::norm2(romR);
-    // else if (normKind == ::pressio::Norm::L1)
-    //   normValue = ::pressio::ops::norm1(romR);
-    // else
-    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
+    this->compute_impl(romState, romPrevStates, fomSystemObj,
+		       time, dt, step,
+		       romR, normKind, normValue);
   }
 
 private:
@@ -139,7 +135,15 @@ private:
     doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj, time, dt, step, romR, normKind, normValue);
+
+    try{
+      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
+						   time, dt, step, romR,
+						   normKind, normValue);
+    }
+    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
   }
 
   // we have here n = 2 prev rom states
@@ -160,7 +164,15 @@ private:
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
-    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj, time, dt, step, romR, normKind, normValue);
+
+    try{
+      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
+						   time, dt, step,
+						   romR, normKind, normValue);
+    }
+    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
   }
 
 protected:

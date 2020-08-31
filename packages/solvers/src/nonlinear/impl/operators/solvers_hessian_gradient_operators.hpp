@@ -75,7 +75,6 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -168,7 +167,6 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return H_; }
   g_t & getGradient(){ return g_; }
   const h_t & getHessian() const { return H_; }
@@ -287,7 +285,6 @@ public:
   {}
 
 public:
-  const bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpHGApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
@@ -331,8 +328,11 @@ private:
     // compute lmH = H + mu*diag(H)
     const auto & H = HGOpHGApi_.getHessian();
     ::pressio::ops::deep_copy(lmH_, H);
-    // this needs to be replaces with a daxpy when we have the diagonal view
-    lmH_.data()->diagonal() = lmH_.data()->diagonal() + dampParam_*lmH_.data()->diagonal();
+
+    const auto diagH   = ::pressio::containers::diag(H);
+    auto diaglmH = ::pressio::containers::diag(lmH_);
+    constexpr auto one  = pressio::utils::constants<sc_t>::one();
+    ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
   }
 };
 
@@ -384,7 +384,6 @@ public:
       lmH_(HGOpRJApi_.getHessian()){}
 
 public:
- const bool computesGradient() const { return true; }
   h_t & getHessian(){ return lmH_; }
   g_t & getGradient(){ return HGOpRJApi_.getGradient(); }
   const h_t & getHessian() const { return lmH_; }
@@ -416,8 +415,11 @@ public:
     // compute lmH = H + mu*diag(H)
     const auto & H = HGOpRJApi_.getHessian();
     ::pressio::ops::deep_copy(lmH_, H);
-    // this needs to be replaces with a daxpy when we have the diagonal view
-    lmH_.data()->diagonal() = lmH_.data()->diagonal() + dampParam_*lmH_.data()->diagonal();
+
+    const auto diagH   = ::pressio::containers::diag(H);
+    auto diaglmH = ::pressio::containers::diag(lmH_);
+    constexpr auto one  = pressio::utils::constants<sc_t>::one();
+    ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
   }
 };
 

@@ -129,5 +129,93 @@ public:
   }
 };
 
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename matrix_t>
+struct DiagExpr<
+  matrix_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value
+    >
+  >
+  : public VectorSharedMemBase< DiagExpr<matrix_t> >
+{
+  using this_t = DiagExpr<matrix_t>;
+  using mytraits = typename details::traits<this_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using size_t = typename mytraits::size_t;
+
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+
+  //using native_expr_t = typename mytraits::native_expr_t;
+  ///using data_return_t = typename mytraits::data_return_t;
+  //using const_data_return_t = typename mytraits::const_data_return_t;
+
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+private:
+  matrix_t & matObj_;
+  //native_expr_t nativeExprObj_;
+  size_t extent_ = {};
+  size_t numRows_ = {};
+  size_t numCols_ = {};
+
+public:
+  DiagExpr() = delete;
+  ~DiagExpr() = default;
+  DiagExpr(const DiagExpr & other) = default;
+  DiagExpr(DiagExpr && other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = default;
+  DiagExpr & operator=(DiagExpr && other) = default;
+
+  DiagExpr(matrix_t & matObjIn)
+    : matObj_(matObjIn),
+      /*nativeExprObj_(),*/
+      numRows_(matObj_.extent(0)),
+      numCols_(matObj_.extent(1)),
+      extent_(matObj_.extent(0))
+  {
+    assert(numRows_ == numCols_);
+  }
+
+  size_t extent() const{
+    return extent_;
+  }
+
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
+
+  matrix_t & getUnderlyingObject(){
+    return matObj_;
+  }
+
+  const matrix_t & getUnderlyingObject() const{
+    return matObj_;
+  }
+
+  // const_data_return_t data() const{
+  //   return &nativeExprObj_;
+  // }
+  // data_return_t data(){
+  //   return &nativeExprObj_;
+  // }
+
+  ref_t operator()(size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
+
+  const_ref_t operator()(size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
+};
+#endif
+
 }}} //end namespace pressio::containers::expressions
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_MATRIX_DIAG_EXPRESSION_HPP_
