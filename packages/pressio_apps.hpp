@@ -67,7 +67,6 @@
 #include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "apps/src/euler1d/apps_euler1d_kokkos.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
 #endif
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
@@ -78,14 +77,6 @@
 
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
-
-
-// euler1d
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/src/euler1d/apps_euler1d_tpetra_block.hpp"
-#include "apps/src/euler1d/apps_euler1d_tpetra_block_hyper.hpp"
-#endif
-
 
 
 // steady 2d adv-diff
