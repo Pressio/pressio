@@ -64,7 +64,6 @@ struct ExplicitDoStepBasic
   }
 };
 
-
 template<typename solver_type>
 struct ImplicitDoStepBasic
 {
@@ -80,7 +79,6 @@ struct ImplicitDoStepBasic
   }
 };
 
-
 template<typename solver_type, typename guesser_cb_t>
 struct ImplicitDoStepWithGuesser
 {
@@ -93,7 +91,8 @@ struct ImplicitDoStepWithGuesser
 		      solver_type & solver,
 		      guesser_cb_t && guessCb)
   {
-    stepper.doStep(stateInOut, time, dt, step, solver, std::forward<guesser_cb_t>(guessCb));
+    stepper.doStep(stateInOut, time, dt, step,
+		   solver, std::forward<guesser_cb_t>(guessCb));
   }
 };
 

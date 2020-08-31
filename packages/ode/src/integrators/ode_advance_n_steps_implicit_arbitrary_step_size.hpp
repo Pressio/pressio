@@ -62,8 +62,11 @@ template<
   typename step_size_cb_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::time_step_size_setter<step_size_cb_t, types::step_t, time_type>::value
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type
+    >::value and
+  ::pressio::ode::concepts::time_step_size_manager<
+    step_size_cb_t, types::step_t, time_type>::value
   >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
@@ -77,11 +80,11 @@ advanceNSteps(stepper_type & stepper,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping. ");
 
-  using do_step_policy_t = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t	 = impl::IntegratorNStepsWithTimeStepSizeSetter<do_step_policy_t>;
-  advancer_t::execute(num_steps, start_time,
-		      std::forward<step_size_cb_t>(dtManager),
-		      odeStateInOut, stepper, solver);
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
+  advancer_t::execute<step_policy>(num_steps, start_time,
+				   std::forward<step_size_cb_t>(dtManager),
+				   odeStateInOut, stepper, solver);
 }
 
 }}//end namespace pressio::ode

@@ -135,19 +135,19 @@ public:
   template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
   mpl::enable_if_t< prev_states_mgr_type::size()==1 >
   compute(const state_type & odeCurrentState,
-      const prev_states_mgr_type & prevStatesMgr,
-      const system_type & system,
-      const scalar_type & t,
-      const scalar_type & dt,
-      const types::step_t &  step,
-      jacobian_type & J) const
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t &  step,
+	  jacobian_type & J) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
 
     system.template discreteTimeJacobian(step, t, dt,
-          *J.data(),
-          *odeCurrentState.data(),
-          *ynm1.data() );
+					 *J.data(),
+					 *odeCurrentState.data(),
+					 *ynm1.data() );
   }
 
   //-------------------------------
@@ -156,21 +156,46 @@ public:
   template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
   mpl::enable_if_t< prev_states_mgr_type::size()==2 >
   compute(const state_type & odeCurrentState,
-      const prev_states_mgr_type & prevStatesMgr,
-      const system_type & system,
-      const scalar_type & t,
-      const scalar_type & dt,
-      const types::step_t & step,
-      jacobian_type & J) const
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t & step,
+	  jacobian_type & J) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
     const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
 
     system.template discreteTimeJacobian(step, t, dt,
-          *J.data(),
-          *odeCurrentState.data(),
-          (*ynm1.data() ),
-          (*ynm2.data()) );
+					 *J.data(),
+					 *odeCurrentState.data(),
+					 (*ynm1.data() ),
+					 (*ynm2.data()) );
+  }
+
+  //-------------------------------
+  // specialize for n == 3
+  //-------------------------------
+  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
+  mpl::enable_if_t< prev_states_mgr_type::size()==3 >
+  compute(const state_type & odeCurrentState,
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t & step,
+	  jacobian_type & J) const
+  {
+    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
+    const auto & ynm3 = prevStatesMgr.get(ode::nMinusThree());
+
+    system.template discreteTimeJacobian(step, t, dt,
+					 *J.data(),
+					 *odeCurrentState.data(),
+					 (*ynm1.data()),
+					 (*ynm2.data()),
+					 (*ynm3.data()) );
   }
 };//end class
 

@@ -81,7 +81,6 @@ public:
       J_( system.createJacobian() ){}
 
 public:
-  const bool computesGradient() const { return false; }
   r_t & getResidual(){ return r_; }
   j_t & getJacobian(){ return J_; }
   const r_t & getResidual() const{ return r_; }

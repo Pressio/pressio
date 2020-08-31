@@ -59,6 +59,13 @@ at compile time since these are used for pre-processor directives.
 	- default: 		OFF
 
 
+- PRESSIO_ENABLE_TPL_TORCH
+	- description: 	self-explanatory
+	- enable with: 	-DPRESSIO_ENABLE_TPL_TORCH=[ON/OFF]
+	- prerequisites: 	need to have it installed if you want this on
+	- default: 		OFF
+
+
 <!-- - PRESSIO_ENABLE_TPL_BLAZE
 	- description: 	self-explanatory
 	- enable with: 	-DPRESSIO_ENABLE_TPL_BLAZE=[ON/OFF]
@@ -72,4 +79,3 @@ at compile time since these are used for pre-processor directives.
 	- prerequisites: 	need to have it installed if you want this on
 	- default: 		OFF
  -->
-

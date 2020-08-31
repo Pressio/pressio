@@ -73,7 +73,7 @@ struct AppPreconditioner{
 		  operand_t & operand,
 		  const scalar_t &t) const
   {
-    fomSystemObj.applyPreconditioner(*yFom.data(), *operand.data(), t);
+    fomSystemObj.applyPreconditioner(*yFom.data(), t, *operand.data());
   }
 };
 

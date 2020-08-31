@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_time_step_size_setter.hpp
+// containers_diag.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,32 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
+#define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
 
-namespace pressio{ namespace ode{ namespace concepts {
+namespace pressio{ namespace containers{
 
-template <typename T, typename step_t, typename time_type, typename enable = void>
-struct time_step_size_setter
-  : std::false_type{};
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::diag_const_ret_t
+  >
+diag(const T & obj)
+{
+  using return_t = typename details::traits<T>::diag_const_ret_t;
+  return return_t(obj);
+}
 
-template <typename T, typename step_t, typename time_type>
-struct time_step_size_setter<
-  T, step_t, time_type,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-         std::declval<T const>()(
-               std::declval<step_t const &>(),    //step
-               std::declval<time_type const &>(), //time
-               std::declval<time_type &>()        // dt
-               )
-         )
-      >::value
-    >
-  > : std::true_type{};
+template <typename T, typename ... Args>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_matrix_wrapper<T>::value,
+  typename details::traits<T>::diag_ret_t
+  >
+diag(T & obj)
+{
+  using return_t = typename details::traits<T>::diag_ret_t;
+  return return_t(obj);
+}
 
-}}} // namespace pressio::ode::concepts
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_SETTER_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_

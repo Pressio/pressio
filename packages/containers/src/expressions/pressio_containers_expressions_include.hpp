@@ -57,6 +57,10 @@
 #include "./subspan/containers_expressions_traits.hpp"
 #include "./subspan/containers_subspan.hpp"
 
+#include "./diag/containers_matrix_diag_expression.hpp"
+#include "./diag/containers_expressions_traits.hpp"
+#include "./diag/containers_diag.hpp"
+
 #include "containers_is_expression.hpp"
 
 #endif  // CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_

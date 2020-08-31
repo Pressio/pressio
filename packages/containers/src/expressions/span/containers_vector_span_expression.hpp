@@ -135,8 +135,6 @@ public:
 };
 
 
-
-
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename vector_t>
 struct SpanExpr<
@@ -179,7 +177,8 @@ public:
 	   const size_t startIndexIn,
 	   const size_t extentIn)
     : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
-    nativeExprObj_(Kokkos::subview(*vecObj_.data(), std::make_pair(startIndex_, startIndex_+extent_)))
+    nativeExprObj_(Kokkos::subview(*vecObj_.data(),
+				   std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
@@ -189,7 +188,8 @@ public:
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
       extent_(std::get<1>(indexRange)-startIndex_),
-      nativeExprObj_(Kokkos::subview(*vecObj_.data(), std::make_pair(startIndex_, startIndex_+extent_)))
+      nativeExprObj_(Kokkos::subview(*vecObj_.data(),
+				     std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
@@ -201,13 +201,13 @@ public:
   }
 
   // TODO: enable only on host
-  ref_t operator[](std::size_t i){
+  ref_t operator[](size_t i){
     assert(i < extent_);
     return nativeExprObj_(i);
   }
 
   // TODO: enable only on host
-  const_ref_t operator[](std::size_t i) const
+  const_ref_t operator[](size_t i) const
   {
     assert(i < extent_);
     return nativeExprObj_(i);
