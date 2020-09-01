@@ -98,8 +98,9 @@ public:
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
       residual_(fomSystemObj.createVelocity()),
+      J_(fomSystemObj.createApplyJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
-      jacobians_( timeStencilSize, numStepsInWindow , phi_),
+      jacobians_( timeStencilSize, numStepsInWindow ,J_),
       timeSchemeObj_(romSize_, fomState)
   {
     using non_frozen_t = ::pressio::rom::wls::NonFrozenJacobiansContainer<typename decoder_t::jacobian_type>;
@@ -130,8 +131,9 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
       phi_(decoderObj.getReferenceToJacobian()),
       fomStateCurrent_(fomState),
       residual_( fomSystemObj.createDiscreteTimeResidual() ),
+      J_(fomSystemObj.createApplyDiscreteTimeJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
-      jacobians_( timeStencilSize, numStepsInWindow , phi_),
+      jacobians_( timeStencilSize, numStepsInWindow , J_),
       timeSchemeObj_(romSize_, fomState)
   {
     using non_frozen_t = ::pressio::rom::wls::NonFrozenJacobiansContainer<typename decoder_t::jacobian_type>;
@@ -171,7 +173,6 @@ public:
     window_size_t stepNumGlobal = step_s + stepNumLocal;
     ::pressio::ops::set_zero(hess);
     ::pressio::ops::set_zero(gradient);
-
     //get access to the state at the first window
     setCurrentFomState(wlsState, 0, fomStateReconstrObj);
 
@@ -181,9 +182,9 @@ public:
     //compute the time discrete residual
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("residual");
 #endif
     timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("residual");
 #endif
@@ -452,6 +453,7 @@ private:
   window_size_t jacStencilSize_;
   window_size_t jacobianUpdateFrequency_;
 
+  const decoder_jac_t J_;
   const fom_system_type & fomSystemObj_;
   const decoder_jac_t & phi_;
   mutable fom_state_t fomStateCurrent_;
