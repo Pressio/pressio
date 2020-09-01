@@ -1,28 +1,45 @@
+
 DOXYFILE = 'Doxyfile-mcss'
 MAIN_PROJECT_URL: "Pressio"
 
-
 LINKS_NAVBAR1 = [
-    ("<a href=\"md_pages_user_guide.html\">User Guide</a>", [
-        ("<a href=\"md_pages_build_and_install.html\">Build and Installation</a>", ),
-        ("<a href=\"md_pages_basic_usage.html\">Basic Usage</a>",),
-        ("<a href=\"md_pages_advanced_usage.html\">Advanced Usage</a>",),
-        ("<a href=\"md_pages_API.html\">API</a>",)
-    ]),
-    ("<a href=\"md_pages_tutorials.html\">Tutorials</a>", [
-        ("<a href=\"md_pages_quickstart.html\">Quickstart</a>", ),
-        ("<a href=\"md_pages_examples.html\">Examples</a>",)
-    ]),
-	("<a href=\"md_pages_team.html\">Team</a>",[])
-]
-LINKS_NAVBAR2 = [
-    ('Classes', 'annotated', []),
-    ('Namespaces', 'namespaces', [])
+  # user guide
+  ("<a href=\"md_pages_user_guide.html\">User Guide</a>",
+   [
+     ("<a href=\"md_pages_build_and_install.html\">Installation</a>",),
+     ("<a href=\"md_pages_pressio_app.html\">Interacting with your app</a>",),
+     ("<a href=\"md_pages_prep_app.html\">Step-by-step on preparing your app</a>",)
+   ]),
+  #
+  # tutorials
+  ("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+   [
+     ("<a href=\"md_pages_tutorial1.html\">Tutorial1</a>", )
+   ]),
+  #
+  # examples
+  ("<a href=\"md_pages_examples.html\">Full Examples</a>", []),
+  #
+  # # Adapter API
+  # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
+  #  [
+  #    ("<a href=\"md_pages_galerkin_api.html\">Galerkin ROM</a>", [])
+  #    ("<a href=\"md_pages_galerkin_api.html\">Galerkin ROM</a>", [])
+  #  ])
+  #
+  # license
+  ("<a href=\"md_pages_license.html\">License</a>", [])
 ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code']
+LINKS_NAVBAR2 = [
+  ('Classes', 'annotated', []),
+  ('Namespaces', 'namespaces', [])
+]
+
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components']
 
 SHOW_UNDOCUMENTED = "YES"
+
 
 # STYLESHEETS = [
 #     'https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
