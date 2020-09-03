@@ -39,8 +39,9 @@ int main(int argc, char *argv[]){
     auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize, numCell, 
          Comm, appobj.getDataMap());
     native_dmat_t tpb_phi(*tpw_phi.data(), *appobj.getDataMap(), 1);
+    decoder_jac_t phi(std::move(tpb_phi));
     // create decoder obj
-    decoder_t decoderObj(tpb_phi);
+    decoder_t decoderObj(phi);
 
     // for this problem, my reference state = initial state
     auto & yRef = appobj.getInitialState();

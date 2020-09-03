@@ -22,16 +22,16 @@ int main(int argc, char *argv[])
     std::string checkStr = "PASSED";
 
     const auto checkStr1 = pressio::testing::wls::doRun<fom_t, rom_data_t_eigen, tcomm_t, lowTri, ode_tag_euler>(Comm, rank);
-    const auto checkStr2 = pressio::testing::wls::doRun<fom_t, rom_data_t_eigen, tcomm_t, lowTri, ode_tag_BDF2>(Comm, rank);
+    //    const auto checkStr2 = pressio::testing::wls::doRun<fom_t, rom_data_t_eigen, tcomm_t, lowTri, ode_tag_BDF2>(Comm, rank);
 
    if (checkStr1 == "FAILED"){
       std::cout << "WLS failed on implicit Euler" << std::endl;
       checkStr = "FAILED";
     }
-    if (checkStr2 == "FAILED"){
-      std::cout << "WLS failed on implicit BDF2" << std::endl;
-      checkStr = "FAILED";
-    }
+    // if (checkStr2 == "FAILED"){
+    //   std::cout << "WLS failed on implicit BDF2" << std::endl;
+    //   checkStr = "FAILED";
+    // }
     std::cout << checkStr << std::endl;
   }
   return 0;

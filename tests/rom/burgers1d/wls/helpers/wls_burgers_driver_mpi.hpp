@@ -12,7 +12,8 @@
 
 namespace{
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::Euler odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::implicitmethods::Euler odeTag,
+	     const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
@@ -20,7 +21,8 @@ auto readSol(::pressio::ode::implicitmethods::Euler odeTag, const std::size_t fo
 }
 
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag,
+	     const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
@@ -67,7 +69,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   constexpr pressio::rom::wls::window_size_t numWindows = (finalTime/dt)/numStepsInWindow;
 
   // create/read jacobian of the decoder
-  auto decoderObj = readBasis<decoder_t,fom_dmat_t>(appObj,ode_tag(),romSize,fomSize,Comm);
+  auto decoderObj = readBasis<decoder_t>(appObj,ode_tag(),romSize,fomSize,Comm);
 
   // lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;

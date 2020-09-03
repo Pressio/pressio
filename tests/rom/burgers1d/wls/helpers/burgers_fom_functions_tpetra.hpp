@@ -6,28 +6,27 @@
 
 namespace pressio{ namespace testing{ namespace wls{
 
-template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
+template <typename decoder_d_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj,
 		       ::pressio::ode::implicitmethods::Euler odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {
-  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize,
-							       fomSize, Comm, appObj.getDataMap());
-  decoder_d_t decoderObj(phiNative);
+  auto phi = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize,
+						   fomSize, Comm, appObj.getDataMap());
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
-template <typename decoder_d_t, typename fom_dmat_t, typename rcpcomm_t>
+template <typename decoder_d_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj,
 		       ::pressio::ode::implicitmethods::BDF2 odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {
-  const auto phiNative = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize,
-							       fomSize, Comm,
-							       appObj.getDataMap());
-  decoder_d_t decoderObj(phiNative);
+  auto phi = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize,
+						   fomSize, Comm, appObj.getDataMap());
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
