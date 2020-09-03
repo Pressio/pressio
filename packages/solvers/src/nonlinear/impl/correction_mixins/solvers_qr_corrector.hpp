@@ -87,7 +87,7 @@ public:
 
     // J = QR
     solverObj_.computeThin(J);
-    // compute RTResid_ = Q^T r
+    // compute Q^T r
     solverObj_.applyQTranspose(r, QTResid_);
     // compute gradient = R^T Q^T r
     solverObj_.applyRTranspose(QTResid_, g_);
