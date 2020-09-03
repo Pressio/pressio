@@ -6,4 +6,4 @@ Patrick: \todo
 - use paper to extract things
 
 Use the image:
-<img src="https://github.com/Pressio/pressio/tree/master/figs/press_app_schematic.png" width="45%">
+<img src="https://github.com/Pressio/pressio/blob/master/docs/figs/press_app_schematic.png" width="45%">
