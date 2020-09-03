@@ -33,26 +33,30 @@ operators and solvers.
 nonlinear model reduction in large-scale applications without compromising performance.
 @m_endspan
 
-## What steps of pROMs does Pressio cover?
+## Main steps of pROMs
 Projection-based model reduction can be broken into three main steps,
 namely data collection, basis creation, and ROM deployment.
+
+- data collection: \todo (all)
+
+- compute basis: \todo (all)
+
+- create/run the ROM: \todo (all)
+
+## What steps does Pressio currently cover?
 \pressioproj currently contains capabilities to perform the last step.
-
-- data collection: \todo (users do this. Maybe at some point we will provide tools
-to run the samples, but for now that is not a huge priority.)
-
-- compute basis: \todo (this is done externally. But we can develop something
+\todo Say that we have plans for the other steps too.
+Maybe at some point we will provide tools to run the samples,
+but for now that is not a huge priority. we can develop something
 later on to aid this step. For example interfacing with efficient
-POD libraries, providing tools for specific mesh formats (exodus).)
-
-- create/run the ROM: \todo
+POD libraries, providing tools for specific mesh formats (exodus).
 
 
-## What does Pressio include?
+## The Pressio ecosystem
 \pressioproj is a computational framework, comprising a (growing) collection of repositories :
 
 * [pressio](https://github.com/Pressio/pressio): &emsp;&ensp;&emsp;&emsp;&ensp;core C++ library based on generic programming;
 <!-- to support applications with arbitrary data types; -->
 * [pressio4py](https://github.com/Pressio/pressio4py): &emsp;&emsp;&nbsp;&nbsp;Python bindings for the core Pressio C++ functionalities;
-* [pressio-builder](https://github.com/Pressio/pressio-builder): &nbsp;&nbsp;&nbsp;auxiliary repo with bash scripts for building/testing.
+* [pressio-builder](https://github.com/Pressio/pressio-builder): &nbsp;&nbsp;&nbsp;auxiliary bash scripts for building/testing.
 * [pressio-tutorials](https://github.com/Pressio/pressio-tutorials): &nbsp;tutorials explaining how to use `pressio` and its functionalities;

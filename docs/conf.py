@@ -7,8 +7,8 @@ LINKS_NAVBAR1 = [
   ("<a href=\"md_pages_user_guide.html\">User Guide</a>",
    [
      ("<a href=\"md_pages_build_and_install.html\">Installation</a>",),
-     ("<a href=\"md_pages_pressio_app.html\">Interacting with your app</a>",),
-     ("<a href=\"md_pages_prep_app.html\">Step-by-step on preparing your app</a>",)
+     ("<a href=\"md_pages_pressio_app.html\">Interacting with an app</a>",),
+     ("<a href=\"md_pages_prep_app.html\">Step-by-step on adapting an app</a>",)
    ]),
   #
   # tutorials
