@@ -79,7 +79,10 @@ public:
   PyDecoder() = delete;
 
   PyDecoder(const jacobian_native_t & jacobianMatrixIn)
-    : mappingJacobian_(jacobianMatrixIn), kind_(mappingKind::Linear)
+    //note here that we view the native object, we don't deep copy it
+    // so if the mapping jacobian changes on the python side, it is also reflected here
+    : mappingJacobian_(jacobianMatrixIn, ::pressio::view()),
+      kind_(mappingKind::Linear)
   {}
 
   PyDecoder(pybind11::object customMapper)

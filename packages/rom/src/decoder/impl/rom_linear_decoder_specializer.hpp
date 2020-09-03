@@ -63,13 +63,17 @@ struct LinearDecoderSpecializer<
   void, matrix_type, fom_state_type
   >
 {
-  static_assert(::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
-  "The matrix template arg passed to the LinearDecoder class is not a valid decoder's Jacobian type.");
+  static_assert
+  (::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
+   "The matrix template arg passed to the LinearDecoder class \
+is not a valid decoder's Jacobian type.");
 
-  static_assert(::pressio::rom::concepts::fom_state<fom_state_type>::value,
-  "The fom state type template arg passed to the LinearDecoder class is not a valid fom state type.");
+  static_assert
+  (::pressio::rom::concepts::fom_state<fom_state_type>::value,
+   "The fom state type template arg passed to the LinearDecoder class \
+is not a valid fom state type.");
 
-  using type = ::pressio::rom::impl::LinearDecoderWithPressioOps<matrix_type, fom_state_type>;
+  using type = LinearDecoderWithPressioOps<matrix_type, fom_state_type>;
 };
 
 // matrix_type, fom_state_type, ud_ops
@@ -78,13 +82,17 @@ struct LinearDecoderSpecializer<
   void, matrix_type, fom_state_type, ud_ops_t
   >
 {
-  static_assert(::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
-  "The matrix template arg passed to the LinearDecoder class is not a valid decoder's Jacobian type.");
+  static_assert
+  (::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
+   "The matrix template arg passed to the LinearDecoder class \
+is not a valid decoder's Jacobian type.");
 
-  static_assert(::pressio::rom::concepts::fom_state<fom_state_type>::value,
-  "The fom state type template arg passed to the LinearDecoder class is not a valid fom state type.");
+  static_assert
+  (::pressio::rom::concepts::fom_state<fom_state_type>::value,
+   "The fom state type template arg passed to the LinearDecoder class \
+ is not a valid fom state type.");
 
-  using type = ::pressio::rom::impl::LinearDecoderWithCustomOps<matrix_type, fom_state_type, ud_ops_t>;
+  using type = LinearDecoderWithCustomOps<matrix_type, fom_state_type,ud_ops_t>;
 };
 
 }}}//end namespace pressio::rom::impl
