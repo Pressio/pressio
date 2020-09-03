@@ -20,15 +20,19 @@ LINKS_NAVBAR1 = [
   # examples
   ("<a href=\"md_pages_examples.html\">Full Examples</a>", []),
   #
-  # # Adapter API
-  # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
-  #  [
-  #    ("<a href=\"md_pages_galerkin_api.html\">Galerkin ROM</a>", [])
-  #    ("<a href=\"md_pages_galerkin_api.html\">Galerkin ROM</a>", [])
-  #  ])
+  # Adapter API
+  ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
+   [
+     ("<a href=\"md_pages_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",),
+     ("<a href=\"md_pages_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",)
+   ]),
   #
-  # license
-  ("<a href=\"md_pages_license.html\">License</a>", [])
+  # various
+  ("<a href=\"md_pages_various.html\">Various</a>", 
+    [
+      ("<a href=\"md_pages_license.html\">License</a>",),
+      ("<a href=\"md_pages_formulation_lspg.html\">What is LSPG?</a>",)
+    ])
 ]
 
 LINKS_NAVBAR2 = [
@@ -36,7 +40,7 @@ LINKS_NAVBAR2 = [
   ('Namespaces', 'namespaces', [])
 ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components']
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot']
 
 SHOW_UNDOCUMENTED = "YES"
 
