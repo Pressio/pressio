@@ -75,10 +75,12 @@ public:
   // default cnstr
   Vector() = delete;
 
-  // cnstrs
   explicit Vector(const wrapped_type & vecobj)
     // use the deep_copy cnstr
     : data_(vecobj, Teuchos::Copy){}
+
+  explicit Vector(wrapped_type && vecobj)
+    : data_(std::move(vecobj)){}
 
   explicit Vector(Teuchos::RCP<const map_t> mapO)
     : data_(mapO){}
@@ -99,14 +101,8 @@ public:
   }
 
   // move cnstr
-  Vector(Vector && other) : data_(*other.data(), Teuchos::Copy){}
-
-  // move assignment
-  Vector & operator=(Vector && other){
-    assert(this->extentLocal(0) == other.extentLocal(0));
-    data_.assign( *other.data() );
-    return *this;
-  }
+  Vector(Vector && other) = default;
+  Vector & operator=(Vector && other) = default;
 
   // destructor
   ~Vector() = default;

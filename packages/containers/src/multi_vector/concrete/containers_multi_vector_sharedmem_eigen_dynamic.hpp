@@ -74,8 +74,9 @@ public:
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  explicit MultiVector(const wrap_t & other)
-    : data_(other){}
+  explicit MultiVector(const wrap_t & other) : data_(other){}
+
+  MultiVector(wrap_t && other) : data_(std::move(other)){}
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;

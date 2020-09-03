@@ -103,16 +103,19 @@ public:
     return *this;
   }
 
-  // move cnstr
-  Vector(Vector && other) : Vector(*other.data()){}
+  // // move cnstr
+  // Vector(Vector && other)
+  //   : Vector(*other.data()){}
 
-  // move assignment
-  Vector & operator=(Vector && other){
-    this->data_.update(::pressio::utils::constants<sc_t>::one(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::zero() );
-    return *this;
-  }
+  // // move assignment
+  // Vector & operator=(Vector && other){
+  //   if (*this != &other){
+  //     this->data_.update(::pressio::utils::constants<sc_t>::one(),
+  // 			 *other.data(),
+  // 			 ::pressio::utils::constants<sc_t>::zero() );
+  //   }
+  //   return *this;
+  // }
 
   ~Vector() = default;
 

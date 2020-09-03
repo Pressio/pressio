@@ -82,7 +82,10 @@ public:
     data_.resize(insize);
     data_.setConstant( ::pressio::utils::constants<sc_t>::zero() );
   }
+
   explicit Vector(const wrap_t & src) : data_(src){}
+
+  Vector(wrap_t && src) : data_(std::move(src)){}
 
   // copy cnstr
   Vector(Vector const & other) = default;

@@ -73,6 +73,7 @@ public:
 
   explicit Vector(const sc_t * src) : data_(src){}
   explicit Vector(const wrap_t & src) : data_(src){}
+  Vector(wrap_t && src) : data_(std::move(src)){}
 
   // copy cnstr
   Vector(Vector const & other) = default;

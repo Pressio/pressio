@@ -76,10 +76,13 @@ class MultiVector<
 public:
   MultiVector() = default;
 
-  explicit MultiVector(const wrap_t src)
+  explicit MultiVector(const wrap_t & src)
     : data_{src.label(), src.extent(0), src.extent(1)}{
     Kokkos::deep_copy(data_, src);
   }
+
+  MultiVector(wrap_t && src)
+    : data_(std::move(src)){}
 
   MultiVector(const std::string & label, size_t e1, size_t e2)
     : data_{label, e1, e2}{}
@@ -93,7 +96,7 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // copy assign implments copy semantics not view (for time being)
+  // copy assign implments copy semantics not view
   MultiVector & operator=(const MultiVector & other){
     if (&other != this){
       assert(this->length() == other.length());
@@ -104,20 +107,8 @@ public:
   }
 
   // move cnstr and assign
-  MultiVector(MultiVector && other)
-    : data_{other.data_.label(),
-	    other.data_.extent(0),
-	    other.data_.extent(1)}
-  {
-    Kokkos::deep_copy(data_, other.data_);
-  }
-
-  MultiVector & operator=(MultiVector && other){
-    assert(this->length() == other.length());
-    assert(this->numVectors() == other.numVectors());
-    Kokkos::deep_copy(data_, *other.data());
-    return *this;
-  }
+  MultiVector(MultiVector && other) = default;
+  MultiVector & operator=(MultiVector && other) = default;
 
   ~MultiVector() = default;
 

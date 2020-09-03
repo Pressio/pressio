@@ -77,10 +77,12 @@ public:
   // of a view WITHOUT doing shallow copy.
   // We create a new object and deep_copy original.
 
-  explicit Vector(const wrapped_type src)
+  explicit Vector(const wrapped_type & src)
     : data_{src.label(), src.extent(0)}{
     Kokkos::deep_copy(data_, src);
   }
+
+  Vector(wrapped_type && src) : data_(std::move(src)){}
 
   Vector(const std::string & label, ord_t e1) : data_{label, e1}{}
 
@@ -102,17 +104,18 @@ public:
   }
 
   // move cnstr and assign
-  Vector(Vector && other)
-    : data_{other.data_.label(), other.data_.extent(0)}{
-    Kokkos::deep_copy(data_, other.data_);
-  }
+  Vector(Vector && other) = default;
+  //   : data_{other.data_.label(), other.data_.extent(0)}{
+  //   Kokkos::deep_copy(data_, other.data_);
+  // }
 
-  Vector & operator=(Vector && other){
-    assert(this->extent(0) == other.extent(0));
-    Kokkos::deep_copy(data_, *other.data());
-    return *this;
-  }
+  Vector & operator=(Vector && other) = default;
+  //   assert(this->extent(0) == other.extent(0));
+  //   Kokkos::deep_copy(data_, *other.data());
+  //   return *this;
+  // }
 
+  // destructor
   ~Vector() = default;
 
   template<typename _wrapped_type = wrapped_type>

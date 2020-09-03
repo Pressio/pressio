@@ -83,6 +83,9 @@ public:
   MultiVector(const map_t & mapobj, GO_t numVectors)
     : data_( Teuchos::rcpFromRef(mapobj), numVectors ){}
 
+  explicit MultiVector(wrap_t && other)
+    : data_(std::move(other)){}
+
   explicit MultiVector(const wrap_t & other)
     // use the deep_copy constructor
     : data_(other, Teuchos::Copy){}
@@ -94,23 +97,15 @@ public:
   // copy assignment
   MultiVector & operator=(const MultiVector & other){
     if(&other != this){
-      assert(this->localSize() == other.localSize());
       data_.assign( *other.data() );
     }
     return *this;
   }
 
   // move cnstr
-  MultiVector(MultiVector && other)
-    // use the deep_copy constructor
-    : data_(*other.data(), Teuchos::Copy){}
-
+  MultiVector(MultiVector && other) = default;
   // move assignment
-  MultiVector & operator=(MultiVector && other){
-    assert(this->localSize() == other.localSize());
-    data_.assign( *other.data() );
-    return *this;
-  }
+  MultiVector & operator=(MultiVector && other) = default;
 
   ~MultiVector() = default;
 

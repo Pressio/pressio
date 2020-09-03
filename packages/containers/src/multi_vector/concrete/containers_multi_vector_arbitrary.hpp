@@ -70,24 +70,63 @@ public:
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
       std::is_default_constructible<_wrapped_type>::value, int
-    > = 0
+      > = 0
   >
   MultiVector(){};
 
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t, size_t>::value, int
-    > = 0
+      std::is_constructible<_wrapped_type, size_t, size_t>::value, int> = 0
   >
   MultiVector(size_t nR, size_t nC) : data_(nR, nC){};
+
 
   explicit MultiVector(const wrapped_type & vecobj)
     : data_(vecobj){}
 
+  template<
+    typename T = int,
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
+  explicit MultiVector(wrapped_type && vecobj)
+    : data_(vecobj){}
+
+
+  // copy constructor
   MultiVector(MultiVector const & other)
     : data_(*other.data()){}
 
+  // copy assignment
+  MultiVector & operator=(const MultiVector & other){
+    if(&other != this){
+      data_ = other.data_;
+    }
+    return *this;
+  }
+
+  // mv constructor
+  template<
+    typename T = int,
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
+  MultiVector(MultiVector && other) noexcept
+    : data_(std::move(other.data_)){}
+
+  // mv assignment
+  template<
+    typename T = int,
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
+  MultiVector & operator=(MultiVector && other) noexcept
+  {
+    if(&other != this){
+      data_ = std::move(other.data_);
+    }
+    return *this;
+  }
+
+public:
   size_t extent(size_t k) const{
     return data_.extent(k);
   }
