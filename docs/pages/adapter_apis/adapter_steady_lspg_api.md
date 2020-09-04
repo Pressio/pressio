@@ -41,8 +41,9 @@ public:
   void applyJacobian(state, B, A) const; // computes: A = Jac B
 };
 @endcode
+@endparblock
 
-<br></br>
+<br>
 ### Preconditioned steady LSPG
 
 If you want a preconditioned steady LSPG problem, then the above class must be extended to add: 
@@ -56,6 +57,8 @@ class AdapterSteadyLSPG
   void applyPreconditioner(const state_type &, dense_matrix_type & jac) const;
 };
 @endcode
+@endparblock
+
 <!--   // for preconditioned problem
   // for masked problem
   residual_type createApplyMaskResult(const residual_type & unmaskedObj) const;

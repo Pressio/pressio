@@ -31,6 +31,7 @@ public:
   void applyJacobian(state, const dense_matrix_type & B, time, dense_matrix_type & A) const; // computes: A = Jac B
 };
 @endcode
+@endparblock
 
 ### Preconditioned LSPG
 If you want a preconditioned problem, then the above class must be extended to add: 
@@ -46,6 +47,8 @@ class AdapterSteadyLSPG
 
 };
 @endcode
+@endparblock
+
 <!--   // for preconditioned problem
   // for masked problem
   residual_type createApplyMaskResult(const residual_type & unmaskedObj) const;
@@ -102,4 +105,5 @@ public:
   }
 };
 @endcode
+@endparblock
 

@@ -6,32 +6,45 @@ LINKS_NAVBAR1 = [
   # user guide
   ("<a href=\"md_pages_user_guide.html\">User Guide</a>",
    [
-     ("<a href=\"md_pages_build_and_install.html\">Installation</a>",),
-     ("<a href=\"md_pages_pressio_app.html\">Interacting with an app</a>",),
-     ("<a href=\"md_pages_prep_app.html\">Step-by-step on adapting an app</a>",)
+     ("<a href=\"md_pages_userguide_build_and_install.html\">Installation</a>",),
+     ("<a href=\"md_pages_userguide_pressio_app.html\">Interacting with an app</a>",),
+     ("<a href=\"md_pages_userguide_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
   #
   # tutorials
   ("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
-     ("<a href=\"md_pages_tutorial1.html\">Tutorial1</a>", )
+     ("<a href=\"md_pages_tutorials_tutorial1.html\">Tutorial1</a>", )
    ]),
   #
   # examples
-  ("<a href=\"md_pages_examples.html\">Full Examples</a>", []),
+  ("<a href=\"md_pages_examples.html\">Full Examples</a>",
+   [
+     ("<a href=\"md_pages_examples_example1.html\">Example1</a>", )
+   ]),
+  #
+  # hyper-reduction
+  ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",
+   [
+     ("<a href=\"md_pages_hyperreduction_hyperred_how_to_enable.html\">How to enable hyperreduction</a>",),
+     ("<a href=\"md_pages_hyperreduction_hyperred_eigen_example.html\">Eigen example</a>",),
+     ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
+   ]),
   #
   # Adapter API
   ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
    [
-     ("<a href=\"md_pages_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",),
-     ("<a href=\"md_pages_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",)
+     ("<a href=\"md_pages_adapter_apis_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",),
+     ("<a href=\"md_pages_adapter_apis_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",)
    ]),
   #
   # various
-  ("<a href=\"md_pages_various.html\">Various</a>", 
+  ("<a href=\"md_pages_various.html\">Various</a>",
     [
-      ("<a href=\"md_pages_license.html\">License</a>",),
-      ("<a href=\"md_pages_formulation_lspg.html\">What is LSPG?</a>",)
+      ("<a href=\"md_pages_various_license.html\">License</a>",),
+      ("<a href=\"md_pages_various_formulation_galerkin.html\">Galerkin ROM Formlation</a>",),
+      ("<a href=\"md_pages_various_formulation_lspg.html\">LSPG ROM Formulation</a>",),
+      ("<a href=\"md_pages_various_formulation_wls.html\">WLS ROM Formulation</a>",)
     ])
 ]
 
@@ -40,7 +53,9 @@ LINKS_NAVBAR2 = [
   ('Namespaces', 'namespaces', [])
 ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot']
+PLUGINS = ['m.htmlsanity', 'm.math',
+           'm.code', 'm.components',
+           'm.dot']
 
 SHOW_UNDOCUMENTED = "YES"
 
