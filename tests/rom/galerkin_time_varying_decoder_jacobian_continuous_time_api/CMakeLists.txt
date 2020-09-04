@@ -1,0 +1,2 @@
+
+add_serial_exe_and_test(galerkin_time_varying_decoder_jacobian_continuous_time_api rom main.cc "PASSED")
