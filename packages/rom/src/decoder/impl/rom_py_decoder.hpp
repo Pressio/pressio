@@ -115,19 +115,19 @@ public:
     return mappingJacobian_;
   }
 
-  // template<typename gen_coords_t>
-  // void updateJacobian(const gen_coords_t & genCoordinates) const
-  // {
-  //   if (kind_ == mappingKind::Linear){
-  //     // no op
-  //   }
-  //   else if(kind_ == mappingKind::Custom)
-  //   {
-  //     customMapper_.attr("updateJacobian")(*genCoordinates.data());
-  //   }
-  //   else
-  //     throw std::runtime_error("Invalid mapping kind enum");
-  // }
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    if (kind_ == mappingKind::Linear){
+      // no op
+    }
+    else if(kind_ == mappingKind::Custom)
+    {
+      customMapper_.attr("updateJacobian")(*genCoordinates.data());
+    }
+    else
+      throw std::runtime_error("Invalid mapping kind enum");
+  }
 
 };
 
