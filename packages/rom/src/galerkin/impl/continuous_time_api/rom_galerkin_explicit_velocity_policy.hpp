@@ -206,6 +206,11 @@ private:
     timer->start("galerkin explicit velocity");
 #endif
 
+    // any time compute_impl is called, it means the romState
+    // has changed, so tell decoder to update the Jacobian
+    decoder_.updateJacobian(romState);
+
+    // reconstruct the current fom state
     fomStatesMngr_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -218,9 +223,6 @@ private:
     timer->stop("fom eval rhs");
     timer->start("phiT*fomRhs");
 #endif
-
-    // update Jacobian of decoder if needed
-    decoder_.updateJacobian(romState);
 
     // apply decoder's jacobian to velocity
     (*this).template applyDecoderJacobianToFomVel<scalar_t>(romRhs);
