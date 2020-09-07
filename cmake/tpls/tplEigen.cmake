@@ -1,8 +1,11 @@
 
-option(PRESSIO_ENABLE_TPL_EIGEN "Enable Eigen TPL" ON)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
-  message("Found PRESSIO_ENABLE_TPL_EIGEN=${PRESSIO_ENABLE_TPL_EIGEN}.")
+  message("> Eigen is currently enabled by defauly via PRESSIO_ENABLE_TPL_EIGEN=ON")
+endif()
+
+
+if(PRESSIO_ENABLE_TPL_EIGEN)
 
   # if we need to build tests, then prep for it
   if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)

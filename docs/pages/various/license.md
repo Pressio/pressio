@@ -1,11 +1,12 @@
-/*
+# Licence
+
+```
 //@HEADER
 // ************************************************************************
 //
-// pressio_cmake_config.h.in
-//                     		  Pressio
-//                             Copyright 2019
-//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//                              Pressio
+// Copyright 2019 National Technology & Engineering Solutions of Sandia,LLC
+//                              (NTESS)
 //
 // Under the terms of Contract DE-NA0003525 with NTESS, the
 // U.S. Government retains certain rights in this software.
@@ -44,36 +45,4 @@
 //
 // ************************************************************************
 //@HEADER
-*/
-
-#ifndef PRESSIO_CMAKE_CONFIG_H_
-#define PRESSIO_CMAKE_CONFIG_H_
-
-#cmakedefine PRESSIO_ENABLE_DEBUG_PRINT
-#cmakedefine PRESSIO_ENABLE_TPL_EIGEN
-#cmakedefine PRESSIO_ENABLE_TPL_TRILINOS
-#cmakedefine PRESSIO_ENABLE_TEUCHOS_TIMERS
-#cmakedefine PRESSIO_ENABLE_TPL_PYBIND11
-#cmakedefine PRESSIO_ENABLE_TPL_KOKKOS
-#cmakedefine PRESSIO_ENABLE_TPL_BLAS
-#cmakedefine PRESSIO_ENABLE_TPL_LAPACK
-#cmakedefine PRESSIO_ENABLE_TPL_MPI
-
-
-// macros for catching compiler
-#if defined( __INTEL_COMPILER )
-#define PRESSIO_COMPILER_INTEL __INTEL_COMPILER
-#endif
-
-#if !defined( __clang__ ) && !defined( PRESSIO_COMPILER_INTEL ) &&defined( __GNUC__ )
-#define PRESSIO_COMPILER_GNU __GNUC__*100+__GNUC_MINOR__*10+__GNUC_PATCHLEVEL__
-#endif
-
-// macros for deprecation (need to adjust when we can move to c++14)
-#if defined(PRESSIO_COMPILER_GNU) || defined(PRESSIO_COMPILER_CLANG)
-#define PRESSIO_DEPRECATED __attribute__ ((deprecated))
-#else
-#define PRESSIO_DEPRECATED
-#endif
-
-#endif
+```

@@ -68,28 +68,44 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(packages)
 
 #=====================================================================
-# TPLs: note that linking to TPLs is only needed when building tests
+# note that actually linking the TPLs libraries is only needed
+# when building tests or when the user builds their app.
+# For just installing pressio, we only need to set the cmake vars.
 #=====================================================================
+message("")
+message("${Magenta}Processing what is being enabled/disabled:${ColourReset}")
+
 if( cmake_build_type_tolower STREQUAL "debug" AND NOT PRESSIO_ENABLE_DEBUG_PRINT)
-  message( "CMAKE_BUILD_TYPE==Debug, setting so PRESSIO_ENABLE_DEBUG_PRINT=ON" )
-  message( "If you want to turn off debug prints, reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
+  message( "> CMAKE_BUILD_TYPE==Debug, setting so PRESSIO_ENABLE_DEBUG_PRINT=ON" )
+  message( "  To disable: reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
   message("")
 endif()
 if(PRESSIO_ENABLE_DEBUG_PRINT)
-  message( "Enabling debug prints since PRESSIO_ENABLE_DEBUG_PRINT=ON" )
-  message( "If you want to turn off debug prints, reconfigure with -DDEBUG_PRINT=OFF" )
+  message( "> Enabling debug prints since PRESSIO_ENABLE_DEBUG_PRINT=ON" )
+  message( "  To disable: reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
   message("")
 endif()
 
 option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
+
+option(PRESSIO_ENABLE_TPL_EIGEN		"Enable Eigen TPL"	ON)
+option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
+option(PRESSIO_ENABLE_TPL_BLAS		"Enable BLAS TPL"	OFF)
+option(PRESSIO_ENABLE_TPL_LAPACK	"Enable LAPACK TPL"	OFF)
+option(PRESSIO_ENABLE_TPL_KOKKOS	"Enable Kokkos TPL"	OFF)
+option(PRESSIO_ENABLE_TPL_MPI		"Enable MPI"		OFF)
+option(PRESSIO_ENABLE_TPL_PYBIND11	"Enable Pybind11 TPL"	OFF)
+
 include(tplEigen)
+include(tplPybind11)
 include(tplMPI)
 include(tplTrilinos)
 include(tplBlas)
 include(tplLapack)
 include(tplKokkos)
-include(tplPybind11)
+message("")
+
 
 #=====================================================================
 # unit tests are enabled if
@@ -97,9 +113,7 @@ include(tplPybind11)
 #   (b) PRESSIO_ENABLE_TESTS = ON
 #=====================================================================
 if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
-  # tell CMake to use CTest extension
   enable_testing()
-  # add subdir where the unit tests are
   add_subdirectory(unit_tests)
 endif()
 
@@ -108,9 +122,7 @@ endif()
 #   PRESSIO_ENABLE_TESTS = ON
 #=====================================================================
 if(PRESSIO_ENABLE_TESTS)
-  # tell CMake to use CTest extension
   enable_testing()
-  # add subdir where the unit tests are
   add_subdirectory(tests)
 endif()
 
@@ -135,7 +147,7 @@ add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
 #=====================================================================
 message(STATUS "")
 message(STATUS "${Green}Configure completed ${ColourReset}")
-# string(TOLOWER "${CMAKE_GENERATOR}" cmake_generator_tolower)
+string(TOLOWER "${CMAKE_GENERATOR}" cmake_generator_tolower)
 # if(cmake_generator_tolower MATCHES "makefile")
 #   message(STATUS "Things you can do now:")
 #   message(STATUS "----------------|--------------------------------------------------------")
