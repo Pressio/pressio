@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
   //   pressio::rom::DefaultLSPGUnsteady, ode_tag, fom_t, lspg_state_t,
   //   decoder_t, stepper_order, stepper_n_states, scalar_t>;
   using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_, t0);
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_);
 
   // linear solver
   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;

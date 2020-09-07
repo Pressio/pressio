@@ -80,6 +80,6 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   using lspg_problem = pressio::rom::lspg::composeDefaultProblem<
     ode_name_t, app_t, lspg_state_t, decoder_t, stepper_order, stepper_n_states>::type;
 
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, 0);
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
   std::cout << &lspgProblem << std::endl;
 }

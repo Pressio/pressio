@@ -146,8 +146,7 @@ public:
   ProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
-			   lspg_state_t	 & yROM,
-			   scalar_t	 t0)
+			   lspg_state_t	 & yROM)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
@@ -183,7 +182,6 @@ public:
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
 			   lspg_state_t & yROM,
-			   scalar_t t0,
 			   const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
@@ -219,8 +217,7 @@ public:
   ProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
-			   lspg_state_t	& yROM,
-			   scalar_t t0)
+			   lspg_state_t	& yROM)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),

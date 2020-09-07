@@ -89,13 +89,9 @@ public:
   using stepper_t = typename problem_t::stepper_t;
 
 private:
-  ::pressio::ode::types::step_t step0_;
-  scalar_t t0_;
-  scalar_t dt0_;
   fom_state_t fomStateReference_;
   fom_reconstr_t fomStateReconstructor_;
   fom_states_manager_t fomStatesMngr_;
-
   residual_policy_t residualPolicy_;
   jacobian_policy_t jacobianPolicy_;
   stepper_t stepperObj_;
@@ -115,18 +111,12 @@ public:
   ProblemDiscreteTimeApi(const fom_system_t & appObj,
 			 const fom_nat_state_t & fomStateReferenceNative,
 			 decoder_t	 & decoder,
-			 rom_state_t & romStateIn,
-			 scalar_t	t0)
-    : step0_{},
-      t0_{t0},
-      dt0_{},
-      fomStateReference_(fomStateReferenceNative),
+			 rom_state_t & romStateIn)
+    : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      // policies
       residualPolicy_(fomStatesMngr_, decoder, appObj),
       jacobianPolicy_(fomStatesMngr_, decoder, appObj),
-      // stepper
       stepperObj_(romStateIn, appObj, residualPolicy_, jacobianPolicy_)
   {}
 

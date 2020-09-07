@@ -66,7 +66,6 @@ class ProblemContinuousTimeApi
 {
 
 public:
-  // define the type holding types for the problem
   using problem_t = galerkin_type<stepper_tag, fom_system_type, rom_state_type, Args...>;
 
   using fom_system_t		= typename problem_t::fom_system_t;
@@ -122,8 +121,7 @@ public:
   ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
 			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
-			   galerkin_state_t	    & romStateIn,
-			   scalar_t		    t0)
+			   galerkin_state_t	    & romStateIn)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_(fomSystemObj.createVelocity()),
@@ -149,7 +147,6 @@ public:
 			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
 			   galerkin_state_t	    & romStateIn,
-			   scalar_t		    t0,
 			   const _ud_ops_t	    & udOps)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),

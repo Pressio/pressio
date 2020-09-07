@@ -92,9 +92,6 @@ public:
   using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
 
 private:
-  ::pressio::ode::types::step_t step0_;
-  scalar_t			t0_;
-  scalar_t			dt0_;
   const fom_state_t		fomStateReference_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
@@ -125,12 +122,8 @@ public:
   ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 			 const fom_native_state_t & fomStateReferenceNative,
 			 decoder_t	 & decoder,
-			 lspg_state_t & yROM,
-			 scalar_t	t0)
-    : step0_{},
-      t0_{t0},
-      dt0_{},
-      fomStateReference_(fomStateReferenceNative),
+			 lspg_state_t & yROM)
+    : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       // construct policies
@@ -148,12 +141,8 @@ public:
 			 const fom_native_state_t & fomStateReferenceNative,
 			 decoder_t & decoder,
 			 lspg_state_t & yROM,
-			 scalar_t t0,
 			 const _ud_ops_t & udOps)
-    : step0_{},
-      t0_{t0},
-      dt0_{},
-      fomStateReference_(fomStateReferenceNative),
+    : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
       // construct policies

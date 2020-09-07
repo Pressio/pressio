@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
     using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
           ode_tag, fom_t, lspg_state_t, decoder_t>::type;
     using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
+    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
     // linear solver for hessian
     // hessian comes up in GN solver, it is (J phi)^T (J phi)

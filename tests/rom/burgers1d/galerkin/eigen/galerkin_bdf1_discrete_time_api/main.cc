@@ -62,7 +62,7 @@ struct GalerkinBDF1WithResidualApi
       ode_tag, fom_t, rom_state_t, rom_jacobian_t,
       decoder_t, stepper_order, stepper_n_states>::type;
     using stepper_t  = typename problem_t::stepper_t;
-    problem_t Problem(appobj, yRef, decoderObj, yROM_, t0);
+    problem_t Problem(appobj, yRef, decoderObj, yROM_);
 
     auto & stepperObj = Problem.getStepperRef();
 

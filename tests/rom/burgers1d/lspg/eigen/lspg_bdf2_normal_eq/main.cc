@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
   using ode_tag = pressio::ode::implicitmethods::BDF2;
   using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, lspg_state_t, decoder_t>::type;
   using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
