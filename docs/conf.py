@@ -3,12 +3,12 @@ DOXYFILE = 'Doxyfile-mcss'
 MAIN_PROJECT_URL: "Pressio"
 
 LINKS_NAVBAR1 = [
-  # user guide
-  ("<a href=\"md_pages_user_guide.html\">User Guide</a>",
+  # Get Started
+  ("<a href=\"md_pages_get_started.html\">Get Started</a>",
    [
-     ("<a href=\"md_pages_userguide_build_and_install.html\">Installation</a>",),
-     ("<a href=\"md_pages_userguide_pressio_app.html\">Interacting with an app</a>",),
-     ("<a href=\"md_pages_userguide_adapting_app.html\">Step-by-step on adapting an app</a>",)
+     ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
+     ("<a href=\"md_pages_getstarted_pressio_app.html\">Interacting with an app</a>",),
+     ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
   #
   # tutorials
