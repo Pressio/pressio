@@ -1,6 +1,6 @@
 
 
-# Dependencies and Installation
+# Installation and Dependencies
 
 
 @m_class{m-block m-info}
@@ -53,17 +53,17 @@ We can distinguish between *optional* and *required* dependencies.
 Enabling/disabling specific dependencies is done via the following cmake variables:
 \todo fix the autoamtic setting of pressio based on what is selected.
 
-| Variable                        | Description                          | Default Value                                            |
-| ------------------              | ---------------                      | -----------                                              |
-| `PRESSIO_ENABLE_DEBUG_PRINT`    | to enable debugging print statements | `OFF`                                                    |
-| `PRESSIO_ENABLE_EIGEN`          | self-explanatory                     | `ON`                                                     |
-| `PRESSIO_ENABLE_TPL_MPI`        | self-explanatory                     | `OFF`                                                    |
-| `PRESSIO_ENABLE_TPL_TRILINOS`   | self-explanatory                     | `OFF`                                                    |
-| `PRESSIO_ENABLE_TPL_KOKKOS`     | self-explanatory                     | `OFF`; is set `ON` when `PRESSIO_ENABLE_TPL_TRILINOS=ON` |
-| `PRESSIO_ENABLE_TEUCHOS_TIMERS` | self-explanatory                     | `OFF`                                                    |
-| `PRESSIO_ENABLE_TPL_BLAS`       | self-explanatory                     | `OFF`                                                    |
-| `PRESSIO_ENABLE_TPL_LAPACK`     | self-explanatory                     | `OFF`                                                    |
-| `PRESSIO_ENABLE_TPL_PYBIND11`   | self-explanatory                     | `OFF`                                                    |
+| Variable                        | Description                          | Default Value                                                                                   |
+| ------------------              | ---------------                      | -----------                                                                                     |
+| `PRESSIO_ENABLE_TPL_EIGEN`      | self-explanatory                     | `ON`                                                                                            |
+| `PRESSIO_ENABLE_TPL_TRILINOS`   | self-explanatory                     | `OFF`                                                                                           |
+| `PRESSIO_ENABLE_TPL_MPI`        | self-explanatory                     | `OFF`  automatically `ON` if `PRESSIO_ENABLE_TPL_TRILINOS=ON`                                   |
+| `PRESSIO_ENABLE_TPL_KOKKOS`     | self-explanatory                     | `OFF`; automatically `ON` if `PRESSIO_ENABLE_TPL_TRILINOS=ON`                                   |
+| `PRESSIO_ENABLE_TEUCHOS_TIMERS` | self-explanatory                     | `OFF`  automatically `ON` if `PRESSIO_ENABLE_TPL_TRILINOS=ON`                                   |
+| `PRESSIO_ENABLE_TPL_BLAS`       | self-explanatory                     | `OFF`; automatically `ON` if `PRESSIO_ENABLE_TPL_LAPACK=ON` or `PRESSIO_ENABLE_TPL_TRILINOS=ON` |
+| `PRESSIO_ENABLE_TPL_LAPACK`     | self-explanatory                     | `OFF`; automatically `ON` if `PRESSIO_ENABLE_TPL_BLAS=ON` or `PRESSIO_ENABLE_TPL_TRILINOS=ON`   |
+| `PRESSIO_ENABLE_TPL_PYBIND11`   | self-explanatory                     | `OFF`                                                                                           |
+| `PRESSIO_ENABLE_DEBUG_PRINT`    | to enable debugging print statements | `OFF`                                                                                           |
 <!-- | `PRESSIO_ENABLE_TPL_TORCH`| self-explanatory | `OFF` |-->
 
 Obviously, the choice of TPLs to enable is related to the
@@ -90,7 +90,7 @@ to provide; and (b) we belive some of these constraints are necessary.
 <!-- At the very minimum, you need to have Eigen installed. -->
 
 
-## Ok, but what are the steps to get, install and use Pressio in practice?
+## In practice, what are the steps to get, install and use Pressio?
 We suggest to use the following steps to install the `pressio` headers
 such that you can then point to it from within your code:
 <ol>
@@ -116,18 +116,18 @@ cmake -D CMAKE_INSTALL_PREFIX=../install \
 make install # nothing is built, just headers copied to installation
 @endcode
 </p></li>
-This step would process the cmake arguments and copy the `pressio`
-headers to the install prefix `<where-you-cloned-pressio>/install`.
-Note that nothing is built yet because `pressio` is header-only.
+Note that during this step **nothing** is built because `pressio` is header-only.
+This step only processes the cmake arguments and copy the headers to the
+install prefix `<where-you-cloned-pressio>/install`, where you can
+also find a `presssio_cmake_config.h` file containing the cmake variables defined.
 
 Since `pressio` is header-only, any TPL you want to enable
-is **not** needed now during the installation of `pressio`, but it is
-needed when you build any code that *uses* pressio.
+is **not** really needed during this installation of `pressio`,
+but obviously will be needed when you build any code that *uses* pressio and that TPL.
 <!-- * -->
 <br>
 <li><p>Now you point to the installed headers when building your application,
-and include the `pressio` header `pressio.hpp`.
-For the sake of the argument, imagine a simple main file as follows:
+and include the `pressio` header `pressio.hpp`, for example as:
 @m_class{m-code-figure} @parblock
 @code{.cpp}
 #include "pressio.hpp"
@@ -137,60 +137,18 @@ int main(){
 }
 @endcode
 </p></li>
+</ol>
 
+@m_class{m-block m-warning}
 
-
-
-<!-- For example, if your code is: -->
-<!-- @m_class{m-code-figure} @parblock -->
-<!-- @code{.cpp} -->
-<!-- int main{ -->
-<!--  //something that uses pressio with Trilinos enabled -->
-<!-- } -->
-<!-- @endcode -->
-<!-- then you would first install pressio and enable the Trilinos define,  -->
-<!-- clone and install Eigen and then build the code above by doing:  -->
-<!-- @m_class{m-code-figure} @parblock -->
-<!-- @code{.bash} -->
-<!-- g++ -I  -->
-<!-- @endcode -->
-
-
-
-
-
-
-<!-- <li><p>Inside the `pressio/packages` subdirectory, rename the configure file as: -->
-<!-- @m_class{m-code-figure} @parblock -->
-<!-- @code{.bash} -->
-<!-- mv pressio_cmake_config.h.in pressio_cmake_config.h -->
-<!-- @endcode -->
-<!-- </p></li> -->
-<!-- <br> -->
-<!-- <li><p>Edit the `pressio_cmake_config.h` to define the target variables you want to enable, -->
-<!-- and comment all the others. -->
-<!-- For example, if we want to enable all the code in `pressio` supporting Trilinos, we would do: -->
-<!-- @m_class{m-code-figure} @parblock -->
-<!-- @code{.cpp} -->
-<!-- //#cmakedefine PRESSIO_ENABLE_DEBUG_PRINT -->
-<!-- #cmakedefine PRESSIO_ENABLE_TPL_TRILINOS -->
-<!-- #cmakedefine PRESSIO_ENABLE_TEUCHOS_TIMERS -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_PYBIND11 -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_KOKKOS -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_BLAZE -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_ARMADILLO -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_BLAS -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_LAPACK -->
-<!-- //#cmakedefine PRESSIO_ENABLE_TPL_MPI -->
-<!-- @endcode -->
-<!-- </p></li> -->
-
-<!-- You clone the `pressio` repo, and from your code you include -->
-<!-- the `pressio/packages` to find the `pressio` headers. -->
-<!-- Since `pressio` uses preprocessor directives to selectively -->
-<!-- enable/disable code for target TPLs, to when you build your code you -->
-<!-- need to have these preprocessor directives defined. -->
-
-<!-- The full -->
-<!-- For example, if your code uses Trilinos, to enabled the Trilinos-related code in `pressio` you need to have `PRESSIO_ENABLE_TPL_TRILINOS` defined *before* you include -->
-<!-- the `pressio` headers. The list of CMake options to enable can be found [here](./list_of_cmake_optional_vars_to_enable.md). -->
+@par Warning:
+The procedue above is highly advised because it enables `pressio`
+to properly process the cmake options and turn on/off based
+on certain conditions (as explained above).
+The alternative way to use pressio would be to just clone the repo,
+point to its source code and use cmake variables directly when building
+your code. However, this could have unexpected consequences since
+you would be resposible to set the variables correctly but you would not
+know exactly all the possible constrants.
+Therefore, we suggest to use the steps above.
+@endparblock
