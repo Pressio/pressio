@@ -1,11 +1,12 @@
 
-# Overview
+\page frontpage Overview
 
 
 @m_class{m-block m-success}
 
 @par What is Pressio?
-	\pressioproj is an open-source project aimed at enabling leading-edge projection-based reduced order models (\proms) for dynamical systems in science and engineering.
+	An open-source project aimed at enabling leading-edge projection-based
+	reduced order models (\proms) for dynamical systems in science and engineering.
 
 
 ## Motivation
@@ -32,13 +33,9 @@ operators and solvers.
 @m_class{m-block m-success}
 
 @par Objective
-	\pressioproj aims to mitigate the implementation burden of
-	projection-based model reduction in large-scale applications without compromising performance.
+	To mitigate the implementation burden of projection-based model
+	reduction in large-scale applications without compromising performance.
 
-<!-- @m_span{m-text m-success} -->
-<!-- \pressioproj aims to break this barrier by mitigating the implementation burden of -->
-<!-- nonlinear model reduction in large-scale applications without compromising performance. -->
-<!-- @m_endspan -->
 
 ## Main steps of pROMs
 Projection-based model reduction can be broken into three main steps,
@@ -68,3 +65,7 @@ POD libraries, providing tools for specific mesh formats (exodus).
 * [pressio-builder](https://github.com/Pressio/pressio-builder): &nbsp;&nbsp;&nbsp;auxiliary bash scripts for building/testing;
 * [pressio-tutorials](https://github.com/Pressio/pressio-tutorials): &nbsp;tutorials explaining how to use `pressio`
 and its functionalities.
+
+## Where to go from here
+If you are new and want to learn more, start from the \ref userguide and see how to install and use pressio,
+or you can jump directly to the \ref tutorials and/or \ref examples.
