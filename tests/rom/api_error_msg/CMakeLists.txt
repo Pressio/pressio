@@ -38,7 +38,7 @@ macro(add_serial_test_to_check_build_failure TESTNAME PKGNAME TESTSRCS PRIVATEDE
     NAME ${testNameFinal}
     COMMAND ${CMAKE_COMMAND}
     -DtargetName=${testNameFinal}
-    -DtargetLogFile=${CMAKE_CURRENT_BINARY_DIR}/log.out
+    -DtargetLogFile=${CMAKE_CURRENT_BINARY_DIR}/log_${testNameFinal}.out
     -DstringToGrep=${GREPSTRING}
     -P ${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
