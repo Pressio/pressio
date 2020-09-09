@@ -26,20 +26,22 @@ jobs:
         run: sudo apt-get install doxygen
           
       # Runs a single command using the runners shell
+      - name: Running doxygen
+        run: |
+          pwd
+          cd docs/
+          doxygen Doxyfile
+          
+      # Runs a single command using the runners shell
       - name: Cloning repo
         run: |
           cd ..
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
           pwd
-          ./doxygen.py -h
-          
-      # Runs a single command using the runners shell
-      - name: Running doxygen
-        run: |
-          pwd
-          cd docs/
-          doxygen Doxyfile
+          ls -lh ../../pressio/docs/
+          ./doxygen.py ../../pressio/docs/conf.py
+          ls -lh ../../pressio/docs/
                     
       # Runs a single command using the runners shell
       - name: Run a one-line script
