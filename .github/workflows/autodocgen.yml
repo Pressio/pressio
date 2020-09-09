@@ -41,7 +41,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Running doxygen
         run: |
-          cd pressio/docs
+          pwd
+          cd docs/
           doxygen Doxyfile
                     
       # Runs a single command using the runners shell
