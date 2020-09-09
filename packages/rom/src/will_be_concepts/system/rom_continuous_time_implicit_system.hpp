@@ -61,7 +61,7 @@ struct continuous_time_implicit_system<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_velocity_typedef<T>::value and
-    ::pressio::ode::predicates::has_jacobian_typedef<T>::value and
+    /*::pressio::ode::predicates::has_jacobian_typedef<T>::value and*/
     ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     ///////////////////
     /// velocity
@@ -104,9 +104,9 @@ struct analyze_continuous_time_system_class_for_errors
   static_assert
     (::pressio::ode::predicates::has_velocity_typedef<T>::value,
      "Your continuous-time adapter class is missing the velocity typedef");
-  static_assert
-    (::pressio::ode::predicates::has_jacobian_typedef<T>::value,
-     "Your continuous-time adapter class is missing the jacobian typedef");
+  // static_assert
+  //   (::pressio::ode::predicates::has_jacobian_typedef<T>::value,
+  //    "Your continuous-time adapter class is missing the jacobian typedef");
   static_assert
     (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
      "Your continuous-time adapter class is missing the dense_matrix typedef");

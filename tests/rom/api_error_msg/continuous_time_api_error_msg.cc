@@ -7,7 +7,6 @@ struct ValidApp{
   using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using velocity_type	= state_type;
-  using jacobian_type	= Eigen::MatrixXd;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
