@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_lspg.hpp
+// ode_is_stepper_tag.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,29 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
-#define ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+#ifndef ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+#define ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
 
-#include "./impl/rom_compose_lspg_impl.hpp"
+namespace pressio{ namespace ode{ namespace predicates {
 
-namespace pressio{ namespace rom{ namespace lspg{
+template <typename T>
+struct is_stepper_tag : std::false_type{};
 
-template<typename T1, typename ...Args>
-using composeDefaultProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<impl::Default, void, T1, Args...>,
-  impl::composeSteady<impl::Default, void, T1, Args...>
-  >::type;
+template <>
+struct is_stepper_tag<explicitmethods::Euler> : std::true_type{};
 
-template<typename T1, typename ...Args>
-using composePreconditionedProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<impl::Preconditioned, void, T1, Args...>,
-  impl::composeSteady<impl::Preconditioned,   void, T1, Args...>
-  >::type;
+template <>
+struct is_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
 
+template <>
+struct is_stepper_tag<implicitmethods::BDF1> : std::true_type{};
 
-template<typename T1, typename ...Args>
-using composeMaskedProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<impl::Masked, void, T1, Args...>,
-  impl::composeSteady<impl::Masked,   void, T1, Args...>
-  >::type;
+template <>
+struct is_stepper_tag<implicitmethods::BDF2> : std::true_type{};
+
+template <>
+struct is_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
 
 
-}}}
-#endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+}}} // namespace pressio::ode::predicates
+#endif  // ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
