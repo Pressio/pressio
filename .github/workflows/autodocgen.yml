@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Install doxygen
-        run: apt-get install doxygen
+        run: sudo apt-get install doxygen
           
       # Runs a single command using the runners shell
       - name: Cloning repo
