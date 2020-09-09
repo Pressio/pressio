@@ -5,6 +5,7 @@ execute_process(
 
 #execute_process(COMMAND bash -c "")
 
+execute_process(COMMAND bash -c "cat ${targetLogFile}")
 execute_process(COMMAND bash -c "grep -r '${stringToGrep}' ${targetLogFile}" RESULT_VARIABLE CMD_RESULT)
 message("\n")
 if(CMD_RESULT)

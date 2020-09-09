@@ -59,11 +59,8 @@ int main(int argc, char *argv[])
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
-#if defined FAILMODE5
-  using decoder_jac_t	= pressio::containers::MultiVector<typename app_t::dense_matrix_t>;
-#else
-  using decoder_jac_t	= pressio::containers::MultiVector<typename app_t::dense_matrix_type>;
-#endif
+  using decoder_jac_t
+     = pressio::containers::MultiVector<typename app_t::dense_matrix_type>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   app_t appobj;
