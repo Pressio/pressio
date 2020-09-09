@@ -71,14 +71,14 @@ template<typename prob_tag, typename fom_system_t>
 struct FindAdapterMistakesUnsteady<true, prob_tag, fom_system_t>
 {
   static constexpr bool value =
-    ::pressio::rom::what_is_missing_in_passed_discrete_time_system_class<fom_system_t>::value;
+    ::pressio::rom::analyze_discrete_time_system_class_for_errors<fom_system_t>::value;
 };
 
 template<typename fom_system_t>
 struct FindAdapterMistakesUnsteady<false, Default, fom_system_t>
 {
   static constexpr bool value =
-    ::pressio::rom::what_is_missing_in_continuous_time_system_class<fom_system_t>::value;
+    ::pressio::rom::analyze_continuous_time_system_class_for_errors<fom_system_t>::value;
 };
 
 // template<typename fom_system_t>

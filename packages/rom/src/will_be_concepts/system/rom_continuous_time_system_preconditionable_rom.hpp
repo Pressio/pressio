@@ -66,11 +66,12 @@ struct continuous_time_system_preconditionable_rom<
     >
   > : std::true_type{};
 
+} // namespace pressio::rom::concepts
 
 template <typename T>
-struct what_is_missing_in_continuous_time_preconditioned_system_class
+struct analyze_continuous_time_preconditionable_system_class_for_errors
 {
-  static_assert(what_is_missing_in_continuous_time_preconditioned_system_class<T>::value,"");
+  static_assert(::pressio::rom::analyze_continuous_time_system_class_for_errors<T>::value,"");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
@@ -85,5 +86,5 @@ struct what_is_missing_in_continuous_time_preconditioned_system_class
   static constexpr bool value = true;
 };
 
-}}} // namespace pressio::rom::concepts
+}} // namespace pressio::rom
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_PRECONDITIONABLE_ROM_HPP_

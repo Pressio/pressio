@@ -93,7 +93,7 @@ struct continuous_time_implicit_system<pybind11::object, void> : std::true_type{
 } // namespace pressio::rom::concepts
 
 template <typename T>
-struct what_is_missing_in_continuous_time_system_class
+struct analyze_continuous_time_system_class_for_errors
 {
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,

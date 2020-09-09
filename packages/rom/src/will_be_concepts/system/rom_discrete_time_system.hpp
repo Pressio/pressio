@@ -108,7 +108,7 @@ struct discrete_time_system<
 
 
 template <typename T>
-struct what_is_missing_in_passed_discrete_time_system_class
+struct analyze_discrete_time_system_class_for_errors
 {
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
