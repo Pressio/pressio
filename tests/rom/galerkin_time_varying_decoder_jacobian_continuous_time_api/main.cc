@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
   using ode_tag = pressio::ode::explicitmethods::Euler;
   using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
     ode_tag, fom_t, rom_state_t, decoder_t>::type;
-  problem_t galerkinProb(appObj, refState, decoderObj, romState, t0);
+  problem_t galerkinProb(appObj, refState, decoderObj, romState);
 
   pressio::ode::advanceNSteps(galerkinProb.getStepperRef(), romState, 0.0, 0.1, 3);
 

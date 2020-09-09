@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
     ode_tag, fom_t, rom_state_t, rom_jacobian_t,
     decoder_t, stepper_order, stepper_n_states>::type;
   using stepper_t  = typename problem_t::stepper_t;
-  problem_t Problem(appObj, refState, decoderObj, romState, t0);
+  problem_t Problem(appObj, refState, decoderObj, romState);
 
   auto & stepperObj = Problem.getStepperRef();
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize, checkStr);
