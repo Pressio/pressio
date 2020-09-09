@@ -57,4 +57,4 @@ jobs:
     - name: Run CTest
       run: |
         cd ${{ env.PRESSIO_BUILDS }}/pressio/build
-        ctest -I 46,49
+        ctest -I 46,49 -V
