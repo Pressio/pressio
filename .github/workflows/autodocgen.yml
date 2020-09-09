@@ -22,9 +22,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
+      # test doxygen
+      - name: Test Doxygen
+        uses: mattnotmitt/doxygen-action@v1
+        with:
+            working-directory: '/home/runner/work/pressio/pressio'
+            doxyfile-path: 'docs/'
+          
       # Runs a single command using the runners shell
       - name: Cloning repo
         run: |
+          cd ..
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
           pwd
