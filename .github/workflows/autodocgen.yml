@@ -21,19 +21,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-    # Build the HTML documentation
-      - name: Doxygen Action
-        uses: mattnotmitt/doxygen-action@v1
-        with:
-            working-directory: '.'
-            doxyfile-path: 'docs/'
+      - uses: mattnotmitt/doxygen-action@v1
       
       # Runs a single command using the runners shell
       - name: Cloning repo
         run: |
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
+          pwd
           ./doxygen.py -h
           
       # Runs a single command using the runners shell
