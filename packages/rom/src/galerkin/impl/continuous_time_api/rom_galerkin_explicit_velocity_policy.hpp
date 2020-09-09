@@ -80,6 +80,7 @@ public:
 			 fom_states_manager_t & fomStatesMngr,
 			 const decoder_t & decoder)
     : fomRhs_{fomRhs},
+      decoder_{decoder},
       phi_(decoder.getReferenceToJacobian()),
       fomStatesMngr_(fomStatesMngr){}
 
@@ -96,6 +97,7 @@ public:
 			 const decoder_t & decoder,
 			 const _ud_ops & udOps)
     : fomRhs_{fomRhs},
+      decoder_{decoder},
       phi_(decoder.getReferenceToJacobian()),
       fomStatesMngr_(fomStatesMngr),
       udOps_{&udOps}{}
@@ -174,7 +176,8 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_, fomRhs_, zero, result);
+    ::pressio::ops::product(::pressio::transpose(), one, phi_,
+			    fomRhs_, zero, result);
   }
 
   template <
@@ -187,9 +190,11 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    udOps_->product(::pressio::transpose(), one, *phi_.data(), *fomRhs_.data(), zero, result);
+    udOps_->product(::pressio::transpose(), one, *phi_.data(),
+		    *fomRhs_.data(), zero, result);
   }
 
+  // compute impl
   template <typename fom_system_t, typename scalar_t>
   void compute_impl(const galerkin_state_t  & romState,
 		    galerkin_state_t	    & romRhs,
@@ -201,6 +206,11 @@ private:
     timer->start("galerkin explicit velocity");
 #endif
 
+    // any time compute_impl is called, it means the romState
+    // has changed, so tell decoder to update the Jacobian
+    decoder_.updateJacobian(romState);
+
+    // reconstruct the current fom state
     fomStatesMngr_.reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -214,6 +224,7 @@ private:
     timer->start("phiT*fomRhs");
 #endif
 
+    // apply decoder's jacobian to velocity
     (*this).template applyDecoderJacobianToFomVel<scalar_t>(romRhs);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -224,6 +235,7 @@ private:
 
 protected:
   mutable fom_rhs_t fomRhs_ = {};
+  const decoder_t & decoder_;
   const typename decoder_t::jacobian_type & phi_;
   fom_states_manager_t & fomStatesMngr_;
   const ud_ops * udOps_ = {};
