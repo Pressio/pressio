@@ -14,7 +14,6 @@ public:
     // if FAILMODE1 is defined, exclude this method so to trigger failure
 #if defined FAILMODE1
 #else
-  template <typename step_t, typename ... Args>
   void velocity(const state_type &,
 		const scalar_type & time,
 		velocity_type &) const
@@ -23,11 +22,10 @@ public:
 
 #if defined FAILMODE2
 #else
-  template <typename step_t, typename ... Args>
   void applyJacobian(const state_type &,
 		     const dense_matrix_type &,
 		     const scalar_type &,
-		     dense_matrix_type &)
+		     dense_matrix_type &) const
   {}
 #endif
 
@@ -41,11 +39,9 @@ public:
 
 #if defined FAILMODE4
 #else
-
   dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
     return dense_matrix_type(numDof_, 3);
   }
-
 #endif
 };
 
