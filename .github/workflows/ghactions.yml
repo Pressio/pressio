@@ -1,8 +1,8 @@
 name: Github Actions for Pressio
 
 on: [push]
-    
-jobs: 
+
+jobs:
   build:
 
     runs-on: ubuntu-latest
@@ -26,7 +26,7 @@ jobs:
         mkdir pressio_repos
         mkdir pressio_builds
         PARENT_DIR=$(pwd)
-        echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR  
+        echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR
         echo ::set-env name=PRESSIO_REPOS::$PARENT_DIR/pressio_repos
         echo ::set-env name=PRESSIO_BUILDS::$PARENT_DIR/pressio_builds
     - name: Cloning Pressio Builder...
@@ -57,5 +57,4 @@ jobs:
     - name: Run CTest
       run: |
         cd ${{ env.PRESSIO_BUILDS }}/pressio/build
-        ctest
-              
+        ctest -V
