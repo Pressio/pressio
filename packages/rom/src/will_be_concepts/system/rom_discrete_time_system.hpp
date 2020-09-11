@@ -108,8 +108,9 @@ struct discrete_time_system<
 
 
 template <typename T>
-struct analyze_discrete_time_system_class_for_errors
+struct find_discrepancies_with_discrete_time_system_api
 {
+
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
      "Your discrete-time adapter class is missing the scalar typedef");
@@ -118,45 +119,44 @@ struct analyze_discrete_time_system_class_for_errors
      "Your discrete-time adapter class is missing the state typedef");
   static_assert
     (::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value,
-     "Your discrete-time adapter class is missing the discrete_time_residual typedef");
+     "Your discrete-time adapter class is missing the discrete time residual typedef");
   static_assert
     (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
-     "Your discrete-time adapter class is missing the dense_matrix typedef");
+     "Your discrete-time adapter class is missing the dense matrix typedef");
 
   static_assert
     (::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
      T, typename T::discrete_time_residual_type>::value,
-     "Your discrete-time adapter class is missing the create_discrete_time_residual_method");
+     "Your discrete-time adapter class is missing the create discrete time residual method");
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
      T,  typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
-     "Your discrete-time adapter class is missing the create_apply_discrete_time_jacobian_result_method");
-
+     "Your discrete-time adapter class is missing the create apply discrete time jacobian result method");
 
   static_assert
     (::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
      T, 1, ::pressio::ode::types::step_t,
      typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type>::value,
-     "Your discrete-time adapter class is missing the discrete_time_residual_method accepting 1 state");
+     "Your discrete-time adapter class is missing the discrete time residual method accepting 1 state");
 
   static_assert
     (::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
      T, 2, ::pressio::ode::types::step_t,
      typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type>::value,
-     "Your discrete-time adapter class is missing the discrete_time_residual_method accepting 2 states");
+     "Your discrete-time adapter class is missing the discrete time residual method accepting 2 states");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 1, ::pressio::ode::types::step_t, typename T::scalar_type,
      typename T::state_type,  typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
-     "Your discrete-time adapter class is missing the apply_discrete_time_jacobian_method accepting 1 states");
+     "Your discrete-time adapter class is missing the apply discrete time jacobian method accepting 1 states");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 2, ::pressio::ode::types::step_t, typename T::scalar_type,
      typename T::state_type, typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
-     "Your discrete-time adapter class is missing the apply_discrete_time_jacobian_result_method accepting 2 states");
+     "Your discrete-time adapter class is missing the apply discrete time jacobian result method accepting 2 states");
 
   static constexpr bool value = true;
 };

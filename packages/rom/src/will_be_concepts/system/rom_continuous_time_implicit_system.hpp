@@ -93,7 +93,7 @@ struct continuous_time_implicit_system<pybind11::object, void> : std::true_type{
 } // namespace pressio::rom::concepts
 
 template <typename T>
-struct analyze_continuous_time_system_class_for_errors
+struct find_discrepancies_with_continuous_time_implicit_system_api
 {
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
@@ -114,24 +114,24 @@ struct analyze_continuous_time_system_class_for_errors
   static_assert
     (::pressio::ode::predicates::has_const_create_velocity_method_return_result<
       T, typename T::velocity_type>::value,
-     "Your continuous-time adapter class is missing the create_velocity_method");
+     "Your continuous-time adapter class is missing the create velocity method");
 
   static_assert
     (::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
       T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
       >::value,
-     "Your continuous-time adapter class is missing the velocity_method");
+     "Your continuous-time adapter class is missing the velocity method");
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
      T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value,
-     "Your continuous-time adapter class is missing the create_apply_jacobian_result_method");
+     "Your continuous-time adapter class is missing the create apply jacobian result method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
       T,  typename T::state_type,  typename T::dense_matrix_type,
      typename T::scalar_type, typename T::dense_matrix_type >::value,
-     "Your continuous-time adapter class is missing the apply_jacobian_method");
+     "Your continuous-time adapter class is missing the apply jacobian method");
 
   static constexpr bool value = true;
 };

@@ -61,6 +61,7 @@ struct continuous_time_explicit_system<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_velocity_typedef<T>::value and
+    ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
     /// velocity
     ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
       T, typename T::velocity_type>::value and
@@ -76,5 +77,37 @@ template<>
 struct continuous_time_explicit_system<pybind11::object, void> : std::true_type{};
 #endif
 
-}}} // namespace pressio::rom::concepts
+} // namespace pressio::rom::concepts
+
+template <typename T>
+struct find_discrepancies_with_continuous_time_explicit_system_api
+{
+  static_assert
+    (::pressio::containers::predicates::has_scalar_typedef<T>::value,
+     "Your continuous-time adapter class is missing the scalar typedef");
+  static_assert
+    (::pressio::ode::predicates::has_state_typedef<T>::value,
+     "Your continuous-time adapter class is missing the state typedef");
+  static_assert
+    (::pressio::ode::predicates::has_velocity_typedef<T>::value,
+     "Your continuous-time adapter class is missing the velocity typedef");
+  static_assert
+    (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
+     "Your continuous-time adapter class is missing the dense matrix typedef");
+
+  static_assert
+    (::pressio::ode::predicates::has_const_create_velocity_method_return_result<
+      T, typename T::velocity_type>::value,
+     "Your continuous-time adapter class is missing the create velocity method");
+
+  static_assert
+    (::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
+      T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
+      >::value,
+     "Your continuous-time adapter class is missing the velocity method");
+
+  static constexpr bool value = true;
+};
+
+}} // namespace pressio::rom
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_EXPLICIT_SYSTEM_HPP_

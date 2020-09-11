@@ -69,7 +69,6 @@ using composePreconditionedProblem =
   impl::composeSteady<impl::Preconditioned,   void, T1, Args...>
   >::type;
 
-
 template<typename T1, typename ...Args>
 using composeMaskedProblem =
   typename std::conditional<

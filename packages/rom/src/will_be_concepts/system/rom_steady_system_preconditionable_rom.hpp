@@ -58,14 +58,34 @@ template<typename T>
 struct steady_system_preconditionable_rom<
   T,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<T>::value and 
+    ::pressio::rom::concepts::steady_system<T>::value and
     ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
             T, typename T::state_type, typename T::residual_type >::value and
     ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-            T, typename T::state_type, typename T::dense_matrix_type >::value 
+            T, typename T::state_type, typename T::dense_matrix_type >::value
     >
   > : std::true_type{};
 
+} // namespace pressio::rom::concepts
 
-}}} // namespace pressio::rom::concepts
+template <typename T>
+struct find_discrepancies_with_steady_system_preconditionable_api
+{
+  static_assert
+  (find_discrepancies_with_steady_system_api<T>::value, "");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
+     T, typename T::state_type, typename T::residual_type >::value,
+     "Your steady adapter class is missing the apply preconditioner to residual method");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
+     T, typename T::state_type, typename T::dense_matrix_type >::value,
+     "Your steady adapter class is missing the apply preconditioner to dense matrix method");
+
+  static constexpr bool value = true;
+};
+
+}} // namespace pressio::rom
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_

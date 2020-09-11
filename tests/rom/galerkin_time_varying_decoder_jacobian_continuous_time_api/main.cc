@@ -87,6 +87,7 @@ public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
   using velocity_type = state_type;
+  using dense_matrix_type = Eigen::MatrixXd;
 
 public:
   MyFakeApp(int N) : N_(N){}
