@@ -21,6 +21,7 @@ one needs to account for this. See below for the details.
 @endparblock
 
 
+
 ## Dependencies
 
 Some packages of `pressio` contain code and implementations
@@ -46,7 +47,6 @@ We can distinguish between *optional* and *required* dependencies.
 | Pybind11           | Optional          | v2.5                  |
 | GoogleTest         | Optional          | 1.10.0                |
 |                    |                   |                       |
-
 
 
 Enabling/disabling specific dependencies is done via the following cmake variables:

@@ -1,18 +1,17 @@
 
-\page frontpage Overview
+# Overview
 
 
-@m_class{m-block m-success}
+@m_class{m-note m-success}
 
-@par What is Pressio?
-	An open-source project aimed at enabling leading-edge projection-based
-	reduced order models (\proms) for dynamical systems in science and engineering.
+Pressio is an open-source project aimed at enabling leading-edge projection-based
+reduced order models (\proms) for dynamical systems in science and engineering.
 
 
 ## Motivation
 Projection-based model reduction refers to a class of surrogate models
 that reduce the number of degrees
-of freedom in the high-fidelity model through a projection process.
+of freedom in the full-order model (FOM) through a projection process.
 This projection step applied to the governing equations often enables one
 to make stronger performance guarantees
 (e.g., of structure preservation, of accuracy via adaptivity) than other
@@ -30,11 +29,10 @@ and commercial codes typically do not expose the required low-level
 operators and solvers.
 
 
-@m_class{m-block m-success}
+@m_class{m-note m-success}
 
-@par Objective
-	To mitigate the implementation burden of projection-based model
-	reduction in large-scale applications without compromising performance.
+Pressio aims to mitigate the implementation burden of projection-based model
+reduction in large-scale applications without compromising performance.
 
 
 ## Main steps of pROMs
@@ -47,13 +45,18 @@ namely data collection, basis creation, and ROM deployment.
 
 - create/run the ROM: \todo (all)
 
-## What steps does Pressio currently cover?
-\pressioproj currently contains capabilities to perform the last step.
+
+
+@m_class{m-block m-warning}
+
+@par
+pressioproj currently contains capabilities to perform the last step.
 \todo Say that we have plans for the other steps too.
 Maybe at some point we will provide tools to run the samples,
 but for now that is not a huge priority. we can develop something
 later on to aid this step. For example interfacing with efficient
 POD libraries, providing tools for specific mesh formats (exodus).
+
 
 
 ## The Pressio framework
@@ -67,5 +70,7 @@ POD libraries, providing tools for specific mesh formats (exodus).
 and its functionalities.
 
 ## Where to go from here
-If you are new and want to learn more, start from the \ref userguide and see how to install and use pressio,
-or you can jump directly to the \ref tutorials and/or \ref examples.
+If you are new and want to learn more, start from the [userguide](./md_pages_get_started.html)
+and see how to install and use pressio, or you can jump directly
+to the [tutorials](./md_pages_tutorials.html)
+and/or [examples](md_pages_examples.html)

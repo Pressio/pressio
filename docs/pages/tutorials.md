@@ -1,4 +1,4 @@
-\page tutorials Tutorials
+# Tutorials
 
 **Tutorials should explain specific functionalities.**
 

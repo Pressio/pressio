@@ -7,4 +7,4 @@
 - use Eric's schematic if he lets us
 
 <!-- Use the image of schematic from paper. -->
-<!-- <img src="./schem.svg" width="30" height="30px"> -->
+<img src="./out.svg">
