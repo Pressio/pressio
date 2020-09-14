@@ -1,7 +1,9 @@
 
-# Overview
+# Documentation for the C++ core library
 
+Work in progress!
 
+<!-- 
 @m_class{m-note m-success}
 
 Pressio is an open-source project aimed at enabling leading-edge projection-based
@@ -46,7 +48,6 @@ namely data collection, basis creation, and ROM deployment.
 - create/run the ROM: \todo (all)
 
 
-
 @m_class{m-block m-warning}
 
 @par
@@ -56,21 +57,21 @@ Maybe at some point we will provide tools to run the samples,
 but for now that is not a huge priority. we can develop something
 later on to aid this step. For example interfacing with efficient
 POD libraries, providing tools for specific mesh formats (exodus).
+ -->
 
-
-
+<!-- 
 ## The Pressio framework
 \pressioproj is a computational *framework*, comprising a (growing) collection of repositories :
 
 * [pressio](https://github.com/Pressio/pressio): &emsp;&ensp;&emsp;&emsp;&ensp;core C++ library based on generic programming;
+
 <!-- to support applications with arbitrary data types; -->
-* [pressio4py](https://github.com/Pressio/pressio4py): &emsp;&emsp;&nbsp;&nbsp;Python bindings for the core Pressio C++ functionalities;
-* [pressio-builder](https://github.com/Pressio/pressio-builder): &nbsp;&nbsp;&nbsp;auxiliary bash scripts for building/testing;
-* [pressio-tutorials](https://github.com/Pressio/pressio-tutorials): &nbsp;tutorials explaining how to use `pressio`
-and its functionalities.
+<!-- [pressio4py](https://github.com/Pressio/pressio4py): &emsp;&emsp;&nbsp;&nbsp;Python bindings for the core Pressio C++ functionalities; -->
+<!-- [pressio-builder](https://github.com/Pressio/pressio-builder): &nbsp;&nbsp;&nbsp;auxiliary bash scripts for building/testing; -->
+<!-- [pressio-tutorials](https://github.com/Pressio/pressio-tutorials): &nbsp;tutorials explaining how to use `pressio` and its functionalities.
 
 ## Where to go from here
 If you are new and want to learn more, start from the [userguide](./md_pages_get_started.html)
 and see how to install and use pressio, or you can jump directly
 to the [tutorials](./md_pages_tutorials.html)
-and/or [examples](md_pages_examples.html)
+and/or [examples](md_pages_examples.html) -->

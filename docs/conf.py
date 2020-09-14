@@ -7,7 +7,6 @@ LINKS_NAVBAR1 = [
   ("<a href=\"md_pages_get_started.html\">Get Started</a>",
    [
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
-     ("<a href=\"md_pages_getstarted_pressio_app.html\">Interacting with an app</a>",),
      ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
@@ -38,16 +37,7 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_adapter_apis_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",),
      ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
      #("<a href=\"md_pages_adapter_apis_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",)
-   ]),
-
-  # various
-  ("<a href=\"md_pages_various.html\">Various</a>",
-    [
-      ("<a href=\"md_pages_various_license.html\">License</a>",),
-      ("<a href=\"md_pages_various_formulation_galerkin.html\">Galerkin ROM Formlation</a>",),
-      ("<a href=\"md_pages_various_formulation_lspg.html\">LSPG ROM Formulation</a>",),
-      ("<a href=\"md_pages_various_formulation_wls.html\">WLS ROM Formulation</a>",)
-    ])
+   ])
 ]
 
 LINKS_NAVBAR2 = [
