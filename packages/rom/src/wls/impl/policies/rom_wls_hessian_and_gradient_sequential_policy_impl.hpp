@@ -182,6 +182,7 @@ public:
     //compute the time discrete residual
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
+    timer->start("residual");
 #endif
     timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
 
