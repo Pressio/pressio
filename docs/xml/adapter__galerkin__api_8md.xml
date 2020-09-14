@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="adapter__galerkin__api_8md" kind="file" language="Markdown">
+    <compoundname>adapter_galerkin_api.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="pages/adapter_apis/adapter_galerkin_api.md"/>
+  </compounddef>
+</doxygen>

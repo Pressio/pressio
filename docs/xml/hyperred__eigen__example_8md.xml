@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="hyperred__eigen__example_8md" kind="file" language="Markdown">
+    <compoundname>hyperred_eigen_example.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="pages/hyperreduction/hyperred_eigen_example.md"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="md_pages_get_started" kind="page">
+    <compoundname>md_pages_get_started</compoundname>
+    <title>Get Started</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>To get started you can:</para>
+<para><itemizedlist>
+<listitem><para><ulink url="./md_pages_getstarted_build_and_install.html">Read about the installation process</ulink> </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

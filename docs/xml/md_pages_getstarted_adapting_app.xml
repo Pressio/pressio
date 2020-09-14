@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="md_pages_getstarted_adapting_app" kind="page">
+    <compoundname>md_pages_getstarted_adapting_app</compoundname>
+    <title>Step-by-step guide on preparing your app</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem><para>here we should show real code, starting from a simple miniapp maybbe a simple dynamical system that we crafted</para>
+</listitem><listitem><para>should not start from somehting that looks already like suitable for pressio</para>
+</listitem><listitem><para>mention that the are deetails that only make sense for real cases but this is just to show how the frameowrk works </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
