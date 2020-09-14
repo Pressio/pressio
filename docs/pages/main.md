@@ -4,7 +4,7 @@
 dynamical systems in science and engineering.*
 
 You landed on the C++ documentation! 
-If this is a mistake, please refer to the [project website]((https://pressio.github.io/))  
+If this is a mistake, please refer to the [project website](https://pressio.github.io/)  
 
 
 <!-- 
