@@ -54,6 +54,7 @@
 
 namespace pressio{ namespace ode{
 
+// no collector object is passed
 template<
   typename stepper_type,
   typename state_type,
@@ -82,9 +83,50 @@ but the state type you are using is not admissible for implicit time-stepping. "
 
   using step_policy = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  advancer_t::execute<step_policy>(num_steps, start_time,
+  using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
+  collector_t collector;
+
+  advancer_t::execute<step_policy>(num_steps, start_time, odeStateInOut,
 				   std::forward<step_size_cb_t>(dtManager),
-				   odeStateInOut, stepper, solver);
+				   collector, stepper, solver);
+}
+
+// a collector object is passed
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename solver_type,
+  typename step_size_cb_type,
+  typename collector_type
+  >
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type
+    >::value and
+  ::pressio::ode::concepts::time_step_size_manager<
+    step_size_cb_type, types::step_t, time_type>::value and
+  ::pressio::ode::concepts::collector<
+    collector_type, time_type, state_type>::value
+  >
+advanceNSteps(stepper_type & stepper,
+	      state_type & odeStateInOut,
+	      const time_type start_time,
+	      const types::step_t num_steps,
+	      solver_type & solver,
+	      step_size_cb_type && dtManager,
+	      collector_type & collector)
+{
+
+  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+		"You are trying to call advanceNSteps with an implicit stepper \
+but the state type you are using is not admissible for implicit time-stepping. ");
+
+  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
+  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
+  advancer_t::execute<step_policy>(num_steps, start_time, odeStateInOut,
+				   std::forward<step_size_cb_type>(dtManager),
+				   collector, stepper, solver);
 }
 
 }}//end namespace pressio::ode

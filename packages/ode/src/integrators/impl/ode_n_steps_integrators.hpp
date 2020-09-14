@@ -68,7 +68,7 @@ struct IntegratorNStepsWithConstDt
   static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      const time_type			  & dt,
-		      state_type			  & yIn,
+		      state_type			  & odeStateInOut,
 		      collector_type			  & collector,
 		      Args				  && ... args)
   {
@@ -78,13 +78,15 @@ struct IntegratorNStepsWithConstDt
 #endif
 
     using step_t = ::pressio::ode::types::step_t;
-    using collector_dispatch = CallCollectorDispatch<collector_type, time_type, state_type>;
-    constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
+    using collector_dispatch =
+      CallCollectorDispatch<collector_type, time_type, state_type>;
 
     // time variable
     time_type time = start_time;
     // pass initial condition to collector object
-    collector_dispatch::execute(collector, zero, time, yIn);
+    collector_dispatch::execute(collector,
+				::pressio::utils::constants<step_t>::zero(),
+				time, odeStateInOut);
 
     step_t step = 1;
     printStartOfAdvancing("AdvanceNStepsWithConstDt");
@@ -95,20 +97,20 @@ struct IntegratorNStepsWithConstDt
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepPolicy::execute(time, dt, step, yIn, std::forward<Args>(args)...);
+      stepPolicy::execute(time, dt, step, odeStateInOut,
+			  std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
 
       time = start_time + static_cast<time_type>(step) * dt;
-      collector_dispatch::execute(collector, step, time, yIn);
+      collector_dispatch::execute(collector, step, time, odeStateInOut);
     }
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time loop");
 #endif
   }//end ()
 };
-
 
 
 /*
@@ -121,14 +123,20 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     typename stepPolicy,
     typename time_type,
     typename dt_setter,
+    typename state_type,
+    typename collector_type,
     typename ... Args
     >
   static void execute(const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
+		      state_type			  & odeStateInOut,
 		      dt_setter				  && dtManager,
+		      collector_type			  & collector,
 		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
+    using collector_dispatch =
+      CallCollectorDispatch<collector_type, time_type, state_type>;
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -136,6 +144,11 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #endif
 
     time_type time = start_time;
+    // pass initial condition to collector object
+    collector_dispatch::execute(collector,
+				::pressio::utils::constants<step_t>::zero(),
+				time, odeStateInOut);
+
     time_type dt = {};
     step_t step	   = 1;
     printStartOfAdvancing("AdvanceNStepsWithDtCallback");
@@ -148,12 +161,14 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepPolicy::execute(time, dt, step, std::forward<Args>(args)...);
+      stepPolicy::execute(time, dt, step,
+			  odeStateInOut, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
 
       time += dt;
+      collector_dispatch::execute(collector, step, time, odeStateInOut);
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
