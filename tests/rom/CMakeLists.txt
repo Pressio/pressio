@@ -6,3 +6,5 @@ add_subdirectory(galerkin_time_varying_decoder_jacobian_discrete_time_api)
 
 add_subdirectory(burgers1d)
 add_subdirectory(steady_linear_adv_diff_2d)
+
+add_subdirectory(lspg_residual_policy_norms)

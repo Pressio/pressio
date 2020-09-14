@@ -56,7 +56,11 @@ class PreconditionedResidualPolicy : public preconditionable_policy
 {
 
   using typename preconditionable_policy::residual_t;
+  using typename preconditionable_policy::ud_ops_t;
+
   using preconditionable_policy::fomStatesMngr_;
+  using preconditionable_policy::udOps_;
+
 
 public:
   PreconditionedResidualPolicy() = delete;
@@ -100,10 +104,13 @@ public:
 	       scalar_t & normValue) const
   {
     preconditionable_policy::template compute<
-      stepper_tag>(currentState, prevStates, systemObj, t, dt, step, residual, normKind, normValue);
+      stepper_tag>(currentState, prevStates, systemObj, t, dt, step,
+		   residual, normKind, normValue);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     systemObj.applyPreconditioner(*yFom.data(), t, *residual.data());
+
+    this->computeNorm(residual, normKind, normValue);
   }
 
   //-------------------------------
@@ -116,10 +123,44 @@ public:
               ::pressio::Norm normKind,
               norm_val_t & normValue) const
   {
-    preconditionable_policy::compute(currentState, residual, systemObj, normKind, normValue);
+    preconditionable_policy::compute(currentState, residual,
+				     systemObj, normKind, normValue);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
     systemObj.applyPreconditioner(*yFom.data(), *residual.data());
+
+    this->computeNorm(residual, normKind, normValue);
+  }
+
+private:
+  template <typename scalar_t, typename _ud_ops_t = ud_ops_t>
+  ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value >
+  computeNorm(const residual_t & R,
+	      ::pressio::Norm normKind,
+	      scalar_t & normValue) const
+  {
+    if (normKind == ::pressio::Norm::L2)
+      normValue = ::pressio::ops::norm2(R);
+    else if (normKind == ::pressio::Norm::L1)
+      normValue = ::pressio::ops::norm1(R);
+    else
+      throw std::runtime_error
+	("Invalid norm kind for lspg unsteady preconditioned residual policy");
+  }
+
+  template <typename scalar_t, typename _ud_ops_t = ud_ops_t>
+  ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value >
+  computeNorm(const residual_t & R,
+  	      ::pressio::Norm normKind,
+  	      scalar_t & normValue) const
+  {
+    if (normKind == ::pressio::Norm::L2)
+      normValue = udOps_->norm2(*R.data());
+    else if (normKind == ::pressio::Norm::L1)
+      normValue = udOps_->norm1(*R.data());
+    else
+      throw std::runtime_error
+  	("Invalid norm kind for lspg unsteady preconditioned residual policy");
   }
 
 };//end class
