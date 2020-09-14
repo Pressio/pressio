@@ -51,6 +51,8 @@ PLUGINS = ['m.htmlsanity', 'm.math',
 
 SHOW_UNDOCUMENTED = "YES"
 
+FAVICON = 'favicon.ico'
+
 
 # STYLESHEETS = [
 #     'https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
