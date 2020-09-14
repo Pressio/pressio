@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="md_pages_examples_example1" kind="page">
+    <compoundname>md_pages_examples_example1</compoundname>
+    <title>Example 1</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

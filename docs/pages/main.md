@@ -1,14 +1,17 @@
+# Pressio C++
 
-# Documentation for the C++ core library
+*Leading-edge projection-based reduced order models (\proms) for 
+dynamical systems in science and engineering.*
 
-Work in progress!
+You landed on the C++ documentation! 
+If this is a mistake, please refer to the [project website]((https://pressio.github.io/))  
+
 
 <!-- 
 @m_class{m-note m-success}
 
 Pressio is an open-source project aimed at enabling leading-edge projection-based
 reduced order models (\proms) for dynamical systems in science and engineering.
-
 
 ## Motivation
 Projection-based model reduction refers to a class of surrogate models

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="hyperred__how__to__enable_8md" kind="file" language="Markdown">
+    <compoundname>hyperred_how_to_enable.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="pages/hyperreduction/hyperred_how_to_enable.md"/>
+  </compounddef>
+</doxygen>
