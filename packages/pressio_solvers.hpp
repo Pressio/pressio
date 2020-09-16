@@ -64,6 +64,7 @@
 #include "solvers/src/base/solvers_iterative_base.hpp"
 #include "solvers/src/base/solvers_linear_base.hpp"
 
+// predicates
 #include "solvers/src/predicates/typedefs/solvers_has_matrix_typedef.hpp"
 #include "solvers/src/predicates/typedefs/solvers_has_gradient_typedef.hpp"
 #include "solvers/src/predicates/typedefs/solvers_has_hessian_typedef.hpp"
