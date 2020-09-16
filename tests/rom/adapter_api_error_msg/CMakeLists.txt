@@ -61,29 +61,29 @@ set(s_lspg_src  lspg_steady_api.cc)
 set(LSPG "rom_compose_lspg_impl")
 set(GALE "rom_compose_galerkin_impl")
 
-set(MISS_VEL_C "missing the create velocity method")
-set(MISS_VEL   "missing the velocity method")
+set(MISS_VEL_C "is without (or has a wrong) create velocity method")
+set(MISS_VEL   "is without (or has a wrong) velocity method")
 
-set(MISS_APP_J_C  "missing the create apply jacobian result method")
-set(MISS_APP_J    "missing the apply jacobian method")
+set(MISS_APP_J_C  "is without (or has a wrong) create apply jacobian result method")
+set(MISS_APP_J    "is without (or has a wrong) apply jacobian method")
 
-set(MISS_APP_PREC_TO_RES  "missing the apply preconditioner to residual method")
-set(MISS_APP_PREC_TO_MAT  "missing the apply preconditioner to dense matrix method")
-set(MISS_APP_PREC_TO_VEL  "missing the apply preconditioner to velocity method")
+set(MISS_APP_PREC_TO_RES  "is without (or has a wrong) apply preconditioner to residual method")
+set(MISS_APP_PREC_TO_MAT  "is without (or has a wrong) apply preconditioner to dense matrix method")
+set(MISS_APP_PREC_TO_VEL  "is without (or has a wrong) apply preconditioner to velocity method")
 
-set(MISS_APP_MASK_TO_VEL     "missing the apply mask to velocity method")
-set(MISS_APP_MASK_TO_VEL_C  "missing the create apply mask to velocity method")
-set(MISS_APP_MASK_TO_MAT    "missing the apply mask to dense matrix method")
-set(MISS_APP_MASK_TO_MAT_C  "missing the create apply mask to dense matrix method")
+set(MISS_APP_MASK_TO_VEL     "is without (or has a wrong) apply mask to velocity method")
+set(MISS_APP_MASK_TO_VEL_C  "is without (or has a wrong) create apply mask to velocity method")
+set(MISS_APP_MASK_TO_MAT    "is without (or has a wrong) apply mask to dense matrix method")
+set(MISS_APP_MASK_TO_MAT_C  "is without (or has a wrong) create apply mask to dense matrix method")
 
-set(MISS_RES_C "missing the create residual method")
-set(MISS_RES   "missing the residual method")
+set(MISS_RES_C "is without (or has a wrong) create residual method")
+set(MISS_RES   "is without (or has a wrong) residual method")
 
-set(MISS_DT_R_C "missing the create discrete time residual method")
-set(MISS_DT_R   "missing the discrete time residual method")
+set(MISS_DT_R_C "is without (or has a wrong) create discrete time residual method")
+set(MISS_DT_R   "is without (or has a wrong) discrete time residual method")
 
-set(MISS_APP_DT_J_C "missing the create apply discrete time jacobian result method")
-set(MISS_APP_DT_J   "missing the apply discrete time jacobian method")
+set(MISS_APP_DT_J_C "is without (or has a wrong) create apply discrete time jacobian result method")
+set(MISS_APP_DT_J   "is without (or has a wrong) apply discrete time jacobian method")
 
 
 ##################################
@@ -118,7 +118,7 @@ add_serial_test_to_check_build_failure(
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_galerkin_discrete_time_api_case5
-  ${dt_src} "missing the dense matrix typedef" ${GALE} NO_MAT_ALIAS DEFAULT DO_GALE)
+  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${GALE} NO_MAT_ALIAS DEFAULT DO_GALE)
 
 ###############################
 ### DEFAULT LSPG STEADY ###
@@ -269,7 +269,7 @@ add_serial_test_to_check_build_failure(
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case5
-  ${dt_src} "missing the dense matrix typedef" ${LSPG} NO_MAT_ALIAS DEFAULT DO_LSPG)
+  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${LSPG} NO_MAT_ALIAS DEFAULT DO_LSPG)
 
 
 

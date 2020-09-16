@@ -84,27 +84,27 @@ struct find_discrepancies_with_continuous_time_explicit_system_api
 {
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
-     "Your continuous-time adapter class is missing the scalar typedef");
+     "Your continuous-time adapter class is without (or has a wrong) scalar typedef");
   static_assert
     (::pressio::ode::predicates::has_state_typedef<T>::value,
-     "Your continuous-time adapter class is missing the state typedef");
+     "Your continuous-time adapter class is without (or has a wrong) state typedef");
   static_assert
     (::pressio::ode::predicates::has_velocity_typedef<T>::value,
-     "Your continuous-time adapter class is missing the velocity typedef");
+     "Your continuous-time adapter class is without (or has a wrong) velocity typedef");
   static_assert
     (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
-     "Your continuous-time adapter class is missing the dense matrix typedef");
+     "Your continuous-time adapter class is without (or has a wrong) dense matrix typedef");
 
   static_assert
     (::pressio::ode::predicates::has_const_create_velocity_method_return_result<
       T, typename T::velocity_type>::value,
-     "Your continuous-time adapter class is missing the create velocity method");
+     "Your continuous-time adapter class is without (or has a wrong) create velocity method");
 
   static_assert
     (::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
       T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
       >::value,
-     "Your continuous-time adapter class is missing the velocity method");
+     "Your continuous-time adapter class is without (or has a wrong) velocity method");
 
   static constexpr bool value = true;
 };

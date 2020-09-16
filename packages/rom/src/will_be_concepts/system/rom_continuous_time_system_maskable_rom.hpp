@@ -97,22 +97,22 @@ struct find_discrepancies_with_continuous_time_implicit_system_maskable_api
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_mask_result_method_accept_operand_return_result<
      T, typename T::velocity_type, typename T::velocity_type >::value,
-     "Your continuous-time adapter class is missing the create apply mask to velocity method");
+     "Your continuous-time adapter class is without (or has a wrong) create apply mask to velocity method");
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_mask_result_method_accept_operand_return_result<
      T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value,
-     "Your continuous-time adapter class is missing the create apply mask to dense matrix method");
+     "Your continuous-time adapter class is without (or has a wrong) create apply mask to dense matrix method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
      T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value,
-     "Your continuous-time adapter class is missing the apply mask to velocity method");
+     "Your continuous-time adapter class is without (or has a wrong) apply mask to velocity method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
      T, typename T::dense_matrix_type, typename T::scalar_type, typename T::dense_matrix_type >::value,
-     "Your continuous-time adapter class is missing the apply mask to dense matrix method");
+     "Your continuous-time adapter class is without (or has a wrong) apply mask to dense matrix method");
 
   static constexpr bool value = true;
 };

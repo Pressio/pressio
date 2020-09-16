@@ -77,12 +77,12 @@ struct find_discrepancies_with_steady_system_preconditionable_api
   static_assert
     (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
      T, typename T::state_type, typename T::residual_type >::value,
-     "Your steady adapter class is missing the apply preconditioner to residual method");
+     "Your steady adapter class is without (or has a wrong) apply preconditioner to residual method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
      T, typename T::state_type, typename T::dense_matrix_type >::value,
-     "Your steady adapter class is missing the apply preconditioner to dense matrix method");
+     "Your steady adapter class is without (or has a wrong) apply preconditioner to dense matrix method");
 
   static constexpr bool value = true;
 };

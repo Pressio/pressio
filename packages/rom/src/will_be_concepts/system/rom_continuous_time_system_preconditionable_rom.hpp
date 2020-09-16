@@ -106,12 +106,12 @@ struct find_discrepancies_with_continuous_time_implicit_system_preconditionable_
   static_assert
     (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
      T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value,
-     "Your continuous-time adapter class is missing the apply preconditioner to velocity method");
+     "Your continuous-time adapter class is without (or has a wrong) apply preconditioner to velocity method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
      T, typename T::state_type, typename T::scalar_type, typename T::dense_matrix_type >::value,
-     "Your continuous-time adapter class is missing the apply preconditioner to dense matrix method");
+     "Your continuous-time adapter class is without (or has a wrong) apply preconditioner to dense matrix method");
 
   static constexpr bool value = true;
 };
