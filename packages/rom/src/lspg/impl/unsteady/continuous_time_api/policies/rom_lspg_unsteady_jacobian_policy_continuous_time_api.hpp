@@ -183,6 +183,9 @@ private:
     // Maybe we should find a way to ensure this is the case.
     // fomStatesMngr_.reconstructCurrentFomState(romState);
 
+    // update Jacobian of decoder
+    decoderObj_.updateJacobian(romState);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif

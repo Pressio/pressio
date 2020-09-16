@@ -457,9 +457,9 @@ private:
   const fom_system_type & fomSystemObj_;
   const decoder_jac_t & phi_;
   mutable fom_state_t fomStateCurrent_;
+  mutable residual_t residual_;
   const decoder_jac_t J_;
   
-  mutable residual_t residual_;
   mutable jacobians_container_t jacobians_;
   const preconditioner_t Preconditioner{};
   const time_stencil_t timeSchemeObj_;

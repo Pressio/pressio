@@ -156,7 +156,6 @@ public:
 			 const scalar_type & dt,
 			 const window_size_t & step) const
   {
-    const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt  
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
     auto residualView = *residual.data();
     auto fomStateView = *fomState.data();

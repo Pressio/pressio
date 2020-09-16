@@ -102,10 +102,13 @@ public:
     timer->start("lspg apply jac");
 #endif
 
-    // todo: this is not needed if jacobian is called after resiudal
-    // because residual takes care of reconstructing the fom state
-    //    timer->start("reconstruct fom state");
-    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    // update Jacobian of decoder
+    decoderObj_.updateJacobian(romState);
+
+    // // todo: this is not needed if jacobian is called after resiudal
+    // // because residual takes care of reconstructing the fom state
+    // //    timer->start("reconstruct fom state");
+    // fomStatesMngr_.template reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");

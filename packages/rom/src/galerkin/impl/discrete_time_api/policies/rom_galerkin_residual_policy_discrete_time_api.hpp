@@ -60,7 +60,8 @@ template <
 class ResidualPolicyDiscreteTimeApi
 {
 public:
-  using scalar_t = typename ::pressio::containers::details::traits<rom_residual_type>::scalar_t;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<rom_residual_type>::scalar_t;
   using residual_t = rom_residual_type;
 
 public:
@@ -69,8 +70,8 @@ public:
 
   template< typename app_t>
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
-			    const decoder_type & decoder,
-			    const app_t & appObj)
+				const decoder_type & decoder,
+				const app_t & appObj)
     : fomStatesMngr_(fomStatesMngr),
       decoder_(decoder),
       decoderJacobian_(decoder.getReferenceToJacobian()),
@@ -86,8 +87,10 @@ public:
   }
 
   template <
-    typename ode_tag, typename rom_state_t,
-    typename rom_prev_states_t, typename fom_system_t
+    typename ode_tag,
+    typename rom_state_t,
+    typename rom_prev_states_t,
+    typename fom_system_t
     >
   void compute(const rom_state_t & romState,
 	       const rom_prev_states_t & romPrevStates,
@@ -107,7 +110,8 @@ public:
     else if (normKind == ::pressio::Norm::L1)
       normValue = ::pressio::ops::norm1(romResidual);
     else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
+      throw std::runtime_error
+	("Invalid norm kind for lspg unsteady residual policy");
   }
 
 private:
@@ -123,9 +127,9 @@ private:
      */
     fomStatesMngr_.reconstructCurrentFomState(romState);
 
-    /* the previous FOM states should only be recomputed when the time step changes
-     * we do not need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
+    /* previous FOM states should only be recomputed when the time step changes
+     * not need to reconstruct all the FOM states, we just need to reconstruct
+     * state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
       fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
@@ -134,16 +138,21 @@ private:
   }
 
   // we have here n = 1 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_system_t, typename scalar_t>
+  template <
+    typename rom_state_t,
+    typename rom_prev_states_t,
+    typename fom_system_t,
+    typename scalar_t
+    >
   mpl::enable_if_t< rom_prev_states_t::size()==1 >
-  compute_impl(const rom_state_t		        & romState,
-		    const rom_prev_states_t		& romPrevStates,
-		    const fom_system_t			& fomSystemObj,
-		    const scalar_t		        & time,
-		    const scalar_t			& dt,
-		    const ::pressio::ode::types::step_t & step,
-		    residual_t			        & romResidual,
-        ::pressio::Norm normKind) const
+  compute_impl(const rom_state_t & romState,
+	       const rom_prev_states_t & romPrevStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & romResidual,
+	       ::pressio::Norm normKind) const
   {
     // update Jacobian of decoder
     decoder_.updateJacobian(romState);
@@ -152,7 +161,8 @@ private:
 
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj, time, dt,
+    ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
+						 time, dt,
 						 step, fomR_,
 						 normKind, fomRNormValue_);
 
@@ -163,16 +173,21 @@ private:
   }
 
   // we have here n = 2 prev rom states
-  template <typename rom_state_t, typename rom_prev_states_t, typename fom_system_t, typename scalar_t>
+  template <
+    typename rom_state_t,
+    typename rom_prev_states_t,
+    typename fom_system_t,
+    typename scalar_t
+    >
   mpl::enable_if_t< rom_prev_states_t::size()==2 >
-  compute_impl(const rom_state_t			& romState,
-		    const rom_prev_states_t		& romPrevStates,
-		    const fom_system_t		        & fomSystemObj,
-		    const scalar_t		        & time,
-		    const scalar_t			& dt,
-		    const ::pressio::ode::types::step_t & step,
-		    residual_t			        & romResidual,
-        ::pressio::Norm normKind) const
+  compute_impl(const rom_state_t & romState,
+	       const rom_prev_states_t & romPrevStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & time,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & step,
+	       residual_t & romResidual,
+	       ::pressio::Norm normKind) const
   {
     // update Jacobian of decoder
     decoder_.updateJacobian(romState);
@@ -193,7 +208,6 @@ private:
   }
 
 private:
-
   // storedStep is used to keep track of which step we are doing.
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous

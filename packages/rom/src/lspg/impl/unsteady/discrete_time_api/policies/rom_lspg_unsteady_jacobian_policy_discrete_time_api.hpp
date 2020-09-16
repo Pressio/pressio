@@ -78,13 +78,18 @@ public:
     // // this is only called once
     // fomStatesMngr_.template reconstructCurrentFomState(romState);
     const auto & phi = decoderObj_.getReferenceToJacobian();
-    apply_jac_return_t romJac(fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
+    apply_jac_return_t romJac
+      (fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
   }
 
   template <
-    typename ode_tag, typename lspg_state_t, typename lspg_prev_states_t, typename lspg_jac_t,
-    typename fom_system_t, typename scalar_t
+    typename ode_tag,
+    typename lspg_state_t,
+    typename lspg_prev_states_t,
+    typename lspg_jac_t,
+    typename fom_system_t,
+    typename scalar_t
     >
   void compute(const lspg_state_t & romState,
 	       const lspg_prev_states_t	& romPrevStates,
@@ -94,7 +99,8 @@ public:
 	       const ::pressio::ode::types::step_t & step,
 	       lspg_jac_t & romJac) const
   {
-    this->compute_impl(romState, romPrevStates, fomSystemObj, time, dt, step, romJac);
+    this->compute_impl(romState, romPrevStates,
+		       fomSystemObj, time, dt, step, romJac);
   }
 
 private:
@@ -115,12 +121,17 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    //fomStatesMngr_.template reconstructCurrentFomState(romState);
+
+    // update Jacobian of decoder
+    decoderObj_.updateJacobian(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj, time, dt, step, phi, romJac);
+    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
+						      time, dt, step,
+						      phi, romJac);
   }
 
   // we have here n = 2 prev rom states
@@ -140,13 +151,19 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    fomStatesMngr_.template reconstructCurrentFomState(romState);
+    //fomStatesMngr_.template reconstructCurrentFomState(romState);
+
+    // update Jacobian of decoder
+    decoderObj_.updateJacobian(romState);
 
     const auto & phi = decoderObj_.getReferenceToJacobian();
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2, fomSystemObj, time, dt, step, phi, romJac);
+    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
+						      fomSystemObj,
+						      time, dt, step,
+						      phi, romJac);
   }
 
 protected:
