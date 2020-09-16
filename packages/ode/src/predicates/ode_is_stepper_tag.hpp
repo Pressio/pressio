@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_system_preconditionable_rom.hpp
+// ode_is_stepper_tag.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,29 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
+#ifndef ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+#define ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
-
-template<typename T, typename enable = void>
-struct steady_system_preconditionable_rom : std::false_type{};
-
-template<typename T>
-struct steady_system_preconditionable_rom<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<T>::value and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-            T, typename T::state_type, typename T::residual_type >::value and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-            T, typename T::state_type, typename T::dense_matrix_type >::value
-    >
-  > : std::true_type{};
-
-} // namespace pressio::rom::concepts
+namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T>
-struct find_discrepancies_with_steady_system_preconditionable_api
-{
-  static_assert
-  (find_discrepancies_with_steady_system_api<T>::value, "");
+struct is_stepper_tag : std::false_type{};
 
-  static_assert
-    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-     T, typename T::state_type, typename T::residual_type >::value,
-     "Your steady adapter class is missing the apply preconditioner to residual method");
+template <>
+struct is_stepper_tag<explicitmethods::Euler> : std::true_type{};
 
-  static_assert
-    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-     T, typename T::state_type, typename T::dense_matrix_type >::value,
-     "Your steady adapter class is missing the apply preconditioner to dense matrix method");
+template <>
+struct is_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
 
-  static constexpr bool value = true;
-};
+template <>
+struct is_stepper_tag<implicitmethods::BDF1> : std::true_type{};
 
-}} // namespace pressio::rom
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
+template <>
+struct is_stepper_tag<implicitmethods::BDF2> : std::true_type{};
+
+template <>
+struct is_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
+
+
+}}} // namespace pressio::ode::predicates
+#endif  // ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_

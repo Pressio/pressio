@@ -52,20 +52,69 @@
 namespace pressio{ namespace rom{ namespace concepts {
 
 template<typename T, typename enable = void>
+struct continuous_time_implicit_system_preconditionable_rom : std::false_type{};
+
+template<typename T>
+struct continuous_time_implicit_system_preconditionable_rom<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_implicit_system<T>::value and
+    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+            T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value and
+    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+            T, typename T::state_type, typename T::scalar_type, typename T::dense_matrix_type >::value
+    >
+  > : std::true_type{};
+
+
+template<typename T, typename enable = void>
+struct continuous_time_explicit_system_preconditionable_rom : std::false_type{};
+
+template<typename T>
+struct continuous_time_explicit_system_preconditionable_rom<
+  T,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_explicit_system<T>::value and
+    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+            T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value and
+    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+            T, typename T::state_type, typename T::scalar_type, typename T::dense_matrix_type >::value
+    >
+  > : std::true_type{};
+
+
+template<typename T, typename enable = void>
 struct continuous_time_system_preconditionable_rom : std::false_type{};
 
 template<typename T>
 struct continuous_time_system_preconditionable_rom<
   T,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_system<T>::value and 
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
-            T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
-            T, typename T::state_type, typename T::scalar_type, typename T::dense_matrix_type >::value 
+    continuous_time_explicit_system_preconditionable_rom<T>::value or
+    continuous_time_implicit_system_preconditionable_rom<T>::value
     >
   > : std::true_type{};
 
+} // namespace pressio::rom::concepts
 
-}}} // namespace pressio::rom::concepts
+template <typename T>
+struct find_discrepancies_with_continuous_time_implicit_system_preconditionable_api
+{
+  static_assert
+  (::pressio::rom::find_discrepancies_with_continuous_time_implicit_system_api<T>::value,"");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+     T, typename T::state_type, typename T::scalar_type, typename T::velocity_type >::value,
+     "Your continuous-time adapter class is missing the apply preconditioner to velocity method");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
+     T, typename T::state_type, typename T::scalar_type, typename T::dense_matrix_type >::value,
+     "Your continuous-time adapter class is missing the apply preconditioner to dense matrix method");
+
+  static constexpr bool value = true;
+};
+
+}} // namespace pressio::rom
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_PRECONDITIONABLE_ROM_HPP_

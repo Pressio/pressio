@@ -1,7 +1,7 @@
 
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
-  message("> Eigen is currently enabled by defauly via PRESSIO_ENABLE_TPL_EIGEN=ON")
+  message("> Eigen is currently enabled by default via PRESSIO_ENABLE_TPL_EIGEN=ON")
 endif()
 
 

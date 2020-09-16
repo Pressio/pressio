@@ -53,14 +53,30 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-template<typename ...Args>
-using composeDefaultProblem = impl::compose<impl::Default, void, Args...>;
+template<typename T1, typename ...Args>
+using composeDefaultProblem =
+  typename std::conditional<
+  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+  impl::composeUnsteady<impl::Default, void, T1, Args...>,
+  impl::composeSteady<impl::Default, void, T1, Args...>
+  >::type;
 
-template<typename ...Args>
-using composePreconditionedProblem = impl::compose<impl::Preconditioned, void, Args...>;
+template<typename T1, typename ...Args>
+using composePreconditionedProblem =
+  typename std::conditional<
+  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+  impl::composeUnsteady<impl::Preconditioned, void, T1, Args...>,
+  impl::composeSteady<impl::Preconditioned,   void, T1, Args...>
+  >::type;
 
-template<typename ...Args>
-using composeMaskedProblem = impl::compose<impl::Masked, void, Args...>;
+template<typename T1, typename ...Args>
+using composeMaskedProblem =
+  typename std::conditional<
+  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+  impl::composeUnsteady<impl::Masked, void, T1, Args...>,
+  impl::composeSteady<impl::Masked,   void, T1, Args...>
+  >::type;
+
 
 }}}
 #endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_

@@ -76,11 +76,14 @@
 
 #include "ode/src/ode_exceptions.hpp"
 
+// tags types
+#include "ode/src/explicit/ode_explicit_stepper_tags.hpp"
+#include "ode/src/implicit/ode_implicit_stepper_tags.hpp"
+#include "ode/src/predicates/ode_is_stepper_tag.hpp"
+
 // --------------
 // explicit
 // --------------
-#include "ode/src/explicit/ode_explicit_stepper_tags.hpp"
-
 #include "ode/src/will_be_concepts/ode_explicit_state.hpp"
 #include "ode/src/will_be_concepts/ode_explicit_velocity.hpp"
 #include "ode/src/predicates/velocity_methods/ode_has_const_create_velocity_method_return_result.hpp"
@@ -96,8 +99,6 @@
 // --------------
 // implicit
 // --------------
-#include "ode/src/implicit/ode_implicit_stepper_tags.hpp"
-
 #include "ode/src/predicates/ode_is_stepper_total_n_states_setter.hpp"
 #include "ode/src/predicates/ode_is_stepper_order_setter.hpp"
 #include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
@@ -123,6 +124,7 @@
 #include "ode/src/implicit/standard_policies/ode_implicit_residual_standard_policy.hpp"
 #include "ode/src/implicit/standard_policies/ode_implicit_jacobian_standard_policy.hpp"
 #include "ode/src/implicit/ode_implicit_stepper.hpp"
+
 
 // --------------
 // integrators

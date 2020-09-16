@@ -1,6 +1,8 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils)
 
+add_subdirectory(adapter_api_error_msg)
+
 add_subdirectory(galerkin_time_varying_decoder_jacobian_continuous_time_api)
 add_subdirectory(galerkin_time_varying_decoder_jacobian_discrete_time_api)
 
