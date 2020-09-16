@@ -123,7 +123,7 @@ private:
   {
     // here we assume that the residual policy already:
     // - reconstucted the previous states
-    // - called the decoder to update the jacovian
+    // - called the decoder to update the jacobian
 
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
@@ -153,7 +153,7 @@ private:
   {
     // here we assume that the residual policy already:
     // - reconstucted the previous states
-    // - called the decoder to update the jacovian
+    // - called the decoder to update the jacobian
 
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();

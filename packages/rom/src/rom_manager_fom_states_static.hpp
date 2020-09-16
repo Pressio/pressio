@@ -129,7 +129,7 @@ public:
   // overload the left shift operator to use when we need to
   // reconstruct the FOM state at n-1 and shift all previous ones
 
-  /* when n == 1, disenable the << operator since that is meant
+  /* when n == 1, disable the << operator since that is meant
    * to use for time-dep problems when we have to store the states
    * for the stepper stencil */
 
