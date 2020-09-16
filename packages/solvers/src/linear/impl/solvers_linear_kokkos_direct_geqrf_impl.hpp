@@ -111,6 +111,46 @@ public:
 private:
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+
+  /*
+   * enable if:
+   * the matrix has layout left (i.e. column major)
+   * T is a kokkos vector wrapper
+   * T has host execution space
+   * T and MatrixT have same execution space
+   */
+  template <typename _MatrixT = MatrixT, typename T>
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft
+    >::value and
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
+    ::pressio::containers::details::traits<T>::has_host_execution_space and
+    mpl::is_same<
+     typename containers::details::traits<T>::execution_space,
+     typename containers::details::traits<_MatrixT>::execution_space
+     >::value
+  >
+  solveImpl(const _MatrixT & A, const T& b, T & y)
+  {
+    if (!auxMat_){
+      auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("geqrfAuxM",
+						       A.extent(0),
+						       A.extent(1)));
+    }
+    else{
+      if (A.extent(0) != auxMat_->extent(0) or
+	  A.extent(1) != auxMat_->extent(1))
+	{
+	  Kokkos::resize(*auxMat_->data(), A.extent(0), A.extent(1));
+	}
+    }
+
+    ::pressio::ops::deep_copy(*auxMat_, A);
+    this->solveAllowMatOverwriteImpl(*auxMat_, b, y);
+  }
+
+
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
@@ -197,7 +237,6 @@ private:
 
 
 private:
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
   Teuchos::BLAS<int, scalar_t> blas_;
@@ -209,6 +248,8 @@ private:
 
   std::vector<scalar_t> work_ = {0};
   std::vector<scalar_t> tau_ = {};
+
+  std::unique_ptr<MatrixT> auxMat_ = nullptr;
 #endif
 
 #if defined PRESSIO_ENABLE_TPL_KOKKOS and defined KOKKOS_ENABLE_CUDA

@@ -84,16 +84,18 @@ public:
   {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // this is the overload use for pressio4py since the state object passed to the constructor
-  // is not a wrapper bbut a native pybind array, so we need to use the wrapped type.
-  // However, this is only true for the constructor. For the actual computation below,
-  // the state is wrapper type.
+  // overload used for pressio4py since the state passed to the constructor
+  // is not a wrapper bbut a native pybind array, so we need the wrapped type.
+  // However, this is only true for the constructor.
+  // For the actual computation below, the state is wrapper type.
   template <typename system_t, typename ...Args>
   HessianGradientCorrector(const system_t & system,
 			   const typename ::pressio::containers::details::traits<state_t>::wrapped_t & state,
 			   lin_solver_t & solverObj,
 			   Args && ... args)
-    : T(system, state_t(state) /*the parent needs a wrapped object*/, std::forward<Args>(args)...),
+    : T(system,
+	state_t(state) /*the parent needs a wrapped object*/,
+	std::forward<Args>(args)...),
       correction_(state),
       solverObj_(solverObj)
   {}
@@ -101,9 +103,14 @@ public:
 
 public:
   template <typename system_t>
-  void computeCorrection(const system_t & sys, state_t & state)
+  void computeCorrection(const system_t & sys,
+			 state_t & state,
+			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, normType, residNormCurrCorrStep_);
+    T::computeOperators(sys, state, normType,
+			residNormCurrCorrStep_,
+			recomputeSystemJacobian);
+
     auto & H = T::getHessian();
     auto & g = T::getGradient();
     this->doLinearSolve(H, g);
@@ -135,7 +142,9 @@ public:
   }
 
   template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const
+  void residualNorm(const system_t & system,
+		    const state_t & state,
+		    sc_t & result) const
   {
     T::residualNorm(system, state, normType, result);
   }
@@ -149,7 +158,7 @@ private:
 #endif
   doLinearSolve(H_t & H, const g_t & g)
   {
-    solverObj_.solveAllowMatOverwrite(H, g, correction_);
+    solverObj_.solve(H, g, correction_);
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

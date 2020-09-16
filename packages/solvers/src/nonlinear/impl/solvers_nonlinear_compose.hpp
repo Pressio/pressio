@@ -49,7 +49,8 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 
-#include "./operators/solvers_hessian_gradient_operators.hpp"
+#include "./operators/solvers_gn_hessian_gradient_operators.hpp"
+#include "./operators/solvers_lm_hessian_gradient_operators.hpp"
 #include "./operators/solvers_residual_jacobian_operators.hpp"
 #include "./correction_mixins/solvers_hessian_gradient_corrector.hpp"
 #include "./correction_mixins/solvers_qr_corrector.hpp"

@@ -70,7 +70,7 @@ template <
   typename norm_t
   >
 struct has_const_residualandjacobian_method_accept_state_result_norm_return_void<
-  T, state_t, res_t, jac_t, norm_t, 
+  T, state_t, res_t, jac_t, norm_t,
   mpl::enable_if_t<
     std::is_void<
       decltype(
@@ -80,7 +80,8 @@ struct has_const_residualandjacobian_method_accept_state_result_norm_return_void
               std::declval<res_t &>(),
               std::declval<jac_t &>(),
               ::pressio::Norm::Undefined,
-              std::declval<norm_t &>()
+              std::declval<norm_t &>(),
+	      std::declval<bool>()
             )
          )
       >::value

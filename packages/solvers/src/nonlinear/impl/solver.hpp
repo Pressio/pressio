@@ -62,7 +62,6 @@ enum class stop
    afterMaxIters
   };
 
-
 namespace impl{
 
 template<typename T, typename sc_t>
@@ -75,6 +74,7 @@ class Solver
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
+  iteration_t jacobianUpdateFreq_ = 1;
 
 private:
   stop stopping_ = stop::whenCorrectionAbsoluteNormBelowTolerance;
@@ -93,6 +93,7 @@ public:
   Solver(Args &&... args)
     : T(std::forward<Args>(args)...){}
 
+public:
   void setStoppingCriterion(stop value){
     stopping_ = value;
   }
@@ -103,7 +104,9 @@ public:
 
   template<typename system_t, typename state_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  mpl::enable_if_t< !::pressio::containers::predicates::is_array_pybind<state_t>::value>
+  mpl::enable_if_t<
+    !::pressio::containers::predicates::is_array_pybind<state_t>::value
+    >
 #else
   void
 #endif
@@ -114,7 +117,9 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<::pressio::containers::predicates::is_array_pybind<state_t>::value>
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_array_pybind<state_t>::value
+    >
   solve(const system_t & sys, state_t & state)
   {
     // here we want to view the state since we want to modify its data,
@@ -125,6 +130,10 @@ public:
   }
 #endif
 
+  void setSystemJacobianUpdateFreq(std::size_t newFreq){
+    jacobianUpdateFreq_ = newFreq;
+  }
+
 private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & sys, state_t & state)
@@ -132,13 +141,17 @@ private:
     sc_t residualNorm0 = {};
     sc_t correctionNorm0 = {};
     sc_t gradientNorm0 = {};
+    bool recomputeSystemJacobian = true;
 
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
+      recomputeSystemJacobian =
+	(iStep_ == 1) ? true : ((iStep_ % jacobianUpdateFreq_) == 0);
+
       // 1.
       try{
-	T::computeCorrection(sys, state);
+	T::computeCorrection(sys, state, recomputeSystemJacobian);
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
 	throw ::pressio::eh::nonlinear_solve_failure();
@@ -177,10 +190,10 @@ private:
       }
 #endif
 
-      // 3.
+      // 4.
       if (stopLoop(iStep_)) break;
 
-      // 4.
+      // 5.
       T::updateState(sys, state);
     }
 

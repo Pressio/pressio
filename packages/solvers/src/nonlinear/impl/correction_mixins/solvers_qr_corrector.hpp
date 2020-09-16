@@ -73,15 +73,25 @@ public:
   QRCorrector() = delete;
 
   template <typename system_t>
-  QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
-    : T(system, state), correction_(state), QTResid_(state), g_(state), solverObj_(solverObj)
+  QRCorrector(const system_t & system,
+	      const state_t & state,
+	      qr_solver_t & solverObj)
+    : T(system, state),
+      correction_(state),
+      QTResid_(state),
+      g_(state),
+      solverObj_(solverObj)
   {}
 
 public:
   template <typename system_t>
-  void computeCorrection(const system_t & sys, state_t & state)
+  void computeCorrection(const system_t & sys,
+			 state_t & state,
+			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, normType, residNormCurrCorrStep_);
+    T::computeOperators(sys, state, normType,
+			residNormCurrCorrStep_,
+			recomputeSystemJacobian);
     auto & r = T::getResidual();
     auto & J = T::getJacobian();
 
@@ -128,7 +138,9 @@ public:
   }
 
   template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const
+  void residualNorm(const system_t & system,
+		    const state_t & state,
+		    sc_t & result) const
   {
     T::residualNorm(system, state, normType, result);
   }

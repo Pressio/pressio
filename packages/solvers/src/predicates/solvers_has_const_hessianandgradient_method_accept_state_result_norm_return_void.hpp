@@ -50,7 +50,7 @@
 #define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
-  
+
 template <
   typename T,
   typename state_t,
@@ -81,7 +81,8 @@ struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
             std::declval<grad_t &>(),
             /* does not matter here what we pass, just to test */
             ::pressio::Norm::Undefined,
-            std::declval<norm_t &>()
+            std::declval<norm_t &>(),
+	    std::declval<bool>()
           )
          )
       >::value
