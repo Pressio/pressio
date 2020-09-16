@@ -56,7 +56,7 @@ struct MyFakeApp
 {
   int N_;
   std::string & sentinel_;
-  mutable int counter_;
+  mutable int counter_ = {};
 
 public:
   using scalar_type = double;
