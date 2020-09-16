@@ -187,7 +187,8 @@ public:
 			  hessian_type		      & hessian,
 			  gradient_type		      & gradient,
 			  const pressio::Norm & normType,
-			  scalar_type		      & rnorm) const
+			  scalar_type		      & rnorm,
+        bool recomputeJacobian) const
   {
     if (normType != ::pressio::Norm::L2)
       throw std::runtime_error("cannot call WLS with a norm != L2");
