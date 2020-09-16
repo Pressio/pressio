@@ -1,7 +1,7 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils)
 
-#add_subdirectory(adapter_api_error_msg)
+add_subdirectory(adapter_api_error_msg)
 
 add_subdirectory(galerkin_variable_decoder_jacobian_continuous_time_api)
 add_subdirectory(galerkin_variable_decoder_jacobian_discrete_time_api)
@@ -9,7 +9,7 @@ add_subdirectory(lspg_variable_decoder_jacobian_continuous_time_api)
 add_subdirectory(lspg_variable_decoder_jacobian_discrete_time_api)
 add_subdirectory(lspg_variable_decoder_jacobian_steady_api)
 
-# add_subdirectory(burgers1d)
-# add_subdirectory(steady_linear_adv_diff_2d)
+add_subdirectory(burgers1d)
+add_subdirectory(steady_linear_adv_diff_2d)
 
-# add_subdirectory(lspg_residual_policy_norms)
+add_subdirectory(lspg_residual_policy_norms)
