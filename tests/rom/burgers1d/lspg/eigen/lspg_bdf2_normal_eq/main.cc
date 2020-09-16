@@ -23,7 +23,6 @@ int main(int argc, char *argv[]){
   constexpr int numCell = 20;
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   fom_t appobj( mu, numCell);
-  auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
   // read from file the jacobian of the decoder

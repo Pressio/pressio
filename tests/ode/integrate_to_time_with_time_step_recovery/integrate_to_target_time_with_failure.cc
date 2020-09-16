@@ -34,7 +34,6 @@ struct MyFakeSolver
 
 int main(int argc, char *argv[])
 {
-  using scalar_t = double;
   using vec_t = Eigen::VectorXd;
   using ode_state_t = pressio::containers::Vector<vec_t>;
 

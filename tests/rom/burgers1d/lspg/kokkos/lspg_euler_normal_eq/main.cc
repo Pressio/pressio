@@ -25,7 +25,6 @@ int main(int argc, char *argv[]){
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, fom_state_t_d>;
 
   std::string checkStr {"PASSED"};
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
   Kokkos::initialize (argc, argv);
   {
@@ -33,7 +32,6 @@ int main(int argc, char *argv[]){
     constexpr int numCell = 20;
     fom_t appobj({{5.0, 0.02, 0.02}}, numCell);
     const scalar_t dt = 0.01;
-    constexpr auto t0 = zero;
 
     constexpr int romSize = 11;
 

@@ -1,7 +1,6 @@
 
 #include "pressio_rom.hpp"
-#include "pressio_apps.hpp"
-#include "utils_eigen.hpp"
+
 
 struct MyCustomDecoder
 {
@@ -27,16 +26,14 @@ public:
     }
   }
 
+  const jacobian_type & getReferenceToJacobian() const{
+    return jac_;
+  }
+
   template <typename rom_state_type>
   void updateJacobian(const rom_state_type &) const
   {
     ++updJacCount_;
-    // updateJacobian should be called BEFORE the applyMapping.
-    // Here we can use counters to verify this
-    if (updJacCount_ != applyMappingCount_+1){
-      throw std::runtime_error
-	("invalid logic for Galerkin calls tocustomDecoder, something is off");
-    }
 
     // at step 2, change the jacobian
     if(updJacCount_ == 2){
@@ -59,23 +56,13 @@ public:
 		    ::pressio::containers::Vector<Eigen::VectorXd> & result) const
   {
     ++applyMappingCount_;
-    // applyMapping should be called BEFORE the updateJacobian
-    // because pressio first reconstrct FOM, then call FOM velocity
-    // and then project the velocity.
-    // Here we can use counters to verify this
-    if (updJacCount_ != applyMappingCount_){
-      throw std::runtime_error
-	("invalid logic for Galerkin calls tocustomDecoder, something is off");
-    }
 
-    const auto & jacNativeObj = *jac_.data();
+    Eigen::MatrixXd A(result.extent(0), romSize_);
+    A.setConstant(2);
+
     const auto & romStateNativeObj = *romState.data();
     auto & resultNativeObj = *result.data();
-    resultNativeObj = jacNativeObj * romStateNativeObj;
-  }
-
-  const jacobian_type & getReferenceToJacobian() const{
-    return jac_;
+    resultNativeObj = A * romStateNativeObj;
   }
 };
 
@@ -83,6 +70,9 @@ public:
 struct MyFakeApp
 {
   int N_;
+  std::string & sentinel_;
+  mutable int counter_;
+
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
@@ -90,7 +80,8 @@ public:
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
-  MyFakeApp(int N) : N_(N){}
+  MyFakeApp(int N, std::string & sentinel)
+    : N_(N), sentinel_(sentinel){}
 
   velocity_type createVelocity() const{
     return state_type(N_);
@@ -100,6 +91,22 @@ public:
 		const double & time,
 		velocity_type & f) const
   {
+    ++counter_;
+
+    Eigen::VectorXd stateExpected(N_);
+    if(counter_==1){
+      stateExpected.setConstant(0.);
+      if( ! stateExpected.isApprox(state) ) sentinel_="FAILED";
+    }
+    if(counter_==2){
+      stateExpected.setConstant(30.);
+      if( ! stateExpected.isApprox(state) ) sentinel_="FAILED";
+    }
+    if(counter_==3){
+      stateExpected.setConstant(70.);
+      if( ! stateExpected.isApprox(state) ) sentinel_="FAILED";
+    }
+
     for (int i=0; i<N_; ++i){
       f(i) = 1;
     }
@@ -108,42 +115,60 @@ public:
 
 int main(int argc, char *argv[])
 {
-  /* In this test we integrate: dx/dt = phi^T f( phi x)
+  /* Here we verify correctness of the varying decoder's jacobian
+     for galerkin with continuous-time API.
+
+     Let g(x) be the decoder, and let Jg be its jacobian.
+
+     We integrate: dx/dt = Jg^T f( g(x) )
      using Euler forward where x is vec of generalized coords.
 
-     We then have:  x_n+1 = x_n + dt * phi^T f()
+     We then have:  x_n+1 = x_n + dt * Jg^T f( g(x) )
 
-     This test is meant to test Galerkin with euler forward
-     works correctly when using a decoder where its Jacobian (J_d) changes.
      To do this, we craft a test where:
 
-     dt = 0.1, we do 3 steps so we go from t_0->t_1->t_2->t_3
+     - dt = 0.1, we do 3 steps so from t_0->t_1->t_2->t_3
 
+     - g(x) = [ 2 2 2 2 2 ]  x
+                2 2 2 2 2
+		...
+	      [ 2 2 2 2 2 ]
+
+     - f=[1 1 ... 1]^T always
+
+     --------
+     STEP 1:
+     --------
+     At step=1 (i.e. from t_0 to t_1) we have:
      x_0 = [0 0 0 0 0]
-     J_d = [1 2 3 4 5;
-	    1 2 3 4 5;
-	    ...
-	    1 2 3 4 5];
+     Jg = [1 2 3 4 5;
+	   1 2 3 4 5;
+	   ...
+	   1 2 3 4 5];
 
-     f=[1 1 ... 1]^T always, even if in a real case f would change.
+     --------
+     STEP 2
+     --------
+     At step=2 (i.e. from t_1 to t_2) we update Jg to be:
+     Jg = [2 3 4 5 6;
+           2 3 4 5 6;
+	   ...
+	   2 3 4 5 6];
 
-     At step=2 (i.e. from t_1 to t_2) we update J_d to be:
-     J_d = [2 3 4 5 6;
-	    2 3 4 5 6;
-	    ...
-	    2 3 4 5 6];
-
-     At step=3 (i.e. from t_2 to t_3) we update J_d to be:
-     J_d = [3 4 5 6 7;
-	    3 4 5 6 7;
-	    ...
-	    3 4 5 6 7]
+     --------
+     STEP 3
+     --------
+     At step=3 (i.e. from t_2 to t_3) we update Jg to be:
+     Jg = [3 4 5 6 7;
+	   3 4 5 6 7;
+	   ...
+	   3 4 5 6 7]
 
      This means that if things are correct, we should have:
-     x(t0) =  [0 0 0 0 0 ]
-     x(t1) = [0 0 0 0 0 ] + 0.1 * J_d(t0)^T [1 ... 1]^T  = [1 2 3 4 5]
-     x(t2) = [1 2 3 4 5 ] + 0.1 * J_d(t1)^T [1 ... 1]^T  = [3 5 7 9 11]
-     x(t3) = [3 5 7 9 11] + 0.1 * J_d(t2)^T [1 ... 1]^T  = [6 9 12 15 18]
+     x(t0) = [0 0 0 0 0 ]
+     x(t1) = [0 0 0 0 0 ] + 0.1 * Jg(t0)^T [1 ... 1]^T  = [1 2 3 4 5]
+     x(t2) = [1 2 3 4 5 ] + 0.1 * Jg(t1)^T [1 ... 1]^T  = [3 5 7 9 11]
+     x(t3) = [3 5 7 9 11] + 0.1 * Jg(t2)^T [1 ... 1]^T  = [6 9 12 15 18]
    */
 
   std::string checkStr {"PASSED"};
@@ -159,7 +184,7 @@ int main(int argc, char *argv[])
   constexpr int romSize = 5;
 
   // app object
-  fom_t appObj(fomSize);
+  fom_t appObj(fomSize, checkStr);
 
   // decoder (use my custom one)
   decoder_t  decoderObj(fomSize, romSize);
@@ -171,7 +196,6 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 0.0);
 
-  auto t0 = static_cast<scalar_t>(0);
   using ode_tag = pressio::ode::explicitmethods::Euler;
   using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
     ode_tag, fom_t, rom_state_t, decoder_t>::type;

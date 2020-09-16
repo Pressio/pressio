@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
   using scalar_t         = typename fom_t::scalar_type;
   using rom_data_t_eigen = romDataTypeEigen<scalar_t>;
   using ode_tag_euler    = ::pressio::ode::implicitmethods::Euler;
-  using ode_tag_BDF2     = ::pressio::ode::implicitmethods::BDF2;
   using lowTri		 = pressio::matrixLowerTriangular;
 
   // scope guard needed for tpetra

@@ -3,9 +3,6 @@
 #include "pressio_ops.hpp"
 namespace{
 
-  void tester(int i){
-  }
-
   template <typename matrix_t, typename vec_t>
   void testAddition(matrix_t A, vec_t v, vec_t v2)
   {

@@ -202,7 +202,6 @@ struct EulerLSPGWithResidualApi
     // adapter
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
-    const auto t0 = pressio::utils::constants<scalar_t>::zero();
 
     ops1_t myOps1;
     opsGN_t myOps2;
