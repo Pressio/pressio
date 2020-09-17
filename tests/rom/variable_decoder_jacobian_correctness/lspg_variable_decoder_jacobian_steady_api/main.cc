@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 
   using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
       fom_t, rom_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObj, refState, decoderObj);
+  lspg_problem_type lspgProblem(appObj, refState, decoderObj, romState);
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr);
