@@ -23,6 +23,7 @@ public:
             scalar_type & normR,
   			    Args && ... states) const
   {
+    std::cout << "f1\n";
     // R.setConstant(1);
   }
 
@@ -34,7 +35,9 @@ public:
   				 dense_matrix_type & A,
   				 Args && ... states) const
   {
+    std::cout << "f2\n";
     A.setConstant(2);
+    std::cout << "f3\n";
   }
 
   discrete_time_residual_type createDiscreteTimeResidual() const
@@ -69,12 +72,12 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   app_t appobj;
   decoder_jac_t phi(Eigen::MatrixXd(appobj.numDof_,3));
   decoder_t decoderObj(phi);
-  typename app_t::state_type yRef;
-  lspg_state_t yROM;
+  typename app_t::state_type yRef(appobj.numDof_);
+  lspg_state_t yROM(3);
 
   static_assert(::pressio::rom::concepts::discrete_time_system<app_t>::value, "");
 
-  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;  
+  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;
   using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   using lspg_problem = pressio::rom::lspg::composeDefaultProblem<
@@ -82,4 +85,5 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
 
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
   std::cout << &lspgProblem << std::endl;
+  // here we just test that the problem is constructed
 }

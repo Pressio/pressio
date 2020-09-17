@@ -11,7 +11,6 @@ struct MyCustomDecoder
 private:
   const int romSize_ = {};
   mutable jacobian_type jac_;
-  mutable int updJacCount_ = 0;
   mutable int applyMappingCount_ = 0;
 
 public:

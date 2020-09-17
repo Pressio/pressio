@@ -9,8 +9,6 @@ struct MyCustomDecoder
 private:
   const int romSize_ = {};
   mutable jacobian_type jac_;
-  mutable int stepsCount1_ = 0;
-  mutable int stepsCount2_ = 0;
 
 public:
   MyCustomDecoder() = delete;
