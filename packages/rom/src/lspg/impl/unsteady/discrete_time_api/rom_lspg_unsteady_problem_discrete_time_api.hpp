@@ -105,7 +105,7 @@ public:
     return stepperObj_;
   }
 
-  const fom_native_state_t & viewCurrentFomState() const{
+  const fom_native_state_t & currentFomState() const{
     return *fomStatesMngr_.getCRefToCurrentFomState().data();
   }
 
@@ -122,7 +122,7 @@ public:
   ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 			 const fom_native_state_t & fomStateReferenceNative,
 			 decoder_t	 & decoder,
-			 lspg_state_t & yROM)
+			 lspg_state_t & romStateIn)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
@@ -130,8 +130,12 @@ public:
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       // construct stepper
-      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
   template <
     typename _ud_ops_t = ud_ops_t,
@@ -140,7 +144,7 @@ public:
   ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 			 const fom_native_state_t & fomStateReferenceNative,
 			 decoder_t & decoder,
-			 lspg_state_t & yROM,
+			 lspg_state_t & romStateIn,
 			 const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
@@ -149,8 +153,12 @@ public:
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       // construct stepper
-      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
 };
 

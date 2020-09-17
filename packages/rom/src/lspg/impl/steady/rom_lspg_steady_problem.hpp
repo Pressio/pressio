@@ -102,6 +102,10 @@ public:
     return fomStateReconstructor_;
   }
 
+  const fom_native_state_t & currentFomState() const{
+    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+  }
+
 public:
   /* specialize for when the fom_system_t is regular c++ */
   template <
@@ -112,33 +116,45 @@ public:
   >
   ProblemSteady(const _fom_system_t & fomSystemObj,
   		const fom_native_state_t & fomNativeReferenceState,
-  		const decoder_t	& decoder)
+  		const decoder_t	& decoder,
+		lspg_state_t & romStateIn)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /* specialize for when the fom_system_t is python object */
   template <
     typename _fom_system_t = fom_system_t,
+    typename _lspg_state_t = lspg_state_t,
     ::pressio::mpl::enable_if_t<
-      ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value,
+      ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
+      ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value,
       int > = 0
   >
   ProblemSteady(const _fom_system_t & fomSystemObj,
 		const fom_native_state_t fomNativeReferenceState,
-		const decoder_t	& decoder)
+		const decoder_t	& decoder,
+		typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
+  }
 #endif
 
 };

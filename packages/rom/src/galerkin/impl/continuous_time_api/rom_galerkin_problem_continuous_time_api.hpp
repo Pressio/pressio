@@ -101,6 +101,10 @@ public:
     return fomStateReconstructor_;
   }
 
+  const fom_native_state_t & currentFomState() const{
+    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+  }
+
 public:
   ProblemContinuousTimeApi() = delete;
   ~ProblemContinuousTimeApi() = default;
@@ -128,7 +132,11 @@ public:
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
-  {}
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
   /*
    * ud_ops_t != void, C++ types
@@ -154,7 +162,11 @@ public:
       fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
       stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
-  {}
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   /*
@@ -178,7 +190,11 @@ public:
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, residualPolicy_)
-  {}
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(galerkin_state_t(romStateIn));
+  }
 #endif
 
 };

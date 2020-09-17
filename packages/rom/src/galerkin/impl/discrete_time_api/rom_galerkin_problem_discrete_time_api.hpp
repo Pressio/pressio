@@ -105,6 +105,10 @@ public:
     return fomStateReconstructor_;
   }
 
+  const fom_nat_state_t & currentFomState() const{
+    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+  }
+
 public:
   ProblemDiscreteTimeApi() = delete;
 
@@ -118,8 +122,11 @@ public:
       residualPolicy_(fomStatesMngr_, decoder, appObj),
       jacobianPolicy_(fomStatesMngr_, decoder, appObj),
       stepperObj_(romStateIn, appObj, residualPolicy_, jacobianPolicy_)
-  {}
-
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 };
 
 }}}}//end namespace

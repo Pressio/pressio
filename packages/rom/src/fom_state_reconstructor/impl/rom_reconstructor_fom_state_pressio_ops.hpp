@@ -60,9 +60,9 @@ struct FomStateReconstructorPressioOps
 {
   FomStateReconstructorPressioOps() = delete;
 
-  FomStateReconstructorPressioOps(const fom_state_type & fomStateIn,
+  FomStateReconstructorPressioOps(const fom_state_type & fomStateReferenceIn,
 				  const decoder_type & decoder)
-    : fomStateReference_(fomStateIn),
+    : fomStateReference_(fomStateReferenceIn),
       decoderObj_(decoder)
   {}
 
@@ -105,7 +105,7 @@ private:
   const fom_state_type & fomStateReference_	= {};
   const decoder_type   & decoderObj_	= {};
 
-};//end class
+};
 
 }}}//end namespace pressio::rom::impl
 #endif  // ROM_FOM_STATE_RECONSTRUCTOR_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_

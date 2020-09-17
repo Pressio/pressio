@@ -116,7 +116,7 @@ public:
     return stepperObj_;
   }
 
-  const fom_native_state_t & viewCurrentFomState() const{
+  const fom_native_state_t & currentFomState() const{
     return *fomStatesMngr_.getCRefToCurrentFomState().data();
   }
 
@@ -146,12 +146,15 @@ public:
   ProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
-			   lspg_state_t	 & yROM)
+			   lspg_state_t	 & romStateIn)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(fomSystemObj.createApplyJacobianResult( *decoder.getReferenceToJacobian().data() )),
+      //
+      jPhiMatrix_(fomSystemObj.createApplyJacobianResult
+		       ( *decoder.getReferenceToJacobian().data() )),
+      //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
@@ -159,9 +162,12 @@ public:
       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
       auxStepperObj_{},
-      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
-
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
   /* specialize for:
    * - the fom_system_t is regular c++
@@ -181,13 +187,16 @@ public:
   ProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
-			   lspg_state_t & yROM,
+			   lspg_state_t & romStateIn,
 			   const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(fomSystemObj.createApplyJacobianResult(*decoder.getReferenceToJacobian().data())),
+      //
+      jPhiMatrix_(fomSystemObj.createApplyJacobianResult
+		       (*decoder.getReferenceToJacobian().data())),
+      //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
@@ -195,8 +204,12 @@ public:
       residualPolicy_(fomVelocityRef_, fomStatesMngr_, udOps),
       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder, udOps),
       auxStepperObj_{},
-      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
 
   /* specialize for:
@@ -217,21 +230,29 @@ public:
   ProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 			   const fom_native_state_t & fomStateReferenceNative,
 			   const decoder_t & decoder,
-			   lspg_state_t	& yROM)
+			   lspg_state_t	& romStateIn)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_(fomSystemObj.createApplyJacobianResult(*decoder.getReferenceToJacobian().data())),
+      //
+      jPhiMatrix_(fomSystemObj.createApplyJacobianResult
+		   (*decoder.getReferenceToJacobian().data())),
+      //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
       // since the lspg residual is of same type and size of the fom velocity
       // (this is true w and w/o hyperreduction)
       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-      auxStepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_),
-      stepperObj_(yROM, fomSystemObj, residualPolicy_, jacobianPolicy_, auxStepperObj_)
-  {}
+      auxStepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_),
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_,
+		  jacobianPolicy_, auxStepperObj_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -251,20 +272,29 @@ public:
       std::is_void<_ud_ops_t>::value,
       int > = 0
   >
-  ProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-			   const fom_native_state_t fomStateReferenceIn,
-			   const decoder_t & decoder,
-			   typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & yROM,
-			   scalar_t t0)
+  ProblemContinuousTimeApi
+  (const _fom_system_t & fomSystemObj,
+   const fom_native_state_t fomStateReferenceIn,
+   const decoder_t & decoder,
+   typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
+   scalar_t t0)
     : fomStateReference_(fomStateReferenceIn),
       fomVelocityRef_( fomSystemObj.attr("velocity")(fomStateReferenceIn, t0) ),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      jPhiMatrix_( fomSystemObj.attr("applyJacobian")(fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
+      //
+      jPhiMatrix_(fomSystemObj.attr("applyJacobian")
+		        (fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
+      //
       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-      stepperObj_(_lspg_state_t(yROM), fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {}
+      stepperObj_(_lspg_state_t(romStateIn), fomSystemObj,
+		  residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
+  }
 #endif
 
 };

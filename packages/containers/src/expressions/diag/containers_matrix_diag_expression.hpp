@@ -157,9 +157,9 @@ struct DiagExpr<
 private:
   matrix_t & matObj_;
   //native_expr_t nativeExprObj_;
-  size_t extent_ = {};
   size_t numRows_ = {};
   size_t numCols_ = {};
+  size_t extent_ = {};
 
 public:
   DiagExpr() = delete;
