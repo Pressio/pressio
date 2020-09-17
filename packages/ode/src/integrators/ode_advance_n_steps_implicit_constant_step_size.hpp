@@ -54,7 +54,10 @@
 
 namespace pressio{ namespace ode{
 
-// basic version
+/*
+  accept:
+  stepper, state, startTime, dt, # steps, solver
+*/
 template<
   typename stepper_type,
   typename state_type,
@@ -91,7 +94,11 @@ but the state type you are using is not admissible for implicit time-stepping.")
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-
+/*
+  Overload for pressio4py
+  accept:
+  stepper, state, startTime, dt, # steps, solver
+*/
 template<
   typename stepper_type,
   typename native_python_state_type,
@@ -135,7 +142,9 @@ but the state type you are using is not admissible for implicit time-stepping.")
 #endif
 
 
-// with collector
+/*
+  stepper, state, startTime, dt, # steps, collector, solver
+*/
 template<
   typename stepper_type,
   typename state_type,
@@ -169,7 +178,37 @@ but the state type you are using is not admissible for implicit time-stepping.")
 }
 
 
-// with guesser
+/*
+  stepper, state, startTime, dt, # steps, solver, collector
+*/
+template<
+  typename stepper_type,
+  typename state_type,
+  typename time_type,
+  typename collector_type,
+  typename solver_type
+  >
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::concepts::implicitly_steppable<
+    stepper_type, state_type, time_type, solver_type>::value and
+  ::pressio::ode::concepts::collector<
+    collector_type, time_type, state_type>::value
+  >
+advanceNSteps(stepper_type & stepper,
+	      state_type & odeStateInOut,
+	      const time_type startTime,
+	      const time_type dt,
+	      const types::step_t numSteps,
+	      solver_type & solver,
+	      collector_type & collector)
+{
+  advanceNSteps(stepper, odeStateInOut, startTime, dt,
+		numSteps, collector, solver);
+}
+
+/*
+  stepper, state, startTime, dt, # steps, solver, guesser
+*/
 template<
   typename stepper_type,
   typename state_type,
@@ -206,7 +245,9 @@ but the state type you are using is not admissible for implicit time-stepping.")
 }
 
 
-// with guesser and collector
+/*
+  stepper, state, startTime, dt, # steps, collector, solver, guesser
+*/
 template<
   typename stepper_type,
   typename state_type,
@@ -245,7 +286,9 @@ but the state type you are using is not admissible for implicit time-stepping.")
 				   std::forward<guess_callback_t>(guessCb));
 }
 
-// with guesser and collector passed in different order
+/*
+  stepper, state, startTime, dt, # steps, solver, collector, guesser
+*/
 template<
   typename stepper_type,
   typename state_type,
