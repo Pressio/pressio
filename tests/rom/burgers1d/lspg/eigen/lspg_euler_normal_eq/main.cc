@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
   using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
   decoder_t decoderObj(phi);
 
-
   // -------------------------------------------------------
   // create ROM problem
   // -------------------------------------------------------

@@ -75,7 +75,7 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
-	::pressio::containers::MatrixSharedMemBase<C_type> & C)
+	::pressio::containers::DenseMatrixSharedMemBase<C_type> & C)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");

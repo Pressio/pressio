@@ -55,8 +55,9 @@ template <typename wrapped_type>
 class Vector<
   wrapped_type,
   mpl::enable_if_t<
-    details::traits<Vector<wrapped_type>>::wrapped_vector_identifier
-    == details::WrappedVectorIdentifier::Arbitrary
+    ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
+    // details::traits<Vector<wrapped_type>>::wrapped_vector_identifier
+    // == details::WrappedVectorIdentifier::Arbitrary
     >
   >
   : public ContainerBase< Vector<wrapped_type>>
@@ -70,7 +71,7 @@ public:
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value, 
+      std::is_default_constructible<_wrapped_type>::value,
       int > = 0
   >
   Vector(){};

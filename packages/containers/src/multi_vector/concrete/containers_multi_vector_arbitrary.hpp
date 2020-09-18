@@ -55,8 +55,7 @@ template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   mpl::enable_if_t<
-    details::traits<MultiVector<wrapped_type>>::wrapped_multi_vector_identifier
-    == details::WrappedMultiVectorIdentifier::Arbitrary
+    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value
     >
   >
   : public ContainerBase< MultiVector<wrapped_type>>

@@ -56,7 +56,7 @@ class VectorSharedMemBase
   : public ContainerSharedMemBase<derived_type>
 {
   static_assert(details::traits<derived_type>::is_shared_mem==1,
-  "OOPS: distributed concrete vector inheriting from sharedMem base!");
+  "Distributed concrete vector inheriting from sharedMem base!");
 
   using mytraits = typename details::traits<derived_type>;
   using ord_t = typename mytraits::ordinal_t;
@@ -77,10 +77,11 @@ public:
   }
 
 private:
-  /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  /* workaround for nvcc issue with templates,
+  https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_BASE_CONTAINERS_VECTOR_SHAREDMEM_BASE_HPP_

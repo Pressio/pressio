@@ -56,14 +56,14 @@ class VectorDistributedBase
   : public ContainerDistributedBase<derived_type>
 {
   static_assert( details::traits<derived_type>::is_shared_mem==0,
-  "OOPS: non-distributed concrete vector inheriting from distributed base!");
+  "Non-distributed concrete vector inheriting from distributed base!");
 
 private:
   /* workaround for nvcc issue with templates, see
   https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_BASE_CONTAINERS_VECTOR_DISTRIBUTED_BASE_HPP_

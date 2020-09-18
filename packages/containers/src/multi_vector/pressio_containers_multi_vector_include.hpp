@@ -49,33 +49,25 @@
 #ifndef CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 #define CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./predicates/containers_native_kokkos_multi_vector_meta.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./predicates/containers_native_epetra_multi_vector_meta.hpp"
-#include "./predicates/containers_native_tpetra_block_multi_vector_meta.hpp"
-#include "./predicates/containers_native_tpetra_multi_vector_meta.hpp"
-#endif
-#include "./predicates/containers_native_eigen_multi_vector_meta.hpp"
-#include "./predicates/containers_native_arbitrary_multi_vector_meta.hpp"
-
+// NOTE that below the order matters
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./predicates/containers_is_multi_vector_wrapper_epetra.hpp"
-#include "./predicates/containers_is_multi_vector_wrapper_tpetra.hpp"
-#include "./predicates/containers_is_multi_vector_wrapper_tpetra_block.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_epetra.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra_block.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./predicates/containers_is_multi_vector_wrapper_kokkos.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_kokkos.hpp"
 #endif
-#include "./predicates/containers_is_multi_vector_wrapper_eigen.hpp"
-#include "./predicates/containers_is_multi_vector_wrapper_arbitrary.hpp"
-#include "./predicates/containers_is_multi_vector_wrapper.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_eigen.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_arbitrary.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper.hpp"
 
+// include traits
 #include "./containers_multi_vector_traits.hpp"
 
-
+// concrete types
+#include "./concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./concrete/containers_multi_vector_distributed_epetra.hpp"
 #include "./concrete/containers_multi_vector_distributed_tpetra_block.hpp"
@@ -85,8 +77,6 @@
 #include "./concrete/containers_multi_vector_sharedmem_kokkos.hpp"
 #endif
 #include "./concrete/containers_multi_vector_arbitrary.hpp"
-#include "./concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
-
 
 
 #endif  // CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_

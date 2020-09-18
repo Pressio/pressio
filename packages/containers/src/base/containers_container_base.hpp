@@ -72,7 +72,7 @@ public:
   data_ret_t data(){
     return static_cast<derived_type *>(this)->data();
   }
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_BASE_CONTAINERS_CONTAINER_BASE_HPP_

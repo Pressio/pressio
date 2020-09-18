@@ -76,9 +76,9 @@ template<typename derived_type>
 class ContainerSharedMemBase;
 
 template<typename derived_type>
-class MatrixDistributedBase;
+class DenseMatrixDistributedBase;
 template<typename derived_type>
-class MatrixSharedMemBase;
+class DenseMatrixSharedMemBase;
 
 template<typename derived_type>
 class MultiVectorDistributedBase;
@@ -104,7 +104,15 @@ class MultiVector;
 template <
   typename wrapped_type,
   typename Enable = void>
-class Matrix;
+class DenseMatrix;
+
+template <typename ... Args>
+using Matrix = DenseMatrix<Args...>;
+
+template <
+  typename wrapped_type,
+  typename Enable = void>
+class SparseMatrix;
 
 
 namespace expressions{

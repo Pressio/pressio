@@ -57,7 +57,7 @@ class MultiVectorSharedMemBase : public ContainerSharedMemBase<derived_type>
   using traits = ::pressio::containers::details::traits<derived_type>;
 
   static_assert(traits::is_shared_mem==1,
-		"OOPS: the concrete vector type inheriting from sharedMem base is not shared mem!");
+	"The concrete vector type inheriting from sharedMem base is not shared mem!");
 
   using this_t = MultiVectorSharedMemBase<derived_type>;
   using sc_t  = typename traits::scalar_t;
@@ -68,7 +68,7 @@ public:
   ord_t numVectors() const{
     return static_cast<const derived_type &>(*this).numVectors();
   }
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_BASE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_BASE_HPP_

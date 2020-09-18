@@ -53,7 +53,7 @@ namespace pressio{ namespace containers{
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
   and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_const_ret_t
   >
@@ -65,7 +65,7 @@ subspan(const T & obj, Args&& ... args)
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
   and (0 < sizeof...(Args)),
   typename details::traits<T>::subspan_ret_t
   >

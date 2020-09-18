@@ -67,8 +67,7 @@ enum class WrappedPackageIdentifier{
 Identifier for wrapped vectors
 
 Within a given package, like trilinos, we can
-have multiple types of vectors, for
-instance epetra, tpetra.
+have multiple types of vectors, e.g. epetra, tpetra.
 Same can be true for other packages.
 --------------------------------------------*/
 enum class WrappedVectorIdentifier{
@@ -76,7 +75,7 @@ enum class WrappedVectorIdentifier{
    Epetra,
    Tpetra,
    TpetraBlock,
-   Eigen,
+   // Eigen,
    EigenRowStatic,
    EigenColStatic,
    EigenRowDynamic,
@@ -92,17 +91,17 @@ Identifier for wrapped matrix
 --------------------------------------------*/
 enum class WrappedMatrixIdentifier{
    Undefined,
-   CrsEpetra,
    DenseEpetra,
-   SparseEpetra,
-   SparseTpetra,
-   CrsKokkos,
    DenseKokkos,
    TeuchosSerialDense,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
    Pybind,
-   Arbitrary
+   // CrsEpetra,
+   // SparseEpetra,
+   // SparseTpetra,
+   // CrsKokkos,
+   DenseArbitrary
 };
 
 /*--------------------------------------------
