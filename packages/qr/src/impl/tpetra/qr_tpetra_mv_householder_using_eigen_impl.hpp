@@ -70,7 +70,7 @@ class TpetraMVHouseholderUsingEigen
 
   using Q_t = Q_type<MV>;
   using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
+  using eig_mat_w	= containers::DenseMatrix<eig_dyn_mat>;
   using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
   help_impl_t myImpl_	= {};
 
@@ -114,7 +114,7 @@ public:
     A2.data()->doImport(*A.data(), importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix
-    containers::Matrix<Eigen::MatrixXd> eA2W(rows,cols);
+    containers::DenseMatrix<Eigen::MatrixXd> eA2W(rows,cols);
     for (int j=0;j<cols;j++){
       auto colData = A2.data()->getData(j);
       for (int i=0;i<rows;i++)

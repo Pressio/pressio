@@ -14,7 +14,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 
@@ -57,7 +57,7 @@ TEST(ode_implicit_euler, guesserLambda){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);//appObj.y0);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
@@ -106,7 +106,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 

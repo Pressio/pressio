@@ -204,7 +204,7 @@ struct EulerLSPGWithVelocityApi
 
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  using hessian_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
 
   using ops1_t		= myOps<scalar_t, native_dmat_t>;
   using opsGN_t		= myOpsGN<native_dmat_t, scalar_t>;

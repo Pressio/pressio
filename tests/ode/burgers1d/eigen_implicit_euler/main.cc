@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
   // types for ode
   using ode_state_t = pressio::containers::Vector<app_state_t>;
   using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
-  using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
+  using ode_jac_t   = pressio::containers::SparseMatrix<app_jacob_t>;
 
   ode_state_t y(y0n);
   using ode_tag = pressio::ode::implicitmethods::Euler;

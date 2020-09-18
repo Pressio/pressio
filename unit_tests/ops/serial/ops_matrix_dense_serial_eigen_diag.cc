@@ -78,8 +78,8 @@ TEST(containers_matrix_serial_eigen_diag_ops, diag)
   using eigmat_t_float = Eigen::Matrix<float,-1,-1>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
-  using myM_t_float = pressio::containers::Matrix<eigmat_t_float>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
+  using myM_t_float = pressio::containers::DenseMatrix<eigmat_t_float>;
   using myV_t = pressio::containers::Vector<eigvec_t>;
 
 
@@ -116,7 +116,7 @@ TEST(containers_matrix_serial_eigen_diag_ops, diagRowMajor)
   using eigmat_t = Eigen::Matrix<double,-1,-1,Eigen::RowMajor>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
   using myV_t = pressio::containers::Vector<eigvec_t>;
 
 

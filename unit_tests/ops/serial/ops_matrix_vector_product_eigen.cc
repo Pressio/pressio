@@ -12,7 +12,7 @@ TEST(ops_matrix_vector_product, eigenVectorDenseMatrix){
   using natM_t = Eigen::Matrix<double,3,3>;
   natM_t M;
   M << 1,0,2,2,1,3,0,0,1;
-  containers::Matrix<natM_t> myM(M);
+  containers::DenseMatrix<natM_t> myM(M);
 
   containers::Vector<natV_t> myR;
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();

@@ -16,7 +16,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 
@@ -65,7 +65,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 

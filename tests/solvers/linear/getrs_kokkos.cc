@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   using k2d_d = Kokkos::View<double**, d_layout, exe_space>;
   using k2d_h = typename k2d_d::host_mirror_type;
 
-  using wmat = ::pressio::containers::Matrix<k2d_d>;
+  using wmat = ::pressio::containers::DenseMatrix<k2d_d>;
   static_assert( ::pressio::containers::details::traits<wmat>::is_static == 0, "" );
-  static_assert( ::pressio::containers::predicates::is_matrix_wrapper_kokkos<wmat>::value, "" );
+  static_assert( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<wmat>::value, "" );
 
   // size of problems, rows and cols
   constexpr int Nr = 4;

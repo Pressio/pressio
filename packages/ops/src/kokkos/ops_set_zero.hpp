@@ -57,7 +57,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
   ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<T>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
   >
 set_zero(T & v){
   using value_t	      = typename ::pressio::containers::details::traits<T>::scalar_t;

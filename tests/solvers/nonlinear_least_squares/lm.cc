@@ -4,7 +4,7 @@
 struct NonLinearLeastSquareSystem 
 {
   using matrix_n_t  = Eigen::Matrix<double, -1, -1>;
-  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::DenseMatrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = pressio::containers::Vector<vector_n_t>;
   typedef vector_w_t vector_type;
@@ -52,7 +52,7 @@ int main() {
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = containers::Vector<vector_n_t>;
   using eig_dyn_mat  = Eigen::Matrix<double, -1, -1>;
-  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t  = pressio::containers::DenseMatrix<eig_dyn_mat>;
 
   using solver_tag   = pressio::solvers::linear::iterative::LSCG;
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;

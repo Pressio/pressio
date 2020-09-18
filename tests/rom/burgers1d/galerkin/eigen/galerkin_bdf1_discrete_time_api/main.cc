@@ -15,7 +15,7 @@ struct GalerkinBDF1WithResidualApi
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using eig_dyn_mat   = Eigen::Matrix<scalar_t, -1, -1>;
   using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
-  using rom_jacobian_t = pressio::containers::Matrix<eig_dyn_mat>;
+  using rom_jacobian_t = pressio::containers::DenseMatrix<eig_dyn_mat>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;

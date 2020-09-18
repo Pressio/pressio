@@ -6,14 +6,14 @@ TEST(ops_matrix_matrix_product, eigenDenseDense){
   using namespace pressio;
 
   using nat_t = Eigen::MatrixXd;
-  using myA_t = containers::Matrix<nat_t>;
+  using myA_t = containers::DenseMatrix<nat_t>;
   nat_t a(3,4);
   a << 1.,2.,3.,4., 4.,3.,2.,1., 1.,2.,3.,4.;
   myA_t A(a);
   //  std::cout << *A.data() << "\n";
 
   using nat2_t = Eigen::MatrixXd;
-  using myB_t = containers::Matrix<nat2_t>;
+  using myB_t = containers::DenseMatrix<nat2_t>;
   nat2_t b(4,2); b << 1.,2.,3.,3.,4.,4.,2.,2.;
   myB_t B(b);
   //  std::cout << *B.data();
@@ -22,7 +22,7 @@ TEST(ops_matrix_matrix_product, eigenDenseDense){
    containers::predicates::is_dense_matrix_wrapper_eigen<myA_t>::value,"");
   
 
-  containers::Matrix<Eigen::Matrix<double,3,2>> C2;
+  containers::DenseMatrix<Eigen::Matrix<double,3,2>> C2;
 
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();
   constexpr auto alpha = ::pressio::utils::constants<double>::one();

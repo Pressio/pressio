@@ -57,11 +57,11 @@ namespace pressio{ namespace ops{
 template< typename T1, typename T2 >
 ::pressio::mpl::enable_if_t<
   (::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value or
-   ::pressio::containers::predicates::is_matrix_wrapper_kokkos<T1>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T1>::value or
    ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value)
   and
   (::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value or
-   ::pressio::containers::predicates::is_matrix_wrapper_kokkos<T2>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T2>::value or
    ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value)
   >
 deep_copy(T1 & dest, const T2 & src){

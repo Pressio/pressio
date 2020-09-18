@@ -11,7 +11,7 @@ struct EigenRosenbrock3
 
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using jacobian_w_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
   using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using scalar_type = double;

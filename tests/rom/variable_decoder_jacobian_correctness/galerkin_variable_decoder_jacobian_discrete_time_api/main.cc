@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
   using ode_tag = pressio::ode::implicitmethods::Arbitrary;
   using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using rom_jacobian_t = pressio::containers::Matrix<Eigen::MatrixXd>;
+  using rom_jacobian_t = pressio::containers::DenseMatrix<Eigen::MatrixXd>;
 
   using problem_t = pressio::rom::galerkin::composeDefaultProblem<
     ode_tag, fom_t, rom_state_t, rom_jacobian_t,

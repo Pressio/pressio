@@ -112,14 +112,15 @@ headers are included in (and classes found) in the proper order.
 
 //*** matrix ****
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "containers/src/predicates/native_types_detection/containers_native_kokkos_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_kokkos_dense_matrix.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "containers/src/predicates/native_types_detection/containers_native_epetra_matrix.hpp"
-#include "containers/src/predicates/native_types_detection/containers_native_teuchos_matrix.hpp"
-#include "containers/src/predicates/native_types_detection/containers_native_tpetra_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_epetra_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_teuchos_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_tpetra_dense_matrix.hpp"
 #endif
-#include "containers/src/predicates/native_types_detection/containers_native_eigen_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_sparse_matrix.hpp"
 
 //*** multi vector ****
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -134,7 +135,7 @@ headers are included in (and classes found) in the proper order.
 
 // arbitrary must be at end because they depend on the above
 #include "containers/src/predicates/native_types_detection/containers_native_arbitrary_vector.hpp"
-#include "containers/src/predicates/native_types_detection/containers_native_arbitrary_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_arbitrary_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_arbitrary_multi_vector.hpp"
 
 
@@ -142,7 +143,8 @@ headers are included in (and classes found) in the proper order.
 // includes actual Vector/Matrix/MV classes
 //-------------------------------------------
 #include "containers/src/vector/pressio_containers_vector_include.hpp"
-#include "containers/src/matrix/pressio_containers_matrix_include.hpp"
+#include "containers/src/dense_matrix/pressio_containers_dense_matrix_include.hpp"
+#include "containers/src/sparse_matrix/pressio_containers_sparse_matrix_include.hpp"
 #include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
 
 //-------------------------------------------

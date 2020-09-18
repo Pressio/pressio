@@ -81,7 +81,7 @@ TEST(containers_matrix_serial_eigen, subspan)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::MatrixXd;
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
 
   myM_t A(6,4);
   A(0,0) = 1.;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
@@ -100,7 +100,7 @@ TEST(containers_matrix_serial_eigen, subspan)
 TEST(containers_matrix_serial_eigen, subspanRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
 
   myM_t A(6,4);
   A(0,0) = 1.;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;

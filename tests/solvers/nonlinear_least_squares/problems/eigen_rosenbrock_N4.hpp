@@ -10,7 +10,7 @@ struct EigenRosenbrock4Impl
 {
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using jacobian_w_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
   using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using scalar_type = double;
@@ -85,12 +85,12 @@ struct EigenRosenbrock4HessGradApi
 {
   using eig_dyn_mat	= Eigen::MatrixXd;
   using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using jacobian_w_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
   using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using scalar_type	= double;
   using state_type	= state_w_t;
-  using hessian_type	= pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_type	= pressio::containers::DenseMatrix<eig_dyn_mat>;
   using gradient_type	= state_type;
 
   static constexpr int nf = 6; // num functions

@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
     // use leftlayout so we access blas/lapack easily
     using kll = Kokkos::LayoutLeft;
     using k2dLl_d = Kokkos::View<scalar_t**, kll, exe_space>;
-    using hessian_t  = pressio::containers::Matrix<k2dLl_d>;
+    using hessian_t  = pressio::containers::DenseMatrix<k2dLl_d>;
     using solver_tag   = pressio::solvers::linear::direct::getrs;
     using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;

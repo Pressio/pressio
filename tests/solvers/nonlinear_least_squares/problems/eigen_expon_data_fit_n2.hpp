@@ -11,7 +11,7 @@ struct EigenExpDataFitN2
   using scalar_type	= double;
   using state_type	= pressio::containers::Vector<Eigen::VectorXd>;
   using residual_type	= state_type;
-  using jacobian_type	= pressio::containers::Matrix<Eigen::MatrixXd>;
+  using jacobian_type	= pressio::containers::DenseMatrix<Eigen::MatrixXd>;
 
   static constexpr int n = 8;
   const double times_[n] = {1.,2.,3.,4., 5.,6.,7.,8};

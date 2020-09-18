@@ -57,7 +57,7 @@ void testConst(const T & A){
 TEST(containers_matrix_serial_kokkos_diag_expressions, diag)
 {
   using mat_t = Kokkos::View<double**, Kokkos::HostSpace>;
-  using myM_t = pressio::containers::Matrix<mat_t>;
+  using myM_t = pressio::containers::DenseMatrix<mat_t>;
 
   myM_t A(4,4);
   //auto Ah = Kokkos::create_mirror_view(*A.data());

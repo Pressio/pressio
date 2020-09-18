@@ -57,7 +57,7 @@ class QRSolver<
   matrix_type, algo, false, void, Q_type,
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_multi_vector_wrapper<matrix_type>::value or
-    containers::predicates::is_matrix_wrapper<matrix_type>::value
+    containers::predicates::is_dense_matrix_wrapper<matrix_type>::value
     >
   > : public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_compute_t,
       public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_solve_t

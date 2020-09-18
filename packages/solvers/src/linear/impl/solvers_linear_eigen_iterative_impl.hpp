@@ -57,7 +57,9 @@ class EigenIterative
     public IterativeBase< EigenIterative<solver_tag, MatrixT>,
 			  typename containers::details::traits<MatrixT>::scalar_t>
 {
-  static_assert( ::pressio::containers::predicates::is_matrix_wrapper_eigen<MatrixT>::value or
+  static_assert
+  ( ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
+    ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<MatrixT>::value or
   		 ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value,
   		 "Eigen iterative solver needs a matrix type = wrapper of an eigen matrix");
 

@@ -64,7 +64,7 @@ TEST(containers_matrix_serial_eigen_diag_expressions, diag)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::MatrixXd;
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
 
   myM_t A(4,4);
   A(0,0) = 1.2;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
@@ -82,7 +82,7 @@ TEST(containers_matrix_serial_eigen_diag_expressions, diag)
 TEST(containers_matrix_serial_eigen_diag_expressions, diagRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
 
   myM_t A(4,4);
   A(0,0) = 1.2;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;

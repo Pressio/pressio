@@ -62,7 +62,7 @@ namespace pressio{ namespace ops{
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
-   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+   containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value) and
   containers::predicates::is_vector_wrapper_eigen<x_type>::value and
   containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >
@@ -91,7 +91,7 @@ product(::pressio::nontranspose mode,
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   (containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value or
-   containers::predicates::is_matrix_wrapper_eigen<A_type>::value) and
+   containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value) and
   containers::predicates::is_vector_wrapper_eigen<x_type>::value and
   containers::predicates::is_vector_wrapper_eigen<y_type>::value
   >

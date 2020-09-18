@@ -58,7 +58,7 @@ class ModGramSchmidtMVEpetra<matrix_t, R_t, MV_t, Q_type, void>
   using int_t	     = int;
   using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = containers::Matrix<eig_dyn_mat>;
+  using R_nat_t	     = containers::DenseMatrix<eig_dyn_mat>;
   using Q_t	     = Q_type<MV_t>;
   static constexpr sc_t one_ = static_cast<sc_t>(1);
   static constexpr sc_t zero_ = static_cast<sc_t>(0);

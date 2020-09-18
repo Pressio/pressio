@@ -9,7 +9,7 @@ int main()
 
   // Matrix typedefs
   using matrix_n_t = Eigen::MatrixXd;
-  using matrix_w_t = containers::Matrix<matrix_n_t>;
+  using matrix_w_t = containers::DenseMatrix<matrix_n_t>;
 
   // Vector typedefs
   using vector_n_t = Eigen::VectorXd;

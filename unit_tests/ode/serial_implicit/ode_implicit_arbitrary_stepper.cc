@@ -52,7 +52,7 @@ TEST(ode_implicit, validArbitraryStepperPolicies){
   using njac_t = typename app_t::jacobian_type;
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nvel_t>;
-  using jac_t = containers::Matrix<njac_t>;
+  using jac_t = containers::SparseMatrix<njac_t>;
 
   using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
   static_assert(ode::concepts::implicit_euler_residual_policy<
@@ -73,7 +73,7 @@ TEST(ode_implicit, validArbitraryStepperPolicies){
 //   using njac_t	 = typename app_t::jacobian_type;
 //   using state_t  = containers::Vector<nstate_t>;
 //   using res_t	 = containers::Vector<nres_t>;
-//   using jac_t    = containers::Matrix<njac_t>;
+//   using jac_t    = containers::SparseMatrix<njac_t>;
 
 //   using stepper_order = ode::types::StepperOrder<1>;
 //   using stepper_n_states = ode::types::StepperTotalNumberOfStates<2>;

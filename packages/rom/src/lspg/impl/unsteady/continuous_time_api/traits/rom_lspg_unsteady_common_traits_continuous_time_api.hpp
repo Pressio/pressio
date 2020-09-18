@@ -127,7 +127,7 @@ struct CommonTraitsContinuousTimeApi
    * where (something) is product of few matrices.
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = containers::MV<>
-   * if phi is Matrix<>, then we have containers::Matrix<>
+   * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
    * not bad assumption since all matrices are left-applied to decoder_jac_t
    */
   using lspg_matrix_t		= decoder_jac_t;

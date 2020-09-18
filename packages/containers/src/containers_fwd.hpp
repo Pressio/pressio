@@ -106,9 +106,6 @@ template <
   typename Enable = void>
 class DenseMatrix;
 
-template <typename ... Args>
-using Matrix = DenseMatrix<Args...>;
-
 template <
   typename wrapped_type,
   typename Enable = void>

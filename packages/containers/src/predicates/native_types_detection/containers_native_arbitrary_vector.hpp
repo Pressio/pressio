@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
-#define CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
+#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
+#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -56,11 +56,10 @@ namespace pressio{ namespace containers{ namespace predicates {
   - not one the supported vector types
   AND
   - not an eigen sparse or dense matrix or multivector
-  - not a kokkos sparse or dense matrix or multivector
-  - not an epetra multivector or sparse matrix
+  - not an epetra multivector or matrix
   - not a teuchos dense matrix
   - not a tpetra block multivector
-  - not a tpetra sparse matrix or multivector
+  - not a tpetra multivector
 
   NOTE that these checks are necessary to guard against cases like this:
     using T = Eigen::MatrixXd;
@@ -88,10 +87,6 @@ struct is_admissible_as_vector_arbitrary : std::false_type
   (!containers::predicates::is_dense_matrix_kokkos<T>::value and
    !containers::predicates::is_multi_vector_kokkos<T>::value,
    "You cannot wrap a Kokkos 2d view as a pressio::containers::Vector<>.");
-
-  static_assert
-  (!containers::predicates::is_sparse_matrix_kokkos<T>::value,
-   "You cannot wrap a Kokkos sparse matrix as a pressio::containers::Vector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -99,10 +94,6 @@ struct is_admissible_as_vector_arbitrary : std::false_type
   (!containers::predicates::is_multi_vector_epetra<T>::value and
    !containers::predicates::is_dense_matrix_epetra<T>::value,
    "You cannot wrap an Epetra multivector as a pressio::containers::Vector<>.");
-
-  static_assert
-  (!containers::predicates::is_sparse_matrix_epetra<T>::value,
-   "You cannot wrap an Epetra sparse matrix as a pressio::containers::Vector<>.");
 
   static_assert
   (!containers::predicates::is_dense_matrix_teuchos<T>::value
@@ -116,9 +107,6 @@ struct is_admissible_as_vector_arbitrary : std::false_type
   static_assert
   (!containers::predicates::is_multi_vector_tpetra<T>::value,
    "You cannot wrap a Tpetra multivector as a pressio::containers::Vector<>.");
-  static_assert
-  (!containers::predicates::is_sparse_matrix_tpetra<T>::value,
-   "You cannot wrap a Tpetra sparse matrix as a pressio::containers::Vector<>.");
 #endif
 };
 
@@ -136,13 +124,11 @@ struct is_admissible_as_vector_arbitrary<
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and !containers::predicates::is_vector_kokkos<T>::value
     and !containers::predicates::is_dense_matrix_kokkos<T>::value
-    and !containers::predicates::is_sparse_matrix_kokkos<T>::value
     and !containers::predicates::is_multi_vector_kokkos<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and !containers::predicates::is_vector_epetra<T>::value
     and !containers::predicates::is_multi_vector_epetra<T>::value
-    and !containers::predicates::is_sparse_matrix_epetra<T>::value
     and !containers::predicates::is_dense_matrix_epetra<T>::value
     //
     and !containers::predicates::is_dense_vector_teuchos<T>::value
@@ -154,11 +140,10 @@ struct is_admissible_as_vector_arbitrary<
     //
     and !containers::predicates::is_vector_tpetra<T>::value
     and !containers::predicates::is_multi_vector_tpetra<T>::value
-    and !containers::predicates::is_sparse_matrix_tpetra<T>::value
 #endif
     >
   > : std::true_type{};
 
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_

@@ -102,7 +102,7 @@ private:
     A2.data()->Import(*A.data(), importer, Insert);
 
     // store it into an Eigen matrix
-    containers::Matrix<Eigen::MatrixXd> eA2W(m,n);
+    containers::DenseMatrix<Eigen::MatrixXd> eA2W(m,n);
     for (int i=0;i<m;i++)
       for (int j=0;j<n;j++)
     	eA2W(i,j) = A2(i,j);

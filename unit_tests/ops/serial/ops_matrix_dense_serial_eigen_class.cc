@@ -3,7 +3,7 @@
 #include "pressio_ops.hpp"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-using mymat_t = pressio::containers::Matrix<nat_t>;
+using mymat_t = pressio::containers::DenseMatrix<nat_t>;
 
 TEST(ops_matrix_dense_eigen_dynamic_class,
      sizeResize)
@@ -38,7 +38,7 @@ TEST(ops_matrix_dense_eigen_dynamic_class,
 // TEST(ops_matrix_dense_eigen_dynamic_class, additionOperator)
 // {
 //   using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-//   using mymat_t = containers::Matrix<nat_t>;
+//   using mymat_t = containers::DenseMatrix<nat_t>;
 
 //   nat_t em1;
 //   em1.resize(2,2);
@@ -60,7 +60,7 @@ TEST(ops_matrix_dense_eigen_dynamic_class,
 // TEST(ops_matrix_dense_eigen_dynamic_class, substractOperator)
 // {
 //   using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-//   using mymat_t = containers::Matrix<nat_t>;
+//   using mymat_t = containers::DenseMatrix<nat_t>;
 
 //   nat_t em1;
 //   em1.resize(2,2);
@@ -83,7 +83,7 @@ TEST(ops_matrix_dense_eigen_dynamic_class,
 // TEST(ops_matrix_dense_eigen_dynamic_class, starOperator)
 // {
 //   using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-//   using mymat_t = containers::Matrix<nat_t>;
+//   using mymat_t = containers::DenseMatrix<nat_t>;
 
 //   nat_t em1;
 //   em1.resize(2,2);
@@ -107,7 +107,7 @@ TEST(ops_matrix_dense_eigen_dynamic_class,
 // TEST(ops_matrix_dense_eigen_dynamic_class, transposeDynamic)
 // {
 //   using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-//   using mymat_t = containers::Matrix<nat_t>;
+//   using mymat_t = containers::DenseMatrix<nat_t>;
 
 //   nat_t em1;
 //   em1.resize(2,3);
@@ -136,7 +136,7 @@ TEST(ops_matrix_dense_eigen_dynamic_class,
 // TEST(ops_matrix_dense_eigen_dynamic_class, transposeStatic)
 // {
 //   using nat_t = Eigen::Matrix<double, 2, 3>;
-//   using mymat_t = containers::Matrix<nat_t>;
+//   using mymat_t = containers::DenseMatrix<nat_t>;
 
 //   nat_t em1;
 //   em1 << 34.0, 22.5, 11.5, 75., 3., 6.;

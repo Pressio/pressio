@@ -136,7 +136,7 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 
 //   //  auto vecSize = rhs.size();
 //   using eigMat = Eigen::Matrix<sc_t, n, n>;
-//   containers::Matrix<eigMat> eigR( Rmatrix->values() );
+//   containers::DenseMatrix<eigMat> eigR( Rmatrix->values() );
 //   solve(rhs, eigR, y);
 // }
 // #endif

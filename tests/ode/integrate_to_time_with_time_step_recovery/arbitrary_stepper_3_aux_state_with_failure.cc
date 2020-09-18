@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
   using njacobian_t	= typename app_t::discrete_time_jacobian_type;
   using state_t		= ::pressio::containers::Vector<nstate_t>;
   using res_t		= ::pressio::containers::Vector<nresid_t>;
-  using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
+  using jac_t		= ::pressio::containers::SparseMatrix<njacobian_t>;
 
   auto dtManager =
     [](const ::pressio::ode::types::step_t & step,

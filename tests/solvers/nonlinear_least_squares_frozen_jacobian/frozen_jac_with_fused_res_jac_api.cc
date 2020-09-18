@@ -2,13 +2,6 @@
 #include "pressio_solvers.hpp"
 #include "common.hpp"
 
-// using eig_mat = Eigen::Matrix<double, -1, -1>;
-// using eig_vec = Eigen::VectorXd;
-// using vec_type = pressio::containers::Vector<eig_vec>;
-// using mat_type = pressio::containers::Matrix<eig_mat>;
-// constexpr int numEquations = 5;
-// constexpr int numVars = 3;
-
 struct MySystem
 {
   using scalar_type = double;

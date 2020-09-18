@@ -4,7 +4,7 @@
 
 struct ValidSystemA {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::SparseMatrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = pressio::containers::Vector<vector_n_t>;
 
@@ -31,7 +31,7 @@ struct ValidSystemA {
 
 struct ValidSystemB {
   using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = pressio::containers::Matrix<matrix_n_t>;
+  using matrix_w_t = pressio::containers::SparseMatrix<matrix_n_t>;
   using vector_n_t = Eigen::VectorXd;
   using vector_w_t = pressio::containers::Vector<vector_n_t>;
 

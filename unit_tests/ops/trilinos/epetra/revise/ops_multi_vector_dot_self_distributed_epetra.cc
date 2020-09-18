@@ -56,7 +56,7 @@ TEST(epetraMultiVector,
   }
 
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
-  using eig_mat_w = containers::Matrix<eig_mat>;
+  using eig_mat_w = containers::DenseMatrix<eig_mat>;
 
   eig_mat TT(4,4);
   TT(0,0)=17.; TT(0,1)=0.; TT(0,2)=5.; TT(0,3)=2.;

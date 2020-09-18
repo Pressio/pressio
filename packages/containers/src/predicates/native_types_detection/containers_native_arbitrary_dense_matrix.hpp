@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_DENSE_MATRIX_META_HPP_
-#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_DENSE_MATRIX_META_HPP_
+#ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_DENSE_MATRIX_HPP_
+#define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_DENSE_MATRIX_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -63,7 +63,7 @@ namespace pressio{ namespace containers{ namespace predicates {
 
   NOTE that these checks are necessary to guard against cases like this:
     using T = Eigen::VectorXd;
-    using v_t = pressio::containers::Matrix<T>;
+    using v_t = pressio::containers::DenseMatrix<T>;
 
     If we were to just check that T is not an eigen matrix,
     then this case would still compile. But this is wrong.
@@ -76,26 +76,26 @@ struct is_admissible_as_dense_matrix_arbitrary : std::false_type
 
   static_assert
   (!containers::predicates::is_vector_eigen<T>::value,
-   "You cannot wrap an Eigen vector as a pressio::containers::Matrix<>.");
+   "You cannot wrap an Eigen vector as a pressio::containers::DenseMatrix<>.");
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert
   (!containers::predicates::is_vector_epetra<T>::value,
-   "You cannot wrap an Epetra vector as a pressio::containers::Matrix<>.");
+   "You cannot wrap an Epetra vector as a pressio::containers::DenseMatrix<>.");
 
   static_assert
   (!containers::predicates::is_vector_tpetra_block<T>::value,
-   "You cannot wrap a Tpetra block vector as a pressio::containers::Matrix<>.");
+   "You cannot wrap a Tpetra block vector as a pressio::containers::DenseMatrix<>.");
 
   static_assert
   (!containers::predicates::is_vector_tpetra<T>::value,
-   "You cannot wrap a Tpetra vector as a pressio::containers::Matrix<>.");
+   "You cannot wrap a Tpetra vector as a pressio::containers::DenseMatrix<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
   static_assert
   (!containers::predicates::is_vector_kokkos<T>::value,
-   "You cannot wrap a Kokkos 1d view as a pressio::containers::Matrix<>.");
+   "You cannot wrap a Kokkos 1d view as a pressio::containers::DenseMatrix<>.");
 #endif
 };
 
@@ -113,8 +113,8 @@ struct is_admissible_as_dense_matrix_arbitrary<
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and !containers::predicates::is_dense_matrix_epetra<T>::value
-    and !containers::predicates::is_vector_epetra<T>::value
     and !containers::predicates::is_multi_vector_epetra<T>::value
+    and !containers::predicates::is_vector_epetra<T>::value
     //
     and !containers::predicates::is_dense_matrix_teuchos<T>::value
     and !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value
@@ -127,12 +127,12 @@ struct is_admissible_as_dense_matrix_arbitrary<
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and !containers::predicates::is_dense_matrix_kokkos<T>::value
-    and !containers::predicates::is_vector_kokkos<T>::value
     and !containers::predicates::is_multi_vector_kokkos<T>::value
+    and !containers::predicates::is_vector_kokkos<T>::value
 #endif
     >
   > : std::true_type{};
 
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_NATIVE_ARBITRARY_MATRIX_META_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_DENSE_MATRIX_HPP_

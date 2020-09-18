@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_HPP_
-#define CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_HPP_
+#ifndef CONTAINERS_DENSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_
+#define CONTAINERS_DENSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -60,8 +60,8 @@ struct is_dense_matrix_wrapper<
 	mpl::enable_if_t<
 		containers::details::traits<T>::is_matrix and
 		containers::details::traits<T>::is_dense
-	>::type
+	>
 	> : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_MATRIX_PREDICATES_CONTAINERS_IS_MATRIX_WRAPPER_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_

@@ -22,7 +22,7 @@ struct eigenDenseR9Fixture
 
   using this_t	 = eigenDenseR9Fixture;
   using nat_mat_t = Eigen::MatrixXd;
-  using mymat_t = pressio::containers::Matrix<nat_mat_t>;
+  using mymat_t = pressio::containers::DenseMatrix<nat_mat_t>;
   using nat_v_t	 = Eigen::VectorXd;
   using myvec_t	 = pressio::containers::Vector<nat_v_t>;
 

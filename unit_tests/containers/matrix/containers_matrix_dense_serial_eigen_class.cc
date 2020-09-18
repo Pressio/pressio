@@ -3,7 +3,7 @@
 #include "pressio_containers.hpp"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-using mymat_t = pressio::containers::Matrix<nat_t>;
+using mymat_t = pressio::containers::DenseMatrix<nat_t>;
 
 
 TEST(containers_matrix_dense_eigen_dynamic_class,

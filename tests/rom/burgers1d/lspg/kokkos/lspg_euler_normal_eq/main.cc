@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
     lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
     // linear solver
-    using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;
+    using hessian_t  = pressio::containers::DenseMatrix<typename fom_t::mv_d>;
     using solver_tag   = pressio::solvers::linear::direct::getrs;
     using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;

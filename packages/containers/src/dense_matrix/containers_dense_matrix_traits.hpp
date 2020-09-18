@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_
-#define CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_
+#ifndef CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
+#define CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -80,10 +80,7 @@ struct traits<
   using data_return_t = wrapped_type *;
 
   static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::Arbitrary;
-
-  // static constexpr WrappedPackageIdentifier
-  // wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseArbitrary;
 
   static constexpr bool is_vector = false;
   static constexpr bool is_matrix = true;
@@ -307,4 +304,4 @@ struct traits<
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_MATRIX_CONTAINERS_MATRIX_TRAITS_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
