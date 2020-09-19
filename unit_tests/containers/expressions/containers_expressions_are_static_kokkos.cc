@@ -30,7 +30,7 @@ TEST(containers_expressions, subspanIsStaticKokkos)
 {
   using namespace pressio::containers;
   using m_t = Kokkos::View<double**>;
-  using my_t = Matrix<m_t>;
+  using my_t = DenseMatrix<m_t>;
   using subspan_t= expressions::SubspanExpr<my_t>;
   static_assert
     (predicates::is_static_dense_matrix_wrapper_kokkos<subspan_t>::value, "");
@@ -42,7 +42,7 @@ TEST(containers_expressions, subspanIsStaticKokkos2)
 {
   using namespace pressio::containers;
   using m_t = Kokkos::View<double*[4]>;
-  using my_t = Matrix<m_t>;
+  using my_t = DenseMatrix<m_t>;
   using subspan_t= expressions::SubspanExpr<my_t>;
   static_assert
     (predicates::is_static_dense_matrix_wrapper_kokkos<subspan_t>::value, "");

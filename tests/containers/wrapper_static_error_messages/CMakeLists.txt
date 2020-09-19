@@ -9,7 +9,7 @@
 macro(add_serial_test_to_check_build_failure
     TESTNAME SRC GREPSTRING1 GREPSTRING2 PRIVATEDEF1)
   # set name of the executable
-  set(testNameFinal rom_${TESTNAME})
+  set(testNameFinal containers_${TESTNAME})
   add_executable(${testNameFinal} ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.cc)
 
   # Avoid building these targets normally
@@ -91,92 +91,91 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
 endif()
 
 
-# ########################
-# ### for multi vector ###
-# ########################
+########################
+### for multi vector ###
+########################
 
-# set(main main_for_multivector)
+set(main main_for_multivector)
 
-# set(errMgs 
-#   "You cannot wrap an Eigen vector as a pressio::containers::MultiVector<>" 
-#   "You cannot wrap an Eigen sparse matrix as a pressio::containers::MultiVector<>" 
-#   "You cannot wrap an Epetra vector as a pressio::containers::MultiVector<>"
-#   "You cannot wrap a Tpetra vector as a pressio::containers::MultiVector<>"
-#   "You cannot wrap a Tpetra block vector as a pressio::containers::MultiVector<>"
-#   "You cannot wrap a Kokkos 1d view as a pressio::containers::MultiVector<>"
-#   )
+set(errMgs 
+  "You cannot wrap an Eigen vector as a pressio::containers::MultiVector<>" 
+  "You cannot wrap an Eigen sparse matrix as a pressio::containers::MultiVector<>" 
+  "You cannot wrap an Epetra vector as a pressio::containers::MultiVector<>"
+  "You cannot wrap a Tpetra vector as a pressio::containers::MultiVector<>"
+  "You cannot wrap a Tpetra block vector as a pressio::containers::MultiVector<>"
+  "You cannot wrap a Kokkos 1d view as a pressio::containers::MultiVector<>"
+  )
 
+list(GET errMgs 0 err)
+add_serial_test_to_check_build_failure(
+  try_wrap_eig_vec_with_multivector ${main} ${err} " " DO_EIGEN_DENSE)
 
-# list(GET errMgs 0 err)
-# add_serial_test_to_check_build_failure(
-#   try_wrap_eig_vec_with_multivector ${main} ${err} " " DO_EIGEN_DENSE)
+list(GET errMgs 1 err)
+add_serial_test_to_check_build_failure(
+  try_wrap_eig_spmat_with_multivector ${main} ${err} " " DO_EIGEN_SPARSE)
 
-# list(GET errMgs 1 err)
-# add_serial_test_to_check_build_failure(
-#   try_wrap_eig_spmat_with_multivector ${main} ${err} " " DO_EIGEN_SPARSE)
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+  list(GET errMgs 2 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_epetra_vec_with_multivector ${main} ${err} " " DO_EPETRA_V)
 
-# if(PRESSIO_ENABLE_TPL_TRILINOS)
-#   list(GET errMgs 2 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_epetra_vec_with_multivector ${main} ${err} " " DO_EPETRA_V)
+  list(GET errMgs 3 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_tpetra_vec_with_multivector ${main} ${err} " " DO_TPETRA_V)
 
-#   list(GET errMgs 3 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_tpetra_vec_with_multivector ${main} ${err} " " DO_TPETRA_V)
+  list(GET errMgs 4 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_tpetra_block_vec_with_multivector ${main} ${err} " " DO_TPETRA_BLOCK_V)
+endif()
 
-#   list(GET errMgs 4 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_tpetra_block_vec_with_multivector ${main} ${err} " " DO_TPETRA_BLOCK_V)
-# endif()
-
-# if(PRESSIO_ENABLE_TPL_KOKKOS)
-#   list(GET errMgs 5 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_Kokkos_vec_with_multivector ${main} ${err} " " DO_KOKKOS_V)
-# endif()
-
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+  list(GET errMgs 5 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_Kokkos_vec_with_multivector ${main} ${err} " " DO_KOKKOS_V)
+endif()
 
 
 
-# ########################
-# ### for matrix ###
-# ########################
 
-# set(main main_for_matrix)
+########################
+### for matrix ###
+########################
 
-# set(errMgs 
-#   "You cannot wrap an Eigen vector as a pressio::containers::DenseMatrix<>" 
-#   "You cannot wrap an Eigen sparse matrix as a pressio::containers::DenseMatrix<>" 
-#   "You cannot wrap an Epetra vector as a pressio::containers::DenseMatrix<>"
-#   "You cannot wrap a Tpetra vector as a pressio::containers::DenseMatrix<>"
-#   "You cannot wrap a Tpetra block vector as a pressio::containers::DenseMatrix<>"
-#   "You cannot wrap a Kokkos 1d view as a pressio::containers::DenseMatrix<>"
-#   )
+set(main main_for_matrix)
 
-# list(GET errMgs 0 err)
-# add_serial_test_to_check_build_failure(
-#   try_wrap_eig_vec_with_matrix ${main} ${err} " " DO_EIGEN_DENSE)
+set(errMgs 
+  "You cannot wrap an Eigen vector as a pressio::containers::DenseMatrix<>" 
+  "You cannot wrap an Eigen sparse matrix as a pressio::containers::DenseMatrix<>" 
+  "You cannot wrap an Epetra vector as a pressio::containers::DenseMatrix<>"
+  "You cannot wrap a Tpetra vector as a pressio::containers::DenseMatrix<>"
+  "You cannot wrap a Tpetra block vector as a pressio::containers::DenseMatrix<>"
+  "You cannot wrap a Kokkos 1d view as a pressio::containers::DenseMatrix<>"
+  )
 
-# list(GET errMgs 1 err)
-# add_serial_test_to_check_build_failure(
-#   try_wrap_eig_spmat_with_matrix ${main} ${err} " " DO_EIGEN_SPARSE)
+list(GET errMgs 0 err)
+add_serial_test_to_check_build_failure(
+  try_wrap_eig_vec_with_matrix ${main} ${err} " " DO_EIGEN_DENSE)
 
-# if(PRESSIO_ENABLE_TPL_TRILINOS)
-#   list(GET errMgs 2 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_epetra_vec_with_matrix ${main} ${err} " " DO_EPETRA_V)
+list(GET errMgs 1 err)
+add_serial_test_to_check_build_failure(
+  try_wrap_eig_spmat_with_matrix ${main} ${err} " " DO_EIGEN_SPARSE)
 
-#   list(GET errMgs 4 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_tpetra_vec_with_matrix ${main} ${err} " " DO_TPETRA_V)
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+  list(GET errMgs 2 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_epetra_vec_with_matrix ${main} ${err} " " DO_EPETRA_V)
 
-#   list(GET errMgs 5 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_tpetra_block_vec_with_matrix ${main} ${err} " " DO_TPETRA_BLOCK_V)
-# endif()
+  list(GET errMgs 3 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_tpetra_vec_with_matrix ${main} ${err} " " DO_TPETRA_V)
 
-# if(PRESSIO_ENABLE_TPL_KOKKOS)
-#   list(GET errMgs 3 err)
-#   add_serial_test_to_check_build_failure(
-#     try_wrap_Kokkos_vec_with_matrix ${main} ${err} " " DO_KOKKOS_V)
-# endif()
+  list(GET errMgs 4 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_tpetra_block_vec_with_matrix ${main} ${err} " " DO_TPETRA_BLOCK_V)
+endif()
+
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+  list(GET errMgs 5 err)
+  add_serial_test_to_check_build_failure(
+    try_wrap_Kokkos_vec_with_matrix ${main} ${err} " " DO_KOKKOS_V)
+endif()

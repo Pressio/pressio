@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_native_arbitrary_matrix_meta.hpp
+// containers_native_arbitrary_dense_matrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -77,6 +77,10 @@ struct is_admissible_as_dense_matrix_arbitrary : std::false_type
   static_assert
   (!containers::predicates::is_vector_eigen<T>::value,
    "You cannot wrap an Eigen vector as a pressio::containers::DenseMatrix<>.");
+
+  static_assert
+  (!containers::predicates::is_sparse_matrix_eigen<T>::value,
+   "You cannot wrap an Eigen sparse matrix as a pressio::containers::DenseMatrix<>.");
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert

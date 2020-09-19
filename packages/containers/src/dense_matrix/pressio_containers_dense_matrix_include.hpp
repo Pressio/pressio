@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_containers_matrix_include.hpp
+// pressio_containers_dense_matrix_include.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_MATRIX_DENSE_INCLUDE_HPP_
-#define CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_MATRIX_DENSE_INCLUDE_HPP_
+#ifndef CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
+#define CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
 
 // predicates for wrappers
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
@@ -82,4 +82,4 @@
 #endif
 #include "./concrete/containers_matrix_dense_arbitrary.hpp"
 
-#endif  // CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_MATRIX_DENSE_INCLUDE_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
