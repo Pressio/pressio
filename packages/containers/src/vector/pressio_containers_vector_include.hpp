@@ -53,7 +53,7 @@
 
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_eigen.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_detection_predicates/containers_is_dense_vector_wrapper_teuchos.hpp"
+#include "./wrapper_detection_predicates/containers_is_vector_wrapper_teuchos.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_epetra.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra.hpp"

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_dense_vector_wrapper_teuchos.hpp
+// containers_is_vector_wrapper_teuchos.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,16 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_VECTOR_WRAPPER_TEUCHOS_HPP_
-#define CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_VECTOR_WRAPPER_TEUCHOS_HPP_
+#ifndef CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_TEUCHOS_HPP_
+#define CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_TEUCHOS_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dense_vector_wrapper_teuchos : std::false_type {};
+struct is_vector_wrapper_teuchos : std::false_type {};
 
 template <typename T>
-struct is_dense_vector_wrapper_teuchos<
+struct is_vector_wrapper_teuchos<
   T,
   ::pressio::mpl::enable_if_t<
     containers::details::traits<T>::is_vector &&
@@ -65,4 +65,4 @@ struct is_dense_vector_wrapper_teuchos<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_DENSE_VECTOR_WRAPPER_TEUCHOS_HPP_
+#endif  // CONTAINERS_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_TEUCHOS_HPP_

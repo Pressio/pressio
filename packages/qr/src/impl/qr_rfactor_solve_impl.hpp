@@ -76,7 +76,7 @@ solve(const vector_type & rhs,
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_vector_wrapper_teuchos<vector_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and
   ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
 >
 solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
@@ -110,7 +110,7 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 //   typename vector_type,
 //   typename R_type,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_dense_vector_wrapper_teuchos<vector_type>::value and
+//     ::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and
 //     ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
 //     > * = nullptr
 //   >
