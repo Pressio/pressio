@@ -52,8 +52,7 @@
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************
-an arbitrary matrix is one
-for which a user must provide ops
+an arbitrary dense matrix 
 *******************************/
 template <typename wrapped_type>
 struct traits<

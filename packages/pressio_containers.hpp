@@ -117,7 +117,6 @@ headers are included in (and classes found) in the proper order.
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "containers/src/predicates/native_types_detection/containers_native_epetra_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_teuchos_dense_matrix.hpp"
-#include "containers/src/predicates/native_types_detection/containers_native_tpetra_dense_matrix.hpp"
 #endif
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_sparse_matrix.hpp"

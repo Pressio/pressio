@@ -59,8 +59,11 @@ struct is_admissible_as_multi_vector_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     // kokkos MV is a view and has rank=2
-    Kokkos::is_view<T>::value &&
-    T::traits::rank==2
+    Kokkos::is_view<T>::value and
+    T::traits::rank==2 and
+    std::is_same<
+      typename T::traits::array_layout, Kokkos::LayoutLeft
+      >::value
     >
   > : std::true_type{};
 

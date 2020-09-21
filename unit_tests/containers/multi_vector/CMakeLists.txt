@@ -6,10 +6,9 @@ add_serial_utest(${exeRootName}_serial "${SRC1}")
 
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
-  add_serial_utest_kokkos(${exeRootName}_sharedmem_kokkos_class
-    ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_sharedmem_kokkos_class.cc )
+  add_serial_utest_kokkos(${exeRootName}_sharedmem_kokkos_mv
+    ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_sharedmem_kokkos_mv.cc )
 endif()
-
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   set(SRC1
