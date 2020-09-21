@@ -52,11 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class DenseMatrix<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_dense_matrix_teuchos<
-		 wrapped_type>::value>
-	     >
+class DenseMatrix<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_dense_matrix_teuchos<wrapped_type>::value
+    >
+  >
   : public DenseMatrixSharedMemBase< DenseMatrix<wrapped_type> >
 {
 

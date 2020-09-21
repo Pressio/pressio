@@ -173,7 +173,7 @@ template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_epetra<wrapped_type>::value
+    containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value
     >
   >
   : public containers_shared_traits<DenseMatrix<wrapped_type>,

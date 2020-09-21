@@ -56,11 +56,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_dynamic_vector_eigen<wrapped_type>::value
-	       >
-	     >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_dynamic_vector_eigen<wrapped_type>::value
+    >
+  >
   : public VectorSharedMemBase< Vector<wrapped_type> >
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   , public ROL::Vector< typename wrapped_type::Scalar>
@@ -78,23 +79,28 @@ class Vector<wrapped_type,
 public:
   Vector() = default;
 
+  explicit Vector(const wrap_t & src) : data_(src){}
+
+  Vector(wrap_t && src) : data_(std::move(src)){}
+
   explicit Vector(ord_t insize){
     data_.resize(insize);
     data_.setConstant( ::pressio::utils::constants<sc_t>::zero() );
   }
 
-  explicit Vector(const wrap_t & src) : data_(src){}
-
-  Vector(wrap_t && src) : data_(std::move(src)){}
-
   // copy cnstr
   Vector(Vector const & other) = default;
   // copy assignment
   Vector & operator=(const Vector & other) = default;
+
+  /* move semantics, see:
+     https://gitlab.com/libeigen/eigen/-/issues/2000
+  */
   // move cnstr
   Vector(Vector && o) = default;
   // move assignment
   Vector & operator=(Vector && other) = default;
+
   // destructor
   ~Vector() = default;
 

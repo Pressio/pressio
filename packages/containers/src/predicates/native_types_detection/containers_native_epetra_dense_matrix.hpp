@@ -56,11 +56,11 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dense_matrix_epetra
+struct is_admissible_as_dense_matrix_epetra
   : std::false_type {};
 
 template<typename T>
-struct is_dense_matrix_epetra<T,
+struct is_admissible_as_dense_matrix_epetra<T,
     typename std::enable_if<
       std::is_same<T, Epetra_MultiVector>::value
       >::type >

@@ -108,7 +108,7 @@ template <typename T>
 struct is_admissible_as_multi_vector_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !containers::predicates::is_multi_vector_eigen<T>::value and
+    !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value and
     !containers::predicates::is_sparse_matrix_eigen<T>::value and
     !containers::predicates::is_vector_eigen<T>::value
     //
@@ -123,7 +123,7 @@ struct is_admissible_as_multi_vector_arbitrary<
     and !containers::predicates::is_vector_tpetra<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    and !containers::predicates::is_multi_vector_kokkos<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
     and !containers::predicates::is_vector_kokkos<T>::value
 #endif
     >

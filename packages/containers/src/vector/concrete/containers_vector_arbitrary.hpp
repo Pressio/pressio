@@ -56,8 +56,6 @@ class Vector<
   wrapped_type,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
-    // details::traits<Vector<wrapped_type>>::wrapped_vector_identifier
-    // == details::WrappedVectorIdentifier::Arbitrary
     >
   >
   : public ContainerBase< Vector<wrapped_type>>

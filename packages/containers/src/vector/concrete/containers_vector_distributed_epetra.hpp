@@ -52,13 +52,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     typename
-	     std::enable_if<
-	       ::pressio::containers::predicates::is_vector_epetra<
-		 wrapped_type>::value
-	       >::type
-	     >
+class Vector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_epetra<
+      wrapped_type>::value
+    >
+  >
   : public VectorDistributedBase< Vector<wrapped_type> >
 {
 

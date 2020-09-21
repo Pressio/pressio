@@ -52,10 +52,10 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dynamic_multi_vector_eigen : std::false_type {};
+struct is_admissible_as_dynamic_multi_vector_eigen : std::false_type {};
 
 template <typename T>
-struct is_dynamic_multi_vector_eigen<
+struct is_admissible_as_dynamic_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_dense_dynamic_matrix_eigen<T>::value and
@@ -66,10 +66,10 @@ struct is_dynamic_multi_vector_eigen<
 
 
 template <typename T, typename enable = void>
-struct is_static_multi_vector_eigen : std::false_type {};
+struct is_admissible_as_static_multi_vector_eigen : std::false_type {};
 
 template <typename T>
-struct is_static_multi_vector_eigen<
+struct is_admissible_as_static_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_dense_static_matrix_eigen<T>::value and
@@ -80,14 +80,14 @@ struct is_static_multi_vector_eigen<
 
 
 template <typename T, typename enable = void>
-struct is_multi_vector_eigen : std::false_type {};
+struct is_admissible_as_multi_vector_eigen : std::false_type {};
 
 template <typename T>
-struct is_multi_vector_eigen<
+struct is_admissible_as_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
-    is_dynamic_multi_vector_eigen<T>::value or
-    is_static_multi_vector_eigen<T>::value
+    is_admissible_as_dynamic_multi_vector_eigen<T>::value or
+    is_admissible_as_static_multi_vector_eigen<T>::value
     >
   >
 {};

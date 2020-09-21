@@ -110,13 +110,13 @@ struct is_admissible_as_dense_matrix_arbitrary<
     !containers::predicates::is_dense_matrix_eigen<T>::value and
     !containers::predicates::is_sparse_matrix_eigen<T>::value and
     !containers::predicates::is_vector_eigen<T>::value and
-    !containers::predicates::is_multi_vector_eigen<T>::value
+    !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
     //
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !containers::predicates::is_array_pybind<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-    and !containers::predicates::is_dense_matrix_epetra<T>::value
+    and !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value
     and !containers::predicates::is_multi_vector_epetra<T>::value
     and !containers::predicates::is_vector_epetra<T>::value
     //
@@ -131,7 +131,7 @@ struct is_admissible_as_dense_matrix_arbitrary<
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and !containers::predicates::is_dense_matrix_kokkos<T>::value
-    and !containers::predicates::is_multi_vector_kokkos<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
     and !containers::predicates::is_vector_kokkos<T>::value
 #endif
     >

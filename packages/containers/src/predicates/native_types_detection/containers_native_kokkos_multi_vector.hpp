@@ -52,10 +52,10 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_multi_vector_kokkos : std::false_type {};
+struct is_admissible_as_multi_vector_kokkos : std::false_type {};
 
 template <typename T>
-struct is_multi_vector_kokkos<
+struct is_admissible_as_multi_vector_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     // kokkos MV is a view and has rank=2

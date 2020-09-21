@@ -52,11 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_static_vector_eigen<wrapped_type>::value
-	       >
-	     >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_static_vector_eigen<wrapped_type>::value
+    >
+  >
   : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
@@ -71,18 +72,24 @@ class Vector<wrapped_type,
 public:
   Vector() = default;
 
-  explicit Vector(const sc_t * src) : data_(src){}
   explicit Vector(const wrap_t & src) : data_(src){}
+
   Vector(wrap_t && src) : data_(std::move(src)){}
 
   // copy cnstr
   Vector(Vector const & other) = default;
   // copy assignment
   Vector & operator=(Vector const & other) = default;
+
+  /* move semantics for static vectors do not invalidate
+     the moved-from object, they just copy the data, see:
+     https://gitlab.com/libeigen/eigen/-/issues/2000
+  */
   // move cnstr
   Vector(Vector && other) = default;
   // move assignment
   Vector & operator=(Vector && other) = default;
+
   // destructor
   ~Vector() = default;
 

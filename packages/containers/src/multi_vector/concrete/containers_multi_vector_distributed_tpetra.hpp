@@ -54,13 +54,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class MultiVector<wrapped_type,
-     typename
-     std::enable_if<
-       ::pressio::containers::predicates::is_multi_vector_tpetra<
-	    wrapped_type>::value
-       >::type
-     >
+class MultiVector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_multi_vector_tpetra<
+      wrapped_type>::value
+    >
+  >
   : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 

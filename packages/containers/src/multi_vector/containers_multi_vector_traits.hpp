@@ -242,7 +242,7 @@ template<typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      ::pressio::containers::predicates::is_dynamic_multi_vector_eigen<wrapped_type>::value
+      ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -277,7 +277,7 @@ template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::predicates::is_multi_vector_kokkos<wrapped_type>::value
+      containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<

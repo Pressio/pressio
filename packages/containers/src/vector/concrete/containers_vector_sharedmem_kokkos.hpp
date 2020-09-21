@@ -52,11 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_vector_kokkos<wrapped_type>::value
-	       >
-	     >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_vector_kokkos<wrapped_type>::value
+    >
+  >
   : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
@@ -109,7 +110,7 @@ public:
   //   Kokkos::deep_copy(data_, other.data_);
   // }
 
-  Vector & operator=(Vector && other) = default;
+  Vector & operator=(Vector && other)= default;
   //   assert(this->extent(0) == other.extent(0));
   //   Kokkos::deep_copy(data_, *other.data());
   //   return *this;

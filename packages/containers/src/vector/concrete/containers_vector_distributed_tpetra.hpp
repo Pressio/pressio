@@ -54,13 +54,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     typename
-	     std::enable_if<
-	       ::pressio::containers::predicates::is_vector_tpetra<
-		 wrapped_type>::value
-	       >::type
-	     >
+class Vector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_tpetra<
+      wrapped_type>::value
+    >
+  >
   : public VectorDistributedBase< Vector<wrapped_type> >
 {
 
@@ -85,8 +85,9 @@ public:
   explicit Vector(Teuchos::RCP<const map_t> mapO)
     : data_(mapO){}
 
-  // here we do not default the copy and move because if we did that,
-  // it would use the tpetra copy/move which have view semantics
+  // here we do not default the copy constr and assing because
+  // if we did, it would use the tpetra copy/move which
+  // have view semantics
   // which is not what we want here (for the time being)
 
   // copy cnstr

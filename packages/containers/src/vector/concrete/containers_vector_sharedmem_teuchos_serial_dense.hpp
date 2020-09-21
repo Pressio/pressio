@@ -52,11 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_dense_vector_teuchos<wrapped_type>::value
-	       >
-	     >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_dense_vector_teuchos<wrapped_type>::value
+    >
+  >
   : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 

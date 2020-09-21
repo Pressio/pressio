@@ -75,7 +75,7 @@ struct is_admissible_as_vector_arbitrary : std::false_type
 {
   static_assert
   (!containers::predicates::is_dense_matrix_eigen<T>::value and
-   !containers::predicates::is_dynamic_multi_vector_eigen<T>::value,
+   !containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value,
    "You cannot wrap an Eigen dense matrix as a pressio::containers::Vector<>.");
 
   static_assert
@@ -85,14 +85,14 @@ struct is_admissible_as_vector_arbitrary : std::false_type
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
   static_assert
   (!containers::predicates::is_dense_matrix_kokkos<T>::value and
-   !containers::predicates::is_multi_vector_kokkos<T>::value,
+   !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value,
    "You cannot wrap a Kokkos 2d view as a pressio::containers::Vector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert
   (!containers::predicates::is_multi_vector_epetra<T>::value and
-   !containers::predicates::is_dense_matrix_epetra<T>::value,
+   !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value,
    "You cannot wrap an Epetra multivector as a pressio::containers::Vector<>.");
 
   static_assert
@@ -117,19 +117,19 @@ struct is_admissible_as_vector_arbitrary<
     !containers::predicates::is_vector_eigen<T>::value and
     !containers::predicates::is_dense_matrix_eigen<T>::value and
     !containers::predicates::is_sparse_matrix_eigen<T>::value and
-    !containers::predicates::is_multi_vector_eigen<T>::value
+    !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !containers::predicates::is_array_pybind<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
     and !containers::predicates::is_vector_kokkos<T>::value
     and !containers::predicates::is_dense_matrix_kokkos<T>::value
-    and !containers::predicates::is_multi_vector_kokkos<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and !containers::predicates::is_vector_epetra<T>::value
     and !containers::predicates::is_multi_vector_epetra<T>::value
-    and !containers::predicates::is_dense_matrix_epetra<T>::value
+    and !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value
     //
     and !containers::predicates::is_dense_vector_teuchos<T>::value
     and !containers::predicates::is_dense_matrix_teuchos<T>::value

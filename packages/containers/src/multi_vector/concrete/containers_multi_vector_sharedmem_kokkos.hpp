@@ -55,7 +55,7 @@ template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_multi_vector_kokkos<wrapped_type>::value
+    containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
     >
   >
   : public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
