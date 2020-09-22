@@ -31,7 +31,8 @@ bool test1()
   linear_solver_t linSolver;
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
+    problem_t, 
+    //pressio::solvers::nonlinear::DefaultUpdate,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
 
@@ -67,9 +68,12 @@ bool test2()
   linear_solver_t linSolver;
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::armijoUpdate,
+    problem_t, 
+    //pressio::solvers::nonlinear::armijoUpdate,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
+
+  GNSolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
 
@@ -103,7 +107,8 @@ bool test3()
   linear_solver_t linSolver;
 
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
+    problem_t, 
+    //pressio::solvers::nonlinear::DefaultUpdate,
     linear_solver_t>;
   gn_t GNSolver(problem, x, linSolver);
 

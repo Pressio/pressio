@@ -95,7 +95,8 @@ public:
     myImpl_.applyRTranspose(vecIn, y);
   }
 
-  void computeThinOutOfPlace(matrix_t & A){
+  void computeThinOutOfPlace(const matrix_t & A)
+  {
     auto rows = A.extent(0);
     auto cols = A.numVectors();
     auto & ArowMap = A.data()->Map();

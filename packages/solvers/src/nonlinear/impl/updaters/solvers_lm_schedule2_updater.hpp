@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_lm_gain_factor.hpp
+// solvers_lm_schedule2_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,49 +46,71 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
+
+#include "solvers_lm_gain_factor.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename scalar_t, typename state_t>
-class LMGainFactor
+template<typename state_t>
+class LMSchedule2Updater : public BaseUpdater
 {
+  using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+
 private:
-  state_t cDiagH_; // = h * diag(J^T J)
-  state_t trialState_;
+  LMGainFactor<state_t> gainFactorEval_;
+
+  using cnst		   = pressio::utils::constants<scalar_t>;
+  const scalar_t rho1_	   = static_cast<scalar_t>(0.2);
+  const scalar_t rho2_     = static_cast<scalar_t>(0.8);
+  const scalar_t beta_	   = cnst::two();
+  const scalar_t gammaInv_ = cnst::one()/cnst::three();
+  const scalar_t tau_	   = cnst::one();
 
 public:
-  LMGainFactor(const state_t & state) : cDiagH_(state), trialState_(state){}
+  LMSchedule2Updater() = delete;
 
-  template<typename system_t, typename hess_grad_correc_t>
-  scalar_t compute(const system_t & system,
+  LMSchedule2Updater(const state_t & state)
+    : gainFactorEval_(state){}
+
+  void resetForNewCall() final
+  {
+    gainFactorEval_.resetForNewCall();
+  }
+
+  template<typename system_t, typename solver_mixin_t>
+  void updateState(const system_t & sys,
 		   state_t & state,
-		   const scalar_t & mu,
-		   hess_grad_correc_t & correctionObj)
+		   solver_mixin_t & solver)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto ten  = static_cast<scalar_t>(10);
+    constexpr auto seven  = static_cast<scalar_t>(7);
+    constexpr auto negSeven  = ::pressio::utils::constants<scalar_t>::negOne()*seven;
+    const auto tenToSev  = std::pow(ten, seven);
+    const auto tenToNegSev  = std::pow(ten, negSeven);
 
-    const auto & correction = correctionObj.getCorrection();
-    const auto & g	    = correctionObj.getGradient();
-    const auto & H = correctionObj.getHessianBeforeLMDiagonalScaling();
+    const auto mu	    = solver.getLMDampParam();
+    const auto & correction = solver.getCorrectionCRef();
 
-    // denom
-    for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
-    const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
-    const auto den2 = ::pressio::ops::dot(correction, g);
-    auto denom = (one/two)*(mu*den1 + den2);
+    // *** compute gain factor (rho) ***
+    const auto rho = gainFactorEval_.compute(sys, state, mu, solver);
 
-    // numerator
-    auto norm = correctionObj.residualNormCurrentCorrectionStep();
-    auto r2Old = norm*norm;
-    ::pressio::ops::do_update(trialState_, state, one, correction, one);
-    correctionObj.residualNorm(system, trialState_, norm);
+    // *** update mu ***
+    if (rho < rho1_){
+      solver.setLMDampParam(std::min(mu*beta_, tenToSev) );
+    }
 
-    return (r2Old - norm*norm) / denom;
+    if (rho > rho2_){
+      solver.setLMDampParam(std::max( tenToNegSev, mu*gammaInv_) );
+    }
+
+    if (rho > 0){
+      ::pressio::ops::do_update(state, one, correction, one);
+    }
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_GAIN_FACTOR_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_

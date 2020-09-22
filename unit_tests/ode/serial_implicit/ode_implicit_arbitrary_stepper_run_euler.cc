@@ -232,8 +232,7 @@ struct Bdf1Solver
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
   // using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
   app_t appObj_ = {};
@@ -278,8 +277,7 @@ struct CustomBdf1Solver
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
 
   app_t appObj_		= {};
   state_t y_		= {};

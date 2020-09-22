@@ -59,9 +59,7 @@ int main(int argc, char *argv[]){
 
   // GaussNewton solver with normal equations
   using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
+    lspg_stepper_t, linear_solver_t>;
   nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(10);

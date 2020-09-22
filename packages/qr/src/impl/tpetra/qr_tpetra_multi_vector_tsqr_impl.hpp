@@ -69,12 +69,14 @@ public:
   TpetraMVTSQR() = default;
   ~TpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & A) 
+  {
     auto nVecs = A.numVectors();
     auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(*A.data(), *Qmat_->data(), *localR_.get(), false);
+    tsqrAdaptor_.factorExplicit(*const_cast<matrix_t &>(A).data(), 
+      *Qmat_->data(), *localR_.get(), false);
 
     //::pressio::utils::io::print_stdout(*localR_.get());
 // #ifdef PRESSIO_ENABLE_DEBUG_PRINT

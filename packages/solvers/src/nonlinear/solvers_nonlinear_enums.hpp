@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson.hpp
+// solvers_nonlinear_enums.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,29 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-
-#include "./impl/solvers_nonlinear_compose.hpp"
+#ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, Args...>;
+enum class stop
+  {
+   whenCorrectionAbsoluteNormBelowTolerance, // this is the default
+   whenCorrectionRelativeNormBelowTolerance,
+   whenResidualAbsoluteNormBelowTolerance,
+   whenResidualRelativeNormBelowTolerance,
+   whenGradientAbsoluteNormBelowTolerance,
+   whenGradientRelativeNormBelowTolerance,
+   afterMaxIters
+  };
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
+enum class update
+  {
+   standard, // default
+   armijo,
+   LMSchedule1,
+   LMSchedule2
+  };
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_

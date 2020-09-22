@@ -72,7 +72,7 @@ struct GalerkinBDF1WithResidualApi
 
     // nonlinear system
     using nonlinear_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-      stepper_t, pressio::solvers::nonlinear::DefaultUpdate,linear_solver_t>;
+      stepper_t, linear_solver_t>;
     nonlinear_solver_t solver(stepperObj, yROM_, linSolverObj);
     solver.setTolerance(1e-12);
     solver.setMaxIterations(4);

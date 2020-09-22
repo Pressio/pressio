@@ -75,7 +75,7 @@ public:
   QRHouseholderDenseEigenMatrixWrapper() = default;
   ~QRHouseholderDenseEigenMatrixWrapper() = default;
 
-  void computeThinOutOfPlace(matrix_type & A){
+  void computeThinOutOfPlace(const matrix_type & A){
     auto rows = A.data()->rows();
     auto cols = A.data()->cols();
     fct_ = std::make_shared<factorizer_t>(*A.data());

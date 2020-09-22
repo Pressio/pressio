@@ -67,7 +67,10 @@ public:
   ModGramSchmidtMVEpetra() = default;
   ~ModGramSchmidtMVEpetra() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & Ain) 
+  {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto nVecs = A.numVectors();
     auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
@@ -84,9 +87,9 @@ public:
       qk->Update( rkkInv, *ak, zero_ );
 
       for (auto j=k+1; j<A.numVectors(); j++){
-	auto & aj = (*A.data())(j);
-	qk->Dot(*aj, &localR_(k,j));
-	aj->Update(-localR_(k,j), *qk, one_);
+	     auto & aj = (*A.data())(j);
+	     qk->Dot(*aj, &localR_(k,j));
+	     aj->Update(-localR_(k,j), *qk, one_);
       }
     }
   }

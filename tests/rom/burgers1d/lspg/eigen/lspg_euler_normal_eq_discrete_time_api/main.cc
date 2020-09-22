@@ -69,9 +69,7 @@ struct EulerLSPGWithResidualApi
 
     // GaussNewton solver with normal equations
     using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-      lspg_stepper_t,
-      pressio::solvers::nonlinear::DefaultUpdate,
-      linear_solver_t>;
+      lspg_stepper_t, linear_solver_t>;
     nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
@@ -148,9 +146,7 @@ struct EulerLSPGWithVelocityApi
 
     // GaussNewton solver with normal equations
     using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-      lspg_stepper_t,
-      pressio::solvers::nonlinear::DefaultUpdate,
-      linear_solver_t>;
+      lspg_stepper_t, linear_solver_t>;
     nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

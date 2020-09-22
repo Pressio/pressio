@@ -265,9 +265,7 @@ struct EulerLSPGWithVelocityApi
 
     // GaussNewton solver
     using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t, opsGN_t>;
+    lspg_stepper_t, linear_solver_t, opsGN_t>;
     gn_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

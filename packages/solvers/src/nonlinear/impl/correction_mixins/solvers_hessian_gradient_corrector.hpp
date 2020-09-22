@@ -52,12 +52,16 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_t, typename lin_solver_t, ::pressio::Norm normType
+  typename T, typename state_type, typename lin_solver_t, ::pressio::Norm normType
   >
 class HessianGradientCorrector : public T
 {
-  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+public:
+  using state_t = state_type;
+  static constexpr auto normType_ = normType;
+  using sc_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
 
+private:
   state_t correction_ = {};
 
   typename std::conditional<
@@ -69,8 +73,6 @@ class HessianGradientCorrector : public T
   sc_t correctionNormCurrCorrStep_ = {};
 
 public:
-  static constexpr auto normType_ = normType;
-
   HessianGradientCorrector() = delete;
 
   template <typename system_t, typename ...Args>
@@ -81,7 +83,10 @@ public:
     : T(system, state, std::forward<Args>(args)...),
       correction_(state),
       solverObj_(solverObj)
-  {}
+  {
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    ::pressio::ops::fill(correction_, zero);
+  }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // overload used for pressio4py since the state passed to the constructor
@@ -98,7 +103,10 @@ public:
 	std::forward<Args>(args)...),
       correction_(state),
       solverObj_(solverObj)
-  {}
+  {
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    ::pressio::ops::fill(correction_, zero);
+  }
 #endif
 
 public:
@@ -111,8 +119,8 @@ public:
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
-    auto & H = T::getHessian();
-    auto & g = T::getGradient();
+    const auto & H = T::getHessianCRef();
+    const auto & g = T::getGradientCRef();
     this->doLinearSolve(H, g);
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
@@ -125,7 +133,7 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrection() const{
+  const state_t & getCorrectionCRef() const{
     return correction_;
   }
 

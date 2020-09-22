@@ -46,34 +46,30 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_DEFAULT_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_DEFAULT_UPDATER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename scalar_t, typename state_t, typename T>
-class DefaultUpdater : public T
+class DefaultUpdater : public BaseUpdater
 {
 public:
-  DefaultUpdater() = delete;
+  DefaultUpdater() = default;
 
-  template <typename ...Args>
-  DefaultUpdater(Args &&... args) : T(std::forward<Args>(args)...){}
+  void resetForNewCall() final{}
 
-  void resetForNewCall(){
-    T::resetForNewCall();
-  }
-
-  template<typename system_t>
-  void updateState(const system_t & sys, state_t & state)
+  template<typename system_t, typename state_t, typename solver_mixin_t>
+  void updateState(const system_t & sys,
+		   state_t & state,
+		   solver_mixin_t & solver)
   {
-    using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+    using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
     // default update: y = y + alpha*correction
-    const auto & correction = T::getCorrection();
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+    const auto & correction = solver.getCorrectionCRef();
+    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::do_update(state, one, correction, one);
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_DEFAULT_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_

@@ -65,7 +65,7 @@ TEST(containers_vector_sharedmem_kokkos, CopyAssign)
 //   w_t a("a",3);
 //   ASSERT_EQ( a.data()->use_count(), 1 );
 //   w_t b(std::move(a));
-//   ASSERT_TRUE( a.data() == nullptr );
+//   // ASSERT_TRUE( a.data() == nullptr );
 //   ASSERT_EQ( a.data()->use_count(), 0 );
 //   ASSERT_TRUE( a.data()->data() == b.data()->data() );
 // }

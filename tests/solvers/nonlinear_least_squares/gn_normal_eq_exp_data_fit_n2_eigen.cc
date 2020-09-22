@@ -72,9 +72,9 @@ int main()
 
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate, linear_solver_t>;
+    problem_t, /*pressio::solvers::nonlinear::DefaultUpdate,*/ 
+    linear_solver_t>;
   solver GNSolver(problem, x, linSolver);
-
 
   x[0] = 2.0; x[1] = 0.25;
   testC1(sentinel, problem, x, GNSolver);
@@ -91,7 +91,6 @@ int main()
   std::cout << sentinel << std::endl;
 
   std::cout << std::setprecision(14) << *x.data() << std::endl;
-
 }
 
 

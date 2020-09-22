@@ -77,24 +77,25 @@ public:
   >
   LMHessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
     : HGOpHGApi_(system, state),
-      lmH_(HGOpHGApi_.getHessian())
+      lmH_(HGOpHGApi_.getHessianCRef())
   {}
 
 public:
-  h_t & getHessian(){ return lmH_; }
-  g_t & getGradient(){ return HGOpHGApi_.getGradient(); }
-  const h_t & getHessian() const { return lmH_; }
-  const g_t & getGradient() const{ return HGOpHGApi_.getGradient(); }
-
-  const h_t & getHessianBeforeLMDiagonalScaling() const {
-    return HGOpHGApi_.getHessian();
-  }
-  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
-  sc_t getLMDampParam() const{ return dampParam_; }
-
   void resetForNewCall(){
     dampParam_ = pressio::utils::constants<sc_t>::one();
   }
+
+  h_t & getHessianRef()			{ return lmH_; }
+  g_t & getGradientRef()		{ return HGOpHGApi_.getGradientRef(); }
+  const h_t & getHessianCRef() const	{ return lmH_; }
+  const g_t & getGradientCRef() const	{ return HGOpHGApi_.getGradientCRef(); }
+
+  const h_t & getHessianCRefBeforeLMDiagonalScaling() const {
+    return HGOpHGApi_.getHessianCRef();
+  }
+
+  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
+  sc_t getLMDampParam() const{ return dampParam_; }
 
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, const state_t & state,
@@ -140,7 +141,7 @@ public:
 private:
   void computeLMHessian(){
     // compute lmH = H + mu*diag(H)
-    const auto & H = HGOpHGApi_.getHessian();
+    const auto & H = HGOpHGApi_.getHessianCRef();
     ::pressio::ops::deep_copy(lmH_, H);
 
     const auto diagH   = ::pressio::containers::diag(H);
@@ -186,7 +187,7 @@ public:
   >
   LMHessianGradientOperatorsRJApi(const system_t & system, const state_t & state)
     : HGOpRJApi_(system, state),
-      lmH_(HGOpRJApi_.getHessian()){}
+      lmH_(HGOpRJApi_.getHessianCRef()){}
 
   template <
    typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
@@ -201,17 +202,18 @@ public:
 				  const state_t & state,
 				  const ud_ops_t * udOps)
     : HGOpRJApi_(system, state, udOps),
-      lmH_(HGOpRJApi_.getHessian()){}
+      lmH_(HGOpRJApi_.getHessianCRef()){}
 
 public:
-  h_t & getHessian(){ return lmH_; }
-  g_t & getGradient(){ return HGOpRJApi_.getGradient(); }
-  const h_t & getHessian() const { return lmH_; }
-  const g_t & getGradient() const{ return HGOpRJApi_.getGradient(); }
+  h_t & getHessianRef()			{ return lmH_; }
+  g_t & getGradientRef()		{ return HGOpRJApi_.getGradientRef(); }
+  const h_t & getHessianCRef() const	{ return lmH_; }
+  const g_t & getGradientCRef() const	{ return HGOpRJApi_.getGradientCRef(); }
 
-  const h_t & getHessianBeforeLMDiagonalScaling() const {
-    return HGOpRJApi_.getHessian();
+  const h_t & getHessianCRefBeforeLMDiagonalScaling() const {
+    return HGOpRJApi_.getHessianCRef();
   }
+
   void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
   sc_t getLMDampParam() const{ return dampParam_; }
 
@@ -233,7 +235,7 @@ public:
 
     if(recomputeSystemJacobian){
       // compute lmH = H + mu*diag(H)
-      const auto & H = HGOpRJApi_.getHessian();
+      const auto & H = HGOpRJApi_.getHessianCRef();
       ::pressio::ops::deep_copy(lmH_, H);
 
       const auto diagH   = ::pressio::containers::diag(H);

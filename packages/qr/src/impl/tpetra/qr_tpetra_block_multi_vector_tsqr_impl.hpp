@@ -74,7 +74,10 @@ public:
   TpetraBlockMVTSQR() = default;
   ~TpetraBlockMVTSQR() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & Ain)
+  {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto nVecs	   = A.numVectors();
     auto blockSize = A.data()->getBlockSize();
     createLocalRIfNeeded(nVecs);

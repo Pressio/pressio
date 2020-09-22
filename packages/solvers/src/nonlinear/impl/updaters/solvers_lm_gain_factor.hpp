@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson.hpp
+// solvers_lm_gain_factor.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,63 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+template<typename state_t>
+class LMGainFactor
+{
+  using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, Args...>;
+private:
+  state_t cDiagH_; // = h * diag(J^T J)
+  state_t trialState_;
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
+public:
+  LMGainFactor(const state_t & state)
+    : cDiagH_(state), trialState_(state)
+  {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    ::pressio::ops::fill(cDiagH_, zero);
+    ::pressio::ops::fill(trialState_, zero);
+  }
 
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+  void resetForNewCall(){
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    ::pressio::ops::fill(cDiagH_, zero);
+    ::pressio::ops::fill(trialState_, zero);
+  }
+
+  template<typename system_t, typename solver_mixin_t>
+  scalar_t compute(const system_t & system,
+		   state_t & state,
+		   const scalar_t & mu,
+		   solver_mixin_t & solverObj)
+  {
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+
+    const auto & correction = solverObj.getCorrectionCRef();
+    const auto & g	    = solverObj.getGradientCRef();
+    const auto & H	    = solverObj.getHessianCRefBeforeLMDiagonalScaling();
+
+    // denom
+    for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
+    const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
+    const auto den2 = ::pressio::ops::dot(correction, g);
+    auto denom = (one/two)*(mu*den1 + den2);
+
+    // numerator
+    auto norm = solverObj.residualNormCurrentCorrectionStep();
+    auto r2Old = norm*norm;
+    ::pressio::ops::do_update(trialState_, state, one, correction, one);
+    solverObj.residualNorm(system, trialState_, norm);
+
+    return (r2Old - norm*norm) / denom;
+  }
+};
+
+}}}}
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_

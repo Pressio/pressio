@@ -66,7 +66,10 @@ public:
   ModGramSchmidtMVTpetra() = default;
   ~ModGramSchmidtMVTpetra() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & Ain)
+  {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto nVecs = A.numVectors();
     auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, nVecs);

@@ -20,11 +20,11 @@ int main()
   qr_solver_t qrSolver;
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    problem_t, pressio::solvers::nonlinear::armijoUpdate,
-    qr_solver_t>;
+    problem_t, /*pressio::solvers::nonlinear::armijoUpdate,*/  qr_solver_t>;
   solver GNsolver(problem, x, qrSolver);
   GNsolver.setTolerance(1e-8);
   GNsolver.setMaxIterations(10);
+  GNsolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
 
   GNsolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;

@@ -68,12 +68,13 @@ public:
   EpetraMVTSQR() = default;
   ~EpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & A)
+  {
     auto nVecs = A.numVectors();
     auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(*A.data(),
+    tsqrAdaptor_.factorExplicit(*(const_cast<matrix_t &>(A).data()),
 				*Qmat_->data(),
 				*localR_.get(),
 				false);

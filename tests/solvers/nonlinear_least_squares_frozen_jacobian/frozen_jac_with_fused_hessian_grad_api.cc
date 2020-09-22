@@ -127,7 +127,8 @@ int main()
 // test GN normal eq
 #if defined USE_GN_NEQ
     using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-      system_t, pressio::solvers::nonlinear::DefaultUpdate,
+      system_t, 
+      // pressio::solvers::nonlinear::DefaultUpdate,
       MyLinSolverNormalEq>;
     solver solver1(sysObj, x, linSolverObj);
     solver1.setMaxIterations(6);
@@ -139,7 +140,8 @@ int main()
 // test LM 
 #if defined USE_LM_NEQ
     using solver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, pressio::solvers::nonlinear::DefaultUpdate,
+      system_t, 
+      // pressio::solvers::nonlinear::DefaultUpdate,
       MyLinSolverNormalEq>;
     solver solver1(sysObj, x, linSolverObj);
     solver1.setMaxIterations(6);

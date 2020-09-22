@@ -49,37 +49,37 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_
 
-#include "./impl/update_mixins/solvers_default_updater.hpp"
-#include "./impl/update_mixins/solvers_armijo_updater.hpp"
-#include "./impl/update_mixins/solvers_lm_schedule1_updater.hpp"
-#include "./impl/update_mixins/solvers_lm_schedule2_updater.hpp"
+// #include "./impl/update_mixins/solvers_default_updater.hpp"
+// #include "./impl/update_mixins/solvers_armijo_updater.hpp"
+// #include "./impl/update_mixins/solvers_lm_schedule1_updater.hpp"
+// #include "./impl/update_mixins/solvers_lm_schedule2_updater.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template<typename ... Args> using DefaultUpdate = impl::DefaultUpdater<Args...>;
-template<typename ... Args> using defaultUpdate = impl::DefaultUpdater<Args...>;
+// template<typename ... Args> using DefaultUpdate = impl::DefaultUpdater<Args...>;
+// template<typename ... Args> using defaultUpdate = impl::DefaultUpdater<Args...>;
 
-template<typename ... Args> using armijoUpdate = impl::ArmijoUpdater<Args...>;
-template<typename ... Args> using ArmijoUpdate = impl::ArmijoUpdater<Args...>;
+// template<typename ... Args> using armijoUpdate = impl::ArmijoUpdater<Args...>;
+// template<typename ... Args> using ArmijoUpdate = impl::ArmijoUpdater<Args...>;
 
-template<typename ... Args> using LMDefaultUpdate = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using lmDefaultUpdate = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using DefaultUpdateLM = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using defaultUpdateLM = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using LMDefaultUpdate = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using lmDefaultUpdate = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using DefaultUpdateLM = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using defaultUpdateLM = impl::LMSchedule1Updater<Args...>;
 
-template<typename ... Args> using LMSchedule1Update = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using lmSchedule1Update = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using LMUpdateSchedule1 = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using lmUpdateSchedule1 = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using Schedul1UpdateLM  = impl::LMSchedule1Updater<Args...>;
-template<typename ... Args> using schedule1UpdateLM = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using LMSchedule1Update = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using lmSchedule1Update = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using LMUpdateSchedule1 = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using lmUpdateSchedule1 = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using Schedul1UpdateLM  = impl::LMSchedule1Updater<Args...>;
+// template<typename ... Args> using schedule1UpdateLM = impl::LMSchedule1Updater<Args...>;
 
-template<typename ... Args> using LMSchedule2Update = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using lmSchedule2Update = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using LMUpdateSchedule2 = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using lmUpdateSchedule2 = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using Schedule2UpdateLM  = impl::LMSchedule2Updater<Args...>;
-template<typename ... Args> using schedule2UpdateLM = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using LMSchedule2Update = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using lmSchedule2Update = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using LMUpdateSchedule2 = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using lmUpdateSchedule2 = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using Schedule2UpdateLM  = impl::LMSchedule2Updater<Args...>;
+// template<typename ... Args> using schedule2UpdateLM = impl::LMSchedule2Updater<Args...>;
 
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_UPDATING_CRITERIA_HPP_

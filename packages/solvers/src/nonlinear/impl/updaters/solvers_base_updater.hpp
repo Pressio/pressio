@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_lm_schedule2_updater.hpp
+// solvers_base_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,65 +46,31 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
-
-#include "solvers_lm_gain_factor.hpp"
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename scalar_t, typename state_t, typename T>
-class LMSchedule2Updater : public T
+class BaseUpdater
 {
-private:
-  LMGainFactor<scalar_t, state_t> gainFactorEval_;
-
-  using cnst		   = pressio::utils::constants<scalar_t>;
-  const scalar_t rho1_	   = static_cast<scalar_t>(0.2);
-  const scalar_t rho2_     = static_cast<scalar_t>(0.8);
-  const scalar_t beta_	   = cnst::two();
-  const scalar_t gammaInv_ = cnst::one()/cnst::three();
-  const scalar_t tau_	   = cnst::one();
-
 public:
-  template <typename system_t, typename ...Args>
-  LMSchedule2Updater(const system_t & sys, const state_t & state, Args &&... args)
-    : T(sys, state, std::forward<Args>(args)...), gainFactorEval_(state){}
+  BaseUpdater() = default;
 
-  void resetForNewCall(){
-    T::resetForNewCall();
-  }
+  virtual ~BaseUpdater() = default;
 
-  template<typename system_t>
-  void updateState(const system_t & sys, state_t & state)
+  template<
+    typename T, typename system_t, typename state_t, typename solver_mixin_t
+    >
+  mpl::enable_if_t<std::is_base_of<BaseUpdater, T>::value>
+  updateState(const system_t & sys,
+	      state_t & state,
+	      solver_mixin_t & solver)
   {
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto ten  = static_cast<scalar_t>(10);
-    constexpr auto seven  = static_cast<scalar_t>(7);
-    constexpr auto negSeven  = ::pressio::utils::constants<scalar_t>::negOne()*seven;
-    const auto tenToSev  = std::pow(ten, seven);
-    const auto tenToNegSev  = std::pow(ten, negSeven);
-
-    const auto mu	    = T::getLMDampParam();
-    const auto & correction = T::getCorrection();
-
-    // *** compute gain factor (rho) ***
-    const auto rho = gainFactorEval_.compute(sys, state, mu, *this);
-
-    // *** update mu ***
-    if (rho < rho1_){
-      T::setLMDampParam( std::min(mu*beta_, tenToSev) );
-    }
-
-    if (rho > rho2_){
-      T::setLMDampParam( std::max( tenToNegSev, mu*gammaInv_) );
-    }
-
-    if (rho > 0){
-      ::pressio::ops::do_update(state, one, correction, one);
-    }
+    static_cast<T*>(this)->updateState(sys, state, solver);
   }
+
+  virtual void resetForNewCall() = 0;
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_LM_SCHEDULE2_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_

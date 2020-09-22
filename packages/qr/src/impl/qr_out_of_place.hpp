@@ -77,7 +77,7 @@ public:
   ~QRSolver() = default;
 
 private:
-  void computeThinImpl(matrix_type & A){
+  void computeThinImpl(const matrix_type & A){
     myImpl_.computeThinOutOfPlace(A);
   }
 

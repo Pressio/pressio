@@ -56,13 +56,13 @@ class ResidualJacobianOperators
 {
   using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
 
-  // this is used for residualNorm method so that we don't modify the real operator r_
-  // which must be the same once computeOperators is called.
-  mutable r_t auxR_;
-
   // r_,J_ are the actual main operators
   r_t r_;
   j_t J_;
+
+  // this is used for residualNorm method so that we don't modify the real operator r_
+  // which must be the same once computeOperators is called.
+  mutable r_t auxR_;
 
 public:
   ResidualJacobianOperators() = delete;
@@ -76,18 +76,25 @@ public:
      > = 0
   >
   ResidualJacobianOperators(const system_t & system, const state_t & state)
-    : auxR_( system.createResidual() ),
-      r_( system.createResidual() ),
-      J_( system.createJacobian() ){}
+    : r_( system.createResidual() ),
+      J_( system.createJacobian() ),
+      auxR_( system.createResidual() ){}
 
 public:
-  r_t & getResidual(){ return r_; }
-  j_t & getJacobian(){ return J_; }
-  const r_t & getResidual() const{ return r_; }
-  const j_t & getJacobian() const{ return J_; }
+  void resetForNewCall()		{ /* no op */ }
+  r_t & getResidualRef()		{ return r_; }
+  j_t & getJacobianRef()		{ return J_; }
+  const r_t & getResidualCRef() const	{ return r_; }
+  const j_t & getJacobianCRef() const	{ return J_; }
 
-  void resetForNewCall(){
-    //no op
+  template <typename T>
+  void setParameter(std::string key, T value) {
+    throw std::runtime_error("ResidualJacobian operators do not have parameters");
+  }
+
+  sc_t getParameter(std::string key) const {
+    throw std::runtime_error("ResidualJacobian operators do not have parameters");
+    return {};
   }
 
   template<typename system_t, typename state_t>

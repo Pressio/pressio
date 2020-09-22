@@ -51,7 +51,7 @@ int main()
 
   // GaussNewton solver
   using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
+    problem_t, /*pressio::solvers::nonlinear::DefaultUpdate,*/ 
     qr_solver_type>;
   solver GNSolver(problem, x, qrSolver);
 

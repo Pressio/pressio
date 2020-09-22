@@ -68,10 +68,11 @@ int main() {
     x0[1] = -2.;
 
     using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, pressio::solvers::nonlinear::LMDefaultUpdate,
+      system_t, //pressio::solvers::nonlinear::LMDefaultUpdate,
       linear_solver_t>;
     lmsolver solver1(sys, x0, linSolverObj);
 
+    solver1.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
     solver1.setTolerance(1e-15);
     solver1.solve(sys, x0);
   }
@@ -83,10 +84,11 @@ int main() {
     x1[1] = -2.;
 
     using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt<
-      system_t, pressio::solvers::nonlinear::LMUpdateSchedule2,
+      system_t, /*pressio::solvers::nonlinear::LMUpdateSchedule2,*/
       linear_solver_t>::type;
     lmsolver solver2(sys, x0, linSolverObj);
     solver2.setTolerance(1e-15);
+    solver2.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule2);
     solver2.solve(sys, x1);
   }
 
@@ -98,10 +100,12 @@ int main() {
   vector_w_t x2b(2);
   {
     using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, pressio::solvers::nonlinear::LMDefaultUpdate, linear_solver_t>;
+      system_t, /*pressio::solvers::nonlinear::LMDefaultUpdate,*/ 
+      linear_solver_t>;
 
     lmsolver solver1(sys, x2a, linSolverObj);
     solver1.setMaxIterations(4);
+    solver1.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
 
     x2a[0] = 0.5; x2a[1] = -2.;
     solver1.solve(sys, x2a);

@@ -95,8 +95,10 @@ public:
     return *this->Qmat_;
   }
 
-  void computeThinOutOfPlace(matrix_t & A)
+  void computeThinOutOfPlace(const matrix_t & Ain)
   {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto rows = A.extent(0);
     auto cols = A.numVectors();
     auto ArowMap = A.data()->getMap();

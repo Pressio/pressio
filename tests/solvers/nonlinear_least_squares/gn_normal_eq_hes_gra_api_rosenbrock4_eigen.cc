@@ -24,7 +24,8 @@ int main()
   lin_solver_t linSolver;
 
   using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, pressio::solvers::nonlinear::DefaultUpdate,
+    problem_t, 
+    //pressio::solvers::nonlinear::DefaultUpdate,
     lin_solver_t>;
   solver GNSolver(problem, x, linSolver);
 

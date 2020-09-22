@@ -49,49 +49,57 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-enum class stop
-  {
-   whenCorrectionAbsoluteNormBelowTolerance, // this is the default
-   whenCorrectionRelativeNormBelowTolerance,
-   whenResidualAbsoluteNormBelowTolerance,
-   whenResidualRelativeNormBelowTolerance,
-   whenGradientAbsoluteNormBelowTolerance,
-   whenGradientRelativeNormBelowTolerance,
-   afterMaxIters
-  };
-
-namespace impl{
-
-template<typename T, typename sc_t>
+template<typename solver_tag, typename T, typename sc_t>
 class Solver
   : public T,
-    public IterativeBase< Solver<T, sc_t>, sc_t >
+    public IterativeBase< Solver<solver_tag, T, sc_t>, sc_t >
 {
+  using this_t		 = Solver<solver_tag, T, sc_t>;
 
-  using this_t = Solver<T, sc_t>;
+  using state_t		 = typename T::state_t;
   using iterative_base_t = IterativeBase<this_t, sc_t>;
   friend iterative_base_t;
   using typename iterative_base_t::iteration_t;
-  iteration_t jacobianUpdateFreq_ = 1;
 
 private:
-  stop stopping_ = stop::whenCorrectionAbsoluteNormBelowTolerance;
+  iteration_t jacobianUpdateFreq_ = 1;
   iteration_t iStep_ = {};
   std::array<sc_t, 6> norms_;
+
+  // default stopping creterion
+  stop stopping_   = stop::whenCorrectionAbsoluteNormBelowTolerance;
+
+  // updating criterion
+  update updating_ = update::standard;
+  using upd_base_t = impl::BaseUpdater;
+  using upd_def_t  = impl::DefaultUpdater;
+  std::unique_ptr<upd_base_t> updater_ = nullptr;
 
 public:
   Solver() = delete;
 
-  template <typename ...Args>
-  Solver(stop stopping, Args &&... args)
-    : T(std::forward<Args>(args)...),
-      stopping_(stopping_){}
+  template <typename system_t, typename state_t, typename ...Args>
+  Solver(const system_t & system,
+  	 const state_t & state,
+	 stop stoppingE,
+	 update updatingE,
+  	 Args &&... args)
+    : T(system, state, std::forward<Args>(args)...),
+      stopping_(stoppingE),
+      updating_(updatingE)
+  {}
 
-  template <typename ...Args>
-  Solver(Args &&... args)
-    : T(std::forward<Args>(args)...){}
+  template <typename system_t, typename state_t, typename ...Args>
+  Solver(const system_t & system,
+	 const state_t & state,
+  	 Args &&... args)
+    : Solver(system, state,
+	     stop::whenCorrectionAbsoluteNormBelowTolerance,
+	     update::standard,
+	     std::forward<Args>(args)...)
+  {}
 
 public:
   void setStoppingCriterion(stop value){
@@ -102,11 +110,26 @@ public:
     return stopping_;
   }
 
+  void setUpdatingCriterion(update value){
+    updating_ = value;
+    // set null to indicate it needs to be constructed
+    updater_ = nullptr;
+  }
+
+  update getUpdatingCriterion() const{
+    return updating_;
+  }
+
+  void setSystemJacobianUpdateFreq(std::size_t newFreq){
+    jacobianUpdateFreq_ = newFreq;
+  }
+
+public:
   template<typename system_t, typename state_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   mpl::enable_if_t<
-    !::pressio::containers::predicates::is_array_pybind<state_t>::value
-    >
+  !::pressio::containers::predicates::is_array_pybind<state_t>::value
+  >
 #else
   void
 #endif
@@ -130,14 +153,14 @@ public:
   }
 #endif
 
-  void setSystemJacobianUpdateFreq(std::size_t newFreq){
-    jacobianUpdateFreq_ = newFreq;
-  }
-
 private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & sys, state_t & state)
   {
+    if (!updater_) constructUpdater(state);
+    // after we construct it, it should not be nullt
+    assert(updater_);
+
     sc_t residualNorm0 = {};
     sc_t correctionNorm0 = {};
     sc_t gradientNorm0 = {};
@@ -194,13 +217,174 @@ private:
       if (stopLoop(iStep_)) break;
 
       // 5.
-      T::updateState(sys, state);
+      executeUpdater(sys, state);
     }
 
     // when we are done with a solver, reset params to default
     T::resetForNewCall();
+    updater_->resetForNewCall();
   }
 
+  iteration_t getNumIterationsExecutedImpl() const {
+    return iStep_;
+  }
+
+  /*
+    for GaussNewton, we can only have: standard, armijo update
+  */
+  template<typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<
+    std::is_same<_solver_tag, GaussNewton>::value or
+    std::is_same<_solver_tag, GaussNewtonQR>::value
+    >
+  constructUpdater(const state_t & state)
+  {
+    switch (updating_)
+    {
+    case update::standard:{
+      using ut = impl::DefaultUpdater;
+      updater_.reset(new ut());
+      break;
+    }
+
+    case update::armijo:{
+      using ut = impl::ArmijoUpdater<state_t>;
+      updater_.reset(new ut(state));
+      break;
+    }
+
+    default:
+      throw std::runtime_error("Invalid update enum for GaussNewton");
+    }
+  }
+
+  template<typename system_t, typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<
+    std::is_same<_solver_tag, GaussNewton>::value or
+    std::is_same<_solver_tag, GaussNewtonQR>::value
+    >
+  executeUpdater(const system_t & sys, state_t & state)
+  {
+    switch (updating_)
+    {
+      case update::standard:{
+  	using ut = impl::DefaultUpdater;
+  	updater_->template updateState<ut>(sys, state, *this);
+  	break;
+      }
+
+      case update::armijo:{
+  	using ut = impl::ArmijoUpdater<state_t>;
+  	updater_->template updateState<ut>(sys, state, *this);
+  	break;
+      }
+
+      default:
+	throw std::runtime_error("Invalid update enum for GaussNewton");
+    }
+  }
+
+
+  /*
+    Levenberg-Mqrquardt, we can only have: standard, LM1, LM2
+  */
+  template<typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<std::is_same<_solver_tag, LevenbergMarquardt>::value>
+  constructUpdater(const state_t & state)
+  {
+    switch (updating_)
+    {
+      case update::standard:{
+	using ut = impl::DefaultUpdater;
+	updater_.reset(new ut());
+	break;
+      }
+
+      case update::LMSchedule1:{
+	using ut = impl::LMSchedule1Updater<state_t>;
+	updater_.reset(new ut(state));
+	break;
+      }
+
+      case update::LMSchedule2:{
+	using ut = impl::LMSchedule2Updater<state_t>;
+	updater_.reset(new ut(state));
+	break;
+      }
+
+      default:
+	throw std::runtime_error("Invalid update enum for LevenbergMarquardt");
+    }
+  }
+
+  template<typename system_t, typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<std::is_same<_solver_tag, LevenbergMarquardt>::value>
+  executeUpdater(const system_t & sys, state_t & state)
+  {
+    switch (updating_)
+      {
+      case update::standard:{
+	using ut = impl::DefaultUpdater;
+	updater_->template updateState<ut>(sys, state, *this);
+	break;
+      }
+
+      case update::LMSchedule1:{
+	using ut = impl::LMSchedule1Updater<state_t>;
+	updater_->template updateState<ut>(sys, state, *this);
+	break;
+      }
+
+      case update::LMSchedule2:{
+	using ut = impl::LMSchedule2Updater<state_t>;
+	updater_->template updateState<ut>(sys, state, *this);
+	break;
+      }
+
+      default:
+	throw std::runtime_error("Invalid update enum for LevenbergMarquardt");
+      }
+  }
+
+
+  /*
+    Newton-Raphson, we can only have: standard
+  */
+  template<typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<std::is_same<_solver_tag, NewtonRaphson>::value>
+  constructUpdater(const state_t & state)
+  {
+    switch (updating_)
+      {
+      case update::standard:{
+  	using ut = impl::DefaultUpdater;
+  	updater_.reset(new ut());
+  	break;
+      }
+
+      default:
+  	throw std::runtime_error("Invalid update enum for NewtonRaphson");
+      }
+  }
+
+  template<typename system_t, typename state_t, typename _solver_tag = solver_tag>
+  mpl::enable_if_t<std::is_same<_solver_tag, NewtonRaphson>::value>
+  executeUpdater(const system_t & sys, state_t & state)
+  {
+    switch (updating_)
+      {
+      case update::standard:{
+  	using ut = impl::DefaultUpdater;
+  	updater_->template updateState<ut>(sys, state, *this);
+  	break;
+      }
+      default:
+  	throw std::runtime_error("Invalid update enum for NewtonRaphson");
+      }
+  }
+
+
+  // stopping check
   bool stopLoop(const iteration_t & iStep) const
   {
     switch (stopping_)
@@ -224,13 +408,10 @@ private:
     	return norms_[5] < iterative_base_t::tolerance_;
 
       default:
-	return false;
+    	return false;
       };
   }
 
-  iteration_t getNumIterationsExecutedImpl() const {
-    return iStep_;
-  }
 };
 
 }}}}

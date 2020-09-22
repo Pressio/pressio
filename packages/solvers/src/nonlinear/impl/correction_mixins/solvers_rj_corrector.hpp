@@ -52,12 +52,15 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_t, typename lin_solver_t, ::pressio::Norm normType
+  typename T, typename state_type, typename lin_solver_t, ::pressio::Norm normType
   >
 class RJCorrector : public T
 {
+public:
+  using state_t = state_type;
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
+private:
   state_t correction_ = {};
   lin_solver_t & solverObj_;
   sc_t residNormCurrCorrStep_ = {};
@@ -65,15 +68,19 @@ class RJCorrector : public T
   sc_t correctionNormCurrCorrStep_ = {};
 
 public:
-  static constexpr auto normType_ = normType;
-
   RJCorrector() = delete;
 
   template <typename system_t>
   RJCorrector(const system_t & system,
         const state_t & state,
         lin_solver_t & solverObj)
-    : T(system, state), correction_(state), solverObj_(solverObj){}
+    : T(system, state),
+      correction_(state),
+      solverObj_(solverObj)
+  {
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    ::pressio::ops::fill(correction_, zero);
+  }
 
 public:
   template <typename system_t>
@@ -85,8 +92,8 @@ public:
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
-    auto & r = T::getResidual();
-    auto & J = T::getJacobian();
+    const auto & r = T::getResidualCRef();
+    const auto & J = T::getJacobianCRef();
     // solve J correction = r
     solverObj_.solve(J, r, correction_);
     // scale by -1 for sign convention
@@ -101,7 +108,7 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrection() const{ return correction_; }
+  const state_t & getCorrectionCRef() const{ return correction_; }
 
   const sc_t & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;

@@ -75,13 +75,20 @@ public:
   {}
 
 public:
-  h_t & getHessian(){ return H_; }
-  g_t & getGradient(){ return g_; }
-  const h_t & getHessian() const { return H_; }
-  const g_t & getGradient() const{ return g_; }
+  void resetForNewCall()		{ /* no op */ }
+  h_t & getHessianRef()			{ return H_; }
+  g_t & getGradientRef()		{ return g_; }
+  const h_t & getHessianCRef() const	{ return H_; }
+  const g_t & getGradientCRef() const	{ return g_; }
 
-  void resetForNewCall(){
-    //no op
+  sc_t getParameter(std::string key) const {
+    throw std::runtime_error("GN HessGrad operators does not have parameters");
+    return {};
+  }
+
+  template <typename T>
+  void setParameter(std::string key, T value) {
+    throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
   template< typename system_t, typename state_t>
@@ -193,13 +200,20 @@ public:
   {}
 
 public:
-  h_t & getHessian(){ return H_; }
-  g_t & getGradient(){ return g_; }
-  const h_t & getHessian() const { return H_; }
-  const g_t & getGradient() const{ return g_; }
+  void resetForNewCall()		{ /* no op */ }
+  h_t & getHessianRef()			{ return H_; }
+  g_t & getGradientRef()		{ return g_; }
+  const h_t & getHessianCRef() const	{ return H_; }
+  const g_t & getGradientCRef() const	{ return g_; }
 
-  void resetForNewCall(){
-    //no op
+  sc_t getParameter(std::string key) const {
+    throw std::runtime_error("GN HessGrad operators does not have parameters");
+    return {};
+  }
+
+  template <typename T>
+  void setParameter(std::string key, T value) {
+    throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
   template< typename system_t, typename state_t>

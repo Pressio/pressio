@@ -29,8 +29,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
   lin_solver_t linSolverObj;
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
@@ -71,8 +70,7 @@ TEST(ode_implicit_euler, guesserLambda){
   lin_solver_t linSolverObj;
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
   NonLinSolver.setMaxIterations(0);
   // using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
@@ -128,8 +126,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   lin_solver_t linSolverObj;
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time

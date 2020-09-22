@@ -63,12 +63,11 @@ int main(int argc, char *argv[]){
     qr_solver_type qrSolver;
 
     using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-      lspg_stepper_t,
-      pressio::solvers::nonlinear::armijoUpdate,
-      qr_solver_type>;
+      lspg_stepper_t, qr_solver_type>;
     gnsolver_t solver(lspgProblem.getStepperRef(), yROM, qrSolver);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
+    solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
 
     // integrate in time
     pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);

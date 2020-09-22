@@ -67,7 +67,7 @@ class QROutOfPlaceBase
   friend utils::details::CrtpBase<this_t>;
 
 public:
-  void computeThin(matrix_t & A){
+  void computeThin(const matrix_t & A){
     this->underlying().computeThinImpl(A);
   }
 
@@ -88,7 +88,7 @@ public:
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_vector_wrapper<vec_in_t>::value and
-    containers::predicates::is_vector_wrapper<vec_out_t>::value 
+    containers::predicates::is_vector_wrapper<vec_out_t>::value
   >
   applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyRTransposeImpl(vecIn, vecOut);

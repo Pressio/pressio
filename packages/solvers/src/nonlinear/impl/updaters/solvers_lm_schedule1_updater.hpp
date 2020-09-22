@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson.hpp
+// solvers_lm_schedule1_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,18 +46,67 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE1_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE1_UPDATER_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+#include "solvers_lm_gain_factor.hpp"
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, Args...>;
+template<typename state_t>
+class LMSchedule1Updater : public BaseUpdater
+{
+  using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
+private:
+  LMGainFactor<state_t> gainFactorEval_;
 
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+  using cnst		   = pressio::utils::constants<scalar_t>;
+  const scalar_t beta_     = cnst::two();
+  const scalar_t gammaInv_ = cnst::one()/cnst::three();
+  const scalar_t p_	   = cnst::three();
+  const scalar_t tau_	   = cnst::one();
+  scalar_t nu_		   = cnst::two();
+
+public:
+  LMSchedule1Updater() = delete;
+
+  LMSchedule1Updater(const state_t & state)
+    : gainFactorEval_(state){}
+
+  void resetForNewCall() final{
+    nu_ = cnst::two();
+    gainFactorEval_.resetForNewCall();
+  }
+
+  template<typename system_t, typename solver_mixin_t>
+  void updateState(const system_t & sys,
+		   state_t & state,
+		   solver_mixin_t & solver)
+  {
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+
+    const auto mu	    = solver.getLMDampParam();
+    const auto & correction = solver.getCorrectionCRef();
+
+    // *** compute gain factor (rho) ***
+    const auto rho = gainFactorEval_.compute(sys, state, mu, solver);
+
+    // *** update mu ***
+    if (rho > 0){
+      ::pressio::ops::do_update(state, one, correction, one);
+      scalar_t mu_rat = one - (beta_ - one)*std::pow(two*rho - one, p_);
+      mu_rat = std::max(mu_rat, gammaInv_);
+      solver.setLMDampParam(mu*mu_rat);
+      nu_ = beta_;
+    }
+    else{
+      solver.setLMDampParam(mu*nu_);
+      nu_ = two*nu_;
+    }
+  }
+};
+
+}}}}
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_SCHEDULE1_UPDATER_HPP_

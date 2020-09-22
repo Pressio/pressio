@@ -82,9 +82,7 @@ int main(int argc, char *argv[]){
 
   // GaussNewton solver
   using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    rom_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
+    rom_system_t, linear_solver_t>;
   nls_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);

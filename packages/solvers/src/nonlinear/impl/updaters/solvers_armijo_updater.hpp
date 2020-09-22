@@ -46,33 +46,41 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_ARMIJO_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_ARMIJO_UPDATER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename sc_t, typename state_t, typename T>
-class ArmijoUpdater : public T
+template <typename state_t>
+class ArmijoUpdater : public BaseUpdater
 {
+  using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+
   state_t trialState_;
   const sc_t beta_  = 0.0001;
 
 public:
   ArmijoUpdater() = delete;
 
-  template <typename sys_t, typename ...Args>
-  ArmijoUpdater(const sys_t & sys, const state_t & state, Args &&... args)
-    : T(sys, state, std::forward<Args>(args)...), trialState_(state){}
-
-  void resetForNewCall(){
-    T::resetForNewCall();
+  ArmijoUpdater(const state_t & state)
+    : trialState_(state)
+  {
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    ::pressio::ops::fill(trialState_, zero);
   }
 
-  template<typename system_t>
-  void updateState(const system_t & system, state_t & state)
+  void resetForNewCall() final{ /* no op */ }
+
+  template<typename system_t, typename solver_mixin_t>
+  void updateState(const system_t & system,
+		   state_t & state,
+		   solver_mixin_t & solver)
   {
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
     auto alpha = static_cast<sc_t>(1);
+
+    ::pressio::ops::fill(trialState_,
+			 ::pressio::utils::constants<sc_t>::zero());
 
     // https://people.maths.ox.ac.uk/hauser/hauser_lecture2.pdf
 
@@ -85,9 +93,9 @@ public:
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 
-    const auto & p_k   = T::getCorrection();
-    const auto & g_k   = T::getGradient();
-    const auto fx_k    = T::residualNormCurrentCorrectionStep();
+    const auto & p_k   = solver.getCorrectionCRef();
+    const auto & g_k   = solver.getGradientCRef();
+    const auto fx_k    = solver.residualNormCurrentCorrectionStep();
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
@@ -104,7 +112,7 @@ public:
       const auto rhs = alpha * beta_ * gkDotpk;
 
       // eval f(x_k + alpha_l * p_k)
-      T::residualNorm(system, trialState_, ftrial);
+      solver.residualNorm(system, trialState_, ftrial);
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;
@@ -131,4 +139,4 @@ public:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATE_MIXINS_SOLVERS_ARMIJO_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_

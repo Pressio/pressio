@@ -118,9 +118,7 @@ std::string doRun()
 
   // NL solver
   using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    wls_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
+    wls_system_t, linear_solver_t>;
   gn_t GNSolver(wlsSystem, wlsState, linear_solver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(5);
