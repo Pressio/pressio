@@ -255,7 +255,6 @@ struct EulerLSPGWithVelocityApi
     using ode_tag  = pressio::ode::implicitmethods::Euler;
     using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
       ode_tag, fom_t, lspg_state_t, decoder_t, ops1_t>::type;
-    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
     lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, myOps1);
 
     // linear solver
@@ -264,9 +263,8 @@ struct EulerLSPGWithVelocityApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t, linear_solver_t, opsGN_t>;
-    gn_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(
+              lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 

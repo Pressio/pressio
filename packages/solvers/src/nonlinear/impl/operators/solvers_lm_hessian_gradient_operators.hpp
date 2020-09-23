@@ -75,10 +75,22 @@ public:
       int
      > = 0
   >
-  LMHessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
+  LMHessianGradientOperatorsHGApi(const system_t & system,
+				  const state_t & state)
     : HGOpHGApi_(system, state),
       lmH_(HGOpHGApi_.getHessianCRef())
   {}
+
+  // copy constr and assign
+  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi const &) = default;
+  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi const &) = default;
+
+  // move constr and assign
+  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi && o) = default;
+  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi && o) = default;
+
+  // destr
+  ~LMHessianGradientOperatorsHGApi() = default;
 
 public:
   void resetForNewCall(){
@@ -203,6 +215,18 @@ public:
 				  const ud_ops_t * udOps)
     : HGOpRJApi_(system, state, udOps),
       lmH_(HGOpRJApi_.getHessianCRef()){}
+
+  // copy constr and assign
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi const &) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi const &) = default;
+
+  // move constr and assign
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi && o) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
+
+  // destr
+  ~LMHessianGradientOperatorsRJApi() = default;
+
 
 public:
   h_t & getHessianRef()			{ return lmH_; }

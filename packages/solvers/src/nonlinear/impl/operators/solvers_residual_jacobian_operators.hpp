@@ -80,6 +80,17 @@ public:
       J_( system.createJacobian() ),
       auxR_( system.createResidual() ){}
 
+  // copy constr and assign
+  ResidualJacobianOperators(ResidualJacobianOperators const &) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators const &) = default;
+
+  // move constr and assign
+  ResidualJacobianOperators(ResidualJacobianOperators && o) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators && o) = default;
+
+  // destr
+  ~ResidualJacobianOperators() = default;
+
 public:
   void resetForNewCall()		{ /* no op */ }
   r_t & getResidualRef()		{ return r_; }

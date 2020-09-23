@@ -99,7 +99,7 @@ std::string doRun()
 
   //  lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;
-  linear_solver_t linear_solver;
+  linear_solver_t linearSolver;
 
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
@@ -110,16 +110,15 @@ std::string doRun()
   // create policy and wls system
   int jacobianUpdateFrequency = 2;
   policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
-  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
+  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linearSolver);
 
   // create the wls state
   wls_state_t  wlsState(wlsSize);
   pressio::ops::set_zero(wlsState);
 
   // NL solver
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    wls_system_t, linear_solver_t>;
-  gn_t GNSolver(wlsSystem, wlsState, linear_solver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(
+    wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(5);
 

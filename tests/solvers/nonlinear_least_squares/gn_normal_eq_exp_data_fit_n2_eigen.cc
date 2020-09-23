@@ -71,10 +71,10 @@ int main()
   linear_solver_t linSolver;
 
   // GaussNewton solver
-  using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, /*pressio::solvers::nonlinear::DefaultUpdate,*/ 
-    linear_solver_t>;
-  solver GNSolver(problem, x, linSolver);
+  // using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
+  //   problem_t, linear_solver_t>;
+  // solver GNSolver(problem, x, linSolver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(problem,x,linSolver);
 
   x[0] = 2.0; x[1] = 0.25;
   testC1(sentinel, problem, x, GNSolver);

@@ -74,6 +74,17 @@ public:
       H_( system.createHessian() )
   {}
 
+  // copy constr and assign
+  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi const &) = default;
+  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi const &) = default;
+
+  // move constr and assign
+  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi &&) = default;
+  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi &&) = default;
+
+  // destr
+  ~HessianGradientOperatorsHGApi() = default;
+
 public:
   void resetForNewCall()		{ /* no op */ }
   h_t & getHessianRef()			{ return H_; }
@@ -155,6 +166,7 @@ class HessianGradientOperatorsRJApi
   j_t J_;
   g_t g_;
   h_t H_;
+
   const ud_ops_t * udOps_ = nullptr;
 
 public:
@@ -198,6 +210,17 @@ public:
 				     *J_.data(), *J_.data())),
       udOps_(&udOps)
   {}
+
+  // copy constr and assign
+  HessianGradientOperatorsRJApi(HessianGradientOperatorsRJApi const &) = default;
+  HessianGradientOperatorsRJApi & operator=(HessianGradientOperatorsRJApi const &) = default;
+
+  // move constr and assign
+  HessianGradientOperatorsRJApi(HessianGradientOperatorsRJApi && o) = default;
+  HessianGradientOperatorsRJApi & operator=(HessianGradientOperatorsRJApi && o) = default;
+
+  // destr
+  ~HessianGradientOperatorsRJApi() = default;
 
 public:
   void resetForNewCall()		{ /* no op */ }

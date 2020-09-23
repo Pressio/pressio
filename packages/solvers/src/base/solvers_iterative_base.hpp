@@ -54,10 +54,6 @@ namespace pressio { namespace solvers {
 template<typename derived_t, typename scalar_t>
 struct IterativeBase
 {
-  IterativeBase() = default;
-  IterativeBase(const IterativeBase &) = delete;
-  // ~IterativeBase() = default;
-
   using iteration_t = unsigned int;
 
   /** Get the number of iterations performed. */

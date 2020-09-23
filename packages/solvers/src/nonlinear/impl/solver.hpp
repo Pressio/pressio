@@ -101,6 +101,17 @@ public:
 	     std::forward<Args>(args)...)
   {}
 
+  // copy constr and assign
+  Solver(Solver const &) = default;
+  Solver & operator=(Solver const &) = default;
+
+  // move constr and assign
+  Solver(Solver &&) = default;
+  Solver & operator=(Solver &&) = default;
+
+  // destr
+  ~Solver() = default;
+
 public:
   void setStoppingCriterion(stop value){
     stopping_ = value;
@@ -125,18 +136,20 @@ public:
   }
 
 public:
-  template<typename system_t, typename state_t>
+
+  template<typename system_t, typename _state_t = state_t>
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   mpl::enable_if_t<
-  !::pressio::containers::predicates::is_array_pybind<state_t>::value
+  !::pressio::containers::predicates::is_array_pybind<_state_t>::value
   >
 #else
   void
 #endif
-  solve(const system_t & sys, state_t & state)
+  solve(const system_t & sys, _state_t & state)
   {
     this->solveImpl(sys, state);
   }
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template<typename system_t, typename state_t>

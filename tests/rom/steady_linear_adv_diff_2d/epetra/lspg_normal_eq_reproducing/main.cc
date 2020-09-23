@@ -70,7 +70,6 @@ int main(int argc, char *argv[]){
   using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
       fom_adapter_t, lspg_state_t, decoder_t>::type;
   lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
-  using rom_system_t = typename lspg_problem_type::lspg_system_t;
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
@@ -80,9 +79,8 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    rom_system_t, linear_solver_t>;
-  nls_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj);
+  auto solver = pressio::solvers::nonlinear::createGaussNewton(
+      lspgProblem.getSystemRef(), yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
   solver.solve(lspgProblem.getSystemRef(), yROM);

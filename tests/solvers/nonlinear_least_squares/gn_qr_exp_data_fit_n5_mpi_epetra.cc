@@ -28,10 +28,11 @@ bool test1()
   // define type of QR and GaussNewton solver
   using qr_solver_type = qr::QRSolver<mat_type, qr::TSQR>;
   qr_solver_type qrSolver;
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    problem_t, /*pressio::solvers::nonlinear::armijoUpdate,*/
-    qr_solver_type>;
-  gn_t GNSolver(problem, x, qrSolver);
+
+  // using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
+  //   problem_t, qr_solver_type>;
+  // gn_t GNSolver(problem, x, qrSolver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
 
   GNSolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   GNSolver.setTolerance(1e-8);
@@ -63,10 +64,11 @@ bool test2()
   // GaussNewton solver
   using qr_solver_type = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_type qrSolver;
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    problem_t, /*pressio::solvers::nonlinear::armijoUpdate,*/
-    qr_solver_type>;
-  gn_t GNSolver(problem, x, qrSolver);
+  
+  // using gn_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
+  //   problem_t, qr_solver_type>;
+  // gn_t GNSolver(problem, x, qrSolver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
 
   GNSolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   GNSolver.setTolerance(1e-8);

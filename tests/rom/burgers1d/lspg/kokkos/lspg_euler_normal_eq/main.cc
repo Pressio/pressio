@@ -53,7 +53,6 @@ int main(int argc, char *argv[]){
     using ode_tag  = pressio::ode::implicitmethods::Euler;
     using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
       ode_tag, fom_t, lspg_state_d_t, decoder_d_t>::type;
-    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
     lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
     // linear solver
@@ -63,9 +62,8 @@ int main(int argc, char *argv[]){
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-      lspg_stepper_t, linear_solver_t>;
-    nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(
+      lspgProblem.getStepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-14);
     // I know this should converge in few iters at every step
     solver.setMaxIterations(5);

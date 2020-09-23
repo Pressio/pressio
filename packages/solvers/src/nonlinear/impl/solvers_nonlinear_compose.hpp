@@ -257,10 +257,14 @@ struct compose<
   // 		"A valid linear solver type must be passed to GN with normal equations");
   static_assert
   (::pressio::solvers::concepts::linear_solver_for_least_squares_solver<linear_solver_t>::value,
-   "A valid linear solver type must be passed to GN with normal equations");
+   "A valid linear solver type must be passed to GN or LM with normal equations");
 
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
+   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+
   // gradient is same as state_t
   using grad_t = state_t;
   // hessian_t is extracted from linear solver
@@ -295,6 +299,7 @@ struct compose<
 {
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
+
   using grad_t = state_t;
   using linear_solver_t = pybind11::object;
 
@@ -323,12 +328,17 @@ struct compose<
   static_assert
   (::pressio::solvers::concepts::linear_solver_for_least_squares_solver<
    linear_solver_t>::value,
-   "A valid linear solver type must be passed to GN with normal equations");
+   "A valid linear solver type must be passed to GN or LM with normal equations");
 
   // todo: check that ops type is admissible
 
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
+   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+
+
   // gradient is same as state_t
   using grad_t = state_t;
   // hessian_t is extracted from linear solver
@@ -357,6 +367,9 @@ struct compose<system_t, GaussNewtonQR, Args...>
 
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
+   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
   using corr_mixin = typename composeCorrector<
     GaussNewtonQR, void, system_t, state_t, qr_solver_t>::type;
@@ -365,14 +378,16 @@ struct compose<system_t, GaussNewtonQR, Args...>
 
 template<
   typename system_t,
-  // template<typename...> class update_t,
-  typename linear_solver_t,
-  typename ... Args
+  typename linear_solver_t
   >
-struct compose<system_t, NewtonRaphson, linear_solver_t, Args...>
+struct compose<system_t, NewtonRaphson, linear_solver_t>
 {
   using scalar_t = typename system_t::scalar_type;
   using state_t  = typename system_t::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
+   "Newton-Raphson solver: the state type must be a pressio vector wrapper.");
+
   using corr_mixin = typename composeCorrector<
     NewtonRaphson, void, system_t, state_t, linear_solver_t>::type;
   using type = Solver<NewtonRaphson, corr_mixin, scalar_t>;

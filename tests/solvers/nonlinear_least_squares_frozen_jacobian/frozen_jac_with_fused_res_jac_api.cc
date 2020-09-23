@@ -120,9 +120,7 @@ int main()
 // test GN with QR
 #if defined USE_GN_QR
     using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-      system_t, 
-      // pressio::solvers::nonlinear::DefaultUpdate,
-      MySolverQR>;
+      system_t, MySolverQR>;
     solver solver1(sysObj, x, solverObjQR);
     solver1.setMaxIterations(6);
     solver1.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
@@ -134,9 +132,7 @@ int main()
 // test GN normal eq
 #if defined USE_GN_NEQ
     using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-      system_t, 
-      // pressio::solvers::nonlinear::DefaultUpdate,
-      MyLinSolverNormalEq>;
+      system_t, MyLinSolverNormalEq>;
     solver solver1(sysObj, x, linSolverObj);
     solver1.setMaxIterations(6);
     solver1.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
@@ -147,9 +143,7 @@ int main()
 // test LM 
 #if defined USE_LM_NEQ
     using solver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, 
-      // pressio::solvers::nonlinear::DefaultUpdate,
-      MyLinSolverNormalEq>;
+      system_t, MyLinSolverNormalEq>;
     solver solver1(sysObj, x, linSolverObj);
     solver1.setMaxIterations(6);
     solver1.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);

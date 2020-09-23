@@ -56,16 +56,14 @@ int main(int argc, char *argv[]){
       ode_tag, fom_t, lspg_state_t, decoder_t>::type;
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
-  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   using rom_jac_t      = typename lspg_problem::lspg_matrix_t;
 
   // GaussNewton solver
   using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
   qr_solver_type qrSolver;
 
-  using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    lspg_stepper_t, qr_solver_type>;
-  gnsolver_t solver(lspgProblem.getStepperRef(), yROM, qrSolver);
+  auto solver = pressio::solvers::nonlinear::createGaussNewtonQR(
+    lspgProblem.getStepperRef(), yROM, qrSolver);
   solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   solver.setTolerance(1e-13);
     // I know this should converge in few iters at every step

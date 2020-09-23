@@ -66,7 +66,7 @@ private:
   state_t QTResid_ = {};
   state_t g_ = {};
 
-  qr_solver_t & solverObj_;
+  std::reference_wrapper<qr_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -90,6 +90,17 @@ public:
     ::pressio::ops::fill(g_, zero);
   }
 
+  // copy constr and assign
+  QRCorrector(QRCorrector const &) = default;
+  QRCorrector & operator=(QRCorrector const &) = default;
+
+  // move constr and assign
+  QRCorrector(QRCorrector && o) = default;
+  QRCorrector & operator=(QRCorrector && o) = default;
+
+  // destr
+  ~QRCorrector() = default;
+
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys,
@@ -103,14 +114,14 @@ public:
     const auto & J = T::getJacobianCRef();
 
     // J = QR
-    solverObj_.computeThin(J);
+    solverObj_.get().computeThin(J);
     // compute Q^T r
-    solverObj_.applyQTranspose(r, QTResid_);
+    solverObj_.get().applyQTranspose(r, QTResid_);
     // compute gradient = R^T Q^T r
-    solverObj_.applyRTranspose(QTResid_, g_);
+    solverObj_.get().applyRTranspose(QTResid_, g_);
 
     // solve: R correction = Q^T Residual
-    solverObj_.solve(QTResid_, correction_);
+    solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 

@@ -58,7 +58,6 @@ int main() {
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
-  using system_t = NonLinearLeastSquareSystem;
   NonLinearLeastSquareSystem sys;
 
   // LM with default update
@@ -67,14 +66,13 @@ int main() {
     x0[0] = 0.5;
     x0[1] = -2.;
 
-    using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, //pressio::solvers::nonlinear::LMDefaultUpdate,
-      linear_solver_t>;
-    lmsolver solver1(sys, x0, linSolverObj);
-
-    solver1.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
-    solver1.setTolerance(1e-15);
-    solver1.solve(sys, x0);
+    // using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
+    //   NonLinearLeastSquareSystem, linear_solver_t>;
+    // lmsolver solver1(sys, x0, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sys, x0, linSolverObj);
+    solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
+    solver.setTolerance(1e-15);
+    solver.solve(sys, x0);
   }
 
   // LM with a different update
@@ -83,13 +81,13 @@ int main() {
     x1[0] = 0.5;
     x1[1] = -2.;
 
-    using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt<
-      system_t, /*pressio::solvers::nonlinear::LMUpdateSchedule2,*/
-      linear_solver_t>::type;
-    lmsolver solver2(sys, x0, linSolverObj);
-    solver2.setTolerance(1e-15);
-    solver2.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule2);
-    solver2.solve(sys, x1);
+    // using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt<
+    //   NonLinearLeastSquareSystem, linear_solver_t>::type;
+    // lmsolver solver(sys, x0, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sys, x0, linSolverObj);
+    solver.setTolerance(1e-15);
+    solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule2);
+    solver.solve(sys, x1);
   }
 
   // LM with default update, multiple solves
@@ -99,19 +97,18 @@ int main() {
   vector_w_t x2a(2);
   vector_w_t x2b(2);
   {
-    using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, /*pressio::solvers::nonlinear::LMDefaultUpdate,*/ 
-      linear_solver_t>;
-
-    lmsolver solver1(sys, x2a, linSolverObj);
-    solver1.setMaxIterations(4);
-    solver1.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
+    // using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
+    //   NonLinearLeastSquareSystem, linear_solver_t>;
+    // lmsolver solver(sys, x2a, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sys, x0, linSolverObj);
+    solver.setMaxIterations(4);
+    solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
 
     x2a[0] = 0.5; x2a[1] = -2.;
-    solver1.solve(sys, x2a);
+    solver.solve(sys, x2a);
 
     x2b[0] = 0.5; x2b[1] = -2.;
-    solver1.solve(sys, x2b);
+    solver.solve(sys, x2b);
 
     const bool b1 = abs(x2a[0] - x2b[0]) < 1e-13;
     const bool b2 = abs(x2a[1] - x2b[1]) < 1e-13;

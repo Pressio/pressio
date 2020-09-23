@@ -70,5 +70,42 @@ template<typename system_t, typename ... Args>
 using composeGaussNewtonQR_t = typename composeGaussNewtonQR<
   system_t, Args...>::type;
 
+
+
+template<typename system_t, typename state_t, typename lin_solver_t>
+composeGaussNewton_t<system_t, lin_solver_t>
+createGaussNewton(const system_t & system,
+		  const state_t & state,
+		  lin_solver_t & linSolver)
+{
+  using return_t = composeGaussNewton_t<system_t, lin_solver_t>;
+  return return_t( system, state, linSolver);
+}
+
+
+template<
+  typename system_t, typename state_t, typename lin_solver_t, typename ops_t
+  >
+composeGaussNewton_t<system_t, lin_solver_t, ops_t>
+createGaussNewton(const system_t & system,
+		  const state_t & state,
+		  lin_solver_t & linSolver,
+		  const ops_t & opsObj)
+{
+  using return_t = composeGaussNewton_t<system_t, lin_solver_t, ops_t>;
+  return return_t( system, state, linSolver, opsObj);
+}
+
+
+template<typename system_t, typename state_t, typename qr_solver_t>
+composeGaussNewtonQR_t<system_t, qr_solver_t>
+createGaussNewtonQR(const system_t & system,
+		    const state_t & state,
+		    qr_solver_t & qrSolver)
+{
+  using return_t = composeGaussNewtonQR_t<system_t, qr_solver_t>;
+  return return_t( system, state, qrSolver);
+}
+
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_

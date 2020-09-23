@@ -59,5 +59,16 @@ using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, Args..
 template<typename system_t, typename ... Args>
 using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
 
+
+template<typename system_t, typename state_t, typename lin_solver_t>
+composeNewtonRaphson_t<system_t, lin_solver_t>
+createNewtonRaphson(const system_t & system,
+		    const state_t & state,
+		    lin_solver_t & linSolver)
+{
+  using return_t = composeNewtonRaphson_t<system_t, lin_solver_t>;
+  return return_t( system, state, linSolver);
+}
+
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_

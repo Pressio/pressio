@@ -64,11 +64,10 @@ int main()
   using lin_solver_t = linear::Solver<linear::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
 
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    problem_t, 
-    //pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
-  nl_solver_t NonLinSolver(sys, y, linearSolverObj);
+  // using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+  //   problem_t, lin_solver_t>;
+  // nl_solver_t NonLinSolver(sys, y, linearSolverObj);
+  auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(sys, y, linearSolverObj);
 
   NonLinSolver.solve(sys, y);
 
@@ -80,88 +79,3 @@ int main()
   std::cout <<  strOut << std::endl;
   std::cout << *y.data() << std::endl;
 }
-
-
-
-
-
-
-// TEST(solvers_nonlinear_base, solversBaseGettersTest)
-// {
-//   using namespace pressio;
-//   using namespace pressio::solvers;
-
-//   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
-
-//   auto x = solver.getMaxIterations();
-//   auto xNL = solver.getMaxNonLinearIterations();
-
-//   auto tol = solver.getTolerance();
-//   auto tolNL = solver.getNonLinearTolerance();
-
-//   EXPECT_EQ(x, 100);
-//   EXPECT_EQ(xNL, 100);
-//   EXPECT_NEAR(tol, 1.0e-5, 1.0e-8);
-//   EXPECT_NEAR(tolNL, 1.0e-5, 1.0e-8);
-// }
-
-
-// TEST(solvers_non_linear_base, solversBaseSettersTest)
-// {
-//   using namespace pressio;
-//   using namespace pressio::solvers;
-
-//   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
-
-//   solver.setMaxIterations(200);
-//   solver.setMaxNonLinearIterations(222);
-
-//   solver.setTolerance(-2.0e-5);
-//   solver.setNonLinearTolerance(-2.0e-5);
-
-//   auto x = solver.getMaxIterations();
-//   auto xNL = solver.getMaxNonLinearIterations();
-
-//   auto tol = solver.getTolerance();
-//   auto tolNL = solver.getNonLinearTolerance();
-
-//   EXPECT_EQ(x, 200);
-//   EXPECT_EQ(xNL, 222);
-//   EXPECT_NEAR(tol, 2.0e-5, 1.0e-8);
-//   EXPECT_NEAR(tolNL, 2.0e-5, 1.0e-8);
-// }
-
-
-// TEST(solvers_non_linear_base, solversBaseSolveTest)
-// {
-//   using namespace pressio;
-//   using namespace pressio::solvers;
-
-//   using vector_n_t = Eigen::VectorXd;
-//   using vector_w_t = containers::Vector<vector_n_t>;
-
-//   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
-
-//   vector_w_t b(2);
-//   b[0] = 0.4;
-//   b[1] = 0.5;
-
-//   ValidSystem sys;
-//   auto y = solver.solve(sys, b);
-
-//   EXPECT_NEAR( y[0],  1.0, 1e-8 );
-//   EXPECT_NEAR( y[1],  0.0, 1e-8 );
-// }
-
-
-// TEST(solvers_non_linear_base, solversBaseBadSolveTest)
-// {
-//   using namespace pressio;
-//   using namespace pressio::solvers;
-
-//   auto solver = NonLinearSolvers::createIterativeSolver<nonlinear::NewtonRaphson, linear::Bicgstab>();
-
-//   double left; int right;
-
-//   ASSERT_DEATH(solver.solve(left, right), "Error: either the nonlinear system or the solution hint is invalid.");
-// }

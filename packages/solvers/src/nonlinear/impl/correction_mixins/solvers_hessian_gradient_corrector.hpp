@@ -66,7 +66,8 @@ private:
 
   typename std::conditional<
     ::pressio::ops::predicates::is_object_pybind<lin_solver_t>::value,
-    lin_solver_t, lin_solver_t &>::type solverObj_;
+    lin_solver_t, std::reference_wrapper<lin_solver_t>
+    >::type solverObj_;
 
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
@@ -108,6 +109,17 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 #endif
+
+  // copy constr and assign
+  HessianGradientCorrector(HessianGradientCorrector const &) = default;
+  HessianGradientCorrector & operator=(HessianGradientCorrector const &) = default;
+
+  // move constr and assign
+  HessianGradientCorrector(HessianGradientCorrector && o) = default;
+  HessianGradientCorrector & operator=(HessianGradientCorrector && o) = default;
+
+  // destr
+  ~HessianGradientCorrector() = default;
 
 public:
   template <typename system_t>
@@ -166,7 +178,7 @@ private:
 #endif
   doLinearSolve(H_t & H, const g_t & g)
   {
-    solverObj_.solve(H, g, correction_);
+    solverObj_.get().solve(H, g, correction_);
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

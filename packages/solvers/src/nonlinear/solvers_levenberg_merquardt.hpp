@@ -65,5 +65,31 @@ using composeLM_t = typename composeLM<system_t, Args...>::type;
 template<typename system_t, typename ... Args>
 using composeLevenbergMarquardt_t = typename composeLM<system_t, Args...>::type;
 
+
+template<
+  typename system_t, typename state_t, typename lin_solver_t
+  >
+composeLevenbergMarquardt_t<system_t, lin_solver_t>
+createLevenbergMarquardt(const system_t & system,
+			 const state_t & state,
+			 lin_solver_t & linSolver)
+{
+  using return_t = composeLevenbergMarquardt_t<system_t, lin_solver_t>;
+  return return_t( system, state, linSolver);
+}
+
+template<
+  typename system_t, typename state_t, typename lin_solver_t, typename ops_t
+  >
+composeLevenbergMarquardt_t<system_t, lin_solver_t, ops_t>
+createLevenbergMarquardt(const system_t & system,
+			 const state_t & state,
+			 lin_solver_t & linSolver,
+			 const ops_t & opsObj)
+{
+  using return_t = composeLevenbergMarquardt_t<system_t, lin_solver_t, ops_t>;
+  return return_t( system, state, linSolver, opsObj);
+}
+
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_

@@ -49,9 +49,11 @@ int main(int argc, char *argv[]){
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
 
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
-  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
+  // using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+  //   stepper_t, lin_solver_t>;
+  // nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
+  auto NonLinSolver= 
+    pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y, linSolverObj);
 
   // integrate in time
   scalar_t fint = 10;

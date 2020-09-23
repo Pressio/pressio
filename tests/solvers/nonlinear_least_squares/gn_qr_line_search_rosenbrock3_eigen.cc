@@ -19,14 +19,16 @@ int main()
   using qr_solver_t = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_t qrSolver;
   // GaussNewton solver
-  using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    problem_t, /*pressio::solvers::nonlinear::armijoUpdate,*/  qr_solver_t>;
-  solver GNsolver(problem, x, qrSolver);
-  GNsolver.setTolerance(1e-8);
-  GNsolver.setMaxIterations(10);
-  GNsolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
+  // using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
+  //   problem_t, qr_solver_t>;
+  // solver GNsolver(problem, x, qrSolver);
 
-  GNsolver.solve(problem, x);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
+  GNSolver.setTolerance(1e-8);
+  GNSolver.setMaxIterations(10);
+  GNSolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
+
+  GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
   if( std::abs(x(0) - 0.88235299629773) > 1e-6 ) sentinel = "FAILED";
   if( std::abs(x(1) - 0.70131382960973) > 1e-6 ) sentinel = "FAILED";

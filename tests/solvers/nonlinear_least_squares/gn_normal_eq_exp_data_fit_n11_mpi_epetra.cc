@@ -44,11 +44,10 @@ int main(int argc, char **argv)
   using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    problem_t, 
-    //pressio::solvers::nonlinear::armijoUpdate,
-    linear_solver_t>;
-  gn_t GNSolver(problem, x, linSolver);
+  // using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
+  //   problem_t, linear_solver_t>;
+  // gn_t GNSolver(problem, x, linSolver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(problem,x,linSolver);
 
   GNSolver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   GNSolver.setTolerance(1e-8);

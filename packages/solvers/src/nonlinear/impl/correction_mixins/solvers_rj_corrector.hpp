@@ -62,7 +62,7 @@ public:
 
 private:
   state_t correction_ = {};
-  lin_solver_t & solverObj_;
+  std::reference_wrapper<lin_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -82,6 +82,17 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
+  // copy constr and assign
+  RJCorrector(RJCorrector const &) = default;
+  RJCorrector & operator=(RJCorrector const &) = default;
+
+  // move constr and assign
+  RJCorrector(RJCorrector && o) = default;
+  RJCorrector & operator=(RJCorrector && o) = default;
+
+  // destr
+  ~RJCorrector() = default;
+
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys,
@@ -95,7 +106,7 @@ public:
     const auto & r = T::getResidualCRef();
     const auto & J = T::getJacobianCRef();
     // solve J correction = r
-    solverObj_.solve(J, r, correction_);
+    solverObj_.get().solve(J, r, correction_);
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 
