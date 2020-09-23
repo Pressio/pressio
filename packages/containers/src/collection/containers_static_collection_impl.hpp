@@ -67,6 +67,10 @@ class StaticCollection
   (::pressio::containers::predicates::is_wrapper<T>::value, 
     "You can only create a StaticCollection of a pressio container type.");
 
+  static_assert
+  (::pressio::containers::predicates::is_expression<T>::value, 
+    "You cannot create a StaticCollection of pressio expressions.");
+
 public:
   using value_type    = T;
   using data_type     = std::array<T, n>;
@@ -134,6 +138,18 @@ public:
   template <std::size_t _n = n, mpl::enable_if_t<_n == 7, int> = 0>
   StaticCollection(T const & y)
     : data_{{y,y,y,y,y,y,y}}{}
+
+  // copy cnstr
+  StaticCollection(StaticCollection const & other) = default;
+  // copy assignment
+  StaticCollection & operator=(StaticCollection const & other) = default;
+  // move cnstr
+  StaticCollection(StaticCollection && other) = default;
+  // move assignment
+  StaticCollection & operator=(StaticCollection && other) = default;
+  // destructor
+  ~StaticCollection() = default;
+
 };
 
 }}}//end namespace pressio::containers::impl
