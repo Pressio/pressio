@@ -81,8 +81,8 @@ public:
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
   // move cnstr
   MultiVector(MultiVector && o) = default;
   // move assignment

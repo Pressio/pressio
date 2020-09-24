@@ -43,73 +43,73 @@ TEST_F(tpetraVectorGlobSize15Fixture,
   EXPECT_EQ( v1.extent(0), 15);
 }
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       CompoundAssignAdd_deep_copy_cstr){
-  using namespace pressio;
-  using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        CompoundAssignAdd_deep_copy_cstr){
+//   using namespace pressio;
+//   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = containers::Vector<native_t>;
-  myvec_t v1( *x_ );
-  v1.data()->putScalar(1.2);
-  myvec_t v2( *x_ );
-  v2.data()->putScalar(3.3);
-  v1 += v2;
-  Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
-  for (int i=0; i<v1.extentLocal(0); i++){
-    EXPECT_DOUBLE_EQ( dd[i], 4.5 );
-  }
-}
+//   using myvec_t = containers::Vector<native_t>;
+//   myvec_t v1( *x_ );
+//   v1.data()->putScalar(1.2);
+//   myvec_t v2( *x_ );
+//   v2.data()->putScalar(3.3);
+//   v1 += v2;
+//   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
+//   for (int i=0; i<v1.extentLocal(0); i++){
+//     EXPECT_DOUBLE_EQ( dd[i], 4.5 );
+//   }
+// }
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       CompoundAssignAdd_mapConstr){
-  using namespace pressio;
-  using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        CompoundAssignAdd_mapConstr){
+//   using namespace pressio;
+//   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = containers::Vector<native_t>;
-  myvec_t v1( contigMap_ );
-  v1.data()->putScalar(1.2);
-  myvec_t v2( contigMap_ );
-  v2.data()->putScalar(3.3);
-  v1 += v2;
-  Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
-  for (int i=0; i<v1.extentLocal(0); i++){
-    EXPECT_DOUBLE_EQ( dd[i], 4.5 );
-  }
-}
+//   using myvec_t = containers::Vector<native_t>;
+//   myvec_t v1( contigMap_ );
+//   v1.data()->putScalar(1.2);
+//   myvec_t v2( contigMap_ );
+//   v2.data()->putScalar(3.3);
+//   v1 += v2;
+//   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
+//   for (int i=0; i<v1.extentLocal(0); i++){
+//     EXPECT_DOUBLE_EQ( dd[i], 4.5 );
+//   }
+// }
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       CompoundAssignSubtract_deep_copy_cstr){
-  using namespace pressio;
-  using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        CompoundAssignSubtract_deep_copy_cstr){
+//   using namespace pressio;
+//   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = containers::Vector<native_t>;
-  myvec_t v1( *x_ );
-  v1.data()->putScalar(1.2);
-  myvec_t v2( *x_ );
-  v2.data()->putScalar(3.3);
-  v1 -= v2;
-  Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
-  for (int i=0; i<v1.extentLocal(0); i++){
-    EXPECT_DOUBLE_EQ( dd[i], -2.1 );
-  }
-}
+//   using myvec_t = containers::Vector<native_t>;
+//   myvec_t v1( *x_ );
+//   v1.data()->putScalar(1.2);
+//   myvec_t v2( *x_ );
+//   v2.data()->putScalar(3.3);
+//   v1 -= v2;
+//   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
+//   for (int i=0; i<v1.extentLocal(0); i++){
+//     EXPECT_DOUBLE_EQ( dd[i], -2.1 );
+//   }
+// }
 
-TEST_F(tpetraVectorGlobSize15Fixture,
-       CompoundAssignSubtract_mapConstr){
-  using namespace pressio;
-  using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
+// TEST_F(tpetraVectorGlobSize15Fixture,
+//        CompoundAssignSubtract_mapConstr){
+//   using namespace pressio;
+//   using sc_t = typename tpetraVectorGlobSize15Fixture::ST;
 
-  using myvec_t = containers::Vector<native_t>;
-  myvec_t v1( contigMap_ );
-  v1.data()->putScalar(1.2);
-  myvec_t v2( contigMap_ );
-  v2.data()->putScalar(3.3);
-  v1 -= v2;
-  Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
-  for (int i=0; i<v1.extentLocal(0); i++){
-    EXPECT_DOUBLE_EQ( dd[i], -2.1 );
-  }
-}
+//   using myvec_t = containers::Vector<native_t>;
+//   myvec_t v1( contigMap_ );
+//   v1.data()->putScalar(1.2);
+//   myvec_t v2( contigMap_ );
+//   v2.data()->putScalar(3.3);
+//   v1 -= v2;
+//   Teuchos::ArrayRCP<const sc_t> dd = v1.data()->getData();
+//   for (int i=0; i<v1.extentLocal(0); i++){
+//     EXPECT_DOUBLE_EQ( dd[i], -2.1 );
+//   }
+// }
 
 // TEST_F(tpetraVectorGlobSize15Fixture,
 //        empty){

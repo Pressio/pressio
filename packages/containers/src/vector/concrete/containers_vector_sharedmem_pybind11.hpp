@@ -120,20 +120,20 @@ public:
       proxy(i) = srcPx(i);
   }
 
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert( other.ndim() == 1 );
-      assert(this->extent(0) == other.extent(0));
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     assert( other.ndim() == 1 );
+  //     assert(this->extent(0) == other.extent(0));
 
-      // copy data from src to this
-      auto proxy = data_.mutable_unchecked();
-      const auto srcPx = other.data_.unchecked();
-      for (ord_t i=0; i<other.extent(0); ++i)
-  	proxy_(i) = srcPx(i);
-    }
-    return *this;
-  }
+  //     // copy data from src to this
+  //     auto proxy = data_.mutable_unchecked();
+  //     const auto srcPx = other.data_.unchecked();
+  //     for (ord_t i=0; i<other.extent(0); ++i)
+  // 	proxy_(i) = srcPx(i);
+  //   }
+  //   return *this;
+  // }
 
   // // move cnstr and assign
   // Vector(Vector && other);

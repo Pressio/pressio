@@ -82,8 +82,8 @@ public:
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
   // move cnstr
   MultiVector(MultiVector && o) = default;
   // move assignment
@@ -104,12 +104,12 @@ public:
     return data_[icol][irow];
   }
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.Update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
+  // // compound assignment when type(b) = type(this)
+  // // this += b
+  // this_t & operator+=(const this_t & other) {
+  //   this->data_.Update(1.0, *other.data(), 1.0 );
+  //   return *this;
+  // }
 
 public:
   wrap_t const * data() const{

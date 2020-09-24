@@ -116,22 +116,22 @@ public:
   }
 
   // copy assignment
-  DenseMatrix & operator=(const DenseMatrix & other){
-    if (&other != this){
-      assert(this->extent(0) == other.extent(0));
-      assert(this->extent(1) == other.extent(1));
+  DenseMatrix & operator=(const DenseMatrix & other) = delete;
+  //   if (&other != this){
+  //     assert(this->extent(0) == other.extent(0));
+  //     assert(this->extent(1) == other.extent(1));
 
-      // copy data from src to this
-      auto proxy = data_.mutable_unchecked();
-      const auto srcPx = other.data_.unchecked();
-      for (ord_t i=0; i<other.extent(0); ++i){
-  	for (ord_t j=0; j<other.extent(1); ++j){
-  	  proxy(i,j) = srcPx(i,j);
-  	}
-      }
-    }
-    return *this;
-  }
+  //     // copy data from src to this
+  //     auto proxy = data_.mutable_unchecked();
+  //     const auto srcPx = other.data_.unchecked();
+  //     for (ord_t i=0; i<other.extent(0); ++i){
+  // 	for (ord_t j=0; j<other.extent(1); ++j){
+  // 	  proxy(i,j) = srcPx(i,j);
+  // 	}
+  //     }
+  //   }
+  //   return *this;
+  // }
 
   // // move cnstr and assign
   // DenseMatrix(DenseMatrix && o);

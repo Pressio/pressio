@@ -78,8 +78,8 @@ public:
 
   // copy cnstr
   Vector(Vector const & other) = default;
-  // copy assignment
-  Vector & operator=(Vector const & other) = default;
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(Vector const & other) = delete;
 
   /* move semantics for static vectors do not invalidate
      the moved-from object, they just copy the data, see:
@@ -108,21 +108,21 @@ public:
     return data_(i);
   };
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    assert( other.size() == this->size() );
-    this->data_ += *other.data();
-    return *this;
-  }
+  // // compound assignment when type(b) = type(this)
+  // // this += b
+  // this_t & operator+=(const this_t & other) {
+  //   assert( other.size() == this->size() );
+  //   this->data_ += *other.data();
+  //   return *this;
+  // }
 
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    assert( other.size() == this->size() );
-    this->data_ -= *other.data();
-    return *this;
-  }
+  // // compound assignment when type(b) = type(this)
+  // // this -= b
+  // this_t & operator-=(const this_t & other) {
+  //   assert( other.size() == this->size() );
+  //   this->data_ -= *other.data();
+  //   return *this;
+  // }
 
 public:
   wrap_t const * data() const{

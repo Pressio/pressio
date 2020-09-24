@@ -47,22 +47,22 @@ TEST(containers_vector_epetra, CopyConstructor)
   ASSERT_TRUE( b.data()->Values() != nullptr );
 }
 
-TEST(containers_vector_epetra, CopyAssign)
-{
-  Epetra_MpiComm comm(MPI_COMM_WORLD);
-  Epetra_Map map(15, 0, comm);
+// TEST(containers_vector_epetra, CopyAssign)
+// {
+//   Epetra_MpiComm comm(MPI_COMM_WORLD);
+//   Epetra_Map map(15, 0, comm);
 
-  w_t a(map);
-  a.data()->PutScalar(1.);
+//   w_t a(map);
+//   a.data()->PutScalar(1.);
 
-  w_t b(map);
-  b = a;
-  double res; b.data()->Norm1(&res);
-  ASSERT_EQ( res, 15. );
-  ASSERT_TRUE( a.data()->Values() != b.data()->Values() );
-  ASSERT_TRUE( a.data()->Values() != nullptr );
-  ASSERT_TRUE( b.data()->Values() != nullptr );
-}
+//   w_t b(map);
+//   b = a;
+//   double res; b.data()->Norm1(&res);
+//   ASSERT_EQ( res, 15. );
+//   ASSERT_TRUE( a.data()->Values() != b.data()->Values() );
+//   ASSERT_TRUE( a.data()->Values() != nullptr );
+//   ASSERT_TRUE( b.data()->Values() != nullptr );
+// }
 
 TEST(containers_vector_epetra, MoveConstr)
 {

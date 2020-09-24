@@ -62,44 +62,44 @@ TEST(containers_matrix_dense_eigen_dynamic_class,
 
 
 
-TEST(containers_matrix_dense_eigen_dynamic_class,
-     CompoundAssignAddOperator)
-{
-  nat_t em1;
-  em1.resize(2,2);
-  em1 << 2., 4., 3., 6.;
-  mymat_t m1(em1);
+// TEST(containers_matrix_dense_eigen_dynamic_class,
+//      CompoundAssignAddOperator)
+// {
+//   nat_t em1;
+//   em1.resize(2,2);
+//   em1 << 2., 4., 3., 6.;
+//   mymat_t m1(em1);
 
-  nat_t em2;
-  em2.resize(2,2);
-  em2 << 1., 2., 1., 2.;
-  mymat_t m2(em2);
+//   nat_t em2;
+//   em2.resize(2,2);
+//   em2 << 1., 2., 1., 2.;
+//   mymat_t m2(em2);
 
-  m1 += m2;
-  EXPECT_DOUBLE_EQ(m1(0,0), 3.);
-  EXPECT_DOUBLE_EQ(m1(0,1), 6.);
-  EXPECT_DOUBLE_EQ(m1(1,0), 4.);
-  EXPECT_DOUBLE_EQ(m1(1,1), 8.);
-}
+//   m1 += m2;
+//   EXPECT_DOUBLE_EQ(m1(0,0), 3.);
+//   EXPECT_DOUBLE_EQ(m1(0,1), 6.);
+//   EXPECT_DOUBLE_EQ(m1(1,0), 4.);
+//   EXPECT_DOUBLE_EQ(m1(1,1), 8.);
+// }
 
 
-TEST(containers_matrix_dense_eigen_dynamic_class,
-     CompoundAssignSubtractOperator)
-{
-  nat_t em1;
-  em1.resize(2,2);
-  em1 << 2., 4., 3., 6.;
-  mymat_t m1(em1);
+// TEST(containers_matrix_dense_eigen_dynamic_class,
+//      CompoundAssignSubtractOperator)
+// {
+//   nat_t em1;
+//   em1.resize(2,2);
+//   em1 << 2., 4., 3., 6.;
+//   mymat_t m1(em1);
 
-  nat_t em2;
-  em2.resize(2,2);
-  em2 << 1., 2., 1., 2.;
-  mymat_t m2(em2);
+//   nat_t em2;
+//   em2.resize(2,2);
+//   em2 << 1., 2., 1., 2.;
+//   mymat_t m2(em2);
 
-  m1 -= m2;
-  EXPECT_DOUBLE_EQ(m1(0,0), 1.);
-  EXPECT_DOUBLE_EQ(m1(0,1), 2.);
-  EXPECT_DOUBLE_EQ(m1(1,0), 2.);
-  EXPECT_DOUBLE_EQ(m1(1,1), 4.);
-}
+//   m1 -= m2;
+//   EXPECT_DOUBLE_EQ(m1(0,0), 1.);
+//   EXPECT_DOUBLE_EQ(m1(0,1), 2.);
+//   EXPECT_DOUBLE_EQ(m1(1,0), 2.);
+//   EXPECT_DOUBLE_EQ(m1(1,1), 4.);
+// }
 

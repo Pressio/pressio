@@ -101,15 +101,15 @@ public:
     std::cout << "copy block \n";
   }
 
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other){
-    if(&other != this)
-    {
-      data_.update(::pressio::utils::constants<sc_t>::one(),
-		   *other.data(), ::pressio::utils::constants<sc_t>::zero());
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if(&other != this)
+  //   {
+  //     data_.update(::pressio::utils::constants<sc_t>::one(),
+		//    *other.data(), ::pressio::utils::constants<sc_t>::zero());
+  //   }
+  //   return *this;
+  // }
 
   // // // move and move assign: delete because they are not working for tblock
   // // MultiVector(MultiVector && other) = delete;

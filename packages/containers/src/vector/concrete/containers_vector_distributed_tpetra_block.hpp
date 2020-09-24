@@ -78,8 +78,8 @@ public:
    * so for now we construct this one using other's data */
 
   explicit Vector(const wrapped_type & vecobj)
-    : data_( *vecobj.getMap(),
-  	     vecobj.getBlockSize()){
+    : data_( *vecobj.getMap(), vecobj.getBlockSize())
+  {
     // just a trick to copy data
     data_.update(::pressio::utils::constants<sc_t>::one(),
 		 vecobj,
@@ -93,15 +93,15 @@ public:
   // copy cnstr delegating (for now) to the one above
   Vector(Vector const & other) : Vector(*other.data()){}
 
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      this->data_.update(::pressio::utils::constants<sc_t>::one(),
-			 *other.data(),
-			 ::pressio::utils::constants<sc_t>::zero() );
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     this->data_.update(::pressio::utils::constants<sc_t>::one(),
+		// 	 *other.data(),
+		// 	 ::pressio::utils::constants<sc_t>::zero() );
+  //   }
+  //   return *this;
+  // }
 
   // // move cnstr
   // Vector(Vector && other)
@@ -120,23 +120,23 @@ public:
   ~Vector() = default;
 
 public:
-  // compound add assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants<sc_t>::one(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::one() );
-    return *this;
-  }
+  // // compound add assignment when type(b) = type(this)
+  // // this += b
+  // this_t & operator+=(const this_t & other) {
+  //   this->data_.update(::pressio::utils::constants<sc_t>::one(),
+		//        *other.data(),
+		//        ::pressio::utils::constants<sc_t>::one() );
+  //   return *this;
+  // }
 
-  // compound add assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants<sc_t>::negOne(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::one() );
-    return *this;
-  }
+  // // compound add assignment when type(b) = type(this)
+  // // this -= b
+  // this_t & operator-=(const this_t & other) {
+  //   this->data_.update(::pressio::utils::constants<sc_t>::negOne(),
+		//        *other.data(),
+		//        ::pressio::utils::constants<sc_t>::one() );
+  //   return *this;
+  // }
 
   wrapped_type const * data() const{
     return &data_;

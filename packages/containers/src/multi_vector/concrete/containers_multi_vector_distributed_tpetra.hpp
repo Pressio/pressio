@@ -94,13 +94,13 @@ public:
   MultiVector(const MultiVector & other)
     : data_(*other.data(), Teuchos::Copy){}
 
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other){
-    if(&other != this){
-      data_.assign( *other.data() );
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if(&other != this){
+  //     data_.assign( *other.data() );
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr
   MultiVector(MultiVector && other) = default;
@@ -109,13 +109,13 @@ public:
 
   ~MultiVector() = default;
 
-public:
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
+// public:
+//   // compound assignment when type(b) = type(this)
+//   // this += b
+//   this_t & operator+=(const this_t & other) {
+//     this->data_.update(1.0, *other.data(), 1.0 );
+//     return *this;
+//   }
 
 public:
   wrap_t const * data() const{

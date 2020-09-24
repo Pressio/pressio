@@ -92,14 +92,15 @@ public:
 
   // copy cnstr
   Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert(this->extentLocal(0) == other.extentLocal(0));
-      data_.assign( *other.data() );
-    }
-    return *this;
-  }
+
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     assert(this->extentLocal(0) == other.extentLocal(0));
+  //     data_.assign( *other.data() );
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr
   Vector(Vector && other) = default;
@@ -109,19 +110,19 @@ public:
   ~Vector() = default;
 
 public:
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
+  // // compound assignment when type(b) = type(this)
+  // // this += b
+  // this_t & operator+=(const this_t & other) {
+  //   this->data_.update(1.0, *other.data(), 1.0 );
+  //   return *this;
+  // }
 
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    this->data_.update(-1.0, *other.data(), 1.0 );
-    return *this;
-  }
+  // // compound assignment when type(b) = type(this)
+  // // this -= b
+  // this_t & operator-=(const this_t & other) {
+  //   this->data_.update(-1.0, *other.data(), 1.0 );
+  //   return *this;
+  // }
 
   void print(std::string tag) const{
     Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense

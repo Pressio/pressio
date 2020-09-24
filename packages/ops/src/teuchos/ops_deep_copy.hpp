@@ -58,8 +58,9 @@ template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-deep_copy(T & dest, const T & src){
-  dest = src;
+deep_copy(T & dest, const T & src)
+{
+  *dest.data() = *src.data();
 }
 
 }}//end namespace pressio::ops

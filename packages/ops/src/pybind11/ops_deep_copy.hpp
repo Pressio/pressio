@@ -55,7 +55,8 @@ template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-deep_copy(T & dest, const T & src){
+deep_copy(T & dest, const T & src)
+{
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   assert( dest.extent(0) == src.extent(0) );
   auto dest_proxy = dest.data()->mutable_unchecked();

@@ -55,19 +55,19 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
-     assignOp){
+// TEST(containers_vector_serial_eigen_dynamic_class,
+//      assignOp){
 
-  //construct by passing the size
-  myvec_t a(3);
-  a[0]=1.1; a[1]=1.2; a[2]= 1.3;
+//   //construct by passing the size
+//   myvec_t a(3);
+//   a[0]=1.1; a[1]=1.2; a[2]= 1.3;
 
-  myvec_t b(3);
-  b = a;
-  EXPECT_DOUBLE_EQ( b[0], 1.1);
-  EXPECT_DOUBLE_EQ( b[1], 1.2);
-  EXPECT_DOUBLE_EQ( b[2], 1.3);
-}
+//   myvec_t b(3);
+//   b = a;
+//   EXPECT_DOUBLE_EQ( b[0], 1.1);
+//   EXPECT_DOUBLE_EQ( b[1], 1.2);
+//   EXPECT_DOUBLE_EQ( b[2], 1.3);
+// }
 
 
 TEST(containers_vector_serial_eigen_dynamic_class,
@@ -148,55 +148,54 @@ TEST(containers_vector_serial_eigen_dynamic_class,
 
   myvec_t a(4);
   ASSERT_TRUE( a.extent(0) == 4 );
-  myvec_t b(6);
-  a = b;
-  ASSERT_TRUE( a.extent(0) == 6 );
-  ASSERT_FALSE( a.extent(0) == 4 );
+  // myvec_t b(6);
+  // a = b;
+  // ASSERT_TRUE( a.extent(0) == 6 );
+  // ASSERT_FALSE( a.extent(0) == 4 );
 }
 
-TEST(containers_vector_serial_eigen_dynamic_class,
-     assignScalar){
+// TEST(containers_vector_serial_eigen_dynamic_class,
+//      assignScalar){
 
-  myvec_t a(4);
-  a = 1.12;
-  EXPECT_DOUBLE_EQ( a(0), 1.12);
-  EXPECT_DOUBLE_EQ( a(1), 1.12);
-  EXPECT_DOUBLE_EQ( a(2), 1.12);
-  EXPECT_DOUBLE_EQ( a(3), 1.12);
-}
+//   myvec_t a(4);
+//   a = 1.12;
+//   EXPECT_DOUBLE_EQ( a(0), 1.12);
+//   EXPECT_DOUBLE_EQ( a(1), 1.12);
+//   EXPECT_DOUBLE_EQ( a(2), 1.12);
+//   EXPECT_DOUBLE_EQ( a(3), 1.12);
+// }
+
+// TEST(containers_vector_serial_eigen_dynamic_class,
+//      CompoundAssignAddOperator){
+
+//   myvec_t m_v1(4);
+//   m_v1[0] = 3.; m_v1[1] = 2.;
+//   m_v1[2] = 4.; m_v1[3] = 5.;
+//   myvec_t m_v2(4);
+//   m_v2[0] = 1.; m_v2[1] = 1.;
+//   m_v2[2] = 1.; m_v2[3] = 1.;
+
+//   m_v1 += m_v2;
+//   EXPECT_DOUBLE_EQ(m_v1[0], 4.);
+//   EXPECT_DOUBLE_EQ(m_v1[1], 3.);
+//   EXPECT_DOUBLE_EQ(m_v1[2], 5.);
+//   EXPECT_DOUBLE_EQ(m_v1[3], 6.);
+// }
 
 
-TEST(containers_vector_serial_eigen_dynamic_class,
-     CompoundAssignAddOperator){
+// TEST(containers_vector_serial_eigen_dynamic_class,
+//      CompoundAssignSubtractOperator){
 
-  myvec_t m_v1(4);
-  m_v1[0] = 3.; m_v1[1] = 2.;
-  m_v1[2] = 4.; m_v1[3] = 5.;
-  myvec_t m_v2(4);
-  m_v2[0] = 1.; m_v2[1] = 1.;
-  m_v2[2] = 1.; m_v2[3] = 1.;
+//   myvec_t m_v1(4);
+//   m_v1[0] = 3.; m_v1[1] = 2.;
+//   m_v1[2] = 4.; m_v1[3] = 5.;
+//   myvec_t m_v2(4);
+//   m_v2[0] = 1.; m_v2[1] = 1.;
+//   m_v2[2] = 1.; m_v2[3] = 1.;
 
-  m_v1 += m_v2;
-  EXPECT_DOUBLE_EQ(m_v1[0], 4.);
-  EXPECT_DOUBLE_EQ(m_v1[1], 3.);
-  EXPECT_DOUBLE_EQ(m_v1[2], 5.);
-  EXPECT_DOUBLE_EQ(m_v1[3], 6.);
-}
-
-
-TEST(containers_vector_serial_eigen_dynamic_class,
-     CompoundAssignSubtractOperator){
-
-  myvec_t m_v1(4);
-  m_v1[0] = 3.; m_v1[1] = 2.;
-  m_v1[2] = 4.; m_v1[3] = 5.;
-  myvec_t m_v2(4);
-  m_v2[0] = 1.; m_v2[1] = 1.;
-  m_v2[2] = 1.; m_v2[3] = 1.;
-
-  m_v1 -= m_v2;
-  EXPECT_DOUBLE_EQ(m_v1[0], 2.);
-  EXPECT_DOUBLE_EQ(m_v1[1], 1.);
-  EXPECT_DOUBLE_EQ(m_v1[2], 3.);
-  EXPECT_DOUBLE_EQ(m_v1[3], 4.);
-}
+//   m_v1 -= m_v2;
+//   EXPECT_DOUBLE_EQ(m_v1[0], 2.);
+//   EXPECT_DOUBLE_EQ(m_v1[1], 1.);
+//   EXPECT_DOUBLE_EQ(m_v1[2], 3.);
+//   EXPECT_DOUBLE_EQ(m_v1[3], 4.);
+// }

@@ -93,19 +93,19 @@ public:
     return data_(row,col);
   }
 
-  derived_t & operator+=(const derived_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    assert( other.extent(1) == this->extent(1) );
-    this->data_ += *other.data();
-    return *this;
-  }
+  // derived_t & operator+=(const derived_t & other) {
+  //   assert( other.extent(0) == this->extent(0) );
+  //   assert( other.extent(1) == this->extent(1) );
+  //   this->data_ += *other.data();
+  //   return *this;
+  // }
 
-  derived_t & operator-=(const derived_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    assert( other.extent(1) == this->extent(1) );
-    this->data_ -= *other.data();
-    return *this;
-  }
+  // derived_t & operator-=(const derived_t & other) {
+  //   assert( other.extent(0) == this->extent(0) );
+  //   assert( other.extent(1) == this->extent(1) );
+  //   this->data_ -= *other.data();
+  //   return *this;
+  // }
 
 public:
   ord_t extent(ord_t i) const {

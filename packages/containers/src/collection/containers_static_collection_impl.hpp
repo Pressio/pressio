@@ -68,7 +68,7 @@ class StaticCollection
     "You can only create a StaticCollection of a pressio container type.");
 
   static_assert
-  (::pressio::containers::predicates::is_expression<T>::value, 
+  (!::pressio::containers::predicates::is_expression<T>::value, 
     "You cannot create a StaticCollection of pressio expressions.");
 
 public:

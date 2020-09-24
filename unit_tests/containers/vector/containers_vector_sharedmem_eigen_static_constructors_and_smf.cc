@@ -50,17 +50,17 @@ TEST(containers_vector_sharedmem_eigen_static, CopyConstructor)
   ASSERT_TRUE( b.data()->data() != nullptr );
 }
 
-TEST(containers_vector_sharedmem_eigen_static, CopyAssign)
-{
-  w_t a;
-  a.data()->setConstant(1.);
-  w_t b;
-  b = a;
-  ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
-  ASSERT_TRUE( a.data()->data() != b.data()->data() );
-  ASSERT_TRUE( a.data()->data() != nullptr );
-  ASSERT_TRUE( b.data()->data() != nullptr );
-}
+// TEST(containers_vector_sharedmem_eigen_static, CopyAssign)
+// {
+//   w_t a;
+//   a.data()->setConstant(1.);
+//   w_t b;
+//   b = a;
+//   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
+//   ASSERT_TRUE( a.data()->data() != b.data()->data() );
+//   ASSERT_TRUE( a.data()->data() != nullptr );
+//   ASSERT_TRUE( b.data()->data() != nullptr );
+// }
 
 TEST(containers_vector_sharedmem_eigen_static, MoveConstructor)
 {

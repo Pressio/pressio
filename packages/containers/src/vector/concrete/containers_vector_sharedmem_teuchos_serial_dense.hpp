@@ -76,8 +76,8 @@ public:
 
   // copy constructor implements copy semantics
   Vector(const Vector & other) = default;
-  // copy assign implments copy semantics
-  Vector & operator=(const Vector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(const Vector & other) = delete;
 
   // move cnstr and assign
   Vector(Vector && other) = default;
@@ -85,29 +85,29 @@ public:
 
   ~Vector() = default;
 
-public:
-  // assignment with value
-  this_t & operator=(const sc_t value){
-    for (ord_t i = 0; i != this->extent(0); ++i)
-      data_[i] = value;
-    return *this;
-  }
+// public:
+//   // assignment with value
+//   this_t & operator=(const sc_t value){
+//     for (ord_t i = 0; i != this->extent(0); ++i)
+//       data_[i] = value;
+//     return *this;
+//   }
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    this->data_ += *other.data();
-    return *this;
-  }
+//   // compound assignment when type(b) = type(this)
+//   // this += b
+//   this_t & operator+=(const this_t & other) {
+//     assert( other.extent(0) == this->extent(0) );
+//     this->data_ += *other.data();
+//     return *this;
+//   }
 
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    this->data_ -= *other.data();
-    return *this;
-  }
+//   // compound assignment when type(b) = type(this)
+//   // this -= b
+//   this_t & operator-=(const this_t & other) {
+//     assert( other.extent(0) == this->extent(0) );
+//     this->data_ -= *other.data();
+//     return *this;
+//   }
 
 public:
   ref_t operator [] (ord_t i){

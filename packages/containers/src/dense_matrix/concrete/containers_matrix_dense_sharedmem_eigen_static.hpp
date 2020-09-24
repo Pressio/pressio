@@ -90,19 +90,19 @@ public:
     return data_(row,col);
   }
 
-  derived_t & operator+=(const derived_t & other) {
-    assert( other.rows() == this->rows() );
-    assert( other.cols() == this->cols() );
-    this->data_ += *other.data();
-    return *this;
-  }
+  // derived_t & operator+=(const derived_t & other) {
+  //   assert( other.rows() == this->rows() );
+  //   assert( other.cols() == this->cols() );
+  //   this->data_ += *other.data();
+  //   return *this;
+  // }
 
-  derived_t & operator-=(const derived_t & other) {
-    assert( other.rows() == this->rows() );
-    assert( other.cols() == this->cols() );
-    this->data_ -= *other.data();
-    return *this;
-  }
+  // derived_t & operator-=(const derived_t & other) {
+  //   assert( other.rows() == this->rows() );
+  //   assert( other.cols() == this->cols() );
+  //   this->data_ -= *other.data();
+  //   return *this;
+  // }
 
 public:
   wrap_t * data(){

@@ -89,20 +89,30 @@ public:
 
   Vector(const ord_t e1) : data_{"empty", e1}{}
 
-  // copy constructor implements copy semantics (for time being)
+  /* copy constructor and asign implement value semantics.
+     Hence, when we copyConstruct a kokkos wrapper
+     we want to make sure that the new object does not
+     view the previous one
+     so the following should be true:
+	Vector a(...)
+	a(0) = 0.5
+	Vector b(a)
+	b(0) =1.1
+	a(0) == 0.5 // should be true
+  */
   Vector(const Vector & other)
     : data_{other.data_.label(), other.data_.extent(0)}{
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // copy assign implments copy semantics not view (for time being)
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert(this->extent(0) == other.extent(0));
-      Kokkos::deep_copy(data_, *other.data());
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy 
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     assert(this->extent(0) == other.extent(0));
+  //     Kokkos::deep_copy(data_, *other.data());
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr and assign
   Vector(Vector && other) = default;

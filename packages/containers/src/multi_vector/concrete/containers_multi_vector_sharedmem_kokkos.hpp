@@ -96,15 +96,15 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // copy assign implments copy semantics not view
-  MultiVector & operator=(const MultiVector & other){
-    if (&other != this){
-      assert(this->length() == other.length());
-      assert(this->numVectors() == other.numVectors());
-      Kokkos::deep_copy(data_, *other.data());
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if (&other != this){
+  //     assert(this->length() == other.length());
+  //     assert(this->numVectors() == other.numVectors());
+  //     Kokkos::deep_copy(data_, *other.data());
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr and assign
   MultiVector(MultiVector && other) = default;

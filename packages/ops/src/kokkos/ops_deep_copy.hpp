@@ -64,7 +64,8 @@ template< typename T1, typename T2 >
    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T2>::value or
    ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value)
   >
-deep_copy(T1 & dest, const T2 & src){
+deep_copy(T1 & dest, const T2 & src)
+{
   Kokkos::deep_copy(*dest.data(), *src.data());
 }
 
