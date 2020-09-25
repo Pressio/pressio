@@ -70,18 +70,18 @@ private:
 public:
   MultiVector() = default;
 
+  explicit MultiVector(const wrap_t & other) : data_(other){}
+
   MultiVector(ord_t length, ord_t numVectors)
     : data_(length, numVectors){
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  explicit MultiVector(const wrap_t & other) : data_(other){}
-
   MultiVector(wrap_t && other) : data_(std::move(other)){}
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
   // move cnstr
   MultiVector(MultiVector && o) = default;
@@ -104,7 +104,6 @@ public:
     return data_(irow, iVec);
   }
 
-public:
   ord_t numVectors() const{
     return data_.cols();
   }

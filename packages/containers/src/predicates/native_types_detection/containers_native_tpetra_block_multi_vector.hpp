@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_BLOCK_MULTI_VECTOR_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_BLOCK_MULTI_VECTOR_HPP_
 
-#include <Tpetra_Experimental_BlockMultiVector_decl.hpp>
+#include <Tpetra_BlockMultiVector_decl.hpp>
 
 namespace pressio{ namespace containers{ namespace predicates {
 
@@ -61,7 +61,7 @@ struct is_multi_vector_tpetra_block<
   T,
   ::pressio::mpl::enable_if_t<
     std::is_same<T,
-		 Tpetra::Experimental::BlockMultiVector<
+		 Tpetra::BlockMultiVector<
 		   typename T::impl_scalar_type,
 		   typename T::local_ordinal_type,
 		   typename T::global_ordinal_type,

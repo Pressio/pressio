@@ -9,7 +9,7 @@ TEST(containers_multi_vector_distributed_tpetra_block, Traits){
   using GO = unsigned long;
   typedef Tpetra::MultiVector<>::node_type NT;
   // typedef Tpetra::Map<LO, GO, NT> map_type;
-  using nat_t = Tpetra::Experimental::BlockMultiVector<ST, LO, GO, NT>;
+  using nat_t = Tpetra::BlockMultiVector<ST, LO, GO, NT>;
   using mymvec_t = containers::MultiVector<nat_t>;
 
   static_assert(::pressio::containers::predicates::is_multi_vector_tpetra_block<nat_t>::value,"");

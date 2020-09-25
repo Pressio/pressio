@@ -9,10 +9,10 @@ TEST(containers_vector_distributed_tpetra_block, Traits){
   using ST = double;
   using LO = int;
   using GO = unsigned long;
-  typedef Tpetra::Experimental::BlockVector<>::node_type NT;
+  typedef Tpetra::BlockVector<>::node_type NT;
   typedef Tpetra::Map<LO, GO, NT> map_type;
 
-  using natV_t = Tpetra::Experimental::BlockVector<ST, LO, GO, NT>;
+  using natV_t = Tpetra::BlockVector<ST, LO, GO, NT>;
   STATIC_ASSERT_IS_VECTOR_TPETRA_BLOCK(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_TPETRA(natV_t);
   STATIC_ASSERT_IS_NOT_VECTOR_EIGEN(natV_t);

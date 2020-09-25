@@ -108,20 +108,6 @@ public:
     return data_[i];
   };
 
-  // // compound assignment when type(b) = type(this)
-  // // this += b
-  // Vector & operator+=(const Vector & other) {
-  //   this->data_.Update(1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
-
-  // // compound assignment when type(b) = type(this)
-  // // this -= b
-  // Vector & operator-=(const Vector & other) {
-  //   this->data_.Update(-1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
-
   wrapped_type const * data() const{
     return &data_;
   }

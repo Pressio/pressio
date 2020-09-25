@@ -77,6 +77,10 @@ private:
 public:
   MultiVector() = default;
 
+  explicit MultiVector(const wrap_t & other)
+    // use the deep_copy constructor
+    : data_(other, Teuchos::Copy){}
+
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
@@ -86,19 +90,13 @@ public:
   explicit MultiVector(wrap_t && other)
     : data_(std::move(other)){}
 
-  explicit MultiVector(const wrap_t & other)
-    // use the deep_copy constructor
-    : data_(other, Teuchos::Copy){}
-
   // copy constr
   MultiVector(const MultiVector & other)
     : data_(*other.data(), Teuchos::Copy){}
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
-  //   if(&other != this){
-  //     data_.assign( *other.data() );
-  //   }
+  //   if(&other != this){data_.assign( *other.data() );}
   //   return *this;
   // }
 
@@ -108,14 +106,6 @@ public:
   MultiVector & operator=(MultiVector && other) = default;
 
   ~MultiVector() = default;
-
-// public:
-//   // compound assignment when type(b) = type(this)
-//   // this += b
-//   this_t & operator+=(const this_t & other) {
-//     this->data_.update(1.0, *other.data(), 1.0 );
-//     return *this;
-//   }
 
 public:
   wrap_t const * data() const{

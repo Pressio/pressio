@@ -12,18 +12,25 @@ TEST(containers_vector_sharedmem_eigen_static, Constructor1)
   ASSERT_TRUE( b.data()->data() != nullptr );
 }
 
-TEST(containers_vector_sharedmem_eigen_static, Constructor3)
+TEST(containers_vector_sharedmem_eigen_static, Constructor2)
 {
   vec_t a;
   a.setConstant(1);
+
   w_t b(a);
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
+
+  // change b should not affect a
+  b.data()->setConstant(2.);
+  ASSERT_EQ(b.data()->lpNorm<1>(), 30.);
+  ASSERT_EQ(a.lpNorm<1>(), 15.);
+
   ASSERT_TRUE( a.data() != b.data()->data() );
   ASSERT_TRUE( a.data() != nullptr );
   ASSERT_TRUE( b.data()->data() != nullptr );
 }
 
-TEST(containers_vector_sharedmem_eigen_static, Constructor4)
+TEST(containers_vector_sharedmem_eigen_static, Constructor3)
 {
   /* move semantics for static vectors do not invalidate
      the moved-from object, they just copy the data, see:
@@ -32,8 +39,10 @@ TEST(containers_vector_sharedmem_eigen_static, Constructor4)
 
   vec_t a;
   a.setConstant(1);
+
   w_t b(std::move(a));
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
+
   ASSERT_TRUE( a.data() != b.data()->data() );
   ASSERT_TRUE( a.data() != nullptr );
   ASSERT_TRUE( b.data()->data() != nullptr );
@@ -43,24 +52,19 @@ TEST(containers_vector_sharedmem_eigen_static, CopyConstructor)
 {
   w_t a;
   a.data()->setConstant(1.);
+
   w_t b(a);
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
+
+  // change b should not affect a
+  b.data()->setConstant(2.);
+  ASSERT_EQ(b.data()->lpNorm<1>(), 30.);
+  ASSERT_EQ(a.data()->lpNorm<1>(), 15.);
+
   ASSERT_TRUE( a.data()->data() != b.data()->data() );
   ASSERT_TRUE( a.data()->data() != nullptr );
   ASSERT_TRUE( b.data()->data() != nullptr );
 }
-
-// TEST(containers_vector_sharedmem_eigen_static, CopyAssign)
-// {
-//   w_t a;
-//   a.data()->setConstant(1.);
-//   w_t b;
-//   b = a;
-//   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
-//   ASSERT_TRUE( a.data()->data() != b.data()->data() );
-//   ASSERT_TRUE( a.data()->data() != nullptr );
-//   ASSERT_TRUE( b.data()->data() != nullptr );
-// }
 
 TEST(containers_vector_sharedmem_eigen_static, MoveConstructor)
 {
@@ -73,6 +77,7 @@ TEST(containers_vector_sharedmem_eigen_static, MoveConstructor)
   a.data()->setConstant(1.);
   const auto ptr = a.data()->data();
   ASSERT_TRUE( ptr != nullptr );
+
   w_t b(std::move(a));
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
   ASSERT_TRUE( a.data()->data() != nullptr );

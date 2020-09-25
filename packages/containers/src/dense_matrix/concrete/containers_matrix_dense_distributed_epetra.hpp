@@ -94,7 +94,6 @@ public:
     return data_[icol][irow];
   }
 
-public:
   wrap_t const * data() const{
     return &data_;
   }

@@ -9,10 +9,10 @@ TEST(containers_vector_distributed_tpetra_block, Traits){
   using ST = double;
   using LO = int;
   using GO = unsigned long;
-  typedef Tpetra::Experimental::BlockVector<>::node_type NT;
+  typedef Tpetra::BlockVector<>::node_type NT;
   typedef Tpetra::Map<LO, GO, NT> map_type;
 
-  using natV_t = Tpetra::Experimental::BlockVector<ST, LO, GO, NT>;
+  using natV_t = Tpetra::BlockVector<ST, LO, GO, NT>;
   static_assert(::pressio::containers::predicates::is_vector_tpetra_block<natV_t>::value,"");
 
   using myvec_t = containers::Vector<natV_t>;

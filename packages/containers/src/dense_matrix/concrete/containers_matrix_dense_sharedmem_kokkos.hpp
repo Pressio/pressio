@@ -101,14 +101,6 @@ public:
   ~DenseMatrix(){}
 
 public:
-  // // copy assign implments copy semantics not view (for time being)
-  // this_t & operator=(const this_t & other){
-  //   assert(this->rows() == other.rows());
-  //   assert(this->cols() == other.cols());
-  //   Kokkos::deep_copy(data_, *other.data());
-  //   return *this;
-  // }
-
   template< typename _wrapped_type = wrapped_type >
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
@@ -129,7 +121,6 @@ public:
     return data_(i, j);
   };
 
-public:
   wrap_t const * data() const{
     return &data_;
   }

@@ -107,12 +107,6 @@ public:
 
   // delete copy assign to force usage of ops::deep_copy 
   Vector & operator=(const Vector & other) = delete;
-  //   if (&other != this){
-  //     assert(this->extent(0) == other.extent(0));
-  //     Kokkos::deep_copy(data_, *other.data());
-  //   }
-  //   return *this;
-  // }
 
   // move cnstr and assign
   Vector(Vector && other) = default;
@@ -129,6 +123,7 @@ public:
   // destructor
   ~Vector() = default;
 
+public:
   template<typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also

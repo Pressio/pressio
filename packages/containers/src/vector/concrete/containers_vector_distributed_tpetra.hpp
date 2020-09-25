@@ -85,11 +85,6 @@ public:
   explicit Vector(Teuchos::RCP<const map_t> mapO)
     : data_(mapO){}
 
-  // here we do not default the copy constr and assing because
-  // if we did, it would use the tpetra copy/move which
-  // have view semantics
-  // which is not what we want here (for the time being)
-
   // copy cnstr
   Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
 
@@ -110,19 +105,6 @@ public:
   ~Vector() = default;
 
 public:
-  // // compound assignment when type(b) = type(this)
-  // // this += b
-  // this_t & operator+=(const this_t & other) {
-  //   this->data_.update(1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
-
-  // // compound assignment when type(b) = type(this)
-  // // this -= b
-  // this_t & operator-=(const this_t & other) {
-  //   this->data_.update(-1.0, *other.data(), 1.0 );
-  //   return *this;
-  // }
 
   void print(std::string tag) const{
     Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense

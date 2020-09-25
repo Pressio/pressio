@@ -62,7 +62,7 @@ norm2(const vec_type & a)
 {
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::Experimental::BlockVector<>;
+  using mv_t = Tpetra::BlockVector<>;
   return const_cast<mv_t*>(a.data())->getVectorView().norm2();
 }
 
@@ -77,7 +77,7 @@ norm1(const vec_type & a)
 {
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
-  using mv_t = Tpetra::Experimental::BlockVector<>;
+  using mv_t = Tpetra::BlockVector<>;
   return const_cast<mv_t*>(a.data())->getVectorView().norm1();
 }
 

@@ -81,16 +81,16 @@ public:
 
   explicit Vector(const wrap_t & src) : data_(src){}
 
-  Vector(wrap_t && src) : data_(std::move(src)){}
-
   explicit Vector(ord_t insize){
     data_.resize(insize);
     data_.setConstant( ::pressio::utils::constants<sc_t>::zero() );
   }
 
+  Vector(wrap_t && src) : data_(std::move(src)){}
+
   // copy cnstr
   Vector(Vector const & other) = default;
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
 
   /* move semantics, see:
@@ -102,30 +102,6 @@ public:
 
   // destructor
   ~Vector() = default;
-
-// public:
-//   // assignment with value
-//   this_t & operator=(const sc_t & value){
-//     for (ord_t i = 0; i != data_.size(); ++i)
-//       data_[i] = value;
-//     return *this;
-//   }
-
-//   // compound assignment when type(b) = type(this)
-//   // this += b
-//   this_t & operator+=(const this_t & other) {
-//     assert( other.extent(0) == this->extent(0) );
-//     this->data_ += *other.data();
-//     return *this;
-//   }
-
-//   // compound assignment when type(b) = type(this)
-//   // this -= b
-//   this_t & operator-=(const this_t & other) {
-//     assert( other.extent(0) == this->extent(0) );
-//     this->data_ -= *other.data();
-//     return *this;
-//   }
 
 public:
 
