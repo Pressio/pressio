@@ -42,7 +42,9 @@ jobs:
           ls -lh ../../pressio/docs/
           ./doxygen.py ../../pressio/docs/conf.py
           
-          cd ../../pressio/docs
+      - name: Commit changes
+        run: |
+          pwd
           ls -lh 
           
 #       - name: Push changes
