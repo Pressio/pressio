@@ -54,8 +54,7 @@ namespace pressio { namespace solvers { namespace linear{ namespace impl{
 template<typename solver_tag, typename MatrixT>
 class EigenIterative
   : public LinearBase<MatrixT, EigenIterative<solver_tag, MatrixT> >,
-    public IterativeBase< EigenIterative<solver_tag, MatrixT>,
-			  typename containers::details::traits<MatrixT>::scalar_t>
+    public IterativeBase< EigenIterative<solver_tag, MatrixT>>
 {
   static_assert
   ( ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
@@ -70,7 +69,7 @@ public:
 
   using this_t          = EigenIterative<solver_tag, MatrixT>;
   using base_interface  = LinearBase<MatrixT, this_t>;
-  using base_iterative  = IterativeBase<this_t, scalar_t>;
+  using base_iterative  = IterativeBase<this_t>;
 
   using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
@@ -86,33 +85,37 @@ public:
   EigenIterative(const EigenIterative &) = delete;
   ~EigenIterative() = default;
 
-private:
-  iteration_t getNumIterationsExecutedImpl() const {
+  iteration_t getNumIterationsExecuted() const 
+  {
     return mysolver_.iterations();
   }
 
-  scalar_t getFinalErrorImpl() const {
+  scalar_t getFinalError() const 
+  {
     return mysolver_.error();
   }
 
-  void resetLinearSystemImpl(const MatrixT& A) {
+  void resetLinearSystem(const MatrixT& A)
+  {
     mysolver_.compute(*A.data());
   }
 
   template <typename T>
-  void solveImpl(const T& b, T & y)
+  void solve(const T& b, T & y)
   {
     *y.data() = mysolver_.solve(*b.data());
   }
 
   template <typename T>
-  void solveImpl(const MatrixT & A, const T& b, T & y) {
+  void solve(const MatrixT & A, const T& b, T & y) 
+  {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }
 
   template <typename T>
-  void solveAllowMatOverwriteImpl(MatrixT & A, const T& b, T & y) {
+  void solveAllowMatOverwrite(MatrixT & A, const T& b, T & y)
+  {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }

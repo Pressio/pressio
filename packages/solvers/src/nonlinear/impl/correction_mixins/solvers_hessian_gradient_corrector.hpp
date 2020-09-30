@@ -52,13 +52,13 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_type, typename lin_solver_t, ::pressio::Norm normType
+  typename T, typename state_type, typename lin_solver_t
   >
 class HessianGradientCorrector : public T
 {
 public:
   using state_t = state_type;
-  static constexpr auto normType_ = normType;
+  static constexpr auto normType_ = ::pressio::Norm::L2;
   using sc_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
 
 private:
@@ -95,10 +95,11 @@ public:
   // However, this is only true for the constructor.
   // For the actual computation below, the state is wrapper type.
   template <typename system_t, typename ...Args>
-  HessianGradientCorrector(const system_t & system,
-			   const typename ::pressio::containers::details::traits<state_t>::wrapped_t & state,
-			   lin_solver_t & solverObj,
-			   Args && ... args)
+  HessianGradientCorrector
+  (const system_t & system,
+   const typename ::pressio::containers::details::traits<state_t>::wrapped_t & state,
+   lin_solver_t & solverObj,
+   Args && ... args)
     : T(system,
 	state_t(state) /*the parent needs a wrapped object*/,
 	std::forward<Args>(args)...),
@@ -127,7 +128,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, normType,
+    T::computeOperators(sys, state, ::pressio::Norm::L2,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
@@ -139,7 +140,9 @@ public:
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g);
   }
 
-  bool hasGradientComputation() const { return true; }
+  bool hasGradientComputation() const {
+    return true;
+  }
 
   void resetForNewCall(){
     T::resetForNewCall();
@@ -166,7 +169,7 @@ public:
 		    const state_t & state,
 		    sc_t & result) const
   {
-    T::residualNorm(system, state, normType, result);
+    T::residualNorm(system, state, ::pressio::Norm::L2, result);
   }
 
 private:

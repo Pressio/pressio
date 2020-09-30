@@ -136,16 +136,20 @@ public:
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
-  residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm) const
+  residualNorm(const system_t & system, 
+         const state_t & state,
+	       ::pressio::Norm normType, 
+         sc_t & residualNorm) const
   {
     system.residual(state, auxR_, normType, residualNorm);
   }
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
-  residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm)
+  residualNorm(const system_t & system, 
+         const state_t & state,
+	       ::pressio::Norm normType, 
+         sc_t & residualNorm) const
   {
     system.residualNorm(state, normType, residualNorm);
   }

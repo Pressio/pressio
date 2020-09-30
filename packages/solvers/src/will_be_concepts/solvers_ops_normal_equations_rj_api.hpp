@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_legitimate_linear_solver_for_least_squares_solver.hpp
+// solvers_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,26 +46,85 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_
-#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_
+#ifndef solvers_ops_nonlin_ls_HPP_
+#define solvers_ops_nonlin_ls_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
-template <typename T, typename enable = void>
-struct linear_solver_for_least_squares_solver : std::false_type{};
+template <
+  typename T,
+  typename sc_t,
+  typename H_t,
+  typename g_t,
+  typename J_t,
+  typename r_t,
+  typename enable = void
+>
+struct ops_normal_equations_rj_api : std::false_type{};
 
-template <typename T>
-struct linear_solver_for_least_squares_solver<
-  T,
+template <
+  typename T,
+  typename sc_t,
+  typename H_t,
+  typename g_t,
+  typename J_t,
+  typename r_t
+>
+struct ops_normal_equations_rj_api<
+  T, sc_t, H_t, g_t, J_t, r_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::solvers::predicates::has_matrix_typedef<T>::value and
-    // the matrix_type is not void
-    !std::is_void<typename T::matrix_type>::value and
-    ::pressio::mpl::publicly_inherits_from<
-      T, ::pressio::solvers::LinearBase<typename T::matrix_type, T>
+    // 1. need non-void product returning J^T J
+    std::is_same<
+      decltype
+      (
+       std::declval< T const &>().template product<H_t>
+       (
+        std::declval< ::pressio::transpose >(),
+        std::declval< ::pressio::nontranspose >(),
+        std::declval< sc_t>(),
+        std::declval< 
+          typename containers::details::traits<J_t>::wrapped_t const & >(),
+        std::declval< 
+          typename containers::details::traits<J_t>::wrapped_t const & >()
+        )
+       ),
+      H_t
+      >::value 
+    and
+    // 2. need void product computing  J^T J
+    std::is_void<
+      decltype
+      (
+       std::declval< T const &>().product
+       (
+        std::declval< ::pressio::transpose >(),
+        std::declval< ::pressio::nontranspose >(),
+        std::declval< sc_t>(),
+        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
+        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
+        std::declval< sc_t>(),
+        std::declval< H_t & >()
+        )
+       )
       >::value
-    >
+    and
+    // 3. need void product computing J^T r
+    std::is_void<
+      decltype
+      (
+       std::declval< T const &>().product
+       (
+        std::declval< ::pressio::transpose >(),
+        std::declval< sc_t>(),
+        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
+        std::declval< typename containers::details::traits<r_t>::wrapped_t const & >(),
+        std::declval< sc_t>(),
+        std::declval< g_t & >()
+        )
+       )
+      >::value
+   >
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_LEAST_SQUARES_SOLVER_HPP_
+#endif  // solvers_weighting_operator_HPP_

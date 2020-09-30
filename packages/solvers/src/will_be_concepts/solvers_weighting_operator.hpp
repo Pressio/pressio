@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solver_tags.hpp
+// solvers_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,35 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_TAGS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVER_TAGS_HPP_
+#ifndef solvers_weighting_operator_HPP_
+#define solvers_weighting_operator_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio{ namespace solvers{ namespace concepts {
 
-struct NewtonRaphson{};
-struct GaussNewton{};
-struct GaussNewtonQR{};
-struct LevenbergMarquardt{};
-using LM = LevenbergMarquardt;
+template <
+  typename T,
+  typename operand_t,
+  typename result_t,
+  typename enable = void
+>
+struct weighting_operator : std::false_type{};
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-struct GaussNewtonPy{};
-#endif
+template <typename T, typename operand_t, typename  result_t>
+struct weighting_operator<
+  T, operand_t, result_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<operand_t const &>(),
+	std::declval<result_t &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_SOLVER_TAGS_HPP_
+}}} // namespace pressio::solvers::concepts
+#endif  // solvers_weighting_operator_HPP_

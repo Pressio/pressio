@@ -83,24 +83,23 @@ public:
   EigenDirect(const EigenDirect &) = delete;
   ~EigenDirect() = default;
 
-private:
-  void resetLinearSystemImpl(const MatrixT& A) {
+  void resetLinearSystem(const MatrixT& A) {
     mysolver_.compute(*A.data());
   }
 
   template <typename T>
-  void solveImpl(const T& b, T & y) {
+  void solve(const T& b, T & y) {
     *y.data() = mysolver_.solve(*b.data());
   }
 
   template <typename T>
-  void solveImpl(const MatrixT & A, const T& b, T & y) {
+  void solve(const MatrixT & A, const T& b, T & y) {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }
 
   template <typename T>
-  void solveAllowMatOverwriteImpl(MatrixT & A, const T& b, T & y) {
+  void solveAllowMatOverwrite(MatrixT & A, const T& b, T & y) {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }

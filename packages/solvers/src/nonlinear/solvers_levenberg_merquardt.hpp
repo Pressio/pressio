@@ -54,41 +54,28 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
 template<typename system_t, typename ... Args>
-using composeLM = impl::compose<system_t, impl::LM, void, Args...>;
-
-template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt = composeLM<system_t, Args...>;
+using composeLM = impl::compose<
+  system_t, LM, void,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
 template<typename system_t, typename ... Args>
 using composeLM_t = typename composeLM<system_t, Args...>::type;
 
 template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt_t = typename composeLM<system_t, Args...>::type;
+using composeLevenbergMarquardt = composeLM<system_t, Args...>;
+
+template<typename system_t, typename ... Args>
+using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
 
 
-template<
-  typename system_t, typename state_t, typename lin_solver_t
-  >
-composeLevenbergMarquardt_t<system_t, lin_solver_t>
+template<typename system_t, typename state_t, typename ...Args>
+composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>
 createLevenbergMarquardt(const system_t & system,
 			 const state_t & state,
-			 lin_solver_t & linSolver)
+			 Args && ...args)
 {
-  using return_t = composeLevenbergMarquardt_t<system_t, lin_solver_t>;
-  return return_t( system, state, linSolver);
-}
-
-template<
-  typename system_t, typename state_t, typename lin_solver_t, typename ops_t
-  >
-composeLevenbergMarquardt_t<system_t, lin_solver_t, ops_t>
-createLevenbergMarquardt(const system_t & system,
-			 const state_t & state,
-			 lin_solver_t & linSolver,
-			 const ops_t & opsObj)
-{
-  using return_t = composeLevenbergMarquardt_t<system_t, lin_solver_t, ops_t>;
-  return return_t( system, state, linSolver, opsObj);
+  using return_t = composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>;
+  return return_t( system, state, std::forward<Args>(args)...);
 }
 
 }}}

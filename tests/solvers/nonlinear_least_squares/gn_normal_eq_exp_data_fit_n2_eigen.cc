@@ -70,10 +70,6 @@ int main()
   using linear_solver_t = solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  // GaussNewton solver
-  // using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-  //   problem_t, linear_solver_t>;
-  // solver GNSolver(problem, x, linSolver);
   auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(problem,x,linSolver);
 
   x[0] = 2.0; x[1] = 0.25;

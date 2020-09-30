@@ -91,8 +91,6 @@ public:
   KokkosDirect(const KokkosDirect &) = delete;
   ~KokkosDirect() = default;
 
-private:
-
 // because this uses teuchos lapack wrapper
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 
@@ -115,7 +113,7 @@ private:
      typename containers::details::traits<_MatrixT>::execution_space
      >::value
   >
-  solveImpl(const _MatrixT & A, const T& b, T & y)
+  solve(const _MatrixT & A, const T& b, T & y)
   {
     if (!auxMat_){
       auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("potrsUppAuxM",
@@ -131,7 +129,7 @@ private:
     }
 
     ::pressio::ops::deep_copy(*auxMat_, A);
-    this->solveAllowMatOverwriteImpl(*auxMat_, b, y);
+    this->solveAllowMatOverwrite(*auxMat_, b, y);
   }
 
 
@@ -152,7 +150,7 @@ private:
      typename containers::details::traits<_MatrixT>::execution_space
      >::value
   >
-  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
+  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
   {
     assert(A.extent(0) == b.extent(0) );
     assert(A.extent(1) == y.extent(0) );

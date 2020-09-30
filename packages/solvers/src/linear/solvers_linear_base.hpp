@@ -59,7 +59,8 @@ namespace pressio{ namespace solvers{
  * This class defines the public interface for a linear solver class.
  */
 template<typename MatrixT, typename Derived>
-struct LinearBase {
+struct LinearBase 
+{
 
   LinearBase() = default;
   LinearBase(const LinearBase&) = delete;
@@ -72,23 +73,23 @@ struct LinearBase {
 		  MatrixT, CompatibleMatrixT>::value,
 		  "Matrix types not compatible");
 
-    static_cast<Derived&>(*this).resetLinearSystemImpl(A);
+    static_cast<Derived&>(*this).resetLinearSystem(A);
   }
 
   template <typename VectorT>
   void solve(const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solveImpl(b, x);
+    static_cast<Derived&>(*this).solve(b, x);
   }
 
   template <typename VectorT>
   void solve(const MatrixT & A, const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solveImpl(A, b, x);
+    static_cast<Derived&>(*this).solve(A, b, x);
   }
 
   // this method allows solver to overwrite matrix
   template <typename VectorT>
   void solveAllowMatOverwrite(MatrixT & A, const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solveAllowMatOverwriteImpl(A, b, x);
+    static_cast<Derived&>(*this).solveAllowMatOverwrite(A, b, x);
   }
 
 };

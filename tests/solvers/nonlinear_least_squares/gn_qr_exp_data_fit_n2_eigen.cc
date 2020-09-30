@@ -49,10 +49,6 @@ int main()
   using qr_solver_type = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_type qrSolver;
 
-  // GaussNewton solver
-  // using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-  //   problem_t, qr_solver_type>;
-  // solver GNSolver(problem, x, qrSolver);
   auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
 
   x[0] = 2.0; x[1] = 0.25;

@@ -52,13 +52,13 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_type, typename qr_solver_t, ::pressio::Norm normType
+  typename T, typename state_type, typename qr_solver_t
   >
 class QRCorrector : public T
 {
 public:
   using state_t = state_type;
-  static constexpr auto normType_ = normType;
+  static constexpr auto normType_ = ::pressio::Norm::L2;
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
 private:
@@ -107,7 +107,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, normType,
+    T::computeOperators(sys, state, normType_,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
     const auto & r = T::getResidualCRef();
@@ -160,7 +160,7 @@ public:
 		    const state_t & state,
 		    sc_t & result) const
   {
-    T::residualNorm(system, state, normType, result);
+    T::residualNorm(system, state, normType_, result);
   }
 
 };

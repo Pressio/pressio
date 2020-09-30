@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gauss_newton.hpp
+// solver_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,20 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
-
-#include "./impl/solvers_nonlinear_compose.hpp"
+#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_NONLINEAR_TAGS_HPP_
+#define SOLVERS_NONLINEAR_IMPL_SOLVER_NONLINEAR_TAGS_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-//*************************
-//***** GN with NEQ *******
-//*************************
-template<typename system_t, typename ... Args>
-using composeGaussNewton = impl::compose<
-  system_t, GaussNewton, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >;
+struct NewtonRaphson{};
+struct GaussNewton{};
+struct GaussNewtonQR{};
+struct LevenbergMarquardt{};
+using LM = LevenbergMarquardt;
 
-template<typename system_t, typename ... Args>
-using composeGaussNewton_t =
-  typename composeGaussNewton<system_t, Args...>::type;
-
-template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewton_t<system_t, Args...>
-createGaussNewton(const system_t & system,
-		  const state_t & state,
-		  Args && ... args)
-{
-  using return_t = composeGaussNewton_t<system_t, Args...>;
-  return return_t(system, state, std::forward<Args>(args)...);
-}
-
-//************************
-//***** GN with QR *******
-//************************
-template<typename system_t, typename ... Args>
-using composeGaussNewtonQR = impl::composeGNQR<
-  void, system_t,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
-
-template<typename system_t, typename ... Args>
-using composeGaussNewtonQR_t =
-  typename composeGaussNewtonQR<system_t, Args...>::type;
-
-
-template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewtonQR_t<system_t, Args...>
-createGaussNewtonQR(const system_t & system,
-		    const state_t & state,
-		    Args && ...args)
-{
-  using return_t = composeGaussNewtonQR_t<system_t, Args...>;
-  return return_t(system, state, std::forward<Args>(args)...);
-}
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+struct GaussNewtonPy{};
+#endif
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVER_TAGS_HPP_

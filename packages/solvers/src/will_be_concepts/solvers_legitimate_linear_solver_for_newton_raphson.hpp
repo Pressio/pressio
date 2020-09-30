@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gauss_newton.hpp
+// solvers_legitimate_linear_solver_for_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,38 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace solvers{ namespace concepts {
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+template <typename T, typename state_type, typename enable = void>
+struct linear_solver_for_newton_raphson : std::false_type{};
 
-//*************************
-//***** GN with NEQ *******
-//*************************
-template<typename system_t, typename ... Args>
-using composeGaussNewton = impl::compose<
-  system_t, GaussNewton, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >;
+template <typename T, typename state_type>
+struct linear_solver_for_newton_raphson<
+  T, state_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::solvers::predicates::has_matrix_typedef<T>::value and
+    // the matrix_type is not void
+    !std::is_void<typename T::matrix_type>::value and
+    // has a solve method
+    std::is_void<
+      decltype
+      (
+       std::declval<T>().solve
+       (
+        std::declval<typename T::matrix_type const &>(), // A
+        std::declval<state_type const &>(), // b
+        std::declval<state_type &>() // x
+        )
+       )
+      >::value
+    // ::pressio::mpl::publicly_inherits_from<
+    //   T, ::pressio::solvers::LinearBase<typename T::matrix_type, T>
+    //   >::value
+    >
+  > : std::true_type{};
 
-template<typename system_t, typename ... Args>
-using composeGaussNewton_t =
-  typename composeGaussNewton<system_t, Args...>::type;
-
-template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewton_t<system_t, Args...>
-createGaussNewton(const system_t & system,
-		  const state_t & state,
-		  Args && ... args)
-{
-  using return_t = composeGaussNewton_t<system_t, Args...>;
-  return return_t(system, state, std::forward<Args>(args)...);
-}
-
-//************************
-//***** GN with QR *******
-//************************
-template<typename system_t, typename ... Args>
-using composeGaussNewtonQR = impl::composeGNQR<
-  void, system_t,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
-
-template<typename system_t, typename ... Args>
-using composeGaussNewtonQR_t =
-  typename composeGaussNewtonQR<system_t, Args...>::type;
-
-
-template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewtonQR_t<system_t, Args...>
-createGaussNewtonQR(const system_t & system,
-		    const state_t & state,
-		    Args && ...args)
-{
-  using return_t = composeGaussNewtonQR_t<system_t, Args...>;
-  return return_t(system, state, std::forward<Args>(args)...);
-}
-
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_HPP_
+}}} // namespace pressio::solvers::concepts
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_

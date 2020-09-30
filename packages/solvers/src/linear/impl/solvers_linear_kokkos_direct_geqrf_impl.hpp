@@ -108,10 +108,7 @@ public:
   }
 
 
-private:
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-
   /*
    * enable if:
    * the matrix has layout left (i.e. column major)
@@ -131,7 +128,7 @@ private:
      typename containers::details::traits<_MatrixT>::execution_space
      >::value
   >
-  solveImpl(const _MatrixT & A, const T& b, T & y)
+  solve(const _MatrixT & A, const T& b, T & y)
   {
     if (!auxMat_){
       auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("geqrfAuxM",
@@ -147,7 +144,7 @@ private:
     }
 
     ::pressio::ops::deep_copy(*auxMat_, A);
-    this->solveAllowMatOverwriteImpl(*auxMat_, b, y);
+    this->solveAllowMatOverwrite(*auxMat_, b, y);
   }
 
 
@@ -170,7 +167,7 @@ private:
      typename containers::details::traits<_MatrixT>::execution_space
      >::value
   >
-  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
+  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
   {
     // gerts is for square matrices
     assert(A.extent(0) == A.extent(1));

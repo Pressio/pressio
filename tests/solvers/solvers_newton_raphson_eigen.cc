@@ -64,9 +64,6 @@ int main()
   using lin_solver_t = linear::Solver<linear::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
 
-  // using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-  //   problem_t, lin_solver_t>;
-  // nl_solver_t NonLinSolver(sys, y, linearSolverObj);
   auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(sys, y, linearSolverObj);
 
   NonLinSolver.solve(sys, y);

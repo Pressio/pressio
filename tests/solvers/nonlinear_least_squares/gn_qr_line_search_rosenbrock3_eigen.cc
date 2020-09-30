@@ -18,10 +18,6 @@ int main()
 
   using qr_solver_t = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_t qrSolver;
-  // GaussNewton solver
-  // using solver = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-  //   problem_t, qr_solver_t>;
-  // solver GNsolver(problem, x, qrSolver);
 
   auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
   GNSolver.setTolerance(1e-8);

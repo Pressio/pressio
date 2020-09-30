@@ -1,0 +1,7 @@
+
+add_serial_exe_and_test(gn_neq_dummy_weighting_correctness solvers dummy_weighting_correctness.cc "PASSED")
+target_compile_definitions(solvers_gn_neq_dummy_weighting_correctness PRIVATE USE_GN_NEQ)
+
+add_serial_exe_and_test(lm_neq_dummy_weighting_correctness solvers dummy_weighting_correctness.cc "PASSED")
+target_compile_definitions(solvers_lm_neq_dummy_weighting_correctness PRIVATE USE_LM_NEQ)
+

@@ -51,6 +51,132 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
+template <
+  typename h_t, 
+  typename g_t,
+  typename r_t, 
+  typename j_t,
+  typename ud_ops_t,
+  template<typename ...> class hgRJApi_t, 
+  typename ...Args
+  >
+class LMHessianGradientOperatorsRJApi
+{
+  static constexpr auto pT  = ::pressio::transpose();
+  static constexpr auto pnT = ::pressio::nontranspose();
+  using sc_t = typename ::pressio::containers::details::traits<h_t>::scalar_t;
+
+  // HGOpRJApi_ contains H = J^T J, and g = J^T r
+  hgRJApi_t<h_t, g_t, r_t, j_t, ud_ops_t, Args...>  HGOpRJApi_;
+
+  // lmH contains H + lm*diag(H)
+  h_t lmH_;
+
+  // damping factor for LM
+  sc_t dampParam_ = pressio::utils::constants<sc_t>::one();
+
+public:
+  LMHessianGradientOperatorsRJApi() = delete;
+
+  template <
+   typename system_t, 
+   typename state_t, 
+   typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t<
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      and std::is_void<_ud_ops_t>::value,
+      int
+     > = 0
+  >
+  LMHessianGradientOperatorsRJApi(const system_t & system, 
+                                  const state_t & state)
+    : HGOpRJApi_(system, state),
+      lmH_(HGOpRJApi_.getHessianCRef()){}
+
+  template <
+   typename system_t, 
+   typename state_t, 
+   typename ...ArgsIn,
+    mpl::enable_if_t<
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) 
+      and sizeof ...(ArgsIn) >= 1,
+      int
+     > = 0
+  >
+  LMHessianGradientOperatorsRJApi(const system_t & system,
+          const state_t & state,
+          ArgsIn && ...args)
+    : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
+      lmH_(HGOpRJApi_.getHessianCRef()){}
+
+
+  // copy constr and assign
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi const &) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi const &) = default;
+
+  // move constr and assign
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi && o) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
+
+  // destr
+  ~LMHessianGradientOperatorsRJApi() = default;
+
+
+public:
+  h_t & getHessianRef()     { return lmH_; }
+  g_t & getGradientRef()    { return HGOpRJApi_.getGradientRef(); }
+  const h_t & getHessianCRef() const  { return lmH_; }
+  const g_t & getGradientCRef() const { return HGOpRJApi_.getGradientCRef(); }
+
+  const h_t & getHessianCRefBeforeLMDiagonalScaling() const {
+    return HGOpRJApi_.getHessianCRef();
+  }
+
+  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
+  sc_t getLMDampParam() const{ return dampParam_; }
+
+public:
+  void resetForNewCall(){
+    dampParam_ = pressio::utils::constants<sc_t>::one();
+  }
+
+  template<typename system_t, typename state_t>
+  void computeOperators(const system_t & sys,
+      const state_t & state,
+      ::pressio::Norm normType,
+      sc_t & residualNorm,
+      bool recomputeSystemJacobian=true)
+  {
+    HGOpRJApi_.computeOperators(sys, state, normType,
+        residualNorm,
+        recomputeSystemJacobian);
+
+    if(recomputeSystemJacobian){
+      // compute lmH = H + mu*diag(H)
+      const auto & H = HGOpRJApi_.getHessianCRef();
+      ::pressio::ops::deep_copy(lmH_, H);
+
+      const auto diagH   = ::pressio::containers::diag(H);
+      auto diaglmH = ::pressio::containers::diag(lmH_);
+      constexpr auto one  = pressio::utils::constants<sc_t>::one();
+      ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
+    }
+  }
+
+  template< typename system_t, typename state_t>
+  void residualNorm(const system_t & system, 
+         const state_t & state,
+         ::pressio::Norm normType, 
+         sc_t & residualNorm) const
+  {
+    HGOpRJApi_.residualNorm(system, state, normType, residualNorm);
+  }
+};
+
+
+
 template <typename h_t, typename g_t>
 class LMHessianGradientOperatorsHGApi
 {
@@ -110,8 +236,10 @@ public:
   sc_t getLMDampParam() const{ return dampParam_; }
 
   template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system, const state_t & state,
-		    ::pressio::Norm normType, sc_t & residualNorm) const
+  void residualNorm(const system_t & system, 
+        const state_t & state,
+		    ::pressio::Norm normType, 
+        sc_t & residualNorm) const
   {
     system.residualNorm(state, normType, residualNorm);
   }
@@ -151,7 +279,8 @@ public:
   }
 
 private:
-  void computeLMHessian(){
+  void computeLMHessian()
+  {
     // compute lmH = H + mu*diag(H)
     const auto & H = HGOpHGApi_.getHessianCRef();
     ::pressio::ops::deep_copy(lmH_, H);
@@ -160,123 +289,6 @@ private:
     auto diaglmH = ::pressio::containers::diag(lmH_);
     constexpr auto one  = pressio::utils::constants<sc_t>::one();
     ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
-  }
-};
-
-
-
-template <
-  typename h_t, typename g_t,
-  typename r_t, typename j_t,
-  typename ud_ops_t = void
-  >
-class LMHessianGradientOperatorsRJApi
-{
-  static constexpr auto pT  = ::pressio::transpose();
-  static constexpr auto pnT = ::pressio::nontranspose();
-  using sc_t = typename ::pressio::containers::details::traits<h_t>::scalar_t;
-
-  // HGOpRJApi_ contains H = J^T J, and g = J^T r
-  HessianGradientOperatorsRJApi<h_t, g_t, r_t, j_t, ud_ops_t> HGOpRJApi_;
-
-  // lmH contains H + lm*diag(H)
-  h_t lmH_;
-
-  // damping factor for LM
-  sc_t dampParam_ = pressio::utils::constants<sc_t>::one();
-
-public:
-  LMHessianGradientOperatorsRJApi() = delete;
-
-  template <
-   typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
-      and std::is_void<_ud_ops_t>::value,
-      int
-     > = 0
-  >
-  LMHessianGradientOperatorsRJApi(const system_t & system, const state_t & state)
-    : HGOpRJApi_(system, state),
-      lmH_(HGOpRJApi_.getHessianCRef()){}
-
-  template <
-   typename system_t, typename state_t, typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
-      and !std::is_void<_ud_ops_t>::value,
-      int
-     > = 0
-  >
-  LMHessianGradientOperatorsRJApi(const system_t & system,
-				  const state_t & state,
-				  const ud_ops_t * udOps)
-    : HGOpRJApi_(system, state, udOps),
-      lmH_(HGOpRJApi_.getHessianCRef()){}
-
-  // copy constr and assign
-  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi const &) = default;
-  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi const &) = default;
-
-  // move constr and assign
-  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi && o) = default;
-  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
-
-  // destr
-  ~LMHessianGradientOperatorsRJApi() = default;
-
-
-public:
-  h_t & getHessianRef()			{ return lmH_; }
-  g_t & getGradientRef()		{ return HGOpRJApi_.getGradientRef(); }
-  const h_t & getHessianCRef() const	{ return lmH_; }
-  const g_t & getGradientCRef() const	{ return HGOpRJApi_.getGradientCRef(); }
-
-  const h_t & getHessianCRefBeforeLMDiagonalScaling() const {
-    return HGOpRJApi_.getHessianCRef();
-  }
-
-  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
-  sc_t getLMDampParam() const{ return dampParam_; }
-
-public:
-  void resetForNewCall(){
-    dampParam_ = pressio::utils::constants<sc_t>::one();
-  }
-
-  template<typename system_t, typename state_t>
-  void computeOperators(const system_t & sys,
-			const state_t & state,
-			::pressio::Norm normType,
-			sc_t & residualNorm,
-			bool recomputeSystemJacobian=true)
-  {
-    HGOpRJApi_.computeOperators(sys, state, normType,
-				residualNorm,
-				recomputeSystemJacobian);
-
-    if(recomputeSystemJacobian){
-      // compute lmH = H + mu*diag(H)
-      const auto & H = HGOpRJApi_.getHessianCRef();
-      ::pressio::ops::deep_copy(lmH_, H);
-
-      const auto diagH   = ::pressio::containers::diag(H);
-      auto diaglmH = ::pressio::containers::diag(lmH_);
-      constexpr auto one  = pressio::utils::constants<sc_t>::one();
-      ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
-    }
-  }
-
-  template< typename system_t, typename state_t>
-  mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
-    >
-  residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm) const
-  {
-    HGOpRJApi_.residualNorm(system, state, normType, residualNorm);
   }
 };
 

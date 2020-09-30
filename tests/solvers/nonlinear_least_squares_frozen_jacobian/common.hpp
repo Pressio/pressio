@@ -116,15 +116,15 @@ struct MySolverQR
   : checkStr_(checkStr){}
 
   template<typename r_t, typename result_t>
-  void applyQTranspose(const r_t & r, result_t & QTr)
+  void applyQTranspose(const r_t & r, result_t & QTr) const
   {}
 
   template<typename result_t, typename g_t>
-  void applyRTranspose(result_t & QTr, g_t & g)
+  void applyRTranspose(result_t & QTr, g_t & g) const
   {}
 
   template<typename qt_t, typename c_t>
-  void solve(const qt_t & QTr, c_t & correction)
+  void solve(const qt_t & QTr, c_t & correction) const
   {}
 
   template<typename J_t>
