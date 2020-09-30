@@ -41,7 +41,14 @@ jobs:
           pwd
           ls -lh ../../pressio/docs/
           ./doxygen.py ../../pressio/docs/conf.py
-          ls -lh ../../pressio/docs/
+          
+          cd ../../pressio/docs
+          ls -lh 
+          
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
                     
 #       # Runs a single command using the runners shell
 #       - name: Run a one-line script
