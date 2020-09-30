@@ -107,6 +107,10 @@ public:
       if( ! stateExpected.isApprox(state) ) sentinel_="FAILED";
     }
 
+    std::cout << stateExpected  << std::endl;
+    std::cout << "--"  << std::endl;
+    std::cout << state  << std::endl;
+
     for (int i=0; i<N_; ++i){
       f(i) = 1;
     }

@@ -34,7 +34,7 @@ public:
     std::cout << "UPDATE\n";
     for (int i=0; i<jac_.extent(0); ++i){
       for (int j=0; j<jac_.extent(1); ++j){
-	jac_(i,j) += 1;
+	     jac_(i,j) += 1;
       }
     }
   }
