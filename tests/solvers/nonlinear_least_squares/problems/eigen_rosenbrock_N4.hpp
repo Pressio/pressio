@@ -21,13 +21,8 @@ struct EigenRosenbrock4Impl
   static constexpr int nf = 6; // num functions
   static constexpr int nv = 4; // num variables
 
-  residual_type createResidual() const {
-    return residual_type(nf);
-  }
-
-  jacobian_type createJacobian() const {
-    return jacobian_type(nf, nv);
-  }
+  residual_type createResidual() const{return residual_type(nf);}
+  jacobian_type createJacobian() const{return jacobian_type(nf, nv);}
 
   // void residualNorm(const state_type & state,
   // 		    pressio::Norm normKind,
@@ -39,10 +34,7 @@ struct EigenRosenbrock4Impl
   //   residual(state, R, normKind, resNorm);
   // }
 
-  void residual(const state_type& x, 
-    residual_type & res,
-		::pressio::Norm normKind,
-		scalar_type & normResidual) const
+  void residual(const state_type& x, residual_type & res) const
   {
     auto x1 = x[0];
     auto x2 = x[1];
@@ -54,12 +46,12 @@ struct EigenRosenbrock4Impl
     res[3] = (1.-x1);
     res[4] = (1.-x2);
     res[5] = (1.-x3);
-
-    if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
-    if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
+    // if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
+    // if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const {
+  void jacobian(const state_type & x, jacobian_type & jac) const 
+  {
     auto x1 = x[0];
     auto x2 = x[1];
     auto x3 = x[2];
@@ -100,21 +92,23 @@ struct EigenRosenbrock4HessGradApi
 
 public:
   hessian_type createHessian() const{
-    // this only construct empty objects
+    // this only constructs empty object
     return hessian_type(nv, nv);
   }
 
   gradient_type createGradient() const{
-    // this only construct empty objects
+    // this only constructs empty object
     return gradient_type(nv);
   }
 
   void residualNorm(const state_type & state,
 		    pressio::Norm normKind,
-		    scalar_type & resNorm) const
+		    scalar_type & normResidual) const
   {
     auto R = rosImpl.createResidual();
-    rosImpl.residual(state, R, normKind, resNorm);
+    rosImpl.residual(state, R);//, normKind, normResidual);
+    if (normKind == pressio::Norm::L2) normResidual = R.data()->norm();
+    if (normKind == pressio::Norm::L1) normResidual = R.data()->lpNorm<1>();    
   }
 
   void hessianAndGradient(const state_type & x,
@@ -129,7 +123,7 @@ public:
     *hess.data() = J.data()->transpose() * (*J.data());
 
     auto R = rosImpl.createResidual();
-    rosImpl.residual(x, R, normType, residualNorm);
+    rosImpl.residual(x, R);//, normType, residualNorm);
 
     *grad.data() = J.data()->transpose() * (*R.data());
 

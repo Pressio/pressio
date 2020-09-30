@@ -205,7 +205,6 @@ public:
   }
 
 
-
   /**
      time_discrete_jacobian function overload for continuous time API w/ tpetra block
   */
@@ -320,14 +319,8 @@ public:
       }
       jacobianOneNeedsRecomputing_ = true;
     }
-
   }
-
  }
-
-
-
-
 
   /**
      time_discrete_jacobian function overload for continuous time API w/ tpetra block
@@ -399,15 +392,8 @@ public:
     const auto gIDy = fomStateMap->getMyGlobalIndices();
 
     time_discrete_jacobian_from_views(fomSystemObj,fomState,fomStateView,Jphi,JphiView,phi,phiView,t,dt,step,arg);
-
  }
-
-
 #endif
-
-
-
-
 
   /**
      time_discrete_residual Function overload for conitnuous time api
@@ -470,9 +456,8 @@ public:
       auto & fomStateNm2 = auxStatesContainer_.get(nm2());
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
 
-      scalar_type normValue = {};
       fomSystemObj.discreteTimeResidual(step, t, dt,
-				  *residual.data(), ::pressio::Norm::L2, normValue,
+				  *residual.data(),
 				  *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
     }
 
@@ -481,18 +466,11 @@ public:
       using nm1 = ::pressio::ode::nMinusOne;
       auto & fomStateNm1 = auxStatesContainer_.get(nm1());
 
-      scalar_type normValue = {};
       fomSystemObj.discreteTimeResidual(step, t, dt,
-				  *residual.data(), ::pressio::Norm::L2, normValue,
+				  *residual.data(), 
 				  *fomState.data(), *fomStateNm1.data());
     }
   }
-
-
-
-
-
-
 
   /**
      time_discrete_jacobian function overload for continuous time API

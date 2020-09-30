@@ -349,15 +349,10 @@ public:
     using nm1 = ::pressio::ode::nMinusOne;
     auto & fomStateNm1 = auxStatesContainer_.get(nm1());
 
-    scalar_type normValue = {};
     fomSystemObj.discreteTimeResidual(step, t, dt,
-				*residual.data(), ::pressio::Norm::L2, normValue,
+				*residual.data(), 
 				*fomState.data(), *fomStateNm1.data());
   }
-
-
-
-
 
 
   /**

@@ -53,7 +53,7 @@ namespace pressio{ namespace rom{
 
 template <
   typename fom_state_t, typename fom_system_t, typename step_t,
-  typename time_t, typename norm_t, typename result_t
+  typename time_t, typename result_t
   >
 void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const fom_state_t & state_nm1,
@@ -61,17 +61,15 @@ void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const time_t  & time,
 				  const time_t  & dt,
 				  const step_t  & step,
-				  result_t & R,
-				  const pressio::Norm & normKind,
-				  norm_t & normValue)
+				  result_t & R)
 {
   fomObj.template discreteTimeResidual(step, time, dt, *R.data(),
-  	normKind, normValue, *state_n.data(), *state_nm1.data());
+  	*state_n.data(), *state_nm1.data());
 }
 
 template <
   typename fom_state_t, typename fom_system_t, typename step_t,
-  typename time_t, typename norm_t, typename result_t
+  typename time_t, typename result_t
   >
 void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const fom_state_t & state_nm1,
@@ -80,12 +78,10 @@ void queryFomDiscreteTimeResidual(const fom_state_t & state_n,
 				  const time_t  & time,
 				  const time_t  & dt,
 				  const step_t  & step,
-				  result_t & R,
-				  const pressio::Norm & normKind,
-				  norm_t & normValue)
+				  result_t & R)
 {
   fomObj.template discreteTimeResidual(step, time, dt, *R.data(),
-  	normKind, normValue, *state_n.data(), *state_nm1.data(), *state_nm2.data());
+  	*state_n.data(), *state_nm1.data(), *state_nm2.data());
 }
 
 }} //end namespace pressio::rom

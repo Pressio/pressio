@@ -16,9 +16,7 @@ public:
 		  const double & t,
 		  const double & dt,
 		  ::pressio::ode::types::step_t step,
-		  residual_type & R,
-      ::pressio::Norm normKind,
-      double & normValue) const
+		  residual_type & R) const
   {}
 };//end class
 

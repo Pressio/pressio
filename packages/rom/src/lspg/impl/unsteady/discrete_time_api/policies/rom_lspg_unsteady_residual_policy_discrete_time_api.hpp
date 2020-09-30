@@ -87,13 +87,10 @@ public:
 	       const scalar_t		& time,
 	       const scalar_t		& dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm	normKind,
-	       scalar_t	& normValue) const
+	       residual_t & romR) const
   {
     this->compute_impl(romState, romPrevStates, fomSystemObj,
-		       time, dt, step,
-		       romR, normKind, normValue);
+		       time, dt, step, romR);
   }
 
 private:
@@ -128,9 +125,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm   normKind,
-	       scalar_t & normValue) const
+	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
@@ -138,8 +133,7 @@ private:
 
     try{
       ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
-						   time, dt, step, romR,
-						   normKind, normValue);
+						   time, dt, step, romR);
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -155,9 +149,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm   normKind,
-	       scalar_t & normValue) const
+	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
@@ -167,8 +159,7 @@ private:
 
     try{
       ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
-						   time, dt, step,
-						   romR, normKind, normValue);
+						   time, dt, step, romR);
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();

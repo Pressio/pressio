@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_has_const_residual_method_accept_state_result_norm_return_void.hpp
+// solvers_has_const_residual_method_accept_state_result_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
-#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
@@ -55,29 +55,27 @@ template <
   typename T,
   typename state_t,
   typename res_t,
-  typename norm_t,
   typename = void
   >
-struct has_const_residual_method_accept_state_result_norm_return_void
+struct has_const_residual_method_accept_state_result_return_void
   : std::false_type{};
 
 template <
   typename T,
   typename state_t,
-  typename res_t,
-  typename norm_t
+  typename res_t
   >
-struct has_const_residual_method_accept_state_result_norm_return_void<
-  T, state_t, res_t, norm_t, 
+struct has_const_residual_method_accept_state_result_return_void<
+  T, state_t, res_t,  
   mpl::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().residual
             (
               std::declval<state_t const &>(),
-              std::declval<res_t &>(),
-              ::pressio::Norm::Undefined,
-              std::declval<norm_t &>()
+              std::declval<res_t &>()
+              // ::pressio::Norm::Undefined,
+              // std::declval<norm_t &>()
             )
          )
       >::value
@@ -85,4 +83,4 @@ struct has_const_residual_method_accept_state_result_norm_return_void<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::predicates
-#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_

@@ -93,26 +93,22 @@ public:
 	     const scalar_type & t,
 	     const scalar_type & dt,
 	     const types::step_t & step,
-	     residual_type & R,
-	     ::pressio::Norm normKind,
-	     scalar_type & normValue) const
+	     residual_type & R) const
   {
     try{
     system.velocity(*odeCurrentState.data(), t, *R.data());
     ::pressio::ode::impl::discrete_time_residual(odeCurrentState,
-						 R, prevStatesMgr,
-						 dt, ode_tag());
+						 R, prevStatesMgr, dt, ode_tag());
     }
     catch (::pressio::eh::velocity_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
-
-    if (normKind==::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(R);
-    else if (normKind==::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(R);
-    else
-      throw std::runtime_error("Invalid norm");
+    // if (normKind==::pressio::Norm::L1)
+    //   normValue = ::pressio::ops::norm1(R);
+    // else if (normKind==::pressio::Norm::L2)
+    //   normValue = ::pressio::ops::norm2(R);
+    // else
+    //   throw std::runtime_error("Invalid norm");
   }
 };//end class
 
@@ -159,15 +155,12 @@ public:
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
-	  residual_type & R,
-	  ::pressio::Norm normKind,
-	  scalar_type & normValue) const
+	  residual_type & R) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   normKind, normValue,
 					   *odeCurrentState.data(),
 					   *ynm1.data());
     }
@@ -187,16 +180,13 @@ public:
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
-	  residual_type & R,
-	  ::pressio::Norm normKind,
-	  scalar_type & normValue) const
+	  residual_type & R) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
     const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   normKind, normValue,
 					   *odeCurrentState.data(),
 					   *ynm1.data(), *ynm2.data());
     }
@@ -217,9 +207,7 @@ public:
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
-	  residual_type & R,
-	  ::pressio::Norm normKind,
-	  scalar_type & normValue) const
+	  residual_type & R) const
   {
     const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
     const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
@@ -227,7 +215,6 @@ public:
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   normKind, normValue,
 					   *odeCurrentState.data(),
 					   *ynm1.data(),
 					   *ynm2.data(),

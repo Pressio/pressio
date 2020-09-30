@@ -19,11 +19,7 @@ TEST(solvers, nonlinear_tolerances)
     residual_type createResidual() const { return residual_type(2); }
     jacobian_type createJacobian() const { return jacobian_type(2, 2); }
 
-    void residual(const state_type& x,
-		  residual_type& res,
-		  pressio::Norm normKind,
-		  scalar_type & norm) const {}
-
+    void residual(const state_type& x, residual_type& res) const{}
     void jacobian(const state_type& x, jacobian_type& jac) const{}
   };
 

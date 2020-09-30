@@ -16,9 +16,7 @@ struct ValidSystemA {
   residual_type createResidual() const;
   jacobian_type createJacobian() const;
 
-  void residual(const state_type& x, residual_type & res,
-		::pressio::Norm normKind, scalar_type & normResidual) const;
-
+  void residual(const state_type& x, residual_type & res) const;
   void jacobian(const state_type& x, jacobian_type & jac) const;
 };
 
@@ -33,12 +31,9 @@ struct NonValidSystemA1 {
   using residual_type	= state_type;
   using jacobian_type	= matrix_w_t;
 
-  //residual_type createResidual() const;
+  //residual_type createResidual() const; // missing on purpose to fail assert
   jacobian_type createJacobian() const;
-
-  void residual(const state_type& x, residual_type & res,
-		::pressio::Norm normKind, scalar_type & normResidual) const;
-
+  void residual(const state_type& x, residual_type & res) const;
   void jacobian(const state_type& x, jacobian_type & jac) const;
 };
 
@@ -56,14 +51,9 @@ struct ValidSystemB {
   residual_type createResidual() const;
   jacobian_type createJacobian() const;
 
-  void residualNorm(const state_type & state,
-		    pressio::Norm normKind,
-		    scalar_type & resNorm) const;
-
   void residualAndJacobian(const state_type& x,
-			   residual_type & res, jacobian_type & J,
-			   ::pressio::Norm normKind,
-			   scalar_type & normResidual,
+			   residual_type & res, 
+         jacobian_type & J,
 			   bool recomputeJacobian) const;
 };
 
@@ -89,59 +79,3 @@ TEST(solvers_meta, system_admissible_fused_res_jac_api){
   static_assert(solvers::concepts::system_fused_residual_jacobian<system_t>::value, "");
 }
 
-
-// TEST(solvers_meta, detect_residual_methods){
-//   using namespace pressio;
-//   using system_t   = ValidSystemA;
-//   static_assert(solvers::concepts::system_has_needed_residual_methods
-// 		<system_t,
-// 		typename system_t::state_type,
-// 		typename system_t::residual_type
-// 		>::value, "");
-
-//   static_assert(solvers::predicates::has_residual_method_callable_with_one_arg<
-// 			system_t, typename system_t::state_type>::value,
-// 		"system does not have residual with one arg");
-
-//   static_assert(solvers::predicates::has_residual_method_callable_with_one_arg<
-// 			system_t, double>::value == false,
-// 		"system has residual method with one arg with wrong type");
-
-//   static_assert(solvers::predicates::has_residual_method_callable_with_two_args<
-// 		system_t,
-// 		typename system_t::state_type,
-// 		typename system_t::residual_type
-// 		>::value,
-// 		"system does not have residual with two args");
-
-//   static_assert(solvers::predicates::has_residual_method_callable_with_two_args<
-// 		system_t,
-// 		typename system_t::state_type,
-// 		double
-// 		>::value == false,
-// 		"system has residual with two args wrong type");
-// }
-
-// TEST(solvers_meta, detect_jacobian_methods){
-//   using namespace pressio;
-//   using system_t   = ValidSystemA;
-
-//   static_assert(solvers::predicates::has_jacobian_method_callable_with_one_arg<
-// 		system_t,
-// 		typename system_t::state_type
-// 		>::value,
-// 		"system does not have jacobian with one arg");
-
-//   static_assert(solvers::predicates::has_jacobian_method_callable_with_two_args<
-// 		system_t,
-// 		typename system_t::state_type,
-// 		typename system_t::jacobian_type
-// 		>::value,
-// 		"system does not have jacobian with two args");
-
-//   static_assert(solvers::concepts::system_has_needed_jacobian_methods
-// 		<system_t,
-// 		typename system_t::state_type,
-// 		typename system_t::jacobian_type
-// 		>::value, "");
-// }

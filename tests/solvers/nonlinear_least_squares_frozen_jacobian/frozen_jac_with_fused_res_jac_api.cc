@@ -38,9 +38,7 @@ public:
 
   void residualAndJacobian(const state_type & y,
                            residual_type & R, 
-                           jacobian_type & jac,
-                           pressio::Norm normKind, 
-                           scalar_type & resNorm, 
+                           jacobian_type & jac, 
                            bool updateJacobian) const
   {
     ++iterCountR_;
@@ -48,8 +46,8 @@ public:
       R_[i] = R[i] + 1.;
 
     pressio::ops::deep_copy(R, R_);
-    if (normKind == pressio::Norm::L2)
-      resNorm = R_.data()->norm();
+    // if (normKind == pressio::Norm::L2)
+    //   resNorm = R_.data()->norm();
 
     if (updateJacobian)
     {
@@ -66,13 +64,13 @@ public:
     }
   }
 
-  void residualNorm(const state_type &, 
-                    pressio::Norm normKind, 
-                    scalar_type & resNorm) const
-  {
-    if (normKind == pressio::Norm::L2)
-      resNorm = R_.data()->norm();
-  }
+  // void residualNorm(const state_type &, 
+  //                   pressio::Norm normKind, 
+  //                   scalar_type & resNorm) const
+  // {
+  //   if (normKind == pressio::Norm::L2)
+  //     resNorm = R_.data()->norm();
+  // }
 };
 
 int main()

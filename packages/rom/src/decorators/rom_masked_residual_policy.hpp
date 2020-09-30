@@ -84,8 +84,7 @@ public:
     typename state_t,
     typename prev_states_t,
     typename fom_system_t,
-    typename time_type,
-    typename norm_value_type
+    typename time_type
     >
   void compute(const state_t & state,
 	       const prev_states_t & prevStates,
@@ -93,17 +92,15 @@ public:
 	       const time_type & time,
 	       const time_type & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & R,
-	       ::pressio::Norm normKind,
-	       norm_value_type & normValue) const
+	       residual_t & R) const
   {
     maskable_policy::template compute<stepper_tag>(state, prevStates, systemObj, time,
-						   dt, step, R_, normKind, normValue);
+						   dt, step, R_);
 
     systemObj.applyMask(*R_.data(), time, *R.data());
 
-    // need to compute norm since after the mask the object is a different
-    this->computeNorm(R, normKind, normValue);
+    // // need to compute norm since after the mask the object is a different
+    // this->computeNorm(R, normKind, normValue);
   }
 
   // //-------------------------------
@@ -124,36 +121,34 @@ public:
   //   this->computeNorm(R, normKind, normValue);
   // }
 
-private:
-  template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
-  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
-  computeNorm(const residual_t & R,
-	      ::pressio::Norm normKind,
-	      norm_value_type & normValue) const
-  {
-    if (normKind == ::pressio::Norm::L2)
-      normValue = udOps_->norm2(*R.data());
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = udOps_->norm1(*R.data());
-    else
-      throw std::runtime_error
-	("Invalid norm kind for lspg unsteady masked residual policy");
-  }
+// private:
+//   template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
+//   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
+//   computeNorm(const residual_t & R) const
+//   {
+//     if (normKind == ::pressio::Norm::L2)
+//       normValue = udOps_->norm2(*R.data());
+//     else if (normKind == ::pressio::Norm::L1)
+//       normValue = udOps_->norm1(*R.data());
+//     else
+//       throw std::runtime_error
+// 	("Invalid norm kind for lspg unsteady masked residual policy");
+//   }
 
-  template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
-  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
-  computeNorm(const residual_t & R,
-	      ::pressio::Norm normKind,
-	      norm_value_type & normValue) const
-  {
-    if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(R);
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(R);
-    else
-      throw std::runtime_error
-	("Invalid norm kind for lspg unsteady masked residual policy");
-  }
+//   template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
+//   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
+//   computeNorm(const residual_t & R,
+// 	      ::pressio::Norm normKind,
+// 	      norm_value_type & normValue) const
+//   {
+//     if (normKind == ::pressio::Norm::L2)
+//       normValue = ::pressio::ops::norm2(R);
+//     else if (normKind == ::pressio::Norm::L1)
+//       normValue = ::pressio::ops::norm1(R);
+//     else
+//       throw std::runtime_error
+// 	("Invalid norm kind for lspg unsteady masked residual policy");
+//   }
 
 };//end class
 

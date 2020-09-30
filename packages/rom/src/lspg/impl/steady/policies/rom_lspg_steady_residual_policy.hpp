@@ -98,12 +98,10 @@ public:
   }
 #endif
 
-  template <typename lspg_state_t, typename fom_system_t, typename norm_value_type>
+  template <typename lspg_state_t, typename fom_system_t>
   void compute(const lspg_state_t & romState,
 	       residual_type & romResidual,
-	       const fom_system_t & fomSystemObj,
-	       ::pressio::Norm normKind,
-	       norm_value_type & normValue) const
+	       const fom_system_t & fomSystemObj) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -116,14 +114,15 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomResidual(fomSystemObj, fomStatesMngr_.getCRefToCurrentFomState(), romResidual);
+    ::pressio::rom::queryFomResidual(fomSystemObj, 
+      fomStatesMngr_.getCRefToCurrentFomState(), romResidual);
 
-    if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(romResidual);
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(romResidual);
-    else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
+    // if (normKind == ::pressio::Norm::L2)
+    //   normValue = ::pressio::ops::norm2(romResidual);
+    // else if (normKind == ::pressio::Norm::L1)
+    //   normValue = ::pressio::ops::norm1(romResidual);
+    // else
+    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

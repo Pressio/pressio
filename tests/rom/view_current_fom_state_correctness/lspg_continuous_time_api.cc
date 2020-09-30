@@ -66,10 +66,9 @@ struct MyFakeSolver
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-    double norm{};
     for (auto k=0; k<2; ++k)
     {
-      sys.residual(state, R_, ::pressio::Norm::L2, norm);
+      sys.residual(state, R_);
       sys.jacobian(state, J_);
 
       for (auto i=0; i<state.extent(0); ++i) state(i) += 1.;

@@ -24,16 +24,14 @@ struct ValidSystem {
   }
 
   void residual(const state_type& x, 
-                residual_type& res,
-                pressio::Norm normKind, 
-                scalar_type & norm) const 
+                residual_type& res) const 
   {
     res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
     res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    if (normKind == pressio::Norm::L2) 
-      norm = res.data()->norm();
-    else if (normKind == pressio::Norm::L1) 
-      norm = res.data()->lpNorm<1>();
+    // if (normKind == pressio::Norm::L2) 
+    //   norm = res.data()->norm();
+    // else if (normKind == pressio::Norm::L1) 
+    //   norm = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type& x, jacobian_type& jac) const {

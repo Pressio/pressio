@@ -71,11 +71,9 @@ public:
   			    const scalar_type & time,
   			    const scalar_type & dt,
   			    discrete_time_residual_type & R,
-			    pressio::Norm normKind,
-			    scalar_type & normR,
   			    Args && ... states) const
   {
-    discreteTimeResidualImpl(step, time,dt,R,normKind,normR,
+    discreteTimeResidualImpl(step, time,dt,R,
 			     std::forward<Args>(states)...);
   }
 
@@ -109,8 +107,6 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
-				pressio::Norm normKind,
-				scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
@@ -214,10 +210,9 @@ struct MyFakeSolver
 
     // // here sys is a an "arbitrary" stepper object since for
     // // this test we use the discrete time API
-    double norm{};
     for (auto k=0; k<2; ++k)
     {
-      sys.residual(state, R_, ::pressio::Norm::L2, norm);
+      sys.residual(state, R_);
       sys.jacobian(state, J_);
 
       if (callCounter_==1 and k==0){

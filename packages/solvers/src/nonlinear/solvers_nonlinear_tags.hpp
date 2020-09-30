@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solver_tags.hpp
+// solvers_nonlinear_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_NONLINEAR_TAGS_HPP_
-#define SOLVERS_NONLINEAR_IMPL_SOLVER_NONLINEAR_TAGS_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
@@ -62,4 +62,4 @@ struct GaussNewtonPy{};
 #endif
 
 }}}
-#endif  // SOLVERS_NONLINEAR_IMPL_SOLVER_TAGS_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_

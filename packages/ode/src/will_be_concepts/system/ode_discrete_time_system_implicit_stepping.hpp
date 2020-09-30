@@ -67,12 +67,12 @@ struct discrete_time_system_implicit_stepping<
     // time-discrete residual 
     ::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
         T, typename T::discrete_time_residual_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
+    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
         T, 1, types::step_t, 
         typename T::scalar_type, 
         typename T::state_type, 
         typename T::discrete_time_residual_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_n_states_return_void<
+    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
         T, 2, types::step_t, 
         typename T::scalar_type, 
         typename T::state_type, 

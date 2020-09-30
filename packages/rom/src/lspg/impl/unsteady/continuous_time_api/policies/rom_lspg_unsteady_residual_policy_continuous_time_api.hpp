@@ -116,12 +116,10 @@ public:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & timeStep,
-	       residual_t & romR,
-	       ::pressio::Norm normKind,
-	       scalar_t & normValue) const
+	       residual_t & romR) const
   {
     this->compute_impl<stepper_tag>(romState, romR, romPrevStates, fomSystemObj,
-				    time, dt, timeStep, normKind, normValue);
+				    time, dt, timeStep);
   }
 
 private:
@@ -134,19 +132,16 @@ private:
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
-			   const scalar_t & dt,
-			   ::pressio::Norm normKind,
-			   scalar_t & normValue) const
+			   const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt);
-
-    if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(romR);
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(romR);
-    else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
+    // if (normKind == ::pressio::Norm::L2)
+    //   normValue = ::pressio::ops::norm2(romR);
+    // else if (normKind == ::pressio::Norm::L1)
+    //   normValue = ::pressio::ops::norm1(romR);
+    // else
+    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
@@ -158,19 +153,17 @@ private:
   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
 			   residual_t & romR,
-			   const scalar_t & dt,
-			   ::pressio::Norm normKind,
-			   scalar_t & normValue) const
+			   const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
 
-    if (normKind == ::pressio::Norm::L2)
-      normValue = udOps_->norm2(*romR.data());
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = udOps_->norm1(*romR.data());
-    else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
+    // if (normKind == ::pressio::Norm::L2)
+    //   normValue = udOps_->norm2(*romR.data());
+    // else if (normKind == ::pressio::Norm::L1)
+    //   normValue = udOps_->norm1(*romR.data());
+    // else
+    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
@@ -186,9 +179,7 @@ private:
 		    const fom_system_t  & fomSystemObj,
 		    const scalar_t & time,
 		    const scalar_t & dt,
-		    const ::pressio::ode::types::step_t & timeStep,
-		    ::pressio::Norm normKind,
-		    scalar_t & normValue) const
+		    const ::pressio::ode::types::step_t & timeStep) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -223,8 +214,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt,
-						normKind, normValue);
+    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");

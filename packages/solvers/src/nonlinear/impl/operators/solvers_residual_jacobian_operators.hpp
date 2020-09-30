@@ -58,7 +58,7 @@ class ResidualJacobianOperators
 
   // r_,J_ are the actual main operators
   r_t r_;
-  j_t J_;
+  mutable j_t J_;
 
   // this is used for residualNorm method so that we don't modify the real operator r_
   // which must be the same once computeOperators is called.
@@ -109,50 +109,69 @@ public:
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+  >
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
-    sys.residual(state, r_, normType, residualNorm);
+
+    sys.residual(state, r_);
+
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = ::pressio::ops::norm2(r_);
+
     if  (recomputeSystemJacobian){
       sys.jacobian(state, J_);
     }
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    >
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
-    sys.residualAndJacobian(state, r_, J_, normType,
-			    residualNorm, recomputeSystemJacobian);
+    sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = ::pressio::ops::norm2(r_);
   }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    >
   residualNorm(const system_t & system, 
          const state_t & state,
 	       ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residual(state, auxR_, normType, residualNorm);
+    system.residual(state, auxR_);
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = ::pressio::ops::norm2(auxR_);
   }
 
   template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    >
   residualNorm(const system_t & system, 
          const state_t & state,
 	       ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residualNorm(state, normType, residualNorm);
+    system.residualAndJacobian(state, auxR_, J_, false);
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = ::pressio::ops::norm2(auxR_);
   }
+
 };
 
 }}}}

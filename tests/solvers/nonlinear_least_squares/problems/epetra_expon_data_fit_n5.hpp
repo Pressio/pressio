@@ -102,24 +102,16 @@ struct EpetraExpDataFitN5
     return x[0] + x[1] * exp(-t*x[3]) + x[2]*exp(-t*x[4]);
   }
 
-  residual_type createResidual() const {
-    return *R_;
-  }
+  residual_type createResidual() const{ return *R_; }
+  jacobian_type createJacobian() const{ return *J_; }
 
-  jacobian_type createJacobian() const{
-    return *J_;
-  }//end jacobian
-
-  void residual(const state_type& x, residual_type & R,
-    ::pressio::Norm normKind,
-    scalar_type & normResidual) const 
+  void residual(const state_type& x, residual_type & R) const 
   {
     for (auto i=0; i< NumMyElem_; i++){
       R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
     };
-
-    if (normKind == pressio::Norm::L2) R.data()->Norm2(&normResidual);
-    if (normKind == pressio::Norm::L1) R.data()->Norm1(&normResidual);
+    // if (normKind == pressio::Norm::L2) R.data()->Norm2(&normResidual);
+    // if (normKind == pressio::Norm::L1) R.data()->Norm1(&normResidual);
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const{

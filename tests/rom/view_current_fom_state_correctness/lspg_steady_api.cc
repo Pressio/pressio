@@ -73,12 +73,11 @@ struct MyFakeSolver
   {
     ++callCounter_;
 
-    double norm{};
     for (auto k=0; k<2; ++k)
     {
       std::cout << "Solver call " << callCounter_ << " " << k << std::endl;
 
-      sys.residual(state, R_, ::pressio::Norm::L2, norm);
+      sys.residual(state, R_);
       sys.jacobian(state, J_);
 
       std::cout << *state.data() << std::endl;

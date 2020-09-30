@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef solvers_weighting_operator_HPP_
-#define solvers_weighting_operator_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
@@ -77,4 +77,4 @@ struct weighting_operator<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // solvers_weighting_operator_HPP_
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_

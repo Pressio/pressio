@@ -15,16 +15,12 @@ struct NonLinearLeastSquareSystem
   using residual_type = vector_w_t;
   using jacobian_type = matrix_w_t;
 
-  void residual(const state_type& x, 
-    residual_type & res,
-		::pressio::Norm normKind, 
-    scalar_type & normResidual) const 
+  void residual(const state_type& x, residual_type & res) const 
   {
     res[0] = x[0] - x[1]*(2. - x[1]*(5. - x[1]) ) - 13.;
     res[1] = x[0] - x[1]*(14. - x[1]*(1. + x[1]) ) - 29.;
-
-    if (normKind == pressio::Norm::L2)
-      normResidual = res.data()->norm();
+    // if (normKind == pressio::Norm::L2)
+    //   normResidual = res.data()->norm();
   }
 
   void jacobian(const state_type& x, jacobian_type & jac) const {

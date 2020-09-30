@@ -61,7 +61,6 @@ struct MyFakeSolver
     ++count_;
 
     state_t R(3);
-    double normValue = {};
     for (int i=0; i<2; ++i)
     {
       std::cout << i << "\n";
@@ -71,7 +70,7 @@ struct MyFakeSolver
 		  << state[1] << " "
 		  << state[2] << std::endl;
 
-	sys.residual(state, R, ::pressio::Norm::L2, normValue);
+	sys.residual(state, R);
 
 	std::cout << "s: res" << " "
 		  << R[0] << " "

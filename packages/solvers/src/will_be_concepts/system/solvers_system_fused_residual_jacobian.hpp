@@ -69,12 +69,11 @@ struct system_fused_residual_jacobian
    ::pressio::solvers::predicates::has_const_create_jacobian_method_return_result<
       T, typename T::jacobian_type>::value and
 
-   ::pressio::solvers::predicates::has_const_residualandjacobian_method_accept_state_result_norm_return_void<
-      T, typename T::state_type, typename T::residual_type, 
-      typename T::jacobian_type, typename T::scalar_type>::value and
-
-   ::pressio::solvers::predicates::has_const_residualnorm_method_accept_state_norm_return_void<
-      T, typename T::state_type, typename T::scalar_type>::value    
+   ::pressio::solvers::predicates::has_const_residualandjacobian_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type, typename T::jacobian_type>::value 
+      
+   // ::pressio::solvers::predicates::has_const_residualnorm_method_accept_state_return_void<
+   //    T, typename T::state_type, typename T::scalar_type>::value    
   >
  > : std::true_type{};
 

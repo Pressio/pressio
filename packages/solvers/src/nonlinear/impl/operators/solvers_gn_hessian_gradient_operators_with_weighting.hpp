@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gn_hessian_gradient_operators.hpp
+// solvers_gn_hessian_gradient_operators_with_weighting.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_WEIGHTED_HPP_
-#define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_WEIGHTED_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_WITH_WEIGHTING_HPP_
+#define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_WITH_WEIGHTING_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
@@ -176,9 +176,11 @@ public:
        bool recomputeSystemJacobian = true)
   {
     // compute r from system object
-    system.residual(state, r_, normType, residualNorm);
+    system.residual(state, r_);//, normType, residualNorm);
     // apply M 
     (*functorM_)(r_, Mr_);
+
+    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNorm(normType);
 
     if (recomputeSystemJacobian){
@@ -200,11 +202,11 @@ public:
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {
-    system.residualAndJacobian(state, r_, J_, normType,
-          residualNorm,
-          recomputeSystemJacobian);
+    system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    //normType, residualNorm, recomputeSystemJacobian);
 
     (*functorM_)(r_, Mr_);
+    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNorm(normType);
 
     if (recomputeSystemJacobian){
@@ -224,9 +226,10 @@ public:
          ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residual(state, r_, normType, residualNorm);
+    system.residual(state, r_);//, normType, residualNorm);
     (*functorM_)(r_, Mr_);
-    residualNorm = ::pressio::ops::dot(r_, Mr_);
+    residualNorm = this->computeNorm(normType);
+    // residualNorm = ::pressio::ops::dot(r_, Mr_);
   }
 
   template< typename system_t, typename state_t>
@@ -241,21 +244,26 @@ public:
     // system.residualNorm(state, normType, residualNorm);
 
     // here we query system to recompute r_ only (that is why we pass false)
-    system.residualAndJacobian(state, r_, J_, normType,
-          residualNorm, false);
+    system.residualAndJacobian(state, r_, J_, false); 
+                              //normType,residualNorm, false);
     (*functorM_)(r_, Mr_);
-    residualNorm = ::pressio::ops::dot(r_, Mr_);
+    residualNorm = this->computeNorm(normType);
+    // residualNorm = ::pressio::ops::dot(r_, Mr_);
   }
 
 private:
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t< std::is_void<_ud_ops_t>::value, sc_t >
-  computeNorm(::pressio::Norm normType)
+  computeNorm(::pressio::Norm normType) const
   {
-    if (normType == ::pressio::Norm::L2){
-      return ::pressio::ops::dot(r_, Mr_);
-    }
-    return {};
+    return ::pressio::ops::dot(r_, Mr_);
+  }
+
+  template<typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, sc_t >
+  computeNorm(::pressio::Norm normType) const
+  {
+    return udOps_->dot(r_, Mr_);
   }
 
   template<typename _ud_ops_t = ud_ops_t>
@@ -302,4 +310,4 @@ private:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_WITH_WEIGHTING_HPP_

@@ -27,12 +27,9 @@ public:
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_residual_type & R,
-                            ::pressio::Norm normKind,
-                            scalar_type & normVal,
 			    Args && ...args) const
   {
     this->timeDiscreteResidualImpl( step, time, dt, R,
-				    normKind, normVal,
 				    std::forward<Args>(args)... );
   }
 
@@ -41,8 +38,6 @@ public:
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
-				::pressio::Norm normKind,
-				scalar_type & normValue,
 				const state_type & yn,
 				const state_type & ynm1,
 				const state_type & ynm2) const
@@ -113,12 +108,11 @@ struct MyFakeSolver
     // steps happening inside the real pressio nonlin solver
 
     state_t R(3);
-    double normValue = {};
     for (int i=0; i<2; ++i)
     {
       std::cout << i << "\n";
       try{
-	sys.residual(state, R, ::pressio::Norm::L2, normValue);
+	sys.residual(state, R);
 	state[0] += 0.1;
 	state[1] += 0.2;
 	state[2] += 0.3;

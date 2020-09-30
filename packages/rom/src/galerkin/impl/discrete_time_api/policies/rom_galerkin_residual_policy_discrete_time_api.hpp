@@ -98,20 +98,18 @@ public:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romResidual,
-	       ::pressio::Norm normKind,
-	       scalar_t & normValue) const
+	       residual_t & romResidual) const
   {
     this->compute_impl(romState, romPrevStates, fomSystemObj,
-		       time, dt, step, romResidual, normKind);
+		       time, dt, step, romResidual);
 
-    if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(romResidual);
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(romResidual);
-    else
-      throw std::runtime_error
-	("Invalid norm kind for lspg unsteady residual policy");
+    // if (normKind == ::pressio::Norm::L2)
+    //   normValue = ::pressio::ops::norm2(romResidual);
+    // else if (normKind == ::pressio::Norm::L1)
+    //   normValue = ::pressio::ops::norm1(romResidual);
+    // else
+    //   throw std::runtime_error
+  	// ("Invalid norm kind for lspg unsteady residual policy");
   }
 
 private:
@@ -151,8 +149,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romResidual,
-	       ::pressio::Norm normKind) const
+         residual_t & romResidual) const
   {
     // update Jacobian of decoder
     decoder_.updateJacobian(romState);
@@ -162,9 +159,7 @@ private:
     const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
-						 time, dt,
-						 step, fomR_,
-						 normKind, fomRNormValue_);
+						 time, dt, step, fomR_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -186,8 +181,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romResidual,
-	       ::pressio::Norm normKind) const
+	       residual_t & romResidual) const
   {
     // update Jacobian of decoder
     decoder_.updateJacobian(romState);
@@ -198,8 +192,7 @@ private:
     const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
     const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
     ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
-						 time, dt, step, fomR_,
-						 normKind, fomRNormValue_);
+						 time, dt, step, fomR_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -218,7 +211,7 @@ private:
   const decoder_type & decoder_;
   const typename decoder_type::jacobian_type & decoderJacobian_;
   mutable fom_residual_type fomR_;
-  mutable scalar_t fomRNormValue_ = {};
+  // mutable scalar_t fomRNormValue_ = {};
 };
 
 }}}}//end namespace

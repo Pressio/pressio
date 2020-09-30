@@ -202,13 +202,11 @@ public:
     return this->jacobian_obj_.create(sys_.get());
   }
 
-  void residual(const state_t & odeState, residual_t & R,
-    ::pressio::Norm normKind, scalar_t & normValue) const
+  void residual(const state_t & odeState, residual_t & R) const
   {
     this->residual_obj_.template compute<tag_name>(
       odeState, this->auxStates_, this->sys_.get(),
-      this->t_, this->dt_, this->step_, R,
-      normKind, normValue);
+      this->t_, this->dt_, this->step_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const

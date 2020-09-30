@@ -129,11 +129,10 @@ public:
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_residual_type & R,
-                            ::pressio::Norm normKind, 
-                            scalar_type & normVal,
                             Args && ... args) const
   {
-    this->timeDiscreteResidualImpl( step, time, dt, R, normKind, normVal, std::forward<Args>(args)... );
+    this->timeDiscreteResidualImpl( step, time, dt, R, 
+      std::forward<Args>(args)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -143,7 +142,8 @@ public:
                             discrete_time_jacobian_type & J,
                             Args && ... states) const
   {
-    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
+    this->timeDiscreteJacobianImpl(step, time, dt, 
+      J, std::forward<Args>(states)... );
   }
 
 private:
@@ -180,19 +180,16 @@ private:
         const scalar_type & time,
         const scalar_type & dt,
         residual_type & R,
-        ::pressio::Norm normKind,
-        scalar_type & normValue,
         const state_type & yn,
         const state_type & ynm1) const
   {
     auto f =  this->createVelocity();
     this->velocity(yn, time, f);
     R = yn - ynm1 - dt * f;
-
-    if (normKind==::pressio::Norm::L2)
-      normValue = R.norm();
-    if (normKind==::pressio::Norm::L1)
-      normValue = R.lpNorm<1>();
+    // if (normKind==::pressio::Norm::L2)
+    //   normValue = R.norm();
+    // if (normKind==::pressio::Norm::L1)
+    //   normValue = R.lpNorm<1>();
   }
 
   template <typename step_t, typename state_t>

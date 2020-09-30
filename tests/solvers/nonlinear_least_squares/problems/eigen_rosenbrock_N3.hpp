@@ -21,18 +21,10 @@ struct EigenRosenbrock3
   static constexpr int nf = 4; // num functions
   static constexpr int nv = 3; // num variables
 
-  residual_type createResidual() const {
-    return residual_type(nf);
-  }
+  residual_type createResidual() const{return residual_type(nf);}
+  jacobian_type createJacobian() const{return jacobian_type(nf, nv);}
 
-  jacobian_type createJacobian() const {
-    return jacobian_type(nf, nv);
-  }
-
-  void residual(const state_type& x,
-		residual_type & res,
-		::pressio::Norm normKind,
-		scalar_type & normResidual) const
+  void residual(const state_type& x, residual_type & res) const
   {
     auto x1 = x[0];
     auto x2 = x[1];
@@ -42,9 +34,8 @@ struct EigenRosenbrock3
     res[1] = 10.*(x2 - x1*x1);
     res[2] = (1.-x1);
     res[3] = (1.-x2);
-
-    if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
-    if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
+    // if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
+    // if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const {

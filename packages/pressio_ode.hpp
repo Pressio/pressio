@@ -102,7 +102,7 @@
 #include "ode/src/predicates/ode_is_stepper_total_n_states_setter.hpp"
 #include "ode/src/predicates/ode_is_stepper_order_setter.hpp"
 #include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
-#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_norm_states_return_void.hpp"
+#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_states_return_void.hpp"
 #include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_create_discrete_time_jacobian_method_return_result.hpp"
 #include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "ode/src/will_be_concepts/ode_implicit_state.hpp"

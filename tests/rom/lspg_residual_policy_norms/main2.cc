@@ -151,8 +151,10 @@ void testSteadyResidualPolicy(fom_state_t & yRef,
   scalar_t rNorm1 = {};
   scalar_t rNorm2 = {};
 
-  rPol.compute(romState, residual, fomObj, pressio::Norm::L2, rNorm1);
-  rPolPrecond.compute(romState, residual, fomObj, pressio::Norm::L2, rNorm2);
+  rPol.compute(romState, residual, fomObj);
+  rNorm1 = residual.data()->norm();
+  rPolPrecond.compute(romState, residual, fomObj);
+  rNorm2 = residual.data()->norm();
 
   const auto trueNorm1 = std::sqrt( (1*1)*(double)fomSize );
   const auto trueNorm2 = std::sqrt( (1.5*1.5)*(double)fomSize );

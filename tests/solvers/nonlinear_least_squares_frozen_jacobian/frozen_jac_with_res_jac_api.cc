@@ -33,17 +33,15 @@ struct MySystem
   }
 
   void residual(const state_type& x,
-    residual_type & R,
-		::pressio::Norm normKind,
-    scalar_type & normResidual) const
+    residual_type & R) const
   {
     ++iterCountR_;
 
     for (auto i=0; i<R.extent(0); ++i)
       R[i] += 1.;
 
-    if (normKind == pressio::Norm::L2)
-      normResidual = R.data()->norm();
+    // if (normKind == pressio::Norm::L2)
+    //   normResidual = R.data()->norm();
   }
 
   void jacobian(const state_type& x, jacobian_type & jac) const

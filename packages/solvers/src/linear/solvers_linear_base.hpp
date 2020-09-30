@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_BASE_SOLVERS_LINEAR_BASE_HPP_
-#define SOLVERS_BASE_SOLVERS_LINEAR_BASE_HPP_
+#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_
+#define SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_
 
 namespace pressio{ namespace solvers{
 
@@ -95,4 +95,4 @@ struct LinearBase
 };
 
 }}//end namespace pressio::solvers
-#endif  // SOLVERS_BASE_SOLVERS_LINEAR_BASE_HPP_
+#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_

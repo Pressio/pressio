@@ -98,9 +98,9 @@ struct implicit_residual_policy<
 	     std::declval<scalar_t const &>(),
 	     std::declval<scalar_t const &>(),
 	     std::declval<::pressio::ode::types::step_t>(),
-	     std::declval<residual_t &>(),
-	     ::pressio::Norm::Undefined,
-	     std::declval<scalar_t &>()
+	     std::declval<residual_t &>()
+	     // ::pressio::Norm::Undefined,
+	     // std::declval<scalar_t &>()
 	     )
        )
       >::value

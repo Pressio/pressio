@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gn_hessian_gradient_operators.hpp
+// solvers_gn_hessian_gradient_operators_hg_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -152,4 +152,4 @@ public:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_

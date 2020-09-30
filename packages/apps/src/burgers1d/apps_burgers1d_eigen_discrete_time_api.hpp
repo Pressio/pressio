@@ -106,11 +106,10 @@ public:
   			    const scalar_type & time,
   			    const scalar_type & dt,
   			    discrete_time_residual_type & R,
-			    pressio::Norm normKind,
-			    scalar_type & normR,
   			    Args && ... states) const
   {
-    this->discreteTimeResidualImpl(step, time, dt, R,normKind, normR, std::forward<Args>(states)... );
+    this->discreteTimeResidualImpl(step, time, dt, 
+      R,std::forward<Args>(states)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -121,7 +120,8 @@ public:
   				 dense_matrix_type & A,
   				 Args && ... states) const
   {
-    this->applyDiscreteTimeJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
+    this->applyDiscreteTimeJacobianImpl(step, time, dt, 
+      B, A, std::forward<Args>(states)...);
   }
 
 private:
@@ -131,8 +131,6 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
-				pressio::Norm normKind,
-				scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1) const
   {
@@ -146,8 +144,6 @@ private:
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
-				pressio::Norm normKind,
-				scalar_type & normR,
 				const state_type & yn,
 				const state_type & ynm1,
         const state_type & ynm2) const

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gn_hessian_gradient_operators.hpp
+// solvers_gn_hessian_gradient_operators_no_weighting.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -69,7 +69,7 @@ private:
   static constexpr auto pnT = ::pressio::nontranspose();
 
   mutable r_t r_;
-  j_t J_;
+  mutable j_t J_;
   g_t g_;
   h_t H_;
 
@@ -149,23 +149,31 @@ public:
     throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
+public:
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
-  computeOperators(const system_t & sys,
+  computeOperators(const system_t & systemObj,
        const state_t & state,
        ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {
-    sys.residual(state, r_, normType, residualNorm);
+    // compute r_
+    systemObj.residual(state, r_);//, normType, residualNorm);
 
+    // compute norm of r_
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = this->computeNormR();
+
+    // recompute Jacobian is needed 
     if (recomputeSystemJacobian){
-      sys.jacobian(state, J_);
+      systemObj.jacobian(state, J_);
       computeHessian();
     }
 
+    // gradient always computed because residual always changes
     computeGradient();
   }
 
@@ -173,19 +181,24 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
-  computeOperators(const system_t & sys,
+  computeOperators(const system_t & systemObj,
        const state_t & state,
        ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
-  {
-    sys.residualAndJacobian(state, r_, J_, normType,
-          residualNorm,
-          recomputeSystemJacobian);
+  {    
+    systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+
+    // compute  norm of r_
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = this->computeNormR();
+
+    // hessian only recomputed if Jacobian has been updated
     if (recomputeSystemJacobian){
       computeHessian();
     }
 
+    // gradient always computed because residual always changes
     computeGradient();
   }
 
@@ -193,27 +206,48 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
+  residualNorm(const system_t & systemObj, 
          const state_t & state,
          ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residual(state, r_, normType, residualNorm);
+    systemObj.residual(state, r_);
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = this->computeNormR();
   }
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
+  residualNorm(const system_t & systemObj, 
          const state_t & state,
          ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residualNorm(state, normType, residualNorm);
+    systemObj.residualAndJacobian(state, r_, J_, false);
+    assert(normType == ::pressio::Norm::L2);
+    residualNorm = this->computeNormR();
   }
 
 private:
+  template<typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t<
+    std::is_void<_ud_ops_t>::value, 
+    sc_t 
+    >
+  computeNormR() const
+  {
+    return ::pressio::ops::norm2(r_);
+  }
+
+  template<typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, sc_t >
+  computeNormR() const
+  {
+    return udOps_->norm2(*r_.data());
+  }
+
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   computeHessian()
@@ -258,4 +292,4 @@ private:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_NO_WEIGHTING_HPP_

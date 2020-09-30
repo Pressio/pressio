@@ -18,8 +18,6 @@ public:
   			    const scalar_type & time,
 			    const scalar_type & dt,
   			    discrete_time_residual_type & R,
-            pressio::Norm normKind,
-            scalar_type & normR,
   			    Args & ... states) const
   {
     // forward to whatever approriate impl method, e. g.

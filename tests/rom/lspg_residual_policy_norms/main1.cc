@@ -186,14 +186,17 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   sc_t rNorm2 = {};
   sc_t rNorm3 = {};
 
-  rPol.compute<ode_tag>(romState, romAuxStates, fomObj, 0.0, 0.5, 1,
-  			residual, pressio::Norm::L2, rNorm1);
+  rPol.compute<ode_tag>(romState, romAuxStates, fomObj, 
+    0.0, 0.5, 1,residual);
+  rNorm1 = residual.data()->norm();
 
-  rPolPrecond.compute<ode_tag>(romState, romAuxStates, fomObj, 0.0, 0.5, 1,
-  			       residual, pressio::Norm::L2, rNorm2);
+  rPolPrecond.compute<ode_tag>(romState,romAuxStates,fomObj, 
+    0.0, 0.5, 1,residual);
+  rNorm2 = residual.data()->norm();
 
-  rPolMasked.compute<ode_tag>(romState, romAuxStates, fomObj, 0.0, 0.5, 1,
-			       residual, pressio::Norm::L2, rNorm3);
+  rPolMasked.compute<ode_tag>(romState, romAuxStates, fomObj, 
+    0.0, 0.5, 1,residual);
+  rNorm3 = residual.data()->norm();
 
   const auto trueNorm1 = std::sqrt( (1.5*1.5)*(double)fomSize );
   const auto trueNorm2 = std::sqrt( (2.0*2.0)*(double)fomSize );

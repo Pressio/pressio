@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_weighting_operator.hpp
+// solvers_ops_normal_equations_rj_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef solvers_ops_nonlin_ls_HPP_
-#define solvers_ops_nonlin_ls_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
@@ -123,8 +123,19 @@ struct ops_normal_equations_rj_api<
         )
        )
       >::value
+    and
+    // 4. need norm2 method
+    std::is_same<
+      decltype
+      (
+       std::declval< T const &>().norm2
+       (
+        std::declval< typename containers::details::traits<r_t>::wrapped_t const & >()
+        )
+       ), sc_t
+      >::value
    >
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // solvers_weighting_operator_HPP_
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
