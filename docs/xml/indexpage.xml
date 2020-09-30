@@ -1,14 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="indexpage" kind="page">
     <compoundname>index</compoundname>
     <title>Pressio C++</title>
-    <briefdescription>
-    </briefdescription>
     <detaileddescription>
-<para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
-<para>You landed on the C++ documentation! If this is a mistake, please refer to the <ulink url="https://pressio.github.io/">project website</ulink> <linebreak/>
- </para>
-    </detaileddescription>
+<para><emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para><para>You landed on the C++ documentation! If this is a mistake, please refer to the <ulink url="https://pressio.github.io/">project website</ulink> </para>    </detaileddescription>
   </compounddef>
 </doxygen>
