@@ -47,6 +47,8 @@ jobs:
           pwd
           cd docs/
           touch temp_file.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add temp_file.txt
           git commit -m "Add temp file for testing" -a
           
