@@ -74,24 +74,27 @@ struct SpanExpr<
   using const_data_return_t = typename mytraits::const_data_return_t;
 
 private:
-  vector_t & vecObj_;
+  std::reference_wrapper<vector_t> vecObj_;
   ord_t startIndex_;
   ord_t extent_ = {};
   native_expr_t nativeExprObj_;
 
 public:
   SpanExpr() = delete;
-  ~SpanExpr() = default;
+  
   SpanExpr(const SpanExpr & other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = delete;
+
   SpanExpr(SpanExpr && other) = default;
-  SpanExpr & operator=(const SpanExpr & other) = default;
-  SpanExpr & operator=(SpanExpr && other) = default;
+  SpanExpr & operator=(SpanExpr && other) = delete;
+
+  ~SpanExpr() = default;
 
   SpanExpr(vector_t & objIn,
 	   const ord_t startIndexIn,
 	   const ord_t extentIn)
     : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
-    nativeExprObj_(vecObj_.data()->segment(startIndex_, extent_))
+    nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
@@ -102,7 +105,7 @@ public:
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
       extent_(std::get<1>(indexRange)-startIndex_),
-      nativeExprObj_(vecObj_.data()->segment(startIndex_, extent_))
+      nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
@@ -160,24 +163,27 @@ struct SpanExpr<
   using const_data_return_t = typename mytraits::const_data_return_t;
 
 private:
-  vector_t & vecObj_;
+  std::reference_wrapper<vector_t> vecObj_;
   size_t startIndex_;
   size_t extent_ = {};
   native_expr_t nativeExprObj_;
 
 public:
   SpanExpr() = delete;
-  ~SpanExpr() = default;
+  
   SpanExpr(const SpanExpr & other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = delete;
+
   SpanExpr(SpanExpr && other) = default;
-  SpanExpr & operator=(const SpanExpr & other) = default;
-  SpanExpr & operator=(SpanExpr && other) = default;
+  SpanExpr & operator=(SpanExpr && other) = delete;
+
+  ~SpanExpr() = default;
 
   SpanExpr(vector_t & objIn,
 	   const size_t startIndexIn,
 	   const size_t extentIn)
     : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
-    nativeExprObj_(Kokkos::subview(*vecObj_.data(),
+    nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
 				   std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
@@ -188,7 +194,7 @@ public:
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
       extent_(std::get<1>(indexRange)-startIndex_),
-      nativeExprObj_(Kokkos::subview(*vecObj_.data(),
+      nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
 				     std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );

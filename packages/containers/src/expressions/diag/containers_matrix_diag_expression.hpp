@@ -75,7 +75,7 @@ struct DiagExpr<
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  matrix_t & matObj_;
+  std::reference_wrapper<matrix_t> matObj_;
   native_expr_t nativeExprObj_;
   size_t numRows_ = {};
   size_t numCols_ = {};
@@ -83,18 +83,20 @@ private:
 
 public:
   DiagExpr() = delete;
-  ~DiagExpr() = default;
+
   DiagExpr(const DiagExpr & other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = delete;
+
   DiagExpr(DiagExpr && other) = default;
-  DiagExpr & operator=(const DiagExpr & other) = default;
-  DiagExpr & operator=(DiagExpr && other) = default;
+  DiagExpr & operator=(DiagExpr && other) = delete;
+  ~DiagExpr() = default;
 
   DiagExpr(matrix_t & matObjIn)
     : matObj_(matObjIn),
-    nativeExprObj_(matObj_.data()->diagonal()),
-    numRows_(matObj_.data()->rows()),
-    numCols_(matObj_.data()->cols()),
-    extent_(matObj_.data()->rows())
+    nativeExprObj_(matObj_.get().data()->diagonal()),
+    numRows_(matObj_.get().data()->rows()),
+    numCols_(matObj_.get().data()->cols()),
+    extent_(matObj_.get().data()->rows())
   {
     assert(numRows_ == numCols_);
   }
@@ -155,7 +157,7 @@ struct DiagExpr<
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  matrix_t & matObj_;
+  std::reference_wrapper<matrix_t> matObj_;
   //native_expr_t nativeExprObj_;
   size_t numRows_ = {};
   size_t numCols_ = {};
@@ -163,18 +165,21 @@ private:
 
 public:
   DiagExpr() = delete;
-  ~DiagExpr() = default;
+
   DiagExpr(const DiagExpr & other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = delete;
+
   DiagExpr(DiagExpr && other) = default;
-  DiagExpr & operator=(const DiagExpr & other) = default;
-  DiagExpr & operator=(DiagExpr && other) = default;
+  DiagExpr & operator=(DiagExpr && other) = delete;
+
+  ~DiagExpr() = default;
 
   DiagExpr(matrix_t & matObjIn)
     : matObj_(matObjIn),
       /*nativeExprObj_(),*/
-      numRows_(matObj_.extent(0)),
-      numCols_(matObj_.extent(1)),
-      extent_(matObj_.extent(0))
+      numRows_(matObj_.get().extent(0)),
+      numCols_(matObj_.get().extent(1)),
+      extent_(matObj_.get().extent(0))
   {
     assert(numRows_ == numCols_);
   }
