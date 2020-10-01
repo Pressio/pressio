@@ -71,17 +71,25 @@ class DenseMatrix<
 public:
   DenseMatrix() = default;
 
-  DenseMatrix(ord_t nrows, ord_t ncols)
-    : data_(nrows, ncols){
+  explicit DenseMatrix(const wrap_t & other) : data_(other){}
+
+  DenseMatrix(ord_t nrows, ord_t ncols) : data_(nrows, ncols)
+  {
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  explicit DenseMatrix(const wrap_t & other)
-    : data_(other){}
+  DenseMatrix(wrap_t && other) : data_(std::move(other)){}
 
-  explicit DenseMatrix(const sc_t * datain)
-    : data_(datain){}
+  // copy cnstr
+  DenseMatrix(DenseMatrix const & other) = default;
+  // delete copy assign to force usage of ops::deep_copy
+  DenseMatrix & operator=(const DenseMatrix & other) = delete;
 
+  // move cnstr
+  DenseMatrix(DenseMatrix && o) = default;
+  // move assignment
+  DenseMatrix & operator=(DenseMatrix && other) = default;
+  // destructor
   ~DenseMatrix() = default;
 
 public:

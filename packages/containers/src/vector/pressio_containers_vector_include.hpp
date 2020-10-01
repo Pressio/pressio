@@ -49,17 +49,18 @@
 #ifndef CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 #define CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 
-// NOTE that below the order matters
+/* WARNING: the inclusion order below matters:
+concrete classes depend on traits which depend on predicates. */ 
 
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_eigen.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "./wrapper_detection_predicates/containers_is_vector_wrapper_pybind.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_teuchos.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_epetra.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_pybind.hpp"
+#include "./wrapper_detection_predicates/containers_is_vector_wrapper_teuchos.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_kokkos.hpp"
@@ -67,7 +68,7 @@
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_arbitrary.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper.hpp"
 
-// include traits
+// traits 
 #include "./containers_vector_traits.hpp"
 
 // concrete types

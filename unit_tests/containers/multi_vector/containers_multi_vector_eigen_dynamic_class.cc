@@ -2,34 +2,13 @@
 #include <gtest/gtest.h>
 #include "pressio_containers.hpp"
 
-using eigdmat_t = Eigen::MatrixXd;
-using myMV_t = pressio::containers::MultiVector<eigdmat_t>;
+using em_t = Eigen::MatrixXd;
+using w_t = pressio::containers::MultiVector<em_t>;
 
-
-TEST(containers_multi_vector_serial_eigen_dynamic_class,
-     constructor){
-
-  using MVTrait = pressio::containers::details::traits<myMV_t>;
-  ASSERT_TRUE(MVTrait::wrapped_multi_vector_identifier
-  == pressio::containers::details::WrappedMultiVectorIdentifier::Eigen);
-
-  ASSERT_TRUE(
-  pressio::containers::predicates::is_multi_vector_wrapper_eigen<myMV_t>::value);
-  
-  //construct by passing the size 
-  myMV_t A(6,3);
-
-  // pass native eigen data
-  eigdmat_t eA(45,32);
-  myMV_t AW(eA);
-}
-
-
-TEST(containers_multi_vector_serial_eigen_dynamic_class,
-     constructorAndCheckVals){
-
+TEST(containers_multi_vector_eigen_dynamic, constructorAndCheckVals)
+{
   //construct by passing the sizes 
-  myMV_t A(6,3);
+  w_t A(6,3);
   ASSERT_TRUE( A.extent(0) == 6 );
   ASSERT_TRUE( A.numVectors() == 3 );
   for (size_t i=0; i<6; i++)
@@ -37,11 +16,11 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
       EXPECT_DOUBLE_EQ( A(i,j), 0.);
   
   // pass native eigen vector
-  eigdmat_t eA(45,12);
+  em_t eA(45,12);
   eA(2,2) = 2.2;
   eA(4,11) = 4.4;
 
-  myMV_t B(eA);
+  w_t B(eA);
   ASSERT_TRUE( B.extent(0) == 45 );
   ASSERT_TRUE( B.numVectors() == 12 );
   ASSERT_FALSE( B.extent(0) == 4 );
@@ -51,17 +30,120 @@ TEST(containers_multi_vector_serial_eigen_dynamic_class,
 }
 
 
-TEST(containers_multi_vector_serial_eigen_dynamic_class,
-     copyConstructor){
+TEST(containers_multivector_eigen_dynamic, Constructor1)
+{
+  w_t b;
+  ASSERT_TRUE( b.data()->data() == nullptr );
+  ASSERT_TRUE( b.data()->rows() == 0 );
+  ASSERT_TRUE( b.data()->cols() == 0 );
+}
 
-  //construct by passing the size 
-  myMV_t a(3,2);
-  a(0,0)=1.1;
-  a(0,1)=1.2;
-  a(2,1)=1.3;
-  
-  myMV_t b(a);
-  EXPECT_DOUBLE_EQ( b(0,0), 1.1);
-  EXPECT_DOUBLE_EQ( b(0,1), 1.2);
-  EXPECT_DOUBLE_EQ( b(2,1), 1.3);
+TEST(containers_multivector_eigen_dynamic, Constructor2)
+{
+  em_t a (15, 4);
+  a.setConstant(1);
+
+  w_t b(a);
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 15.);
+  }
+  // change b should not affect a
+  b.data()->setConstant(2.);
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 30.);
+    ASSERT_EQ(a.col(j).lpNorm<1>(), 15.);
+  }
+
+  ASSERT_TRUE( a.data() != b.data()->data() );
+  ASSERT_TRUE( a.data() != nullptr );
+  ASSERT_TRUE( b.data()->data() != nullptr );
+}
+
+TEST(containers_multivector_eigen_dynamic, Constructor3)
+{
+  w_t b(15,4);
+  ASSERT_TRUE( b.data()->data() != nullptr );
+  ASSERT_TRUE( b.data()->rows() == 15 );
+  ASSERT_TRUE( b.data()->cols() == 4 );
+}
+
+TEST(containers_multivector_eigen_dynamic, Constructor4)
+{
+  em_t a(15,4);
+  a.setConstant(1);
+  const auto ptr = a.data();
+
+  w_t b (std::move(a));
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 15.);
+  }
+
+  ASSERT_TRUE( b.data()->data() == ptr );
+  ASSERT_TRUE( a.data() == nullptr );
+  ASSERT_TRUE( b.data() != nullptr );
+}
+
+TEST(containers_multivector_eigen_dynamic, CopyConstructor)
+{
+  w_t a(15,4);
+  a.data()->setConstant(1.);
+
+  w_t b(a);
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 15.);
+  }
+
+  // change b should not affect a
+  b.data()->setConstant(2.);
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 30.);
+    ASSERT_EQ(a.data()->col(j).lpNorm<1>(), 15.);
+  }
+
+  ASSERT_TRUE( a.data()->data() != b.data()->data() );
+  ASSERT_TRUE( a.data()->data() != nullptr );
+  ASSERT_TRUE( b.data()->data() != nullptr );
+}
+
+TEST(containers_multivector_eigen_dynamic, MoveConstructor)
+{
+  w_t a(15,4);
+  a.data()->setConstant(1.);
+  const auto ptr = a.data()->data();
+  ASSERT_TRUE( ptr != nullptr );
+
+  w_t b(std::move(a));
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 15.);
+  }
+
+  ASSERT_TRUE( a.data()->data() == nullptr );
+  ASSERT_TRUE( b.data()->data() == ptr );
+}
+
+TEST(containers_multivector_eigen_dynamic, MoveAssign)
+{
+  w_t b(15,4);
+  b.data()->setConstant(1.);
+  auto tmp = b.data()->data();
+  for (auto j=0; j<4; ++j){
+    ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 15.);
+  }
+  {
+    w_t a(15,4);
+    tmp = a.data()->data();
+    a.data()->setConstant(2.);
+    ASSERT_TRUE( tmp != nullptr );
+    b = std::move(a);
+    for (auto j=0; j<4; ++j){
+      ASSERT_EQ(b.data()->col(j).lpNorm<1>(), 30.);
+    }
+
+    ASSERT_TRUE( b.data()->data() == tmp );
+
+    // waiting for: https://gitlab.com/libeigen/eigen/-/issues/2000
+    //ASSERT_TRUE( a.data()->data() == nullptr );
+  }
+  ASSERT_TRUE( b.data()->data() == tmp );
+  ASSERT_TRUE( b.data()->data() != nullptr );
 }

@@ -155,9 +155,23 @@ struct is_dense_dynamic_matrix_eigen<
     >
   > : std::true_type{};
 
+
 //----------------------------------------------------------------------
+template <typename T, typename enable = void>
+struct is_dense_row_major_matrix_eigen : std::false_type {};
+
+template<typename T>
+struct is_dense_row_major_matrix_eigen<
+  T,
+  mpl::enable_if_t<
+    (is_dense_static_matrix_eigen<T>::value or
+    is_dense_dynamic_matrix_eigen<T>::value) and
+    int(T::IsRowMajor)==1
+    >
+  > : std::true_type{};
 
 
+//----------------------------------------------------------------------
 template <typename T, typename enable = void>
 struct is_dense_matrix_eigen : std::false_type {};
 

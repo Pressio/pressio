@@ -1,19 +1,24 @@
 
 set(exeRootName containers_multi_vector)
 
+#############
+### EIGEN ###
+#############
 set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_eigen_dynamic_class.cc)
-add_serial_utest(${exeRootName}_serial "${SRC1}")
+add_serial_utest(${exeRootName}_eigen_dynamic "${SRC1}")
 
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_eigen_dynamic_constructors_and_smf.cc)
-add_serial_utest(${exeRootName}_eigen_constructors_and_smf "${SRC1}")
-
-
+##############
+### KOKKOS ###
+##############
 if(PRESSIO_ENABLE_TPL_KOKKOS)
   add_serial_utest_kokkos(
     ${exeRootName}_sharedmem_kokkos_mv
     ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_sharedmem_kokkos_mv.cc )
 endif()
 
+################
+### TRILINOS ###
+################
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   #### EPETRA ####
   add_serial_utest(

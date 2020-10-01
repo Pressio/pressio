@@ -49,17 +49,18 @@
 #ifndef CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 #define CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 
-// NOTE that below the order matters
+/* WARNING: the inclusion order below matters:
+concrete classes depend on traits which depend on predicates. */ 
 
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_eigen.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_epetra.hpp"
-#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra.hpp"
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra_block.hpp"
+#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_kokkos.hpp"
 #endif
-#include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_eigen.hpp"
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_arbitrary.hpp"
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper.hpp"
 
@@ -77,6 +78,5 @@
 #include "./concrete/containers_multi_vector_sharedmem_kokkos.hpp"
 #endif
 #include "./concrete/containers_multi_vector_arbitrary.hpp"
-
 
 #endif  // CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_

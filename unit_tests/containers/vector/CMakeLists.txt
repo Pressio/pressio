@@ -1,7 +1,6 @@
 
 set(exeRootName containers_vector)
 
-
 #############
 ### EIGEN ###
 #############

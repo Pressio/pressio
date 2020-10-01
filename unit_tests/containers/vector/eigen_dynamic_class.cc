@@ -19,7 +19,7 @@ TEST(containers_vector_sharedmem_eigen_dyn, Constructor2)
 
   w_t b(a);
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
-  // change b should not affect a
+  // changing b should not affect a
   b.data()->setConstant(2.);
   ASSERT_EQ(b.data()->lpNorm<1>(), 30.);
   ASSERT_EQ(a.lpNorm<1>(), 15.);
@@ -40,10 +40,13 @@ TEST(containers_vector_sharedmem_eigen_dyn, Constructor4)
 {
   vec_t a(15);
   a.setConstant(1);
+  const auto ptr = a.data();
+
   w_t b (std::move(a));
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
   ASSERT_TRUE( a.data() == nullptr );
   ASSERT_TRUE( b.data() != nullptr );
+  ASSERT_TRUE( b.data()->data() == ptr );
 }
 
 TEST(containers_vector_sharedmem_eigen_dyn, CopyConstructor)
@@ -81,26 +84,27 @@ TEST(containers_vector_sharedmem_eigen_dyn, MoveAssign)
   w_t b(15);
   b.data()->setConstant(1.);
   ASSERT_EQ(b.data()->lpNorm<1>(), 15.);
+  auto tmp = b.data()->data();
   {
     w_t a(15);
-    const auto ptr = a.data()->data();
+    tmp = a.data()->data();
     a.data()->setConstant(2.);
-    ASSERT_TRUE( ptr != nullptr );
+    ASSERT_TRUE( tmp != nullptr );
+
     b = std::move(a);
     ASSERT_EQ(b.data()->lpNorm<1>(), 30.);
 
-    ASSERT_TRUE( b.data()->data() == ptr );
+    ASSERT_TRUE( b.data()->data() == tmp );
 
     // waiting for: https://gitlab.com/libeigen/eigen/-/issues/2000
     //ASSERT_TRUE( ptr == nullptr );
   }
-  ASSERT_TRUE( b.data()->data() != nullptr );
+  ASSERT_TRUE( b.data()->data() == tmp );
+  // ASSERT_TRUE( b.data()->data() != nullptr );
 }
 
-
-TEST(containers_vector_sharedmem_eigen_dyn,
-     queryWrappedData){
-
+TEST(containers_vector_sharedmem_eigen_dyn, queryWrappedData)
+{
   w_t m_v1(4);
   ::testing::StaticAssertTypeEq<decltype(m_v1.data()),
 				vec_t * >();
@@ -109,18 +113,15 @@ TEST(containers_vector_sharedmem_eigen_dyn,
 				 const vec_t * >();
 }
 
-
-TEST(containers_vector_sharedmem_eigen_dyn,
-     size){
-
+TEST(containers_vector_sharedmem_eigen_dyn, size)
+{
   w_t m_v1(11);
   ASSERT_TRUE( m_v1.extent(0) == 11 );
 }
 
-
 TEST(containers_vector_sharedmem_eigen_dyn,
-     subscriptOperatorSquareBrack){
-
+     subscriptOperatorSquareBrack)
+{
   w_t m_v3(4);
   ::testing::StaticAssertTypeEq<
     decltype(m_v3[1]), double & >();
@@ -172,8 +173,8 @@ TEST(containers_vector_sharedmem_eigen_dyn,
 
 
 TEST(containers_vector_sharedmem_eigen_dyn,
-     matchingSize){
-
+     matchingSize)
+{
   w_t a(4);
   ASSERT_TRUE( a.extent(0) == 4 );
   // w_t b(6);

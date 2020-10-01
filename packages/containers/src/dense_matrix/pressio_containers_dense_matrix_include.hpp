@@ -49,7 +49,9 @@
 #ifndef CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
 #define CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
 
-// predicates for wrappers
+/* WARNING: the inclusion order below matters:
+concrete classes depend on traits which depend on predicates. */ 
+
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_epetra.hpp"

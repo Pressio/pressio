@@ -72,8 +72,8 @@ public:
 
   explicit MultiVector(const wrap_t & other) : data_(other){}
 
-  MultiVector(ord_t length, ord_t numVectors)
-    : data_(length, numVectors){
+  MultiVector(ord_t length, ord_t numVectors) : data_(length, numVectors)
+  {
     data_.setConstant(static_cast<sc_t>(0));
   }
 
@@ -83,6 +83,7 @@ public:
   MultiVector(MultiVector const & other) = default;
   // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
+
   // move cnstr
   MultiVector(MultiVector && o) = default;
   // move assignment
@@ -92,15 +93,17 @@ public:
 
 
 public:
-  sc_t & operator()(ord_t irow, ord_t iVec){
-    assert(iVec < this->numVectors() );
+  sc_t & operator()(ord_t irow, ord_t iVec)
+  {
     assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
-  sc_t const & operator()(ord_t irow, ord_t iVec)const{
-    assert(iVec < this->numVectors() );
+  sc_t const & operator()(ord_t irow, ord_t iVec) const
+  {
     assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
