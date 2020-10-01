@@ -13,7 +13,7 @@ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_dynamic.cc)
 add_serial_utest(${exeRootName}_eigen_dynamic_rowmajor ${SRC1})
 target_compile_definitions(utest_${exeRootName}_eigen_dynamic_rowmajor PRIVATE USE_ROWMAJ)
 
-# column-major matrix static 
+# column-major matrix static
 set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_static.cc)
 add_serial_utest(${exeRootName}_eigen_static_colmajor ${SRC1})
 target_compile_definitions(utest_${exeRootName}_eigen_static_colmajor PRIVATE USE_COLMAJ)
@@ -22,3 +22,10 @@ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_static.cc)
 add_serial_utest(${exeRootName}_eigen_static_rowmajor ${SRC1})
 target_compile_definitions(utest_${exeRootName}_eigen_static_rowmajor PRIVATE USE_ROWMAJ)
 
+##############
+### KOKKOS ###
+##############
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+  add_serial_utest_kokkos(${exeRootName}_kokkos_strided_subview
+    ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_strided_subview.cc)
+endif()
