@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_default_problem_traits_discrete_time_api.hpp
+// rom_lspg_unsteady_masked_problem_traits_discrete_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -136,4 +136,4 @@ struct traits<
 };//end class
 
 }}}//end  namespace pressio::rom::lspg::unsteady::impl
-#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_

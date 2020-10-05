@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_continuous_time_api.hpp
+// rom_lspg_unsteady_preconditioned_problem_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PREC_PROBLEM_CONTINUOUS_TIME_API_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PREC_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
@@ -288,4 +288,4 @@ public:
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_CONTINUOUS_TIME_API_HPP_

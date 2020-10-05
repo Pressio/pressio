@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_steady_problem.hpp
+// rom_lspg_steady_default_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -145,4 +145,4 @@ public:
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_
+#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_

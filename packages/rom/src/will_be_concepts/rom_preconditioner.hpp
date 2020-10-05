@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_continuous_time_system_preconditioner.hpp
+// rom_preconditioner.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_PRECONDITIONER_ROM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_PRECONDITIONER_ROM_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_ROM_PRECONDITIONER_HPP_
+#define ROM_WILL_BE_CONCEPTS_ROM_PRECONDITIONER_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -107,4 +107,4 @@ struct steady_preconditioner<
 } // namespace pressio::rom::concepts
 
 }} // namespace pressio::rom
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_MASKABLE_ROM_HPP_
+#endif  // ROM_WILL_BE_CONCEPTS_ROM_PRECONDITIONER_HPP_

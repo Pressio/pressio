@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_lspg_impl.hpp
+// rom_compose_unsteady_lspg_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
 
 #include "../rom_lspg_problem_tags.hpp"
 
@@ -342,4 +342,4 @@ struct composeUnsteady<
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_COMPOSE_LSPG_IMPL_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_

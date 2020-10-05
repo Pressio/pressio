@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_problem_continuous_time_api.hpp
+// rom_galerkin_default_problem_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_PROBLEM_CONTINUOUS_TIME_API_HPP_
-#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
@@ -191,4 +191,4 @@ public:
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_

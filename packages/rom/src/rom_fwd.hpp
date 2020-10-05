@@ -58,4 +58,4 @@ template<typename T>
 struct traits<const T> : traits<T> {};
 
 }}} // end namespace pressio::rom::details
-#endif  // CONTAINERS_CONTAINERS_FWD_HPP_
+#endif  // ROM_ROM_FWD_HPP_
