@@ -60,7 +60,6 @@ class JacobianPolicyDiscreteTimeApi
 {
 
 public:
-  static constexpr bool isResidualPolicy_ = false;
   using apply_jac_return_t = apply_jac_return_type;
 
 public:

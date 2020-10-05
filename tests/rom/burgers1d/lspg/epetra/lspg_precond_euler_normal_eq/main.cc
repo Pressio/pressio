@@ -2,9 +2,11 @@
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
+#include "utils_epetra_identity_preconditioner.hpp"
 
-int main(int argc, char *argv[]){
-  using fom_t		= pressio::apps::Burgers1dEpetraPreconditioned;
+int main(int argc, char *argv[])
+{
+  using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
@@ -48,11 +50,14 @@ int main(int argc, char *argv[]){
   // initialize to zero (this has to be done)
   pressio::ops::fill(yROM, 0.0);
 
+  using precond_t = pressio::rom::test::EpetraIdentityPreconditioner;
+  precond_t Prec;
+
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
   using lspg_problem = typename pressio::rom::lspg::composePreconditionedProblem<
-    ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
+    ode_tag, fom_t, lspg_state_t, decoder_t, precond_t>::type;
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, Prec);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;

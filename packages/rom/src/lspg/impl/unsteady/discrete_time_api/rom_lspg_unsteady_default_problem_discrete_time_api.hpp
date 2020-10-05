@@ -46,62 +46,49 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_DISCRETE_TIME_API_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_PROBLEM_DISCRETE_TIME_API_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_DISCRETE_TIME_API_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_DISCRETE_TIME_API_HPP_
 
-#include "./policies/rom_lspg_unsteady_residual_policy_discrete_time_api.hpp"
-#include "./policies/rom_lspg_unsteady_jacobian_policy_discrete_time_api.hpp"
-
-#include "./traits/rom_lspg_unsteady_common_traits_discrete_time_api.hpp"
-#include "./traits/rom_lspg_unsteady_default_problem_traits_discrete_time_api.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <
-  template <class, class, class, class ...> class lspg_type,
-  typename stepper_tag,
-  typename fom_system_type,
-  typename lspg_state_type,
-  typename ...Args
-  >
-class ProblemDiscreteTimeApi
+template <typename ...Args>
+class DefaultProblemDiscreteTimeApi
 {
-
 public:
-  // define the type holding types for the problem
-  using lspg_problem_t = lspg_type<stepper_tag, fom_system_type, lspg_state_type, Args...>;
+  using this_t = DefaultProblemDiscreteTimeApi<Args...>;
+  using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t		= typename lspg_problem_t::fom_system_t;
-  using scalar_t		= typename lspg_problem_t::scalar_t;
-  using fom_native_state_t	= typename lspg_problem_t::fom_native_state_t;
-  using fom_native_residual_t	= typename lspg_problem_t::fom_native_residual_t;
-  using fom_state_t		= typename lspg_problem_t::fom_state_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using scalar_t		= typename traits::scalar_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_native_residual_t	= typename traits::fom_native_residual_t;
+  using fom_state_t		= typename traits::fom_state_t;
 
-  using decoder_t		= typename lspg_problem_t::decoder_t;
-  using fom_state_reconstr_t	= typename lspg_problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename lspg_problem_t::fom_states_manager_t;
-  using ud_ops_t		= typename lspg_problem_t::ud_ops_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using ud_ops_t		= typename traits::ud_ops_t;
 
-  using lspg_state_t		= typename lspg_problem_t::lspg_state_t;
-  using lspg_residual_t		= typename lspg_problem_t::lspg_residual_t;
-  using lspg_matrix_t		= typename lspg_problem_t::lspg_matrix_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_residual_t		= typename traits::lspg_residual_t;
+  using lspg_matrix_t		= typename traits::lspg_matrix_t;
 
-  using lspg_residual_policy_t	= typename lspg_problem_t::lspg_residual_policy_t;
-  using lspg_jacobian_policy_t	= typename lspg_problem_t::lspg_jacobian_policy_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
 
-  using lspg_stepper_t		= typename lspg_problem_t::lspg_stepper_t;
+  using stepper_t		= typename traits::stepper_t;
 
 private:
   const fom_state_t		fomStateReference_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
-
-  lspg_residual_policy_t	residualPolicy_;
-  lspg_jacobian_policy_t	jacobianPolicy_;
-  lspg_stepper_t		stepperObj_;
+  residual_policy_t	residualPolicy_;
+  jacobian_policy_t	jacobianPolicy_;
+  stepper_t		stepperObj_;
 
 public:
-  lspg_stepper_t & getStepperRef(){
+  stepper_t & getStepperRef(){
     return stepperObj_;
   }
 
@@ -114,15 +101,14 @@ public:
   }
 
 public:
-
-  template <
-  typename _ud_ops_t = ud_ops_t,
-  mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+  template<
+    typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
   >
-  ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-			 const fom_native_state_t & fomStateReferenceNative,
-			 decoder_t	 & decoder,
-			 lspg_state_t & romStateIn)
+  DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+				const fom_native_state_t & fomStateReferenceNative,
+				decoder_t	 & decoder,
+				lspg_state_t & romStateIn)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
@@ -141,11 +127,11 @@ public:
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
     >
-  ProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-			 const fom_native_state_t & fomStateReferenceNative,
-			 decoder_t & decoder,
-			 lspg_state_t & romStateIn,
-			 const _ud_ops_t & udOps)
+  DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+				const fom_native_state_t & fomStateReferenceNative,
+				decoder_t & decoder,
+				lspg_state_t & romStateIn,
+				const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),

@@ -49,40 +49,31 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_PROBLEM_CONTINUOUS_TIME_API_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_GALERKIN_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
-#include "rom_galerkin_explicit_velocity_policy.hpp"
-#include "./traits/rom_galerkin_common_traits_continuous_time_api.hpp"
-#include "./traits/rom_galerkin_default_problem_traits_continuous_time_api.hpp"
-
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template <
-  template <class ...> class galerkin_type,
-  typename stepper_tag,
-  typename fom_system_type,
-  typename rom_state_type,
-  typename ...Args
-  >
-class ProblemContinuousTimeApi
+template <typename ...Args>
+class DefaultProblemContinuousTimeApi
 {
 
 public:
-  using problem_t = galerkin_type<stepper_tag, fom_system_type, rom_state_type, Args...>;
+  using this_t = DefaultProblemContinuousTimeApi<Args...>;
+  using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t		= typename problem_t::fom_system_t;
-  using scalar_t		= typename problem_t::scalar_t;
-  using fom_native_state_t	= typename problem_t::fom_native_state_t;
-  using fom_state_t		= typename problem_t::fom_state_t;
-  using fom_velocity_t		= typename problem_t::fom_velocity_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using scalar_t		= typename traits::scalar_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using fom_velocity_t		= typename traits::fom_velocity_t;
 
-  using galerkin_state_t	= typename problem_t::galerkin_state_t;
-  using galerkin_native_state_t	= typename problem_t::galerkin_native_state_t;
-  using decoder_t		= typename problem_t::decoder_t;
-  using fom_state_reconstr_t	= typename problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename problem_t::fom_states_manager_t;
-  using ud_ops_t		= typename problem_t::ud_ops_t;
+  using galerkin_state_t	= typename traits::galerkin_state_t;
+  using galerkin_native_state_t	= typename traits::galerkin_native_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using ud_ops_t		= typename traits::ud_ops_t;
 
-  using residual_policy_t	= typename problem_t::residual_policy_t;
-  using stepper_t		= typename problem_t::stepper_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using stepper_t		= typename traits::stepper_t;
 
 private:
   fom_state_t			fomStateReference_;
@@ -106,8 +97,8 @@ public:
   }
 
 public:
-  ProblemContinuousTimeApi() = delete;
-  ~ProblemContinuousTimeApi() = default;
+  DefaultProblemContinuousTimeApi() = delete;
+  ~DefaultProblemContinuousTimeApi() = default;
 
   /*
    * ud_ops_t = void, C++ types
@@ -122,7 +113,7 @@ public:
 #endif
       , int> = 0
     >
-  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
 			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
 			   galerkin_state_t	    & romStateIn)
@@ -151,7 +142,7 @@ public:
 #endif
       , int> = 0
     >
-  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
 			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
 			   galerkin_state_t	    & romStateIn,
@@ -179,7 +170,7 @@ public:
       ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value,
       int > = 0
     >
-  ProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
 			   const fom_native_state_t & fomNativeReferenceState,
 			   const decoder_t	    & decoder,
 			   const galerkin_native_state_t & romStateIn,

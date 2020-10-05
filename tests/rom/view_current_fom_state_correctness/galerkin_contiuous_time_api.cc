@@ -4,7 +4,7 @@
 
 struct MyFakeApp
 {
-  int N_;
+  int N_ = {};
 
 public:
   using scalar_type = double;

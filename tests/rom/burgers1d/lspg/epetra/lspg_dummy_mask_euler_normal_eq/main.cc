@@ -2,9 +2,10 @@
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
+#include "utils_epetra_identity_masked.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= pressio::apps::Burgers1dEpetraIdentityMask;
+  using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
@@ -48,14 +49,15 @@ int main(int argc, char *argv[]){
   // initialize to zero (this has to be done)
   pressio::ops::fill(yROM, 0.0);
 
-  static_assert(::pressio::rom::concepts::continuous_time_system_maskable_rom<fom_t>::value, "");
-
+  // define LSPG type
+  using mask_t = pressio::rom::test::Burgers1dEpetraIdentityMask;
+  mask_t masker(&Comm, appobj.getDataMap());
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
   using lspg_problem = typename pressio::rom::lspg::composeMaskedProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
+      ode_tag, fom_t, lspg_state_t, decoder_t, mask_t>::type;
+  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, masker);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;

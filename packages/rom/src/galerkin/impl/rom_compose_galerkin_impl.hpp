@@ -49,14 +49,23 @@
 #ifndef ROM_GALERKIN_IMPL_ROM_COMPOSE_GALERKIN_IMPL_HPP_
 #define ROM_GALERKIN_IMPL_ROM_COMPOSE_GALERKIN_IMPL_HPP_
 
-#include "./continuous_time_api/rom_galerkin_problem_continuous_time_api.hpp"
-#include "./discrete_time_api/rom_galerkin_problem_discrete_time_api.hpp"
+// continuous time API
+#include "./continuous_time_api/rom_galerkin_explicit_velocity_policy.hpp"
+#include "./continuous_time_api/traits/rom_galerkin_common_traits_continuous_time_api.hpp"
+#include "./continuous_time_api/traits/rom_galerkin_default_problem_traits_continuous_time_api.hpp"
+#include "./continuous_time_api/rom_galerkin_default_problem_continuous_time_api.hpp"
+
+// discrete time API
+#include "./discrete_time_api/policies/rom_galerkin_residual_policy_discrete_time_api.hpp"
+#include "./discrete_time_api/policies/rom_galerkin_jacobian_policy_discrete_time_api.hpp"
+#include "./discrete_time_api/traits/rom_galerkin_common_traits_discrete_time_api.hpp"
+#include "./discrete_time_api/traits/rom_galerkin_default_problem_traits_discrete_time_api.hpp"
+#include "./discrete_time_api/rom_galerkin_default_problem_discrete_time_api.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 // tags for the Galerkin problem
 struct Default{};
-
 
 //---------------------------------------------
 // helpers classes to print
@@ -79,10 +88,9 @@ struct FindAdapterMistakes<false, Default, fom_system_t>
     ::pressio::rom::find_discrepancies_with_continuous_time_explicit_system_api<fom_system_t>::value;
 };
 
-
-//------------------------
-// specialize compose
-//------------------------
+// //------------------------
+// // specialize compose
+// //------------------------
 template<
   typename problem_tag,
   typename dummy,
@@ -101,7 +109,7 @@ the first template argument is not a valid stepper tag.			\
 Valid choices: ode::explicitmethods::{Euler, RungeKutta4} for the continuous-time API, \
 and ode::implicitmethods::{Arbitrary} for the discrete-time API.");
 
-  /*if here, it means that the adapter class is the problem.
+/*  if here, it means that the adapter class is the problem.
     There are two scenarios: either the user wants to use the discrete-time
     or the continuous-time API. But we have no way to know here which one
     they WANT to use and want to print error messages detailed enough.
@@ -115,8 +123,8 @@ and ode::implicitmethods::{Arbitrary} for the discrete-time API.");
     mispells or forgets the "discrete_time_residual_type" typedef,
     then the logic here breaks, and we might need to add logic to handle the
     case if that typedef is not found, because it could mean the user is
-    using the continuous-time api or mispelled the typedef or forgot it.
-  */
+    using the continuous-time api or mispelled the typedef or forgot it. */
+
   using helper =
     typename std::conditional<
     ::pressio::ode::predicates::has_discrete_time_residual_typedef<fom_system_t>::value,
@@ -130,41 +138,89 @@ and ode::implicitmethods::{Arbitrary} for the discrete-time API.");
   using type = void;
 };
 
-// default problem with continuous time API
-template<typename stepper_tag, typename fom_system_type, typename galerkin_state_t, typename ...Args>
+///////////////////////////////////////////////////////
+//////       CONTINUOUS TIME API
+///////////////////////////////////////////////////////
+/**** 
+  default Galerkin, pressio ops
+***/
+template<
+  typename stepper_tag, 
+  typename fom_system_type, 
+  typename galerkin_state_type, 
+  typename decoder_type
+  >
 struct compose<
 ::pressio::rom::galerkin::impl::Default,
 mpl::enable_if_t<
 ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
 >,
-stepper_tag, fom_system_type, galerkin_state_t, Args...>
+stepper_tag, fom_system_type, galerkin_state_type, decoder_type>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
    std::is_same< stepper_tag, ::pressio::ode::explicitmethods::RungeKutta4>::value,
    "Default Galerkin with continuous-time API currently only accepts Forward Euler or RK4");
 
-  using type = ::pressio::rom::galerkin::impl::ProblemContinuousTimeApi<
-            ::pressio::rom::galerkin::impl::DefaultProblemTraitsContinuousTimeApi,
-            stepper_tag, fom_system_type, galerkin_state_t, Args...>;
+  using type = ::pressio::rom::galerkin::impl::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, void>;
 };
 
-// default problem with discrete time api
-template<typename stepper_tag, typename fom_system_type, typename galerkin_state_t, typename ...Args>
+/**** 
+  default Galerkin, user-defined ops
+***/
+template<
+  typename stepper_tag, 
+  typename fom_system_type, 
+  typename galerkin_state_type, 
+  typename decoder_type,
+  typename ud_ops_type
+  >
+struct compose<
+::pressio::rom::galerkin::impl::Default,
+mpl::enable_if_t<
+::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
+>,
+stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>
+{
+  static_assert
+  (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
+   std::is_same< stepper_tag, ::pressio::ode::explicitmethods::RungeKutta4>::value,
+   "Default Galerkin with continuous-time API currently only accepts Forward Euler or RK4");
+
+  using type = ::pressio::rom::galerkin::impl::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>;
+};
+
+
+///////////////////////////////////////////////////////
+//////       DISCRETE TIME API
+///////////////////////////////////////////////////////
+/**** 
+  default Galerkin, pressio ops
+***/
+template<
+  typename stepper_tag, 
+  typename fom_system_type, 
+  typename galerkin_state_type, 
+  typename rom_jacobian_type,
+  typename decoder_type,
+  typename ...Args
+  >
 struct compose<
 ::pressio::rom::galerkin::impl::Default,
 mpl::enable_if_t<
 ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
 >,
-stepper_tag, fom_system_type, galerkin_state_t, Args...>
+stepper_tag, fom_system_type, galerkin_state_type, rom_jacobian_type, decoder_type, Args...>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Default Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
-  using type = ::pressio::rom::galerkin::impl::ProblemDiscreteTimeApi<
-            ::pressio::rom::galerkin::impl::DefaultProblemTraitsDiscreteTimeApi,
-            stepper_tag, fom_system_type, galerkin_state_t, Args...>;
+  using type = ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
+      stepper_tag, fom_system_type, galerkin_state_type,  
+      rom_jacobian_type, decoder_type, Args...>;
 };
 
 }}}}

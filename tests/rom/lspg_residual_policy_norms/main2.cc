@@ -3,7 +3,7 @@
 
 struct MyFakeApp
 {
-  int N_;
+  int N_ = {};
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
@@ -40,23 +40,23 @@ public:
     for (int i=0; i<N_; ++i) operand(i) += 0.5;
   }
 
-  residual_type createApplyMaskResult(const residual_type & operand) const{
-    return residual_type(N_);
-  }
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & operand) const
-  {
-    dense_matrix_type A;
-    return A;
-  }
+  // residual_type createApplyMaskResult(const residual_type & operand) const{
+  //   return residual_type(N_);
+  // }
+  // dense_matrix_type createApplyMaskResult(const dense_matrix_type & operand) const
+  // {
+  //   dense_matrix_type A;
+  //   return A;
+  // }
 
-  void applyMask(const residual_type & operand,
-		 residual_type & result) const
-  {
-    for (int i=0; i<N_; ++i) result(i) = operand(i) + 1.5;
-  }
+  // void applyMask(const residual_type & operand,
+		//  residual_type & result) const
+  // {
+  //   for (int i=0; i<N_; ++i) result(i) = operand(i) + 1.5;
+  // }
 
-  void applyMask(const dense_matrix_type &,
-		 dense_matrix_type &) const{}
+  // void applyMask(const dense_matrix_type &,
+		//  dense_matrix_type &) const{}
 
 };
 

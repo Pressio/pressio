@@ -51,38 +51,25 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename residual_type, typename fom_states_manager_t, typename ud_ops_type>
+template <typename residual_type, typename fom_states_manager_t>
 class ResidualPolicy
 {
 public:
   using residual_t = residual_type;
-  using ud_ops_t = ud_ops_type;
 
 public:
   ResidualPolicy() = delete;
   ~ResidualPolicy() = default;
 
-  // 1. void ops
-  template <
-    typename _fom_states_manager_t = fom_states_manager_t,
-    typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
-    >
-  ResidualPolicy(_fom_states_manager_t & fomStatesMngr)
+  ResidualPolicy(fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr){}
-
-  // 2. nonvoid ops
-  template <
-    typename _fom_states_manager_t = fom_states_manager_t,
-    typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
-    >
-  ResidualPolicy(_fom_states_manager_t & fomStatesMngr, const _ud_ops_t & udOps)
-    : fomStatesMngr_(fomStatesMngr), udOps_{&udOps}{}
 
 public:
   template <typename fom_system_t>
-  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, residual_t >
+  mpl::enable_if_t< 
+    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
+    residual_t 
+  >
   create(const fom_system_t & fomSystemObj) const
   {
     return residual_t(fomSystemObj.createResidual());
@@ -90,7 +77,10 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename fom_system_t>
-  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, residual_t >
+  mpl::enable_if_t< 
+   ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
+   residual_t 
+  >
   create(const fom_system_t & fomSystemObj) const
   {
     const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();
@@ -117,35 +107,16 @@ public:
     ::pressio::rom::queryFomResidual(fomSystemObj, 
       fomStatesMngr_.getCRefToCurrentFomState(), romResidual);
 
-    // if (normKind == ::pressio::Norm::L2)
-    //   normValue = ::pressio::ops::norm2(romResidual);
-    // else if (normKind == ::pressio::Norm::L1)
-    //   normValue = ::pressio::ops::norm1(romResidual);
-    // else
-    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
-
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->stop("lspg residual");
 #endif
   }
 
-
 protected:
   fom_states_manager_t & fomStatesMngr_;
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // here we do this conditional type because it seems when ud_ops_t= pybind11::object
-  // it only works if we copy the object. Need to figure out if we can leave ptr in all cases.
-  typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops_t, pybind11::object>::value, ud_ops_t,
-    const ud_ops_t *
-    >::type udOps_ = {};
-#else
-  const ud_ops_t * udOps_ = {};
-#endif
-
-};//end class
+};
 
 }}}}}
 #endif  // ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_RESIDUAL_POLICY_HPP_

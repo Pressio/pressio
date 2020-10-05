@@ -49,44 +49,31 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_PROBLEM_DISCRETE_TIME_API_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_PROBLEM_DISCRETE_TIME_API_HPP_
 
-#include "./policies/rom_galerkin_residual_policy_discrete_time_api.hpp"
-#include "./policies/rom_galerkin_jacobian_policy_discrete_time_api.hpp"
-
-#include "./traits/rom_galerkin_common_traits_discrete_time_api.hpp"
-#include "./traits/rom_galerkin_default_problem_traits_discrete_time_api.hpp"
-
-
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template <
-  template <class ...> class galerkin_type,
-  typename stepper_tag,
-  typename fom_system_type,
-  typename rom_state_type,
-  typename rom_jacobian_type,
-  typename ...Args
-  >
-class ProblemDiscreteTimeApi
+template <typename... Args>
+class DefaultProblemDiscreteTimeApi
 {
 
 public:
-  using problem_t	= galerkin_type<stepper_tag, fom_system_type, rom_state_type, rom_jacobian_type, Args...>;
+  using this_t = DefaultProblemDiscreteTimeApi<Args...>;
+  using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t		= typename problem_t::fom_system_t;
-  using scalar_t	= typename problem_t::scalar_t;
-  using fom_nat_state_t = typename problem_t::fom_native_state_t;
-  using fom_state_t	= typename problem_t::fom_state_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using scalar_t	= typename traits::scalar_t;
+  using fom_nat_state_t = typename traits::fom_native_state_t;
+  using fom_state_t	= typename traits::fom_state_t;
 
-  using decoder_t	= typename problem_t::decoder_t;
-  using fom_reconstr_t	= typename problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename problem_t::fom_states_manager_t;
-  using ud_ops_t	= typename problem_t::ud_ops_t;
+  using decoder_t	= typename traits::decoder_t;
+  using fom_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using ud_ops_t	= typename traits::ud_ops_t;
 
-  using rom_state_t	= typename problem_t::rom_state_t;
-  using residual_policy_t = typename problem_t::residual_policy_t;
-  using jacobian_policy_t = typename problem_t::jacobian_policy_t;
+  using rom_state_t	= typename traits::rom_state_t;
+  using residual_policy_t = typename traits::residual_policy_t;
+  using jacobian_policy_t = typename traits::jacobian_policy_t;
 
-  using stepper_t = typename problem_t::stepper_t;
+  using stepper_t = typename traits::stepper_t;
 
 private:
   fom_state_t fomStateReference_;
@@ -110,9 +97,9 @@ public:
   }
 
 public:
-  ProblemDiscreteTimeApi() = delete;
+  DefaultProblemDiscreteTimeApi() = delete;
 
-  ProblemDiscreteTimeApi(const fom_system_t & appObj,
+  DefaultProblemDiscreteTimeApi(const fom_system_t & appObj,
 			 const fom_nat_state_t & fomStateReferenceNative,
 			 decoder_t	 & decoder,
 			 rom_state_t & romStateIn)

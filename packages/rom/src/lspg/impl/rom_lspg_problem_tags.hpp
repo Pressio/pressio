@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_system_preconditionable_rom.hpp
+// rom_compose_lspg_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,14 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
+#ifndef ROM_LSPG_IMPL_LSPG_TAGS_IMPL_HPP_
+#define ROM_LSPG_IMPL_LSPG_TAGS_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template<typename T, typename enable = void>
-struct steady_system_preconditionable_rom : std::false_type{};
+struct Default{};
+struct Preconditioned{};
+struct Masked{};
 
-template<typename T>
-struct steady_system_preconditionable_rom<
-  T,
-  mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<T>::value and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-            T, typename T::state_type, typename T::residual_type >::value and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-            T, typename T::state_type, typename T::dense_matrix_type >::value
-    >
-  > : std::true_type{};
-
-} // namespace pressio::rom::concepts
-
-template <typename T>
-struct find_discrepancies_with_steady_system_preconditionable_api
-{
-  static_assert
-  (find_discrepancies_with_steady_system_api<T>::value, "");
-
-  static_assert
-    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-     T, typename T::state_type, typename T::residual_type >::value,
-     "Your steady adapter class is without (or has a wrong) apply preconditioner to residual method");
-
-  static_assert
-    (::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-     T, typename T::state_type, typename T::dense_matrix_type >::value,
-     "Your steady adapter class is without (or has a wrong) apply preconditioner to dense matrix method");
-
-  static constexpr bool value = true;
-};
-
-}} // namespace pressio::rom
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_PRECONDITIONABLE_ROM_HPP_
+}}}}
+#endif  // ROM_LSPG_IMPL_ROM_COMPOSE_LSPG_IMPL_HPP_

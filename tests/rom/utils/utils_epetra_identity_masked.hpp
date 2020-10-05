@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// apps_burgers1d_epetra_masked.hpp
+// apps_burgers1d_epetra_identity_masked.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,33 @@
 //@HEADER
 */
 
-#ifndef APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_MASKED_HPP_
-#define APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_MASKED_HPP_
+#ifndef ROM_TESTS_BURGERS1D_EPETRA_IDENT_IDENT_MASKER_HPP_
+#define ROM_TESTS_BURGERS1D_EPETRA_IDENT_IDENT_MASKER_HPP_
 
-#include "apps_burgers1d_epetra.hpp"
-
+#include "pressio_apps.hpp"
 #include <Epetra_Import.h>
 
-namespace pressio{ namespace apps{
+namespace pressio{ namespace rom{ namespace test{ 
 
-class Burgers1dEpetraMasked : public Burgers1dEpetra
+class Burgers1dEpetraIdentityMask //: public Burgers1dEpetra
 {
 public:
-  using base_t = Burgers1dEpetra;
   using importer_t = Epetra_Import;
-  using base_t::dense_matrix_type;
-  using base_t::velocity_type;
-  using base_t::state_type;
-  using base_t::scalar_type;
+  // using base_t = Burgers1dEpetra;
+  using dense_matrix_type = typename ::pressio::apps::Burgers1dEpetra::dense_matrix_type;
+  using velocity_type = typename ::pressio::apps::Burgers1dEpetra::velocity_type;
+  using state_type = typename ::pressio::apps::Burgers1dEpetra::state_type;
+  using scalar_type = typename ::pressio::apps::Burgers1dEpetra::scalar_type;
 
-  Burgers1dEpetraMasked(std::vector<scalar_type> params,
-			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){
-    this->setup();
+  Burgers1dEpetraIdentityMask(Epetra_MpiComm * comm, 
+    const Epetra_Map & dataMap)
+  {
+    createMaskMap(comm, dataMap);
+    importer_ = std::make_shared<importer_t>(*maskMap_, dataMap);
+    // this->setup();
   }
 
-  ~Burgers1dEpetraMasked() = default;
+  ~Burgers1dEpetraIdentityMask() = default;
 
 public:
   velocity_type createApplyMaskResult(const velocity_type & src) const
@@ -81,51 +82,43 @@ public:
     return dest;
   }
 
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & src) const
-  {
+  dense_matrix_type createApplyMaskResult(const dense_matrix_type & src) const{
     dense_matrix_type dest(*maskMap_, src.NumVectors());
     dest.Import(src, *importer_, Insert);
     return dest;
   }
 
   template <typename T>
-  void applyMask(const T & unmaskedObj, double time, T & maskedObj) const{
-    maskedObj.Import(unmaskedObj, *importer_, Insert);
+  void applyMask(const T & src, double time, T & dest) const{
+    dest.Import(src, *importer_, Insert);
   }
 
 private:
-  void setup(){
-    base_t::setup();
-    // create a map to mimic the mask
-    createMaskMap();
-    //    maskMap_->Print(std::cout);
-    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
-  };
-
-  void createMaskMap(){
+  void createMaskMap(Epetra_MpiComm * comm, const Epetra_Map & dataMap)
+  {
     // get # of my elements for the full map
-    auto myN0 = dataMap_->NumMyElements();
+    auto myN0 = dataMap.NumMyElements();
     // get my global IDs
-    auto myGID = dataMap_->MyGlobalElements();
+    auto myGID = dataMap.MyGlobalElements();
 
-    // pick some elements
+    // pick all elements
     std::vector<int> myGIDnc;
     for (decltype(myN0) i=0; i<myN0; i++) {
-      if ( i<=8 or (i>=11 and i<=18) or i>=21 )
-	myGIDnc.emplace_back(myGID[i]);
+	   myGIDnc.emplace_back(myGID[i]);
     }
-
     maskMap_ = std::make_shared<Epetra_Map>(-1, myGIDnc.size(),
 					    myGIDnc.data(), 0,
-					    *comm_);
-    maskMap_->Print(std::cout);
+					    *comm);
+    //maskMap_->Print(std::cout);
   };
 
 private:
+  template<typename T> using rcp = std::shared_ptr<T>;
+
   rcp<Epetra_Map> maskMap_;
   std::vector<int> myMaskGel_;
   rcp<importer_t> importer_;
 };
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_MASKED_HPP_
+}}}
+#endif

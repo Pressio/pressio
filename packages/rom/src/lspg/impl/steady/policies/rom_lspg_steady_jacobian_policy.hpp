@@ -54,14 +54,12 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace stea
 template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename decoder_type,
-  typename ud_ops_type
+  typename decoder_type
   >
 class JacobianPolicy
 {
 public:
   using apply_jac_return_t = apply_jac_return_type;
-  using ud_ops_t = ud_ops_type;
 
 public:
   JacobianPolicy() = delete;
@@ -74,7 +72,10 @@ public:
 public:
 
   template <typename fom_system_t>
-  mpl::enable_if_t< !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, apply_jac_return_t >
+  mpl::enable_if_t< 
+    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
+    apply_jac_return_t 
+  >
   create(const fom_system_t & fomSystemObj) const
   {
     const auto & basis = decoderObj_.getReferenceToJacobian();
@@ -83,7 +84,10 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename fom_system_t>
-  mpl::enable_if_t< ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, apply_jac_return_t >
+  mpl::enable_if_t< 
+    ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
+    apply_jac_return_t 
+  >
   create(const fom_system_t & fomSystemObj) const
   {
     const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();

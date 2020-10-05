@@ -69,7 +69,6 @@ int main(int argc, char *argv[]){
   using ode_tag  = pressio::ode::implicitmethods::Euler;
   using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
     ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-  // using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
   lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
 
   // linear solver

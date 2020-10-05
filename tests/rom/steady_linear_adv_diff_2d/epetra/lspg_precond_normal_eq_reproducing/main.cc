@@ -2,8 +2,10 @@
 #include "pressio_rom.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
+#include "utils_epetra_identity_preconditioner.hpp"
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
   using true_fom_t	= pressio::apps::SteadyLinAdvDiff2dEpetra;
   using fom_adapter_t	= pressio::apps::SteadyLinAdvDiff2dEpetraRomAdapter;
   using scalar_t	= typename fom_adapter_t::scalar_type;
@@ -67,9 +69,13 @@ int main(int argc, char *argv[]){
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
-  using lspg_problem_type = typename pressio::rom::lspg::composePreconditionedProblem<
-    fom_adapter_t, lspg_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
+  using prec_t = pressio::rom::test::EpetraIdentityPreconditioner;
+  prec_t Prec;
+
+  using lspg_problem_type = 
+    typename pressio::rom::lspg::composePreconditionedProblem<
+    fom_adapter_t, lspg_state_t, decoder_t, prec_t>::type;
+  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM, Prec);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;

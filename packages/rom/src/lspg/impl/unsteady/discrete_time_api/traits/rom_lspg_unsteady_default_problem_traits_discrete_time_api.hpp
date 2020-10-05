@@ -49,18 +49,33 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio{ namespace rom{ 
+
+//fwd declare problem class
+namespace lspg{ namespace impl{ namespace unsteady{
+template <typename ...>
+class DefaultProblemDiscreteTimeApi;
+}}}// end namespace pressio::rom::lspg::impl::unsteady
+
+namespace details{
 
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
-  typename ... Args
+  typename decoder_type,
+  typename ...Args
   >
-struct DefaultProblemTraitsDiscreteTimeApi
+struct traits<
+  ::pressio::rom::lspg::impl::unsteady::DefaultProblemDiscreteTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...
+    >
+  >
 {
   // pick the common types holder
-  using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsDiscreteTimeApi<stepper_tag, fom_system_type, lspg_state_type, Args...>;
+  using common_types_t =
+    ::pressio::rom::lspg::impl::unsteady::CommonTraitsDiscreteTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -75,26 +90,30 @@ struct DefaultProblemTraitsDiscreteTimeApi
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t		= typename common_types_t::fom_states_manager_t;
+  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
+
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::lspg::impl::unsteady::ResidualPolicyDiscreteTimeApi<
+  using residual_policy_t	=
+    ::pressio::rom::lspg::impl::unsteady::ResidualPolicyDiscreteTimeApi<
     lspg_residual_t, fom_states_manager_t>;
 
   // policy to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::impl::unsteady::JacobianPolicyDiscreteTimeApi<
+  using jacobian_policy_t	=
+    ::pressio::rom::lspg::impl::unsteady::JacobianPolicyDiscreteTimeApi<
     fom_states_manager_t, lspg_matrix_t, decoder_t>;
 
   using stepper_order_t  = typename common_types_t::order_setter;
   using tot_n_setter_t   = typename common_types_t::tot_n_setter;
 
   // declare type of stepper object
-  using lspg_stepper_t		= ::pressio::ode::ImplicitStepper<
+  using stepper_t		= ::pressio::ode::ImplicitStepper<
     stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_system_type,
-    stepper_order_t, tot_n_setter_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
+    stepper_order_t, tot_n_setter_t,
+    residual_policy_t, jacobian_policy_t>;
 
 };//end class
 
-}}}}}//end  namespace pressio::rom::lspg::unsteady::impl
+}}}//end  namespace pressio::rom::lspg::unsteady::impl
 #endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_

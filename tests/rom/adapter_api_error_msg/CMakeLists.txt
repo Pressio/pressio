@@ -58,7 +58,8 @@ set(u_gale_src	galerkin_continuous_time_api.cc)
 set(u_lspg_src	lspg_continuous_time_api.cc)
 set(s_lspg_src  lspg_steady_api.cc)
 
-set(LSPG "rom_compose_lspg_impl")
+set(LSPG_st "rom_compose_steady_lspg_impl")
+set(LSPG_ust "rom_compose_unsteady_lspg_impl")
 set(GALE "rom_compose_galerkin_impl")
 
 set(MISS_VEL_C "is without (or has a wrong) create velocity method")
@@ -67,14 +68,14 @@ set(MISS_VEL   "is without (or has a wrong) velocity method")
 set(MISS_APP_J_C  "is without (or has a wrong) create apply jacobian result method")
 set(MISS_APP_J    "is without (or has a wrong) apply jacobian method")
 
-set(MISS_APP_PREC_TO_RES  "is without (or has a wrong) apply preconditioner to residual method")
-set(MISS_APP_PREC_TO_MAT  "is without (or has a wrong) apply preconditioner to dense matrix method")
-set(MISS_APP_PREC_TO_VEL  "is without (or has a wrong) apply preconditioner to velocity method")
+# set(MISS_APP_PREC_TO_RES  "is without (or has a wrong) apply preconditioner to residual method")
+# set(MISS_APP_PREC_TO_MAT  "is without (or has a wrong) apply preconditioner to dense matrix method")
+# set(MISS_APP_PREC_TO_VEL  "is without (or has a wrong) apply preconditioner to velocity method")
 
-set(MISS_APP_MASK_TO_VEL     "is without (or has a wrong) apply mask to velocity method")
-set(MISS_APP_MASK_TO_VEL_C  "is without (or has a wrong) create apply mask to velocity method")
-set(MISS_APP_MASK_TO_MAT    "is without (or has a wrong) apply mask to dense matrix method")
-set(MISS_APP_MASK_TO_MAT_C  "is without (or has a wrong) create apply mask to dense matrix method")
+# set(MISS_APP_MASK_TO_VEL     "is without (or has a wrong) apply mask to velocity method")
+# set(MISS_APP_MASK_TO_VEL_C  "is without (or has a wrong) create apply mask to velocity method")
+# set(MISS_APP_MASK_TO_MAT    "is without (or has a wrong) apply mask to dense matrix method")
+# set(MISS_APP_MASK_TO_MAT_C  "is without (or has a wrong) create apply mask to dense matrix method")
 
 set(MISS_RES_C "is without (or has a wrong) create residual method")
 set(MISS_RES   "is without (or has a wrong) residual method")
@@ -86,166 +87,96 @@ set(MISS_APP_DT_J_C "is without (or has a wrong) create apply discrete time jaco
 set(MISS_APP_DT_J   "is without (or has a wrong) apply discrete time jacobian method")
 
 
-##################################
-### DEFAULT GALERKIN CONT TIME ###
-##################################
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_continuous_time_api_case1
-  ${u_gale_src} ${MISS_VEL} ${GALE} NO_VEL DEFAULT DO_GALE)
+# ##################################
+# ### DEFAULT GALERKIN CONT TIME ###
+# ##################################
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_continuous_time_api_case1
+#   ${u_gale_src} ${MISS_VEL} ${GALE} NO_VEL DEFAULT DO_GALE)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_continuous_time_api_case2
-  ${u_gale_src} ${MISS_VEL_C} ${GALE} NO_VEL_C DEFAULT DO_GALE)
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_continuous_time_api_case2
+#   ${u_gale_src} ${MISS_VEL_C} ${GALE} NO_VEL_C DEFAULT DO_GALE)
 
-##########################################
-### DEFAULT GALERKIN DISCRETE TIME API ###
-##########################################
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_discrete_time_api_case1
-  ${dt_src} ${MISS_DT_R} ${GALE} NO_RES DEFAULT DO_GALE)
+# ##########################################
+# ### DEFAULT GALERKIN DISCRETE TIME API ###
+# ##########################################
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_discrete_time_api_case1
+#   ${dt_src} ${MISS_DT_R} ${GALE} NO_RES DEFAULT DO_GALE)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_discrete_time_api_case2
-  ${dt_src} ${MISS_APP_DT_J} ${GALE} NO_APP_J DEFAULT DO_GALE)
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_discrete_time_api_case2
+#   ${dt_src} ${MISS_APP_DT_J} ${GALE} NO_APP_J DEFAULT DO_GALE)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_discrete_time_api_case3
-  ${dt_src} ${MISS_DT_R_C} ${GALE} NO_RES_C DEFAULT DO_GALE)
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_discrete_time_api_case3
+#   ${dt_src} ${MISS_DT_R_C} ${GALE} NO_RES_C DEFAULT DO_GALE)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_discrete_time_api_case4
-  ${dt_src} ${MISS_APP_DT_J_C} ${GALE} NO_APP_J_C DEFAULT DO_GALE)
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_discrete_time_api_case4
+#   ${dt_src} ${MISS_APP_DT_J_C} ${GALE} NO_APP_J_C DEFAULT DO_GALE)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_galerkin_discrete_time_api_case5
-  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${GALE} NO_MAT_ALIAS DEFAULT DO_GALE)
+# add_serial_test_to_check_build_failure(
+#   adapter_error_default_galerkin_discrete_time_api_case5
+#   ${dt_src} "is without (or has a wrong) dense matrix typedef" ${GALE} NO_MAT_ALIAS DEFAULT DO_GALE)
 
 ###############################
 ### DEFAULT LSPG STEADY ###
 ###############################
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_steady_api_case1
-  ${s_lspg_src} ${MISS_RES} ${LSPG} NO_RES DEFAULT DO_LSPG)
+  ${s_lspg_src} ${MISS_RES} ${LSPG_st} NO_RES DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_steady_api_case2
-  ${s_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J DEFAULT DO_LSPG)
+  ${s_lspg_src} ${MISS_APP_J} ${LSPG_st} NO_APP_J DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_steady_api_case3
-  ${s_lspg_src} ${MISS_RES_C} ${LSPG} NO_RES_C DEFAULT DO_LSPG)
+  ${s_lspg_src} ${MISS_RES_C} ${LSPG_st} NO_RES_C DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_steady_api_case4
-  ${s_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C DEFAULT DO_LSPG)
+  ${s_lspg_src} ${MISS_APP_J_C} ${LSPG_st} NO_APP_J_C DEFAULT DO_LSPG)
 
 ##################################
 ### PRECONDITIONED LSPG STEADY ###
 ##################################
 add_serial_test_to_check_build_failure(
   adapter_error_precond_lspg_steady_api_case1
-  ${s_lspg_src} ${MISS_RES} ${LSPG} NO_RES PRECOND DO_LSPG)
+  ${s_lspg_src} ${MISS_RES} ${LSPG_st} NO_RES PRECOND DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_precond_lspg_steady_api_case2
-  ${s_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J PRECOND DO_LSPG)
+  ${s_lspg_src} ${MISS_APP_J} ${LSPG_st} NO_APP_J PRECOND DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_precond_lspg_steady_api_case3
-  ${s_lspg_src} ${MISS_RES_C} ${LSPG} NO_RES_C PRECOND DO_LSPG)
+  ${s_lspg_src} ${MISS_RES_C} ${LSPG_st} NO_RES_C PRECOND DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_precond_lspg_steady_api_case4
-  ${s_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_steady_api_case5
-  ${s_lspg_src} ${MISS_APP_PREC_TO_RES} ${LSPG} NO_APP_PREC_TO_RES PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_steady_api_case6
-  ${s_lspg_src} ${MISS_APP_PREC_TO_MAT} ${LSPG} NO_APP_PREC_TO_MAT PRECOND DO_LSPG)
+  ${s_lspg_src} ${MISS_APP_J_C} ${LSPG_st} NO_APP_J_C PRECOND DO_LSPG)
 
 ##################################
 ### DEFAULT LSPG CONT TIME API ###
 ##################################
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_continuous_time_api_case1
-  ${u_lspg_src} ${MISS_VEL} ${LSPG} NO_VEL DEFAULT DO_LSPG)
+  ${u_lspg_src} ${MISS_VEL} ${LSPG_ust} NO_VEL DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_continuous_time_api_case2
-  ${u_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J DEFAULT DO_LSPG)
+  ${u_lspg_src} ${MISS_APP_J} ${LSPG_ust} NO_APP_J DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_continuous_time_api_case3
-  ${u_lspg_src} ${MISS_VEL_C} ${LSPG} NO_VEL_C DEFAULT DO_LSPG)
+  ${u_lspg_src} ${MISS_VEL_C} ${LSPG_ust} NO_VEL_C DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_continuous_time_api_case4
-  ${u_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C DEFAULT DO_LSPG)
-
-##################################
-### PRECOND LSPG CONT TIME API ###
-##################################
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case1
-  ${u_lspg_src} ${MISS_VEL} ${LSPG} NO_VEL PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case2
-  ${u_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case3
-  ${u_lspg_src} ${MISS_VEL_C} ${LSPG} NO_VEL_C PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case4
-  ${u_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case5
-  ${u_lspg_src} ${MISS_APP_PREC_TO_VEL} ${LSPG} NO_APP_PREC_TO_VEL PRECOND DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_precond_lspg_continuous_time_api_case6
-  ${u_lspg_src} ${MISS_APP_PREC_TO_MAT} ${LSPG} NO_APP_PREC_TO_MAT PRECOND DO_LSPG)
-
-##################################
-### MASKED LSPG CONT TIME API ###
-##################################
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case1
-  ${u_lspg_src} ${MISS_VEL} ${LSPG} NO_VEL MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case2
-  ${u_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case3
-  ${u_lspg_src} ${MISS_VEL_C} ${LSPG} NO_VEL_C MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case4
-  ${u_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case5
-  ${u_lspg_src} ${MISS_APP_MASK_TO_VEL_C} ${LSPG} NO_APP_MASK_TO_VEL_C MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case6
-  ${u_lspg_src} ${MISS_APP_MASK_TO_VEL} ${LSPG} NO_APP_MASK_TO_VEL MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case7
-  ${u_lspg_src} ${MISS_APP_MASK_TO_MAT_C} ${LSPG} NO_APP_MASK_TO_MAT_C MASKED DO_LSPG)
-
-add_serial_test_to_check_build_failure(
-  adapter_error_masked_lspg_continuous_time_api_case8
-  ${u_lspg_src} ${MISS_APP_MASK_TO_MAT} ${LSPG} NO_APP_MASK_TO_MAT MASKED DO_LSPG)
+  ${u_lspg_src} ${MISS_APP_J_C} ${LSPG_ust} NO_APP_J_C DEFAULT DO_LSPG)
 
 
 ##########################################
@@ -253,24 +184,86 @@ add_serial_test_to_check_build_failure(
 ##########################################
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case1
-  ${dt_src} ${MISS_DT_R} ${LSPG} NO_RES DEFAULT DO_LSPG)
+  ${dt_src} ${MISS_DT_R} ${LSPG_ust} NO_RES DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case2
-  ${dt_src} ${MISS_APP_DT_J} ${LSPG} NO_APP_J DEFAULT DO_LSPG)
+  ${dt_src} ${MISS_APP_DT_J} ${LSPG_ust} NO_APP_J DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case3
-  ${dt_src} ${MISS_DT_R_C} ${LSPG} NO_RES_C DEFAULT DO_LSPG)
+  ${dt_src} ${MISS_DT_R_C} ${LSPG_ust} NO_RES_C DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case4
-  ${dt_src} ${MISS_APP_DT_J_C} ${LSPG} NO_APP_J_C DEFAULT DO_LSPG)
+  ${dt_src} ${MISS_APP_DT_J_C} ${LSPG_ust} NO_APP_J_C DEFAULT DO_LSPG)
 
 add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case5
-  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${LSPG} NO_MAT_ALIAS DEFAULT DO_LSPG)
+  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${LSPG_ust} NO_MAT_ALIAS DEFAULT DO_LSPG)
 
+
+# ##################################
+# ### PRECOND LSPG CONT TIME API ###
+# ##################################
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case1
+#   ${u_lspg_src} ${MISS_VEL} ${LSPG} NO_VEL PRECOND DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case2
+#   ${u_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J PRECOND DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case3
+#   ${u_lspg_src} ${MISS_VEL_C} ${LSPG} NO_VEL_C PRECOND DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case4
+#   ${u_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C PRECOND DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case5
+#   ${u_lspg_src} ${MISS_APP_PREC_TO_VEL} ${LSPG} NO_APP_PREC_TO_VEL PRECOND DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_precond_lspg_continuous_time_api_case6
+#   ${u_lspg_src} ${MISS_APP_PREC_TO_MAT} ${LSPG} NO_APP_PREC_TO_MAT PRECOND DO_LSPG)
+
+# ##################################
+# ### MASKED LSPG CONT TIME API ###
+# ##################################
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case1
+#   ${u_lspg_src} ${MISS_VEL} ${LSPG} NO_VEL MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case2
+#   ${u_lspg_src} ${MISS_APP_J} ${LSPG} NO_APP_J MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case3
+#   ${u_lspg_src} ${MISS_VEL_C} ${LSPG} NO_VEL_C MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case4
+#   ${u_lspg_src} ${MISS_APP_J_C} ${LSPG} NO_APP_J_C MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case5
+#   ${u_lspg_src} ${MISS_APP_MASK_TO_VEL_C} ${LSPG} NO_APP_MASK_TO_VEL_C MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case6
+#   ${u_lspg_src} ${MISS_APP_MASK_TO_VEL} ${LSPG} NO_APP_MASK_TO_VEL MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case7
+#   ${u_lspg_src} ${MISS_APP_MASK_TO_MAT_C} ${LSPG} NO_APP_MASK_TO_MAT_C MASKED DO_LSPG)
+
+# add_serial_test_to_check_build_failure(
+#   adapter_error_masked_lspg_continuous_time_api_case8
+#   ${u_lspg_src} ${MISS_APP_MASK_TO_MAT} ${LSPG} NO_APP_MASK_TO_MAT MASKED DO_LSPG)
 
 
 #add_serial_exe_and_test(discrete_api_error_msg rom discrete_api_error_msg.cc "PASSED")

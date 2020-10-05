@@ -1,9 +1,55 @@
 
 #include "pressio_rom.hpp"
 
+struct MyMasker
+{
+  using scalar_type = double;
+
+  int N_ = {};
+  MyMasker(int N) : N_(N){}
+
+  Eigen::VectorXd createApplyMaskResult(const Eigen::VectorXd & operand) const
+  {
+    return Eigen::VectorXd(N_);
+  }
+  Eigen::MatrixXd createApplyMaskResult(const Eigen::MatrixXd & operand) const
+  {
+    Eigen::MatrixXd A;
+    return A;
+  }
+
+  void applyMask(const Eigen::VectorXd & operand,
+     const scalar_type & t,
+     Eigen::VectorXd & result) const
+  {
+    for (int i=0; i<N_; ++i) result(i) = operand(i) + 1.5;
+  }
+
+  void applyMask(const Eigen::MatrixXd &,
+     const scalar_type & t,
+     Eigen::MatrixXd &) const{}
+};
+
+struct MyPreconditioner
+{
+  using scalar_type = double;
+
+  void applyPreconditioner(const Eigen::VectorXd & yState,
+         const scalar_type & time,
+         Eigen::VectorXd & operand) const
+  {
+    for (int i=0; i<operand.size(); ++i) operand(i) += 0.5;
+  }
+
+  void applyPreconditioner(const Eigen::VectorXd & yState,
+         const scalar_type & time,
+         Eigen::MatrixXd & C) const
+  {}
+};
+
 struct MyFakeApp
 {
-  int N_;
+  int N_ = {};
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
@@ -30,38 +76,6 @@ public:
 		     scalar_type t,
 		     dense_matrix_type & A) const
   {}
-
-  void applyPreconditioner(const state_type & yState,
-			   const scalar_type & time,
-			   dense_matrix_type & C) const
-  {
-  }
-  void applyPreconditioner(const state_type & yState,
-			   const scalar_type & time,
-			   velocity_type & operand) const
-  {
-    for (int i=0; i<N_; ++i) operand(i) += 0.5;
-  }
-
-  velocity_type createApplyMaskResult(const velocity_type & operand) const{
-    return velocity_type(N_);
-  }
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & operand) const
-  {
-    dense_matrix_type A;
-    return A;
-  }
-
-  void applyMask(const velocity_type & operand,
-		 const scalar_type & t,
-		 velocity_type & result) const
-  {
-    for (int i=0; i<N_; ++i) result(i) = operand(i) + 1.5;
-  }
-
-  void applyMask(const dense_matrix_type &,
-		 const scalar_type & t,
-		 dense_matrix_type &) const{}
 };
 
 struct MyFakeSolver
@@ -85,6 +99,9 @@ using decoder_t		= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
 using lspg_state_t    = pressio::containers::Vector<Eigen::VectorXd>;
 using lspg_residual_t = fom_state_t;
+
+using preconditioner_t = MyPreconditioner;
+using masker_t = MyMasker;
 
 
 void testUnsteadyResidualPolicy(fom_state_t & yRef,
@@ -115,14 +132,18 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
       fom_state_t, fom_states_manager_t, void>;
 
   using lspg_precond_residual_policy =
-    ::pressio::rom::decorator::PreconditionedResidualPolicy<lspg_residual_policy>;
+    ::pressio::rom::decorator::PreconditionedResidualPolicy<preconditioner_t, lspg_residual_policy>;
 
   using lspg_masked_residual_policy =
-    ::pressio::rom::decorator::MaskedResidualPolicy<lspg_residual_policy>;
+    ::pressio::rom::decorator::MaskedResidualPolicy<masker_t, lspg_residual_policy>;
 
   const lspg_residual_policy rPol(fomObj.createVelocity(), fomStatesMngr);
-  const lspg_precond_residual_policy rPolPrecond(fomObj.createVelocity(), fomStatesMngr);
-  const lspg_masked_residual_policy rPolMasked(fomObj.createVelocity(), fomStatesMngr);
+
+  preconditioner_t Preconditioner;
+  const lspg_precond_residual_policy rPolPrecond(Preconditioner, fomObj.createVelocity(), fomStatesMngr);
+
+  masker_t Masker(fomSize);
+  const lspg_masked_residual_policy rPolMasked(Masker, fomObj.createVelocity(), fomStatesMngr);
 
   // ------------------------------------
   // ***** here we do the test *****

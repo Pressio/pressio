@@ -57,7 +57,7 @@ template <
   typename result_t,
   typename = void
   >
-struct has_const_apply_mask_method_accept_result_return_void
+struct has_const_apply_mask_method_accept_operand_result_return_void
   : std::false_type{};
 
 template <
@@ -65,7 +65,7 @@ template <
   typename operand_type,
   typename result_t
   >
-struct has_const_apply_mask_method_accept_result_return_void<
+struct has_const_apply_mask_method_accept_operand_result_return_void<
   T, operand_type, result_t,
   mpl::enable_if_t<
     std::is_void<

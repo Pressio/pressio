@@ -406,6 +406,7 @@ int main(int argc, char *argv[])
 
   // this is my reference state, zero for now
   native_state_t refState(fomSize);
+  refState.setConstant(0.);
 
   // define ROM state
   rom_state_t romState(romSize);

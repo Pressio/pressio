@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "pressio_rom.hpp"
 
-
 struct ValidApp{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;

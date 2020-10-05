@@ -49,19 +49,32 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ 
+
+//fwd declare problem class
+namespace galerkin{ namespace impl{
+template <typename ...>
+class DefaultProblemContinuousTimeApi;
+}}// end namespace pressio::rom::galerkin::impl
+
+namespace details{
 
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename rom_state_type,
-  typename ...Args
+  typename decoder_type,
+  typename ud_ops_type
   >
-struct DefaultProblemTraitsContinuousTimeApi
+struct traits<
+  ::pressio::rom::galerkin::impl::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, rom_state_type, decoder_type, ud_ops_type
+    >
+  >
 {
-  // pick the common types holder
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-        fom_system_type, rom_state_type, Args...>;
+  using common_types_t = 
+    ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+        fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -88,5 +101,5 @@ struct DefaultProblemTraitsContinuousTimeApi
 
 };//end class
 
-}}}}//end  namespace pressio::rom::galerkin::impl
+}}}//end  namespace pressio::rom::galerkin::impl
 #endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_

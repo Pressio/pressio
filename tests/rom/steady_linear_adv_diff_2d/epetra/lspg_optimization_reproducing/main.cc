@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
     fom_adapter_t, lspg_state_t, decoder_t>::type;
   lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
 
-  using rom_system_t = typename lspg_problem_type::lspg_system_t;
+  using rom_system_t = typename lspg_problem_type::system_t;
   auto & system = lspgProblem.getSystemRef();
 
   using opt_param_t = pressio::optimizers::Parameters<scalar_t>;

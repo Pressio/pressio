@@ -51,16 +51,12 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-template <typename preconditionable_policy>
+template <typename preconditioner_t, typename preconditionable_policy>
 class PreconditionedResidualPolicy : public preconditionable_policy
 {
-
   using typename preconditionable_policy::residual_t;
-  using typename preconditionable_policy::ud_ops_t;
-
   using preconditionable_policy::fomStatesMngr_;
-  using preconditionable_policy::udOps_;
-
+  std::reference_wrapper<const preconditioner_t> preconditionerObj_;
 
 public:
   PreconditionedResidualPolicy() = delete;
@@ -70,8 +66,10 @@ public:
   {}
 
   template <typename ... Args>
-  PreconditionedResidualPolicy(Args && ... args)
-    : preconditionable_policy(std::forward<Args>(args)...)
+  PreconditionedResidualPolicy(const preconditioner_t & preconditionerIn,
+                               Args && ... args)
+    : preconditionable_policy(std::forward<Args>(args)...),
+      preconditionerObj_(preconditionerIn)
   {}
 
   ~PreconditionedResidualPolicy() = default;
@@ -96,67 +94,35 @@ public:
   void compute(const state_t & currentState,
 	       const prev_states_t & prevStates,
 	       const fom_system_t & systemObj,
-	       const scalar_t & t,
+	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       residual_t & residual) const
   {
     preconditionable_policy::template compute<
-      stepper_tag>(currentState, prevStates, systemObj, t, 
-        dt, step, residual);
+      stepper_tag>(currentState, prevStates, systemObj, 
+        time, dt, step, residual);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), t, *residual.data());
-    // this->computeNorm(residual, normKind, normValue);
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *residual.data());
   }
 
   //-------------------------------
   // steady case
   //-------------------------------
-  template <typename lspg_state_t, typename fom_t>
+  template <
+    typename lspg_state_t, 
+    typename fom_t
+  >
   void compute(const lspg_state_t & currentState,
               residual_t & residual,
               const fom_t & systemObj) const
   {
-    preconditionable_policy::compute(currentState, residual,
-				     systemObj);
+    preconditionable_policy::compute(currentState, residual, systemObj);
 
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), *residual.data());
-
-    // this->computeNorm(residual, normKind, normValue);
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), *residual.data());
   }
-
-// private:
-//   template <typename scalar_t, typename _ud_ops_t = ud_ops_t>
-//   ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value >
-//   computeNorm(const residual_t & R,
-// 	      ::pressio::Norm normKind,
-// 	      scalar_t & normValue) const
-//   {
-//     if (normKind == ::pressio::Norm::L2)
-//       normValue = ::pressio::ops::norm2(R);
-//     else if (normKind == ::pressio::Norm::L1)
-//       normValue = ::pressio::ops::norm1(R);
-//     else
-//       throw std::runtime_error
-// 	("Invalid norm kind for lspg unsteady preconditioned residual policy");
-//   }
-
-//   template <typename scalar_t, typename _ud_ops_t = ud_ops_t>
-//   ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value >
-//   computeNorm(const residual_t & R,
-//   	      ::pressio::Norm normKind,
-//   	      scalar_t & normValue) const
-//   {
-//     if (normKind == ::pressio::Norm::L2)
-//       normValue = udOps_->norm2(*R.data());
-//     else if (normKind == ::pressio::Norm::L1)
-//       normValue = udOps_->norm1(*R.data());
-//     else
-//       throw std::runtime_error
-//   	("Invalid norm kind for lspg unsteady preconditioned residual policy");
-//   }
 
 };//end class
 

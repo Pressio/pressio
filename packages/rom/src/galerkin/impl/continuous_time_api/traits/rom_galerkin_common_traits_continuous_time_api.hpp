@@ -106,7 +106,12 @@ struct FomStateReconHelper<
 //------------------------------------------------------------------------------
 
 
-template <typename fom_system_type, typename rom_state_type, typename ...Args >
+template <
+  typename fom_system_type, 
+  typename rom_state_type, 
+  typename decoder_type,
+  typename ud_ops_type
+  >
 struct CommonTraitsContinuousTimeApi
 {
   // the scalar type
@@ -126,26 +131,32 @@ struct CommonTraitsContinuousTimeApi
   // the Galerkin rhs type is (for now) same as state type
   using galerkin_residual_t	= galerkin_state_t;
 
-  // verify the sequence contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    galerkin_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a ROM Galerkin problem");
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  // // verify the sequence contains a valid decoder type
+  // using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+  //   galerkin_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+		// "A valid decoder type must be passed to define a ROM Galerkin problem");
+  // using decoder_jac_t = typename decoder_t::jacobian_type;
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a Galerkin problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
 
-  // if we have an admissible user-defined ops
-  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
-    decoder_jac_t, galerkin_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_galerkin_continuous_time, Args...>;
-  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
+  // // if we have an admissible user-defined ops
+  // using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+  //   decoder_jac_t, galerkin_state_t, fom_state_t,
+  //   ::pressio::rom::concepts::custom_ops_galerkin_continuous_time, Args...>;
+  using ud_ops_t = ud_ops_type;//::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type
   using fom_state_reconstr_t =
-    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
+    typename FomStateReconHelper<ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t = 
+    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, ud_ops_type>;
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

@@ -55,6 +55,7 @@ template <
   typename fom_system_type,
   typename rom_state_type,
   typename rom_jacobian_type,
+  typename decoder_type,
   typename ...Args
   >
 struct CommonTraitsDiscreteTimeApi
@@ -75,13 +76,18 @@ struct CommonTraitsDiscreteTimeApi
   using rom_residual_t = rom_state_type;
   using rom_jacobian_t   = rom_jacobian_type;
 
-  // verify that args contains a valid decoder type
-  using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    rom_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
-		"A valid decoder type must be passed");
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  // // verify that args contains a valid decoder type
+  // using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+  //   rom_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
+		// "A valid decoder type must be passed");
+  // using decoder_jac_t = typename decoder_t::jacobian_type;
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, rom_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a Galerkin problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
 
   /* fom_apply_jacobian_t is type of J*decoder_jac_t where
    * * J is the jacobian of the fom rhs
@@ -128,7 +134,9 @@ basically the size of the stpper stencil.");
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t = 
+    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, 
+        fom_state_reconstr_t, ud_ops_t>;
 
 };
 

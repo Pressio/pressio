@@ -81,8 +81,10 @@ struct ExtractNativeHelper<
     >
   >
 {
-  using fom_native_state_t    = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-  using fom_native_velocity_t = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
+  using fom_native_state_t    =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
+  using fom_native_velocity_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 };
 #endif
 // ------------------------------------------------------------------------------------
@@ -92,15 +94,20 @@ template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
-  typename ...Args>
+  typename decoder_type,
+  typename ud_ops_type
+  >
 struct CommonTraitsContinuousTimeApi
 {
   // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
   using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_velocity_t;
+  using fom_native_state_t	=
+    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
+  using fom_native_velocity_t	=
+    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_velocity_t;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
@@ -112,13 +119,17 @@ struct CommonTraitsContinuousTimeApi
   /* for LSPG, the lspg_residual_type = fom_velocity_type */
   using lspg_residual_t		= fom_velocity_t;
 
-  // verify that args contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  // verify that we have a valid decoder type
+  // using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+  //   lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+  // "A valid decoder type must be passed to define a LSPG problem");
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -132,21 +143,25 @@ struct CommonTraitsContinuousTimeApi
    */
   using lspg_matrix_t		= decoder_jac_t;
 
-  // if we have an admissible user-defined ops
-  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
-    decoder_jac_t, lspg_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_lspg_continuous_time, Args...>;
-  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
+  // // if we have an admissible user-defined ops
+  // using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+  //   decoder_jac_t, lspg_state_t, fom_state_t,
+  //   ::pressio::rom::concepts::custom_ops_lspg_continuous_time, Args...>;
+  // using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void,icUdOps::value,Args...>;
 
   // fom state reconstructor type
   using fom_state_reconstr_t =
-    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
+    typename FomStateReconHelper<ud_ops_type>::template type<scalar_t,
+							     fom_state_t,
+							     decoder_t>;
 
-  // total num of fom states (i.e. stencil size plus the state at current step) needed
+  // total num of fom states (i.e. stencil size plus the state at current step)
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates,
+					   fom_state_reconstr_t, ud_ops_type>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

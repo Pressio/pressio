@@ -51,23 +51,27 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-template <typename preconditionable_policy>
+template <typename preconditioner_t, typename preconditionable_policy>
 class PreconditionedJacobianPolicy : public preconditionable_policy
 {
 
 public:
   using typename preconditionable_policy::apply_jac_return_t;
   using preconditionable_policy::fomStatesMngr_;
+  std::reference_wrapper<const preconditioner_t> preconditionerObj_;
 
 public:
   PreconditionedJacobianPolicy() = delete;
+
   PreconditionedJacobianPolicy(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
   {}
 
   template <typename ... Args>
-  PreconditionedJacobianPolicy(Args && ... args)
-    : preconditionable_policy(std::forward<Args>(args)...)
+  PreconditionedJacobianPolicy(const preconditioner_t & preconditionerIn,
+                               Args && ... args)
+    : preconditionable_policy(std::forward<Args>(args)...),
+      preconditionerObj_(preconditionerIn)
   {}
 
   ~PreconditionedJacobianPolicy() = default;
@@ -93,28 +97,32 @@ public:
   void compute(const state_t & odeState,
 	       const prev_states_mgr & prevStatesMgr,
 	       const fom_system_t & systemObj,
-	       const scalar_t & t,
+	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       jac_t & odeJacobian) const
   {
     preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr,
-							   systemObj, t, dt, step, odeJacobian);
+							   systemObj, time, dt, step, odeJacobian);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), t, *odeJacobian.data());
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *odeJacobian.data());
   }
 
   //-------------------------------
   // steady
   //-------------------------------
-  template <typename state_t, typename jac_t, typename fom_system_t>
+  template <
+    typename state_t, 
+    typename jac_t, 
+    typename fom_system_t
+  >
   void compute(const state_t & stateObj,
                jac_t & jacob,
                const fom_system_t & systemObj) const
   {
     preconditionable_policy::compute(stateObj, jacob, systemObj);
     const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), *jacob.data());
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), *jacob.data());
   }
 
 };//end class

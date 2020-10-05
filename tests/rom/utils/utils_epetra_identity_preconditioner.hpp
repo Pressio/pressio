@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// apps_burgers1d_epetra_identity_masked.hpp
+// apps_burgers1d_epetra_preconditioned.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,82 +46,51 @@
 //@HEADER
 */
 
-#ifndef APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_IDENTITY_MASKED_HPP_
-#define APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_IDENTITY_MASKED_HPP_
+#ifndef ROM_TESTS_BURGERS1D_EPETRA_IDENT_PRECONDITIONER_HPP_
+#define ROM_TESTS_BURGERS1D_EPETRA_IDENT_PRECONDITIONER_HPP_
 
-#include "apps_burgers1d_epetra.hpp"
+#include "pressio_apps.hpp"
 
-#include <Epetra_Import.h>
+namespace pressio{ namespace rom{ namespace test{ 
 
-namespace pressio{ namespace apps{
-
-class Burgers1dEpetraIdentityMask : public Burgers1dEpetra
+class EpetraIdentityPreconditioner
 {
-public:
-  using base_t = Burgers1dEpetra;
-  using importer_t = Epetra_Import;
-  using base_t::dense_matrix_type;
-  using base_t::velocity_type;
-  using base_t::state_type;
-  using base_t::scalar_type;
-
-  Burgers1dEpetraIdentityMask(std::vector<scalar_type> params,
-			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){
-    this->setup();
-  }
-
-  ~Burgers1dEpetraIdentityMask() = default;
+  using scalar_type = typename ::pressio::apps::Burgers1dEpetra::scalar_type;
+  using state_type  = typename ::pressio::apps::Burgers1dEpetra::state_type;
+  using velocity_type = typename ::pressio::apps::Burgers1dEpetra::velocity_type;
+  using dense_matrix_type = typename ::pressio::apps::Burgers1dEpetra::dense_matrix_type;
 
 public:
-  velocity_type createApplyMaskResult(const velocity_type & src) const
+  void applyPreconditioner(const state_type & yState,
+            const scalar_type & time,
+            velocity_type & rhs) const 
   {
-    velocity_type dest(*maskMap_);
-    dest.Import(src, *importer_, Insert);
-    return dest;
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
   }
 
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & src) const{
-    dense_matrix_type dest(*maskMap_, src.NumVectors());
-    dest.Import(src, *importer_, Insert);
-    return dest;
+  void applyPreconditioner(const state_type & yState,
+            const scalar_type & time,
+            dense_matrix_type & C) const 
+  {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
   }
 
-  template <typename T>
-  void applyMask(const T & src, double time, T & dest) const{
-    dest.Import(src, *importer_, Insert);
+  void applyPreconditioner(const state_type & yState,
+            velocity_type & rhs) const 
+  {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
   }
 
-private:
-  void setup(){
-    base_t::setup();
-    // create a map to mimic the mask
-    createMaskMap();
-    importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
-  };
-
-  void createMaskMap(){
-    // get # of my elements for the full map
-    auto myN0 = dataMap_->NumMyElements();
-    // get my global IDs
-    auto myGID = dataMap_->MyGlobalElements();
-
-    // pick all elements
-    std::vector<int> myGIDnc;
-    for (decltype(myN0) i=0; i<myN0; i++) {
-	myGIDnc.emplace_back(myGID[i]);
-    }
-    maskMap_ = std::make_shared<Epetra_Map>(-1, myGIDnc.size(),
-					    myGIDnc.data(), 0,
-					    *comm_);
-    //maskMap_->Print(std::cout);
-  };
-
-private:
-  rcp<Epetra_Map> maskMap_;
-  std::vector<int> myMaskGel_;
-  rcp<importer_t> importer_;
+  void applyPreconditioner(const state_type & yState,
+            dense_matrix_type & C) const 
+  {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
 };
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_IDENTITY_MASKED_HPP_
+}}} 
+#endif

@@ -1,6 +1,15 @@
 
 #include "pressio_rom.hpp"
 
+struct MyPrec
+{
+  using state_type  = Eigen::VectorXd;
+  using residual_type = state_type;
+  using dense_matrix_type = Eigen::MatrixXd;
+  void applyPreconditioner(const state_type &, residual_type & r) const;
+  void applyPreconditioner(const state_type &, dense_matrix_type & jac) const;
+};
+
 struct ValidApp{
   const int32_t numDof_ = 15;
 
@@ -31,18 +40,6 @@ public:
 #else
   dense_matrix_type createApplyJacobianResult(const dense_matrix_type &) const;
 #endif
-
-#if defined PRECOND
- #if defined NO_APP_PREC_TO_RES
- #else
-  void applyPreconditioner(const state_type &, residual_type & r) const;
- #endif
-
- #if defined NO_APP_PREC_TO_MAT
- #else
-  void applyPreconditioner(const state_type &, dense_matrix_type & jac) const;
- #endif
-#endif
 };
 
 int main(int argc, char *argv[])
@@ -62,10 +59,11 @@ int main(int argc, char *argv[])
   using lspg_problem =
 #if defined PRECOND
     pressio::rom::lspg::composePreconditionedProblem<
+      app_t, lspg_state_t, decoder_t, MyPrec>::type;
 #else
     pressio::rom::lspg::composeDefaultProblem<
+      app_t, lspg_state_t, decoder_t>::type;
 #endif
-    app_t, lspg_state_t, decoder_t>::type;
 
   // we should never get here because this test fails
   static_assert(std::is_void<lspg_problem>::value, "");

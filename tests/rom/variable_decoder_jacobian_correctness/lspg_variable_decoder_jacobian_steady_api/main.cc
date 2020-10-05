@@ -54,7 +54,7 @@ public:
 
 struct MyFakeApp
 {
-  int N_;
+  int N_ = {};
   std::string & sentinel_;
   mutable int counter_ = {};
 

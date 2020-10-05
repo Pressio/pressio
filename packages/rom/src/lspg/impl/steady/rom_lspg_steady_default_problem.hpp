@@ -46,55 +46,40 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_
-#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_PROBLEM_HPP_
-
-#include "./policies/rom_lspg_steady_residual_policy.hpp"
-#include "./policies/rom_lspg_steady_jacobian_policy.hpp"
-#include "rom_lspg_steady_system.hpp"
-
-#include "./traits/rom_lspg_steady_common_traits.hpp"
-#include "./traits/rom_lspg_steady_default_problem_traits.hpp"
-#include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
+#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_
+#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <
-  template <class ...> class lspg_type,
-  typename fom_system_type,
-  typename lspg_state_type,
-  typename decoder_type,
-  typename ...Args
-  >
-class ProblemSteady
+template <typename ...Args>
+class DefaultProblemSteady
 {
-
 public:
-  // define the type holding types for the problem
-  using lspg_problem_t = lspg_type<fom_system_type, lspg_state_type, decoder_type, Args...>;
+  using this_t = DefaultProblemSteady<Args...>;
+  using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t = typename lspg_problem_t::fom_system_t;
-  using fom_native_state_t = typename lspg_problem_t::fom_native_state_t;
-  using fom_state_t = typename lspg_problem_t::fom_state_t;
-  using lspg_state_t = typename lspg_problem_t::lspg_state_t;
-  using decoder_t = typename lspg_problem_t::decoder_t;
-  using fom_state_reconstr_t = typename lspg_problem_t::fom_state_reconstr_t;
-  using fom_states_manager_t = typename lspg_problem_t::fom_states_manager_t;
-  using lspg_matrix_t = typename lspg_problem_t::lspg_matrix_t;
-  using lspg_residual_policy_t = typename lspg_problem_t::lspg_residual_policy_t;
-  using lspg_jacobian_policy_t = typename lspg_problem_t::lspg_jacobian_policy_t;
-  using lspg_system_t = typename lspg_problem_t::lspg_system_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using lspg_matrix_t		= typename traits::lspg_matrix_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
+  using system_t		= typename traits::system_t;
 
 private:
-  fom_state_t			fomStateReference_;
-  fom_state_reconstr_t		fomStateReconstructor_;
-  fom_states_manager_t		fomStatesMngr_;
-  lspg_residual_policy_t	residualPolicy_;
-  lspg_jacobian_policy_t	jacobianPolicy_;
-  lspg_system_t			systemObj_;
+  fom_state_t		fomStateReference_;
+  fom_state_reconstr_t	fomStateReconstructor_;
+  fom_states_manager_t	fomStatesMngr_;
+  residual_policy_t	residualPolicy_;
+  jacobian_policy_t	jacobianPolicy_;
+  system_t		systemObj_;
 
 public:
-  lspg_system_t & getSystemRef(){
+  system_t & getSystemRef(){
     return systemObj_;
   }
 
@@ -114,7 +99,7 @@ public:
       !::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value,
       int> = 0
   >
-  ProblemSteady(const _fom_system_t & fomSystemObj,
+  DefaultProblemSteady(const _fom_system_t & fomSystemObj,
   		const fom_native_state_t & fomNativeReferenceState,
   		const decoder_t	& decoder,
 		lspg_state_t & romStateIn)
@@ -140,7 +125,7 @@ public:
       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value,
       int > = 0
   >
-  ProblemSteady(const _fom_system_t & fomSystemObj,
+  DefaultProblemSteady(const _fom_system_t & fomSystemObj,
 		const fom_native_state_t fomNativeReferenceState,
 		const decoder_t	& decoder,
 		typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn)

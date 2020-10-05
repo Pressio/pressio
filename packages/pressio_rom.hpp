@@ -59,6 +59,8 @@
 #include "pressio_solvers.hpp"
 #include "pressio_ode.hpp"
 
+#include "rom/src/rom_fwd.hpp"
+
 #include "rom/src/rom_manager_fom_states_static.hpp"
 #include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
 #include "rom/src/predicates/typedefs/rom_has_dense_matrix_typedef.hpp"
@@ -110,29 +112,29 @@
 #include "rom/src/predicates/apply_jacobian_methods/rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp"
 #include "rom/src/predicates/apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void.hpp"
 #include "rom/src/predicates/preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_time_result_return_void.hpp"
-#include "rom/src/predicates/steady_residual_methods/rom_has_const_create_residual_method_return_result.hpp"
-#include "rom/src/predicates/steady_residual_methods/rom_has_const_residual_method_accept_state_result_return_void.hpp"
+#include "rom/src/predicates/residual_methods/rom_has_const_create_residual_method_return_result.hpp"
+#include "rom/src/predicates/residual_methods/rom_has_const_residual_method_accept_state_result_return_void.hpp"
 #include "rom/src/predicates/apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_result_return_void.hpp"
 #include "rom/src/predicates/preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
 
+#include "rom/src/will_be_concepts/rom_masker.hpp"
+#include "rom/src/will_be_concepts/rom_preconditioner.hpp"
+
+#include "rom/src/will_be_concepts/system/rom_steady_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_discrete_time_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_explicit_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_implicit_system.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_system.hpp"
-#include "rom/src/will_be_concepts/system/rom_continuous_time_system_preconditionable_rom.hpp"
-#include "rom/src/will_be_concepts/system/rom_continuous_time_system_maskable_rom.hpp"
-#include "rom/src/will_be_concepts/system/rom_steady_system.hpp"
-#include "rom/src/will_be_concepts/system/rom_steady_system_preconditionable_rom.hpp"
-
-//-----------------
-// LSPG
-//-----------------
-#include "rom/src/lspg/rom_compose_lspg.hpp"
 
 //----------------
 // galerkin
 //----------------
 #include "rom/src/galerkin/rom_compose_galerkin.hpp"
+
+//-----------------
+// LSPG
+//-----------------
+#include "rom/src/lspg/rom_compose_lspg.hpp"
 
 //----------------
 // wls

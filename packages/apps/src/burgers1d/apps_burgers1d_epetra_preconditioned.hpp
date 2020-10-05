@@ -53,27 +53,14 @@
 
 namespace pressio{ namespace apps{
 
-class Burgers1dEpetraPreconditioned : public Burgers1dEpetra{
-  using base_t = Burgers1dEpetra;
-  using importer_t = Epetra_Import;
+class EpetraIdentityPreconditioner
+{
+  using scalar_type = typename Burgers1dEpetra::scalar_type;
+  using state_type  = typename Burgers1dEpetra::state_type;
+  using velocity_type = typename Burgers1dEpetra::velocity_type;
+  using dense_matrix_type = typename Burgers1dEpetra::dense_matrix_type;
 
 public:
-  Burgers1dEpetraPreconditioned(std::vector<scalar_type> params,
-			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){
-    this->setup();
-  }
-
-  ~Burgers1dEpetraPreconditioned() = default;
-
-public:
-  void applyPreconditioner(const state_type & yState,
-            const scalar_type & time,
-            dense_matrix_type & C) const 
-  {
-    // do nothing, preconditioner is identity
-    std::cout << "identiy precond" << std::endl;
-  }
   void applyPreconditioner(const state_type & yState,
             const scalar_type & time,
             velocity_type & rhs) const 
@@ -81,11 +68,14 @@ public:
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
-private:
-  void setup(){
-    base_t::setup();
-  };
 
+  void applyPreconditioner(const state_type & yState,
+            const scalar_type & time,
+            dense_matrix_type & C) const 
+  {
+    // do nothing, preconditioner is identity
+    std::cout << "identiy precond" << std::endl;
+  }
 };
 
 }} //namespace pressio::apps

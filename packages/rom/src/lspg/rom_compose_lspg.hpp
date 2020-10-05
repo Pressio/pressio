@@ -49,10 +49,21 @@
 #ifndef ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
 #define ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
 
-#include "./impl/rom_compose_lspg_impl.hpp"
+#include "./impl/steady/rom_compose_steady_lspg_impl.hpp"
+#include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
+/*
+  default
+  valid cases for unsteady:
+    template<stepper_tag, fom_type, romstate_t, decoder_t>
+    template<stepper_tag, fom_type, romstate_t, decoder_t, udops_t>
+
+  valid cases for steady:
+    template<fom_type, romstate_t, decoder_t>
+    template<fom_type, romstate_t, decoder_t, udops_t>
+*/
 template<typename T1, typename ...Args>
 using composeDefaultProblem =
   typename std::conditional<
@@ -61,22 +72,32 @@ using composeDefaultProblem =
   impl::composeSteady<impl::Default, void, T1, Args...>
   >::type;
 
+/*
+  preconditioned
+  valid cases for unsteady:
+    template<stepper_tag, fom_type, romstate_t, decoder_t, precond_t>
+*/
 template<typename T1, typename ...Args>
 using composePreconditionedProblem =
   typename std::conditional<
   ::pressio::ode::predicates::is_stepper_tag<T1>::value,
   impl::composeUnsteady<impl::Preconditioned, void, T1, Args...>,
-  impl::composeSteady<impl::Preconditioned,   void, T1, Args...>
+  impl::composeSteady<impl::Preconditioned, void, T1, Args...>
   >::type;
 
+
+/*
+  masked
+  valid cases for unsteady:
+    template<stepper_tag, fom_type, romstate_t, decoder_t, masker_t>
+*/
 template<typename T1, typename ...Args>
 using composeMaskedProblem =
   typename std::conditional<
   ::pressio::ode::predicates::is_stepper_tag<T1>::value,
   impl::composeUnsteady<impl::Masked, void, T1, Args...>,
-  impl::composeSteady<impl::Masked,   void, T1, Args...>
+  void
   >::type;
-
 
 }}}
 #endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_

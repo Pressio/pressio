@@ -59,6 +59,7 @@ template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
+  typename decoder_type,
   typename ...Args
   >
 struct CommonTraitsDiscreteTimeApi
@@ -66,9 +67,9 @@ struct CommonTraitsDiscreteTimeApi
   // the scalar type
   using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename fom_system_t::state_type;
-  using fom_native_residual_t	= typename fom_system_t::discrete_time_residual_type;
+  using fom_system_t	      = fom_system_type;
+  using fom_native_state_t    = typename fom_system_t::state_type;
+  using fom_native_residual_t = typename fom_system_t::discrete_time_residual_type;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
@@ -77,13 +78,18 @@ struct CommonTraitsDiscreteTimeApi
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
-  // verify that args contains a valid decoder type
-  using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
+  // // verify that args contains a valid decoder type
+  // using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+  //   lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
+  // 		"A valid decoder type must be passed to define a LSPG problem");
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_t::jacobian_type;
+
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -113,8 +119,9 @@ struct CommonTraitsDiscreteTimeApi
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::ode::predicates::IsStepperOrderSetter, Args...>;
   using order_setter = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  static_assert( !std::is_void<order_setter>::value,
-  		 "To use lspg with residual api, you need to set the order of the stepper \n \
+  static_assert
+  ( !std::is_void<order_setter>::value,
+    "To use lspg with residual api, you need to set the order of the stepper \n \
 at compile time by passing to LSPGUnsteadyProblem a template argument as follows: \n \
 ::pressio::ode::types::StepperOrder<your_order_value>.");
   // store
@@ -134,11 +141,13 @@ to LSPGUnsteadyProblem a template argument as follows: \n \
 Note that this is the total number of states needed including previous ones, \n \
 basically the size of the stpper stencil.");
 
-  // total number of fom states needed (size of stencil plus the state at current step)
+  // total number fom states needed (size of stencil plus the state at current step)
   static constexpr std::size_t numStates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates,
+					   fom_state_reconstr_t, ud_ops_t>;
 
 };
 

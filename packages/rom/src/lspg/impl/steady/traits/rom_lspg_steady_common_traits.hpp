@@ -77,27 +77,30 @@ struct ExtractNativeHelper<
     >
   >
 {
-  using fom_native_state_t     = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
+  using fom_native_state_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
   using fom_native_residual_t = fom_native_state_t;
 };
 #endif
-// ------------------------------------------------------------------------------------
+// ---------------------------------------------------------------
 
 
 template <
   typename fom_system_type,
-  typename decoder_type,
   typename lspg_state_type,
-  typename ...Args
+  typename decoder_type
   >
 struct CommonTraits
 {
   // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
   using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_residual_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_residual_t;
+  using fom_native_state_t	=
+    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
+  using fom_native_residual_t	=
+    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_residual_t;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
@@ -111,17 +114,34 @@ struct CommonTraits
   using lspg_residual_t		= fom_residual_t;
 
   // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
+
+  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
+   * * J is the jacobian of the fom rhs
+   * * decoder_jac_t is the type of the decoder jacobian
+   * In more complex cases, we might have (something)*J*decoder_jac_t,
+   * where (something) is product of few matrices.
+   * For now, set lspg_matrix_t to be of same type as decoder_jac_t
+   * if phi is MV<>, then lspg_matrix_t = containers::MV<>
+   * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
+   * not a bad assumption since all matrices are left-applied to decoder_jac_t
+   */
+  using lspg_matrix_t		= decoder_jac_t;
 
   // fro now, later on this needs to be detected from args
   using ud_ops_t = void;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  using fom_state_reconstr_t =
+    FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data: we only need to store one FOM state
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, void>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, void>;
 };
 
 }}}}}

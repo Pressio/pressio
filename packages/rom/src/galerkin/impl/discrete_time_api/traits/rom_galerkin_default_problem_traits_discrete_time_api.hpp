@@ -49,20 +49,33 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio{ namespace rom{ 
+
+//fwd declare problem class
+namespace galerkin{ namespace impl{
+template <typename ...>
+class DefaultProblemDiscreteTimeApi;
+}}// end namespace pressio::rom::galerkin::impl
+
+namespace details{
 
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename rom_state_type,
   typename rom_jacobian_type,
-  typename ... Args
+  typename decoder_type, 
+  typename ...Args
   >
-struct DefaultProblemTraitsDiscreteTimeApi
+struct traits<
+  ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
+    stepper_tag, fom_system_type, rom_state_type, rom_jacobian_type, 
+    decoder_type, Args...
+    >
+  >
 {
-  // pick the common types holder
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
-        fom_system_type, rom_state_type, rom_jacobian_type, Args...>;
+        fom_system_type, rom_state_type, rom_jacobian_type, decoder_type, Args...>;
 
   using fom_system_t		= typename common_types::fom_system_t;
   using scalar_t		= typename common_types::scalar_t;
@@ -99,5 +112,5 @@ struct DefaultProblemTraitsDiscreteTimeApi
 
 };//end class
 
-}}}}//end namespace
+}}}//end namespace
 #endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_

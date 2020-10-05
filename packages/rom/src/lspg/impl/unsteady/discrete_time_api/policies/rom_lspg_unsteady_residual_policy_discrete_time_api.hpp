@@ -56,7 +56,6 @@ class ResidualPolicyDiscreteTimeApi
 {
 
 public:
-  static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
 
 public:
