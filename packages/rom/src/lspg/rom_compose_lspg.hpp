@@ -54,15 +54,14 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-/*
-  default
-  valid cases for unsteady:
-    template<stepper_tag, fom_type, romstate_t, decoder_t>
-    template<stepper_tag, fom_type, romstate_t, decoder_t, udops_t>
+/*default
 
-  valid cases for steady:
-    template<fom_type, romstate_t, decoder_t>
-    template<fom_type, romstate_t, decoder_t, udops_t>
+  unsteady:
+  template<stepper_tag, fom_type, romstate_t, decoder_t>
+  template<stepper_tag, fom_type, romstate_t, decoder_t, udops_t>
+
+  steady:
+  template<fom_type, romstate_t, decoder_t>
 */
 template<typename T1, typename ...Args>
 using composeDefaultProblem =
@@ -72,10 +71,14 @@ using composeDefaultProblem =
   impl::composeSteady<impl::Default, void, T1, Args...>
   >::type;
 
-/*
-  preconditioned
-  valid cases for unsteady:
-    template<stepper_tag, fom_type, romstate_t, decoder_t, precond_t>
+
+/*preconditioned
+
+  unsteady:
+  template<stepper_tag, fom_type, romstate_t, decoder_t, precond_t>
+
+  cases for steady:
+  template<fom_type, romstate_t, decoder_t, precond_t>
 */
 template<typename T1, typename ...Args>
 using composePreconditionedProblem =
@@ -86,10 +89,12 @@ using composePreconditionedProblem =
   >::type;
 
 
-/*
-  masked
-  valid cases for unsteady:
-    template<stepper_tag, fom_type, romstate_t, decoder_t, masker_t>
+/*masked
+
+  unsteady:
+  template<stepper_tag, fom_type, romstate_t, decoder_t, masker_t>
+
+  steady: TBI
 */
 template<typename T1, typename ...Args>
 using composeMaskedProblem =
@@ -98,6 +103,18 @@ using composeMaskedProblem =
   impl::composeUnsteady<impl::Masked, void, T1, Args...>,
   void
   >::type;
+
+
+// /*hyperreduced
+//   for now just an alias to above
+// */
+// template<typename T1, typename ...Args>
+// using composeHyperreducedProblem = composeDefaultProblem<T1, Args...>;
+
+// /*preconditioned hyperreduced */
+// template<typename T1, typename ...Args>
+// using composePreconditionedHyperreducedProblem =
+//   composePreconditionedProblem<T1, Args...>;
 
 }}}
 #endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_

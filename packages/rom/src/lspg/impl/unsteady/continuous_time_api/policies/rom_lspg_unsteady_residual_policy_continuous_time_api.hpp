@@ -136,12 +136,6 @@ private:
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt);
-    // if (normKind == ::pressio::Norm::L2)
-    //   normValue = ::pressio::ops::norm2(romR);
-    // else if (normKind == ::pressio::Norm::L1)
-    //   normValue = ::pressio::ops::norm1(romR);
-    // else
-    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
@@ -157,13 +151,6 @@ private:
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
-
-    // if (normKind == ::pressio::Norm::L2)
-    //   normValue = udOps_->norm2(*romR.data());
-    // else if (normKind == ::pressio::Norm::L1)
-    //   normValue = udOps_->norm1(*romR.data());
-    // else
-    //   throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
   }
 
   template <
