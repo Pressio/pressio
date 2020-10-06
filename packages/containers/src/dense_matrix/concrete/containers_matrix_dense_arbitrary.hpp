@@ -87,6 +87,8 @@ public:
   DenseMatrix(DenseMatrix const & other)
     : data_(*other.data()){}
 
+
+public:
   size_t extent(size_t k) const{
     assert( k==0 or k==1);
     return data_.extent(k);

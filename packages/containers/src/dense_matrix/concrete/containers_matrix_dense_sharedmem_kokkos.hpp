@@ -75,14 +75,19 @@ class DenseMatrix<
 public:
   DenseMatrix() = default;
 
-  explicit DenseMatrix(const wrap_t src)
+  explicit DenseMatrix(const wrap_t & src)
     : data_{src.label(),
 	    src.extent(0),
-	    src.extent(1)}{
+	    src.extent(1)}
+  {
     Kokkos::deep_copy(data_, src);
   }
 
-  DenseMatrix(const std::string & label, size_t e1, size_t e2)
+  explicit DenseMatrix(wrap_t && src) 
+    : data_(std::move(src)){}
+
+  DenseMatrix(const std::string & label, 
+              size_t e1, size_t e2)
     : data_{label, e1, e2}
   {}
 
@@ -90,14 +95,24 @@ public:
     : data_{"dummyLabel", e1, e2}
   {}
 
-  DenseMatrix(const this_t & other)
+  DenseMatrix(const DenseMatrix & other)
     : data_{other.data_.label(),
 	    other.data_.extent(0),
-	    other.data_.extent(1)}{
+	    other.data_.extent(1)}
+  {
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  ~DenseMatrix(){}
+  // delete copy assign to force usage of ops::deep_copy 
+  DenseMatrix & operator=(const DenseMatrix & other) = delete;
+
+  // move cnstr and assign
+  DenseMatrix(DenseMatrix && other) = default;
+  DenseMatrix & operator=(DenseMatrix && other)= default;
+
+  // destructor
+  ~DenseMatrix() = default;
+
 
 public:
   template< typename _wrapped_type = wrapped_type >

@@ -69,7 +69,8 @@ class SparseMatrix<wrapped_type,
 public:
   SparseMatrix() = delete;
 
-  explicit SparseMatrix(ord_t nrows, ord_t ncols) {
+  explicit SparseMatrix(ord_t nrows, ord_t ncols) 
+  {
     data_.resize(nrows, ncols);
     data_.makeCompressed();
   }
@@ -81,11 +82,12 @@ public:
      !std::is_void<U>::value and 
      mytraits::is_row_major==1, int> = 0
     >
-  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerRow) {
+  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerRow) 
+  {
     data_.resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
       throw std::runtime_error(
-    "SPARSE MATRIX CNTR: estimated nonzeros larger then size of cols");
+    "SPARSE MATRIX CNTR: estimated nonzeros larger then num of cols");
     data_.reserve(Eigen::VectorXi::Constant(nrows,nonZerosPerRow));
     data_.makeCompressed();
   }
@@ -97,11 +99,12 @@ public:
      !std::is_void<U>::value and
       mytraits::is_row_major==0, int> = 0
     >
-  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerCol) {
+  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerCol) 
+  {
     data_.resize(nrows, ncols);
     if( nonZerosPerCol > nrows )
       throw std::runtime_error(
-    "SPARSE MATRIX CNTR: estimated nonzeros larger then size of rows");
+    "SPARSE MATRIX CNTR: estimated nonzeros larger then num of rows");
     data_.reserve(Eigen::VectorXi::Constant(ncols,nonZerosPerCol));
     data_.makeCompressed();
   }
@@ -110,8 +113,22 @@ public:
     data_.makeCompressed();
   }
 
+  // copy cnstr
+  SparseMatrix(SparseMatrix const & other) = default;
+  // delete copy assign to force usage of ops::deep_copy
+  SparseMatrix & operator=(const SparseMatrix & other) = delete;
+
+  /* move semantics, see:
+     https://gitlab.com/libeigen/eigen/-/issues/2000 */
+  // move cnstr
+  SparseMatrix(SparseMatrix && o) = default;
+  // move assignment
+  SparseMatrix & operator=(SparseMatrix && other) = default;
+
+
   ~SparseMatrix() = default;
 
+public:
   // note here that we return by copy
   sc_t operator() (ord_t row, ord_t col) const{
     // eigen returns 0 if the item is zero

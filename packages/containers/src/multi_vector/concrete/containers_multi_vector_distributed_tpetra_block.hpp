@@ -96,9 +96,7 @@ public:
 
   // copy constructor (delegate to above)
   MultiVector(const this_t & other) : MultiVector(*other.data())
-  {
-    std::cout << "copy block \n";
-  }
+  {}
 
   // delete copy assign to force usage of ops::deep_copy 
   MultiVector & operator=(const MultiVector & other) = delete;
@@ -110,9 +108,16 @@ public:
   //   return *this;
   // }
 
-  // // // move and move assign: delete because they are not working for tblock
-  // // MultiVector(MultiVector && other) = delete;
-  // // MultiVector & operator=(MultiVector && other) = delete;
+  // move and move assign: use copy because move not working for tblock
+  MultiVector(MultiVector && other) : MultiVector(*other.data()){}
+
+  MultiVector & operator=(MultiVector && other)
+  {
+    this->data_.update(::pressio::utils::constants<sc_t>::one(),
+           *other.data(),
+           ::pressio::utils::constants<sc_t>::zero() );
+    return *this;
+  }  
 
   ~MultiVector() = default;
 

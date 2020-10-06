@@ -78,6 +78,17 @@ public:
   explicit DenseMatrix(const wrap_t & objin)
     : data_(objin){}
 
+  // copy cnstr
+  DenseMatrix(DenseMatrix const & other) = default;
+
+  // delete copy assign to force usage of ops::deep_copy 
+  DenseMatrix & operator=(DenseMatrix const & other) = delete;
+
+  // move cnstr
+  DenseMatrix(DenseMatrix && other) = default;
+  // move assignment
+  DenseMatrix & operator=(DenseMatrix && other) = default;
+  // destructor
   ~DenseMatrix() = default;
 
 public:
@@ -91,6 +102,18 @@ public:
     assert(icol < this->globalCols() );
     assert(irow < this->localRows() );
     return data_[icol][irow];
+  }
+
+  // for distributed objects, extent return the global extent
+  GO_t extent(std::size_t i) const{
+    assert(i<=1);
+    return (i==0) ? data_.GlobalLength() : data_.NumVectors();
+  }
+
+  LO_t extentLocal(std::size_t i) const{
+    // each process owns all cols
+    assert(i<=1);
+    return (i==0) ? data_.MyLength() : data_.NumVectors();
   }
 
   wrap_t const * data() const{

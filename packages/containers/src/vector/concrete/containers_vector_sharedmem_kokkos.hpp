@@ -78,7 +78,8 @@ public:
   // We create a new object and deep_copy original.
 
   explicit Vector(const wrapped_type & src)
-    : data_{src.label(), src.extent(0)}{
+    : data_{src.label(), src.extent(0)}
+  {
     Kokkos::deep_copy(data_, src);
   }
 

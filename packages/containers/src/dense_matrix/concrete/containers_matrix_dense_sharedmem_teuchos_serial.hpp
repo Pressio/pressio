@@ -78,9 +78,14 @@ public:
 		  Teuchos::DataAccess cv = Teuchos::Copy)
     : data_(cv, other){}
 
-  // explicit DenseMatrix(const sc_t * datain)
-  //   : data_(datain){}
+  // delete copy assign to force usage of ops::deep_copy 
+  DenseMatrix & operator=(const DenseMatrix & other) = delete;
 
+  // move cnstr and assign
+  DenseMatrix(DenseMatrix && other) = default;
+  DenseMatrix & operator=(DenseMatrix && other)= default;
+
+  // destructor
   ~DenseMatrix() = default;
 
 public:
