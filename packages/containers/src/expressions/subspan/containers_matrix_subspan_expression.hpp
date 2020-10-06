@@ -58,7 +58,6 @@ struct SubspanExpr<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value
     >
   >
-  : public DenseMatrixSharedMemBase< SubspanExpr<matrix_t> >
 {
 
   using this_t = SubspanExpr<matrix_t>;
@@ -157,7 +156,6 @@ struct SubspanExpr<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value
     >
   >
-  : public DenseMatrixSharedMemBase< SubspanExpr<matrix_t> >
 {
 
   using this_t = SubspanExpr<matrix_t>;

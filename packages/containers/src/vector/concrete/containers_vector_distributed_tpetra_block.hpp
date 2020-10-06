@@ -60,7 +60,6 @@ class Vector<
       >::value
     >
   >
-  : public VectorDistributedBase< Vector<wrapped_type> >
 {
 
   using this_t		= Vector<wrapped_type>;

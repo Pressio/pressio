@@ -50,7 +50,7 @@
 #define PRESSIO_CONTAINERS_HPP_
 
 /*************** IMPORTANT **************
-The order below matters because this is how we make sure 
+The order below matters because this is how we make sure
 headers are included in (and classes found) in the proper order.
 ****************************************/
 
@@ -76,23 +76,23 @@ headers are included in (and classes found) in the proper order.
 #include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
 #endif
 
-//------------------
-// BASE classes 
-//------------------
-#include "containers/src/base/containers_vector_sharedmem_base.hpp"
-#include "containers/src/base/containers_vector_distributed_base.hpp"
-#include "containers/src/base/containers_multi_vector_sharedmem_base.hpp"
-#include "containers/src/base/containers_multi_vector_distributed_base.hpp"
-#include "containers/src/base/containers_matrix_sharedmem_base.hpp"
-#include "containers/src/base/containers_matrix_distributed_base.hpp"
-#include "containers/src/base/containers_container_sharedmem_base.hpp"
-#include "containers/src/base/containers_container_distributed_base.hpp"
-#include "containers/src/base/containers_container_base.hpp"
+// //------------------
+// // BASE classes
+// //------------------
+// #include "containers/src/base/containers_vector_sharedmem_base.hpp"
+// #include "containers/src/base/containers_vector_distributed_base.hpp"
+// #include "containers/src/base/containers_multi_vector_sharedmem_base.hpp"
+// #include "containers/src/base/containers_multi_vector_distributed_base.hpp"
+// #include "containers/src/base/containers_matrix_sharedmem_base.hpp"
+// #include "containers/src/base/containers_matrix_distributed_base.hpp"
+// #include "containers/src/base/containers_container_sharedmem_base.hpp"
+// #include "containers/src/base/containers_container_distributed_base.hpp"
+// #include "containers/src/base/containers_container_base.hpp"
 
 //-----------------------------------------
 // predicates for native types detection
 //-----------------------------------------
-// for pybind we don't have a distinction for vec/mat/mv, because pybind arrays 
+// for pybind we don't have a distinction for vec/mat/mv, because pybind arrays
 // can have dimensions. so there is not yet a way to detect if it is a vector at compile time.
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "containers/src/predicates/native_types_detection/containers_native_pybind_array.hpp"

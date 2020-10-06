@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_matrix_dense_arbitrary.hpp
+// ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,74 +46,40 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
-#define CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
+#ifndef OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
+#define OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace ops{ namespace concepts {
 
-template <typename wrapped_type>
-class DenseMatrix<
-  wrapped_type,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value
-    >
-  >
-{
-  using this_t = DenseMatrix<wrapped_type>;
-  using size_t = typename details::traits<this_t>::size_t;
-  using sc_t   = typename details::traits<this_t>::scalar_t;
+template<typename T, typename enable = void>
+struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
 
-public:
+template<typename T>
+struct sharedmem_host_accessible_dense_matrix_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
+#ifdef PRESSIO_ENABLE_TPLS_TRILINOS
+    or ::pressio::containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value
+#endif
+   >
+  > : std::true_type{};
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value, int
-    > = 0
-  >
-  DenseMatrix(){};
 
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t, size_t>::value, int
-    > = 0
-  >
-  DenseMatrix(size_t nR, size_t nC) : data_(nR, nC){};
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template<typename T>
+struct sharedmem_host_accessible_dense_matrix_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
+    and
+    std::is_same<
+      typename ::pressio::containers::details::traits<T>::memory_space,
+      Kokkos::HostSpace
+      >::value
+   >
+  > : std::true_type{};
+#endif
 
-  explicit DenseMatrix(const wrapped_type & vecobj)
-    : data_(vecobj){}
-
-  DenseMatrix(DenseMatrix const & other)
-    : data_(*other.data()){}
-
-  size_t extent(size_t k) const{
-    assert( k==0 or k==1);
-    return data_.extent(k);
-  }
-
-  sc_t & operator()(size_t i, size_t j){
-    return data_(i, j);
-  };
-
-  sc_t const & operator()(size_t i, size_t j) const{
-    return data_(i, j);
-  };
-
-  wrapped_type const * data() const{
-    return &data_;
-  }
-
-  wrapped_type * data(){
-    return &data_;
-  }
-
-private:
-  friend ContainerBase<this_t>;
-  wrapped_type data_ = {};
-
-};//end class
-
-}}//end namespace pressio::containers
-
-#endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
+}}} // namespace pressio::ops::concepts
+#endif  // OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_

@@ -58,7 +58,6 @@ struct SpanExpr<
     ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<vector_t>::value
     >
   >
-  : public VectorSharedMemBase< SpanExpr<vector_t> >
 {
   using this_t = SpanExpr<vector_t>;
   using mytraits = typename details::traits<this_t>;
@@ -146,7 +145,6 @@ struct SpanExpr<
     ::pressio::containers::predicates::is_vector_wrapper_kokkos<vector_t>::value
     >
   >
-  : public VectorSharedMemBase< SpanExpr<vector_t> >
 {
   using this_t = SpanExpr<vector_t>;
   using mytraits = typename details::traits<this_t>;

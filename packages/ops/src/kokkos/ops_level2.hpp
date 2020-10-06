@@ -92,14 +92,15 @@ product(::pressio::nontranspose mode,
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
+  containers::predicates::is_vector_wrapper_kokkos<x_type>::value and 
+  containers::predicates::is_vector_wrapper_kokkos<y_type>::value 
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	::pressio::containers::VectorSharedMemBase<y_type> & y)
+	y_type & y)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
 		"Types are not scalar compatible");

@@ -58,7 +58,6 @@ class DenseMatrix<
     containers::predicates::is_dense_static_matrix_eigen<
       wrapped_type>::value>
   >
-  : public DenseMatrixSharedMemBase< DenseMatrix<wrapped_type> >
 {
 
   using derived_t = DenseMatrix<wrapped_type>;

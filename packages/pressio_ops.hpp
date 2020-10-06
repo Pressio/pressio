@@ -55,6 +55,11 @@
 
 #include "ops/src/ops_fwd.hpp"
 
+// will be concepts
+#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_vector_wrapper.hpp"
+#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
+
+
 // predicates
 #include "ops/src/predicates/ops_has_method_deep_copy.hpp"
 #include "ops/src/predicates/ops_has_method_set_zero.hpp"

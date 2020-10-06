@@ -60,7 +60,6 @@ class MultiVector<
       >::value
     >
   >
-  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 
 private:

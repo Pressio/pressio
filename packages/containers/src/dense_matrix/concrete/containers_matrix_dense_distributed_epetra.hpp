@@ -57,7 +57,6 @@ class DenseMatrix<
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value>
   >
-  : public DenseMatrixDistributedBase< DenseMatrix<wrapped_type> >
 {
 
   using this_t = DenseMatrix<wrapped_type>;

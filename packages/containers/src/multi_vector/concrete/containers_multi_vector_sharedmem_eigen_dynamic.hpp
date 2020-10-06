@@ -58,7 +58,6 @@ class MultiVector<
     ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
     >
   >
-  : public MultiVectorSharedMemBase< MultiVector<wrapped_type> >
 {
 
 private:

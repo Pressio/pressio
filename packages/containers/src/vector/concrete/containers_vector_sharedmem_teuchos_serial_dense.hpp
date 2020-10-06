@@ -58,7 +58,6 @@ class Vector<
     containers::predicates::is_dense_vector_teuchos<wrapped_type>::value
     >
   >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
   using this_t = Vector<wrapped_type>;

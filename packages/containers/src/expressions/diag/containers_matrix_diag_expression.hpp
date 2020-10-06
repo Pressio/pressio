@@ -58,7 +58,6 @@ struct DiagExpr<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value
     >
   >
-  : public VectorSharedMemBase< DiagExpr<matrix_t> >
 {
   using this_t = DiagExpr<matrix_t>;
   using mytraits = typename details::traits<this_t>;
@@ -129,6 +128,18 @@ public:
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
+
+  ref_t operator[](size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return nativeExprObj_(i);
+  }
+
+  const_ref_t operator[](size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return nativeExprObj_(i);
+  }
 };
 
 
@@ -140,7 +151,6 @@ struct DiagExpr<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value
     >
   >
-  : public VectorSharedMemBase< DiagExpr<matrix_t> >
 {
   using this_t = DiagExpr<matrix_t>;
   using mytraits = typename details::traits<this_t>;
@@ -207,6 +217,17 @@ public:
   // data_return_t data(){
   //   return &nativeExprObj_;
   // }
+  ref_t operator[](size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
+
+  const_ref_t operator[](size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
 
   ref_t operator()(size_t i)
   {

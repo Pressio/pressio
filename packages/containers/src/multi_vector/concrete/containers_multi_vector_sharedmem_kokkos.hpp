@@ -58,7 +58,6 @@ class MultiVector<
     containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
     >
   >
-  : public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
 {
 
   using this_t = MultiVector<wrapped_type>;

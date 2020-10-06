@@ -58,7 +58,6 @@ class Vector<
     ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
     >
   >
-  : public ContainerBase< Vector<wrapped_type>>
 {
   using this_t = Vector<wrapped_type>;
   using size_t = typename details::traits<this_t>::size_t;
@@ -93,6 +92,13 @@ public:
   size_t extent(size_t k) const{
     return data_.extent(k);
   }
+
+  sc_t & operator[](size_t i){
+    return data_(i);
+  };
+  sc_t const & operator[](size_t i) const{
+    return data_(i);
+  };
 
   sc_t & operator()(size_t i){
     return data_(i);

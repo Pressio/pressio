@@ -57,7 +57,6 @@ class SparseMatrix<wrapped_type,
 	       containers::predicates::is_sparse_matrix_eigen<
 		 wrapped_type >::value>
 	     >
-  : public DenseMatrixSharedMemBase< SparseMatrix<wrapped_type>>
 {
 
   using derived_t = SparseMatrix<wrapped_type>;

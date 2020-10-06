@@ -128,9 +128,11 @@ struct traits<
   public matrix_shared_traits<false>
 {
 
+  using scalar_t  = typename traits<matrix_type>::scalar_t;
+
   using wrapped_t	= typename traits<matrix_type>::wrapped_t;
   using execution_space = typename traits<matrix_type>::execution_space;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
+  using memory_space = typename traits<matrix_type>::memory_space;
   using ordinal_t = typename traits<matrix_type>::ordinal_t;
   using size_t    = ordinal_t;
   using pair_t = std::pair<size_t, size_t>;

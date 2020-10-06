@@ -58,7 +58,6 @@ class DenseMatrix<
     containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
-  : public DenseMatrixSharedMemBase< DenseMatrix<wrapped_type> >
 {
 
   using this_t	    = DenseMatrix<wrapped_type>;

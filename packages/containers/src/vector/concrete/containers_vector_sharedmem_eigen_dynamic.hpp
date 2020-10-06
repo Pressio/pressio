@@ -62,9 +62,8 @@ class Vector<
     containers::predicates::is_dynamic_vector_eigen<wrapped_type>::value
     >
   >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  , public ROL::Vector< typename wrapped_type::Scalar>
+  : public ROL::Vector< typename wrapped_type::Scalar>
 #endif
 {
 

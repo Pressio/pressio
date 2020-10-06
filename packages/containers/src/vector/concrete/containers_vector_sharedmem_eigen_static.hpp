@@ -58,7 +58,6 @@ class Vector<
     containers::predicates::is_static_vector_eigen<wrapped_type>::value
     >
   >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
   using this_t = Vector<wrapped_type>;

@@ -121,9 +121,9 @@ struct traits<
 
   using wrapped_t	= typename traits<matrix_type>::wrapped_t;
   using execution_space = typename traits<matrix_type>::execution_space;
+  using memory_space = typename traits<matrix_type>::memory_space;
   using device_t	= typename traits<matrix_type>::device_t;
   using device_type	= typename traits<matrix_type>::device_t;
-  using memory_space	= typename traits<matrix_type>::memory_space;
   using scalar_t	= typename traits<matrix_type>::scalar_t;
   using ordinal_t	= typename traits<matrix_type>::ordinal_t;
   using size_t		= ordinal_t;

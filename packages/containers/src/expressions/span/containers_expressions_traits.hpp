@@ -126,11 +126,12 @@ struct traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
+  using scalar_t  = typename traits<v_type>::scalar_t;
   using wrapped_t	= typename traits<v_type>::wrapped_t;
   using execution_space = typename traits<v_type>::execution_space;
+  using memory_space = typename traits<v_type>::memory_space;
   using device_t	= typename traits<v_type>::device_t;
   using device_type	= typename traits<v_type>::device_t;
-  using scalar_t	= typename traits<v_type>::scalar_t;
   using ordinal_t	= typename traits<v_type>::ordinal_t;
   using size_t		= ordinal_t;
   using pair_t		= std::pair<size_t, size_t>;

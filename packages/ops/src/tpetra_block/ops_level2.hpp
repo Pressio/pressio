@@ -111,12 +111,13 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<x_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const ::pressio::containers::VectorSharedMemBase<x_type> & x,
+	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
@@ -147,14 +148,15 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<x_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value
+  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	::pressio::containers::VectorSharedMemBase<y_type> & y)
+	y_type & y)
 {
   /* workaround the non-constness of getVectorView*/
   using wrapped_t = typename containers::details::traits<x_type>::wrapped_t;

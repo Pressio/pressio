@@ -58,7 +58,6 @@ class DenseMatrix<
     containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value
     >
   >
-  : public DenseMatrixSharedMemBase< DenseMatrix<wrapped_type> >
 {
 
   using this_t = DenseMatrix<wrapped_type>;
