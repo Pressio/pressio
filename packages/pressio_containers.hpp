@@ -54,7 +54,6 @@ The order below matters because this is how we make sure
 headers are included in (and classes found) in the proper order.
 ****************************************/
 
-
 // dependencies
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
@@ -75,19 +74,6 @@ headers are included in (and classes found) in the proper order.
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
 #endif
-
-// //------------------
-// // BASE classes
-// //------------------
-// #include "containers/src/base/containers_vector_sharedmem_base.hpp"
-// #include "containers/src/base/containers_vector_distributed_base.hpp"
-// #include "containers/src/base/containers_multi_vector_sharedmem_base.hpp"
-// #include "containers/src/base/containers_multi_vector_distributed_base.hpp"
-// #include "containers/src/base/containers_matrix_sharedmem_base.hpp"
-// #include "containers/src/base/containers_matrix_distributed_base.hpp"
-// #include "containers/src/base/containers_container_sharedmem_base.hpp"
-// #include "containers/src/base/containers_container_distributed_base.hpp"
-// #include "containers/src/base/containers_container_base.hpp"
 
 //-----------------------------------------
 // predicates for native types detection
