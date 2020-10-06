@@ -70,7 +70,7 @@ public:
   static constexpr types::stepper_order_t order_value = 1;
 
 private:
-  using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
+  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
   using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
 
   system_wrapper_t systemObj_;

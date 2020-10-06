@@ -68,10 +68,17 @@ struct OdeSystemWrapper<
 #endif
   >
 {
+  OdeSystemWrapper() = delete;
+
   OdeSystemWrapper(const system_type & system)
     : data_(system){}
 
-  OdeSystemWrapper() = delete;
+  OdeSystemWrapper(const OdeSystemWrapper &) = default;
+  OdeSystemWrapper & operator=(const OdeSystemWrapper &) = default;
+
+  OdeSystemWrapper(OdeSystemWrapper &&) = default;
+  OdeSystemWrapper & operator=(OdeSystemWrapper &&) = default;
+
   ~OdeSystemWrapper() = default;
 
   const system_type & get() const{
@@ -79,7 +86,7 @@ struct OdeSystemWrapper<
   }
 
 private:
-  const system_type & data_;
+  std::reference_wrapper<const system_type> data_;
 };
 
 
@@ -95,9 +102,16 @@ struct OdeSystemWrapper<
     >
   >
 {
+  OdeSystemWrapper() = delete;
+
   OdeSystemWrapper(const system_type & system) : data_(system){}
 
-  OdeSystemWrapper() = delete;
+  OdeSystemWrapper(const OdeSystemWrapper &) = default;
+  OdeSystemWrapper & operator=(const OdeSystemWrapper &) = default;
+
+  OdeSystemWrapper(OdeSystemWrapper &&) = default;
+  OdeSystemWrapper & operator=(OdeSystemWrapper &&) = default;
+
   ~OdeSystemWrapper() = default;
 
   const system_type & get() const{

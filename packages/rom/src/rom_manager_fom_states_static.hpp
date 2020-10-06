@@ -62,7 +62,7 @@ class ManagerFomStatesStatic
 Something is not right, because this object would then be unusable.");
 
 public:
-  using data_type  = ::pressio::containers::StaticCollection<fom_state_type, n>;
+  using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type, n>;
   using value_type = fom_state_type;
 
   ManagerFomStatesStatic() = delete;

@@ -60,7 +60,6 @@
 #include "ode/src/ode_types.hpp"
 #include "ode/src/ode_stencil_tags.hpp"
 #include "ode/src/ode_aux_states_manager.hpp"
-#include "ode/src/ode_velocities_container.hpp"
 #include "ode/src/ode_system_wrapper.hpp"
 
 #include "ode/src/predicates/typedefs/ode_has_state_typedef.hpp"

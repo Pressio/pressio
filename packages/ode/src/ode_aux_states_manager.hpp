@@ -54,16 +54,43 @@ namespace pressio{ namespace ode{
 template<typename T, std::size_t n>
 class AuxStatesManager;
 
-// partially specialize for implicit scheme
 template<typename T, std::size_t n>
 class AuxStatesManager
 {
-public:
-  using data_type = ::pressio::containers::StaticCollection<T, n>;
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<T>::value,
+   "AuxStatesManager only supports pressio containers.");
 
-  template <typename ... Args>
+  static_assert
+  (!::pressio::containers::predicates::is_expression<T>::value,
+   "AuxStatesManager does NOT support pressio expressions.");
+
+public:
+  using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
+
+  template <
+    typename _T = T,
+    mpl::enable_if_t<
+      std::is_default_constructible<_T>::value, int
+      > = 0
+  >
+  AuxStatesManager(){};
+
+  template <
+    typename ... Args,
+    mpl::enable_if_t<sizeof...(Args) >= 1, int > = 0
+    >
   AuxStatesManager(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
+
+  // copy cnstr
+  AuxStatesManager(AuxStatesManager const & other) = default;
+  // copy assignment
+  AuxStatesManager & operator=(AuxStatesManager const & other) = default;
+  // move cnstr
+  AuxStatesManager(AuxStatesManager && other) = default;
+  // move assignment
+  AuxStatesManager & operator=(AuxStatesManager && other) = default;
 
   ~AuxStatesManager() = default;
 
