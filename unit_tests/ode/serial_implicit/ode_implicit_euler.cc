@@ -4,7 +4,8 @@
 #include "../reference_apps_for_testing.hpp"
 
 
-TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
+TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated)
+{
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -46,7 +47,8 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated){
 }
 
 
-TEST(ode_implicit_euler, guesserLambda){
+TEST(ode_implicit_euler, guesserLambda)
+{
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -94,7 +96,8 @@ TEST(ode_implicit_euler, guesserLambda){
 }
 
 
-TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
+TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser)
+{
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -111,8 +114,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser){
   //**********************
   // define policies and stepper
   //**********************
-  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
-  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
+  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, res_t>;
+  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;

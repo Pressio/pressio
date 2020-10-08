@@ -3,13 +3,14 @@
 #include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-template<typename state_type, typename system_type, typename residual_type>
+template<typename state_type, typename residual_type>
 class ResidualPolicy{
 
 public:
+  template<typename system_type>
   residual_type create(const system_type & model) const{ return residual_type(); }
 
-  template <typename odetag, typename prev_states_type>
+  template <typename odetag, typename system_type, typename prev_states_type>
   void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
@@ -21,11 +22,11 @@ public:
 };//end class
 
 
-template<typename state_type, typename system_type, typename jacobian_type>
+template<typename state_type, typename jacobian_type>
 class JacobianPolicy{
 
 public:
-  template <typename odetag, typename prev_states_type>
+  template <typename odetag, typename system_type, typename prev_states_type>
   void compute(const state_type & y,
 		  const prev_states_type & oldYs,
 		  const system_type & model,
@@ -35,13 +36,15 @@ public:
 		  jacobian_type & J) const
   {}
 
+  template<typename system_type>
   jacobian_type create(const system_type & model) const{
     return jacobian_type();
   }
 };//end class
 
 
-TEST(ode_implicit, validArbitraryStepperPolicies){
+TEST(ode_implicit, validArbitraryStepperPolicies)
+{
   using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
@@ -52,11 +55,11 @@ TEST(ode_implicit, validArbitraryStepperPolicies){
   using res_t = containers::Vector<nvel_t>;
   using jac_t = containers::SparseMatrix<njac_t>;
 
-  using residual_policy_t = ResidualPolicy<state_t, app_t, res_t>;
+  using residual_policy_t = ResidualPolicy<state_t, res_t>;
   static_assert(ode::concepts::implicit_euler_residual_policy<
      residual_policy_t, state_t, res_t, app_t, double>::value, "");
 
-  using jacobian_policy_t = JacobianPolicy<state_t, app_t, jac_t>;
+  using jacobian_policy_t = JacobianPolicy<state_t, jac_t>;
   static_assert(ode::concepts::implicit_euler_jacobian_policy<
      jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
 }

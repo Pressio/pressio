@@ -3,9 +3,8 @@
 #include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-
-
-TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
+TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated)
+{
   using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
@@ -54,7 +53,8 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 }
 
 
-TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
+TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser)
+{
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -70,9 +70,9 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
   // define auxiliary policies and stepper
   using res_pol_t
-    = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
+    = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, res_t>;
   using jac_pol_t
-    = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
+    = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, jac_t>;
 
   using aux_stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler,

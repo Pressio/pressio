@@ -82,17 +82,17 @@ public:
   using aux_states_t = ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
 
   using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
+    state_type, residual_type>;
   using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
+    state_type, jacobian_type>;
 
 public:
   StepperBDF2() = delete;
+  StepperBDF2(const StepperBDF2 & other)  = default;
+  StepperBDF2 & operator=(const StepperBDF2 & other)  = default;
+  StepperBDF2(StepperBDF2 && other)  = default;
+  StepperBDF2 & operator=(StepperBDF2 && other)  = default;
   ~StepperBDF2() = default;
-  StepperBDF2(const StepperBDF2 & other)  = delete;
-  StepperBDF2 & operator=(const StepperBDF2 & other)  = delete;
-  StepperBDF2(StepperBDF2 && other)  = delete;
-  StepperBDF2 & operator=(StepperBDF2 && other)  = delete;
 
   StepperBDF2(const state_type & state,
 	      const system_type & systemObj,
@@ -212,24 +212,28 @@ public:
 
   residual_t createResidual() const
   {
-    return this->residual_obj_.create(sys_.get());
+    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
+    return resPol.create(sys_.get());
   }
 
   jacobian_t createJacobian() const
   {
-    return this->jacobian_obj_.create(sys_.get());
+    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
+    return jacPol.create(sys_.get());
   }
 
   void residual(const state_t & odeState, residual_t & R) const
   {
-    this->residual_obj_.template compute<tag_name>(
+    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
+    resPol.template compute<tag_name>(
       odeState,  this->auxStates_, this->sys_.get(),
       this->t_, this->dt_, this->step_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    this->jacobian_obj_.template compute<
+    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
+    jacPol.template compute<
       tag_name>(odeState, this->auxStates_, this->sys_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
@@ -252,7 +256,7 @@ private:
   typename std::conditional<
     mpl::is_same<standard_res_policy_t, residual_policy_t>::value,
     const residual_policy_t,
-    const residual_policy_t &
+    std::reference_wrapper<const residual_policy_t>
     >::type residual_obj_;
 
   // conditionally set the type of the object knowing how to compute jacobian
@@ -261,7 +265,7 @@ private:
   typename std::conditional<
     mpl::is_same<standard_jac_policy_t, jacobian_policy_t>::value,
     const jacobian_policy_t,
-    const jacobian_policy_t &
+    std::reference_wrapper<const jacobian_policy_t>
     >::type jacobian_obj_;
 };//end class
 

@@ -51,89 +51,84 @@
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
-template<typename state_type, typename system_type,typename jacobian_type,typename = void>
+template<typename state_type, typename jacobian_type,typename = void>
 class JacobianStandardPolicy;
 
-// ---------------------------------------------------------------
-// partially specialize for when continuous_time_implicit_system
-// ---------------------------------------------------------------
-template<
-  typename state_type,
-  typename system_type,
-  typename jacobian_type
-  >
+template<typename state_type, typename jacobian_type>
 class JacobianStandardPolicy<
-  state_type, system_type, jacobian_type,
+  state_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
     containers::predicates::is_wrapper<state_type>::value and
-    containers::predicates::is_wrapper<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
+    containers::predicates::is_wrapper<jacobian_type>::value
     >
   >
 {
 public:
   JacobianStandardPolicy() = default;
+  JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
+  JacobianStandardPolicy & operator=(const JacobianStandardPolicy &) = default;
+  JacobianStandardPolicy(JacobianStandardPolicy &&) = default;
+  JacobianStandardPolicy & operator=(JacobianStandardPolicy &&) = default;
   ~JacobianStandardPolicy() = default;
 
 public:
-  jacobian_type create(const system_type & system) const
+
+  template <typename system_type>
+  mpl::enable_if_t<
+  ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value,
+  jacobian_type
+  >
+  create(const system_type & system) const
   {
     jacobian_type JJ(system.createJacobian());
     return JJ;
   }
 
-  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
-  void compute(const state_type & odeCurrentState,
-      const prev_states_mgr_type & prevStatesMgr,
-      const system_type & system,
-      const scalar_type & t,
-      const scalar_type & dt,
-      const types::step_t &  step,
-      jacobian_type & J) const
-  {
-    system.jacobian( *odeCurrentState.data(), t, *J.data());
-    ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
-  }
-};//end class
-
-
-// ---------------------------------------------------------------
-// partially specialize for when discrete_time_system_implicit_stepping
-// ---------------------------------------------------------------
-template<
-  typename state_type,
-  typename system_type,
-  typename jacobian_type
-  >
-class JacobianStandardPolicy<
-  state_type, system_type, jacobian_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    containers::predicates::is_wrapper<state_type>::value and
-    containers::predicates::is_wrapper<jacobian_type>::value and
-    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
+  template <typename system_type>
+  mpl::enable_if_t<
+    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value,
+    jacobian_type
     >
-  >
-{
-public:
-  JacobianStandardPolicy() = default;
-  ~JacobianStandardPolicy() = default;
-
-public:
-  jacobian_type create(const system_type & system) const
+  create(const system_type & system) const
   {
     jacobian_type JJ(system.createDiscreteTimeJacobian());
     return JJ;
   }
 
+
+  template <
+    typename ode_tag, typename prev_states_mgr_type,
+    typename system_type, typename scalar_type
+    >
+  mpl::enable_if_t<
+    ::pressio::ode::concepts::continuous_time_implicit_system<system_type>::value
+    >
+  compute(const state_type & odeCurrentState,
+	  const prev_states_mgr_type & prevStatesMgr,
+	  const system_type & system,
+	  const scalar_type & t,
+	  const scalar_type & dt,
+	  const types::step_t &  step,
+	  jacobian_type & J) const
+  {
+    system.jacobian( *odeCurrentState.data(), t, *J.data());
+    ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
+  }
+
+
   //-------------------------------
   // specialize for n == 1
   //-------------------------------
-  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
-  mpl::enable_if_t< prev_states_mgr_type::size()==1 >
+  template <
+    typename ode_tag, typename prev_states_mgr_type,
+    typename system_type, typename scalar_type
+    >
+  mpl::enable_if_t<
+    prev_states_mgr_type::size()==1 and
+    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
+    >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
 	  const system_type & system,
@@ -153,8 +148,14 @@ public:
   //-------------------------------
   // specialize for n == 2
   //-------------------------------
-  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
-  mpl::enable_if_t< prev_states_mgr_type::size()==2 >
+  template <
+    typename ode_tag, typename prev_states_mgr_type,
+    typename system_type, typename scalar_type
+    >
+  mpl::enable_if_t<
+    prev_states_mgr_type::size()==2 and
+    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
+    >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
 	  const system_type & system,
@@ -176,8 +177,14 @@ public:
   //-------------------------------
   // specialize for n == 3
   //-------------------------------
-  template <typename ode_tag, typename prev_states_mgr_type, typename scalar_type>
-  mpl::enable_if_t< prev_states_mgr_type::size()==3 >
+  template <
+    typename ode_tag, typename prev_states_mgr_type,
+    typename system_type, typename scalar_type
+    >
+  mpl::enable_if_t<
+    prev_states_mgr_type::size()==3 and
+    ::pressio::ode::concepts::discrete_time_system_implicit_stepping<system_type>::value
+    >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
 	  const system_type & system,
@@ -197,7 +204,7 @@ public:
 					 (*ynm2.data()),
 					 (*ynm3.data()) );
   }
-};//end class
+};
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
 #endif  // ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_

@@ -93,9 +93,9 @@ struct compose<
     "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
+    state_type, residual_type>;
   using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
+    state_type, jacobian_type>;
   using type = StepperBDF1<scalar_t, state_type, residual_type, jacobian_type,
         system_type, residual_policy_t, jacobian_policy_t>;
 };
@@ -201,9 +201,9 @@ struct compose<
     "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
+    state_type, residual_type>;
   using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
+    state_type, jacobian_type>;
   using type = StepperBDF2<scalar_t, state_type, residual_type, jacobian_type,
         system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
 };
@@ -276,9 +276,9 @@ struct compose<
     "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
+    state_type, residual_type>;
   using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
+    state_type, jacobian_type>;
 
   using type = StepperArbitrary<scalar_t, state_type, residual_type, jacobian_type,
         system_type, order_setter_t, tot_n_setter_t, residual_policy_t, jacobian_policy_t>;
