@@ -128,9 +128,6 @@ struct CommonTraitsContinuousTimeApi
   using galerkin_state_t	= rom_state_type;
   using galerkin_native_state_t	= typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
-  // the Galerkin rhs type is (for now) same as state type
-  using galerkin_residual_t	= galerkin_state_t;
-
   // // verify the sequence contains a valid decoder type
   // using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
   //   galerkin_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;

@@ -83,7 +83,6 @@ struct traits<
   using fom_velocity_t		= typename common_types_t::fom_velocity_t;
   using galerkin_state_t	= typename common_types_t::galerkin_state_t;
   using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;
-  using galerkin_residual_t	= typename common_types_t::galerkin_residual_t;
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
@@ -91,13 +90,13 @@ struct traits<
   using ud_ops_t		= typename common_types_t::ud_ops_t;
 
   // policy for evaluating the ode velocity
-  using residual_policy_t =
+  using velocity_policy_t =
     ::pressio::rom::galerkin::impl::ExplicitVelocityPolicy<rom_state_type,
     fom_states_manager_t, fom_velocity_t, decoder_t, ud_ops_t>;
 
   // declare type of stepper object
   using stepper_t = ::pressio::ode::ExplicitStepper<
-    stepper_tag, rom_state_type, fom_system_t, galerkin_residual_t, residual_policy_t>;
+    stepper_tag, rom_state_type, fom_system_t, velocity_policy_t>;
 
 };//end class
 

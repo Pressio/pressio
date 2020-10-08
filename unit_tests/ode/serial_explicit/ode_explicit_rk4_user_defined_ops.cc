@@ -69,20 +69,21 @@ TEST(ode_explicit_rk4, userDefinedOps){
   using namespace pressio;
   using app_t	    = MyApp;
   using nstate_t    = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
+  // using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
+  // using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
 
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
   MyOps opsObj;
-  using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
-  stepper_t stepperObj(y, appObj, opsObj);
+  // using stepper_t = ode::ExplicitStepper<
+  //   ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
+  // stepper_t stepperObj(y, appObj, opsObj);
+  auto stepperObj = ode::createRungeKutta4Stepper(y, appObj, opsObj);
 
   // integrate in time
   double dt = 0.1;

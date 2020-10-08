@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_composer_impl.hpp
+// ode_implicit_stepper_compose_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_
-#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_
+#ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+#define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 
 #include "ode_implicit_stepper_euler_impl.hpp"
 #include "ode_implicit_stepper_bdf2_impl.hpp"
@@ -56,16 +56,16 @@
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
 
 template<typename tag, typename ...Args>
-struct Composer;
+struct compose;
 
 ////////////////////////////////////////
 /// BDF1 stepper
 ////////////////////////////////////////
 
 // potential cases
-// 1. Composer<bdf1, state_t, res_t, jac_t, system_t>;
-// 2. Composer<bdf1, state_t, res_t, jac_t, system_t, res_pol, jac_pol>;
-// 3. Composer<bdf1, state_t, res_t, jac_t, system_t, void res_pol, jac_pol>;
+// 1. compose<bdf1, state_t, res_t, jac_t, system_t>;
+// 2. compose<bdf1, state_t, res_t, jac_t, system_t, res_pol, jac_pol>;
+// 3. compose<bdf1, state_t, res_t, jac_t, system_t, void, res_pol, jac_pol>;
 
 // 1.
 // when we have standard policies, the system must be checked for API
@@ -77,7 +77,7 @@ template<
   typename jacobian_type,
   typename system_type
   >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -113,7 +113,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
   >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -149,7 +149,7 @@ template<
   typename system_type,
   typename residual_policy_type,
   typename jacobian_policy_type>
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -175,8 +175,8 @@ struct Composer<
 
 
 
-// Composer<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t>;
-// Composer<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t, res_pol, jac_pol>;
+// compose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t>;
+// compose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t, res_pol, jac_pol>;
 template<
   typename state_type,
   typename residual_type,
@@ -184,7 +184,7 @@ template<
   typename system_type,
   typename aux_stepper_t
   >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -217,7 +217,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
   >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -246,10 +246,10 @@ struct Composer<
 
 
 ////////////////////////////////////////
-/// composer Arbitrary stepper
+/// compose Arbitrary stepper
 ////////////////////////////////////////
 
-// Composer< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
+// compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
 template<
   typename state_type,
   typename residual_type,
@@ -258,7 +258,7 @@ template<
   typename order_setter_t,
   typename tot_n_setter_t
   >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
@@ -284,7 +284,7 @@ struct Composer<
         system_type, order_setter_t, tot_n_setter_t, residual_policy_t, jacobian_policy_t>;
 };
 
-// Composer< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
+// compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
 template<
   typename state_type,
   typename residual_type,
@@ -295,7 +295,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type  
 >
-struct Composer<
+struct compose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and

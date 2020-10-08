@@ -23,7 +23,6 @@ int main(int argc, char *argv[]){
   using app_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename app_t::scalar_type;
   using app_state_t	= typename app_t::state_type;
-  using app_velocity_t	= typename app_t::velocity_type;
 
   MPI_Init(&argc,&argv);
   int rank; // My process ID
@@ -34,17 +33,17 @@ int main(int argc, char *argv[]){
   //-------------------------------
   std::vector<double> mu({5.0, 0.02, 0.02});
   const int Ncells = 20;
-  app_t appobj(mu, Ncells, &Comm);
-  auto & y0n = appobj.getInitialState();
+  app_t appObj(mu, Ncells, &Comm);
+  auto & y0n = appObj.getInitialState();
 
   using ode_state_t = pressio::containers::Vector<app_state_t>;
-  using ode_res_t   = pressio::containers::Vector<app_velocity_t>;
   ode_state_t y(y0n);
 
-  using ode_tag = pressio::ode::explicitmethods::Euler;
-  using stepper_t = pressio::ode::ExplicitStepper<
-    ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
-  stepper_t stepperObj(y, appobj);
+  // using ode_tag = pressio::ode::explicitmethods::Euler;
+  // using stepper_t = pressio::ode::ExplicitStepper<
+  //   ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
+  // stepper_t stepperObj(y, appObj);
+  auto stepperObj = pressio::ode::createForwardEulerStepper(y, appObj);
 
   // integrate in time
   scalar_t fint = 35;

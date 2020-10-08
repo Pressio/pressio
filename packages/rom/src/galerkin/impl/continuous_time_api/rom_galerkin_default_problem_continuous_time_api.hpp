@@ -72,7 +72,7 @@ public:
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using ud_ops_t		= typename traits::ud_ops_t;
 
-  using residual_policy_t	= typename traits::residual_policy_t;
+  using velocity_policy_t	= typename traits::velocity_policy_t;
   using stepper_t		= typename traits::stepper_t;
 
 private:
@@ -80,7 +80,7 @@ private:
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		fomVelocityRef_;
   fom_states_manager_t		fomStatesMngr_;
-  residual_policy_t		residualPolicy_;
+  velocity_policy_t		velocityPolicy_;
   stepper_t			stepperObj_;
 
 public:
@@ -121,8 +121,8 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
+      velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
+      stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
@@ -151,8 +151,8 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_)
+      velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
+      stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
@@ -179,8 +179,8 @@ public:
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( fomSystemObj.attr("velocity")(*fomStateReference_.data(), t0) ),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, residualPolicy_)
+      velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
+      stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState

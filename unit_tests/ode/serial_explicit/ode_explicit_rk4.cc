@@ -18,17 +18,18 @@ TEST(ode_explicit_rk4,
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
+  // using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t>;
-  stepper_t stepperObj(y, appObj);
+  // using stepper_t = ode::ExplicitStepper<
+  //   ode::explicitmethods::RungeKutta4, state_t, app_t>;
+  // stepper_t stepperObj(y, appObj);
+  auto stepperObj = ode::createRungeKutta4Stepper(y, appObj);
+
 
   // // integrate in time
   double dt = 0.1;
@@ -49,23 +50,24 @@ TEST(ode_explicit_rk4,
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
+  // using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
+  // using res_t = containers::Vector<nveloc_t>;
 
   state_t y(3);
   y[0] = 1.; y[1] = 2.; y[2] = 3.;
 
-  // the standard policy
-  using res_std_pol_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<
-    state_t, app_t, res_t>;
+  // // the standard policy
+  using res_std_pol_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
-  using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t,
-    app_t, res_t, res_std_pol_t>;
-  stepper_t stepperObj(y, appObj, polObj);
+  // using stepper_t = ode::ExplicitStepper<
+  //   ode::explicitmethods::RungeKutta4, state_t,
+  //   app_t, res_t, res_std_pol_t>;
+  // stepper_t stepperObj(y, appObj, polObj);
+  auto stepperObj = ode::createRungeKutta4Stepper(y, appObj, polObj);
+
 
   // integrate in time
   double dt = 0.1;
