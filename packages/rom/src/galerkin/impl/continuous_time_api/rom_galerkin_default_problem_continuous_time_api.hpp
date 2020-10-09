@@ -113,10 +113,10 @@ public:
 #endif
       , int> = 0
     >
-  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-			   const fom_native_state_t & fomNativeReferenceState,
-			   const decoder_t	    & decoder,
-			   galerkin_state_t	    & romStateIn)
+  DefaultProblemContinuousTimeApi(const fom_system_t	   & fomSystemObj,
+				  const decoder_t	   & decoder,
+				  const galerkin_state_t   & romStateIn,
+				  const fom_native_state_t & fomNativeReferenceState)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_(fomSystemObj.createVelocity()),
@@ -143,10 +143,10 @@ public:
       , int> = 0
     >
   DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-			   const fom_native_state_t & fomNativeReferenceState,
-			   const decoder_t	    & decoder,
-			   galerkin_state_t	    & romStateIn,
-			   const _ud_ops_t	    & udOps)
+				  const decoder_t	    & decoder,
+				  const galerkin_state_t    & romStateIn,
+				  const fom_native_state_t  & fomNativeReferenceState,
+				  const _ud_ops_t	    & udOps)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomVelocityRef_(fomSystemObj.createVelocity()),
@@ -171,10 +171,10 @@ public:
       int > = 0
     >
   DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-			   const fom_native_state_t & fomNativeReferenceState,
-			   const decoder_t	    & decoder,
-			   const galerkin_native_state_t & romStateIn,
-			   scalar_t		    t0)
+				  const fom_native_state_t & fomNativeReferenceState,
+				  const decoder_t	    & decoder,
+				  const galerkin_native_state_t & romStateIn,
+				  scalar_t		    t0)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomVelocityRef_( fomSystemObj.attr("velocity")(*fomStateReference_.data(), t0) ),

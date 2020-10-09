@@ -61,7 +61,7 @@ public:
 
   using fom_system_t		= typename traits::fom_system_t;
   using scalar_t	= typename traits::scalar_t;
-  using fom_nat_state_t = typename traits::fom_native_state_t;
+  using fom_native_state_t = typename traits::fom_native_state_t;
   using fom_state_t	= typename traits::fom_state_t;
 
   using decoder_t	= typename traits::decoder_t;
@@ -92,23 +92,23 @@ public:
     return fomStateReconstructor_;
   }
 
-  const fom_nat_state_t & currentFomState() const{
+  const fom_native_state_t & currentFomState() const{
     return *fomStatesMngr_.getCRefToCurrentFomState().data();
   }
 
 public:
   DefaultProblemDiscreteTimeApi() = delete;
 
-  DefaultProblemDiscreteTimeApi(const fom_system_t & appObj,
-			 const fom_nat_state_t & fomStateReferenceNative,
-			 decoder_t	 & decoder,
-			 rom_state_t & romStateIn)
-    : fomStateReference_(fomStateReferenceNative),
+  DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+				const decoder_t & decoder,
+				const rom_state_t & romStateIn,
+				const fom_native_state_t & fomNativeReferenceState)
+    : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-      residualPolicy_(fomStatesMngr_, decoder, appObj),
-      jacobianPolicy_(fomStatesMngr_, decoder, appObj),
-      stepperObj_(romStateIn, appObj, residualPolicy_, jacobianPolicy_)
+      residualPolicy_(fomStatesMngr_, decoder, fomSystemObj),
+      jacobianPolicy_(fomStatesMngr_, decoder, fomSystemObj),
+      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState

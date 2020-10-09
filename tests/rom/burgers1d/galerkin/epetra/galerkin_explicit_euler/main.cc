@@ -62,9 +62,11 @@ const std::vector<double> bdf1Sol
   pressio::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
-  using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, decoder_t>::type;
-  problem_t galerkinProb(appobj, y0n, decoderObj, yROM);
+  // using problem_t =
+  // pressio::rom::galerkin::composeDefaultProblem<ode_tag, fom_t, decoder_t, rom_state_t>::type;
+  // problem_t galerkinProb(appobj, decoderObj, yROM, y0n);
+  auto galerkinProb =
+    pressio::rom::galerkin::createDefaultProblem<ode_tag>(appobj, decoderObj, yROM, y0n);
 
   scalar_t fint = 35;
   auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);

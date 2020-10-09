@@ -203,14 +203,15 @@ int main(int argc, char *argv[])
   pressio::ops::fill(romState, 1.0);
 
   using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   using rom_jacobian_t = pressio::containers::DenseMatrix<Eigen::MatrixXd>;
-
-  using problem_t = pressio::rom::galerkin::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, rom_jacobian_t,
-    decoder_t, stepper_order, stepper_n_states>::type;
-  problem_t Problem(appObj, refState, decoderObj, romState);
+  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
+  //   ode_tag, fom_t, rom_state_t, rom_jacobian_t,
+  //   decoder_t, stepper_order, stepper_n_states>::type;
+  // problem_t Problem(appObj, decoderObj, romState, refState);
+  auto Problem = 
+    pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
   Observer Obs(checkStr, Problem.currentFomState());
 

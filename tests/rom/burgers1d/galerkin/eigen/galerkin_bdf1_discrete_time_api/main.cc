@@ -53,14 +53,15 @@ struct GalerkinBDF1WithResidualApi
     ::pressio::ops::resize(yROM_, romSize);
     ::pressio::ops::fill(yROM_, 0.0);
 
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
-    using problem_t = pressio::rom::galerkin::composeDefaultProblem<
-      ode_tag, fom_t, rom_state_t, rom_jacobian_t,
-      decoder_t, stepper_order, stepper_n_states>::type;
-    problem_t Problem(appobj, yRef, decoderObj, yROM_);
+    //using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, rom_state_t, rom_jacobian_t,
+    // stepper_order, stepper_n_states>::type;
+    // problem_t Problem(appobj, decoderObj, yROM_, yRef);
+    auto Problem =
+      pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>(appobj, decoderObj, yROM_, yRef);
 
     auto & stepperObj = Problem.getStepperRef();
 
@@ -115,7 +116,7 @@ int main(int argc, char *argv[]){
 1.01905007725692e+00,
 1.02105354928633e+00};
 
-  if ((std::size_t)residFomSol.size() != gold.size()) 
+  if ((std::size_t)residFomSol.size() != gold.size())
     checkStr = "FAILED";
 
   // check the reconstructed fom state

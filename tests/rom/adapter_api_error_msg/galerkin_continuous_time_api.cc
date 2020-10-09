@@ -38,11 +38,11 @@ int main(int argc, char *argv[])
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   using ode_name_t = pressio::ode::explicitmethods::Euler;
-  using lspg_problem = pressio::rom::galerkin::composeDefaultProblem<
-    ode_name_t, app_t, lspg_state_t, decoder_t>::type;
+  using problem_t = pressio::rom::galerkin::composeDefaultProblem_t<
+    ode_name_t, app_t, decoder_t, lspg_state_t>;
 
   // we should never get here because this test fails
-  static_assert(std::is_void<lspg_problem>::value, "");
+  static_assert(std::is_void<problem_t>::value, "");
 
   return 0;
 }

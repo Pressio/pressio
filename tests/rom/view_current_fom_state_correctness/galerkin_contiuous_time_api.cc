@@ -152,9 +152,11 @@ int main(int argc, char *argv[])
   pressio::ops::fill(romState, 1.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
-  using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, decoder_t>::type;
-  problem_t galerkinProb(appObj, refState, decoderObj, romState);
+  // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
+  //   ode_tag, fom_t, decoder_t, rom_state_t>::type;
+  // problem_t galerkinProb(appObj, decoderObj, romState, refState);
+  auto galerkinProb = 
+    pressio::rom::galerkin::createDefaultProblem<ode_tag>(appObj, decoderObj, romState, refState);
 
   Observer Obs(checkStr, galerkinProb.currentFomState());
 

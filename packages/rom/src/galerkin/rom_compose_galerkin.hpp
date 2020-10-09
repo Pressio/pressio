@@ -54,7 +54,84 @@
 namespace pressio{ namespace rom{ namespace galerkin{
 
 template<typename ...Args>
-using composeDefaultProblem = impl::compose<impl::Default, void, Args...>;
+using composeDefaultProblem = impl::compose<
+  impl::Default, void,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-}}}
+template<typename ...Args>
+using composeDefaultProblem_t = typename composeDefaultProblem<Args...>::type;
+
+template<
+  typename tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state,
+  typename ...Args
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value,
+  galerkin::composeDefaultProblem_t<
+    tag, fom_system_type, decoder_type, rom_state_type, Args...
+    >
+  >
+createDefaultProblem(const fom_system_type & fomSysObj,
+		     const decoder_type & decoder,
+		     const rom_state_type & stateIn,
+		     const fom_native_state & fomRef,
+		     Args && ... args)
+{
+  using return_t = galerkin::composeDefaultProblem_t<
+    tag, fom_system_type, decoder_type, rom_state_type, Args...>;
+
+  static_assert
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The fom reference state type deduced for the create function is not \
+compatible with the fom state type detected from adapter class");
+
+  return return_t(fomSysObj, decoder, stateIn,
+		  fomRef, std::forward<Args>(args)...);
+}
+
+
+template<
+  typename rom_jacobian_type,
+  std::size_t order,
+  std::size_t totNumStates,
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value,
+  galerkin::composeDefaultProblem_t<
+    pressio::ode::implicitmethods::Arbitrary,
+    fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
+    ::pressio::ode::types::StepperOrder<order>,
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >
+  >
+createDefaultProblem(const fom_system_type & fomSysObj,
+		     const decoder_type & decoder,
+		     const rom_state_type & stateIn,
+		     const fom_native_state & fomRef)
+{
+  using return_t =
+    galerkin::composeDefaultProblem_t<
+      ::pressio::ode::implicitmethods::Arbitrary,
+    fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
+    ::pressio::ode::types::StepperOrder<order>,
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >;
+
+  static_assert
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The fom reference state type deduced for the create function is not \
+compatible with the fom state type detected from adapter class");
+
+  return return_t(fomSysObj, decoder, stateIn, fomRef);
+}
+
+}}}//end namespace pressio::rom::galerkin
 #endif  // ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_

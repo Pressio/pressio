@@ -88,9 +88,9 @@ struct FindAdapterMistakes<false, Default, fom_system_t>
     ::pressio::rom::find_discrepancies_with_continuous_time_explicit_system_api<fom_system_t>::value;
 };
 
-// //------------------------
-// // specialize compose
-// //------------------------
+//------------------------
+// specialize compose
+//------------------------
 template<
   typename problem_tag,
   typename dummy,
@@ -141,21 +141,21 @@ and ode::implicitmethods::{Arbitrary} for the discrete-time API.");
 ///////////////////////////////////////////////////////
 //////       CONTINUOUS TIME API
 ///////////////////////////////////////////////////////
-/**** 
-  default Galerkin, pressio ops
+/****
+     default Galerkin, pressio ops
 ***/
 template<
-  typename stepper_tag, 
-  typename fom_system_type, 
-  typename galerkin_state_type, 
-  typename decoder_type
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename galerkin_state_type
   >
 struct compose<
-::pressio::rom::galerkin::impl::Default,
-mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
->,
-stepper_tag, fom_system_type, galerkin_state_type, decoder_type>
+  ::pressio::rom::galerkin::impl::Default,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
@@ -166,22 +166,22 @@ stepper_tag, fom_system_type, galerkin_state_type, decoder_type>
     stepper_tag, fom_system_type, galerkin_state_type, decoder_type, void>;
 };
 
-/**** 
+/****
   default Galerkin, user-defined ops
 ***/
 template<
-  typename stepper_tag, 
-  typename fom_system_type, 
-  typename galerkin_state_type, 
+  typename stepper_tag,
+  typename fom_system_type,
   typename decoder_type,
+  typename galerkin_state_type,
   typename ud_ops_type
   >
 struct compose<
-::pressio::rom::galerkin::impl::Default,
-mpl::enable_if_t<
-::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
->,
-stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>
+  ::pressio::rom::galerkin::impl::Default,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::explicitmethods::Euler>::value or
@@ -192,35 +192,34 @@ stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>
     stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>;
 };
 
-
 ///////////////////////////////////////////////////////
 //////       DISCRETE TIME API
 ///////////////////////////////////////////////////////
-/**** 
-  default Galerkin, pressio ops
+/****
+     default Galerkin
 ***/
 template<
-  typename stepper_tag, 
-  typename fom_system_type, 
-  typename galerkin_state_type, 
-  typename rom_jacobian_type,
+  typename stepper_tag,
+  typename fom_system_type,
   typename decoder_type,
+  typename galerkin_state_type,
+  typename rom_jacobian_type,
   typename ...Args
   >
 struct compose<
-::pressio::rom::galerkin::impl::Default,
-mpl::enable_if_t<
-::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
->,
-stepper_tag, fom_system_type, galerkin_state_type, rom_jacobian_type, decoder_type, Args...>
+  ::pressio::rom::galerkin::impl::Default,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, rom_jacobian_type, Args...>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Default Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type,  
-      rom_jacobian_type, decoder_type, Args...>;
+    stepper_tag, fom_system_type, galerkin_state_type,
+    rom_jacobian_type, decoder_type, Args...>;
 };
 
 }}}}
