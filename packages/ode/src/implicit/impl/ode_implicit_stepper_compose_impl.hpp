@@ -328,4 +328,4 @@ struct compose<
 
 
 }}}} // end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSER_IMPL_HPP_
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_

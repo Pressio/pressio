@@ -177,17 +177,19 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  using ode_tag = pressio::ode::implicitmethods::Euler;
-  using problem_t  = pressio::rom::lspg::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, decoder_t>::type;
-  problem_t prob(appObj, refState, decoderObj, romState);
+  using odetag = pressio::ode::implicitmethods::Euler;
+  // using problem_t  = pressio::rom::lspg::composeDefaultProblem<
+  //   odetag, fom_t, decoder_t, rom_state_t>::type;
+  // problem_t problem(appObj, decoderObj, romState, refState);
+  auto problem = pressio::rom::lspg::createDefaultProblemUnsteady<odetag>(
+    appObj, decoderObj, romState, refState);
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize);
 
-  Observer Obs(checkStr, prob.currentFomState());
+  Observer Obs(checkStr, problem.currentFomState());
 
-  pressio::ode::advanceNSteps(prob.getStepperRef(),
+  pressio::ode::advanceNSteps(problem.getStepperRef(),
 			      romState, 0.0, dt, 2,
 			      Obs, solver);
 

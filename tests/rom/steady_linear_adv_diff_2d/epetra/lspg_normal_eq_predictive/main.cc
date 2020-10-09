@@ -67,10 +67,12 @@ int main(int argc, char *argv[]){
   lspg_state_t yROM(romSize);
   pressio::ops::fill(yROM, 0.0);
 
-  // define LSPG type
-  using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-      fom_adapter_t, lspg_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);  
+  // // define LSPG type
+  // using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
+  //     fom_adapter_t, decoder_t, lspg_state_t>::type;
+  // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);  
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
+    appObjROM, decoderObj, yROM, *yRef);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;

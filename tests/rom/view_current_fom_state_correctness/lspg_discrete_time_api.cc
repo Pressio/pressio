@@ -214,15 +214,18 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using problem_t  = pressio::rom::lspg::composeDefaultProblem<
+    // ode_tag, fom_t, decoder_t, rom_state_t, stepper_order, stepper_n_states>::type;
+  // problem_t problem(appObj, decoderObj, romState, refState);
+  // 1=order of steppe, 2=tot # of states needed 
+  auto problem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
+    appObj, decoderObj, romState, refState);
 
-  using problem_t  = pressio::rom::lspg::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, decoder_t, stepper_order, stepper_n_states>::type;
-  problem_t prob(appObj, refState, decoderObj, romState);
 
-  const auto & currFomState = prob.currentFomState();
+  const auto & currFomState = problem.currentFomState();
 
   // here, the fom state should be [10 10 ...]
   Eigen::VectorXd trueFomState(fomSize);
@@ -232,7 +235,7 @@ int main(int argc, char *argv[])
   Observer Obs(checkStr, currFomState);
 
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver(fomSize, romSize);
-  pressio::ode::advanceNSteps(prob.getStepperRef(), romState,
+  pressio::ode::advanceNSteps(problem.getStepperRef(), romState,
   			      0.0, dt, 2, Obs, solver);
 
   std::cout << checkStr <<  std::endl;

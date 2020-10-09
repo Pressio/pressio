@@ -98,6 +98,10 @@ public:
 
 public:
   DefaultProblemContinuousTimeApi() = delete;
+  DefaultProblemContinuousTimeApi(const DefaultProblemContinuousTimeApi &) = default;
+  DefaultProblemContinuousTimeApi & operator=(const DefaultProblemContinuousTimeApi &) = default;
+  DefaultProblemContinuousTimeApi(DefaultProblemContinuousTimeApi &&) = default;
+  DefaultProblemContinuousTimeApi & operator=(DefaultProblemContinuousTimeApi &&) = default;
   ~DefaultProblemContinuousTimeApi() = default;
 
   /*

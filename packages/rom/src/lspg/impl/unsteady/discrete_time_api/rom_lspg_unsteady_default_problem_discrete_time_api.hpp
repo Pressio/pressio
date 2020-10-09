@@ -101,14 +101,21 @@ public:
   }
 
 public:
+  DefaultProblemDiscreteTimeApi() = delete;
+  DefaultProblemDiscreteTimeApi(const DefaultProblemDiscreteTimeApi &) = default;
+  DefaultProblemDiscreteTimeApi & operator=(const DefaultProblemDiscreteTimeApi &) = default;
+  DefaultProblemDiscreteTimeApi(DefaultProblemDiscreteTimeApi &&) = default;
+  DefaultProblemDiscreteTimeApi & operator=(DefaultProblemDiscreteTimeApi &&) = default;
+  ~DefaultProblemDiscreteTimeApi() = default;
+
   template<
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
   >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-				const fom_native_state_t & fomStateReferenceNative,
-				decoder_t	 & decoder,
-				lspg_state_t & romStateIn)
+				const decoder_t	& decoder,
+				const lspg_state_t & romStateIn,
+				const fom_native_state_t & fomStateReferenceNative)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
@@ -128,9 +135,9 @@ public:
     mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
     >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
+				const decoder_t	& decoder,
+				const lspg_state_t & romStateIn,
 				const fom_native_state_t & fomStateReferenceNative,
-				decoder_t & decoder,
-				lspg_state_t & romStateIn,
 				const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),

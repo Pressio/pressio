@@ -49,13 +49,14 @@ int main(int argc, char *argv[]){
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::BDF2;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
-
-    using rom_jac_t      = typename lspg_problem::lspg_matrix_t;
+    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, lspg_state_t>::type;
+    // lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>
+      (appobj, decoderObj, yROM, yRef);
 
     // GaussNewton solver
+    using rom_jac_t = typename decltype(lspgProblem)::traits::lspg_matrix_t;
     using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
     qr_solver_type qrSolver;
 

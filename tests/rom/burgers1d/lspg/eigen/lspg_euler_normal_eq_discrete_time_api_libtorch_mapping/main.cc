@@ -49,13 +49,15 @@ int main(int argc, char *argv[])
   yROM_(6) = -0.7610;
   yROM_(7) = -0.3957;
 
-  // define LSPG type
-  using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, lspg_state_t, 
-        decoder_t, stepper_order, stepper_n_states>::type;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_);
+  // // define LSPG type
+  // using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
+  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  //   using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, 
+  //     decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
+  // lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
+    appobj, decoderObj, yROM_, yRef);
 
   // linear solver
   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;

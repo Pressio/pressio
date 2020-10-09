@@ -252,10 +252,12 @@ struct EulerLSPGWithVelocityApi
     pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     // define LSPG type
-    using ode_tag  = pressio::ode::implicitmethods::Euler;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t, ops1_t>::type;
-    lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, myOps1);
+    using odetag  = pressio::ode::implicitmethods::Euler;
+    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, lspg_state_t, ops1_t>::type;
+    // lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, myOps1);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<odetag>(
+      fomObj, decoderObj, yROM_, yRef, myOps1);
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;

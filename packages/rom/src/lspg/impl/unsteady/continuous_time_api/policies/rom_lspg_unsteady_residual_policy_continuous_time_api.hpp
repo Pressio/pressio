@@ -65,6 +65,10 @@ public:
 
 public:
   ResidualPolicyContinuousTimeApi() = delete;
+  ResidualPolicyContinuousTimeApi(const ResidualPolicyContinuousTimeApi &) = default;
+  ResidualPolicyContinuousTimeApi & operator=(const ResidualPolicyContinuousTimeApi &) = default;
+  ResidualPolicyContinuousTimeApi(ResidualPolicyContinuousTimeApi &&) = default;
+  ResidualPolicyContinuousTimeApi & operator=(ResidualPolicyContinuousTimeApi &&) = default;
   ~ResidualPolicyContinuousTimeApi() = default;
 
   /* for constructing this we need to deal with a few cases
@@ -178,14 +182,14 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when time step changes.
      * no need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt)
      */
     if (storedStep_ != timeStep){
-      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates.get(ode::nMinusOne());
       storedStep_ = timeStep;
     }
 
@@ -193,7 +197,7 @@ private:
     timer->start("fom eval rhs");
 #endif
     ::pressio::rom::queryFomVelocity(fomSystemObj,
-				     fomStatesMngr_.getCRefToCurrentFomState(),
+				     fomStatesMngr_.get().getCRefToCurrentFomState(),
 				     romR, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -201,7 +205,7 @@ private:
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_, romR, dt);
+    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_.get(), romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
@@ -217,7 +221,7 @@ protected:
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   mutable residual_t R_ = {};
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // here we do this conditional type because it seems when

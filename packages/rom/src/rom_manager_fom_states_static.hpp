@@ -54,24 +54,32 @@ namespace pressio{ namespace rom{
 template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
 class ManagerFomStatesStatic
 {
-  static_assert( ::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-		 "Currently, you can only create a ManagerFomStatesStatic from types which have pressio wrappers.");
+  static_assert
+  ( ::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+	"Currently, you can only create a ManagerFomStatesStatic of pressio wrappers.");
 
-  static_assert( n>=1,
-		 "You are trying to instantiate a state FomStatesContainer object with zero size.\
-Something is not right, because this object would then be unusable.");
+  static_assert
+  (n>=1,
+	"You are trying to instantiate a state FomStatesContainer object with zero size.\
+   Something is not right, because this object would then be unusable.");
 
 public:
   using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type, n>;
   using value_type = fom_state_type;
 
   ManagerFomStatesStatic() = delete;
+  ManagerFomStatesStatic(const ManagerFomStatesStatic &) = default;
+  ManagerFomStatesStatic & operator=(const ManagerFomStatesStatic &) = default;
+  ManagerFomStatesStatic(ManagerFomStatesStatic &&) = default;
+  ManagerFomStatesStatic & operator=(ManagerFomStatesStatic &&) = default;
+  ~ManagerFomStatesStatic() = default;
 
   template <typename ... Args>
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
 			 Args && ... args)
     : fomStateReconstrObj_(fomStateReconstr),
-      data_( std::forward<Args>(args)... ){
+      data_( std::forward<Args>(args)... )
+  {
     this->resetContainersToZero();
   }
 
@@ -81,11 +89,10 @@ public:
 			 Args && ... args)
     : udOps_(udOps),
       fomStateReconstrObj_(fomStateReconstr),
-      data_( std::forward<Args>(args)... ){
+      data_( std::forward<Args>(args)... )
+  {
     this->resetContainersToZero();
   }
-
-  ~ManagerFomStatesStatic() = default;
 
 public:
   static constexpr std::size_t size() {
@@ -118,7 +125,7 @@ public:
 #endif
 
     static_assert( n>=1, "Cannot call reconstructCurrentFomState if n < 1");
-    fomStateReconstrObj_(romStateIn, data_(0));
+    fomStateReconstrObj_.get()(romStateIn, data_(0));
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("reconstruct fom state");
@@ -141,7 +148,7 @@ public:
   operator << (const rom_state_t & romStateIn)
   {
     // reconstrct the FOM state at n-1
-    fomStateReconstrObj_(romStateIn, data_(1));
+    fomStateReconstrObj_.get()(romStateIn, data_(1));
   }
 
   /* when n >= 3, we need to deep copy data to
@@ -160,7 +167,7 @@ public:
       ::pressio::ops::deep_copy(dest, src);
     }
     // then, reconstrct the FOM state at t-1
-    fomStateReconstrObj_(romStateIn, data_(1));
+    fomStateReconstrObj_.get()(romStateIn, data_(1));
   }
 
   template <typename _ud_ops_t = ud_ops_t, typename rom_state_t, std::size_t _n = n >
@@ -173,7 +180,7 @@ public:
       udOps_->deep_copy(*dest.data(), *src.data());
     }
     // then, reconstrct the FOM state at t-1
-    fomStateReconstrObj_(romStateIn, data_(1));
+    fomStateReconstrObj_.get()(romStateIn, data_(1));
   }
 
 private:
@@ -193,7 +200,7 @@ private:
 
 private:
   const ud_ops_t * udOps_ = nullptr;
-  const reconstuctor_type & fomStateReconstrObj_  = {};
+  std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
 
   // data[0] contains the current fom state, i.e. step = n
   // data[1] contains fom state at step n-1

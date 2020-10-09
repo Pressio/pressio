@@ -103,15 +103,22 @@ public:
   }
 
 public:
+  PreconditionedProblemDiscreteTimeApi() = delete;
+  PreconditionedProblemDiscreteTimeApi(const PreconditionedProblemDiscreteTimeApi &) = default;
+  PreconditionedProblemDiscreteTimeApi & operator=(const PreconditionedProblemDiscreteTimeApi &) = default;
+  PreconditionedProblemDiscreteTimeApi(PreconditionedProblemDiscreteTimeApi &&) = default;
+  PreconditionedProblemDiscreteTimeApi & operator=(PreconditionedProblemDiscreteTimeApi &&) = default;
+  ~PreconditionedProblemDiscreteTimeApi() = default;
+
   template<
-    typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+  typename _ud_ops_t = ud_ops_t,
+  mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
   >
   PreconditionedProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-				const fom_native_state_t & fomStateReferenceNative,
-				decoder_t	 & decoder,
-				lspg_state_t & romStateIn,
-        const preconditioner_t & preconditionerObj)
+				       const decoder_t & decoder,
+				       const lspg_state_t & romStateIn,
+				       const fom_native_state_t & fomStateReferenceNative,
+				       const preconditioner_t & preconditionerObj)
     : fomStateReference_(fomStateReferenceNative),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
@@ -131,11 +138,11 @@ public:
   //   mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
   //   >
   // PrecondProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-		// 		const fom_native_state_t & fomStateReferenceNative,
-		// 		decoder_t & decoder,
-		// 		lspg_state_t & romStateIn,
-  //       const preconditioner_t & preconditionerObj,        
-		// 		const _ud_ops_t & udOps)
+  // 		const fom_native_state_t & fomStateReferenceNative,
+  // 		decoder_t & decoder,
+  // 		lspg_state_t & romStateIn,
+  //       const preconditioner_t & preconditionerObj,
+  // 		const _ud_ops_t & udOps)
   //   : fomStateReference_(fomStateReferenceNative),
   //     fomStateReconstructor_(fomStateReference_, decoder, udOps),
   //     fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),

@@ -144,9 +144,11 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  using problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-      fom_t, rom_state_t, decoder_t>::type;
-  problem_type problem(appObj, refState, decoderObj, romState);
+  // using problem_type = typename pressio::rom::lspg::composeDefaultProblem<
+  //     fom_t, decoder_t, rom_state_t>::type;
+  // problem_type problem(appObj, decoderObj, romState, refState);
+  auto problem = pressio::rom::lspg::createDefaultProblemSteady(
+    appObj, decoderObj, romState, refState);
 
   const auto & currFomState = problem.currentFomState();
 

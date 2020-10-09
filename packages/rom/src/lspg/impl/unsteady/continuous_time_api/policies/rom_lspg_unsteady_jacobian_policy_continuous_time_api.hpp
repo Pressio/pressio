@@ -66,6 +66,10 @@ public:
 
 public:
   JacobianPolicyContinuousTimeApi() = delete;
+  JacobianPolicyContinuousTimeApi(const JacobianPolicyContinuousTimeApi &) = default;
+  JacobianPolicyContinuousTimeApi & operator=(const JacobianPolicyContinuousTimeApi &) = default;
+  JacobianPolicyContinuousTimeApi(JacobianPolicyContinuousTimeApi &&) = default;
+  JacobianPolicyContinuousTimeApi & operator=(JacobianPolicyContinuousTimeApi &&) = default;
   ~JacobianPolicyContinuousTimeApi() = default;
 
   /* for constructing this we need to deal with a few cases
@@ -143,7 +147,7 @@ private:
   time_discrete_dispatcher(matrix_t & romJac, scalar_t  dt) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
-      stepper_tag>(romJac, dt, decoderJacobian_);
+      stepper_tag>(romJac, dt, decoderJacobian_.get());
   }
 
   template <
@@ -156,7 +160,7 @@ private:
   time_discrete_dispatcher(matrix_t & romJac, scalar_t dt) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
-      stepper_tag>(romJac, dt, decoderJacobian_, udOps_);
+      stepper_tag>(romJac, dt, decoderJacobian_.get(), udOps_);
   }
 
   template <
@@ -181,17 +185,17 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    // fomStatesMngr_.reconstructCurrentFomState(romState);
+    // fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
     // update Jacobian of decoder
-    decoderObj_.updateJacobian(romState);
+    decoderObj_.get().updateJacobian(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
-    const auto & currentFomState = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & currentFomState = fomStatesMngr_.get().getCRefToCurrentFomState();
     ::pressio::rom::queryFomApplyJacobian(fomSystemObj, currentFomState,
-					  decoderJacobian_, romJac, t);
+					  decoderJacobian_.get(), romJac, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
@@ -208,9 +212,9 @@ private:
 
 protected:
   mutable apply_jac_return_t JJ_ = {};
-  fom_states_manager_t & fomStatesMngr_;
-  const decoder_type & decoderObj_ = {};
-  const typename decoder_type::jacobian_type & decoderJacobian_ = {};
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
+  std::reference_wrapper<const decoder_type> decoderObj_ = {};
+  std::reference_wrapper<const typename decoder_type::jacobian_type> decoderJacobian_ = {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   typename std::conditional<

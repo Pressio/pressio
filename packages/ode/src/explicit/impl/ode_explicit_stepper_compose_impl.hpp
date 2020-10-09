@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_stepper_impl.hpp
+// ode_explicit_stepper_compose_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -171,4 +171,4 @@ struct compose
 };
 
 }}}} // end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_IMPL_HPP_
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_

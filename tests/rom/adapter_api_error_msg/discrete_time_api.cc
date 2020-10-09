@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 #else
     pressio::rom::galerkin::composeDefaultProblem<
 #endif
-    ode_name_t, app_t, rom_state_t, decoder_t, stepper_order, stepper_n_states>::type;
+    ode_name_t, app_t, decoder_t, rom_state_t, stepper_order, stepper_n_states>::type;
 
   // we should never get here because this test fails
   static_assert(std::is_void<problem>::value, "");

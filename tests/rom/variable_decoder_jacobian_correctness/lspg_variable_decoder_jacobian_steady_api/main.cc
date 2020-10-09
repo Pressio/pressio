@@ -262,9 +262,11 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 0.0);
 
-  using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-      fom_t, rom_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObj, refState, decoderObj, romState);
+  // using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
+  //     fom_t, decoder_t, rom_state_t>::type;
+  // lspg_problem_type lspgProblem(appObj, decoderObj, romState, refState);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
+    appObj, decoderObj, romState, refState);
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr);

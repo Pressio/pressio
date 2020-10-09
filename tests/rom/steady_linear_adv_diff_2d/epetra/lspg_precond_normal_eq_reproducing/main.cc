@@ -72,10 +72,12 @@ int main(int argc, char *argv[])
   using prec_t = pressio::rom::test::EpetraIdentityPreconditioner;
   prec_t Prec;
 
-  using lspg_problem_type = 
-    typename pressio::rom::lspg::composePreconditionedProblem<
-    fom_adapter_t, lspg_state_t, decoder_t, prec_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM, Prec);
+  // using lspg_problem_type = 
+  //   typename pressio::rom::lspg::composePreconditionedProblem<
+  //   fom_adapter_t, decoder_t, lspg_state_t, prec_t>::type;
+  // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM, Prec);
+  auto lspgProblem = pressio::rom::lspg::createPreconditionedProblemSteady(
+    appObjROM, decoderObj, yROM, *yRef, Prec);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;

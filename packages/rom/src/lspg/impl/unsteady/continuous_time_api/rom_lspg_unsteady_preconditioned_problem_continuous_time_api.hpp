@@ -111,6 +111,10 @@ public:
 
 public:
   PreconditionedProblemContinuousTimeApi() = delete;
+  PreconditionedProblemContinuousTimeApi(const PreconditionedProblemContinuousTimeApi &) = default;
+  PreconditionedProblemContinuousTimeApi & operator=(const PreconditionedProblemContinuousTimeApi &) = default;
+  PreconditionedProblemContinuousTimeApi(PreconditionedProblemContinuousTimeApi &&) = default;
+  PreconditionedProblemContinuousTimeApi & operator=(PreconditionedProblemContinuousTimeApi &&) = default;
   ~PreconditionedProblemContinuousTimeApi() = default;
 
   /* specialize for:
@@ -129,9 +133,9 @@ public:
       int > = 0
   >
   PreconditionedProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
-					 const fom_native_state_t & fomStateReferenceNative,
 					 const decoder_t & decoder,
-					 lspg_state_t	 & romStateIn,
+					 const lspg_state_t & romStateIn,
+					 const fom_native_state_t & fomStateReferenceNative,
 					 const preconditioner_t & preconditionerObj)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
@@ -171,9 +175,9 @@ public:
       int > = 0
     >
   PreconditionedProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-					 const fom_native_state_t & fomStateReferenceNative,
 					 const decoder_t & decoder,
-					 lspg_state_t & romStateIn,
+					 const lspg_state_t & romStateIn,
+					 const fom_native_state_t & fomStateReferenceNative,
 					 const preconditioner_t & preconditionerObj)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),

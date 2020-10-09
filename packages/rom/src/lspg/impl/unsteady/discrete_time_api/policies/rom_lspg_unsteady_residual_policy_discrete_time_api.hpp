@@ -60,6 +60,10 @@ public:
 
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
+  ResidualPolicyDiscreteTimeApi(const ResidualPolicyDiscreteTimeApi &) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = default;
+  ResidualPolicyDiscreteTimeApi(ResidualPolicyDiscreteTimeApi &&) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = default;
   ~ResidualPolicyDiscreteTimeApi() = default;
 
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)
@@ -103,14 +107,14 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates.get(ode::nMinusOne());
       storedStep_ = step;
     }
   }
@@ -127,8 +131,8 @@ private:
 	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
 
     try{
       ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
@@ -152,9 +156,9 @@ private:
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.get().getCRefToFomStatePrevPrevStep();
 
     try{
       ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
@@ -172,7 +176,7 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

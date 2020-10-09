@@ -60,6 +60,11 @@ class PreconditionedResidualPolicy : public preconditionable_policy
 
 public:
   PreconditionedResidualPolicy() = delete;
+  PreconditionedResidualPolicy(const PreconditionedResidualPolicy &) = default;
+  PreconditionedResidualPolicy & operator=(const PreconditionedResidualPolicy &) = default;
+  PreconditionedResidualPolicy(PreconditionedResidualPolicy &&) = default;
+  PreconditionedResidualPolicy & operator=(PreconditionedResidualPolicy &&) = default;
+  ~PreconditionedResidualPolicy() = default;
 
   PreconditionedResidualPolicy(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
@@ -71,8 +76,6 @@ public:
     : preconditionable_policy(std::forward<Args>(args)...),
       preconditionerObj_(preconditionerIn)
   {}
-
-  ~PreconditionedResidualPolicy() = default;
 
 public:
   template <typename fom_system_t>
@@ -103,7 +106,7 @@ public:
       stepper_tag>(currentState, prevStates, systemObj, 
         time, dt, step, residual);
 
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *residual.data());
   }
 
@@ -120,7 +123,7 @@ public:
   {
     preconditionable_policy::compute(currentState, residual, systemObj);
 
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), *residual.data());
   }
 

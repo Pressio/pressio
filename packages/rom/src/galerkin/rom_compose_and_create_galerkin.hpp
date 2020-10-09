@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_galerkin.hpp
+// rom_compose_and_create_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_
-#define ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_
+#ifndef ROM_GALERKIN_ROM_COMPOSE_AND_CREATE_GALERKIN_HPP_
+#define ROM_GALERKIN_ROM_COMPOSE_AND_CREATE_GALERKIN_HPP_
 
 #include "./impl/rom_compose_galerkin_impl.hpp"
 
@@ -134,4 +134,4 @@ compatible with the fom state type detected from adapter class");
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_COMPOSE_GALERKIN_HPP_
+#endif  // ROM_GALERKIN_ROM_COMPOSE_AND_CREATE_GALERKIN_HPP_

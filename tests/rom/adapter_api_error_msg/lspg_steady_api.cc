@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
   using lspg_problem =
 #if defined PRECOND
     pressio::rom::lspg::composePreconditionedProblem<
-      app_t, lspg_state_t, decoder_t, MyPrec>::type;
+      app_t, decoder_t, lspg_state_t, MyPrec>::type;
 #else
     pressio::rom::lspg::composeDefaultProblem<
-      app_t, lspg_state_t, decoder_t>::type;
+      app_t, decoder_t, lspg_state_t>::type;
 #endif
 
   // we should never get here because this test fails

@@ -108,6 +108,10 @@ public:
 
 public:
   DefaultProblemContinuousTimeApi() = delete;
+  DefaultProblemContinuousTimeApi(const DefaultProblemContinuousTimeApi &) = default;
+  DefaultProblemContinuousTimeApi & operator=(const DefaultProblemContinuousTimeApi &) = default;
+  DefaultProblemContinuousTimeApi(DefaultProblemContinuousTimeApi &&) = default;
+  DefaultProblemContinuousTimeApi & operator=(DefaultProblemContinuousTimeApi &&) = default;
   ~DefaultProblemContinuousTimeApi() = default;
 
   /* specialize for:
@@ -124,18 +128,18 @@ public:
       std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value,
       int > = 0
-  >
+    >
   DefaultProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
-			   const fom_native_state_t & fomStateReferenceNative,
-			   const decoder_t & decoder,
-			   lspg_state_t	 & romStateIn)
+				  const decoder_t & decoder,
+				  const lspg_state_t & romStateIn,
+				  const fom_native_state_t & fomStateReferenceNative)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		       ( *decoder.getReferenceToJacobian().data() )),
+		  ( *decoder.getReferenceToJacobian().data() )),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -165,19 +169,19 @@ public:
       std::is_void<_aux_stepper_t>::value and
       !std::is_void<_ud_ops_t>::value,
       int > = 0
-  >
+    >
   DefaultProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-			   const fom_native_state_t & fomStateReferenceNative,
-			   const decoder_t & decoder,
-			   lspg_state_t & romStateIn,
-			   const _ud_ops_t & udOps)
+				  const decoder_t & decoder,
+				  const lspg_state_t & romStateIn,
+				  const fom_native_state_t & fomStateReferenceNative,
+				  const _ud_ops_t & udOps)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder, udOps),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		       (*decoder.getReferenceToJacobian().data())),
+		  (*decoder.getReferenceToJacobian().data())),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -210,16 +214,16 @@ public:
       int > = 0
     >
   DefaultProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-			   const fom_native_state_t & fomStateReferenceNative,
-			   const decoder_t & decoder,
-			   lspg_state_t	& romStateIn)
+				  const decoder_t & decoder,
+				  const lspg_state_t & romStateIn,
+				  const fom_native_state_t & fomStateReferenceNative)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		   (*decoder.getReferenceToJacobian().data())),
+		  (*decoder.getReferenceToJacobian().data())),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -237,47 +241,47 @@ public:
   }
 
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /*- the fom_system_t is a pybind11::object
-//    * - aux stepper is NOT needed (e.g. for BDF1)
-//    * - ud_ops_t == void
-//    */
-//   template <
-//     typename _fom_system_t = fom_system_t,
-//     typename _lspg_state_t = lspg_state_t,
-//     typename _aux_stepper_t = aux_stepper_t,
-//     typename _ud_ops_t = ud_ops_t,
-//     ::pressio::mpl::enable_if_t<
-//       ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
-//       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
-//       std::is_void<_aux_stepper_t>::value and
-//       std::is_void<_ud_ops_t>::value,
-//       int > = 0
-//   >
-//   DefaultProblemContinuousTimeApi
-//   (const _fom_system_t & fomSystemObj,
-//    const fom_native_state_t fomStateReferenceIn,
-//    const decoder_t & decoder,
-//    typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
-//    scalar_t t0)
-//     : fomStateReference_(fomStateReferenceIn),
-//       fomVelocityRef_( fomSystemObj.attr("velocity")(fomStateReferenceIn, t0) ),
-//       fomStateReconstructor_(fomStateReference_, decoder),
-//       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
-//       //
-//       jPhiMatrix_(fomSystemObj.attr("applyJacobian")
-// 		        (fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
-//       //
-//       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
-//       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-//       stepperObj_(_lspg_state_t(romStateIn), fomSystemObj,
-// 		  residualPolicy_, jacobianPolicy_)
-//   {
-//     // reconstruct current fom state so that we have something
-//     // consisten with the current romState
-//     fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
-//   }
-// #endif
+  // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  //   /*- the fom_system_t is a pybind11::object
+  //    * - aux stepper is NOT needed (e.g. for BDF1)
+  //    * - ud_ops_t == void
+  //    */
+  //   template <
+  //     typename _fom_system_t = fom_system_t,
+  //     typename _lspg_state_t = lspg_state_t,
+  //     typename _aux_stepper_t = aux_stepper_t,
+  //     typename _ud_ops_t = ud_ops_t,
+  //     ::pressio::mpl::enable_if_t<
+  //       ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
+  //       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
+  //       std::is_void<_aux_stepper_t>::value and
+  //       std::is_void<_ud_ops_t>::value,
+  //       int > = 0
+  //   >
+  //   DefaultProblemContinuousTimeApi
+  //   (const _fom_system_t & fomSystemObj,
+  //    const fom_native_state_t fomStateReferenceIn,
+  //    const decoder_t & decoder,
+  //    typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
+  //    scalar_t t0)
+  //     : fomStateReference_(fomStateReferenceIn),
+  //       fomVelocityRef_( fomSystemObj.attr("velocity")(fomStateReferenceIn, t0) ),
+  //       fomStateReconstructor_(fomStateReference_, decoder),
+  //       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+  //       //
+  //       jPhiMatrix_(fomSystemObj.attr("applyJacobian")
+  // 		        (fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
+  //       //
+  //       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+  //       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
+  //       stepperObj_(_lspg_state_t(romStateIn), fomSystemObj,
+  // 		  residualPolicy_, jacobianPolicy_)
+  //   {
+  //     // reconstruct current fom state so that we have something
+  //     // consisten with the current romState
+  //     fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
+  //   }
+  // #endif
 
 };
 

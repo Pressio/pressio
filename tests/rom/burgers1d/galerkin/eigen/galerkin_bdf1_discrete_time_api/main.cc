@@ -61,7 +61,8 @@ struct GalerkinBDF1WithResidualApi
     // stepper_order, stepper_n_states>::type;
     // problem_t Problem(appobj, decoderObj, yROM_, yRef);
     auto Problem =
-      pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>(appobj, decoderObj, yROM_, yRef);
+      pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>
+      (appobj, decoderObj, yROM_, yRef);
 
     auto & stepperObj = Problem.getStepperRef();
 

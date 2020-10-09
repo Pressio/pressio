@@ -149,15 +149,17 @@ int main(int argc, char *argv[])
   // prec obj
   precond_t PrecObj;
 
-  using ode_tag = pressio::ode::implicitmethods::Euler;
-  using problem_t  =
-    pressio::rom::lspg::composePreconditionedProblem<
-      ode_tag, fom_t, rom_state_t, decoder_t, precond_t>::type;
-  problem_t prob(appObj, refState, decoderObj, romState, PrecObj);
+  using odetag = pressio::ode::implicitmethods::Euler;
+  // using problem_t  =
+  //   pressio::rom::lspg::composePreconditionedProblem<
+  //     ode_tag, fom_t, decoder_t, rom_state_t, precond_t>::type;
+  // problem_t problem(appObj, decoderObj, romState, refState, PrecObj);
+  auto problem = pressio::rom::lspg::createPreconditionedProblemUnsteady<odetag>(
+    appObj, decoderObj, romState, refState, PrecObj);
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr);
-  pressio::ode::advanceNSteps(prob.getStepperRef(),
+  pressio::ode::advanceNSteps(problem.getStepperRef(),
 			      romState, 0.0, dt, 2, solver);
 
   std::cout << checkStr <<  std::endl;

@@ -109,6 +109,10 @@ public:
 
 public:
   MaskedProblemContinuousTimeApi() = delete;
+  MaskedProblemContinuousTimeApi(const MaskedProblemContinuousTimeApi &) = default;
+  MaskedProblemContinuousTimeApi & operator=(const MaskedProblemContinuousTimeApi &) = default;
+  MaskedProblemContinuousTimeApi(MaskedProblemContinuousTimeApi &&) = default;
+  MaskedProblemContinuousTimeApi & operator=(MaskedProblemContinuousTimeApi &&) = default;
   ~MaskedProblemContinuousTimeApi() = default;
 
   /* specialize for:
@@ -125,19 +129,19 @@ public:
       std::is_void<_aux_stepper_t>::value and
       std::is_void<_ud_ops_t>::value,
       int > = 0
-  >
+    >
   MaskedProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
-			   const fom_native_state_t & fomStateReferenceNative,
-			   const decoder_t & decoder,
-			   lspg_state_t	 & romStateIn,
-         const masker_t & maskerObj)
+				 const decoder_t & decoder,
+				 const lspg_state_t & romStateIn,
+				 const fom_native_state_t & fomStateReferenceNative,
+				 const masker_t & maskerObj)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		       ( *decoder.getReferenceToJacobian().data() )),
+		  ( *decoder.getReferenceToJacobian().data() )),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -169,17 +173,17 @@ public:
       int > = 0
     >
   MaskedProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-         const fom_native_state_t & fomStateReferenceNative,
-         const decoder_t & decoder,
-         lspg_state_t & romStateIn,
-         const masker_t & maskerObj)
+				 const decoder_t & decoder,
+				 const lspg_state_t & romStateIn,
+				 const fom_native_state_t & fomStateReferenceNative,
+				 const masker_t & maskerObj)
     : fomStateReference_(fomStateReferenceNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-       (*decoder.getReferenceToJacobian().data())),
+		  (*decoder.getReferenceToJacobian().data())),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -189,7 +193,7 @@ public:
       jacobianPolicy_(maskerObj, fomStatesMngr_, jPhiMatrix_, decoder),
       auxStepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_),
       stepperObj_(romStateIn, fomSystemObj, residualPolicy_,
-      jacobianPolicy_, auxStepperObj_)
+		  jacobianPolicy_, auxStepperObj_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState

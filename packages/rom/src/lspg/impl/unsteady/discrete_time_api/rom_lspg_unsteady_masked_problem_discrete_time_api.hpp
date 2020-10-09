@@ -103,6 +103,13 @@ public:
   }
 
 public:
+  MaskedProblemDiscreteTimeApi() = delete;
+  MaskedProblemDiscreteTimeApi(const MaskedProblemDiscreteTimeApi &) = default;
+  MaskedProblemDiscreteTimeApi & operator=(const MaskedProblemDiscreteTimeApi &) = default;
+  MaskedProblemDiscreteTimeApi(MaskedProblemDiscreteTimeApi &&) = default;
+  MaskedProblemDiscreteTimeApi & operator=(MaskedProblemDiscreteTimeApi &&) = default;
+  ~MaskedProblemDiscreteTimeApi() = default;
+
   template<
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0

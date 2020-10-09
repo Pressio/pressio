@@ -66,6 +66,10 @@ public:
 
 public:
   ExplicitVelocityPolicy() = delete;
+  ExplicitVelocityPolicy(const ExplicitVelocityPolicy &) = default;
+  ExplicitVelocityPolicy & operator=(const ExplicitVelocityPolicy &) = default;
+  ExplicitVelocityPolicy(ExplicitVelocityPolicy &&) = default;
+  ExplicitVelocityPolicy & operator=(ExplicitVelocityPolicy &&) = default;
   ~ExplicitVelocityPolicy() = default;
 
   // 1. void ops
@@ -107,7 +111,7 @@ public:
   galerkin_state_t create(const fom_t & app) const
   {
     // this is called once
-    galerkin_state_t result(phi_.extent(1));
+    galerkin_state_t result(phi_.get().extent(1));
     ::pressio::ops::set_zero(result);
     return result;
   }
@@ -176,7 +180,7 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::transpose(), one, phi_,
+    ::pressio::ops::product(::pressio::transpose(), one, phi_.get(),
 			    fomRhs_, zero, result);
   }
 
@@ -190,7 +194,7 @@ private:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    udOps_->product(::pressio::transpose(), one, *phi_.data(),
+    udOps_->product(::pressio::transpose(), one, *(phi_.get().data()),
 		    *fomRhs_.data(), zero, result);
   }
 
@@ -208,15 +212,15 @@ private:
 
     // any time compute_impl is called, it means the romState
     // has changed, so tell decoder to update the Jacobian
-    decoder_.updateJacobian(romState);
+    decoder_.get().updateJacobian(romState);
 
     // reconstruct the current fom state
-    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     (*this).template queryFomVelocity<scalar_t>(fomSystemObj, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -235,9 +239,9 @@ private:
 
 protected:
   mutable fom_rhs_t fomRhs_ = {};
-  const decoder_t & decoder_;
-  const typename decoder_t::jacobian_type & phi_;
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<const decoder_t> decoder_;
+  std::reference_wrapper<const typename decoder_t::jacobian_type> phi_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
   const ud_ops * udOps_ = {};
 
 };//end class

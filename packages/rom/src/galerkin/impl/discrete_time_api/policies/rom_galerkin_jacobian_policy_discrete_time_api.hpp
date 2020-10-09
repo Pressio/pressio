@@ -67,6 +67,10 @@ public:
 
 public:
   JacobianPolicyDiscreteTimeApi() = delete;
+  JacobianPolicyDiscreteTimeApi(const JacobianPolicyDiscreteTimeApi &) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(const JacobianPolicyDiscreteTimeApi &) = default;
+  JacobianPolicyDiscreteTimeApi(JacobianPolicyDiscreteTimeApi &&) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(JacobianPolicyDiscreteTimeApi &&) = default;
   ~JacobianPolicyDiscreteTimeApi() = default;
 
   template< typename app_t>
@@ -75,15 +79,15 @@ public:
 				const app_t & appObj)
     : fomStatesMngr_(fomStatesMngr),
       phi_(decoder.getReferenceToJacobian()),
-      fomApplyJac_(appObj.createApplyDiscreteTimeJacobianResult(*phi_.data()))
+      fomApplyJac_(appObj.createApplyDiscreteTimeJacobianResult(*phi_.get().data()))
   {}
 
 public:
   template <typename fom_system_t>
   rom_jacobian_t create(const fom_system_t & fomSystemObj) const
   {
-    const auto nRows = phi_.extent(1);
-    const auto nCols = phi_.extent(1);
+    const auto nRows = phi_.get().extent(1);
+    const auto nCols = phi_.get().extent(1);
     rom_jacobian_t romJac(nRows, nCols);
     return romJac;
   }
@@ -125,16 +129,16 @@ private:
     // - reconstucted the previous states
     // - called the decoder to update the jacobian
 
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
-						      time, dt, step, phi_,
+						      time, dt, step, phi_.get(),
 						      fomApplyJac_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-                            one, phi_, fomApplyJac_, zero, romJac);
+                            one, phi_.get(), fomApplyJac_, zero, romJac);
   }
 
   // we have here n = 2 prev rom states
@@ -155,23 +159,23 @@ private:
     // - reconstucted the previous states
     // - called the decoder to update the jacobian
 
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
 						      fomSystemObj, time,
-						      dt, step, phi_,
+						      dt, step, phi_.get(),
 						      fomApplyJac_);
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-                            one, phi_, fomApplyJac_, zero, romJac);
+                            one, phi_.get(), fomApplyJac_, zero, romJac);
   }
 
 private:
-  fom_states_manager_t & fomStatesMngr_;
-  const typename decoder_type::jacobian_type & phi_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
+  std::reference_wrapper<const typename decoder_type::jacobian_type> phi_;
   mutable fom_apply_jacobian_ret_type fomApplyJac_;
 };
 

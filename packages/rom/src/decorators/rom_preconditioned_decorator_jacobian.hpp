@@ -62,6 +62,11 @@ public:
 
 public:
   PreconditionedJacobianPolicy() = delete;
+  PreconditionedJacobianPolicy(const PreconditionedJacobianPolicy &) = default;
+  PreconditionedJacobianPolicy & operator=(const PreconditionedJacobianPolicy &) = default;
+  PreconditionedJacobianPolicy(PreconditionedJacobianPolicy &&) = default;
+  PreconditionedJacobianPolicy & operator=(PreconditionedJacobianPolicy &&) = default;
+  ~PreconditionedJacobianPolicy() = default;
 
   PreconditionedJacobianPolicy(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
@@ -73,8 +78,6 @@ public:
     : preconditionable_policy(std::forward<Args>(args)...),
       preconditionerObj_(preconditionerIn)
   {}
-
-  ~PreconditionedJacobianPolicy() = default;
 
 public:
   template <typename fom_system_t>
@@ -104,7 +107,7 @@ public:
   {
     preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr,
 							   systemObj, time, dt, step, odeJacobian);
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *odeJacobian.data());
   }
 
@@ -121,7 +124,7 @@ public:
                const fom_system_t & systemObj) const
   {
     preconditionable_policy::compute(stateObj, jacob, systemObj);
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), *jacob.data());
   }
 

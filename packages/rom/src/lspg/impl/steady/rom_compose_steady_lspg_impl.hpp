@@ -82,15 +82,15 @@ struct composeSteady
 // default
 template<
   typename fom_system_type,
-  typename lspg_state_type,
-  typename decoder_type
+  typename decoder_type,
+  typename lspg_state_type
   >
 struct composeSteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
     ::pressio::rom::concepts::steady_system<fom_system_type>::value
     >,
-  fom_system_type, lspg_state_type, decoder_type>
+  fom_system_type, decoder_type, lspg_state_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::DefaultProblemSteady<
       fom_system_type, lspg_state_type, decoder_type>;
@@ -99,8 +99,8 @@ struct composeSteady<
 // precond
 template<
   typename fom_system_type,
-  typename lspg_state_type,
   typename decoder_type,
+  typename lspg_state_type,
   typename precond_type
   >
 struct composeSteady<
@@ -108,7 +108,7 @@ struct composeSteady<
   mpl::enable_if_t<
     ::pressio::rom::concepts::steady_system<fom_system_type>::value
     >,
-  fom_system_type, lspg_state_type, decoder_type, precond_type>
+  fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::PreconditionedProblemSteady<
       fom_system_type, lspg_state_type, decoder_type, precond_type>;

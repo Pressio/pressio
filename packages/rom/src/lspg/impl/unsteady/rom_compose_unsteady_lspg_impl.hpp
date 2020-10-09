@@ -178,15 +178,15 @@ and  ode::implicitmethods::{Arbitrary} for the discrete-time API.");
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_type,
-  typename decoder_type
+  typename decoder_type,
+  typename lspg_state_type
   >
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
     ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_type, decoder_type>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type>
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
@@ -194,13 +194,12 @@ struct composeUnsteady<
       stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
 };
 
-
 // default lspg user-defined dops
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_type,
   typename decoder_type,
+  typename lspg_state_type,
   typename ud_ops_type
   >
 struct composeUnsteady<
@@ -208,7 +207,7 @@ struct composeUnsteady<
   mpl::enable_if_t<
     ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, ud_ops_type>
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
@@ -220,42 +219,42 @@ struct composeUnsteady<
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_t,
-  typename decoder_t,
-  typename precond_t
+  typename decoder_type,
+  typename lspg_state_type,
+  typename precond_type
   >
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Preconditioned,
   mpl::enable_if_t<
     ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_t, decoder_t, precond_t>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
   using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemContinuousTimeApi<
-    stepper_tag, fom_system_type, lspg_state_t, decoder_t, precond_t, void>;
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_type, void>;
 };
 
 // masked lspg pressio ops
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_t,
-  typename decoder_t,
-  typename masker_t
+  typename decoder_type,
+  typename lspg_state_type,
+  typename masker_type
   >
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Masked,
   mpl::enable_if_t<
     ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_t, decoder_t, masker_t>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, masker_type>
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
   using type = ::pressio::rom::lspg::impl::unsteady::MaskedProblemContinuousTimeApi<
-    stepper_tag, fom_system_type, lspg_state_t, decoder_t, masker_t, void>;
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, void>;
 };
 
 
@@ -269,8 +268,8 @@ struct composeUnsteady<
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_type,
   typename decoder_type,
+  typename lspg_state_type,
   typename ...Args
   >
 struct composeUnsteady<
@@ -278,7 +277,7 @@ struct composeUnsteady<
   mpl::enable_if_t<
     ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
@@ -288,16 +287,15 @@ struct composeUnsteady<
       stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>;
 };
 
-
 /***
   Preconditioned lspg pressio ops
 ***/
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_type,
   typename decoder_type,
-  typename precond_t,
+  typename lspg_state_type,
+  typename precond_type,
   typename ...Args
   >
 struct composeUnsteady<
@@ -305,14 +303,14 @@ struct composeUnsteady<
   mpl::enable_if_t<
     ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_t, Args...>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, precond_type, Args...>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_t, Args...>;
+      stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_type, Args...>;
 };
 
 /***
@@ -321,9 +319,9 @@ struct composeUnsteady<
 template<
   typename stepper_tag,
   typename fom_system_type,
-  typename lspg_state_type,
   typename decoder_type,
-  typename masker_t,
+  typename lspg_state_type,
+  typename masker_type,
   typename ...Args
   >
 struct composeUnsteady<
@@ -331,14 +329,14 @@ struct composeUnsteady<
   mpl::enable_if_t<
     ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
     >,
-  stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_t, Args...>
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, masker_type, Args...>
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_t, Args...>;
+      stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, Args...>;
 };
 
 }}}}

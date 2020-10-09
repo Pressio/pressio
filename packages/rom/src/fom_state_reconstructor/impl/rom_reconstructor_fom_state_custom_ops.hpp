@@ -60,6 +60,11 @@ template <
 struct FomStateReconstructorCustomOps
 {
   FomStateReconstructorCustomOps() = delete;
+  FomStateReconstructorCustomOps(const FomStateReconstructorCustomOps &) = default;
+  FomStateReconstructorCustomOps & operator=(const FomStateReconstructorCustomOps &) = default;
+  FomStateReconstructorCustomOps(FomStateReconstructorCustomOps &&) = default;
+  FomStateReconstructorCustomOps & operator=(FomStateReconstructorCustomOps &&) = default;
+  ~FomStateReconstructorCustomOps() = default;
 
   FomStateReconstructorCustomOps(const fom_state_type & fomStateIn,
 				 const decoder_type & decoder,
@@ -72,25 +77,25 @@ struct FomStateReconstructorCustomOps
 		  fom_state_type    & fomState) const
   {
     // map current romState to FOM state
-    decoderObj_.applyMapping(romState, fomState);
+    decoderObj_.get().applyMapping(romState, fomState);
 
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     // fomState = fomState + fomStateReference_;
-    udOps_.axpy(one, *fomStateReference_.data(), *fomState.data());
+    udOps_.get().axpy(one, *(fomStateReference_.get().data()), *fomState.data());
   }
 
   template <typename rom_state_t>
   fom_state_type operator()(const rom_state_t & romState) const{
-    auto fomState(fomStateReference_);
-    udOps_.set_zero(*fomState.data());
+    auto fomState(fomStateReference_.get());
+    udOps_.get().set_zero(*fomState.data());
     this->template operator()(romState,fomState);
     return fomState;
   }
 
 private:
-  const fom_state_type & fomStateReference_;
-  const decoder_type   & decoderObj_;
-  const ops_type & udOps_;
+  std::reference_wrapper<const fom_state_type> fomStateReference_;
+  std::reference_wrapper<const decoder_type> decoderObj_;
+  std::reference_wrapper<const ops_type> udOps_;
 
 };//end class
 

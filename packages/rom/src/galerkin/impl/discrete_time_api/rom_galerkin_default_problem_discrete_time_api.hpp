@@ -98,6 +98,11 @@ public:
 
 public:
   DefaultProblemDiscreteTimeApi() = delete;
+  DefaultProblemDiscreteTimeApi(const DefaultProblemDiscreteTimeApi &) = default;
+  DefaultProblemDiscreteTimeApi & operator=(const DefaultProblemDiscreteTimeApi &) = default;
+  DefaultProblemDiscreteTimeApi(DefaultProblemDiscreteTimeApi &&) = default;
+  DefaultProblemDiscreteTimeApi & operator=(DefaultProblemDiscreteTimeApi &&) = default;  
+  ~DefaultProblemDiscreteTimeApi() = default;
 
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t & decoder,

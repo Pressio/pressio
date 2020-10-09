@@ -129,12 +129,14 @@
 //----------------
 // galerkin
 //----------------
-#include "rom/src/galerkin/rom_compose_galerkin.hpp"
+#include "rom/src/galerkin/rom_compose_and_create_galerkin.hpp"
 
 //-----------------
 // LSPG
 //-----------------
-#include "rom/src/lspg/rom_compose_lspg.hpp"
+#include "rom/src/lspg/rom_default_lspg.hpp"
+#include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
+#include "rom/src/lspg/rom_masked_lspg.hpp"
 
 //----------------
 // wls

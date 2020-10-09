@@ -229,9 +229,11 @@ struct EulerLSPGWithResidualApi
     using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
     using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
 
-    using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t, stepper_order, stepper_n_states, ops1_t>::type;
-    lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, myOps1);
+    // using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states, ops1_t>::type;
+    // lspg_problem lspgProblem(fomObj, decoderObj, yROM_, yRef, myOps1);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
+      fomObj, decoderObj, yROM_, yRef, myOps1);
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;

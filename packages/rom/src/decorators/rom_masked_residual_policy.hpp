@@ -60,6 +60,11 @@ class MaskedResidualPolicy : public maskable_policy
 
 public:
   MaskedResidualPolicy() = delete;
+  MaskedResidualPolicy(const MaskedResidualPolicy &) = default;
+  MaskedResidualPolicy & operator=(const MaskedResidualPolicy &) = default;
+  MaskedResidualPolicy(MaskedResidualPolicy &&) = default;
+  MaskedResidualPolicy & operator=(MaskedResidualPolicy &&) = default;
+  ~MaskedResidualPolicy() = default;
 
   MaskedResidualPolicy(const maskable_policy & obj) 
     : maskable_policy(obj){}

@@ -64,6 +64,10 @@ public:
 
 public:
   JacobianPolicyDiscreteTimeApi() = delete;
+  JacobianPolicyDiscreteTimeApi(const JacobianPolicyDiscreteTimeApi &) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(const JacobianPolicyDiscreteTimeApi &) = default;
+  JacobianPolicyDiscreteTimeApi(JacobianPolicyDiscreteTimeApi &&) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(JacobianPolicyDiscreteTimeApi &&) = default;
   ~JacobianPolicyDiscreteTimeApi() = default;
 
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
@@ -75,8 +79,7 @@ public:
   apply_jac_return_t create(const fom_system_t & fomSystemObj) const
   {
     // // this is only called once
-    // fomStatesMngr_.template reconstructCurrentFomState(romState);
-    const auto & phi = decoderObj_.getReferenceToJacobian();
+    const auto & phi = decoderObj_.get().getReferenceToJacobian();
     apply_jac_return_t romJac
       (fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
@@ -120,14 +123,14 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    //fomStatesMngr_.template reconstructCurrentFomState(romState);
+    //fomStatesMngr_.get().template reconstructCurrentFomState(romState);
 
     // update Jacobian of decoder
-    decoderObj_.updateJacobian(romState);
+    decoderObj_.get().updateJacobian(romState);
 
-    const auto & phi = decoderObj_.getReferenceToJacobian();
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & phi = decoderObj_.get().getReferenceToJacobian();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
 						      time, dt, step,
 						      phi, romJac);
@@ -150,15 +153,15 @@ private:
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
-    //fomStatesMngr_.template reconstructCurrentFomState(romState);
+    //fomStatesMngr_.get().template reconstructCurrentFomState(romState);
 
     // update Jacobian of decoder
-    decoderObj_.updateJacobian(romState);
+    decoderObj_.get().updateJacobian(romState);
 
-    const auto & phi = decoderObj_.getReferenceToJacobian();
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & phi = decoderObj_.get().getReferenceToJacobian();
+    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & ynm2 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
 						      fomSystemObj,
 						      time, dt, step,
@@ -166,8 +169,8 @@ private:
   }
 
 protected:
-  const decoder_type & decoderObj_ = {};
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<const decoder_type> decoderObj_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

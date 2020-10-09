@@ -180,7 +180,8 @@ struct EulerGalerkinWithVelocityApi
     //   ode_tag, fom_t, decoder_t, rom_state_t, ops_t>::type;
     // problem_t galerkinProb(fomObj, decoderObj, yROM_, y0n, myOps);
     auto galerkinProb =
-      pressio::rom::galerkin::createDefaultProblem<ode_tag>(fomObj, decoderObj, yROM_, y0n, myOps);
+      pressio::rom::galerkin::createDefaultProblem<ode_tag>
+      (fomObj, decoderObj, yROM_, y0n, myOps);
 
     scalar_t fint = 35;
     auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);

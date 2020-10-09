@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
 #if defined DEFAULT
   using lspg_problem = pressio::rom::lspg::composeDefaultProblem
-    <ode_name_t, app_t, lspg_state_t, decoder_t>::type;
+    <ode_name_t, app_t, decoder_t, lspg_state_t>::type;
 #endif
 // #if defined PRECOND
 //   using lspg_problem = pressio::rom::lspg::composePreconditionedProblem

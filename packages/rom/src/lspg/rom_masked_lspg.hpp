@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_compose_lspg.hpp
+// rom_masked_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,53 +46,19 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
-#define ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+#ifndef ROM_LSPG_ROM_MASKED_LSPG_HPP_
+#define ROM_LSPG_ROM_MASKED_LSPG_HPP_
 
-#include "./impl/steady/rom_compose_steady_lspg_impl.hpp"
 #include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-/*default
-
+///////////////////////////////////////////
+///		MASKED			///
+///////////////////////////////////////////
+/*
   unsteady:
-  template<stepper_tag, fom_type, romstate_t, decoder_t>
-  template<stepper_tag, fom_type, romstate_t, decoder_t, udops_t>
-
-  steady:
-  template<fom_type, romstate_t, decoder_t>
-*/
-template<typename T1, typename ...Args>
-using composeDefaultProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<impl::Default, void, T1, Args...>,
-  impl::composeSteady<impl::Default, void, T1, Args...>
-  >::type;
-
-
-/*preconditioned
-
-  unsteady:
-  template<stepper_tag, fom_type, romstate_t, decoder_t, precond_t>
-
-  cases for steady:
-  template<fom_type, romstate_t, decoder_t, precond_t>
-*/
-template<typename T1, typename ...Args>
-using composePreconditionedProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<impl::Preconditioned, void, T1, Args...>,
-  impl::composeSteady<impl::Preconditioned, void, T1, Args...>
-  >::type;
-
-
-/*masked
-
-  unsteady:
-  template<stepper_tag, fom_type, romstate_t, decoder_t, masker_t>
+  template<stepper_tag, fom_type, decoder_t, romstate_t, masker_t>
 
   steady: TBI
 */
@@ -104,17 +70,5 @@ using composeMaskedProblem =
   void
   >::type;
 
-
-// /*hyperreduced
-//   for now just an alias to above
-// */
-// template<typename T1, typename ...Args>
-// using composeHyperreducedProblem = composeDefaultProblem<T1, Args...>;
-
-// /*preconditioned hyperreduced */
-// template<typename T1, typename ...Args>
-// using composePreconditionedHyperreducedProblem =
-//   composePreconditionedProblem<T1, Args...>;
-
 }}}
-#endif  // ROM_LSPG_ROM_COMPOSE_LSPG_HPP_
+#endif  // ROM_LSPG_ROM_MASKED_LSPG_HPP_

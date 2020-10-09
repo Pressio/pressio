@@ -184,18 +184,19 @@ int main(int argc, char *argv[])
   // prec obj
   precond_t PrecObj;
 
-  using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
-  using problem_t =
-    pressio::rom::lspg::composePreconditionedProblem<
-      ode_tag, fom_t, rom_state_t, decoder_t, precond_t,
-    stepper_order, stepper_n_states>::type;
-  problem_t prob(appObj, refState, decoderObj, romState, PrecObj);
+  // using odetag = pressio::ode::implicitmethods::Arbitrary;
+  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using problem_t =
+  //   pressio::rom::lspg::composePreconditionedProblem<
+  //     ode_tag, fom_t, decoder_t, rom_state_t, precond_t,
+  //   stepper_order, stepper_n_states>::type;
+  // problem_t problem(appObj, decoderObj, romState, refState, PrecObj);
+  auto problem = pressio::rom::lspg::createPreconditionedProblemUnsteady<1,2>(
+    appObj, decoderObj, romState, refState, PrecObj);
 
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver(fomSize, romSize, checkStr);
-  pressio::ode::advanceNSteps(prob.getStepperRef(), romState, 0.0, dt, 2, solver);
+  pressio::ode::advanceNSteps(problem.getStepperRef(), romState, 0.0, dt, 2, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

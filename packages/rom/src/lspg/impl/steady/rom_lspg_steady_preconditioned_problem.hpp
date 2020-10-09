@@ -93,7 +93,13 @@ public:
   }
 
 public:
-  /* specialize for when the fom_system_t is regular c++ */
+  PreconditionedProblemSteady() = delete;
+  PreconditionedProblemSteady(const PreconditionedProblemSteady &) = default;
+  PreconditionedProblemSteady & operator=(const PreconditionedProblemSteady &) = default;
+  PreconditionedProblemSteady(PreconditionedProblemSteady &&) = default;
+  PreconditionedProblemSteady & operator=(PreconditionedProblemSteady &&) = default;
+  ~PreconditionedProblemSteady() = default;
+
   template <
   typename _fom_system_t = fom_system_t,
   ::pressio::mpl::enable_if_t<
@@ -101,9 +107,9 @@ public:
     int> = 0
   >
   PreconditionedProblemSteady(const _fom_system_t & fomSystemObj,
-			      const fom_native_state_t & fomNativeReferenceState,
 			      const decoder_t	& decoder,
-			      lspg_state_t & romStateIn,
+			      const lspg_state_t & romStateIn,
+			      const fom_native_state_t & fomNativeReferenceState,
 			      const preconditioner_t & preconditionerObj)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),

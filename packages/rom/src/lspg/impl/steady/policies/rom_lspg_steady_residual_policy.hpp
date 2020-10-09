@@ -59,6 +59,10 @@ public:
 
 public:
   ResidualPolicy() = delete;
+  ResidualPolicy(const ResidualPolicy &) = default;
+  ResidualPolicy & operator=(const ResidualPolicy &) = default;
+  ResidualPolicy(ResidualPolicy &&) = default;
+  ResidualPolicy & operator=(ResidualPolicy &&) = default;
   ~ResidualPolicy() = default;
 
   ResidualPolicy(fom_states_manager_t & fomStatesMngr)
@@ -83,7 +87,7 @@ public:
   >
   create(const fom_system_t & fomSystemObj) const
   {
-    const auto & currentFom = fomStatesMngr_.getCRefToCurrentFomState();
+    const auto & currentFom = fomStatesMngr_.get().getCRefToCurrentFomState();
     return residual_t(fomSystemObj.attr("residual")(*currentFom.data()));
   }
 #endif
@@ -98,14 +102,14 @@ public:
     timer->start("lspg residual");
 #endif
 
-    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
 
     ::pressio::rom::queryFomResidual(fomSystemObj, 
-      fomStatesMngr_.getCRefToCurrentFomState(), romResidual);
+      fomStatesMngr_.get().getCRefToCurrentFomState(), romResidual);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -114,7 +118,7 @@ public:
   }
 
 protected:
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 
 };
 

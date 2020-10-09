@@ -62,6 +62,11 @@ public:
 
 public:
   MaskedJacobianPolicy() = delete;
+  MaskedJacobianPolicy(const MaskedJacobianPolicy &) = default;
+  MaskedJacobianPolicy & operator=(const MaskedJacobianPolicy &) = default;
+  MaskedJacobianPolicy(MaskedJacobianPolicy &&) = default;
+  MaskedJacobianPolicy & operator=(MaskedJacobianPolicy &&) = default;
+  ~MaskedJacobianPolicy() = default;
 
   MaskedJacobianPolicy(const maskable_policy & obj) 
   : maskable_policy(obj){}

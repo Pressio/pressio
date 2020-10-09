@@ -92,6 +92,13 @@ public:
   }
 
 public:
+  DefaultProblemSteady() = delete;
+  DefaultProblemSteady(const DefaultProblemSteady &) = default;
+  DefaultProblemSteady & operator=(const DefaultProblemSteady &) = default;
+  DefaultProblemSteady(DefaultProblemSteady &&) = default;
+  DefaultProblemSteady & operator=(DefaultProblemSteady &&) = default;
+  ~DefaultProblemSteady() = default;
+
   /* specialize for when the fom_system_t is regular c++ */
   template <
     typename _fom_system_t = fom_system_t,
@@ -100,9 +107,9 @@ public:
       int> = 0
   >
   DefaultProblemSteady(const _fom_system_t & fomSystemObj,
-  		const fom_native_state_t & fomNativeReferenceState,
-  		const decoder_t	& decoder,
-		lspg_state_t & romStateIn)
+		       const decoder_t	& decoder,
+		       const lspg_state_t & romStateIn,
+		       const fom_native_state_t & fomNativeReferenceState)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
@@ -126,9 +133,9 @@ public:
       int > = 0
   >
   DefaultProblemSteady(const _fom_system_t & fomSystemObj,
-		const fom_native_state_t fomNativeReferenceState,
-		const decoder_t	& decoder,
-		typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn)
+		       const decoder_t	& decoder,
+		       typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
+		       const fom_native_state_t fomNativeReferenceState)
     : fomStateReference_(fomNativeReferenceState),
       fomStateReconstructor_(fomStateReference_, decoder),
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),

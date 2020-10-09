@@ -79,9 +79,9 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   using lspg_problem = pressio::rom::lspg::composeDefaultProblem<
-    ode_name_t, app_t, lspg_state_t, decoder_t, stepper_order, stepper_n_states>::type;
+    ode_name_t, app_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
 
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM);
+  lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
   std::cout << &lspgProblem << std::endl;
   // here we just test that the problem is constructed
 }
