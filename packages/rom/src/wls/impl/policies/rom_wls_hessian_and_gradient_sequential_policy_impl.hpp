@@ -95,10 +95,10 @@ public:
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),
       fomSystemObj_(fomSystemObj),
-      phi_(decoderObj.getReferenceToJacobian()),
+      phi_(decoderObj.jacobianCRef()),
       fomStateCurrent_(fomState),
       residual_(fomSystemObj.createVelocity()),
-      J_(fomSystemObj.createApplyJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
+      J_(fomSystemObj.createApplyJacobianResult(*(decoderObj.jacobianCRef()).data())),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow ,J_),
       timeSchemeObj_(romSize_, fomState)
@@ -128,10 +128,10 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),
       fomSystemObj_(fomSystemObj),
-      phi_(decoderObj.getReferenceToJacobian()),
+      phi_(decoderObj.jacobianCRef()),
       fomStateCurrent_(fomState),
       residual_( fomSystemObj.createDiscreteTimeResidual() ),
-      J_(fomSystemObj.createApplyDiscreteTimeJacobianResult(*(decoderObj.getReferenceToJacobian()).data())),
+      J_(fomSystemObj.createApplyDiscreteTimeJacobianResult(*(decoderObj.jacobianCRef()).data())),
       // construct wls Jacobians from jacobian of the decoder: we might need to change this later
       jacobians_( timeStencilSize, numStepsInWindow , J_),
       timeSchemeObj_(romSize_, fomState)
@@ -215,8 +215,8 @@ public:
 						     std::make_pair( stepNumLocal*romSize_,(stepNumLocal+1)*romSize_ ) ,
 						     std::make_pair( stepNumLocal*romSize_,(stepNumLocal+1)*romSize_) );
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-			    one, jacobians_.getLocalJacobian(stepNumLocal,0),
-			    jacobians_.getLocalJacobian(stepNumLocal,0), zero, hess_block);
+			    one, jacobians_.localJacobian(stepNumLocal,0),
+			    jacobians_.localJacobian(stepNumLocal,0), zero, hess_block);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("hessian computation");
 #endif
@@ -227,7 +227,7 @@ public:
 #endif
     auto gradientView = ::pressio::containers::span(gradient, stepNumLocal*romSize_, romSize_);
     ::pressio::ops::product(::pressio::transpose(),
-			    one, jacobians_.getLocalJacobian(stepNumLocal,0), residual_,
+			    one, jacobians_.localJacobian(stepNumLocal,0), residual_,
 			    one, gradientView);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("gradient computation");
@@ -245,7 +245,7 @@ public:
 #endif
 	    auto gradientView = ::pressio::containers::span(gradient, (stepNumLocal-i)*romSize_, romSize_);
 	    ::pressio::ops::product(::pressio::transpose(), one,
-				    jacobians_.getLocalJacobian( stepNumLocal, i ), residual_, one, gradientView);
+				    jacobians_.localJacobian( stepNumLocal, i ), residual_, one, gradientView);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
 	    timer->stop("gradient computation");
 #endif
@@ -343,8 +343,8 @@ private:
 							 std::make_pair( (n-i)*romSize_, (n-i+1)*romSize_ ),
 							 std::make_pair( (n-j)*romSize_,(n-j+1)*romSize_ ) );
         ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
-				jacobians_.getLocalJacobian( n, i ),
-				jacobians_.getLocalJacobian( n, j ), one, hess_block);
+				jacobians_.localJacobian( n, i ),
+				jacobians_.localJacobian( n, j ), one, hess_block);
       }
     }// end assembling local component of global Hessian
   }
@@ -365,8 +365,8 @@ private:
 							 std::make_pair( (n-i)*romSize_,(n-i+1)*romSize_ ) );
 
         ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one,
-				jacobians_.getLocalJacobian( n , j ),
-				jacobians_.getLocalJacobian( n , i ), one, hess_block);
+				jacobians_.localJacobian( n , j ),
+				jacobians_.localJacobian( n , i ), one, hess_block);
       }
     }// end assembling local component of global Hessian
   }
@@ -390,7 +390,7 @@ private:
   {
     for (window_size_t i = 0; i < jacStencilSize_; i++)
     {
-      auto & jacLocal = jacobians_.getLocalJacobian(stepNumLocal , i );
+      auto & jacLocal = jacobians_.localJacobian(stepNumLocal , i );
       timeSchemeObj_.time_discrete_jacobian(fomSystemObj_,fomStateCurrent_, jacLocal, phi_,
 					   t, dt, stepNumGlobal, i);
       Preconditioner(fomSystemObj_, fomStateCurrent_, jacLocal, t);

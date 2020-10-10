@@ -107,7 +107,7 @@ public:
   {
     preconditionable_policy::template compute<stepper_tag>(odeState, prevStatesMgr,
 							   systemObj, time, dt, step, odeJacobian);
-    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *odeJacobian.data());
   }
 
@@ -124,7 +124,7 @@ public:
                const fom_system_t & systemObj) const
   {
     preconditionable_policy::compute(stateObj, jacob, systemObj);
-    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), *jacob.data());
   }
 

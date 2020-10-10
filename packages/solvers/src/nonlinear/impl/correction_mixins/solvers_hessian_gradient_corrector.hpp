@@ -132,8 +132,8 @@ public:
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
-    const auto & H = T::getHessianCRef();
-    const auto & g = T::getGradientCRef();
+    const auto & H = T::hessianCRef();
+    const auto & g = T::gradientCRef();
     this->doLinearSolve(H, g);
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
@@ -148,7 +148,7 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrectionCRef() const{
+  const state_t & correctionCRef() const{
     return correction_;
   }
 

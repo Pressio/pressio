@@ -90,15 +90,15 @@ private:
   stepper_t		stepperObj_;
 
 public:
-  stepper_t & getStepperRef(){
+  stepper_t & stepperRef(){
     return stepperObj_;
   }
 
   const fom_native_state_t & currentFomState() const{
-    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+    return *fomStatesMngr_.currentFomStateCRef().data();
   }
 
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 

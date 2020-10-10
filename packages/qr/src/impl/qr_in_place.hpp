@@ -136,7 +136,7 @@ private:
 //   }
 
 //   const R_type & cRefRFactorImpl() const {
-//     return myImpl_.getCRefRFactor();
+//     return myImpl_.RFactor();
 //   }
 
 // public:

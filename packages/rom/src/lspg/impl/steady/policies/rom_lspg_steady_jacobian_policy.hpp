@@ -82,7 +82,7 @@ public:
   >
   create(const fom_system_t & fomSystemObj) const
   {
-    const auto & basis = decoderObj_.get().getReferenceToJacobian();
+    const auto & basis = decoderObj_.get().jacobianCRef();
     return apply_jac_return_t(fomSystemObj.createApplyJacobianResult(*basis.data()));
   }
 
@@ -94,8 +94,8 @@ public:
   >
   create(const fom_system_t & fomSystemObj) const
   {
-    const auto & currentFom = fomStatesMngr_.get().getCRefToCurrentFomState();
-    const auto & basis = decoderObj_.get().getReferenceToJacobian();
+    const auto & currentFom = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & basis = decoderObj_.get().jacobianCRef();
     return apply_jac_return_t(fomSystemObj.attr("applyJacobian")(*currentFom.data(), *basis.data()));
   }
 #endif
@@ -122,9 +122,9 @@ public:
     timer->start("fom apply jac");
 #endif
 
-    const auto & basis = decoderObj_.get().getReferenceToJacobian();
+    const auto & basis = decoderObj_.get().jacobianCRef();
     ::pressio::rom::queryFomApplyJacobian(fomSystemObj, 
-        fomStatesMngr_.get().getCRefToCurrentFomState(), basis, romJacobian);
+        fomStatesMngr_.get().currentFomStateCRef(), basis, romJacobian);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

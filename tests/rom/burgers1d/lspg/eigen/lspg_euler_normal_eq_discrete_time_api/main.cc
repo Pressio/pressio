@@ -70,15 +70,15 @@ struct EulerLSPGWithResidualApi
 
     // GaussNewton solver with normal equations
     auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.getStepperRef(), yROM_, linSolverObj);
+      lspgProblem.stepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };
@@ -149,17 +149,17 @@ struct EulerLSPGWithVelocityApi
     // GaussNewton solver with normal equations
     // using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
     //   lspg_stepper_t, linear_solver_t>;
-    // nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
+    // nls_t solver(lspgProblem.stepperRef(), yROM_, linSolverObj);
     auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.getStepperRef(), yROM_, linSolverObj);
+      lspgProblem.stepperRef(), yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };

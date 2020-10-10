@@ -100,13 +100,13 @@ public:
     return data_[i];
   }
 
-  data_type & data(){
-    return data_;
-  }
+  // data_type & data(){
+  //   return data_;
+  // }
 
-  data_type const & data() const{
-    return data_;
-  }
+  // data_type const & data() const{
+  //   return data_;
+  // }
 
 public:
 

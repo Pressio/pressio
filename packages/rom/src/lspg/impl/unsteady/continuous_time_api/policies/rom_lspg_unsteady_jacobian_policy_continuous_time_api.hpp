@@ -89,7 +89,7 @@ public:
     : JJ_(applyJacObj),
       fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
-      decoderJacobian_(decoder.getReferenceToJacobian())
+      decoderJacobian_(decoder.jacobianCRef())
   {}
 
   // 2. non-void ops
@@ -105,7 +105,7 @@ public:
     : JJ_(applyJacObj),
       fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
-      decoderJacobian_(decoder.getReferenceToJacobian()),
+      decoderJacobian_(decoder.jacobianCRef()),
       udOps_{&udOps}
   {}
 
@@ -193,7 +193,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
-    const auto & currentFomState = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
     ::pressio::rom::queryFomApplyJacobian(fomSystemObj, currentFomState,
 					  decoderJacobian_.get(), romJac, t);
 

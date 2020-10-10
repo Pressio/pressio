@@ -83,13 +83,13 @@ int main(int argc, char *argv[]){
 
   // GaussNewton solver
   auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.getSystemRef(), yROM, linSolverObj);
+      lspgProblem.systemRef(), yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.getSystemRef(), yROM);
+  solver.solve(lspgProblem.systemRef(), yROM);
 
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
 
   /* this is a predictive run, so we should recover FOM

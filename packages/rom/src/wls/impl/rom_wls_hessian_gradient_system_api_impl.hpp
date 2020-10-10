@@ -143,7 +143,7 @@ public:
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
     wls_state_type wlsStateTmp(romSize);
-    const auto & decoderJac = decoderObj.getReferenceToJacobian();
+    const auto & decoderJac = decoderObj.jacobianCRef();
 
     ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj, decoderJac,
   									  fomStateInitCondition, fomStateReference,
@@ -169,7 +169,7 @@ private:
   {}
 
 public:
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 

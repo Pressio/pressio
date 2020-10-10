@@ -97,15 +97,15 @@ private:
   stepper_t  stepperObj_;
 
 public:
-  stepper_t & getStepperRef(){
+  stepper_t & stepperRef(){
     return stepperObj_;
   }
 
   const fom_native_state_t & currentFomState() const{
-    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+    return *fomStatesMngr_.currentFomStateCRef().data();
   }
 
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 
@@ -143,7 +143,7 @@ public:
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		       ( *decoder.getReferenceToJacobian().data() )),
+		       ( *decoder.jacobianCRef().data() )),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -185,7 +185,7 @@ public:
       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		  (*decoder.getReferenceToJacobian().data())),
+		  (*decoder.jacobianCRef().data())),
       //
       // here we pass a fom velocity object to the residual policy to
       // use it to initialize the residual data
@@ -230,7 +230,7 @@ public:
   //     fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
   //     //
   //     jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		//        (*decoder.getReferenceToJacobian().data())),
+		//        (*decoder.jacobianCRef().data())),
   //     //
   //     // here we pass a fom velocity object to the residual policy to
   //     // use it to initialize the residual data
@@ -276,7 +276,7 @@ public:
 //       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
 //       //
 //       jPhiMatrix_(fomSystemObj.attr("applyJacobian")
-// 		        (fomStateReferenceIn, *decoder.getReferenceToJacobian().data(), t0)),
+// 		        (fomStateReferenceIn, *decoder.jacobianCRef().data(), t0)),
 //       //
 //       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
 //       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),

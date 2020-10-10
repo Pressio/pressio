@@ -78,7 +78,7 @@ public:
 				const app_t & appObj)
     : fomStatesMngr_(fomStatesMngr),
       decoder_(decoder),
-      decoderJacobian_(decoder.getReferenceToJacobian()),
+      decoderJacobian_(decoder.jacobianCRef()),
       fomR_(appObj.createDiscreteTimeResidual())
     {}
 
@@ -126,7 +126,7 @@ private:
      * state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStatesMngr_.get() << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates.stateAt(ode::nMinusOne());
       storedStep_ = step;
     }
   }
@@ -152,8 +152,8 @@ private:
 
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
     ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
 						 time, dt, step, fomR_);
 
@@ -184,9 +184,9 @@ private:
 
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.get().getCRefToFomStatePrevPrevStep();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
+    const auto & ynm2 = fomStatesMngr_.get().fomStatePrevPrevStepCRef();
     ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
 						 time, dt, step, fomR_);
 

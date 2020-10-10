@@ -84,9 +84,9 @@ public:
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
-    const auto & correction = solverObj.getCorrectionCRef();
-    const auto & g	    = solverObj.getGradientCRef();
-    const auto & H	    = solverObj.getHessianCRefBeforeLMDiagonalScaling();
+    const auto & correction = solverObj.correctionCRef();
+    const auto & g	    = solverObj.gradientCRef();
+    const auto & H	    = solverObj.hessianCRefBeforeLMDiagonalScaling();
 
     // denom
     for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }

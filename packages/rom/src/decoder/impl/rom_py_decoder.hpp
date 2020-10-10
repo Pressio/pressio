@@ -111,7 +111,7 @@ public:
       throw std::runtime_error("Invalid mapping kind enum");
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return mappingJacobian_;
   }
 

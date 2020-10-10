@@ -61,15 +61,15 @@ int main(int argc, char *argv[]){
 
   // GaussNewton solver with normal equations
   auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.getStepperRef(), yROM, linSolverObj);
+      lspgProblem.stepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(10);
 
   // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
+  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
 
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with bdf2, same time-step, for 10 steps

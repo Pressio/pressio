@@ -24,7 +24,7 @@ public:
     }
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 
@@ -422,7 +422,7 @@ int main(int argc, char *argv[])
     appObj, decoderObj, romState, refState);
 
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver(fomSize, romSize, checkStr);
-  pressio::ode::advanceNSteps(problem.getStepperRef(), romState, 0.0, dt, 2, solver);
+  pressio::ode::advanceNSteps(problem.stepperRef(), romState, 0.0, dt, 2, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

@@ -93,8 +93,8 @@ public:
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 
-    const auto & p_k   = solver.getCorrectionCRef();
-    const auto & g_k   = solver.getGradientCRef();
+    const auto & p_k   = solver.correctionCRef();
+    const auto & g_k   = solver.gradientCRef();
     const auto fx_k    = solver.residualNormCurrentCorrectionStep();
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 

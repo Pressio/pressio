@@ -118,7 +118,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomStateInitCond);
   pressio::ops::set_zero(yFinal);
-  const auto fomStateReconstructor = wlsSystem.getFomStateReconstructorCRef();
+  const auto fomStateReconstructor = wlsSystem.fomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(), fomSize, dt);
   std::string checkStr = checkSol(appObj ,yFinal,trueY,rank);

@@ -90,7 +90,7 @@ public:
 			    jacobianOfDecoder_, operand, zero, result);
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jacobianOfDecoder_;
   }
 

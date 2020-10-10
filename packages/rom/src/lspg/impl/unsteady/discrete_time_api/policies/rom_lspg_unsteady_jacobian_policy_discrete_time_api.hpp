@@ -79,7 +79,7 @@ public:
   apply_jac_return_t create(const fom_system_t & fomSystemObj) const
   {
     // // this is only called once
-    const auto & phi = decoderObj_.get().getReferenceToJacobian();
+    const auto & phi = decoderObj_.get().jacobianCRef();
     apply_jac_return_t romJac
       (fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
@@ -128,9 +128,9 @@ private:
     // update Jacobian of decoder
     decoderObj_.get().updateJacobian(romState);
 
-    const auto & phi = decoderObj_.get().getReferenceToJacobian();
-    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & phi = decoderObj_.get().jacobianCRef();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
 						      time, dt, step,
 						      phi, romJac);
@@ -158,10 +158,10 @@ private:
     // update Jacobian of decoder
     decoderObj_.get().updateJacobian(romState);
 
-    const auto & phi = decoderObj_.get().getReferenceToJacobian();
-    const auto & yn   = fomStatesMngr_.get().getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.get().getCRefToFomStatePrevStep();
+    const auto & phi = decoderObj_.get().jacobianCRef();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
+    const auto & ynm2 = fomStatesMngr_.get().fomStatePrevStepCRef();
     ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
 						      fomSystemObj,
 						      time, dt, step,

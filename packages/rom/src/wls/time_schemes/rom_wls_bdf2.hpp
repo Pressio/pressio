@@ -151,9 +151,9 @@ public:
     auto residualView = residualNative.getVectorView();
     auto fomStateNative = *fomState.data();
     auto fomStateView = fomStateNative.getVectorView();
-    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
+    auto Unm1 = auxStatesContainer_.stateAt(::pressio::ode::nMinusOne()); 
     auto Unm1View = (*Unm1.data()).getVectorView();
-    auto Unm2 = auxStatesContainer_.get(::pressio::ode::nMinusTwo()); 
+    auto Unm2 = auxStatesContainer_.stateAt(::pressio::ode::nMinusTwo()); 
     auto Unm2View = (*Unm2.data()).getVectorView();
 
 
@@ -193,12 +193,12 @@ public:
     auto fomStateView = *fomState.data();
     const auto fomStateMap = fomStateView.getMap();
     const auto gIDy = fomStateMap->getMyGlobalIndices();
-    auto Unm1 = auxStatesContainer_.get(::pressio::ode::nMinusOne()); 
+    auto Unm1 = auxStatesContainer_.stateAt(::pressio::ode::nMinusOne()); 
     auto Unm1View = *Unm1.data();
     auto Rdv = residualView.getDataNonConst();
     auto Udv = fomStateView.getData();
     auto Unm1dv = Unm1View.getData();
-    auto Unm2 = auxStatesContainer_.get(::pressio::ode::nMinusTwo()); 
+    auto Unm2 = auxStatesContainer_.stateAt(::pressio::ode::nMinusTwo()); 
     auto Unm2View = *Unm2.data();
     auto Unm2dv = Unm2View.getData();
     time_discrete_residual_from_views(fomStateView,Unm1View,Unm2View,residualView,step,dt);
@@ -453,8 +453,8 @@ public:
     if (step > 0){
       using nm1 = ::pressio::ode::nMinusOne;
       using nm2 = ::pressio::ode::nMinusTwo;
-      auto & fomStateNm2 = auxStatesContainer_.get(nm2());
-      auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+      auto & fomStateNm2 = auxStatesContainer_.stateAt(nm2());
+      auto & fomStateNm1 = auxStatesContainer_.stateAt(nm1());
 
       fomSystemObj.discreteTimeResidual(step, t, dt,
 				  *residual.data(),
@@ -464,7 +464,7 @@ public:
     if (step == 0){
       // u^n - u^{n-1}  - dt*f
       using nm1 = ::pressio::ode::nMinusOne;
-      auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+      auto & fomStateNm1 = auxStatesContainer_.stateAt(nm1());
 
       fomSystemObj.discreteTimeResidual(step, t, dt,
 				  *residual.data(), 
@@ -555,7 +555,7 @@ public:
     if (step == 0){
       if (arg == 0){
         using nm1 = ::pressio::ode::nMinusOne;
-        auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+        auto & fomStateNm1 = auxStatesContainer_.stateAt(nm1());
         fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
 					       *Jphi.data(), *fomState.data(), *fomStateNm1.data());
       }
@@ -565,8 +565,8 @@ public:
       if (arg == 0){
         using nm1 = ::pressio::ode::nMinusOne;
         using nm2 = ::pressio::ode::nMinusTwo;
-        auto & fomStateNm1 = auxStatesContainer_.get(nm1());
-        auto & fomStateNm2 = auxStatesContainer_.get(nm2());
+        auto & fomStateNm1 = auxStatesContainer_.stateAt(nm1());
+        auto & fomStateNm2 = auxStatesContainer_.stateAt(nm2());
         fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
 					       *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
       }
@@ -600,8 +600,8 @@ public:
 
     const auto wlsInitialStateNm2 = ::pressio::containers::span(wlsStateIC, 0, romStateSize_);
     const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC, romStateSize_, romStateSize_);
-    auto & fomStateNm2 = auxStatesContainer_.get(nm2());
-    auto & fomStateNm1 = auxStatesContainer_.get(nm1());
+    auto & fomStateNm2 = auxStatesContainer_.stateAt(nm2());
+    auto & fomStateNm1 = auxStatesContainer_.stateAt(nm1());
     fomStateReconstr(wlsInitialStateNm2,fomStateNm2);
     fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
   }
@@ -612,8 +612,8 @@ public:
     using nm1 = ::pressio::ode::nMinusOne;
     using nm2 = ::pressio::ode::nMinusTwo;
 
-    auto & odeState_nm1 = auxStatesContainer_.get(nm1());
-    auto & odeState_nm2 = auxStatesContainer_.get(nm2());
+    auto & odeState_nm1 = auxStatesContainer_.stateAt(nm1());
+    auto & odeState_nm2 = auxStatesContainer_.stateAt(nm2());
     ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
     ::pressio::ops::deep_copy(odeState_nm1, fomStateCurrent);
   }

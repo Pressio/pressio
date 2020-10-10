@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr, currFomState);
-  solver.solve(problem.getSystemRef(), romState);
+  solver.solve(problem.systemRef(), romState);
 
   std::cout << checkStr <<  std::endl;
   return 0;

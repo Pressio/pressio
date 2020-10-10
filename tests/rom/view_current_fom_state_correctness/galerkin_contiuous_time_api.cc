@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 
   Observer Obs(checkStr, galerkinProb.currentFomState());
 
-  pressio::ode::advanceNSteps(galerkinProb.getStepperRef(), romState,
+  pressio::ode::advanceNSteps(galerkinProb.stepperRef(), romState,
    			      0.0, 0.5, 3, Obs);
 
   std::cout << checkStr <<  std::endl;

@@ -16,7 +16,7 @@ TEST(optimizers_param_list, convertToRol)
   {
     const auto entry = rolParList.sublist("Status Test").getEntry("Iteration Limit");
     const auto value = Teuchos::getValue<int>(entry);
-    EXPECT_EQ(value, MyPars.getMaxIterations());
+    EXPECT_EQ(value, MyPars.maxIterations());
   }
 
   {

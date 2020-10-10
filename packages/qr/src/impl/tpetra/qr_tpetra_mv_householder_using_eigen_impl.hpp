@@ -91,7 +91,7 @@ public:
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 
@@ -135,7 +135,7 @@ public:
     // Rmat_ = std::make_shared<R_type>(Rm);
 
     // store Q into replicated Tpetra::Multivector
-    const auto & Q2 = *(myImpl_.getCRefQFactor().data());
+    const auto & Q2 = *(myImpl_.QFactor().data());
     Q_t locQ( rcp_local_map, Q2.cols() );
     auto trilD = locQ.data();
     trilD->template sync<Kokkos::HostSpace>();

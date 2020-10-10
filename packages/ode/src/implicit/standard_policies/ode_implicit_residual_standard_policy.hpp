@@ -143,7 +143,7 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
@@ -174,8 +174,8 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
@@ -206,9 +206,9 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
-    const auto & ynm3 = prevStatesMgr.get(ode::nMinusThree());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
+    const auto & ynm3 = prevStatesMgr.stateAt(ode::nMinusThree());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),

@@ -97,7 +97,7 @@ private:
   }
 
   const Q_t & cRefQFactorImpl() const {
-    return myImpl_.getCRefQFactor();
+    return myImpl_.QFactor();
   }
 
 private:
@@ -144,7 +144,7 @@ private:
 //   }
 
 //   const Q_t & cRefQFactorImpl() const {
-//     return myImpl_.getCRefQFactor();
+//     return myImpl_.QFactor();
 //   }
 
 //   template < typename vector_in_t, typename vector_out_t>
@@ -161,7 +161,7 @@ private:
 //   }
 
 //   const R_type & cRefRFactorImpl() const {
-//     return myImpl_.getCRefRFactor();
+//     return myImpl_.RFactor();
 //   }
 
 // public:

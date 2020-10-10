@@ -92,7 +92,7 @@ public:
 		   operand, zero, *result.data());
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return mappingJacobian_;
   }
 

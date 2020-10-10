@@ -85,12 +85,12 @@ public:
   EigenIterative(const EigenIterative &) = delete;
   ~EigenIterative() = default;
 
-  iteration_t getNumIterationsExecuted() const 
+  iteration_t numIterationsExecuted() const 
   {
     return mysolver_.iterations();
   }
 
-  scalar_t getFinalError() const 
+  scalar_t finalError() const 
   {
     return mysolver_.error();
   }

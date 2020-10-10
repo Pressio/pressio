@@ -4,9 +4,7 @@
 TEST(containers_meta_basic, inheritanceVector){
   
   using namespace pressio;
-
   using eigV_t = containers::Vector<Eigen::Matrix<double,4,1>>;
-  using base_t1 = containers::VectorSharedMemBase<eigV_t>;
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   using epeV_t = containers::Vector<Epetra_Vector>;

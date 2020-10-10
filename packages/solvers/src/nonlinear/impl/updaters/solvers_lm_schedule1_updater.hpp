@@ -87,8 +87,8 @@ public:
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
-    const auto mu	    = solver.getLMDampParam();
-    const auto & correction = solver.getCorrectionCRef();
+    const auto mu	    = solver.lmDampParam();
+    const auto & correction = solver.correctionCRef();
 
     // *** compute gain factor (rho) ***
     const auto rho = gainFactorEval_.compute(sys, state, mu, solver);

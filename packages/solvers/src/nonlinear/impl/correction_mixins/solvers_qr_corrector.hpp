@@ -110,8 +110,8 @@ public:
     T::computeOperators(sys, state, normType_,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
-    const auto & r = T::getResidualCRef();
-    const auto & J = T::getJacobianCRef();
+    const auto & r = T::residualCRef();
+    const auto & J = T::jacobianCRef();
 
     // J = QR
     solverObj_.get().computeThin(J);
@@ -135,11 +135,11 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrectionCRef() const{
+  const state_t & correctionCRef() const{
     return correction_;
   }
 
-  const state_t & getGradientCRef() const{
+  const state_t & gradientCRef() const{
     return g_;
   }
 

@@ -34,12 +34,12 @@ TEST(solvers, nonlinear_tolerances)
 
   // if we don't specify anything, the tolerance should be defaulted to 0.000001
   const double defaultTol = 0.000001;
-  ASSERT_EQ( solver.getCorrectionAbsoluteTolerance(), defaultTol );
-  ASSERT_EQ( solver.getCorrectionRelativeTolerance(), defaultTol );
-  ASSERT_EQ( solver.getResidualAbsoluteTolerance(),   defaultTol );
-  ASSERT_EQ( solver.getResidualRelativeTolerance(),   defaultTol );
-  ASSERT_EQ( solver.getGradientAbsoluteTolerance(),   defaultTol );
-  ASSERT_EQ( solver.getGradientRelativeTolerance(),   defaultTol );
+  ASSERT_EQ( solver.correctionAbsoluteTolerance(), defaultTol );
+  ASSERT_EQ( solver.correctionRelativeTolerance(), defaultTol );
+  ASSERT_EQ( solver.residualAbsoluteTolerance(),   defaultTol );
+  ASSERT_EQ( solver.residualRelativeTolerance(),   defaultTol );
+  ASSERT_EQ( solver.gradientAbsoluteTolerance(),   defaultTol );
+  ASSERT_EQ( solver.gradientRelativeTolerance(),   defaultTol );
 
   // set each and check
   solver.setCorrectionAbsoluteTolerance(0.01);
@@ -48,10 +48,10 @@ TEST(solvers, nonlinear_tolerances)
   solver.setResidualRelativeTolerance(0.04);
   solver.setGradientAbsoluteTolerance(0.05);
   solver.setGradientRelativeTolerance(0.06);
-  ASSERT_EQ( solver.getCorrectionAbsoluteTolerance(), 0.01 );
-  ASSERT_EQ( solver.getCorrectionRelativeTolerance(), 0.02 );
-  ASSERT_EQ( solver.getResidualAbsoluteTolerance(),   0.03 );
-  ASSERT_EQ( solver.getResidualRelativeTolerance(),   0.04 );
-  ASSERT_EQ( solver.getGradientAbsoluteTolerance(),   0.05 );
-  ASSERT_EQ( solver.getGradientRelativeTolerance(),   0.06 );
+  ASSERT_EQ( solver.correctionAbsoluteTolerance(), 0.01 );
+  ASSERT_EQ( solver.correctionRelativeTolerance(), 0.02 );
+  ASSERT_EQ( solver.residualAbsoluteTolerance(),   0.03 );
+  ASSERT_EQ( solver.residualRelativeTolerance(),   0.04 );
+  ASSERT_EQ( solver.gradientAbsoluteTolerance(),   0.05 );
+  ASSERT_EQ( solver.gradientRelativeTolerance(),   0.06 );
 }

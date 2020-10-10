@@ -59,7 +59,7 @@ struct has_const_get_reference_to_jacobian<
   T, jacobian_t,
   mpl::enable_if_t<
     mpl::is_same<
-      decltype( std::declval<T const &>().getReferenceToJacobian() ),
+      decltype( std::declval<T const &>().jacobianCRef() ),
       const jacobian_t &
       >::value
     >

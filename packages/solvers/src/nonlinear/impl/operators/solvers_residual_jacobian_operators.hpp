@@ -93,10 +93,10 @@ public:
 
 public:
   void resetForNewCall()		{ /* no op */ }
-  r_t & getResidualRef()		{ return r_; }
-  j_t & getJacobianRef()		{ return J_; }
-  const r_t & getResidualCRef() const	{ return r_; }
-  const j_t & getJacobianCRef() const	{ return J_; }
+  r_t & residualRef()		{ return r_; }
+  j_t & jacobianRef()		{ return J_; }
+  const r_t & residualCRef() const	{ return r_; }
+  const j_t & jacobianCRef() const	{ return J_; }
 
   template <typename T>
   void setParameter(std::string key, T value) {

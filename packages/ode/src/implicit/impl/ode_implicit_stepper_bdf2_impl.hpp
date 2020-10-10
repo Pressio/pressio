@@ -173,7 +173,7 @@ public:
     if (step == 1){
       // step ==1 means that we are going from y_0 to y_1
       // auxStates_(0) now holds y_0
-      ::pressio::ops::deep_copy(this->auxStates_.get(nm1()), odeState);
+      ::pressio::ops::deep_copy(this->auxStates_.stateAt(nm1()), odeState);
       auxStepper_.doStep(odeState, t, dt, step, solver);
     }
     if (step >= 2)
@@ -183,8 +183,8 @@ public:
       // step == 3 means that we are going from y_2 to y_3, so:
       //		y_n-2 = y_1 and y_n-1 = y_2
 
-      auto & odeState_nm1 = this->auxStates_.get(nm1());
-      auto & odeState_nm2 = this->auxStates_.get(nm2());
+      auto & odeState_nm1 = this->auxStates_.stateAt(nm1());
+      auto & odeState_nm2 = this->auxStates_.stateAt(nm2());
       ::pressio::ops::deep_copy(recoveryState_, odeState_nm2);
       ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState);

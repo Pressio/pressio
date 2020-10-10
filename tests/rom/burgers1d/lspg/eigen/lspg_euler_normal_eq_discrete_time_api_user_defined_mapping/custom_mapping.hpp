@@ -40,7 +40,7 @@ public:
     resultNativeObj = jacNativeObj * romStateNativeObj;
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 

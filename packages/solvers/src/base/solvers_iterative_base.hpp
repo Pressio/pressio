@@ -57,12 +57,12 @@ struct IterativeBase
   using iteration_t = unsigned int;
 
   /** Get the number of iterations performed. */
-  iteration_t getNumIterationsExecuted() const {
-    return static_cast<const derived_t &>(*this).getNumIterationsExecuted();
+  iteration_t numIterationsExecuted() const {
+    return static_cast<const derived_t &>(*this).numIterationsExecuted();
   }
 
   /** Get the maximum number of iterations. */
-  iteration_t getMaxIterations() const {
+  iteration_t maxIterations() const {
     return maxIters_;
   }
 

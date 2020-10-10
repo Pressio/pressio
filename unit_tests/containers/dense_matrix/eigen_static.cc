@@ -16,7 +16,7 @@ TEST(containers_dense_matrix_eigen_static, checkStorage)
   em_t A;
   ASSERT_TRUE( A.rows() == 6 );
   ASSERT_TRUE( A.cols() == 4 );
-  for (size_t j=0; j<A.cols(); j++)
+  for (size_t j=0; j<4; j++)
     A.col(j).setConstant(j);
 
 #ifdef USE_COLMAJ

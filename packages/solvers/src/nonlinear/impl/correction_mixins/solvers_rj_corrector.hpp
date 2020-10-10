@@ -103,8 +103,8 @@ public:
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
-    const auto & r = T::getResidualCRef();
-    const auto & J = T::getJacobianCRef();
+    const auto & r = T::residualCRef();
+    const auto & J = T::jacobianCRef();
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
     // scale by -1 for sign convention
@@ -119,7 +119,7 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrectionCRef() const{ return correction_; }
+  const state_t & correctionCRef() const{ return correction_; }
 
   const sc_t & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;

@@ -189,7 +189,7 @@ private:
      * the state at the previous step (i.e. t-dt)
      */
     if (storedStep_ != timeStep){
-      fomStatesMngr_.get() << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates.stateAt(ode::nMinusOne());
       storedStep_ = timeStep;
     }
 
@@ -197,7 +197,7 @@ private:
     timer->start("fom eval rhs");
 #endif
     ::pressio::rom::queryFomVelocity(fomSystemObj,
-				     fomStatesMngr_.get().getCRefToCurrentFomState(),
+				     fomStatesMngr_.get().currentFomStateCRef(),
 				     romR, time);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

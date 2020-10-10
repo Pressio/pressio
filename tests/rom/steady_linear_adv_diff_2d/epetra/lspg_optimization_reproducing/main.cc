@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
     appObjROM, decoderObj, yROM, *yRef);
 
   using rom_system_t = typename decltype(lspgProblem)::system_t;
-  auto & system = lspgProblem.getSystemRef();
+  auto & system = lspgProblem.systemRef();
 
   using opt_param_t = pressio::optimizers::Parameters<scalar_t>;
   opt_param_t MyPars;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom);
   pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);

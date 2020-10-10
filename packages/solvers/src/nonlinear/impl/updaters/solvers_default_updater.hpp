@@ -65,7 +65,7 @@ public:
   {
     using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
     // default update: y = y + alpha*correction
-    const auto & correction = solver.getCorrectionCRef();
+    const auto & correction = solver.correctionCRef();
     constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::do_update(state, one, correction, one);
   }

@@ -185,7 +185,7 @@ public:
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeState to that
-      auto & rollBackState = this->auxStates_.get(ode::nMinusOne());
+      auto & rollBackState = this->auxStates_.stateAt(ode::nMinusOne());
       ::pressio::ops::deep_copy(odeState, rollBackState);
 
       // we also need to revert back all the auxiliary states
@@ -203,7 +203,7 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
   void storeRecoveryState()
   {
-    auto & src = this->auxStates_.get(ode::nMinusOne());
+    auto & src = this->auxStates_.stateAt(ode::nMinusOne());
     ::pressio::ops::deep_copy(recoveryState_, src);
   }
 
@@ -211,14 +211,14 @@ private:
   void updateAuxiliaryStorage(const ode_state_type & odeState)
   {
     // copy y_n into y_n-1
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
     ::pressio::ops::deep_copy(y_nm1, odeState);
   }
 
   template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
   void rollBackAuxiliaryStorage()
   {
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
     ::pressio::ops::deep_copy(y_nm1, recoveryState_);
   }
 
@@ -228,7 +228,7 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==2, int > = 0>
   void storeRecoveryState()
   {
-    auto & src = this->auxStates_.get(ode::nMinusTwo());
+    auto & src = this->auxStates_.stateAt(ode::nMinusTwo());
     ::pressio::ops::deep_copy(recoveryState_, src);
   }
 
@@ -236,8 +236,8 @@ private:
   void updateAuxiliaryStorage(const ode_state_type & odeState)
   {
     // copy y_n-1 into y_n-2
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = this->auxStates_.stateAt(ode::nMinusTwo());
     ::pressio::ops::deep_copy(y_nm2, y_nm1);
     // copy y_n into y_n-1
     ::pressio::ops::deep_copy(y_nm1, odeState);
@@ -247,8 +247,8 @@ private:
   void rollBackAuxiliaryStorage()
   {
     // copy y_n-2 into y_n-1
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = this->auxStates_.stateAt(ode::nMinusTwo());
     ::pressio::ops::deep_copy(y_nm1, y_nm2);
     //copy safestate to y_n-2
     ::pressio::ops::deep_copy(y_nm2, recoveryState_);
@@ -260,16 +260,16 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==3, int > = 0>
   void storeRecoveryState()
   {
-    auto & src = this->auxStates_.get(ode::nMinusThree());
+    auto & src = this->auxStates_.stateAt(ode::nMinusThree());
     ::pressio::ops::deep_copy(recoveryState_, src);
   }
 
   template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());
-    auto & y_nm3 = this->auxStates_.get(ode::nMinusThree());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = this->auxStates_.stateAt(ode::nMinusTwo());
+    auto & y_nm3 = this->auxStates_.stateAt(ode::nMinusThree());
     ::pressio::ops::deep_copy(y_nm3, y_nm2);
     ::pressio::ops::deep_copy(y_nm2, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, odeState);
@@ -278,9 +278,9 @@ private:
   template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
   void rollBackAuxiliaryStorage()
   {
-    auto & y_nm1 = this->auxStates_.get(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_.get(ode::nMinusTwo());
-    auto & y_nm3 = this->auxStates_.get(ode::nMinusThree());
+    auto & y_nm1 = this->auxStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = this->auxStates_.stateAt(ode::nMinusTwo());
+    auto & y_nm3 = this->auxStates_.stateAt(ode::nMinusThree());
     ::pressio::ops::deep_copy(y_nm1, y_nm2);
     ::pressio::ops::deep_copy(y_nm2, y_nm3);
     ::pressio::ops::deep_copy(y_nm3, recoveryState_);

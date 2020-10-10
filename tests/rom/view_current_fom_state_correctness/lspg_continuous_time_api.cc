@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 
   Observer Obs(checkStr, problem.currentFomState());
 
-  pressio::ode::advanceNSteps(problem.getStepperRef(),
+  pressio::ode::advanceNSteps(problem.stepperRef(),
 			      romState, 0.0, dt, 2,
 			      Obs, solver);
 

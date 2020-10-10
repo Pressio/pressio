@@ -26,7 +26,7 @@ public:
     }
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
   auto galerkinProb = 
     pressio::rom::galerkin::createDefaultProblem<ode_tag>(appObj, decoderObj, romState, refState);
 
-  pressio::ode::advanceNSteps(galerkinProb.getStepperRef(), romState, 0.0, 0.1, 3);
+  pressio::ode::advanceNSteps(galerkinProb.stepperRef(), romState, 0.0, 0.1, 3);
 
   std::vector<scalar_t> trueS{6,9,12,15,18};
   for  (int i=0; i<5; ++i){

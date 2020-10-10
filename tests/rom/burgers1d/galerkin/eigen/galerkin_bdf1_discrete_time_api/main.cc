@@ -64,7 +64,7 @@ struct GalerkinBDF1WithResidualApi
       pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>
       (appobj, decoderObj, yROM_, yRef);
 
-    auto & stepperObj = Problem.getStepperRef();
+    auto & stepperObj = Problem.stepperRef();
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
@@ -80,7 +80,7 @@ struct GalerkinBDF1WithResidualApi
     pressio::ode::advanceNSteps(stepperObj, yROM_, 0.0, dt, 15, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = Problem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = Problem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };

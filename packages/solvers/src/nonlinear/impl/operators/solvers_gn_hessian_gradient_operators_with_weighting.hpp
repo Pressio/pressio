@@ -150,10 +150,10 @@ public:
 
 public:
   void resetForNewCall()    { /* no op */ }
-  h_t & getHessianRef()     { return H_; }
-  g_t & getGradientRef()    { return g_; }
-  const h_t & getHessianCRef() const  { return H_; }
-  const g_t & getGradientCRef() const { return g_; }
+  h_t & hessianRef()     { return H_; }
+  g_t & gradientRef()    { return g_; }
+  const h_t & hessianCRef() const  { return H_; }
+  const g_t & gradientCRef() const { return g_; }
 
   sc_t getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");

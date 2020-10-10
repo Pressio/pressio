@@ -91,8 +91,8 @@ public:
     const auto tenToSev  = std::pow(ten, seven);
     const auto tenToNegSev  = std::pow(ten, negSeven);
 
-    const auto mu	    = solver.getLMDampParam();
-    const auto & correction = solver.getCorrectionCRef();
+    const auto mu	    = solver.lmDampParam();
+    const auto & correction = solver.correctionCRef();
 
     // *** compute gain factor (rho) ***
     const auto rho = gainFactorEval_.compute(sys, state, mu, solver);

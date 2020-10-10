@@ -106,7 +106,7 @@ public:
       stepper_tag>(currentState, prevStates, systemObj, 
         time, dt, step, residual);
 
-    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *residual.data());
   }
 
@@ -123,7 +123,7 @@ public:
   {
     preconditionable_policy::compute(currentState, residual, systemObj);
 
-    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), *residual.data());
   }
 

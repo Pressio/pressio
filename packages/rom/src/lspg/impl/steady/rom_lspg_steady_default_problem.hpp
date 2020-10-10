@@ -79,16 +79,16 @@ private:
   system_t		systemObj_;
 
 public:
-  system_t & getSystemRef(){
+  system_t & systemRef(){
     return systemObj_;
   }
 
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 
   const fom_native_state_t & currentFomState() const{
-    return *fomStatesMngr_.getCRefToCurrentFomState().data();
+    return *fomStatesMngr_.currentFomStateCRef().data();
   }
 
 public:

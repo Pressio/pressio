@@ -18,7 +18,7 @@ public:
     jac_.data()->setConstant(1.);
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 

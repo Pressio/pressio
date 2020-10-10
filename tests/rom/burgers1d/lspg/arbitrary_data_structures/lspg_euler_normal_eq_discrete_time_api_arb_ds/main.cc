@@ -225,10 +225,9 @@ struct EulerLSPGWithResidualApi
     pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
+    // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
     // using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
     //   ode_tag, fom_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states, ops1_t>::type;
     // lspg_problem lspgProblem(fomObj, decoderObj, yROM_, yRef, myOps1);
@@ -242,16 +241,16 @@ struct EulerLSPGWithResidualApi
 
     // GaussNewton solver
     auto solver = pressio::solvers::nonlinear::createGaussNewton(
-              lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
+              lspgProblem.stepperRef(), yROM_, linSolverObj, myOps2);
 
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };

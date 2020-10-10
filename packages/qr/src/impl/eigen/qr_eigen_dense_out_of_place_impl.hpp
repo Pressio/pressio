@@ -111,7 +111,7 @@ public:
     *y.data() = Rm.solve(*rhs.data());
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 };

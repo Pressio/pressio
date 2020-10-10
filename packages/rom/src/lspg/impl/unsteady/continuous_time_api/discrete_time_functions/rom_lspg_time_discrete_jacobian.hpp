@@ -214,15 +214,15 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   // integral type of the global indices
   using GO_t = typename containers::details::traits<lspg_matrix_type>::global_ordinal_t;
 
-  //get row map of phi
+  // row map of phi
   const auto & phi_map = phi.data()->Map();
-  // get my global elements
+  // my global elements
   std::vector<GO_t> gIDphi( phi.extentLocal(0) );
   phi_map.MyGlobalElements( gIDphi.data() );
 
-  // get map of jphi
+  // map of jphi
   const auto & jphi_map = jphi.data()->Map();
-  // get global elements
+  // global elements
   std::vector<GO_t> gIDjphi( jphi.extentLocal(0) );
   jphi_map.MyGlobalElements( gIDjphi.data() );
 
@@ -257,14 +257,14 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type & dt,
 			    const decoder_jac_type & phi){
 
-  //get row map of phi
+  // row map of phi
   const auto phi_map = phi.getMap();
-  // get my global elements
+  // my global elements
   const auto gIDphi = phi_map->getMyGlobalIndices();
 
-  // get map of jphi
+  // map of jphi
   const auto jphi_map = jphi.getMap();
-  // get global elements
+  // global elements
   const auto gIDjphi = jphi_map->getMyGlobalIndices();
 
   // prefactor (f) multiplying f*dt*J*phi

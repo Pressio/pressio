@@ -137,7 +137,7 @@ public:
 	  const types::step_t &  step,
 	  jacobian_type & J) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
 
     system.template discreteTimeJacobian(step, t, dt,
 					 *J.data(),
@@ -164,8 +164,8 @@ public:
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
 
     system.template discreteTimeJacobian(step, t, dt,
 					 *J.data(),
@@ -193,9 +193,9 @@ public:
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    const auto & ynm1 = prevStatesMgr.get(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.get(ode::nMinusTwo());
-    const auto & ynm3 = prevStatesMgr.get(ode::nMinusThree());
+    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
+    const auto & ynm3 = prevStatesMgr.stateAt(ode::nMinusThree());
 
     system.template discreteTimeJacobian(step, t, dt,
 					 *J.data(),

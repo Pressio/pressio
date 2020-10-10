@@ -99,18 +99,18 @@ public:
     return data_type::size();
   }
 
-  const fom_state_type & getCRefToCurrentFomState() const{
-    static_assert( n>=1, "Cannot call getCRefToCurrentFomState if n < 1");
+  const fom_state_type & currentFomStateCRef() const{
+    static_assert( n>=1, "Cannot call currentFomStateCRef if n < 1");
     return data_(0);
   }
 
-  const fom_state_type & getCRefToFomStatePrevStep() const{
-    static_assert( n>=2, "Cannot call getCRefToFomStatePrevStep if n < 2");
+  const fom_state_type & fomStatePrevStepCRef() const{
+    static_assert( n>=2, "Cannot call fomStatePrevStepCRef if n < 2");
     return data_(1);
   }
 
-  const fom_state_type & getCRefToFomStatePrevPrevStep() const{
-    static_assert( n>=3, "Cannot call getCRefToFomStatePrevPrevStep if n < 3");
+  const fom_state_type & fomStatePrevPrevStepCRef() const{
+    static_assert( n>=3, "Cannot call fomStatePrevPrevStepCRef if n < 3");
     return data_(2);
   }
 

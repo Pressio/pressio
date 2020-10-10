@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 
   Observer Obs(checkStr, Problem.currentFomState());
 
-  auto & stepperObj = Problem.getStepperRef();
+  auto & stepperObj = Problem.stepperRef();
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize);
   pressio::ode::advanceNSteps(stepperObj, romState, 0.0, 0.5, 2, Obs, solver);
 

@@ -68,11 +68,11 @@ public:
     return stepNumLocal*jacStencilSize_;
   }
 
-  jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index){
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index){
     return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  const jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const{
     return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
@@ -100,11 +100,11 @@ public:
     return 0;
   }
 
-  jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) {
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) {
     return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  const jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const {
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const {
     return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 

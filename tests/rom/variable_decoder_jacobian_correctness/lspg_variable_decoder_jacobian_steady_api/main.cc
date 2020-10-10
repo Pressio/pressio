@@ -22,7 +22,7 @@ public:
     }
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr);
-  solver.solve(lspgProblem.getSystemRef(), romState);
+  solver.solve(lspgProblem.systemRef(), romState);
 
   std::cout << checkStr <<  std::endl;
   return 0;

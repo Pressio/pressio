@@ -55,7 +55,7 @@ namespace pressio{ namespace rom{ namespace concepts {
  * A type is a legitimate decoder for LSPG if:
  *
  * - has a jacobian_typedef
- * - has a getReferenceToJacobian
+ * - has a jacobianCRef
  * - template applyMapping(operand_t, result_t)
  *
 */

@@ -87,7 +87,7 @@ public:
   >
   create(const fom_system_t & fomSystemObj) const
   {
-    const auto & currentFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & currentFom = fomStatesMngr_.get().currentFomStateCRef();
     return residual_t(fomSystemObj.attr("residual")(*currentFom.data()));
   }
 #endif
@@ -109,7 +109,7 @@ public:
 #endif
 
     ::pressio::rom::queryFomResidual(fomSystemObj, 
-      fomStatesMngr_.get().getCRefToCurrentFomState(), romResidual);
+      fomStatesMngr_.get().currentFomStateCRef(), romResidual);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

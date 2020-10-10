@@ -143,9 +143,9 @@ public:
     updater_ = nullptr;
   }
 
-  update getUpdatingCriterion() const{ return updatingE_; }
+  update updatingCriterion() const{ return updatingE_; }
   void setStoppingCriterion(stop value){ stoppingE_ = value; }
-  stop getStoppingCriterion() const{ return stoppingE_; }
+  stop stoppingCriterion() const{ return stoppingE_; }
 
   // this is used to set a single tol for all 
   void setTolerance(sc_t tolerance){ tolerances_.fill(std::move(tolerance)); }
@@ -158,15 +158,15 @@ public:
   void setGradientAbsoluteTolerance(sc_t value)  { tolerances_[4] = std::move(value); }
   void setGradientRelativeTolerance(sc_t value)  { tolerances_[5] = std::move(value); }
 
-  sc_t getCorrectionAbsoluteTolerance()const { return tolerances_[0]; }
-  sc_t getCorrectionRelativeTolerance()const { return tolerances_[1]; }
-  sc_t getResidualAbsoluteTolerance()const   { return tolerances_[2]; }
-  sc_t getResidualRelativeTolerance()const   { return tolerances_[3]; }
-  sc_t getGradientAbsoluteTolerance()const   { return tolerances_[4]; }
-  sc_t getGradientRelativeTolerance()const   { return tolerances_[5]; }
+  sc_t correctionAbsoluteTolerance()const { return tolerances_[0]; }
+  sc_t correctionRelativeTolerance()const { return tolerances_[1]; }
+  sc_t residualAbsoluteTolerance()const   { return tolerances_[2]; }
+  sc_t residualRelativeTolerance()const   { return tolerances_[3]; }
+  sc_t gradientAbsoluteTolerance()const   { return tolerances_[4]; }
+  sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
 
 public:
-  iteration_t getNumIterationsExecuted() const {
+  iteration_t numIterationsExecuted() const {
     return iStep_;
   }
 

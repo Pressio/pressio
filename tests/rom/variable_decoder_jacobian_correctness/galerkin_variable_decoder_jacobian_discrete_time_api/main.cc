@@ -45,7 +45,7 @@ public:
     }
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 };
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
   auto Problem = 
     pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
-  auto & stepperObj = Problem.getStepperRef();
+  auto & stepperObj = Problem.stepperRef();
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize, checkStr);
   pressio::ode::advanceNSteps(stepperObj, romState, 0.0, 0.1, 2, solver);
 

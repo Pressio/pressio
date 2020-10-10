@@ -85,7 +85,7 @@ public:
 			 const decoder_t & decoder)
     : fomRhs_{fomRhs},
       decoder_{decoder},
-      phi_(decoder.getReferenceToJacobian()),
+      phi_(decoder.jacobianCRef()),
       fomStatesMngr_(fomStatesMngr){}
 
   // 2. non-void ops
@@ -102,7 +102,7 @@ public:
 			 const _ud_ops & udOps)
     : fomRhs_{fomRhs},
       decoder_{decoder},
-      phi_(decoder.getReferenceToJacobian()),
+      phi_(decoder.jacobianCRef()),
       fomStatesMngr_(fomStatesMngr),
       udOps_{&udOps}{}
 
@@ -220,7 +220,7 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    const auto & yFom = fomStatesMngr_.get().getCRefToCurrentFomState();
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
     (*this).template queryFomVelocity<scalar_t>(fomSystemObj, yFom, t);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

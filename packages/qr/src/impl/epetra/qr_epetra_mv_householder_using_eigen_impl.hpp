@@ -85,7 +85,7 @@ public:
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 
@@ -124,7 +124,7 @@ public:
     // Rmat_ = std::make_shared<R_type>( Rm.block(0,0,n,n) );
 
     // store Q into replicated Epetra_Multivector
-    const auto & Q2 = *(myImpl_.getCRefQFactor().data());
+    const auto & Q2 = *(myImpl_.QFactor().data());
     Q_t locQ(locMap,Q2.cols());
     for (int i=0;i<Q2.rows();i++)
       for (int j=0;j<Q2.cols();j++)
