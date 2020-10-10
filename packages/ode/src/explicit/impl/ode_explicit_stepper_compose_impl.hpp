@@ -122,7 +122,7 @@ template<
 struct compose
 {
   static_assert
-  (::pressio::ode::concepts::continuous_time_explicit_system<system_t>::value,
+  (::pressio::ode::concepts::continuous_time_system_without_differential<system_t>::value,
    "The system passed to the ExplicitStepper does not meet the required API");
 
   using state_t	= state_type;
