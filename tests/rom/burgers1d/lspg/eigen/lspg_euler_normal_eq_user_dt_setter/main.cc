@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
   static_assert
     (pressio::ode::concepts::time_step_size_manager<
      setter_t, pressio::ode::types::step_t, scalar_t>::value,"");
-  setter_t setter(lspgProblem.currentFomState(), dt);
+  setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 
   // integrate in time
   pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, 10, solver, setter);

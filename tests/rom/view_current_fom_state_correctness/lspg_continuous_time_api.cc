@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize);
 
-  Observer Obs(checkStr, problem.currentFomState());
+  Observer Obs(checkStr, problem.currentFomStateCRef());
 
   pressio::ode::advanceNSteps(problem.stepperRef(),
 			      romState, 0.0, dt, 2,

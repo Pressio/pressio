@@ -98,7 +98,7 @@ public:
     return stepperObj_;
   }
 
-  const fom_native_state_t & currentFomState() const{
+  const fom_native_state_t & currentFomStateCRef() const{
     return *fomStatesMngr_.currentFomStateCRef().data();
   }
 

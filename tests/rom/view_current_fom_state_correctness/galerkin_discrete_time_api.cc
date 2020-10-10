@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
   auto Problem = 
     pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
-  Observer Obs(checkStr, Problem.currentFomState());
+  Observer Obs(checkStr, Problem.currentFomStateCRef());
 
   auto & stepperObj = Problem.stepperRef();
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize);

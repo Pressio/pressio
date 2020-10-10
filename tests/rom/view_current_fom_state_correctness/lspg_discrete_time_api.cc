@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
     appObj, decoderObj, romState, refState);
 
 
-  const auto & currFomState = problem.currentFomState();
+  const auto & currFomState = problem.currentFomStateCRef();
 
   // here, the fom state should be [10 10 ...]
   Eigen::VectorXd trueFomState(fomSize);

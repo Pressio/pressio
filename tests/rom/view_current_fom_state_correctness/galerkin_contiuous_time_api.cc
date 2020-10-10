@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
   auto galerkinProb = 
     pressio::rom::galerkin::createDefaultProblem<ode_tag>(appObj, decoderObj, romState, refState);
 
-  Observer Obs(checkStr, galerkinProb.currentFomState());
+  Observer Obs(checkStr, galerkinProb.currentFomStateCRef());
 
   pressio::ode::advanceNSteps(galerkinProb.stepperRef(), romState,
    			      0.0, 0.5, 3, Obs);
