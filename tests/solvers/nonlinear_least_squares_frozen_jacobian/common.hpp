@@ -14,7 +14,7 @@ constexpr int numVars = 3;
 
 
 struct MyLinSolverNormalEq
-  : pressio::solvers::LinearBase<mat_type, MyLinSolverNormalEq>
+  // : pressio::solvers::LinearBase<mat_type, MyLinSolverNormalEq>
 {
   using matrix_type = mat_type;
 

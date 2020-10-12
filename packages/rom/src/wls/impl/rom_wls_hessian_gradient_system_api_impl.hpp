@@ -125,9 +125,17 @@ public:
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::is_detected<::pressio::solvers::predicates::has_matrix_typedef, linear_solver_type>::value and
     !std::is_void<typename linear_solver_type::matrix_type>::value and
-    ::pressio::mpl::publicly_inherits_from<
-      linear_solver_type,
-      ::pressio::solvers::LinearBase<typename linear_solver_type::matrix_type, linear_solver_type>
+    // has a solveAllowMatOverwrite method
+    std::is_void<
+      decltype
+      (
+       std::declval<linear_solver_type>().solveAllowMatOverwrite
+       (
+        std::declval<typename linear_solver_type::matrix_type &>(), 
+        std::declval<wls_state_type const &>(), 
+        std::declval<wls_state_type &>()
+        )
+       )
       >::value,
       int > = 0
   >

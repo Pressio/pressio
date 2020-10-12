@@ -63,7 +63,6 @@ namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>
-  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>>
 {
 public:
   static_assert
@@ -77,8 +76,6 @@ public:
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
-
-  using base_t  = LinearBase<MatrixT, this_t>;
   using solver_traits   = linear::details::traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
@@ -275,8 +272,6 @@ public:
     cudaStatus = cudaDeviceSynchronize();
   }
 #endif
-
-  friend base_t;
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;

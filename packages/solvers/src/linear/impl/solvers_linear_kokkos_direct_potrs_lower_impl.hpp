@@ -63,7 +63,6 @@ namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::potrsL, MatrixT>
-  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::potrsL, MatrixT>>
 {
 public:
   static_assert
@@ -78,8 +77,6 @@ public:
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
-  using base_t  = LinearBase<MatrixT, this_t>;
-  friend base_t;
 
   static_assert( solver_traits::kokkos_enabled == true,
   		 "the native solver must suppport kokkos to use in KokkosDirect");

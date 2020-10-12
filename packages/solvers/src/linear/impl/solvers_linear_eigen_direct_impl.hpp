@@ -53,7 +53,6 @@ namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename solver_tag, typename MatrixT>
 class EigenDirect
-  : public LinearBase<MatrixT, EigenDirect<solver_tag, MatrixT>>
 {
   static_assert
   ( ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
@@ -65,10 +64,7 @@ public:
   using matrix_type	= MatrixT;
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
-
   using this_t          = EigenDirect<solver_tag, MatrixT>;
-  using base_interface  = LinearBase<MatrixT, this_t>;
-
   using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
 
@@ -104,7 +100,6 @@ public:
     this->solve(b, y);
   }
 
-  friend base_interface;
   native_solver_t mysolver_ = {};
 };
 

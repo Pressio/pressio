@@ -67,7 +67,6 @@ class KokkosDirect;
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::geqrf, MatrixT>
-  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::geqrf, MatrixT>>
 {
 public:
   static_assert( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
@@ -81,8 +80,6 @@ public:
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
   using solver_traits   = linear::details::traits<solver_tag>;
-  using base_t  = LinearBase<MatrixT, this_t>;
-  friend base_t;
 
   static_assert( solver_traits::kokkos_enabled == true,
   		 "the native solver must suppport kokkos to use in KokkosDirect");

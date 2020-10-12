@@ -75,7 +75,7 @@
 //**********************
 // *** linear *** //
 //**********************
-#include "solvers/src/linear/solvers_linear_base.hpp"
+//#include "solvers/src/linear/solvers_linear_base.hpp"
 #include "solvers/src/linear/solvers_linear_tags.hpp"
 #include "solvers/src/linear/solvers_linear_traits.hpp"
 #include "solvers/src/linear/solvers_linear_solver.hpp"
