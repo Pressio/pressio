@@ -146,8 +146,8 @@ basically the size of the stpper stencil.");
 
   // type of class holding the fom states
   using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates,
-					   fom_state_reconstr_t, ud_ops_t>;
+    ::pressio::rom::ManagerFomStatesStatic<
+    numStates, fom_state_t, fom_state_reconstr_t, ud_ops_t>;
 
 };
 

@@ -107,8 +107,8 @@ struct FomStateReconHelper<
 
 
 template <
-  typename fom_system_type, 
-  typename rom_state_type, 
+  typename fom_system_type,
+  typename rom_state_type,
   typename decoder_type,
   typename ud_ops_type
   >
@@ -152,8 +152,8 @@ struct CommonTraitsContinuousTimeApi
     typename FomStateReconHelper<ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data
-  using fom_states_manager_t = 
-    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, ud_ops_type>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, ud_ops_type>;
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

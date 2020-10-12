@@ -51,7 +51,12 @@
 
 namespace pressio{ namespace rom{
 
-template <typename fom_state_type, std::size_t n, typename reconstuctor_type, typename ud_ops_t>
+template <
+  std::size_t n,
+  typename fom_state_type,
+  typename reconstuctor_type,
+  typename ud_ops_t
+  >
 class ManagerFomStatesStatic
 {
   static_assert
@@ -74,22 +79,24 @@ public:
   ManagerFomStatesStatic & operator=(ManagerFomStatesStatic &&) = default;
   ~ManagerFomStatesStatic() = default;
 
-  template <typename ... Args>
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
-			 Args && ... args)
+			 const fom_state_type & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
-      data_( std::forward<Args>(args)... )
+      data_(fomState)
   {
     this->resetContainersToZero();
   }
 
-  template <typename ... Args>
+  template<
+    typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
+    >
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
-			 const ud_ops_t * udOps,
-			 Args && ... args)
-    : udOps_(udOps),
-      fomStateReconstrObj_(fomStateReconstr),
-      data_( std::forward<Args>(args)... )
+			 const fom_state_type & fomState,
+			 const _ud_ops_t & udOps)
+    : fomStateReconstrObj_(fomStateReconstr),
+      data_(fomState),
+      udOps_(udOps)
   {
     this->resetContainersToZero();
   }
@@ -113,7 +120,6 @@ public:
     static_assert( n>=3, "Cannot call fomStatePrevPrevStepCRef if n < 3");
     return data_(2);
   }
-
 
   /* this method reconstructs the current FOM state */
   template <typename rom_state_t>
@@ -177,7 +183,7 @@ public:
     for (std::size_t i=n-2; i>=1; --i){
       const auto & src  = data_(i);
       auto & dest = data_(i+1);
-      udOps_->deep_copy(*dest.data(), *src.data());
+      udOps_.get().deep_copy(*dest.data(), *src.data());
     }
     // then, reconstrct the FOM state at t-1
     fomStateReconstrObj_.get()(romStateIn, data_(1));
@@ -195,11 +201,16 @@ private:
   mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
   resetContainersToZero(){
     for (std::size_t i=0; i<n; i++)
-      udOps_->set_zero(*data_(i).data());
+      udOps_.get().set_zero(*data_(i).data());
   }
 
 private:
-  const ud_ops_t * udOps_ = nullptr;
+  typename std::conditional<
+  std::is_void<ud_ops_t>::value,
+  ::pressio::utils::impl::empty,
+  std::reference_wrapper<const ud_ops_t>
+  >::type udOps_;
+
   std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
 
   // data[0] contains the current fom state, i.e. step = n

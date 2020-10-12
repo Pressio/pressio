@@ -178,7 +178,7 @@ public:
     : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
       fomStateReconstructor_(fomNominalState_, decoder, udOps),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_, udOps),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  (*decoder.jacobianCRef().data())),

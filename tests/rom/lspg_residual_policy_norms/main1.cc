@@ -124,7 +124,7 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   fom_recon fomReconstructor(yRef, decoderObj);
 
   using fom_states_manager_t
-    = pressio::rom::ManagerFomStatesStatic<fom_state_t, numAuxStates+1, fom_recon, void>;
+    = pressio::rom::ManagerFomStatesStatic<numAuxStates+1, fom_state_t, fom_recon, void>;
   fom_states_manager_t fomStatesMngr(fomReconstructor, yRef);
 
   using lspg_residual_policy =

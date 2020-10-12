@@ -141,7 +141,7 @@ public:
 				const _ud_ops_t & udOps)
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder, udOps),
-      fomStatesMngr_(fomStateReconstructor_, &udOps, fomNominalState_),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_, udOps),
       // construct policies
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),

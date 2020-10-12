@@ -154,7 +154,7 @@ public:
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder, udOps),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStatesMngr_(fomStateReconstructor_, &udOps, fomNominalState_),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_, udOps),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
       stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
   {

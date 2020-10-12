@@ -141,7 +141,7 @@ struct CommonTraits
 
   // class type holding fom states data: we only need to store one FOM state
   using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, void>;
+    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, void>;
 };
 
 }}}}}
