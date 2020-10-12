@@ -64,16 +64,16 @@ public:
        jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
   {}
 
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const{
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const{
     return stepNumLocal*jacStencilSize_;
   }
 
   jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index){
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
   const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:
@@ -96,16 +96,16 @@ public:
        jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
   {}
 
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const {
     return 0;
   }
 
   jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) {
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
   const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const {
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:
