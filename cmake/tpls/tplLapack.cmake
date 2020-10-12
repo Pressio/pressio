@@ -8,16 +8,17 @@ endif()
 if(PRESSIO_ENABLE_TPL_LAPACK)
 
   if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
-    # check if LAPACK_DIR is specified
-    if (LAPACK_DIR)
+    # check if LAPACK_ROOT is specified
+    if (NOT ${LAPACK_ROOT})
       message("")
-      message("I found LAPACK_DIR=${LAPACK_DIR}.")
-      message("If this is not right, reconfigure with: -DLAPACK_DIR=<path-to-your-lapack>")
+      message(FATAL_ERROR "LAPACK_ROOT not speificed, terminating")
+      message("Make sure you set the LAPACK_ROOT env var")
     endif()
 
+    cmake_policy(SET CMP0074 NEW)
     find_package( LAPACK REQUIRED )
     link_libraries(${LAPACK_LIBRARIES})
-    message("")
+    message("LAPLIBS=${LAPACK_LIBRARIES}")
   endif()
 
 endif()
