@@ -111,9 +111,9 @@ public:
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
-			   const fom_state_t & fomStateReference,
+			   const fom_state_t & fomNominalState,
 			   const wls_state_type & wlsStateIcIn)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomStateReference)
+    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
   {
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1   = containers::span(wlsStateIC_, spanStartIndex, romSize_);
@@ -136,9 +136,9 @@ public:
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
-			   const fom_state_t & fomStateReference,
+			   const fom_state_t & fomNominalState,
   			   linear_solver_type & linSolverObj)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomStateReference)
+    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
@@ -146,7 +146,7 @@ public:
     const auto & decoderJac = decoderObj.jacobianCRef();
 
     ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj, decoderJac,
-  									  fomStateInitCondition, fomStateReference,
+  									  fomStateInitCondition, fomNominalState,
 									  wlsStateTmp);
 
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
@@ -160,12 +160,12 @@ private:
 			   const window_size_t numStepsInWindow,
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
-			   const fom_state_t & fomStateReference)
+			   const fom_state_t & fomNominalState)
     : romSize_(romSize),
       numStepsInWindow_{numStepsInWindow},
       hessianGradientPolicy_(policy),
       wlsStateIC_(wlsStencilSize_),
-      fomStateReconstructor_(fomStateReference, decoderObj)
+      fomStateReconstructor_(fomNominalState, decoderObj)
   {}
 
 public:

@@ -94,17 +94,17 @@ mpl::enable_if_t<
 createDefaultProblemSteady(const fom_system_type & fomSysObj,
 			   const decoder_type & decoder,
 			   const rom_state_type & romStateIn,
-			   const fom_native_state & fomRef)
+			   const fom_native_state & fomNominalState)
 {
   using return_t = composeDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type>;
 
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
-  return return_t(fomSysObj, decoder, romStateIn, fomRef);
+  return return_t(fomSysObj, decoder, romStateIn, fomNominalState);
 }
 
 // create default unsteady (continuous-time api)
@@ -125,7 +125,7 @@ mpl::enable_if_t<
 createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 			     const decoder_type & decoder,
 			     const rom_state_type & romStateIn,
-			     const fom_native_state & fomRef,
+			     const fom_native_state & fomNominalState,
 			     Args && ...args)
 {
   using return_t = composeDefaultProblem_t<
@@ -133,11 +133,11 @@ createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,
-		  fomRef, std::forward<Args>(args)...);
+		  fomNominalState, std::forward<Args>(args)...);
 }
 
 // create default unsteady (discrete-time api)
@@ -163,7 +163,7 @@ mpl::enable_if_t<
 createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 			     const decoder_type & decoder,
 			     const rom_state_type & romStateIn,
-			     const fom_native_state & fomRef,
+			     const fom_native_state & fomNominalState,
 			     Args && ...args)
 {
   using return_t = composeDefaultProblem_t<
@@ -175,11 +175,11 @@ createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,
-		  fomRef, std::forward<Args>(args)...);
+		  fomNominalState, std::forward<Args>(args)...);
 }
 
 }}}

@@ -76,7 +76,7 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomStateReference_;
+  const fom_state_t		fomNominalState_;
   const fom_velocity_t		fomVelocityRef_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
@@ -133,12 +133,12 @@ public:
   MaskedProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
 				 const decoder_t & decoder,
 				 const lspg_state_t & romStateIn,
-				 const fom_native_state_t & fomStateReferenceNative,
+				 const fom_native_state_t & fomNominalStateNative,
 				 const masker_t & maskerObj)
-    : fomStateReference_(fomStateReferenceNative),
+    : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  ( *decoder.jacobianCRef().data() )),
@@ -175,12 +175,12 @@ public:
   MaskedProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 				 const decoder_t & decoder,
 				 const lspg_state_t & romStateIn,
-				 const fom_native_state_t & fomStateReferenceNative,
+				 const fom_native_state_t & fomNominalStateNative,
 				 const masker_t & maskerObj)
-    : fomStateReference_(fomStateReferenceNative),
+    : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  (*decoder.jacobianCRef().data())),

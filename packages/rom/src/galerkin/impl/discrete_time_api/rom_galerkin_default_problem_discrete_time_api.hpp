@@ -76,7 +76,7 @@ public:
   using stepper_t = typename traits::stepper_t;
 
 private:
-  fom_state_t fomStateReference_;
+  fom_state_t fomNominalState_;
   fom_reconstr_t fomStateReconstructor_;
   fom_states_manager_t fomStatesMngr_;
   residual_policy_t residualPolicy_;
@@ -107,10 +107,10 @@ public:
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t & decoder,
 				const rom_state_t & romStateIn,
-				const fom_native_state_t & fomNativeReferenceState)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+				const fom_native_state_t & fomNominalStateNative)
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       residualPolicy_(fomStatesMngr_, decoder, fomSystemObj),
       jacobianPolicy_(fomStatesMngr_, decoder, fomSystemObj),
       stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)

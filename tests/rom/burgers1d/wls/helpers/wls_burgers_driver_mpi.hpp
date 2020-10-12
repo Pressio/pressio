@@ -59,7 +59,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC
-  const fom_state_t & fomStateReference = fomStateInitCond;
+  const fom_state_t & fomNominalState = fomStateInitCond;
 
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
@@ -82,8 +82,8 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
   // create policy and wls system
   int jacobianUpdateFrequency = 1;
-  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
-  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linearSolver);
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomNominalState, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
+  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomNominalState, linearSolver);
 
   // create the wls state
   wls_state_t  wlsState(wlsSize);

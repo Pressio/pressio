@@ -75,7 +75,7 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomStateReference_;
+  const fom_state_t		fomNominalState_;
   const fom_velocity_t		fomVelocityRef_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
@@ -132,11 +132,11 @@ public:
   DefaultProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
 				  const decoder_t & decoder,
 				  const lspg_state_t & romStateIn,
-				  const fom_native_state_t & fomStateReferenceNative)
-    : fomStateReference_(fomStateReferenceNative),
+				  const fom_native_state_t & fomNominalStateNative)
+    : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  ( *decoder.jacobianCRef().data() )),
@@ -173,12 +173,12 @@ public:
   DefaultProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 				  const decoder_t & decoder,
 				  const lspg_state_t & romStateIn,
-				  const fom_native_state_t & fomStateReferenceNative,
+				  const fom_native_state_t & fomNominalStateNative,
 				  const _ud_ops_t & udOps)
-    : fomStateReference_(fomStateReferenceNative),
+    : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomStateReference_, decoder, udOps),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStateReconstructor_(fomNominalState_, decoder, udOps),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  (*decoder.jacobianCRef().data())),
@@ -216,11 +216,11 @@ public:
   DefaultProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
 				  const decoder_t & decoder,
 				  const lspg_state_t & romStateIn,
-				  const fom_native_state_t & fomStateReferenceNative)
-    : fomStateReference_(fomStateReferenceNative),
+				  const fom_native_state_t & fomNominalStateNative)
+    : fomNominalState_(fomNominalStateNative),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       //
       jPhiMatrix_(fomSystemObj.createApplyJacobianResult
 		  (*decoder.jacobianCRef().data())),
@@ -260,17 +260,17 @@ public:
   //   >
   //   DefaultProblemContinuousTimeApi
   //   (const _fom_system_t & fomSystemObj,
-  //    const fom_native_state_t fomStateReferenceIn,
+  //    const fom_native_state_t fomNominalStateIn,
   //    const decoder_t & decoder,
   //    typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
   //    scalar_t t0)
-  //     : fomStateReference_(fomStateReferenceIn),
-  //       fomVelocityRef_( fomSystemObj.attr("velocity")(fomStateReferenceIn, t0) ),
-  //       fomStateReconstructor_(fomStateReference_, decoder),
-  //       fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+  //     : fomNominalState_(fomNominalStateIn),
+  //       fomVelocityRef_( fomSystemObj.attr("velocity")(fomNominalStateIn, t0) ),
+  //       fomStateReconstructor_(fomNominalState_, decoder),
+  //       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
   //       //
   //       jPhiMatrix_(fomSystemObj.attr("applyJacobian")
-  // 		        (fomStateReferenceIn, *decoder.jacobianCRef().data(), t0)),
+  // 		        (fomNominalStateIn, *decoder.jacobianCRef().data(), t0)),
   //       //
   //       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
   //       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),

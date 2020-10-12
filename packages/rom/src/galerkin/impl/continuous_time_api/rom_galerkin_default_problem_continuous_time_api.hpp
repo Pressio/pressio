@@ -76,7 +76,7 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  fom_state_t			fomStateReference_;
+  fom_state_t			fomNominalState_;
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		fomVelocityRef_;
   fom_states_manager_t		fomStatesMngr_;
@@ -120,11 +120,11 @@ public:
   DefaultProblemContinuousTimeApi(const fom_system_t	   & fomSystemObj,
 				  const decoder_t	   & decoder,
 				  const galerkin_state_t   & romStateIn,
-				  const fom_native_state_t & fomNativeReferenceState)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
+				  const fom_native_state_t & fomNominalStateNative)
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
   {
@@ -149,12 +149,12 @@ public:
   DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
 				  const decoder_t	    & decoder,
 				  const galerkin_state_t    & romStateIn,
-				  const fom_native_state_t  & fomNativeReferenceState,
+				  const fom_native_state_t  & fomNominalStateNative,
 				  const _ud_ops_t	    & udOps)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder, udOps),
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder, udOps),
       fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
+      fomStatesMngr_(fomStateReconstructor_, &udOps, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
       stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
   {
@@ -175,14 +175,14 @@ public:
       int > = 0
     >
   DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-				  const fom_native_state_t & fomNativeReferenceState,
+				  const fom_native_state_t & fomNominalStateNative,
 				  const decoder_t	    & decoder,
 				  const galerkin_native_state_t & romStateIn,
 				  scalar_t		    t0)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomVelocityRef_( fomSystemObj.attr("velocity")(*fomStateReference_.data(), t0) ),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomVelocityRef_( fomSystemObj.attr("velocity")(*fomNominalState_.data(), t0) ),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, velocityPolicy_)
   {

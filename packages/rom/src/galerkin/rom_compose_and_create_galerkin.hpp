@@ -86,8 +86,8 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn,
 		  fomRef, std::forward<Args>(args)...);
@@ -127,8 +127,8 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef);
 }

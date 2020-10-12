@@ -65,9 +65,9 @@ struct FomStateReconstructorPressioOps
   FomStateReconstructorPressioOps & operator=(FomStateReconstructorPressioOps &&) = default;
   ~FomStateReconstructorPressioOps() = default;
 
-  FomStateReconstructorPressioOps(const fom_state_type & fomStateReferenceIn,
+  FomStateReconstructorPressioOps(const fom_state_type & fomNominalState,
 				  const decoder_type & decoder)
-    : fomStateReference_(fomStateReferenceIn),
+    : fomNominalState_(fomNominalState),
       decoderObj_(decoder)
   {}
 
@@ -78,13 +78,13 @@ struct FomStateReconstructorPressioOps
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    // fomState = fomState + fomStateReference_;
-    ops::do_update(fomState, one, fomStateReference_.get(), one);
+    // fomState = fomState + fomNominalState_;
+    ops::do_update(fomState, one, fomNominalState_.get(), one);
   }
 
   template <typename rom_state_t>
   fom_state_type operator()(const rom_state_t & romState) const{
-    auto fomState(fomStateReference_.get());
+    auto fomState(fomNominalState_.get());
     ::pressio::ops::set_zero(fomState);
     this->operator()(romState,fomState);
     return fomState;
@@ -99,7 +99,7 @@ struct FomStateReconstructorPressioOps
     >
   evaluate(const rom_state_t & romState) const{
     ::pressio::containers::Vector<rom_state_t> romView(romState, ::pressio::view());
-    fom_state_type fomState(fomStateReference_);
+    fom_state_type fomState(fomNominalState_);
     ::pressio::ops::set_zero(fomState);
     this->operator()(romView, fomState);
     return *fomState.data();
@@ -107,7 +107,7 @@ struct FomStateReconstructorPressioOps
 #endif
 
 private:
-  std::reference_wrapper<const fom_state_type> fomStateReference_	= {};
+  std::reference_wrapper<const fom_state_type> fomNominalState_	= {};
   std::reference_wrapper<const decoder_type> decoderObj_	= {};
 
 };

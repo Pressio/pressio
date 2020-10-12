@@ -71,7 +71,7 @@ public:
   using system_t		= typename traits::system_t;
 
 private:
-  fom_state_t		fomStateReference_;
+  fom_state_t		fomNominalState_;
   fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t	fomStatesMngr_;
   residual_policy_t	residualPolicy_;
@@ -109,10 +109,10 @@ public:
   DefaultProblemSteady(const _fom_system_t & fomSystemObj,
 		       const decoder_t	& decoder,
 		       const lspg_state_t & romStateIn,
-		       const fom_native_state_t & fomNativeReferenceState)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+		       const fom_native_state_t & fomNominalNative)
+    : fomNominalState_(fomNominalNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
@@ -135,10 +135,10 @@ public:
   DefaultProblemSteady(const _fom_system_t & fomSystemObj,
 		       const decoder_t	& decoder,
 		       typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
-		       const fom_native_state_t fomNativeReferenceState)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+		       const fom_native_state_t fomNominalNative)
+    : fomNominalState_(fomNominalNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
       systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)

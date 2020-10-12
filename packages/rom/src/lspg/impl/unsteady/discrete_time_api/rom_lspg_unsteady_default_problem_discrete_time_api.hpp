@@ -80,7 +80,7 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomStateReference_;
+  const fom_state_t		fomNominalState_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
   residual_policy_t	residualPolicy_;
@@ -115,10 +115,10 @@ public:
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t	& decoder,
 				const lspg_state_t & romStateIn,
-				const fom_native_state_t & fomStateReferenceNative)
-    : fomStateReference_(fomStateReferenceNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+				const fom_native_state_t & fomNominalStateNative)
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       // construct policies
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),
@@ -137,11 +137,11 @@ public:
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t	& decoder,
 				const lspg_state_t & romStateIn,
-				const fom_native_state_t & fomStateReferenceNative,
+				const fom_native_state_t & fomNominalStateNative,
 				const _ud_ops_t & udOps)
-    : fomStateReference_(fomStateReferenceNative),
-      fomStateReconstructor_(fomStateReference_, decoder, udOps),
-      fomStatesMngr_(fomStateReconstructor_, &udOps, fomStateReference_),
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder, udOps),
+      fomStatesMngr_(fomStateReconstructor_, &udOps, fomNominalState_),
       // construct policies
       residualPolicy_(fomStatesMngr_),
       jacobianPolicy_(fomStatesMngr_, decoder),

@@ -82,7 +82,7 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomStateReference_;
+  const fom_state_t		fomNominalState_;
   const fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t		fomStatesMngr_;
   residual_policy_t	residualPolicy_;
@@ -115,13 +115,13 @@ public:
     mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
   >
   MaskedProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-				const fom_native_state_t & fomStateReferenceNative,
+				const fom_native_state_t & fomNominalStateNative,
 				decoder_t	 & decoder,
 				lspg_state_t & romStateIn,
         const masker_t & maskerObj)
-    : fomStateReference_(fomStateReferenceNative),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       // construct policies
       residualPolicy_(maskerObj, fomStatesMngr_),
       jacobianPolicy_(maskerObj, fomStatesMngr_, decoder),

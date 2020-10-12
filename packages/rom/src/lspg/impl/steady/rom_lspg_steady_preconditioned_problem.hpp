@@ -72,7 +72,7 @@ public:
   using system_t		= typename traits::system_t;
 
 private:
-  fom_state_t		fomStateReference_;
+  fom_state_t		fomNominalState_;
   fom_state_reconstr_t	fomStateReconstructor_;
   fom_states_manager_t	fomStatesMngr_;
   residual_policy_t	residualPolicy_;
@@ -109,11 +109,11 @@ public:
   PreconditionedProblemSteady(const _fom_system_t & fomSystemObj,
 			      const decoder_t	& decoder,
 			      const lspg_state_t & romStateIn,
-			      const fom_native_state_t & fomNativeReferenceState,
+			      const fom_native_state_t & fomNominalStateNative,
 			      const preconditioner_t & preconditionerObj)
-    : fomStateReference_(fomNativeReferenceState),
-      fomStateReconstructor_(fomStateReference_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomStateReference_),
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       residualPolicy_(preconditionerObj, fomStatesMngr_),
       jacobianPolicy_(preconditionerObj, fomStatesMngr_, decoder),
       systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)

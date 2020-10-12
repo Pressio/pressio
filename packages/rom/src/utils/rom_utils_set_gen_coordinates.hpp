@@ -60,7 +60,7 @@ template <
 void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 				       const basis_t & phi,
 				       const fom_state_t & fomState,
-				       const fom_state_t & fomStateReference,
+				       const fom_state_t & fomNominalState,
 				       rom_state_t & romState)
 {
   /* Compute the ROM coefficients from optimal L^2 projection of yFOM */
@@ -75,9 +75,9 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
   hessian_t H(romSize,romSize);
   ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one, phi, phi, zero, H);
 
-  //create a vector to store fomState - fomStateReference
+  //create a vector to store fomState - fomNominalState
   fom_state_t b(fomState);
-  pressio::ops::do_update(b, one, fomStateReference, negOne);
+  pressio::ops::do_update(b, one, fomNominalState, negOne);
 
   // compute phi^T b
   rom_state_t r(romSize);
