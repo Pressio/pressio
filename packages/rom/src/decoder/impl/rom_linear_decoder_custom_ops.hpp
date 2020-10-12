@@ -62,10 +62,16 @@ struct LinearDecoderWithCustomOps
 
 private:
   const matrix_type mappingJacobian_ = {};
-  const ops_t & udOps_;
+  std::reference_wrapper<const ops_t> udOps_;
 
 public:
   LinearDecoderWithCustomOps() = delete;
+  LinearDecoderWithCustomOps(const LinearDecoderWithCustomOps &) = default;
+  LinearDecoderWithCustomOps & operator=(const LinearDecoderWithCustomOps &) = default;
+  LinearDecoderWithCustomOps(LinearDecoderWithCustomOps &&) = default;
+  LinearDecoderWithCustomOps & operator=(LinearDecoderWithCustomOps &&) = default;
+  ~LinearDecoderWithCustomOps() = default;
+
 
   // /* note that here we make the constructor templated
   //    such that we can pass either
@@ -88,7 +94,7 @@ public:
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    udOps_.product(::pressio::nontranspose(), one, *mappingJacobian_.data(),
+    udOps_.get().product(::pressio::nontranspose(), one, *mappingJacobian_.data(),
 		   operand, zero, *result.data());
   }
 

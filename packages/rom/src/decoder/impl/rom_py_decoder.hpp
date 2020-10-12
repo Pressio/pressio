@@ -77,6 +77,11 @@ private:
 
 public:
   PyDecoder() = delete;
+  PyDecoder(const PyDecoder &) = default;
+  PyDecoder & operator=(const PyDecoder &) = default;
+  PyDecoder(PyDecoder &&) = default;
+  PyDecoder & operator=(PyDecoder &&) = default;
+  ~PyDecoder() = default;
 
   PyDecoder(const jacobian_native_t & jacobianMatrixIn)
     //note here that we view the native object, we don't deep copy it

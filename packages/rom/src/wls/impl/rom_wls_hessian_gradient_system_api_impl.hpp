@@ -84,7 +84,7 @@ private:
   window_size_t numStepsInWindow_ = {};
 
   // policy for evaluating the hessian and gradient
-  const policy_t & hessianGradientPolicy_;
+  std::reference_wrapper<const policy_t> hessianGradientPolicy_;
 
   // cache the size of the wls problem: romSize*numStepsInWindow
   window_size_t wlsProblemSize_ = romSize_*numStepsInWindow_;
@@ -194,7 +194,7 @@ public:
       throw std::runtime_error("cannot call WLS with a norm != L2");
 
     rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_(
+    hessianGradientPolicy_.get()(
 			   wls_state,
 			   wlsStateIC_,
 			   hessian,
@@ -215,7 +215,7 @@ public:
       throw std::runtime_error("cannot call WLS with a norm != L2");
 
     rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_.computeResidualNorm(
+    hessianGradientPolicy_.get().computeResidualNorm(
 			   wls_state,
 			   wlsStateIC_,
 			   fomStateReconstructor_,

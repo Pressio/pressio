@@ -184,12 +184,12 @@ public:
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("residual");
 #endif
-    timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
+    timeSchemeObj_.time_discrete_residual(fomSystemObj_.get(),fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("residual");
 #endif
-    Preconditioner(fomSystemObj_, fomStateCurrent_, residual_, t);
+    Preconditioner(fomSystemObj_.get(), fomStateCurrent_, residual_, t);
 
     //increment the norm
     rNormHelper_ = ::pressio::ops::norm2(residual_);
@@ -292,11 +292,11 @@ public:
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
     timer->start("residual");
 #endif
-    timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
+    timeSchemeObj_.time_discrete_residual(fomSystemObj_.get(),fomStateCurrent_, residual_, ts, dt, stepNumGlobal);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("residual");
 #endif
-    Preconditioner(fomSystemObj_, fomStateCurrent_, residual_, t);
+    Preconditioner(fomSystemObj_.get(), fomStateCurrent_, residual_, t);
 
     //increment the norm
     rNormHelper_ = ::pressio::ops::norm2(residual_);
@@ -317,7 +317,7 @@ public:
       auto timer = Teuchos::TimeMonitor::getStackedTimer();
       timer->start("residual");
 #endif
-      timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, t, dt, step);
+      timeSchemeObj_.time_discrete_residual(fomSystemObj_.get(),fomStateCurrent_, residual_, t, dt, step);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("residual");
 #endif
@@ -391,9 +391,9 @@ private:
     for (window_size_t i = 0; i < jacStencilSize_; i++)
     {
       auto & jacLocal = jacobians_.localJacobian(stepNumLocal , i );
-      timeSchemeObj_.time_discrete_jacobian(fomSystemObj_,fomStateCurrent_, jacLocal, phi_,
-					   t, dt, stepNumGlobal, i);
-      Preconditioner(fomSystemObj_, fomStateCurrent_, jacLocal, t);
+      timeSchemeObj_.time_discrete_jacobian(fomSystemObj_.get(),fomStateCurrent_, 
+          jacLocal, phi_.get(), t, dt, stepNumGlobal, i);
+      Preconditioner(fomSystemObj_.get(), fomStateCurrent_, jacLocal, t);
     }
   }
 
@@ -427,12 +427,12 @@ private:
       auto timer = Teuchos::TimeMonitor::getStackedTimer();
       timer->start("residual");
 #endif
-      timeSchemeObj_.time_discrete_residual(fomSystemObj_,fomStateCurrent_, residual_, t, dt, step);
+      timeSchemeObj_.time_discrete_residual(fomSystemObj_.get(),fomStateCurrent_, residual_, t, dt, step);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("residual");
 #endif
 
-      Preconditioner(fomSystemObj_,fomStateCurrent_,residual_,t);
+      Preconditioner(fomSystemObj_.get(),fomStateCurrent_,residual_,t);
 
       rNormHelper_ = ::pressio::ops::norm2(residual_);
       rnorm += rNormHelper_*rNormHelper_;
@@ -454,8 +454,8 @@ private:
   window_size_t jacStencilSize_;
   window_size_t jacobianUpdateFrequency_;
 
-  const fom_system_type & fomSystemObj_;
-  const decoder_jac_t & phi_;
+  std::reference_wrapper<const fom_system_type> fomSystemObj_;
+  std::reference_wrapper<const decoder_jac_t> phi_;
   mutable fom_state_t fomStateCurrent_;
   mutable residual_t residual_;
   const decoder_jac_t J_;

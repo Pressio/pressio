@@ -65,6 +65,11 @@ private:
 
 public:
   LinearDecoderWithPressioOps() = delete;
+  LinearDecoderWithPressioOps(const LinearDecoderWithPressioOps &) = default;
+  LinearDecoderWithPressioOps & operator=(const LinearDecoderWithPressioOps &) = default;
+  LinearDecoderWithPressioOps(LinearDecoderWithPressioOps &&) = default;
+  LinearDecoderWithPressioOps & operator=(LinearDecoderWithPressioOps &&) = default;
+  ~LinearDecoderWithPressioOps() = default;
 
   // /* note that here we make the constructor templated
   //    such that we can pass either

@@ -61,6 +61,11 @@ class time_step_failure
 
 public:
   time_step_failure() = default;
+  time_step_failure(const time_step_failure &) = default;
+  time_step_failure & operator=(const time_step_failure &) = default;
+  time_step_failure(time_step_failure &&) = default;
+  time_step_failure & operator=(time_step_failure &&) = default;
+  ~time_step_failure() = default;
 
   explicit time_step_failure(std::string append)
     : append_{append}{
@@ -81,6 +86,11 @@ class velocity_failure_unrecoverable
 
 public:
   velocity_failure_unrecoverable() = default;
+  velocity_failure_unrecoverable(const velocity_failure_unrecoverable &) = default;
+  velocity_failure_unrecoverable & operator=(const velocity_failure_unrecoverable &) = default;
+  velocity_failure_unrecoverable(velocity_failure_unrecoverable &&) = default;
+  velocity_failure_unrecoverable & operator=(velocity_failure_unrecoverable &&) = default;
+  ~velocity_failure_unrecoverable() = default;
 
   explicit velocity_failure_unrecoverable(std::string append)
     : append_{append}{
@@ -101,6 +111,11 @@ class discrete_time_residual_failure_unrecoverable
 
 public:
   discrete_time_residual_failure_unrecoverable() = default;
+  discrete_time_residual_failure_unrecoverable(const discrete_time_residual_failure_unrecoverable &) = default;
+  discrete_time_residual_failure_unrecoverable & operator=(const discrete_time_residual_failure_unrecoverable &) = default;
+  discrete_time_residual_failure_unrecoverable(discrete_time_residual_failure_unrecoverable &&) = default;
+  discrete_time_residual_failure_unrecoverable & operator=(discrete_time_residual_failure_unrecoverable &&) = default;
+  ~discrete_time_residual_failure_unrecoverable() = default;
 
   explicit discrete_time_residual_failure_unrecoverable(std::string append)
     : append_{append}{
