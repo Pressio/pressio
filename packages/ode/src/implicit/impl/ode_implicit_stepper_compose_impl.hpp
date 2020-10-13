@@ -83,7 +83,7 @@ struct compose<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_with_differential<system_type>::value
+    ::pressio::ode::concepts::continuous_time_system_with_jacobian<system_type>::value
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
@@ -190,7 +190,7 @@ struct compose<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_with_differential<system_type>::value and
+    ::pressio::ode::concepts::continuous_time_system_with_jacobian<system_type>::value and
     ::pressio::ode::concepts::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
   >,
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
@@ -264,7 +264,7 @@ struct compose<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
     ::pressio::ode::concepts::implicit_residual<residual_type>::value and
     ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::discrete_time_system_with_differential<system_type>::value and
+    ::pressio::ode::concepts::discrete_time_system_with_jacobian<system_type>::value and
     ::pressio::ode::predicates::IsStepperOrderSetter<order_setter_t>::value and
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
   >,
