@@ -55,7 +55,10 @@ class BaseUpdater
 {
 public:
   BaseUpdater() = default;
-
+  BaseUpdater(BaseUpdater const &) = default;
+  BaseUpdater & operator=(BaseUpdater const &) = default;
+  BaseUpdater(BaseUpdater &&) = default;
+  BaseUpdater & operator=(BaseUpdater &&) = default;
   virtual ~BaseUpdater() = default;
 
   template<

@@ -171,17 +171,15 @@ public:
     >
   computeOperators(const system_t & system,
        const state_t & state,
-       ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {
     // compute r from system object
-    system.residual(state, r_);//, normType, residualNorm);
+    system.residual(state, r_);
     // apply M 
     (*functorM_)(r_, Mr_);
 
-    assert(normType == ::pressio::Norm::L2);
-    residualNorm = this->computeNorm(normType);
+    residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
@@ -198,16 +196,13 @@ public:
     >
   computeOperators(const system_t & system,
        const state_t & state,
-       ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    //normType, residualNorm, recomputeSystemJacobian);
 
     (*functorM_)(r_, Mr_);
-    assert(normType == ::pressio::Norm::L2);
-    residualNorm = this->computeNorm(normType);
+    residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
       (*functorM_)(J_, MJ_);
@@ -223,13 +218,11 @@ public:
     >
   residualNorm(const system_t & system, 
          const state_t & state,
-         ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    system.residual(state, r_);//, normType, residualNorm);
+    system.residual(state, r_);
     (*functorM_)(r_, Mr_);
-    residualNorm = this->computeNorm(normType);
-    // residualNorm = ::pressio::ops::dot(r_, Mr_);
+    residualNorm = this->computeNorm();
   }
 
   template< typename system_t, typename state_t>
@@ -238,32 +231,27 @@ public:
     >
   residualNorm(const system_t & system, 
          const state_t & state,
-         ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    // system.residualNorm(state, normType, residualNorm);
-
     // here we query system to recompute r_ only (that is why we pass false)
     system.residualAndJacobian(state, r_, J_, false); 
-                              //normType,residualNorm, false);
     (*functorM_)(r_, Mr_);
-    residualNorm = this->computeNorm(normType);
-    // residualNorm = ::pressio::ops::dot(r_, Mr_);
+    residualNorm = this->computeNorm();
   }
 
 private:
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t< std::is_void<_ud_ops_t>::value, sc_t >
-  computeNorm(::pressio::Norm normType) const
+  computeNorm() const
   {
-    return ::pressio::ops::dot(r_, Mr_);
+    return std::sqrt(::pressio::ops::dot(r_, Mr_));
   }
 
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, sc_t >
-  computeNorm(::pressio::Norm normType) const
+  computeNorm() const
   {
-    return udOps_->dot(r_, Mr_);
+    return std::sqrt(udOps_->dot(r_, Mr_));
   }
 
   template<typename _ud_ops_t = ud_ops_t>

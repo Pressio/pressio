@@ -55,12 +55,16 @@ template<typename state_t>
 class LMGainFactor
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
-
-private:
   state_t cDiagH_; // = h * diag(J^T J)
   state_t trialState_;
 
 public:
+  LMGainFactor(LMGainFactor const &) = default;
+  LMGainFactor & operator=(LMGainFactor const &) = default;
+  LMGainFactor(LMGainFactor &&) = default;
+  LMGainFactor & operator=(LMGainFactor &&) = default;
+  ~LMGainFactor() = default;
+
   LMGainFactor(const state_t & state)
     : cDiagH_(state), trialState_(state)
   {
@@ -69,6 +73,7 @@ public:
     ::pressio::ops::fill(trialState_, zero);
   }
 
+public:
   void resetForNewCall(){
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     ::pressio::ops::fill(cDiagH_, zero);

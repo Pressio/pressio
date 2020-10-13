@@ -74,15 +74,11 @@ createUpdater(const state_t & state,
     case update::standard:{
       using ut = impl::DefaultUpdater;
       return std::unique_ptr<impl::BaseUpdater>(new ut());
-      //updater_.reset(new ut());
-      //break;
     }
 
     case update::armijo:{
       using ut = impl::ArmijoUpdater<state_t>;
       return std::unique_ptr<impl::BaseUpdater>(new ut(state));
-      //updater_.reset(new ut(state));
-      //break;
     }
 
     default:
@@ -107,22 +103,16 @@ createUpdater(const state_t & state,
     case update::standard:{
       using ut = impl::DefaultUpdater;
       return std::unique_ptr<impl::BaseUpdater>(new ut());
-      //updater_.reset(new ut());
-      //break;
     }
 
     case update::LMSchedule1:{
       using ut = impl::LMSchedule1Updater<state_t>;
       return std::unique_ptr<impl::BaseUpdater>(new ut(state));
-      //updater_.reset(new ut(state));
-      //break;
     }
 
     case update::LMSchedule2:{
       using ut = impl::LMSchedule2Updater<state_t>;
       return std::unique_ptr<impl::BaseUpdater>(new ut(state));
-      //updater_.reset(new ut(state));
-      //break;
     }
 
     default:
@@ -147,8 +137,6 @@ createUpdater(const state_t & state,
     case update::standard:{
       using ut = impl::DefaultUpdater;
       return std::unique_ptr<impl::BaseUpdater>(new ut());
-      //updater_.reset(new ut());
-      //break;
     }
 
     default:

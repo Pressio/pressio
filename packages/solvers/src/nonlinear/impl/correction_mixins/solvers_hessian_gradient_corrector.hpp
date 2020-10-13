@@ -58,7 +58,6 @@ class HessianGradientCorrector : public T
 {
 public:
   using state_t = state_type;
-  static constexpr auto normType_ = ::pressio::Norm::L2;
   using sc_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
 
 private:
@@ -128,7 +127,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, ::pressio::Norm::L2,
+    T::computeOperators(sys, state, 
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
@@ -162,14 +161,6 @@ public:
 
   const sc_t & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
-  }
-
-  template< typename system_t>
-  void residualNorm(const system_t & system,
-		    const state_t & state,
-		    sc_t & result) const
-  {
-    T::residualNorm(system, state, ::pressio::Norm::L2, result);
   }
 
 private:

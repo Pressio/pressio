@@ -165,7 +165,6 @@ public:
   sc_t gradientAbsoluteTolerance()const   { return tolerances_[4]; }
   sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
 
-public:
   iteration_t numIterationsExecuted() const {
     return iStep_;
   }

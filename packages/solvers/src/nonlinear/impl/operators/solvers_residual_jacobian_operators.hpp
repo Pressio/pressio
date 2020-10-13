@@ -114,14 +114,11 @@ public:
   >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
 
     sys.residual(state, r_);
-
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = ::pressio::ops::norm2(r_);
 
     if  (recomputeSystemJacobian){
@@ -135,12 +132,10 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
     sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = ::pressio::ops::norm2(r_);
   }
 
@@ -150,11 +145,9 @@ public:
     >
   residualNorm(const system_t & system, 
          const state_t & state,
-	       ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
     system.residual(state, auxR_);
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = ::pressio::ops::norm2(auxR_);
   }
 
@@ -164,11 +157,9 @@ public:
     >
   residualNorm(const system_t & system, 
          const state_t & state,
-	       ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
     system.residualAndJacobian(state, auxR_, J_, false);
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = ::pressio::ops::norm2(auxR_);
   }
 

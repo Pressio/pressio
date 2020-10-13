@@ -105,10 +105,9 @@ public:
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, 
         const state_t & state,
-		    ::pressio::Norm normType, 
         sc_t & residualNorm) const
   {
-    system.residualNorm(state, normType, residualNorm);
+    system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
   template<typename system_t, typename state_t>
@@ -117,7 +116,6 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
@@ -125,7 +123,7 @@ public:
       sys.hessian(state, H_);
     }
 
-    sys.gradient(state, g_, normType,
+    sys.gradient(state, g_, ::pressio::Norm::L2,
 		 residualNorm,
 		 recomputeSystemJacobian);
 
@@ -139,11 +137,11 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    sys.hessianAndGradient(state, H_, g_, normType,
+    sys.hessianAndGradient(state, H_, g_, 
+         ::pressio::Norm::L2,
 			   residualNorm, recomputeSystemJacobian);
 
     // scale because of sign convention

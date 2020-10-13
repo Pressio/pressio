@@ -145,11 +145,10 @@ public:
   template<typename system_t, typename state_t>
   void computeOperators(const system_t & sys,
       const state_t & state,
-      ::pressio::Norm normType,
       sc_t & residualNorm,
       bool recomputeSystemJacobian=true)
   {
-    HGOpRJApi_.computeOperators(sys, state, normType,
+    HGOpRJApi_.computeOperators(sys, state,
         residualNorm,
         recomputeSystemJacobian);
 
@@ -168,10 +167,9 @@ public:
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, 
          const state_t & state,
-         ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
-    HGOpRJApi_.residualNorm(system, state, normType, residualNorm);
+    HGOpRJApi_.residualNorm(system, state, residualNorm);
   }
 };
 
@@ -238,10 +236,9 @@ public:
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system, 
         const state_t & state,
-		    ::pressio::Norm normType, 
         sc_t & residualNorm) const
   {
-    system.residualNorm(state, normType, residualNorm);
+    system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
   template<typename system_t, typename state_t>
@@ -250,11 +247,10 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    HGOpHGApi_.computeOperators(sys, state, normType,
+    HGOpHGApi_.computeOperators(sys, state,
 				residualNorm, recomputeSystemJacobian);
     if (recomputeSystemJacobian){
       computeLMHessian();
@@ -267,11 +263,10 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   ::pressio::Norm normType,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    HGOpHGApi_.computeOperators(sys, state, normType,
+    HGOpHGApi_.computeOperators(sys, state,
 				residualNorm, recomputeSystemJacobian);
     if (recomputeSystemJacobian){
       computeLMHessian();

@@ -99,7 +99,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, ::pressio::Norm::L2,
+    T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
@@ -132,15 +132,6 @@ public:
   const sc_t & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
-
-  template< typename system_t>
-  void residualNorm(const system_t & system,
-		    const state_t & state,
-		    sc_t & result) const
-  {
-    T::residualNorm(system, state, ::pressio::Norm::L2, result);
-  }
-
 };
 
 }}}}

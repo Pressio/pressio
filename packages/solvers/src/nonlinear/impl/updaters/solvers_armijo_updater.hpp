@@ -61,6 +61,11 @@ class ArmijoUpdater : public BaseUpdater
 
 public:
   ArmijoUpdater() = delete;
+  ArmijoUpdater(ArmijoUpdater const &) = default;
+  ArmijoUpdater & operator=(ArmijoUpdater const &) = default;
+  ArmijoUpdater(ArmijoUpdater &&) = default;
+  ArmijoUpdater & operator=(ArmijoUpdater &&) = default;
+  ~ArmijoUpdater() = default;
 
   ArmijoUpdater(const state_t & state)
     : trialState_(state)
@@ -69,6 +74,7 @@ public:
     ::pressio::ops::fill(trialState_, zero);
   }
 
+public:
   void resetForNewCall() final{ /* no op */ }
 
   template<typename system_t, typename solver_mixin_t>

@@ -55,7 +55,13 @@ class DefaultUpdater : public BaseUpdater
 {
 public:
   DefaultUpdater() = default;
+  DefaultUpdater(DefaultUpdater const &) = default;
+  DefaultUpdater & operator=(DefaultUpdater const &) = default;
+  DefaultUpdater(DefaultUpdater &&) = default;
+  DefaultUpdater & operator=(DefaultUpdater &&) = default;
+  ~DefaultUpdater() = default;
 
+public:
   void resetForNewCall() final{}
 
   template<typename system_t, typename state_t, typename solver_mixin_t>

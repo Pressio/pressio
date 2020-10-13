@@ -58,7 +58,6 @@ class LMSchedule1Updater : public BaseUpdater
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
-private:
   LMGainFactor<state_t> gainFactorEval_;
 
   using cnst		   = pressio::utils::constants<scalar_t>;
@@ -70,10 +69,16 @@ private:
 
 public:
   LMSchedule1Updater() = delete;
+  LMSchedule1Updater(LMSchedule1Updater const &) = default;
+  LMSchedule1Updater & operator=(LMSchedule1Updater const &) = default;
+  LMSchedule1Updater(LMSchedule1Updater &&) = default;
+  LMSchedule1Updater & operator=(LMSchedule1Updater &&) = default;
+  ~LMSchedule1Updater() = default;
 
   LMSchedule1Updater(const state_t & state)
     : gainFactorEval_(state){}
 
+public:
   void resetForNewCall() final{
     nu_ = cnst::two();
     gainFactorEval_.resetForNewCall();

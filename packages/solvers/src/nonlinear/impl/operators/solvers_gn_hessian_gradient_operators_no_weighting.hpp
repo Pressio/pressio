@@ -156,15 +156,13 @@ public:
     >
   computeOperators(const system_t & systemObj,
        const state_t & state,
-       ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {
     // compute r_
-    systemObj.residual(state, r_);//, normType, residualNorm);
+    systemObj.residual(state, r_);
 
     // compute norm of r_
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNormR();
 
     // recompute Jacobian is needed 
@@ -183,14 +181,12 @@ public:
     >
   computeOperators(const system_t & systemObj,
        const state_t & state,
-       ::pressio::Norm normType,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
   {    
     systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
     // compute  norm of r_
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNormR();
 
     // hessian only recomputed if Jacobian has been updated
@@ -208,11 +204,9 @@ public:
     >
   residualNorm(const system_t & systemObj, 
          const state_t & state,
-         ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
     systemObj.residual(state, r_);
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNormR();
   }
 
@@ -222,11 +216,9 @@ public:
     >
   residualNorm(const system_t & systemObj, 
          const state_t & state,
-         ::pressio::Norm normType, 
          sc_t & residualNorm) const
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
-    assert(normType == ::pressio::Norm::L2);
     residualNorm = this->computeNormR();
   }
 
