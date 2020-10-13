@@ -56,7 +56,6 @@
 #include "pressio_qr.hpp"
 #include "pressio_svd.hpp"
 
-#include "solvers/src/solvers_fwd.hpp"
 #include "solvers/src/solvers_meta_static_checks.hpp"
 #include "solvers/src/solvers_exceptions.hpp"
 
