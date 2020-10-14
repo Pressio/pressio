@@ -65,14 +65,11 @@ struct SubspanExpr<
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename mytraits::ordinal_t;
   using size_t = typename mytraits::size_t;
-
   using ref_t = typename mytraits::reference_t;
   using const_ref_t = typename mytraits::const_reference_t;
-
   using native_expr_t = typename mytraits::native_expr_t;
   using data_return_t = typename mytraits::data_return_t;
   using const_data_return_t = typename mytraits::const_data_return_t;
-
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -87,13 +84,10 @@ private:
 
 public:
   SubspanExpr() = delete;
-
   SubspanExpr(const SubspanExpr & other) = default;
   SubspanExpr & operator=(const SubspanExpr & other) = delete;
-
   SubspanExpr(SubspanExpr && other) = default;
   SubspanExpr & operator=(SubspanExpr && other) = delete;
-
   ~SubspanExpr() = default;
 
   SubspanExpr(matrix_t & matObjIn,
@@ -106,7 +100,8 @@ public:
     endCol_(std::get<1>(colRangeIn)-1),
     numRows_(endRow_ - rowStart_ + 1),
     numCols_(endCol_ - colStart_ + 1),
-    nativeExprObj_(matObj_.get().data()->block(rowStart_, colStart_, numRows_, numCols_))
+    nativeExprObj_(matObj_.get().data()->block(rowStart_, colStart_,
+					       numRows_, numCols_))
   {
     assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
     assert( (int)std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
@@ -119,6 +114,7 @@ public:
     assert(endCol_ >= colStart_);
   }
 
+public:
   size_t extent(size_t i) const{
     return (i==0) ? numRows_ : numCols_;
   }
@@ -147,7 +143,6 @@ public:
 };
 
 
-
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename matrix_t>
 struct SubspanExpr<
@@ -164,10 +159,8 @@ struct SubspanExpr<
   using ord_t = typename mytraits::ordinal_t;
   using size_t = typename mytraits::size_t;
   using pair_t = typename mytraits::pair_t;
-
   using ref_t = typename mytraits::reference_t;
   using const_ref_t = typename mytraits::const_reference_t;
-
   using native_expr_t = typename mytraits::native_expr_t;
   using data_return_t = typename mytraits::data_return_t;
   using const_data_return_t = typename mytraits::const_data_return_t;
@@ -184,13 +177,10 @@ private:
 
 public:
   SubspanExpr() = delete;
-
   SubspanExpr(const SubspanExpr & other) = default;
   SubspanExpr & operator=(const SubspanExpr & other) = delete;
-
   SubspanExpr(SubspanExpr && other) = default;
   SubspanExpr & operator=(SubspanExpr && other) = delete;
-
   ~SubspanExpr() = default;
 
   SubspanExpr(matrix_t & matObjIn,
@@ -218,20 +208,9 @@ public:
     assert(endCol_ >= colStart_);
   }
 
+public:
   size_t extent(size_t i) const{
     return (i==0) ? numRows_ : numCols_;
-  }
-
-  ref_t operator()(const size_t & i, const size_t & j){
-    assert(i < numRows_);
-    assert(j < numCols_);
-    return nativeExprObj_(i, j);
-  }
-
-  const_ref_t const & operator()(const size_t & i, const size_t & j) const{
-    assert(i < numRows_);
-    assert(j < numCols_);
-    return nativeExprObj_(i, j);
   }
 
   const_data_return_t data() const{
@@ -240,6 +219,46 @@ public:
 
   data_return_t data(){
     return &nativeExprObj_;
+  }
+
+  // non-const subscripting
+  /*
+    need to be careful with non-const subscripting
+    because for kokkos the following would be legal:
+
+    using kv_t	      = Kokkos::View<double **>;
+    using w_t = pressio::containers::DenseMatrix<kv_t>;
+    kv_t a(..);
+    const w_t aw(a);
+    auto s = pressio::containers::subspan(aw,...);
+    s(0,0) = 1.1;
+
+    which works because for kokkos we can assign a const view.
+    but we do NOT wwant this since aw is const.
+   */
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator()(const size_t & i, const size_t & j)
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return nativeExprObj_(i, j);
+  }
+
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    const_ref_t
+    >
+  operator()(const size_t & i, const size_t & j) const
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return nativeExprObj_(i, j);
   }
 };
 #endif

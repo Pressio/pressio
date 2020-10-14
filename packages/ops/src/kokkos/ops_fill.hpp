@@ -59,8 +59,17 @@ template < typename T >
   ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
   >
-fill(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & o,
+     typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
+  /* make sure we don't pass a const object to be modified.
+     In kokkos it is legal to modify const views.
+     But for pressio wrappers it is not.
+   */
+  static_assert
+    (!std::is_const<T>::value,
+     "ops:filll: cannot fill a const-qualified wrapper of a Kokkos view");
+
   KokkosBlas::fill( *o.data(), value );
 }
 

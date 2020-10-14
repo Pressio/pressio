@@ -54,25 +54,55 @@
 namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------
-//  overloads for computing: MV = a * MV + b * MV1
+// overloads for computing: MV = a * MV + b * MV1
 // where MV is an kokkos multivector wrapper
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_kokkos<T>::value
+  containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
+  containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
   >
-do_update(T & mv, const scalar_t &a,
-	       const T & mv1, const scalar_t &b)
+do_update(T1 & mv,
+	  const scalar_t &a,
+	  const T2 & mv1,
+	  const scalar_t &b)
 {
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers. */
+  static_assert
+    (!std::is_const<T1>::value,
+     "cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T1, T2>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
+     "operands need to have same execution space" );
+
   KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
 }
 
-template<typename T, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value
+  containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
+  containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
   >
-do_update(T & mv, const T & mv1, const scalar_t & b)
+do_update(T1 & mv,
+	  const T2 & mv1,
+	  const scalar_t & b)
 {
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers. */
+  static_assert
+    (!std::is_const<T1>::value,
+     "cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T1, T2>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
+     "operands need to have same execution space" );
+
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());
 }

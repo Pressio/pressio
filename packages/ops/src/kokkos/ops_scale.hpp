@@ -59,8 +59,28 @@ template <typename T>
   ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
   >
-scale(T & o, typename ::pressio::containers::details::traits<T>::scalar_t value)
+scale(T & o,
+      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
+  /* make sure we don't pass const objects.
+     In kokkos it is legal to modify const views.
+     But for pressio wrappers it is not.
+     We want to raise an error if we try to do this:
+
+     using kv_t = Kokkos::View<double**>;
+     using w_t  = containers::DenseMatrix<kv_t>;
+     kv_t A("A",4,4);
+     const w_t A1(A);
+     pressio::ops::scale(A1, 3.);
+
+     if we did not statically assert for const, the code would work.
+     We don't want the code above to work.
+     Similarly for vector and mv.
+   */
+  static_assert
+    (!std::is_const<T>::value,
+     "ops:scale: cannot scale a const-qualified wrapper of a Kokkos view");
+
   KokkosBlas::scal( *o.data(), value, *o.data() );
 }
 

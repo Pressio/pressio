@@ -191,6 +191,7 @@ public:
     assert(M.extent(0) == M.extent(1));
   }
 
+public:
   size_t extent() const{
     return extent_;
   }
@@ -200,39 +201,61 @@ public:
     return extent_;
   }
 
-  // TODO: enable only on host
-  ref_t operator[](size_t i)
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
-  // TODO: enable only on host
-  const_ref_t operator[](size_t i) const
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
-  // TODO: enable only on host
-  ref_t operator()(size_t i)
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
-  // TODO: enable only on host
-  const_ref_t operator()(size_t i) const
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
-
   const_data_return_t data() const{
     return &nativeExprObj_;
   }
+
   data_return_t data(){
     return &nativeExprObj_;
+  }
+
+  // non-const subscripting
+  /*
+    need to be careful with non-const subscripting, see span for details
+  */
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator[](size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return nativeExprObj_(i);
+  }
+
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator()(size_t i)
+  {
+    return (*this)[i];
+  }
+
+  // const subscripting
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    const_ref_t
+    >
+  operator[](size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return nativeExprObj_(i);
+  }
+
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    const_ref_t
+    >
+  operator()(size_t i) const
+  {
+    return (*this)[i];
   }
 };
 #endif

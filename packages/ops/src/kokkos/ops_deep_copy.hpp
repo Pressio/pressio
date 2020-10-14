@@ -51,9 +51,6 @@
 
 namespace pressio{ namespace ops{
 
-//--------------------------------------------------------------------------
-// for wrappers, we overload the = operator
-//--------------------------------------------------------------------------
 template< typename T1, typename T2 >
 ::pressio::mpl::enable_if_t<
   (::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value or
@@ -66,6 +63,14 @@ template< typename T1, typename T2 >
   >
 deep_copy(T1 & dest, const T2 & src)
 {
+  /* make sure we don't pass const objects as destination.
+     In kokkos it is legal to modify const views.
+     But for pressio wrappers it is not.
+   */
+  static_assert
+    (!std::is_const<T1>::value,
+     "ops:deep_copy: cannot copy to a const-qualified wrapper of a Kokkos view");
+
   Kokkos::deep_copy(*dest.data(), *src.data());
 }
 

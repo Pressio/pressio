@@ -80,7 +80,7 @@ private:
 
 public:
   SpanExpr() = delete;
-  
+
   SpanExpr(const SpanExpr & other) = default;
   SpanExpr & operator=(const SpanExpr & other) = delete;
 
@@ -92,8 +92,10 @@ public:
   SpanExpr(vector_t & objIn,
 	   const ord_t startIndexIn,
 	   const ord_t extentIn)
-    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
-    nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
+    : vecObj_(objIn),
+      startIndex_(startIndexIn),
+      extent_(extentIn),
+      nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
@@ -110,6 +112,7 @@ public:
     assert( extent_ <= objIn.extent(0) );
   }
 
+public:
   size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
@@ -168,53 +171,43 @@ private:
 
 public:
   SpanExpr() = delete;
-  
   SpanExpr(const SpanExpr & other) = default;
   SpanExpr & operator=(const SpanExpr & other) = delete;
-
   SpanExpr(SpanExpr && other) = default;
   SpanExpr & operator=(SpanExpr && other) = delete;
-
   ~SpanExpr() = default;
 
   SpanExpr(vector_t & objIn,
 	   const size_t startIndexIn,
 	   const size_t extentIn)
-    : vecObj_(objIn), startIndex_(startIndexIn), extent_(extentIn),
-    nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
-				   std::make_pair(startIndex_, startIndex_+extent_)))
+    : vecObj_(objIn),
+      startIndex_(startIndexIn),
+      extent_(extentIn),
+      nativeExprObj_
+      (Kokkos::subview(*vecObj_.get().data(),
+		       std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
-  SpanExpr(vector_t & objIn, pair_t indexRange)
+  SpanExpr(vector_t & objIn,
+	   pair_t indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
       extent_(std::get<1>(indexRange)-startIndex_),
-      nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
-				     std::make_pair(startIndex_, startIndex_+extent_)))
+      nativeExprObj_
+      (Kokkos::subview(*vecObj_.get().data(),
+		       std::make_pair(startIndex_, startIndex_+extent_)))
   {
     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
     assert( extent_ <= objIn.extent(0) );
   }
 
+public:
   size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
-  }
-
-  // TODO: enable only on host
-  ref_t operator[](size_t i){
-    assert(i < extent_);
-    return nativeExprObj_(i);
-  }
-
-  // TODO: enable only on host
-  const_ref_t operator[](size_t i) const
-  {
-    assert(i < extent_);
-    return nativeExprObj_(i);
   }
 
   const_data_return_t data() const{
@@ -223,6 +216,66 @@ public:
 
   data_return_t data(){
     return &nativeExprObj_;
+  }
+
+  // non-const subscripting
+  /*
+    I need to be careful with non-const subscripting
+    because for kokkos the following would be legal:
+
+    using kv_t	      = Kokkos::View<double *>;
+    using pressio_v_t = pressio::containers::Vector<kv_t>;
+    kv_t a(..);
+    const pressio_v_t aw(a);
+    auto s = pressio::containers::span(aw,...);
+    s(0) = 1.1;
+
+    which works because for kokkos we can assign a const view.
+    but we do NOT wwant this since aw is const.
+   */
+  template<typename _vector_t = vector_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator[](size_t i)
+  {
+    assert(i < extent_);
+    return nativeExprObj_(i);
+  }
+
+  template<typename _vector_t = vector_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator()(size_t i)
+  {
+    return (*this)[i];
+  }
+
+  // const subscripting
+  template<typename _vector_t = vector_t>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    const_ref_t
+    >
+  operator[](size_t i) const
+  {
+    assert(i < extent_);
+    return nativeExprObj_(i);
+  }
+
+  template<typename _vector_t = vector_t>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    const_ref_t
+    >
+  operator()(size_t i) const
+  {
+    return (*this)[i];
   }
 };
 #endif

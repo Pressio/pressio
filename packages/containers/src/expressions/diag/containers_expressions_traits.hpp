@@ -128,11 +128,16 @@ struct traits<
   using device_type	= typename traits<matrix_type>::device_t;
   using ordinal_t	= typename traits<matrix_type>::ordinal_t;
   using size_t		= ordinal_t;
-
-  using reference_t = scalar_t &;
+  using reference_t	  = scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  using native_expr_t = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
+  using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
+  using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
+  using native_expr_t = typename std::conditional<
+    std::is_const<matrix_type>::value,
+    _const_native_expr_t,
+    _native_expr_t
+  >::type;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t	    = native_expr_t *;
