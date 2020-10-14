@@ -56,68 +56,29 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
-  !::pressio::containers::predicates::is_diag_expression<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
   >
-do_update(T & v, const scalar_t & a,
-	  const T & v1, const scalar_t & b)
+do_update(T1 & v, const scalar_t & a,
+	  const T2 & v1, const scalar_t & b)
 {
   // v = a*v + b * v1
   KokkosBlas::axpby(b, *v1.data(), a, *v.data());
 }
 
-template<typename T, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
-  !::pressio::containers::predicates::is_diag_expression<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
   >
-do_update(T & v, const T & v1, const scalar_t & b)
+do_update(T1 & v, const T2 & v1, const scalar_t & b)
 {
   // v = b*v1
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   KokkosBlas::axpby(b, *v1.data(), zero, *v.data());
 }
-
-
-// specialize for when we have vector-like diag expressions,
-// because for these we currrently do not support the data() method
-// because we need to figure out how to create a native diagonal
-// expression in kokkos. we only specialize this case and not the ones below
-// because currently the diagonal view is only used with such an op.
-template<typename T1, typename T2, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_diag_expression<T1>::value and
-  ::pressio::containers::predicates::is_diag_expression<T2>::value
-  >
-do_update(T1 & v, const scalar_t & a,
-	  const T2 & v1, const scalar_t & b)
-{
-  static_assert
-    (std::is_same<
-     typename ::pressio::containers::details::traits<T1>::memory_space,
-     typename ::pressio::containers::details::traits<T2>::memory_space>::value,
-     "Kokkos diag Expressions do not have matching memory space");
-
-  // static_assert
-  //   (Kokkos::SpaceAccessibility<
-  //    Kokkos::HostSpace,
-  //    typename ::pressio::containers::details::traits<T1>::memory_space>::accessible,
-  //    "Kokkos diag Expressions must be host accessible.");
-
-  auto kvLhs = *v.getUnderlyingObject().data();
-  auto kvRhs = *v1.getUnderlyingObject().data();
-  Kokkos::parallel_for
-    (v.extent(0),
-     KOKKOS_LAMBDA (const int& i) {
-      kvLhs(i,i) = a*kvLhs(i,i) + b*kvRhs(i,i);
-    });
-}
-
-
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
@@ -149,7 +110,6 @@ do_update(T & v,
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), b, c);
   Kokkos::parallel_for(v.extent(0), F);
 }
-
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -184,7 +144,6 @@ do_update(T & v,
   fnctr_t F(*v.data(), *v1.data(), *v2.data(), *v3.data(), b, c, d);
   Kokkos::parallel_for(v.extent(0), F);
 }
-
 
 //----------------------------------------------------------------------
 //  overloads for computing:

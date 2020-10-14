@@ -95,7 +95,7 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
   //   if (&other != this){
   //     assert(this->length() == other.length());
@@ -122,6 +122,26 @@ public:
   wrap_t dataCp(){
     return data_;
   }
+
+  template< typename _wrapped_type = wrapped_type >
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator () (ord_t i, ord_t j){
+    return data_(i,j);
+  };
+
+  template< typename _wrapped_type = wrapped_type >
+  mpl::enable_if_t<
+    // todo: not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator () (ord_t i, ord_t j) const{
+    return data_(i, j);
+  };
 
   ord_t extent(ord_t i) const {
     return data_.extent(i);

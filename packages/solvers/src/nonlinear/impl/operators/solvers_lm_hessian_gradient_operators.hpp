@@ -52,12 +52,12 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <
-  typename h_t, 
+  typename h_t,
   typename g_t,
-  typename r_t, 
+  typename r_t,
   typename j_t,
   typename ud_ops_t,
-  template<typename ...> class hgRJApi_t, 
+  template<typename ...> class hgRJApi_t,
   typename ...Args
   >
 class LMHessianGradientOperatorsRJApi
@@ -79,8 +79,8 @@ public:
   LMHessianGradientOperatorsRJApi() = delete;
 
   template <
-   typename system_t, 
-   typename state_t, 
+   typename system_t,
+   typename state_t,
    typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
@@ -89,18 +89,18 @@ public:
       int
      > = 0
   >
-  LMHessianGradientOperatorsRJApi(const system_t & system, 
+  LMHessianGradientOperatorsRJApi(const system_t & system,
                                   const state_t & state)
     : HGOpRJApi_(system, state),
       lmH_(HGOpRJApi_.hessianCRef()){}
 
   template <
-   typename system_t, 
-   typename state_t, 
+   typename system_t,
+   typename state_t,
    typename ...ArgsIn,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) 
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
      > = 0
@@ -165,7 +165,7 @@ public:
   }
 
   template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system, 
+  void residualNorm(const system_t & system,
          const state_t & state,
          sc_t & residualNorm) const
   {
@@ -234,7 +234,7 @@ public:
   sc_t lmDampParam() const{ return dampParam_; }
 
   template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system, 
+  void residualNorm(const system_t & system,
         const state_t & state,
         sc_t & residualNorm) const
   {

@@ -73,11 +73,8 @@ struct linear_solver_for_nonlinear_least_squares<
         )
        )
       >::value
-    // ::pressio::mpl::publicly_inherits_from<
-    //   T, ::pressio::solvers::LinearBase<typename T::matrix_type, T>
-    //   >::value
     >
   > : std::true_type{};
-  
+
 }}} // namespace pressio::solvers::concepts
 #endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_

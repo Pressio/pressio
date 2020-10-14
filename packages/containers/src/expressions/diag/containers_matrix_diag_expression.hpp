@@ -63,14 +63,11 @@ struct DiagExpr<
   using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
   using size_t = typename mytraits::size_t;
-
   using ref_t = typename mytraits::reference_t;
   using const_ref_t = typename mytraits::const_reference_t;
-
   using native_expr_t = typename mytraits::native_expr_t;
   using data_return_t = typename mytraits::data_return_t;
   using const_data_return_t = typename mytraits::const_data_return_t;
-
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -152,46 +149,46 @@ struct DiagExpr<
     >
   >
 {
-  using this_t = DiagExpr<matrix_t>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-
-  //using native_expr_t = typename mytraits::native_expr_t;
-  ///using data_return_t = typename mytraits::data_return_t;
-  //using const_data_return_t = typename mytraits::const_data_return_t;
-
-  using pair_t = std::pair<std::size_t, std::size_t>;
+  using this_t		= DiagExpr<matrix_t>;
+  using mytraits	= typename details::traits<this_t>;
+  using sc_t		= typename mytraits::scalar_t;
+  using size_t		= typename mytraits::size_t;
+  using ref_t		= typename mytraits::reference_t;
+  using const_ref_t	= typename mytraits::const_reference_t;
+  using native_expr_t	= typename mytraits::native_expr_t;
+  using data_return_t	= typename mytraits::data_return_t;
+  using const_data_return_t = typename mytraits::const_data_return_t;
 
 private:
   std::reference_wrapper<matrix_t> matObj_;
-  //native_expr_t nativeExprObj_;
-  size_t numRows_ = {};
-  size_t numCols_ = {};
+  native_expr_t nativeExprObj_;
   size_t extent_ = {};
+
+  using natexpr_layout = typename native_expr_t::traits::array_layout;
+  // for now leave this assert, then remove later
+  static_assert
+  (std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
+   "The layout for the native type of the diagonal kokkos expression does not \
+match the strided layout expected");
 
 public:
   DiagExpr() = delete;
-
   DiagExpr(const DiagExpr & other) = default;
   DiagExpr & operator=(const DiagExpr & other) = delete;
-
   DiagExpr(DiagExpr && other) = default;
   DiagExpr & operator=(DiagExpr && other) = delete;
-
   ~DiagExpr() = default;
 
-  DiagExpr(matrix_t & matObjIn)
-    : matObj_(matObjIn),
-      /*nativeExprObj_(),*/
-      numRows_(matObj_.get().extent(0)),
-      numCols_(matObj_.get().extent(1)),
-      extent_(matObj_.get().extent(0))
+  DiagExpr(matrix_t & M)
+    : matObj_(M),
+      nativeExprObj_
+      (M.data()->data(),
+       natexpr_layout( M.extent(0), M.data()->stride(0)+M.data()->stride(1) )
+       ),
+      extent_(M.extent(0))
   {
-    assert(numRows_ == numCols_);
+    // make sure the diagonal is taken on a square matrix
+    assert(M.extent(0) == M.extent(1));
   }
 
   size_t extent() const{
@@ -203,42 +200,39 @@ public:
     return extent_;
   }
 
-  matrix_t & getUnderlyingObject(){
-    return matObj_;
-  }
-
-  const matrix_t & getUnderlyingObject() const{
-    return matObj_;
-  }
-
-  // const_data_return_t data() const{
-  //   return &nativeExprObj_;
-  // }
-  // data_return_t data(){
-  //   return &nativeExprObj_;
-  // }
+  // TODO: enable only on host
   ref_t operator[](size_t i)
   {
     assert(i < (size_t)extent_);
-    return matObj_(i,i);
+    return nativeExprObj_(i);
   }
 
+  // TODO: enable only on host
   const_ref_t operator[](size_t i) const
   {
     assert(i < (size_t)extent_);
-    return matObj_(i,i);
+    return nativeExprObj_(i);
   }
 
+  // TODO: enable only on host
   ref_t operator()(size_t i)
   {
     assert(i < (size_t)extent_);
-    return matObj_(i,i);
+    return nativeExprObj_(i);
   }
 
+  // TODO: enable only on host
   const_ref_t operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
-    return matObj_(i,i);
+    return nativeExprObj_(i);
+  }
+
+  const_data_return_t data() const{
+    return &nativeExprObj_;
+  }
+  data_return_t data(){
+    return &nativeExprObj_;
   }
 };
 #endif
