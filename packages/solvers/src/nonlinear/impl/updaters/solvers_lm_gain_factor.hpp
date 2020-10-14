@@ -102,7 +102,7 @@ public:
     // numerator
     auto norm = solverObj.residualNormCurrentCorrectionStep();
     auto r2Old = norm*norm;
-    ::pressio::ops::do_update(trialState_, state, one, correction, one);
+    ::pressio::ops::update(trialState_, state, one, correction, one);
     solverObj.residualNorm(system, trialState_, norm);
 
     return (r2Old - norm*norm) / denom;

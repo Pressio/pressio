@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_multi_vector_do_update.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
-#define OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
-
-#include<KokkosBlas1_axpby.hpp>
+#ifndef OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
+#define OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -59,23 +57,23 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<T>::value
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & mv, const scalar_t &a,
-	  const T & mv1, const scalar_t &b)
+update(T & mv, const scalar_t &a,
+	       const T & mv1, const scalar_t &b)
 {
   mv.data()->update(b, *mv1.data(), a);
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & mv, const T & mv1, const scalar_t & b)
+update(T & mv, const T & mv1, const scalar_t & b)
 {
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   mv.data()->update(b, *mv1.data(), zero);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_DO_UPDATE_HPP_

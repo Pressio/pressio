@@ -160,7 +160,7 @@ public:
       const auto diagH   = ::pressio::containers::diag(H);
       auto diaglmH = ::pressio::containers::diag(lmH_);
       constexpr auto one  = pressio::utils::constants<sc_t>::one();
-      ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
+      ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
     }
   }
 
@@ -283,7 +283,7 @@ private:
     const auto diagH   = ::pressio::containers::diag(H);
     auto diaglmH = ::pressio::containers::diag(lmH_);
     constexpr auto one  = pressio::utils::constants<sc_t>::one();
-    ::pressio::ops::do_update(diaglmH, one, diagH, dampParam_);
+    ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
   }
 };
 

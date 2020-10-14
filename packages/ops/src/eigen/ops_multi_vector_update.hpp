@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_do_update_one_term.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,57 +46,37 @@
 //@HEADER
 */
 
-#ifndef OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
-#define OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
+#ifndef OPS_EIGEN_OPS_MULTI_VECTOR_UPDATE_HPP_
+#define OPS_EIGEN_OPS_MULTI_VECTOR_UPDATE_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+namespace pressio{ namespace ops{
 
-/*
- * detect if type T has a static method of the form:
- *
- * static void do_update(T1 & , scalar_type, const T2 &, scalar_type)
- */
+//----------------------------------------------------------------------
+//  overloads for computing: MV = a * MV + b * MV1
+// where MV is an eigen multivector wrapper
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+>
+update(T & mv, const scalar_t &a,
+	  const T & mv1, const scalar_t &b)
+{
+  assert( mv.extent(0) == mv1.extent(0) );
+  assert( mv.extent(1) == mv1.extent(1) );
+  *mv.data() = a * (*mv.data()) + b * (*mv1.data());
+}
 
-template <typename T,
-	  typename scalar_t,
-	  typename T1,
-	  typename T2,
-	  typename = void>
-struct has_method_do_update_one_term : std::false_type{};
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+>
+update(T & mv, const T & mv1, const scalar_t & b)
+{
+  assert( mv.extent(0) == mv1.extent(0) );
+  assert( mv.extent(1) == mv1.extent(1) );
+  *mv.data() = b * (*mv1.data());
+}
 
-template <typename T,
-	  typename sc_t,
-	  typename T1,
-	  typename T2 >
-struct has_method_do_update_one_term<
-  T, sc_t, T1, T2,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T const &>().do_update
-       (
-	std::declval< T1 & >(),
-	std::declval<const sc_t>(),
-	std::declval<const T2 &>(),
-	std::declval<const sc_t>()
-	)
-       )
-      >::value
-    and
-    std::is_void<
-      decltype
-      (
-       std::declval<T const &>().do_update
-       (
-	std::declval< T1 & >(),
-	std::declval<const T2 &>(),
-	std::declval<const sc_t>()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
-
-}}} // namespace pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_ONE_TERM_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_EIGEN_OPS_MULTI_VECTOR_UPDATE_HPP_

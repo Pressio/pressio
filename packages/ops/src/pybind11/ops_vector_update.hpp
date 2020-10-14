@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vector_do_update.hpp
+// ops_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -58,7 +58,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, scalar_t a, const T & v1, scalar_t b)
+update(T & v, scalar_t a, const T & v1, scalar_t b)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   auto v_proxy        = v.data()->mutable_unchecked();
@@ -72,7 +72,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, const T & v1, const scalar_t b)
+update(T & v, const T & v1, const scalar_t b)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinat_t;
   auto v_proxy        = v.data()->mutable_unchecked();
@@ -90,7 +90,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
@@ -112,7 +112,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, const T & v1, const scalar_t &b,
+update(T & v, const T & v1, const scalar_t &b,
     const T & v2, const scalar_t &c)
 {
   // assert(v.extent(0)==v1.extent(0)==v2.extent(0));
@@ -134,7 +134,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
@@ -157,7 +157,7 @@ template< typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
     const T & v1, const scalar_t &b,
     const T & v2, const scalar_t &c,
     const T & v3, const scalar_t &d,

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vector_do_update.hpp
+// ops_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_
-#define OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_TEUCHOS_OPS_VECTOR_DO_UPDATE_HPP_
+#define OPS_TEUCHOS_OPS_VECTOR_DO_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -56,56 +56,62 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v, const scalar_t a, const T & v1, const scalar_t b)
+update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = a*v[i] + b*v1[i];
+  }
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v, const T & v1, const scalar_t  b)
+update(T & v, const T & v1, const scalar_t  b)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = b*v1[i];
+  }
 }
-
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v, const scalar_t &a,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c)
+update(T & v, const scalar_t &a,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = a*v[i] + b*v1[i] + c*v2[i];
+  }
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v,
+update(T & v,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = b*v1[i] + c*v2[i];
+  }
 }
-
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -113,30 +119,34 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
+  }
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v,
+update(T & v,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = b*v1[i] + c*v2[i] + d*v3[i];
+  }
 }
 
 //----------------------------------------------------------------------
@@ -145,34 +155,37 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d,
 	  const T & v4, const scalar_t &e)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+  }
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
   >
-do_update(T & v,
+update(T & v,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d,
 	  const T & v4, const scalar_t &e)
 {
-  using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for (int_t i=0; i<v.extentLocal(0); ++i)
+  using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+  int_t n = v.length();
+  for (int_t i=0; i<n; ++i){
     v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+  }
 }
 
-
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_VECTOR_DO_UPDATE_HPP_
+#endif  // OPS_TEUCHOS_OPS_VECTOR_DO_UPDATE_HPP_

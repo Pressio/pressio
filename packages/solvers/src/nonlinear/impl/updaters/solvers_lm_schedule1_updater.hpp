@@ -100,7 +100,7 @@ public:
 
     // *** update mu ***
     if (rho > 0){
-      ::pressio::ops::do_update(state, one, correction, one);
+      ::pressio::ops::update(state, one, correction, one);
       scalar_t mu_rat = one - (beta_ - one)*std::pow(two*rho - one, p_);
       mu_rat = std::max(mu_rat, gammaInv_);
       solver.setLMDampParam(mu*mu_rat);

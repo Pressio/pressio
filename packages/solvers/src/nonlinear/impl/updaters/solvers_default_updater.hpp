@@ -73,7 +73,7 @@ public:
     // default update: y = y + alpha*correction
     const auto & correction = solver.correctionCRef();
     constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::do_update(state, one, correction, one);
+    ::pressio::ops::update(state, one, correction, one);
   }
 };
 

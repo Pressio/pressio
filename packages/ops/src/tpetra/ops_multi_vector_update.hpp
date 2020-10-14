@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_do_update_three_terms.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,58 +46,36 @@
 //@HEADER
 */
 
-#ifndef OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
-#define OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
+#ifndef OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
+#define OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+#include<KokkosBlas1_axpby.hpp>
 
-/*
-static void do_update(T1 &, scalar_type, 
-const T2 &, scalar_type,
-const T3 &, scalar_type,
-const T4 &, scalar_type)
- */
+namespace pressio{ namespace ops{
 
-template <
-  typename T,
-  typename scalar_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4,
-  typename = void
+//----------------------------------------------------------------------
+//  overloads for computing: MV = a * MV + b * MV1
+// where MV is an tpetra multivector wrapper
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_multi_vector_wrapper_tpetra<T>::value
   >
-struct has_method_do_update_three_terms : std::false_type{};
+update(T & mv, const scalar_t &a,
+	  const T & mv1, const scalar_t &b)
+{
+  mv.data()->update(b, *mv1.data(), a);
+}
 
-template <
-  typename T,
-  typename sc_t,
-  typename T1,
-  typename T2,
-  typename T3,
-  typename T4
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<T>::value
   >
-struct has_method_do_update_three_terms<
-  T, sc_t, T1, T2, T3, T4,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T const &>().do_update
-       (
-	std::declval< T1 & >(),
-	std::declval<const sc_t>(),
-	std::declval<const T2 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T3 &>(),
-	std::declval<const sc_t>(),
-	std::declval<const T4 &>(),
-	std::declval<const sc_t>()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+update(T & mv, const T & mv1, const scalar_t & b)
+{
+  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  mv.data()->update(b, *mv1.data(), zero);
+}
 
-}}} // namespace pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_THREE_TERMS_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_MULTI_VECTOR_DO_UPDATE_HPP_

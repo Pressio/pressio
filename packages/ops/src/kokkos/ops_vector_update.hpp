@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vector_do_update.hpp
+// ops_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -84,7 +84,7 @@ template<typename T1, typename T2, typename scalar_t>
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
   >
-do_update(T1 & v,	 const scalar_t & a,
+update(T1 & v,	 const scalar_t & a,
 	  const T2 & v1, const scalar_t & b)
 {
   static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
@@ -96,7 +96,7 @@ template<typename T1, typename T2, typename scalar_t>
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
   >
-do_update(T1 & v, const T2 & v1, const scalar_t & b)
+update(T1 & v, const T2 & v1, const scalar_t & b)
 {
   static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
@@ -112,7 +112,7 @@ template<typename T1, typename T2, typename T3, typename scalar_t>
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value
   >
-do_update(T1 & v,	 const scalar_t &a,
+update(T1 & v,	 const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c)
 {
@@ -130,7 +130,7 @@ template<typename T1, typename T2, typename T3, typename scalar_t>
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value
   >
-do_update(T1 & v,
+update(T1 & v,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c)
 {
@@ -156,7 +156,7 @@ template<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
   >
-do_update(T1 & v,	 const scalar_t &a,
+update(T1 & v,	 const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c,
 	  const T4 & v3, const scalar_t &d)
@@ -179,7 +179,7 @@ template<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
   >
-do_update(T1 & v,
+update(T1 & v,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c,
 	  const T4 & v3, const scalar_t &d)
@@ -207,7 +207,7 @@ template<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
   >
-do_update(T1 & v,	const scalar_t &a,
+update(T1 & v,	const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c,
 	  const T4 & v3, const scalar_t &d,
@@ -232,7 +232,7 @@ template<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
   >
-do_update(T1 & v,
+update(T1 & v,
 	  const T2 & v1, const scalar_t &b,
 	  const T3 & v2, const scalar_t &c,
 	  const T4 & v3, const scalar_t &d,

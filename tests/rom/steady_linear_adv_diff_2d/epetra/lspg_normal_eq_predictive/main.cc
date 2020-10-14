@@ -96,7 +96,7 @@ int main(int argc, char *argv[]){
    * solution only approximately */
   auto normFomY = pressio::ops::norm2(yFom);
   auto errorVec(yFom); 
-  pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
+  pressio::ops::update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::ops::norm2(errorVec);
   if( (norm2err/normFomY)*100 > 0.1 ) checkStr = "FAILED";
 

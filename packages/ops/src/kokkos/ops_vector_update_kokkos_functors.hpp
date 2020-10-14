@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vector_do_update_kokkos_functors.hpp
+// ops_vector_update_kokkos_functors.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

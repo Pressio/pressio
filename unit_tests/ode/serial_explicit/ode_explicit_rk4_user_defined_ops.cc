@@ -28,7 +28,7 @@ struct MyOps
 {
   using v_t = std::vector<double>;
 
-  void do_update(v_t & v, const double c,
+  void update(v_t & v, const double c,
   			const v_t & v0, const double a,
   			const v_t & v1, const double b) const
   {
@@ -36,7 +36,7 @@ struct MyOps
       v[i] = c*v[i] + a*v0[i] + b*v1[i];
   }
 
-  void do_update(v_t & v,
+  void update(v_t & v,
   			const v_t & v0, const double a,
   			const v_t & v1, const double b) const
   {
@@ -44,7 +44,7 @@ struct MyOps
       v[i] = a*v0[i] + b*v1[i];
   }
 
-  void do_update(v_t & v,
+  void update(v_t & v,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,
@@ -54,7 +54,7 @@ struct MyOps
       v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 
-  void do_update(v_t & v, const double a,
+  void update(v_t & v, const double a,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,

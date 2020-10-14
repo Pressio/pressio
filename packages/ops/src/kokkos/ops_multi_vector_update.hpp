@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_multi_vector_do_update.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -62,7 +62,7 @@ template<typename T1, typename T2, typename scalar_t>
   containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
   containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
   >
-do_update(T1 & mv,
+update(T1 & mv,
 	  const scalar_t &a,
 	  const T2 & mv1,
 	  const scalar_t &b)
@@ -87,7 +87,7 @@ template<typename T1, typename T2, typename scalar_t>
   containers::predicates::is_multi_vector_wrapper_kokkos<T1>::value and
   containers::predicates::is_multi_vector_wrapper_kokkos<T2>::value
   >
-do_update(T1 & mv,
+update(T1 & mv,
 	  const T2 & mv1,
 	  const scalar_t & b)
 {

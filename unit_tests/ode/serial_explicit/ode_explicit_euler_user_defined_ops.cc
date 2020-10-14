@@ -29,13 +29,13 @@ struct MyOps
 {
   using v_t = std::vector<scalar_t>;
 
-  void do_update(v_t & v, const v_t & v1, const scalar_t b) const
+  void update(v_t & v, const v_t & v1, const scalar_t b) const
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i];
   }
 
-  void do_update(v_t & v, const scalar_t a,
+  void update(v_t & v, const scalar_t a,
 			const v_t & v1, const scalar_t b) const
   {
     for (size_t i=0; i<v.size(); ++i)

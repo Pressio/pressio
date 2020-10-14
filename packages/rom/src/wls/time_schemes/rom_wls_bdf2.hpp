@@ -504,7 +504,7 @@ public:
       if (arg == 0){
         fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //1
-        ::pressio::ops::do_update(Jphi, -dt, phi, cn);
+        ::pressio::ops::update(Jphi, -dt, phi, cn);
       }
     }
 
@@ -513,18 +513,18 @@ public:
         fomSystemObj.applyJacobian(*fomState.data(),*phi.data(),t,*(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // 1
         const auto cfdt   = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //2/3
-        ::pressio::ops::do_update(Jphi, cfdt, phi, cn);
+        ::pressio::ops::update(Jphi, cfdt, phi, cn);
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
-        ::pressio::ops::do_update(Jphi, phi, cnm1);
+        ::pressio::ops::update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
-        ::pressio::ops::do_update(Jphi, phi, cnm2);
+        ::pressio::ops::update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
     }
@@ -573,13 +573,13 @@ public:
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
-        ::pressio::ops::do_update(Jphi, phi, cnm1);
+        ::pressio::ops::update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
-        ::pressio::ops::do_update(Jphi, phi, cnm2);
+        ::pressio::ops::update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
     }

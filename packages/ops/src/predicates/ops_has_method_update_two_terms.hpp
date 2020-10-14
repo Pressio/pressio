@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_has_method_do_update_two_terms.hpp
+// ops_has_method_update_two_terms.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,10 @@
 //@HEADER
 */
 
-#ifndef OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_TWO_TERMS_HPP_
-#define OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_TWO_TERMS_HPP_
+#ifndef OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_TWO_TERMS_HPP_
+#define OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_TWO_TERMS_HPP_
 
 namespace pressio{ namespace ops{ namespace predicates {
-
-/*
-  static void do_update(T1 &, scalar_type, const T2 &, scalar_type, const T3 &, scalar_type)
- */
 
 template <
   typename T,
@@ -63,7 +59,7 @@ template <
   typename T3,
   typename = void
   >
-struct has_method_do_update_two_terms : std::false_type{};
+struct has_method_update_two_terms : std::false_type{};
 
 template <
   typename T,
@@ -72,13 +68,13 @@ template <
   typename T2,
   typename T3
   >
-struct has_method_do_update_two_terms<
+struct has_method_update_two_terms<
   T, sc_t, T1, T2, T3,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
-       std::declval<T const &>().do_update
+       std::declval<T const &>().update
        (
 	std::declval< T1 & >(),
 	std::declval<const sc_t>(),
@@ -93,7 +89,7 @@ struct has_method_do_update_two_terms<
     std::is_void<
       decltype
       (
-       std::declval<T const &>().do_update
+       std::declval<T const &>().update
        (
 	std::declval< T1 & >(),
 	std::declval<const T2 &>(),
@@ -107,4 +103,4 @@ struct has_method_do_update_two_terms<
   > : std::true_type{};
 
 }}} // namespace pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DO_UPDATE_TWO_TERMS_HPP_
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_TWO_TERMS_HPP_

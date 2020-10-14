@@ -77,7 +77,7 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 
   //create a vector to store fomState - fomNominalState
   fom_state_t b(fomState);
-  pressio::ops::do_update(b, one, fomNominalState, negOne);
+  pressio::ops::update(b, one, fomNominalState, negOne);
 
   // compute phi^T b
   rom_state_t r(romSize);

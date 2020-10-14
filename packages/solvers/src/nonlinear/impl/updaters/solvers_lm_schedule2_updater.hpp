@@ -112,7 +112,7 @@ public:
     }
 
     if (rho > 0){
-      ::pressio::ops::do_update(state, one, correction, one);
+      ::pressio::ops::update(state, one, correction, one);
     }
   }
 };

@@ -112,7 +112,7 @@ public:
     while (not done)
     {
       // update : trialState = x_k + alpha*p_k
-      ::pressio::ops::do_update(trialState_, state, one, p_k, alpha);
+      ::pressio::ops::update(trialState_, state, one, p_k, alpha);
 
       // compute rhs_l = alpha_l * beta * dot(g_k, p_k)
       const auto rhs = alpha * beta_ * gkDotpk;
@@ -140,7 +140,7 @@ public:
     }//while
 
     // solution update: state = state + alpha*p_k
-    ::pressio::ops::do_update(state, one, p_k, alpha);
+    ::pressio::ops::update(state, one, p_k, alpha);
   }
 };
 

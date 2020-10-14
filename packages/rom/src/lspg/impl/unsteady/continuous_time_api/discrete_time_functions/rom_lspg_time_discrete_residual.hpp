@@ -109,7 +109,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   // //R = y_n - y_nm1 - dt * R;
-  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
+  ::pressio::ops::update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
 #endif
 
@@ -150,7 +150,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   //R = y_n - y_nm1 - dt * R;
-  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
+  ::pressio::ops::update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
 
 
@@ -188,7 +188,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   auto & y_nm1 = fomStatesMngr.fomStatePrevStepCRef();
   auto & y_nm2 = fomStatesMngr.fomStatePrevPrevStepCRef();
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  ::pressio::ops::do_update(R, cf, fomStateAt_n, cn, y_nm1, cnm1, y_nm2, cnm2);
+  ::pressio::ops::update(R, cf, fomStateAt_n, cn, y_nm1, cnm1, y_nm2, cnm2);
 }
 
 

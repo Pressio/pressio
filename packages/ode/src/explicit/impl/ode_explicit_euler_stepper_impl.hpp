@@ -178,7 +178,7 @@ public:
       auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
+    ::pressio::ops::update(stateInOut, one, auxRhs0, dt);
   }
 
   /* user provides custom ops */
@@ -194,7 +194,7 @@ public:
       auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);
+    udOps_->update(*stateInOut.data(), one, *auxRhs0.data(), dt);
   }
 };
 

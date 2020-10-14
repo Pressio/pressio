@@ -386,13 +386,13 @@ public:
       fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
       constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; //      1
       const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
-      ::pressio::ops::do_update(Jphi, cfdt, phi, cn);
+      ::pressio::ops::update(Jphi, cfdt, phi, cn);
     }
 
     //only perform computation once since this never changes
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
-      ::pressio::ops::do_update(Jphi, phi, cnm1);
+      ::pressio::ops::update(Jphi, phi, cnm1);
       jacobianNeedsRecomputing_ = true;
     }
   }
@@ -430,7 +430,7 @@ public:
     //only perform computation once since this never changes
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
-      ::pressio::ops::do_update(Jphi,phi,cnm1);
+      ::pressio::ops::update(Jphi,phi,cnm1);
       jacobianNeedsRecomputing_ = true;
     }
   }

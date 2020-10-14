@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_vector_do_update.hpp
+// ops_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_TPETRA_OPS_VECTOR_DO_UPDATE_HPP_
-#define OPS_TPETRA_OPS_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_TPETRA_BLOCK_OPS_VECTOR_DO_UPDATE_HPP_
+#define OPS_TPETRA_BLOCK_OPS_VECTOR_DO_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -56,9 +56,9 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v, const scalar_t a,
+update(T & v, const scalar_t a,
 	  const T & v1, const scalar_t b)
 {
   v.data()->update(b, *v1.data(), a); // v = a*v + b * v1
@@ -66,9 +66,9 @@ do_update(T & v, const scalar_t a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v, const T & v1, const scalar_t b)
+update(T & v, const T & v1, const scalar_t b)
 {
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   v.data()->update(b, *v1.data(), zero); // v = b * v1
@@ -80,11 +80,11 @@ do_update(T & v, const T & v1, const scalar_t b)
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
-	       const T & v2, const scalar_t &c)
+	  const T & v2, const scalar_t &c)
 {
   constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
   v.data()->update(b, *v1.data(), a); // v = v + b * v1
@@ -93,11 +93,11 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c)
+update(T & v,
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c)
 {
   constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
@@ -113,9 +113,9 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
@@ -129,9 +129,9 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v,
+update(T & v,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
@@ -151,9 +151,9 @@ do_update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v, const scalar_t &a,
+update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d,
@@ -169,9 +169,9 @@ do_update(T & v, const scalar_t &a,
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-do_update(T & v,
+update(T & v,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d,
@@ -188,4 +188,4 @@ do_update(T & v,
 
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_VECTOR_DO_UPDATE_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_VECTOR_DO_UPDATE_HPP_

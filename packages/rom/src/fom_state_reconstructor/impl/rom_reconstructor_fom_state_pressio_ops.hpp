@@ -79,7 +79,7 @@ struct FomStateReconstructorPressioOps
     decoderObj_.get().applyMapping(romState, fomState);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     // fomState = fomState + fomNominalState_;
-    ops::do_update(fomState, one, fomNominalState_.get(), one);
+    ops::update(fomState, one, fomNominalState_.get(), one);
   }
 
   template <typename rom_state_t>

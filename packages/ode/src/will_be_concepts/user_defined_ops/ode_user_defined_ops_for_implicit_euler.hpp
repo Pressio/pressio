@@ -71,7 +71,7 @@ template<
 struct user_defined_ops_for_implicit_euler<
   T, scalar_t, state_t, residual_t, jacobian_t,
     mpl::enable_if_t<
-      ::pressio::ops::predicates::has_method_do_update_two_terms<
+      ::pressio::ops::predicates::has_method_update_two_terms<
 	typename T::update_op,
 	scalar_t,
 	typename containers::details::traits<residual_t>::wrapped_t,

@@ -220,7 +220,7 @@ private:
 			 scalar_type dtValue)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::do_update(yIn, stateIn, one, rhsIn, dtValue);
+    ::pressio::ops::update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
   template<typename rhs_t, typename _ops_t = ops_t>
@@ -231,7 +231,7 @@ private:
 			 scalar_type dt6, scalar_type dt3)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::do_update(stateIn, one, rhsIn0, dt6, rhsIn1,
+    ::pressio::ops::update(stateIn, one, rhsIn0, dt6, rhsIn1,
 			      dt3, rhsIn2, dt3, rhsIn3, dt6);
   }
   // -------------------------------------------------------
@@ -245,7 +245,7 @@ private:
 			 scalar_type dtValue)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    udOps_->do_update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
+    udOps_->update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
   }
 
   template<typename rhs_t, typename _ops_t = ops_t>
@@ -256,7 +256,7 @@ private:
 			 scalar_type dt6, scalar_type dt3)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    udOps_->do_update(*stateIn.data(), one, *rhsIn0.data(),
+    udOps_->update(*stateIn.data(), one, *rhsIn0.data(),
 		     dt6, *rhsIn1.data(), dt3, *rhsIn2.data(),
 		     dt3, *rhsIn3.data(), dt6);
   }

@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
   auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom);
-  pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
+  pressio::ops::update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 
