@@ -53,7 +53,6 @@ namespace pressio{ namespace ops{
 
 /*
  * C = beta * C + alpha*op(A)*op(B)
- *
 */
 
 /***********************************
@@ -63,8 +62,8 @@ namespace pressio{ namespace ops{
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
-  ::pressio::containers::predicates::is_fstyle_matrix_wrapper_pybind<C_type>::value
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<C_type>::value
   >
 product(::pressio::transpose modeA,
   ::pressio::nontranspose modeB,
@@ -73,11 +72,19 @@ product(::pressio::transpose modeA,
   const scalar_type beta,
   C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-    "Types are not scalar compatible");
+  // currently not working for expressions because expressions
+  // do not have a .data() method and might have non-contiguous layout
+  // so we cannot just pass them to blas/lapack, we need to handle them separatly
+  static_assert
+    (!containers::predicates::is_expression<A_type>::value and
+     !containers::predicates::is_expression<C_type>::value,
+     "Cannot yet handle expressions for ops::product for pybind11");
 
-  // // we know that operators passed in are f-style arrays, so use eigenmap to manage them
-  // // and perform computations (this should be cheaper than using scipy blas below)
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  // // attempt to use eigen to map data and do operation but still needs debuggin
   // using mat_t = Eigen::Matrix<scalar_type, -1, -1, Eigen::ColMajor>;
   // Eigen::Map<const mat_t> Am(A.data()->data(), A.extent(0), A.extent(1));
   // auto AmT = Am.transpose();
@@ -94,13 +101,14 @@ product(::pressio::transpose modeA,
   constexpr auto transA = yes;
   constexpr auto transB = no;
   constexpr auto ovw    = yes;
-  pyblas.attr("dgemm")(one, *A.data(), *A.data(), beta, *C.data(), transA, transB, ovw);
+  pyblas.attr("dgemm")(one, *A.data(), *A.data(), beta,
+		       *C.data(), transA, transB, ovw);
 }
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
-  ::pressio::containers::predicates::is_fstyle_matrix_wrapper_pybind<C_type>::value,
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -108,9 +116,6 @@ product(::pressio::transpose modeA,
   const scalar_type alpha,
   const A_type & A)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-    "Types are not scalar compatible");
-
   constexpr auto zero  = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.extent(1), A.extent(1));
   product(modeA, modeB, alpha, A, zero, C);

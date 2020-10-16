@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_fill.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,21 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
-#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_PYBIND_OPS_FILL_HPP_
+#define OPS_PYBIND_OPS_FILL_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-norm1(const T & a)
+fill(T & v,
+     typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  sc_t result = ::pressio::utils::constants<sc_t>::zero();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
-    result += std::abs(a(i));
-  }
-  return result;
-}
-
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
-  >
-norm2(const T & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  auto result = ::pressio::utils::constants<sc_t>::zero();
-  for (std::size_t i=0; i<a.extent(0); i++){
-    result += a(i)*a(i);
-  }
-  return std::sqrt(result);
+  for (std::size_t i=0; i<v.extent(0); ++i)
+    v(i) = value;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_KOKKOS_OPS_FILL_HPP_

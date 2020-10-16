@@ -55,14 +55,12 @@ template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-set_zero(T & v){
+set_zero(T & v)
+{
   using traits	 = ::pressio::containers::details::traits<T>;
   using scalar_t = typename traits::scalar_t;
-  using ord_t	 = typename traits::ordinal_t;
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-  auto proxy = v.data()->mutable_unchecked();
-  for (ord_t i=0; i<v.extent(0); ++i)
-    proxy(i) = zero;
+  ::pressio::ops::fill(v, zero);
 }
 
 }}//end namespace pressio::ops

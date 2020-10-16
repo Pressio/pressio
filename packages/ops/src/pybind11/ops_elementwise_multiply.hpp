@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,32 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
-#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
-  >
-norm1(const T & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  sc_t result = ::pressio::utils::constants<sc_t>::zero();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
-    result += std::abs(a(i));
-  }
-  return result;
-}
+/* computing:  y[i] = beta * y[i] + alpha * x[i] * z[i] */
 
-template <typename T>
+template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T2>::value
   >
-norm2(const T & a)
+elementwise_multiply
+(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::containers::details::traits<T>::scalar_t beta,
+ T2 & y)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  auto result = ::pressio::utils::constants<sc_t>::zero();
-  for (std::size_t i=0; i<a.extent(0); i++){
-    result += a(i)*a(i);
+  assert( y.extent(0)  == x.extent(0) );
+  assert( x.extent(0) == z.extent(0) );
+  for (std::size_t i=0; i<y.extent(0); ++i){
+    y(i) = beta*y(i) + alpha*x(i)*z(i);
   }
-  return std::sqrt(result);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_

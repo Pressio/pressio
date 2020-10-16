@@ -54,15 +54,18 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  y[i] = beta * y[i] + alpha * x[i] * z[i]
 //----------------------------------------------------------------------
-template <typename T>
+template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value
   >
-elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
-		     const T & x,
-		     const T & z,
-		     typename ::pressio::containers::details::traits<T>::scalar_t beta,
-		     T & y)
+elementwise_multiply
+(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::containers::details::traits<T>::scalar_t beta,
+ T2 & y)
 {
   (*y.data()) = beta * (*y.data()) + alpha * (*x.data()) * (*z.data());
 }
