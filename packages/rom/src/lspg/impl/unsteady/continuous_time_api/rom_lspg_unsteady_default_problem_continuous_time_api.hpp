@@ -241,48 +241,49 @@ public:
   }
 
 
-  // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  //   /*- the fom_system_t is a pybind11::object
-  //    * - aux stepper is NOT needed (e.g. for BDF1)
-  //    * - ud_ops_t == void
-  //    */
-  //   template <
-  //     typename _fom_system_t = fom_system_t,
-  //     typename _lspg_state_t = lspg_state_t,
-  //     typename _aux_stepper_t = aux_stepper_t,
-  //     typename _ud_ops_t = ud_ops_t,
-  //     ::pressio::mpl::enable_if_t<
-  //       ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
-  //       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
-  //       std::is_void<_aux_stepper_t>::value and
-  //       std::is_void<_ud_ops_t>::value,
-  //       int > = 0
-  //   >
-  //   DefaultProblemContinuousTimeApi
-  //   (const _fom_system_t & fomSystemObj,
-  //    const fom_native_state_t fomNominalStateIn,
-  //    const decoder_t & decoder,
-  //    typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
-  //    scalar_t t0)
-  //     : fomNominalState_(fomNominalStateIn),
-  //       fomVelocityRef_( fomSystemObj.attr("velocity")(fomNominalStateIn, t0) ),
-  //       fomStateReconstructor_(fomNominalState_, decoder),
-  //       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-  //       //
-  //       jPhiMatrix_(fomSystemObj.attr("applyJacobian")
-  // 		        (fomNominalStateIn, *decoder.jacobianCRef().data(), t0)),
-  //       //
-  //       residualPolicy_(fomVelocityRef_, fomStatesMngr_),
-  //       jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
-  //       stepperObj_(_lspg_state_t(romStateIn), fomSystemObj,
-  // 		  residualPolicy_, jacobianPolicy_)
-  //   {
-  //     // reconstruct current fom state so that we have something
-  //     // consisten with the current romState
-  //     fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
-  //   }
-  // #endif
-
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  /*- the fom_system_t is a pybind11::object
+   * - aux stepper is NOT needed (e.g. for BDF1)
+   * - ud_ops_t == void
+   */
+  template <
+    typename _fom_system_t = fom_system_t,
+    typename _lspg_state_t = lspg_state_t,
+    typename _aux_stepper_t = aux_stepper_t,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
+      ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value and
+      std::is_void<_aux_stepper_t>::value and
+      std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  DefaultProblemContinuousTimeApi
+  (const _fom_system_t & fomSystemObj,
+   const decoder_t & decoder,
+   const typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
+   const fom_native_state_t & fomNominalStateIn)
+  : fomNominalState_(fomNominalStateIn),
+    fomVelocityRef_( fomSystemObj.attr("velocity")(fomNominalStateIn,
+						   static_cast<scalar_t>(0)) ),
+    fomStateReconstructor_(fomNominalState_, decoder),
+    fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
+    //
+    jPhiMatrix_(fomSystemObj.attr("applyJacobian")
+		(fomNominalStateIn,
+		 *decoder.jacobianCRef().data(),
+		 static_cast<scalar_t>(0))),
+    //
+    residualPolicy_(fomVelocityRef_, fomStatesMngr_),
+    jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
+    stepperObj_(_lspg_state_t(romStateIn), fomSystemObj,
+		residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(_lspg_state_t(romStateIn));
+  }
+#endif
 };
 
 }}}}}

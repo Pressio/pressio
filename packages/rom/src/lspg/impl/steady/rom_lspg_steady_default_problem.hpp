@@ -132,16 +132,17 @@ public:
       ::pressio::containers::predicates::is_vector_wrapper_pybind<_lspg_state_t>::value,
       int > = 0
   >
-  DefaultProblemSteady(const _fom_system_t & fomSystemObj,
-		       const decoder_t	& decoder,
-		       typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
-		       const fom_native_state_t fomNominalNative)
-    : fomNominalState_(fomNominalNative),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      residualPolicy_(fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, decoder),
-      systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
+  DefaultProblemSteady
+  (const _fom_system_t & fomSystemObj,
+   const decoder_t	& decoder,
+   const typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
+   const fom_native_state_t fomNominalNative)
+  : fomNominalState_(fomNominalNative),
+    fomStateReconstructor_(fomNominalState_, decoder),
+    fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
+    residualPolicy_(fomStatesMngr_),
+    jacobianPolicy_(fomStatesMngr_, decoder),
+    systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState

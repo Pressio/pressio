@@ -101,9 +101,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt)
 {
-  auto & fomStateAt_n   = fomStatesMngr.currentFomStateCRef();
-  auto & fomStateAt_nm1 = fomStatesMngr.fomStatePrevStepCRef();
-
+  const auto & fomStateAt_n   = fomStatesMngr.currentFomStateCRef();
+  const auto & fomStateAt_nm1 = fomStatesMngr.fomStatePrevStepCRef();
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;

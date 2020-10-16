@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_query_fom_velocity.hpp
+// utils_p4py.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,14 @@
 //@HEADER
 */
 
-#ifndef ROM_FOM_QUERY_ROM_QUERY_FOM_VELOCITY_HPP_
-#define ROM_FOM_QUERY_ROM_QUERY_FOM_VELOCITY_HPP_
+#ifndef UTILS_UTILS_P4PY_HPP_
+#define UTILS_UTILS_P4PY_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace utils{
 
-//------------------------------------------
-// for native c++
-//------------------------------------------
-template <
-  typename fom_system_t,
-  typename state_t,
-  typename rhs_t,
-  typename time_t
-  >
-mpl::enable_if_t<
-  !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
-  and !::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
-#endif
-  >
-queryFomVelocity(const fom_system_t & fomObj,
-		 const state_t & fomState,
-		 rhs_t & rhs,
-		 const time_t & time)
-{
-  fomObj.velocity(*fomState.data(), time, *rhs.data());
-}
+// a dummy type that is used ONLY in impl namespace
 
-//------------------------------------------
-// for python
-//------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename state_t, typename rhs_t, typename time_t>
-mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<rhs_t>::value
->
-queryFomVelocity(const pybind11::object & fomObj,
-		 const state_t & fomState,
-		 rhs_t & rhs,
-		 const time_t & time)
-{
-  *rhs.data() = fomObj.attr("velocity")(*fomState.data(), time);
-}
-#endif
+struct p4pyTag{};
 
-}} //end namespace pressio::rom
-#endif  // ROM_FOM_QUERY_ROM_QUERY_FOM_VELOCITY_HPP_
+}} // end of namespace pressio::utils
+#endif  // UTILS_UTILS_P4PY_HPP_

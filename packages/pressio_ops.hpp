@@ -110,6 +110,7 @@
 #include "ops/src/kokkos/ops_vector_update.hpp"
 #include "ops/src/kokkos/ops_multi_vector_update.hpp"
 #include "ops/src/kokkos/ops_dot.hpp"
+#include "ops/src/kokkos/ops_elementwise_multiply.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -156,13 +157,16 @@
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // pybind11
+#include "ops/src/pybind11/ops_fill.hpp"
 #include "ops/src/pybind11/ops_set_zero.hpp"
 #include "ops/src/pybind11/ops_deep_copy.hpp"
-#include "ops/src/pybind11/ops_norms_vector.hpp"
 #include "ops/src/pybind11/ops_vector_update.hpp"
 #include "ops/src/pybind11/ops_level2.hpp"
 #include "ops/src/pybind11/ops_level3.hpp"
 #include "ops/src/pybind11/ops_scale.hpp"
+#include "ops/src/pybind11/ops_dot.hpp"
+#include "ops/src/pybind11/ops_norms_vector.hpp"
+#include "ops/src/pybind11/ops_elementwise_multiply.hpp"
 #endif
 
 #endif

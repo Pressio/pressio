@@ -133,7 +133,7 @@ public:
 	       lspg_jac_t & romJac) const
   {
     this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
-				    time, dt, timeStep);
+    				    time, dt, timeStep);
   }
 
 private:

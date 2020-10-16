@@ -144,8 +144,10 @@ and  ode::implicitmethods::{Arbitrary} for the discrete-time API.");
     they WANT to use and want to print error messages detailed enough.
     So to do that we guess what API they want
     by discriminating on whether the adapter has a discrete_time_residual_type.
-    We choose this because it is simple enough that we hope the user does not get it wrong.
-    We believe that if the system class has the discrete_time_residual_type typedef,
+    We choose this because it is simple enough so we hope the user
+    does not get it wrong!
+    We believe that if the system class has
+    the discrete_time_residual_type typedef,
     then it is very likely the user is trying to use a discrete-time API.
     If not, then they are trying to use the continuous-time API.
     If the user if actually using the discrete-time API but
@@ -190,8 +192,9 @@ struct composeUnsteady<
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
 };
 
 // default lspg user-defined dops
@@ -211,8 +214,9 @@ struct composeUnsteady<
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
 };
 
 // preconditioned lspg pressio ops
@@ -232,7 +236,8 @@ struct composeUnsteady<
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemContinuousTimeApi<
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_type, void>;
 };
 
@@ -253,7 +258,8 @@ struct composeUnsteady<
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::MaskedProblemContinuousTimeApi<
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::MaskedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, void>;
 };
 
@@ -283,8 +289,9 @@ struct composeUnsteady<
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::DefaultProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>;
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::DefaultProblemDiscreteTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>;
 };
 
 /***
@@ -309,8 +316,10 @@ struct composeUnsteady<
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_type, Args...>;
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type,
+    decoder_type, precond_type, Args...>;
 };
 
 /***
@@ -335,8 +344,10 @@ struct composeUnsteady<
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
-  using type = ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
-      stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, Args...>;
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type,
+    decoder_type, masker_type, Args...>;
 };
 
 }}}}

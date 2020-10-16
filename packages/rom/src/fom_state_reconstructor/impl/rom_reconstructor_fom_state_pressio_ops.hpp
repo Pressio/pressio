@@ -58,6 +58,9 @@ template <
   >
 struct FomStateReconstructorPressioOps
 {
+  using native_fom_state_t =
+    typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
+
   FomStateReconstructorPressioOps() = delete;
   FomStateReconstructorPressioOps(const FomStateReconstructorPressioOps &) = default;
   FomStateReconstructorPressioOps & operator=(const FomStateReconstructorPressioOps &) = default;
@@ -83,7 +86,8 @@ struct FomStateReconstructorPressioOps
   }
 
   template <typename rom_state_t>
-  fom_state_type operator()(const rom_state_t & romState) const{
+  fom_state_type operator()(const rom_state_t & romState) const
+  {
     auto fomState(fomNominalState_.get());
     ::pressio::ops::set_zero(fomState);
     this->operator()(romState,fomState);
@@ -91,15 +95,18 @@ struct FomStateReconstructorPressioOps
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // this is added for pybind because I cannot figure out how to overload ()
+  // evaluate is added because I cannot figure out how to overload ()
+  // takes in a native vector, which is a numpy array so we need to view it
+  // inside a pressio vector wrapper so that we can use the pressio ops
   template <typename rom_state_t>
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_array_pybind<rom_state_t>::value,
     typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
     >
-  evaluate(const rom_state_t & romState) const{
+  evaluate(const rom_state_t & romState) const
+  {
     ::pressio::containers::Vector<rom_state_t> romView(romState, ::pressio::view());
-    fom_state_type fomState(fomNominalState_);
+    fom_state_type fomState(fomNominalState_.get());
     ::pressio::ops::set_zero(fomState);
     this->operator()(romView, fomState);
     return *fomState.data();
@@ -108,7 +115,7 @@ struct FomStateReconstructorPressioOps
 
 private:
   std::reference_wrapper<const fom_state_type> fomNominalState_	= {};
-  std::reference_wrapper<const decoder_type> decoderObj_	= {};
+  std::reference_wrapper<const decoder_type>    decoderObj_	= {};
 
 };
 

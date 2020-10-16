@@ -174,21 +174,22 @@ public:
       ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value,
       int > = 0
     >
-  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
-				  const fom_native_state_t & fomNominalStateNative,
-				  const decoder_t	    & decoder,
+  DefaultProblemContinuousTimeApi(const fom_system_t		& fomSystemObj,
+				  const decoder_t		& decoder,
 				  const galerkin_native_state_t & romStateIn,
-				  scalar_t		    t0)
+				  const fom_native_state_t	& fomNominalStateNative)
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder),
-      fomVelocityRef_( fomSystemObj.attr("velocity")(*fomNominalState_.data(), t0) ),
+      fomVelocityRef_(fomSystemObj.attr("velocity")(*fomNominalState_.data(),
+						    static_cast<scalar_t>(0)) ),
       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(galerkin_state_t(romStateIn));
+    auto romStateView = galerkin_state_t(romStateIn, ::pressio::view());
+    fomStatesMngr_.reconstructCurrentFomState(romStateView);
   }
 #endif
 

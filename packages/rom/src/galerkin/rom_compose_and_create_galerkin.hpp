@@ -93,7 +93,6 @@ compatible with the FOM state type detected from adapter class");
 		  fomRef, std::forward<Args>(args)...);
 }
 
-
 template<
   typename rom_jacobian_type,
   std::size_t order,

@@ -57,7 +57,7 @@ struct PyDecoder;
 template <typename matrix_type, typename fom_state_type>
 struct PyDecoder<
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_matrix_wrapper_pybind11<matrix_type>::value and
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind11<matrix_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_pybind11<fom_state_type>::value
     >,
   matrix_type, fom_state_type
@@ -67,9 +67,12 @@ struct PyDecoder<
   enum mappingKind{ Null, Linear, Custom };
 
 private:
-  using scalar_t	  = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
-  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
-  using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
+  using scalar_t  =
+    typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
+  using jacobian_native_t =
+    typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
+  using fom_native_t =
+    typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
 
   matrix_type mappingJacobian_ = {};
   mappingKind kind_ = {};
@@ -84,16 +87,20 @@ public:
   ~PyDecoder() = default;
 
   PyDecoder(const jacobian_native_t & jacobianMatrixIn)
-    //note here that we view the native object, we don't deep copy it
-    // so if the mapping jacobian changes on the python side, it is also reflected here
+    // note that we "view" the native object, we don't deep copy it.
+    // if the mapping jacobian changes on the python side, it reflects here
     : mappingJacobian_(jacobianMatrixIn, ::pressio::view()),
       kind_(mappingKind::Linear)
   {}
 
-  PyDecoder(pybind11::object customMapper)
-    //note here that we view the native object, we don't deep copy it
-    // so if the mapping jacobian changes on the python side, it is also reflected here
-    : mappingJacobian_(customMapper.attr("getJacobian")(), ::pressio::view()),
+  // here the description is not necessarily needed but it is important
+  // to keep because it enables the right overload. Otherwise the interpreter
+  // would pick this overload even if passing a numpy array because
+  // a numpy array is also a python object.
+  PyDecoder(pybind11::object customMapper, std::string description)
+    // note that we "view" the native object, we don't deep copy it.
+    // if the mapping jacobian changes on the python side, it reflects here
+    : mappingJacobian_(customMapper.attr("jacobian")(), ::pressio::view()),
       kind_(mappingKind::Custom),
       customMapper_(customMapper)
   {}
@@ -103,10 +110,12 @@ public:
   template <typename operand_t, typename fom_state_t = fom_state_type>
   void applyMapping(const operand_t & operand, fom_state_t & result) const
   {
-    if (kind_ == mappingKind::Linear){
+    if (kind_ == mappingKind::Linear)
+    {
       constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
       constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-      ::pressio::ops::product(::pressio::nontranspose(), one, mappingJacobian_, operand, zero, result);
+      ::pressio::ops::product(::pressio::nontranspose(), one,
+			      mappingJacobian_, operand, zero, result);
     }
     else if(kind_ == mappingKind::Custom)
     {

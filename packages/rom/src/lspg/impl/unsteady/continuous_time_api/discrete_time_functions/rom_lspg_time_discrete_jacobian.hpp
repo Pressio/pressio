@@ -76,7 +76,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
-     !::pressio::containers::predicates::is_matrix_wrapper_pybind<lspg_matrix_type>::value and
+     !::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value, int > = 0
 #endif
   >
@@ -101,7 +101,7 @@ template <
   typename decoder_jac_type
 >
 mpl::enable_if_t< 
- ::pressio::containers::predicates::is_matrix_wrapper_pybind<lspg_matrix_type>::value
+ ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
 >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
