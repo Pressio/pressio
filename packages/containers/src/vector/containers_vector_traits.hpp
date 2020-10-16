@@ -504,6 +504,8 @@ struct traits<
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Pybind;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   using scalar_t	 = typename wrapped_type::value_type;
   using ordinal_t	 = std::size_t;
@@ -514,12 +516,8 @@ struct traits<
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
-
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
 
   // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;

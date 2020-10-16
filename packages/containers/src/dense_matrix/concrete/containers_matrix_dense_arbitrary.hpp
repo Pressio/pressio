@@ -111,7 +111,6 @@ public:
   }
 
 private:
-  friend ContainerBase<this_t>;
   wrapped_type data_ = {};
 
 };//end class

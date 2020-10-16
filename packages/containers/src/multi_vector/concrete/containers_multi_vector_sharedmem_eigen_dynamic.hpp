@@ -128,7 +128,6 @@ public:
   }
 
 private:
-  friend MultiVectorSharedMemBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

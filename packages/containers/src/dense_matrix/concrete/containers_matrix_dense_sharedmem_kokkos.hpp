@@ -152,7 +152,6 @@ public:
   }
 
 private:
-  friend DenseMatrixSharedMemBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

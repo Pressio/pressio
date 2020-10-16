@@ -65,16 +65,18 @@ class DenseMatrix<
   using sc_t	    = typename mytraits::scalar_t;
   using ord_t	    = typename mytraits::ordinal_t;
   using wrap_t	    = typename mytraits::wrapped_t;
-  // using ref_t	    = typename mytraits::reference_t;
-  // using const_ref_t = typename mytraits::const_reference_t;
-  // using mut_proxy_t = typename mytraits::mut_proxy_t;
-  // using proxy_t	    = typename mytraits::proxy_t;
+  using ref_t	    = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+  using mut_proxy_t = typename mytraits::mut_proxy_t;
+  using proxy_t	    = typename mytraits::proxy_t;
 
 public:
   DenseMatrix() = delete;
 
-  explicit DenseMatrix(std::size_t ext1, std::size_t ext2)
-    : data_({ext1, ext2}){}
+  explicit DenseMatrix(std::size_t ext1,
+		       std::size_t ext2)
+    : data_({ext1, ext2})
+  {}
 
   explicit DenseMatrix(const wrap_t & src)
     : data_{ wrap_t(const_cast<wrap_t &>(src).request()) }
@@ -95,7 +97,8 @@ public:
   // use only if you know what you are doing
   // it is currently used only in specific places
   DenseMatrix(wrap_t src, ::pressio::view)
-    : data_{src}{
+    : data_{src}
+  {
     assert( data_.ndim() == 2 );
   }
 
@@ -132,9 +135,9 @@ public:
   //   return *this;
   // }
 
-  // // move cnstr and assign
-  // DenseMatrix(DenseMatrix && o);
-  // DenseMatrix & operator=(DenseMatrix && o) = delete;
+  // move cnstr and assign
+  DenseMatrix(DenseMatrix && other) = default;
+  DenseMatrix & operator=(DenseMatrix && o) = delete;
 
   // destructor
   ~DenseMatrix(){};
@@ -145,14 +148,6 @@ public:
     return data_.shape(i);
   }
 
-  // ref_t operator()(ord_t i, ord_t j){
-  //   return mutProxy_(i,j);
-  // };
-
-  // const_ref_t operator()(ord_t i, ord_t j) const{
-  //   return proxy_(i,j);
-  // };
-
   wrap_t const * data() const{
     return &data_;
   }
@@ -161,10 +156,25 @@ public:
     return &data_;
   }
 
+  proxy_t proxy() const{
+    return data_.unchecked();
+  }
+
+  mut_proxy_t proxy(){
+    return data_.mutable_unchecked();
+  }
+
+  ref_t operator()(ord_t i, ord_t j){
+    return data_.mutable_at(i,j);
+  };
+
+  const_ref_t operator()(ord_t i, ord_t j) const{
+    return data_.at(i,j);
+  };
+
 private:
-  friend DenseMatrixSharedMemBase< this_t >;
   wrap_t data_ = {};
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_PYBIND11_HPP_

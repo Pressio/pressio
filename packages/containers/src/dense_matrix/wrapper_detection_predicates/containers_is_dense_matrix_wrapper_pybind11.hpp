@@ -58,9 +58,11 @@ template <typename T>
 struct is_cstyle_dense_matrix_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    details::traits<T>::is_matrix &&
-    details::traits<T>::wrapped_matrix_identifier==
-		details::WrappedMatrixIdentifier::Pybind and
+    details::traits<T>::is_matrix
+    &&
+    details::traits<T>::wrapped_matrix_identifier
+    == details::WrappedMatrixIdentifier::DensePybind
+    and
     is_cstyle_array_pybind11<
       typename details::traits<T>::wrapped_t
       >::value
@@ -75,9 +77,11 @@ template <typename T>
 struct is_fstyle_dense_matrix_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    details::traits<T>::is_matrix &&
-    details::traits<T>::wrapped_matrix_identifier==
-		details::WrappedMatrixIdentifier::Pybind and
+    details::traits<T>::is_matrix
+    &&
+    details::traits<T>::wrapped_matrix_identifier
+    == details::WrappedMatrixIdentifier::DensePybind
+    and
     is_fstyle_array_pybind11<
       typename details::traits<T>::wrapped_t
       >::value

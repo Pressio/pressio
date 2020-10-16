@@ -89,10 +89,10 @@ public:
 
   DiagExpr(matrix_t & matObjIn)
     : matObj_(matObjIn),
-    nativeExprObj_(matObj_.get().data()->diagonal()),
-    numRows_(matObj_.get().data()->rows()),
-    numCols_(matObj_.get().data()->cols()),
-    extent_(matObj_.get().data()->rows())
+      nativeExprObj_(matObj_.get().data()->diagonal()),
+      numRows_(matObj_.get().data()->rows()),
+      numCols_(matObj_.get().data()->cols()),
+      extent_(matObj_.get().data()->rows())
   {
     assert(numRows_ == numCols_);
   }
@@ -254,6 +254,112 @@ public:
     const_ref_t
     >
   operator()(size_t i) const
+  {
+    return (*this)[i];
+  }
+};
+#endif
+
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename matrix_t>
+struct DiagExpr<
+  matrix_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<matrix_t>::value
+    >
+  >
+{
+  using this_t = DiagExpr<matrix_t>;
+  using mytraits = typename details::traits<this_t>;
+  using sc_t = typename mytraits::scalar_t;
+  using size_t = typename mytraits::size_t;
+  using ref_t = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+  using native_expr_t = typename mytraits::native_expr_t;
+  using data_return_t = typename mytraits::data_return_t;
+  using const_data_return_t = typename mytraits::const_data_return_t;
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+private:
+  //pybind11::object np_ = pybind11::module::import("numpy");
+  std::reference_wrapper<matrix_t> matObj_;
+  /*native_expr_t nativeExprObj_;*/
+  size_t extent_ = {};
+
+public:
+  DiagExpr() = delete;
+  DiagExpr(const DiagExpr & other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = delete;
+  DiagExpr(DiagExpr && other) = default;
+  DiagExpr & operator=(DiagExpr && other) = delete;
+  ~DiagExpr() = default;
+
+  DiagExpr(matrix_t & matObjIn)
+    : matObj_(matObjIn),
+      /*nativeExprObj_
+	( np_.attr("diag")(matObj_.get().data()) ),*/
+      extent_(matObjIn.extent(0))
+  {
+    assert(matObjIn.extent(0) == matObjIn.extent(1));
+  }
+
+public:
+  // auto proxy() const{
+  //   return nativeExprObj_.unchecked();
+  // }
+
+  // auto proxy(){
+  //   return nativeExprObj_.mutable_unchecked();
+  // }
+
+  // const_data_return_t data() const{
+  //   return &nativeExprObj_;
+  // }
+
+  // data_return_t data(){
+  //   return &nativeExprObj_;
+  // }
+
+  size_t extent() const{
+    return extent_;
+  }
+
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
+
+  // non-const subscripting
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+    ref_t
+    >
+  operator[](size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return matObj_.get()(i,i);
+  }
+
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+    ref_t
+    >
+  operator()(size_t i)
+  {
+    return (*this)[i];
+  }
+
+  // const subscripting
+  const_ref_t operator[](size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return matObj_.get()(i,i);
+  }
+
+  const_ref_t operator()(size_t i) const
   {
     return (*this)[i];
   }

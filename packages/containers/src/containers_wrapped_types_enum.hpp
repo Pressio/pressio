@@ -75,7 +75,6 @@ enum class WrappedVectorIdentifier{
    Epetra,
    Tpetra,
    TpetraBlock,
-   // Eigen,
    EigenRowStatic,
    EigenColStatic,
    EigenRowDynamic,
@@ -96,11 +95,7 @@ enum class WrappedMatrixIdentifier{
    TeuchosSerialDense,
    DenseEigen, // maybe more specific, like static or dynamic
    SparseEigen,
-   Pybind,
-   // CrsEpetra,
-   // SparseEpetra,
-   // SparseTpetra,
-   // CrsKokkos,
+   DensePybind,
    DenseArbitrary
 };
 

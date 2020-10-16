@@ -52,7 +52,7 @@
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************
-an arbitrary dense matrix 
+an arbitrary dense matrix
 *******************************/
 template <typename wrapped_type>
 struct traits<
@@ -97,9 +97,10 @@ struct traits<
     containers::predicates::is_dense_matrix_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<DenseMatrix<wrapped_type>,
-				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen, true>,
+  : public containers_shared_traits<
+  DenseMatrix<wrapped_type>,
+  wrapped_type, false, true, false,
+  WrappedPackageIdentifier::Eigen, true>,
     public matrix_shared_traits<false>
 {
 
@@ -136,11 +137,12 @@ struct traits<
     containers::predicates::is_dense_matrix_teuchos<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<DenseMatrix<wrapped_type>,
-				    wrapped_type,
-				    false, true, false,
-				    WrappedPackageIdentifier::Trilinos,
-				    true>,
+  : public containers_shared_traits<
+  DenseMatrix<wrapped_type>,
+  wrapped_type,
+  false, true, false,
+  WrappedPackageIdentifier::Trilinos,
+  true>,
     public matrix_shared_traits<false>
 {
 
@@ -175,10 +177,11 @@ struct traits<
     containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<DenseMatrix<wrapped_type>,
-				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Trilinos,
-				    false>,
+  : public containers_shared_traits<
+  DenseMatrix<wrapped_type>,
+  wrapped_type, false, true, false,
+  WrappedPackageIdentifier::Trilinos,
+  false>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
@@ -271,15 +274,19 @@ struct traits<
       containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<DenseMatrix<wrapped_type>,
-				    wrapped_type,
-				    false, true, false,
-				    WrappedPackageIdentifier::Pybind,
-				    true>
+  : public containers_shared_traits<
+  DenseMatrix<wrapped_type>,
+  wrapped_type,
+  false, true, false,
+  WrappedPackageIdentifier::Pybind,
+  true>,
+    public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::Pybind;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DensePybind;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   using scalar_t	 = typename wrapped_type::value_type;
   using ordinal_t	 = std::size_t;
@@ -289,13 +296,11 @@ struct traits<
   using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
 
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  using data_return_t	    = wrapped_type *;
+  using reference_t	    = scalar_t &;
+  using const_reference_t   = scalar_t const &;
+  using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
   // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;

@@ -181,7 +181,6 @@ public:
   }
 
 private:
-  friend VectorSharedMemBase< this_t >;
   wrapped_type data_ = {};
 
 };//end class

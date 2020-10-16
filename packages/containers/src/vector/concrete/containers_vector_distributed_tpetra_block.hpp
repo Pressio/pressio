@@ -152,7 +152,6 @@ public:
   }
 
 private:
-  friend VectorDistributedBase< this_t >;
   wrapped_type data_ = {};
 
 };//end class

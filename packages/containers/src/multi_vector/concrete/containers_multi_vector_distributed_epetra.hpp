@@ -139,7 +139,6 @@ public:
   }
 
 private:
-  friend MultiVectorDistributedBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

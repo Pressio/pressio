@@ -125,7 +125,6 @@ public:
   }
 
 private:
-  friend DenseMatrixDistributedBase< this_t >;
   wrap_t data_ = {};
 
 };//end class
