@@ -72,13 +72,11 @@ createUpdater(const state_t & state,
   switch (updateE)
     {
     case update::standard:{
-      std::cout <<"Create standard\n";
       using ut = impl::DefaultUpdater;
       return std::unique_ptr<impl::BaseUpdater>(new ut());
     }
 
     case update::armijo:{
-      std::cout <<"Create Armijo\n";
       using ut = impl::ArmijoUpdater<state_t>;
       return std::unique_ptr<impl::BaseUpdater>(new ut(state));
     }
