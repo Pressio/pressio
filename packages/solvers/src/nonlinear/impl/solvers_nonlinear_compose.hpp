@@ -260,6 +260,51 @@ struct compose<
   using type = Solver<tag, corr_mixin>;
 };
 
+// --------------------------------------------------------------------------
+// COMPOSE GN or LM with Neq and r/j api, pressio ops and M=I for pressio4py
+// --------------------------------------------------------------------------
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename system_t,
+  typename tag,
+  typename hessian_t
+  >
+struct compose<
+  system_t, tag,
+  mpl::enable_if_t<
+    // when dealing with pressio4py and the GN solver is created
+    // for solving steady or unsteady LSPG, system_t is NOT a pybind object.
+    // The system class is a python object only if one is trying
+    // to use GaussNewton to solve a nonlinear system written in python.
+    // For that case, I would say they are better off using other
+    // Python libraries for solvers, so disable that scenario for now.
+    !::pressio::ops::predicates::is_object_pybind<system_t>::value and
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<hessian_t>::value>,
+  pybind11::object, hessian_t, ::pressio::utils::p4pyTag
+  >
+{
+  using scalar_t = typename system_t::scalar_type;
+  using state_t = typename system_t::state_type;
+  using r_t = typename system_t::residual_type;
+  using j_t = typename system_t::jacobian_type;
+
+  using grad_t = state_t;
+  using linear_solver_t = pybind11::object;
+
+  using operators_t =
+    typename std::conditional<
+    std::is_same<tag, GaussNewton>::value,
+    HessianGradientOperatorsRJApiNoWeighting<hessian_t, grad_t, r_t, j_t>,
+    LMHessianGradientOperatorsRJApi<hessian_t, grad_t, r_t, j_t, void,
+				    HessianGradientOperatorsRJApiNoWeighting>
+    >::type;
+
+  using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<tag, corr_mixin>;
+};
+#endif
+
+
 
 // ---------------------------------------------------------------------------
 // *** COMPOSE GN or LM with Neq and r/j api and optional ops and valid M  ***
@@ -353,8 +398,9 @@ struct compose<
   ( std::is_void<ud_ops_t>::value or std::is_void<weighting_functor_t>::value,
     "Both ud_ops_t and weighting_functor_t are non-void, something is wrong.");
 
-  using operators_t
-  = typename composeOperators<weighting_functor_t, tag>::template type<hess_t, grad_t, r_t, j_t, ud_ops_t>;
+  using operators_t =
+    typename composeOperators<weighting_functor_t, tag>::template type<
+    hess_t, grad_t, r_t, j_t, ud_ops_t>;
 
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
@@ -372,11 +418,12 @@ struct compose<
   system_t, tag,
   mpl::enable_if_t<
     (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-     ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
-    and
-    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
-    and !std::is_void<ud_ops_t>::value
-    and !std::is_void<weighting_functor_t>::value
+     ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
+    /*need to check linSoler is not a pybind::objec to guard against ambigous TI */
+    !::pressio::ops::predicates::is_object_pybind<linear_solver_t>::value and
+    !std::is_void<ud_ops_t>::value and
+    !std::is_void<weighting_functor_t>::value
     >,
   linear_solver_t, ud_ops_t, weighting_functor_t
   >
@@ -423,45 +470,6 @@ struct compose<
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
 };
-
-
-// -----------------------------------------------------------------------
-// *** COMPOSE GN with Neq for pressio4py  ***
-// -----------------------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename system_t,
-  //template<typename...> class update_t,
-  typename hessian_t
-  >
-struct compose<
-  system_t, GaussNewton, /*update_t,*/
-  mpl::enable_if_t<
-    // when dealing with pressio4py and the GN solver is created
-    // for solving steady or unsteady LSPG, system_t is NOT a pybind object.
-    // The system class is a python object only if one is trying
-    // to use GaussNewton to solve a nonlinear system written in python.
-    // For that case, I would say they are better off using other
-    // Python libraries for solvers, so disable that scenario for now.
-    !::pressio::ops::predicates::is_object_pybind<system_t>::value and
-    ::pressio::containers::predicates::is_matrix_wrapper_pybind<hessian_t>::value>,
-  pybind11::object, hessian_t
-  >
-{
-  using scalar_t = typename system_t::scalar_type;
-  using state_t = typename system_t::state_type;
-
-  using grad_t = state_t;
-  using linear_solver_t = pybind11::object;
-
-  using corr_mixin =
-    typename composeCorrector<GaussNewton, void, system_t,
-			      state_t, hessian_t, grad_t,
-			      linear_solver_t>::type;
-  // using update_mixin  = update_t<scalar_t, state_t, corr_mixin>;
-  using type = Solver<GaussNewton, corr_mixin>;
-};
-#endif
 
 }}}}
 #endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_

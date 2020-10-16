@@ -86,6 +86,7 @@ public:
 		   const scalar_t & mu,
 		   solver_mixin_t & solverObj)
   {
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
 
@@ -94,7 +95,9 @@ public:
     const auto & H	    = solverObj.hessianCRefBeforeLMDiagonalScaling();
 
     // denom
-    for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
+    // for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
+    const auto diagH = ::pressio::containers::diag(H);
+    ::pressio::ops::elementwise_multiply(one, correction, diagH, zero, cDiagH_);
     const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
     const auto den2 = ::pressio::ops::dot(correction, g);
     auto denom = (one/two)*(mu*den1 + den2);

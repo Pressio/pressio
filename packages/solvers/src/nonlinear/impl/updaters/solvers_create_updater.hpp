@@ -66,17 +66,19 @@ mpl::enable_if_t<
   std::is_same<solver_tag, GaussNewtonQR>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const state_t & state, 
+createUpdater(const state_t & state,
       ::pressio::solvers::nonlinear::update updateE)
 {
   switch (updateE)
     {
     case update::standard:{
+      std::cout <<"Create standard\n";
       using ut = impl::DefaultUpdater;
       return std::unique_ptr<impl::BaseUpdater>(new ut());
     }
 
     case update::armijo:{
+      std::cout <<"Create Armijo\n";
       using ut = impl::ArmijoUpdater<state_t>;
       return std::unique_ptr<impl::BaseUpdater>(new ut(state));
     }
@@ -95,7 +97,7 @@ mpl::enable_if_t<
   std::is_same<solver_tag, LevenbergMarquardt>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const state_t & state, 
+createUpdater(const state_t & state,
       ::pressio::solvers::nonlinear::update updateE)
 {
   switch (updateE)
@@ -129,7 +131,7 @@ mpl::enable_if_t<
   std::is_same<solver_tag, NewtonRaphson>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const state_t & state, 
+createUpdater(const state_t & state,
       ::pressio::solvers::nonlinear::update updateE)
 {
   switch (updateE)

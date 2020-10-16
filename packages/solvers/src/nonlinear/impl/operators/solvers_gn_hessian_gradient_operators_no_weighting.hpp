@@ -52,9 +52,9 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <
-  typename h_t, 
+  typename h_t,
   typename g_t,
-  typename r_t, 
+  typename r_t,
   typename j_t,
   typename ud_ops_type = void
   >
@@ -72,52 +72,51 @@ private:
   mutable j_t J_;
   g_t g_;
   h_t H_;
-
   const ud_ops_t * udOps_   = nullptr;
 
 public:
   HessianGradientOperatorsRJApiNoWeighting() = delete;
 
   template <
-    typename system_t, 
-    typename state_t, 
+    typename system_t,
+    typename state_t,
     typename _ud_ops_t = ud_ops_type,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_t>::value,
       int
-     > = 0
-  >
+      > = 0
+    >
   HessianGradientOperatorsRJApiNoWeighting(const system_t & system, const state_t & state)
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(state),
       H_(::pressio::ops::product<h_t>(pT, pnT,
-              ::pressio::utils::constants<sc_t>::one(),
-              J_))
+				      ::pressio::utils::constants<sc_t>::one(),
+				      J_))
   {}
 
   template <
-   typename system_t, 
-   typename state_t, 
-   typename _ud_ops_t = ud_ops_type,
+    typename system_t,
+    typename state_t,
+    typename _ud_ops_t = ud_ops_type,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and !std::is_void<_ud_ops_t>::value,
       int
-     > = 0
-  >
+      > = 0
+    >
   HessianGradientOperatorsRJApiNoWeighting(const system_t & system,
-        const state_t & state,
-        const _ud_ops_t & udOps)
+					   const state_t & state,
+					   const _ud_ops_t & udOps)
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(state),
       H_(udOps.template product<h_t>(pT, pnT,
-             utils::constants<sc_t>::one(),
-             *J_.data(), *J_.data())),
+				     utils::constants<sc_t>::one(),
+				     *J_.data(), *J_.data())),
       udOps_(&udOps)
   {}
 
@@ -165,7 +164,7 @@ public:
     // compute norm of r_
     residualNorm = this->computeNormR();
 
-    // recompute Jacobian is needed 
+    // recompute Jacobian is needed
     if (recomputeSystemJacobian){
       systemObj.jacobian(state, J_);
       computeHessian();
@@ -183,7 +182,7 @@ public:
        const state_t & state,
        sc_t & residualNorm,
        bool recomputeSystemJacobian = true)
-  {    
+  {
     systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
     // compute  norm of r_
@@ -202,7 +201,7 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & systemObj, 
+  residualNorm(const system_t & systemObj,
          const state_t & state,
          sc_t & residualNorm) const
   {
@@ -214,7 +213,7 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & systemObj, 
+  residualNorm(const system_t & systemObj,
          const state_t & state,
          sc_t & residualNorm) const
   {
@@ -225,8 +224,8 @@ public:
 private:
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t<
-    std::is_void<_ud_ops_t>::value, 
-    sc_t 
+    std::is_void<_ud_ops_t>::value,
+    sc_t
     >
   computeNormR() const
   {

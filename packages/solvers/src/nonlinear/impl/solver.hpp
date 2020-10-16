@@ -115,6 +115,7 @@ public:
   Solver(const system_t & system,
 	 const state_t & state,
   	 Args &&... args)
+    // delegate to constr above
     : Solver(system, state,
 	     stop::whenCorrectionAbsoluteNormBelowTolerance,
 	     update::standard,
@@ -137,17 +138,35 @@ public:
     jacobianUpdateFreq_ = newFreq;
   }
 
+  iteration_t numIterationsExecuted() const {
+    return iStep_;
+  }
+
+  // *****************************************
+  // *** set or query updatating criterion ***
   void setUpdatingCriterion(update value){
     updatingE_ = value;
     // set null to indicate it needs to be constructed
     updater_ = nullptr;
   }
 
-  update updatingCriterion() const{ return updatingE_; }
-  void setStoppingCriterion(stop value){ stoppingE_ = value; }
-  stop stoppingCriterion() const{ return stoppingE_; }
+  update updatingCriterion() const{
+    return updatingE_;
+  }
 
-  // this is used to set a single tol for all 
+  // *****************************************
+  // *** set or query stopping criterion ***
+  void setStoppingCriterion(stop value){
+    stoppingE_ = value;
+  }
+  stop stoppingCriterion() const{
+    return stoppingE_;
+  }
+
+  // *****************************************
+  // *** set or query tolerances ***
+
+  // this is used to set a single tol for all
   void setTolerance(sc_t tolerance){ tolerances_.fill(std::move(tolerance)); }
 
   // finer-grained methods for tolerances
@@ -165,19 +184,17 @@ public:
   sc_t gradientAbsoluteTolerance()const   { return tolerances_[4]; }
   sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
 
-  iteration_t numIterationsExecuted() const {
-    return iStep_;
-  }
 
-  template<typename system_t, typename _state_t = state_t>
+  template<
+    typename system_t,
+    typename _state_t = state_t
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  mpl::enable_if_t<
-  !::pressio::containers::predicates::is_array_pybind<_state_t>::value
-  >
-#else
-  void
+    , mpl::enable_if_t<
+      !::pressio::containers::predicates::is_array_pybind<_state_t>::value, int
+      > = 0
 #endif
-  solve(const system_t & system, _state_t & state)
+    >
+  void solve(const system_t & system, _state_t & state)
   {
     this->solveImpl(system, state);
   }
