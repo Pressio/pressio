@@ -180,8 +180,7 @@ public:
 				  const fom_native_state_t	& fomNominalStateNative)
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder),
-      fomVelocityRef_(fomSystemObj.attr("velocity")(*fomNominalState_.data(),
-						    static_cast<scalar_t>(0)) ),
+      fomVelocityRef_(fomSystemObj.attr("createVelocity")()),
       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
       stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, velocityPolicy_)

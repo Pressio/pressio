@@ -70,9 +70,9 @@ public:
 
 public:
   template <typename fom_system_t>
-  mpl::enable_if_t< 
-    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
-    residual_t 
+  mpl::enable_if_t<
+    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
+    residual_t
   >
   create(const fom_system_t & fomSystemObj) const
   {
@@ -81,14 +81,14 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename fom_system_t>
-  mpl::enable_if_t< 
-   ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
-   residual_t 
+  mpl::enable_if_t<
+   ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
+   residual_t
   >
   create(const fom_system_t & fomSystemObj) const
   {
     const auto & currentFom = fomStatesMngr_.get().currentFomStateCRef();
-    return residual_t(fomSystemObj.attr("residual")(*currentFom.data()));
+    return residual_t(fomSystemObj.attr("createResidual")());
   }
 #endif
 
@@ -108,7 +108,7 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomResidual(fomSystemObj, 
+    ::pressio::rom::queryFomResidual(fomSystemObj,
       fomStatesMngr_.get().currentFomStateCRef(), romResidual);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -119,7 +119,6 @@ public:
 
 protected:
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
-
 };
 
 }}}}}

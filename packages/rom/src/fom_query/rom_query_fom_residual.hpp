@@ -82,7 +82,7 @@ queryFomResidual(const pybind11::object & fomObj,
 		 const state_t & fomState,
 		 result_t & R)
 {
-  *R.data() = fomObj.attr("residual")(*fomState.data());
+  fomObj.attr("residual")(*fomState.data(), *R.data());
 }
 #endif
 

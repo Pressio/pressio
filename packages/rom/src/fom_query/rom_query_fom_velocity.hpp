@@ -89,7 +89,7 @@ queryFomVelocity(const pybind11::object & fomObj,
 		 rhs_t & rhs,
 		 const time_t & time)
 {
-  *rhs.data() = fomObj.attr("velocity")(*fomState.data(), time);
+  fomObj.attr("velocity")(*fomState.data(), time, *rhs.data());
 }
 #endif
 

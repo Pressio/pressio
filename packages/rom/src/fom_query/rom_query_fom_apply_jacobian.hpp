@@ -112,8 +112,9 @@ queryFomApplyJacobian(const pybind11::object & fomObj,
 		      result_t & result,
 		      const time_t & time)
 {
-  *result.data() = fomObj.attr("applyJacobian")(*fomState.data(),
-						*operand.data(), time);
+  fomObj.attr("applyJacobian")(*fomState.data(),
+			       *operand.data(),
+			       time, *result.data());
 }
 
 template <typename state_t, typename operand_t, typename result_t>
@@ -126,8 +127,9 @@ queryFomApplyJacobian(const pybind11::object & fomObj,
 		      const operand_t & operand,
 		      result_t & result)
 {
-  *result.data() = fomObj.attr("applyJacobian")(*fomState.data(),
-						*operand.data());
+  fomObj.attr("applyJacobian")(*fomState.data(),
+			       *operand.data(),
+			       *result.data());
 }
 #endif
 

@@ -76,27 +76,28 @@ public:
 public:
 
   template <typename fom_system_t>
-  mpl::enable_if_t< 
-    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
-    apply_jac_return_t 
+  mpl::enable_if_t<
+    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
+    apply_jac_return_t
   >
   create(const fom_system_t & fomSystemObj) const
   {
     const auto & basis = decoderObj_.get().jacobianCRef();
-    return apply_jac_return_t(fomSystemObj.createApplyJacobianResult(*basis.data()));
+    return apply_jac_return_t
+      (fomSystemObj.createApplyJacobianResult(*basis.data()));
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename fom_system_t>
-  mpl::enable_if_t< 
-    ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value, 
-    apply_jac_return_t 
+  mpl::enable_if_t<
+    ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
+    apply_jac_return_t
   >
   create(const fom_system_t & fomSystemObj) const
   {
-    const auto & currentFom = fomStatesMngr_.get().currentFomStateCRef();
     const auto & basis = decoderObj_.get().jacobianCRef();
-    return apply_jac_return_t(fomSystemObj.attr("applyJacobian")(*currentFom.data(), *basis.data()));
+    return apply_jac_return_t
+      (fomSystemObj.attr("createApplyJacobianResult")(*basis.data()));
   }
 #endif
 
@@ -123,7 +124,7 @@ public:
 #endif
 
     const auto & basis = decoderObj_.get().jacobianCRef();
-    ::pressio::rom::queryFomApplyJacobian(fomSystemObj, 
+    ::pressio::rom::queryFomApplyJacobian(fomSystemObj,
         fomStatesMngr_.get().currentFomStateCRef(), basis, romJacobian);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

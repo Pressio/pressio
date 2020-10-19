@@ -163,7 +163,8 @@ private:
 		   const fom_state_t & fomState,
 		   const scalar_t & time) const
   {
-    *fomRhs_.data() = fomSystemObj.attr("velocity")(*fomState.data(), time);
+    fomSystemObj.attr("velocity")(*fomState.data(), time,
+				  *fomRhs_.data());
   }
 #endif
 

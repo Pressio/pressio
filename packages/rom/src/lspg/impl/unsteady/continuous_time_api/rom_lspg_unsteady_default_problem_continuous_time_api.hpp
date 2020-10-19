@@ -264,15 +264,12 @@ public:
    const typename ::pressio::containers::details::traits<_lspg_state_t>::wrapped_t & romStateIn,
    const fom_native_state_t & fomNominalStateIn)
   : fomNominalState_(fomNominalStateIn),
-    fomVelocityRef_( fomSystemObj.attr("velocity")(fomNominalStateIn,
-						   static_cast<scalar_t>(0)) ),
+    fomVelocityRef_( fomSystemObj.attr("createVelocity")()),
     fomStateReconstructor_(fomNominalState_, decoder),
     fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
     //
-    jPhiMatrix_(fomSystemObj.attr("applyJacobian")
-		(fomNominalStateIn,
-		 *decoder.jacobianCRef().data(),
-		 static_cast<scalar_t>(0))),
+    jPhiMatrix_(fomSystemObj.attr("createApplyJacobianResult")
+		(*decoder.jacobianCRef().data())),
     //
     residualPolicy_(fomVelocityRef_, fomStatesMngr_),
     jacobianPolicy_(fomStatesMngr_, jPhiMatrix_, decoder),
