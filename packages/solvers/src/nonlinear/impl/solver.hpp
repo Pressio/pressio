@@ -97,6 +97,11 @@ private:
 
 public:
   Solver() = delete;
+  Solver(Solver const &) = default;
+  Solver & operator=(Solver const &) = delete;
+  Solver(Solver &&) = default;
+  Solver & operator=(Solver &&) = delete;
+  ~Solver() = default;
 
   template <typename system_t, typename state_t, typename ...Args>
   Solver(const system_t & system,
@@ -121,17 +126,6 @@ public:
 	     update::standard,
 	     std::forward<Args>(args)...)
   {}
-
-  // copy constr and assign
-  Solver(Solver const &) = default;
-  Solver & operator=(Solver const &) = default;
-
-  // move constr and assign
-  Solver(Solver &&) = default;
-  Solver & operator=(Solver &&) = default;
-
-  // destr
-  ~Solver() = default;
 
 public:
   void setSystemJacobianUpdateFreq(std::size_t newFreq){

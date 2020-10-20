@@ -77,6 +77,11 @@ class LMHessianGradientOperatorsRJApi
 
 public:
   LMHessianGradientOperatorsRJApi() = delete;
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi const &) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi const &) = default;
+  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi && o) = default;
+  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
+  ~LMHessianGradientOperatorsRJApi() = default;
 
   template <
    typename system_t,
@@ -92,7 +97,8 @@ public:
   LMHessianGradientOperatorsRJApi(const system_t & system,
                                   const state_t & state)
     : HGOpRJApi_(system, state),
-      lmH_(HGOpRJApi_.hessianCRef()){}
+      lmH_(HGOpRJApi_.hessianCRef())
+  {}
 
   template <
    typename system_t,
@@ -109,20 +115,8 @@ public:
           const state_t & state,
           ArgsIn && ...args)
     : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
-      lmH_(HGOpRJApi_.hessianCRef()){}
-
-
-  // copy constr and assign
-  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi const &) = default;
-  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi const &) = default;
-
-  // move constr and assign
-  LMHessianGradientOperatorsRJApi(LMHessianGradientOperatorsRJApi && o) = default;
-  LMHessianGradientOperatorsRJApi & operator=(LMHessianGradientOperatorsRJApi && o) = default;
-
-  // destr
-  ~LMHessianGradientOperatorsRJApi() = default;
-
+      lmH_(HGOpRJApi_.hessianCRef())
+  {}
 
 public:
   h_t & hessianRef()     { return lmH_; }
@@ -144,13 +138,13 @@ public:
 
   template<typename system_t, typename state_t>
   void computeOperators(const system_t & sys,
-      const state_t & state,
-      sc_t & residualNorm,
-      bool recomputeSystemJacobian=true)
+			const state_t & state,
+			sc_t & residualNorm,
+			bool recomputeSystemJacobian=true)
   {
     HGOpRJApi_.computeOperators(sys, state,
-        residualNorm,
-        recomputeSystemJacobian);
+				residualNorm,
+				recomputeSystemJacobian);
 
     if(recomputeSystemJacobian){
       // compute lmH = H + mu*diag(H)
@@ -166,8 +160,8 @@ public:
 
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system,
-         const state_t & state,
-         sc_t & residualNorm) const
+		    const state_t & state,
+		    sc_t & residualNorm) const
   {
     HGOpRJApi_.residualNorm(system, state, residualNorm);
   }
@@ -190,6 +184,11 @@ class LMHessianGradientOperatorsHGApi
 
 public:
   LMHessianGradientOperatorsHGApi() = delete;
+  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi const &) = default;
+  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi const &) = default;
+  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi && o) = default;
+  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi && o) = default;
+  ~LMHessianGradientOperatorsHGApi() = default;
 
   template <
    typename system_t, typename state_t,
@@ -204,17 +203,6 @@ public:
     : HGOpHGApi_(system, state),
       lmH_(HGOpHGApi_.hessianCRef())
   {}
-
-  // copy constr and assign
-  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi const &) = default;
-  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi const &) = default;
-
-  // move constr and assign
-  LMHessianGradientOperatorsHGApi(LMHessianGradientOperatorsHGApi && o) = default;
-  LMHessianGradientOperatorsHGApi & operator=(LMHessianGradientOperatorsHGApi && o) = default;
-
-  // destr
-  ~LMHessianGradientOperatorsHGApi() = default;
 
 public:
   void resetForNewCall(){
@@ -235,8 +223,8 @@ public:
 
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system,
-        const state_t & state,
-        sc_t & residualNorm) const
+		    const state_t & state,
+		    sc_t & residualNorm) const
   {
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }

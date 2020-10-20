@@ -60,6 +60,11 @@ class HessianGradientOperatorsHGApi
 
 public:
   HessianGradientOperatorsHGApi() = delete;
+  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi const &) = default;
+  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi const &) = default;
+  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi &&) = default;
+  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi &&) = default;
+  ~HessianGradientOperatorsHGApi() = default;
 
   template <
    typename system_t, typename state_t,
@@ -73,17 +78,6 @@ public:
     : g_( system.createGradient() ),
       H_( system.createHessian() )
   {}
-
-  // copy constr and assign
-  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi const &) = default;
-  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi const &) = default;
-
-  // move constr and assign
-  HessianGradientOperatorsHGApi(HessianGradientOperatorsHGApi &&) = default;
-  HessianGradientOperatorsHGApi & operator=(HessianGradientOperatorsHGApi &&) = default;
-
-  // destr
-  ~HessianGradientOperatorsHGApi() = default;
 
 public:
   void resetForNewCall()		{ /* no op */ }
@@ -103,9 +97,9 @@ public:
   }
 
   template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system, 
-        const state_t & state,
-        sc_t & residualNorm) const
+  void residualNorm(const system_t & system,
+		    const state_t & state,
+		    sc_t & residualNorm) const
   {
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
@@ -140,8 +134,8 @@ public:
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    sys.hessianAndGradient(state, H_, g_, 
-         ::pressio::Norm::L2,
+    sys.hessianAndGradient(state, H_, g_,
+			   ::pressio::Norm::L2,
 			   residualNorm, recomputeSystemJacobian);
 
     // scale because of sign convention

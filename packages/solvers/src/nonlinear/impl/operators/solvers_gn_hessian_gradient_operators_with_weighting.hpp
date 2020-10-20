@@ -53,9 +53,9 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 
 template <
-  typename h_t, 
+  typename h_t,
   typename g_t,
-  typename r_t, 
+  typename r_t,
   typename j_t,
   typename ud_ops_type = void,
   typename weighting_functor_t = void
@@ -84,10 +84,15 @@ private:
 
 public:
   WeightedHessianGradientOperatorsRJApi() = delete;
+  WeightedHessianGradientOperatorsRJApi(WeightedHessianGradientOperatorsRJApi const &) = default;
+  WeightedHessianGradientOperatorsRJApi & operator=(WeightedHessianGradientOperatorsRJApi const &) = default;
+  WeightedHessianGradientOperatorsRJApi(WeightedHessianGradientOperatorsRJApi && o) = default;
+  WeightedHessianGradientOperatorsRJApi & operator=(WeightedHessianGradientOperatorsRJApi && o) = default;
+  ~WeightedHessianGradientOperatorsRJApi() = default;
 
   template <
-   typename system_t, 
-   typename state_t, 
+   typename system_t,
+   typename state_t,
    typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
@@ -111,8 +116,8 @@ public:
   {}
 
   template <
-   typename system_t, 
-   typename state_t, 
+   typename system_t,
+   typename state_t,
    typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
@@ -137,17 +142,6 @@ public:
       functorM_(&functorM)
   {}
 
-  // copy constr and assign
-  WeightedHessianGradientOperatorsRJApi(WeightedHessianGradientOperatorsRJApi const &) = default;
-  WeightedHessianGradientOperatorsRJApi & operator=(WeightedHessianGradientOperatorsRJApi const &) = default;
-
-  // move constr and assign
-  WeightedHessianGradientOperatorsRJApi(WeightedHessianGradientOperatorsRJApi && o) = default;
-  WeightedHessianGradientOperatorsRJApi & operator=(WeightedHessianGradientOperatorsRJApi && o) = default;
-
-  // destr
-  ~WeightedHessianGradientOperatorsRJApi() = default;
-
 public:
   void resetForNewCall()    { /* no op */ }
   h_t & hessianRef()     { return H_; }
@@ -155,13 +149,15 @@ public:
   const h_t & hessianCRef() const  { return H_; }
   const g_t & gradientCRef() const { return g_; }
 
-  sc_t getParameter(std::string key) const {
+  sc_t getParameter(std::string key) const
+  {
     throw std::runtime_error("GN HessGrad operators does not have parameters");
     return {};
   }
 
   template <typename T>
-  void setParameter(std::string key, T value) {
+  void setParameter(std::string key, T value)
+  {
     throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
@@ -170,13 +166,13 @@ public:
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & system,
-       const state_t & state,
-       sc_t & residualNorm,
-       bool recomputeSystemJacobian = true)
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian = true)
   {
     // compute r from system object
     system.residual(state, r_);
-    // apply M 
+    // apply M
     (*functorM_)(r_, Mr_);
 
     residualNorm = this->computeNorm();
@@ -195,9 +191,9 @@ public:
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & system,
-       const state_t & state,
-       sc_t & residualNorm,
-       bool recomputeSystemJacobian = true)
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian = true)
   {
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
@@ -216,9 +212,9 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
-         const state_t & state,
-         sc_t & residualNorm) const
+  residualNorm(const system_t & system,
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     system.residual(state, r_);
     (*functorM_)(r_, Mr_);
@@ -229,12 +225,12 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
-         const state_t & state,
-         sc_t & residualNorm) const
+  residualNorm(const system_t & system,
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     // here we query system to recompute r_ only (that is why we pass false)
-    system.residualAndJacobian(state, r_, J_, false); 
+    system.residualAndJacobian(state, r_, J_, false);
     (*functorM_)(r_, Mr_);
     residualNorm = this->computeNorm();
   }

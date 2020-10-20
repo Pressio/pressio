@@ -76,6 +76,11 @@ private:
 
 public:
   HessianGradientOperatorsRJApiNoWeighting() = delete;
+  HessianGradientOperatorsRJApiNoWeighting(HessianGradientOperatorsRJApiNoWeighting const &) = default;
+  HessianGradientOperatorsRJApiNoWeighting & operator=(HessianGradientOperatorsRJApiNoWeighting const &) = default;
+  HessianGradientOperatorsRJApiNoWeighting(HessianGradientOperatorsRJApiNoWeighting && o) = default;
+  HessianGradientOperatorsRJApiNoWeighting & operator=(HessianGradientOperatorsRJApiNoWeighting && o) = default;
+  ~HessianGradientOperatorsRJApiNoWeighting() = default;
 
   template <
     typename system_t,
@@ -120,17 +125,6 @@ public:
       udOps_(&udOps)
   {}
 
-  // copy constr and assign
-  HessianGradientOperatorsRJApiNoWeighting(HessianGradientOperatorsRJApiNoWeighting const &) = default;
-  HessianGradientOperatorsRJApiNoWeighting & operator=(HessianGradientOperatorsRJApiNoWeighting const &) = default;
-
-  // move constr and assign
-  HessianGradientOperatorsRJApiNoWeighting(HessianGradientOperatorsRJApiNoWeighting && o) = default;
-  HessianGradientOperatorsRJApiNoWeighting & operator=(HessianGradientOperatorsRJApiNoWeighting && o) = default;
-
-  // destr
-  ~HessianGradientOperatorsRJApiNoWeighting() = default;
-
 public:
   void resetForNewCall()    { /* no op */ }
   h_t & hessianRef()     { return H_; }
@@ -151,12 +145,12 @@ public:
 public:
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
-    >
+  pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+  >
   computeOperators(const system_t & systemObj,
-       const state_t & state,
-       sc_t & residualNorm,
-       bool recomputeSystemJacobian = true)
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian = true)
   {
     // compute r_
     systemObj.residual(state, r_);
@@ -179,9 +173,9 @@ public:
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & systemObj,
-       const state_t & state,
-       sc_t & residualNorm,
-       bool recomputeSystemJacobian = true)
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian = true)
   {
     systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
@@ -202,8 +196,8 @@ public:
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & systemObj,
-         const state_t & state,
-         sc_t & residualNorm) const
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     systemObj.residual(state, r_);
     residualNorm = this->computeNormR();
@@ -214,8 +208,8 @@ public:
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & systemObj,
-         const state_t & state,
-         sc_t & residualNorm) const
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
     residualNorm = this->computeNormR();
@@ -224,9 +218,9 @@ public:
 private:
   template<typename _ud_ops_t = ud_ops_t>
   mpl::enable_if_t<
-    std::is_void<_ud_ops_t>::value,
-    sc_t
-    >
+  std::is_void<_ud_ops_t>::value,
+  sc_t
+  >
   computeNormR() const
   {
     return ::pressio::ops::norm2(r_);

@@ -66,6 +66,11 @@ class ResidualJacobianOperators
 
 public:
   ResidualJacobianOperators() = delete;
+  ResidualJacobianOperators(ResidualJacobianOperators const &) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators const &) = default;
+  ResidualJacobianOperators(ResidualJacobianOperators && o) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators && o) = default;
+  ~ResidualJacobianOperators() = default;
 
   template <
     typename system_t, typename state_t,
@@ -75,28 +80,19 @@ public:
       int
      > = 0
   >
-  ResidualJacobianOperators(const system_t & system, const state_t & state)
+  ResidualJacobianOperators(const system_t & system,
+			    const state_t & state)
     : r_( system.createResidual() ),
       J_( system.createJacobian() ),
-      auxR_( system.createResidual() ){}
-
-  // copy constr and assign
-  ResidualJacobianOperators(ResidualJacobianOperators const &) = default;
-  ResidualJacobianOperators & operator=(ResidualJacobianOperators const &) = default;
-
-  // move constr and assign
-  ResidualJacobianOperators(ResidualJacobianOperators && o) = default;
-  ResidualJacobianOperators & operator=(ResidualJacobianOperators && o) = default;
-
-  // destr
-  ~ResidualJacobianOperators() = default;
+      auxR_( system.createResidual() )
+  {}
 
 public:
-  void resetForNewCall()		{ /* no op */ }
+  void resetForNewCall()	{ /* no op */ }
   r_t & residualRef()		{ return r_; }
   j_t & jacobianRef()		{ return J_; }
-  const r_t & residualCRef() const	{ return r_; }
-  const j_t & jacobianCRef() const	{ return J_; }
+  const r_t & residualCRef() const { return r_; }
+  const j_t & jacobianCRef() const { return J_; }
 
   template <typename T>
   void setParameter(std::string key, T value) {
@@ -143,7 +139,7 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
+  residualNorm(const system_t & system,
          const state_t & state,
          sc_t & residualNorm) const
   {
@@ -155,7 +151,7 @@ public:
   mpl::enable_if_t<
     pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
     >
-  residualNorm(const system_t & system, 
+  residualNorm(const system_t & system,
          const state_t & state,
          sc_t & residualNorm) const
   {
