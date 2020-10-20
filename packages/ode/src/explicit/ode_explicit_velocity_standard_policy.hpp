@@ -82,12 +82,6 @@ public:
   template <typename system_type>
   state_type create(const system_type & system) const
   {
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    static_assert
-    (mpl::not_same<system_type, pybind11::object >::value,
-    "Cannot pass a pybind11::object to VelocityStandardPolicy");
-#endif
-
     return state_type(system.createVelocity());
   }
 
@@ -97,12 +91,6 @@ public:
 	       const system_type & system,
 	       const scalar_type & time) const
   {
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    static_assert
-    (mpl::not_same<system_type, pybind11::object >::value,
-    "Cannot pass a pybind11::object to VelocityStandardPolicy");
-#endif
-
     system.velocity(*state.data(), time, *f.data());
   }
 

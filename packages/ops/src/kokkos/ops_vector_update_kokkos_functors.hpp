@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_KOKKOS_FUNCTORS_HPP_
-#define OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_KOKKOS_FUNCTORS_HPP_
+#ifndef OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_
+#define OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_
 
 namespace pressio{ namespace ops{ namespace impl{
 
@@ -136,4 +136,4 @@ struct DoUpdateFourTermsFunctor {
 
 
 }}}//end namespace pressio::ops::impl
-#endif  // OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_KOKKOS_FUNCTORS_HPP_
+#endif  // OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_

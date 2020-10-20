@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_continuous_time_system_without_jacobian.hpp
+// ode_continuous_time_system_without_user_provided_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,17 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_JACOBIAN_HPP_
-#define ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_JACOBIAN_HPP_
+#ifndef ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_USER_PROVIDED_JACOBIAN_HPP_
+#define ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_USER_PROVIDED_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace concepts {
 
 template<typename T, typename enable = void>
-struct continuous_time_system_without_jacobian : std::false_type{};
+struct continuous_time_system_without_user_provided_jacobian : std::false_type{};
 
 
 template<typename T>
-struct continuous_time_system_without_jacobian<
+struct continuous_time_system_without_user_provided_jacobian<
   T,
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
@@ -70,17 +70,5 @@ struct continuous_time_system_without_jacobian<
    >
   > : std::true_type{};
 
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct continuous_time_system_without_jacobian<
-  T,
-  mpl::enable_if_t<
-    ::pressio::mpl::is_same<
-      T, pybind11::object>::value
-    >
-  > : std::true_type{};
-#endif
-
 }}} // namespace pressio::ode::concepts
-#endif  // ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_JACOBIAN_HPP_
+#endif  // ODE_WILL_BE_CONCEPTS_SYSTEM_ODE_CONTINUOUS_TIME_SYSTEM_WITHOUT_USER_PROVIDED_JACOBIAN_HPP_

@@ -53,70 +53,65 @@ namespace pressio{ namespace ode{ namespace impl{
 
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
   (containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
   containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value)
 >
-discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::Euler)
+discrete_time_jacobian(jacobian_type & jac,
+		       const scalar_type & dt,
+		       ::pressio::ode::implicitmethods::Euler)
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-  // jac.scale(cf);
-  // jac.addToDiagonal(cn);
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cn);
 }
 
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
-  containers::predicates::is_array_pybind11<jacobian_type>::value
->
-discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::Euler)
-{
-  using namespace ::pressio::ode::constants;
-
-  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-
-  if (jac.ndim() != 2)
-    throw std::runtime_error("Tensors with dim>2 not supported");
-
-  double *ptr = jac.mutable_data();
-  const size_t rows = jac.shape()[0];
-  const size_t cols = jac.shape()[1];
-
-  for (size_t irow = 0; irow < rows; irow++){
-    for (size_t icol = 0; icol < cols; icol++)
-    {
-      ptr[irow*cols + icol] *= cf;
-      if (irow == icol and irow == 2)
-	ptr[irow*cols + icol] += cn;
-    }
-  }
-}
-#endif
-
-
-template <typename jacobian_type, typename scalar_type>
-::pressio::mpl::enable_if_t<
-  // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value) and
   containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
 >
-discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::BDF2)
+discrete_time_jacobian(jacobian_type & jac,
+		       const scalar_type & dt,
+		       ::pressio::ode::implicitmethods::BDF2)
 {
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
-
   using namespace ::pressio::ode::constants;
-  // jac.scale(cf);
-  // jac.addToDiagonal(cn);
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cn);
 }
 
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template <typename jacobian_type, typename scalar_type>
+// ::pressio::mpl::enable_if_t<
+//   // (std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value) and
+//   containers::predicates::is_array_pybind11<jacobian_type>::value
+// >
+// discrete_time_jacobian(jacobian_type & jac, const scalar_type & dt, ::pressio::ode::implicitmethods::Euler)
+// {
+//   using namespace ::pressio::ode::constants;
+
+//   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+//   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+
+//   if (jac.ndim() != 2)
+//     throw std::runtime_error("Tensors with dim>2 not supported");
+
+//   double *ptr = jac.mutable_data();
+//   const size_t rows = jac.shape()[0];
+//   const size_t cols = jac.shape()[1];
+
+//   for (size_t irow = 0; irow < rows; irow++){
+//     for (size_t icol = 0; icol < cols; icol++)
+//     {
+//       ptr[irow*cols + icol] *= cf;
+//       if (irow == icol and irow == 2)
+// 	ptr[irow*cols + icol] += cn;
+//     }
+//   }
+// }
+// #endif
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_

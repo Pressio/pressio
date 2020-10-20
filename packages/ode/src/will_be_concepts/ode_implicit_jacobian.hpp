@@ -60,9 +60,6 @@ struct implicit_jacobian<T,
 	 containers::predicates::is_dense_matrix_wrapper<T>::value or
 	 containers::predicates::is_sparse_matrix_wrapper<T>::value or
 	 containers::predicates::is_multi_vector_wrapper<T>::value
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// 	 or containers::predicates::is_array_pybind11<T>::value
-// #endif
 	 >::type
        > : std::true_type{};
 

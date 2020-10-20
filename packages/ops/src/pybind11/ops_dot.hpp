@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND_OPS_DOT_HPP_
-#define OPS_PYBIND_OPS_DOT_HPP_
+#ifndef OPS_PYBIND11_OPS_DOT_HPP_
+#define OPS_PYBIND11_OPS_DOT_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -87,4 +87,4 @@ dot(const T0 & a, const T1 & b)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND_OPS_DOT_HPP_
+#endif  // OPS_PYBIND11_OPS_DOT_HPP_

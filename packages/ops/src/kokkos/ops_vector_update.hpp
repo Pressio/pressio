@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_HPP_
-#define OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_HPP_
+#ifndef OPS_KOKKOS_OPS_VECTOR_UPDATE_HPP_
+#define OPS_KOKKOS_OPS_VECTOR_UPDATE_HPP_
 
 #include <KokkosBlas1_axpby.hpp>
 
@@ -247,4 +247,4 @@ update(T1 & v,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_VECTOR_DO_UPDATE_HPP_
+#endif  // OPS_KOKKOS_OPS_VECTOR_UPDATE_HPP_

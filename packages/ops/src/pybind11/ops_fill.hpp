@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND_OPS_FILL_HPP_
-#define OPS_PYBIND_OPS_FILL_HPP_
+#ifndef OPS_PYBIND11_OPS_FILL_HPP_
+#define OPS_PYBIND11_OPS_FILL_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -63,4 +63,4 @@ fill(T & v,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_FILL_HPP_
+#endif  // OPS_PYBIND11_OPS_FILL_HPP_

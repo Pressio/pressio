@@ -58,9 +58,6 @@ template<typename T>
 struct implicit_residual<T,
  typename std::enable_if<
    containers::predicates::is_vector_wrapper<T>::value
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//    or containers::predicates::array_pybind11<T>::value
-// #endif
    >::type
   > : std::true_type{};
 

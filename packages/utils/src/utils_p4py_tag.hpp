@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_UTILS_P4PY_HPP_
-#define UTILS_UTILS_P4PY_HPP_
+#ifndef UTILS_UTILS_P4PY_TAG_HPP_
+#define UTILS_UTILS_P4PY_TAG_HPP_
 
 namespace pressio{ namespace utils{
 
@@ -56,4 +56,4 @@ namespace pressio{ namespace utils{
 struct p4pyTag{};
 
 }} // end of namespace pressio::utils
-#endif  // UTILS_UTILS_P4PY_HPP_
+#endif  // UTILS_UTILS_P4PY_TAG_HPP_
