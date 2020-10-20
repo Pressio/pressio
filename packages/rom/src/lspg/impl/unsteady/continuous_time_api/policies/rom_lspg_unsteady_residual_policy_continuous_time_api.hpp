@@ -196,9 +196,8 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    ::pressio::rom::queryFomVelocity(fomSystemObj,
-				     fomStatesMngr_.get().currentFomStateCRef(),
-				     romR, time);
+    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
+    fomSystemObj.velocity(*currentFomState.data(), time, *romR.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

@@ -90,6 +90,7 @@ struct traits<
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t = ud_ops_type;
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
   using residual_policy_t	=
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<

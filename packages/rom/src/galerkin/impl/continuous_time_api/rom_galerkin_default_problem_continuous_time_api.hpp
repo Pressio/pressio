@@ -51,6 +51,14 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
+template<bool forPy, typename T> struct _systemMemberType;
+
+template<typename T> struct _systemMemberType<true, T> {
+  using type = T; };
+template<typename T> struct _systemMemberType<false, T>{
+  using type = ::pressio::utils::impl::empty;};
+
+
 template <typename ...Args>
 class DefaultProblemContinuousTimeApi
 {
@@ -75,7 +83,17 @@ public:
   using velocity_policy_t	= typename traits::velocity_policy_t;
   using stepper_t		= typename traits::stepper_t;
 
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
+
 private:
+  // when dealing with pressio4py, the fom_system_t is a C++ class in pressio4py
+  // that wraps the actual FOM python object. to construct this ROM problem,
+  // the Python code passes the python FOM object NOT a C++ object instantiated
+  // from fom_system_t, see constructor at the end for pressio4py.
+  // Therefore, ONLY when we deal with pressio4py, we make this problem store
+  // an object of the the fom_system_t.
+  typename _systemMemberType<binding_sentinel, fom_system_t>::type fomObj_;
+
   fom_state_t			fomNominalState_;
   fom_state_reconstr_t		fomStateReconstructor_;
   fom_velocity_t		fomVelocityRef_;
@@ -105,28 +123,25 @@ public:
   ~DefaultProblemContinuousTimeApi() = default;
 
   /*
-   * ud_ops_t = void, C++ types
+   * ud_ops_t = void, not binding
    */
   template <
+    bool _binding_sentinel=binding_sentinel,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::predicates::is_wrapper<galerkin_state_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
-#endif
-      , int> = 0
+      _binding_sentinel==false, int> = 0
     >
-  DefaultProblemContinuousTimeApi(const fom_system_t	   & fomSystemObj,
+  DefaultProblemContinuousTimeApi(const fom_system_t	   & fomObj,
 				  const decoder_t	   & decoder,
 				  const galerkin_state_t   & romStateIn,
 				  const fom_native_state_t & fomNominalStateNative)
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder),
-      fomVelocityRef_(fomSystemObj.createVelocity()),
+      fomVelocityRef_(fomObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
+      stepperObj_(romStateIn, fomObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
@@ -134,29 +149,26 @@ public:
   }
 
   /*
-   * ud_ops_t != void, C++ types
+   * ud_ops_t != void, not binding
    */
   template <
+    bool _binding_sentinel=binding_sentinel,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::predicates::is_wrapper<galerkin_state_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-      and !::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value
-#endif
-      , int> = 0
+      _binding_sentinel==false, int> = 0
     >
-  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomSystemObj,
+  DefaultProblemContinuousTimeApi(const fom_system_t	    & fomObj,
 				  const decoder_t	    & decoder,
 				  const galerkin_state_t    & romStateIn,
 				  const fom_native_state_t  & fomNominalStateNative,
 				  const _ud_ops_t	    & udOps)
     : fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder, udOps),
-      fomVelocityRef_(fomSystemObj.createVelocity()),
+      fomVelocityRef_(fomObj.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, fomNominalState_, udOps),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder, udOps),
-      stepperObj_(romStateIn, fomSystemObj, velocityPolicy_)
+      stepperObj_(romStateIn, fomObj, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
@@ -164,26 +176,29 @@ public:
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /*
-   * ud_ops_t == void and state_type is wrapper of pybind11::array
-   */
+  /* ud_ops_t == void and state_type is wrapper of pybind11::array
+
+     Note that in this case, the constructor receives a pybind11::object
+     as the FOM object, and we use that to construct the C++ wrapper object.
+  */
   template <
+    bool _binding_sentinel=binding_sentinel,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and
-      ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value,
-      int > = 0
+      _binding_sentinel, int> = 0
     >
-  DefaultProblemContinuousTimeApi(const fom_system_t		& fomSystemObj,
-				  const decoder_t		& decoder,
+  DefaultProblemContinuousTimeApi(pybind11::object fomObjPython,
+				  const decoder_t & decoder,
 				  const galerkin_native_state_t & romStateIn,
-				  const fom_native_state_t	& fomNominalStateNative)
-    : fomNominalState_(fomNominalStateNative),
+				  const fom_native_state_t & fomNominalStateNative)
+    : fomObj_(fomObjPython),
+      fomNominalState_(fomNominalStateNative),
       fomStateReconstructor_(fomNominalState_, decoder),
-      fomVelocityRef_(fomSystemObj.attr("createVelocity")()),
+      fomVelocityRef_(fomObj_.createVelocity()),
       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
       velocityPolicy_(fomVelocityRef_, fomStatesMngr_, decoder),
-      stepperObj_(galerkin_state_t(romStateIn), fomSystemObj, velocityPolicy_)
+      stepperObj_(galerkin_state_t(romStateIn), fomObj_, velocityPolicy_)
   {
     // reconstruct current fom state so that we have something
     // consisten with the current romState
@@ -191,7 +206,6 @@ public:
     fomStatesMngr_.reconstructCurrentFomState(romStateView);
   }
 #endif
-
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

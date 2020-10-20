@@ -193,9 +193,11 @@ private:
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom apply jac");
 #endif
+
     const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
-    ::pressio::rom::queryFomApplyJacobian(fomSystemObj, currentFomState,
-					  decoderJacobian_.get(), romJac, t);
+    const auto & basis = decoderObj_.get().jacobianCRef();
+    const auto & currFomState = fomStatesMngr_.get().currentFomStateCRef();
+    fomSystemObj.applyJacobian(*currFomState.data(), *basis.data(), t, *romJac.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

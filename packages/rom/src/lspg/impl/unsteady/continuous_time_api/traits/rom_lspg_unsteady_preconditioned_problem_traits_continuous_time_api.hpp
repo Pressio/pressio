@@ -90,7 +90,7 @@ struct traits<
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
   using ud_ops_t = ud_ops_type;
 
   using preconditioner_t = preconditioner_type;

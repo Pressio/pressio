@@ -51,40 +51,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename fom_system_t, typename lspg_state_t, typename enable = void>
-struct ExtractNativeHelper;
-
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,mpl::enable_if_t<
-     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-#endif
-  >
-{
-  using fom_native_state_t    = typename fom_system_t::state_type;
-  using fom_native_residual_t = typename fom_system_t::residual_type;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-  >
-{
-  using fom_native_state_t =
-    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-  using fom_native_residual_t = fom_native_state_t;
-};
-#endif
-// ---------------------------------------------------------------
-
-
 template <
   typename fom_system_type,
   typename lspg_state_type,
@@ -96,11 +62,9 @@ struct CommonTraits
   using scalar_t =
     typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_system_t		= fom_system_type;
-  using fom_native_state_t	=
-    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_residual_t	=
-    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_residual_t;
+  using fom_system_t	      = fom_system_type;
+  using fom_native_state_t    = typename fom_system_t::state_type;
+  using fom_native_residual_t = typename fom_system_t::residual_type;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
@@ -110,7 +74,6 @@ struct CommonTraits
   using lspg_state_t		= lspg_state_type;
 
   // for LSPG, the rom residual type = containers::wrapper of application rhs
-  // i.e. the wrapped fom rhs type
   using lspg_residual_t		= fom_residual_t;
 
   // decoder types (passed in)
@@ -142,6 +105,15 @@ struct CommonTraits
   // class type holding fom states data: we only need to store one FOM state
   using fom_states_manager_t =
     ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, void>;
+
+  // sentinel to tell if we are doing bindings for p4py:
+  // always false if pybind is disabled, otherwise detect from rom state
+  static constexpr bool binding_sentinel =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value;
+#else
+  false;
+#endif
 };
 
 }}}}}

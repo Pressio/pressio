@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ 
+namespace pressio{ namespace rom{
 
 //fwd declare problem class
 namespace galerkin{ namespace impl{
@@ -72,9 +72,8 @@ struct traits<
     >
   >
 {
-  using common_types_t = 
-    ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-        fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
+  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+    fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -88,6 +87,7 @@ struct traits<
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
   // policy for evaluating the ode velocity
   using velocity_policy_t =

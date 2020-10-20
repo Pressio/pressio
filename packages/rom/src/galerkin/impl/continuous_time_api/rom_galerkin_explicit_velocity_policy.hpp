@@ -110,7 +110,6 @@ public:
   template <typename fom_t>
   galerkin_state_t create(const fom_t & app) const
   {
-    // this is called once
     galerkin_state_t result(phi_.get().extent(1));
     ::pressio::ops::set_zero(result);
     return result;
@@ -127,47 +126,6 @@ public:
   }
 
 private:
-  //--------------------------------------------
-  // query fom velocity
-  //--------------------------------------------
-  template<
-  typename scalar_t,
-  typename fom_system_t,
-  typename fom_state_t,
-  typename _fom_rhs_t = fom_rhs_t
-  >
-  ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_wrapper<fom_state_t>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and ::pressio::mpl::not_same<fom_system_t, pybind11::object>::value
-#endif
-  >
-  queryFomVelocity(const fom_system_t & fomSystemObj,
-		   const fom_state_t & fomState,
-		   const scalar_t & time) const
-  {
-    fomSystemObj.velocity(*fomState.data(), time, *fomRhs_.data());
-  }
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template<
-    typename scalar_t,
-    typename fom_system_t,
-    typename fom_state_t,
-    typename _fom_rhs_t = fom_rhs_t
-    >
-  ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_same<fom_system_t, pybind11::object>::value
-    >
-  queryFomVelocity(const fom_system_t & fomSystemObj,
-		   const fom_state_t & fomState,
-		   const scalar_t & time) const
-  {
-    fomSystemObj.attr("velocity")(*fomState.data(), time,
-				  *fomRhs_.data());
-  }
-#endif
-
   // --------------------------------------------
   // compute RHS of ode
   // --------------------------------------------
@@ -199,12 +157,11 @@ private:
 		    *fomRhs_.data(), zero, result);
   }
 
-  // compute impl
   template <typename fom_system_t, typename scalar_t>
   void compute_impl(const galerkin_state_t  & romState,
 		    galerkin_state_t	    & romRhs,
 		    const fom_system_t	    & fomSystemObj,
-		    const scalar_t	    & t) const
+		    const scalar_t	    & time) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -222,7 +179,7 @@ private:
     timer->start("fom eval rhs");
 #endif
     const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
-    (*this).template queryFomVelocity<scalar_t>(fomSystemObj, yFom, t);
+    fomSystemObj.velocity(*yFom.data(), time, *fomRhs_.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

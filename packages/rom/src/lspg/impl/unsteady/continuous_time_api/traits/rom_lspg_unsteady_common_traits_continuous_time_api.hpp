@@ -55,41 +55,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename fom_system_t, typename lspg_state_t, typename enable = void>
-struct ExtractNativeHelper;
-
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,mpl::enable_if_t<
-     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-#endif
-  >
-{
-  using fom_native_state_t    = typename fom_system_t::state_type;
-  using fom_native_velocity_t = typename fom_system_t::velocity_type;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-  >
-{
-  using fom_native_state_t    =
-    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-  using fom_native_velocity_t =
-    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-};
-#endif
-// ------------------------------------------------------------------------------------
-
-
 template <
   typename stepper_tag,
   typename fom_system_type,
@@ -103,11 +68,9 @@ struct CommonTraitsContinuousTimeApi
   using scalar_t =
     typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_system_t		= fom_system_type;
-  using fom_native_state_t	=
-    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_velocity_t	=
-    typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_velocity_t;
+  using fom_system_t	      = fom_system_type;
+  using fom_native_state_t    = typename fom_system_type::state_type;
+  using fom_native_velocity_t = typename fom_system_type::velocity_type;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
@@ -160,8 +123,17 @@ struct CommonTraitsContinuousTimeApi
 
   // type of class holding the fom states
   using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<
-    numStates, fom_state_t, fom_state_reconstr_t, ud_ops_type>;
+    ::pressio::rom::ManagerFomStatesStatic<numStates, fom_state_t,
+					   fom_state_reconstr_t, ud_ops_type>;
+
+  // sentinel to tell if we are doing bindings for p4py:
+  // always false if pybind is disabled, otherwise detect from rom state
+  static constexpr bool binding_sentinel =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value;
+#else
+  false;
+#endif
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl

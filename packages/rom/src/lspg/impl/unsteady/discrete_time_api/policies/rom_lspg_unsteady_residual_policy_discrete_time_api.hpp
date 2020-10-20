@@ -135,8 +135,10 @@ private:
     const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
 
     try{
-      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
-						   time, dt, step, romR);
+      fomSystemObj.discreteTimeResidual(step, time, dt,
+					*romR.data(),
+					*yn.data(),
+					*ynm1.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -161,8 +163,12 @@ private:
     const auto & ynm2 = fomStatesMngr_.get().fomStatePrevPrevStepCRef();
 
     try{
-      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
-						   time, dt, step, romR);
+      fomSystemObj.discreteTimeResidual(step, time, dt,
+					*romR.data(),
+					*yn.data(),
+					*ynm1.data(),
+					*ynm2.data());
+
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();

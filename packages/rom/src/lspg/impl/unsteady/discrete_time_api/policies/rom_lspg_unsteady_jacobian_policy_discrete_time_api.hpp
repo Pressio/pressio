@@ -131,9 +131,11 @@ private:
     const auto & phi = decoderObj_.get().jacobianCRef();
     const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
     const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
-						      time, dt, step,
-						      phi, romJac);
+    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+					   *phi.data(),
+					   *romJac.data(),
+					   *yn.data(),
+					   *ynm1.data());
   }
 
   // we have here n = 2 prev rom states
@@ -162,10 +164,13 @@ private:
     const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
     const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
     const auto & ynm2 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
-						      fomSystemObj,
-						      time, dt, step,
-						      phi, romJac);
+
+    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+					   *phi.data(),
+					   *romJac.data(),
+					   *yn.data(),
+					   *ynm1.data(),
+					   *ynm2.data());
   }
 
 protected:

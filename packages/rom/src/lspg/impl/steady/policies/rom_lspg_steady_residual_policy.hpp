@@ -70,27 +70,10 @@ public:
 
 public:
   template <typename fom_system_t>
-  mpl::enable_if_t<
-    !::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
-    residual_t
-  >
-  create(const fom_system_t & fomSystemObj) const
+  residual_t create(const fom_system_t & fomSystemObj) const
   {
     return residual_t(fomSystemObj.createResidual());
   }
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template <typename fom_system_t>
-  mpl::enable_if_t<
-   ::pressio::ops::predicates::is_object_pybind<fom_system_t>::value,
-   residual_t
-  >
-  create(const fom_system_t & fomSystemObj) const
-  {
-    const auto & currentFom = fomStatesMngr_.get().currentFomStateCRef();
-    return residual_t(fomSystemObj.attr("createResidual")());
-  }
-#endif
 
   template <typename lspg_state_t, typename fom_system_t>
   void compute(const lspg_state_t & romState,
@@ -108,8 +91,8 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    ::pressio::rom::queryFomResidual(fomSystemObj,
-      fomStatesMngr_.get().currentFomStateCRef(), romResidual);
+    const auto & currFom = fomStatesMngr_.get().currentFomStateCRef();
+    fomSystemObj.residual(*currFom.data(), *romResidual.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");

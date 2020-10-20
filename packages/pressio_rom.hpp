@@ -88,13 +88,6 @@
 // fom state reconstructor
 #include "rom/src/fom_state_reconstructor/rom_reconstructor_fom_state.hpp"
 
-// fom-querying functions
-#include "rom/src/fom_query/rom_query_fom_velocity.hpp"
-#include "rom/src/fom_query/rom_query_fom_residual.hpp"
-#include "rom/src/fom_query/rom_query_fom_apply_jacobian.hpp"
-#include "rom/src/fom_query/rom_query_fom_discrete_time_residual.hpp"
-#include "rom/src/fom_query/rom_query_fom_apply_discrete_time_jacobian.hpp"
-
 // decorators
 #include "rom/src/decorators/rom_preconditioned_decorator_residual.hpp"
 #include "rom/src/decorators/rom_preconditioned_decorator_jacobian.hpp"

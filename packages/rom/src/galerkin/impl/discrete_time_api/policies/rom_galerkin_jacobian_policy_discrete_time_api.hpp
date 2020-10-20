@@ -131,9 +131,12 @@ private:
 
     const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
     const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, fomSystemObj,
-						      time, dt, step, phi_.get(),
-						      fomApplyJac_);
+    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+					   *(phi_.get().data()),
+					   *fomApplyJac_.data(),
+					   *yn.data(),
+					   *ynm1.data());
+
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
@@ -162,10 +165,11 @@ private:
     const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
     const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
     const auto & ynm2 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    ::pressio::rom::queryFomApplyDiscreteTimeJacobian(yn, ynm1, ynm2,
-						      fomSystemObj, time,
-						      dt, step, phi_.get(),
-						      fomApplyJac_);
+    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+					   *(phi_.get().data()),
+					   *fomApplyJac_.data(),
+					   *yn.data(),
+					   *ynm1.data());
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
