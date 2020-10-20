@@ -151,7 +151,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value,
+  ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
   composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type,

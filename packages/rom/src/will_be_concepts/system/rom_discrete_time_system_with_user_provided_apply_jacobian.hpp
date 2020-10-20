@@ -46,16 +46,16 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
 template<typename T, typename enable = void>
-struct discrete_time_system : std::false_type{};
+struct discrete_time_system_with_user_provided_apply_jacobian : std::false_type{};
 
 template<typename T>
-struct discrete_time_system<
+struct discrete_time_system_with_user_provided_apply_jacobian<
   T,
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
@@ -162,4 +162,4 @@ struct find_discrepancies_with_discrete_time_system_api
 };
 
 }} // namespace pressio::rom
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
+#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_

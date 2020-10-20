@@ -127,7 +127,7 @@ struct EulerGalerkinWithVelocityApi
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t, ops_t>;
 
-  static_assert(pressio::rom::concepts::continuous_time_explicit_system<fom_t>::value, "");
+  static_assert(pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_t>::value, "");
   static_assert(pressio::rom::concepts::continuous_time_system<fom_t>::value, "");
 
   static_assert(pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
@@ -173,7 +173,7 @@ struct EulerGalerkinWithVelocityApi
     pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     static_assert
-    (pressio::rom::concepts::continuous_time_explicit_system<fom_t>::value,"");
+    (pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_t>::value,"");
 
     using ode_tag = pressio::ode::explicitmethods::Euler;
     // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<

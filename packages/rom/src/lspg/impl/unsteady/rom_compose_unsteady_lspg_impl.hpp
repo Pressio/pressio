@@ -117,7 +117,7 @@ template<typename fom_system_t>
 struct FindAdapterMistakesUnsteady<false, fom_system_t>
 {
   static constexpr bool value =
-    find_discrepancies_with_continuous_time_implicit_system_api<fom_system_t>::value;
+    find_discrepancies_with_continuous_time_system_with_user_provided_apply_jacobian_api<fom_system_t>::value;
 };
 
 template<
@@ -186,7 +186,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type>
 {
@@ -208,7 +208,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, ud_ops_type>
 {
@@ -230,7 +230,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Preconditioned,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
@@ -252,7 +252,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Masked,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_implicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, masker_type>
 {
@@ -281,7 +281,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
+    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>
 {
@@ -308,7 +308,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Preconditioned,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
+    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, precond_type, Args...>
 {
@@ -336,7 +336,7 @@ template<
 struct composeUnsteady<
   ::pressio::rom::lspg::impl::Masked,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
+    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, masker_type, Args...>
 {

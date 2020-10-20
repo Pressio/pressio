@@ -70,7 +70,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value,
+  ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value,
   galerkin::composeDefaultProblem_t<
     tag, fom_system_type, decoder_type, rom_state_type, Args...
     >
@@ -103,7 +103,7 @@ template<
   typename fom_native_state
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value,
+  ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
   galerkin::composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,

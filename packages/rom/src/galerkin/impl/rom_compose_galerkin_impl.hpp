@@ -85,7 +85,7 @@ template<typename fom_system_t>
 struct FindAdapterMistakes<false, Default, fom_system_t>
 {
   static constexpr bool value =
-    ::pressio::rom::find_discrepancies_with_continuous_time_explicit_system_api<fom_system_t>::value;
+    ::pressio::rom::find_discrepancies_with_continuous_time_system_without_user_provided_apply_jacobian_api<fom_system_t>::value;
 };
 
 //------------------------
@@ -153,7 +153,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
@@ -179,7 +179,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_explicit_system<fom_system_type>::value
+    ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
@@ -209,7 +209,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system<fom_system_type>::value
+    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, rom_jacobian_type, Args...>
 {

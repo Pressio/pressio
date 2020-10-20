@@ -118,7 +118,7 @@ public:
   typename residual_type,
   typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and 
                           ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true>::type
   time_discrete_residual(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -147,7 +147,7 @@ public:
   typename residual_type,
   typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and 
                            ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value==true>::type
   time_discrete_residual(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -177,7 +177,7 @@ public:
     typename basis_view_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value>::type
   time_discrete_jacobian_from_views(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
 			 const fom_state_view_type & fomStateView,
@@ -243,7 +243,7 @@ public:
     typename basis_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and 
                           ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true>::type
   time_discrete_jacobian(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -279,7 +279,7 @@ public:
     typename basis_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and 
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and 
                           ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value == true>::type
   time_discrete_jacobian(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -309,7 +309,7 @@ public:
   typename residual_type,
   typename scalar_type
   >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
                           (::pressio::containers::predicates::is_vector_wrapper_eigen<fom_state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
                            or containers::predicates::is_vector_wrapper_kokkos<fom_state_type>::value == true
@@ -338,7 +338,7 @@ public:
     typename residual_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_type>::value>::type
   time_discrete_residual(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
 			 residual_type & residual,
@@ -365,7 +365,7 @@ public:
     typename basis_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::continuous_time_implicit_system<fom_type>::value and
+  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
                           (::pressio::containers::predicates::is_vector_wrapper_eigen<fom_state_type>::value == true
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
                            or containers::predicates::is_vector_wrapper_kokkos<fom_state_type>::value == true
@@ -409,7 +409,7 @@ public:
     typename basis_type,
     typename scalar_type
     >
-  typename std::enable_if<::pressio::rom::concepts::discrete_time_system<fom_type>::value>::type
+  typename std::enable_if<::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_type>::value>::type
   time_discrete_jacobian(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
 			 jac_type & Jphi,

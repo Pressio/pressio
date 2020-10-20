@@ -120,10 +120,10 @@ struct steady_masker<
 } // namespace pressio::rom::concepts
 
 // template <typename T>
-// struct find_discrepancies_with_continuous_time_implicit_system_maskable_api
+// struct find_discrepancies_with_continuous_time_system_with_user_provided_apply_jacobian_maskable_api
 // {
 //   static_assert
-//   (::pressio::rom::find_discrepancies_with_continuous_time_implicit_system_api<T>::value,"");
+//   (::pressio::rom::find_discrepancies_with_continuous_time_system_with_user_provided_apply_jacobian_api<T>::value,"");
 
 //   static_assert
 //     (::pressio::rom::predicates::has_const_create_apply_mask_result_method_accept_operand_return_result<

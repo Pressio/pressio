@@ -114,9 +114,9 @@
 #include "rom/src/will_be_concepts/rom_preconditioner.hpp"
 
 #include "rom/src/will_be_concepts/system/rom_steady_system.hpp"
-#include "rom/src/will_be_concepts/system/rom_discrete_time_system.hpp"
-#include "rom/src/will_be_concepts/system/rom_continuous_time_explicit_system.hpp"
-#include "rom/src/will_be_concepts/system/rom_continuous_time_implicit_system.hpp"
+#include "rom/src/will_be_concepts/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
+#include "rom/src/will_be_concepts/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
+#include "rom/src/will_be_concepts/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
 #include "rom/src/will_be_concepts/system/rom_continuous_time_system.hpp"
 
 //----------------
