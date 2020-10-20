@@ -99,9 +99,9 @@ public:
 public:
   DefaultProblemDiscreteTimeApi() = delete;
   DefaultProblemDiscreteTimeApi(const DefaultProblemDiscreteTimeApi &) = default;
-  DefaultProblemDiscreteTimeApi & operator=(const DefaultProblemDiscreteTimeApi &) = default;
+  DefaultProblemDiscreteTimeApi & operator=(const DefaultProblemDiscreteTimeApi &) = delete;
   DefaultProblemDiscreteTimeApi(DefaultProblemDiscreteTimeApi &&) = default;
-  DefaultProblemDiscreteTimeApi & operator=(DefaultProblemDiscreteTimeApi &&) = default;  
+  DefaultProblemDiscreteTimeApi & operator=(DefaultProblemDiscreteTimeApi &&) = delete;
   ~DefaultProblemDiscreteTimeApi() = default;
 
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,

@@ -74,9 +74,9 @@ public:
 
   ManagerFomStatesStatic() = delete;
   ManagerFomStatesStatic(const ManagerFomStatesStatic &) = default;
-  ManagerFomStatesStatic & operator=(const ManagerFomStatesStatic &) = default;
+  ManagerFomStatesStatic & operator=(const ManagerFomStatesStatic &) = delete;
   ManagerFomStatesStatic(ManagerFomStatesStatic &&) = default;
-  ManagerFomStatesStatic & operator=(ManagerFomStatesStatic &&) = default;
+  ManagerFomStatesStatic & operator=(ManagerFomStatesStatic &&) = delete;
   ~ManagerFomStatesStatic() = default;
 
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,

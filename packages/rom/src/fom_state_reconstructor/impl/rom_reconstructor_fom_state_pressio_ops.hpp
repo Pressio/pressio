@@ -63,9 +63,9 @@ struct FomStateReconstructorPressioOps
 
   FomStateReconstructorPressioOps() = delete;
   FomStateReconstructorPressioOps(const FomStateReconstructorPressioOps &) = default;
-  FomStateReconstructorPressioOps & operator=(const FomStateReconstructorPressioOps &) = default;
+  FomStateReconstructorPressioOps & operator=(const FomStateReconstructorPressioOps &) = delete;
   FomStateReconstructorPressioOps(FomStateReconstructorPressioOps &&) = default;
-  FomStateReconstructorPressioOps & operator=(FomStateReconstructorPressioOps &&) = default;
+  FomStateReconstructorPressioOps & operator=(FomStateReconstructorPressioOps &&) = delete;
   ~FomStateReconstructorPressioOps() = default;
 
   FomStateReconstructorPressioOps(const fom_state_type & fomNominalState,

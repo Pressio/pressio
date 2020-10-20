@@ -66,9 +66,9 @@ public:
 public:
   ResidualPolicyContinuousTimeApi() = delete;
   ResidualPolicyContinuousTimeApi(const ResidualPolicyContinuousTimeApi &) = default;
-  ResidualPolicyContinuousTimeApi & operator=(const ResidualPolicyContinuousTimeApi &) = default;
+  ResidualPolicyContinuousTimeApi & operator=(const ResidualPolicyContinuousTimeApi &) = delete;
   ResidualPolicyContinuousTimeApi(ResidualPolicyContinuousTimeApi &&) = default;
-  ResidualPolicyContinuousTimeApi & operator=(ResidualPolicyContinuousTimeApi &&) = default;
+  ResidualPolicyContinuousTimeApi & operator=(ResidualPolicyContinuousTimeApi &&) = delete;
   ~ResidualPolicyContinuousTimeApi() = default;
 
   /* for constructing this we need to deal with a few cases

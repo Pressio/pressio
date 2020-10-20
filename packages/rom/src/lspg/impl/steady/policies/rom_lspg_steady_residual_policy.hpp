@@ -60,9 +60,9 @@ public:
 public:
   ResidualPolicy() = delete;
   ResidualPolicy(const ResidualPolicy &) = default;
-  ResidualPolicy & operator=(const ResidualPolicy &) = default;
+  ResidualPolicy & operator=(const ResidualPolicy &) = delete;
   ResidualPolicy(ResidualPolicy &&) = default;
-  ResidualPolicy & operator=(ResidualPolicy &&) = default;
+  ResidualPolicy & operator=(ResidualPolicy &&) = delete;
   ~ResidualPolicy() = default;
 
   ResidualPolicy(fom_states_manager_t & fomStatesMngr)

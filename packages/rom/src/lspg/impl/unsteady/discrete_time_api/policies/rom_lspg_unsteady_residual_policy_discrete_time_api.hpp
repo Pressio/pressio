@@ -61,9 +61,9 @@ public:
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
   ResidualPolicyDiscreteTimeApi(const ResidualPolicyDiscreteTimeApi &) = default;
-  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = delete;
   ResidualPolicyDiscreteTimeApi(ResidualPolicyDiscreteTimeApi &&) = default;
-  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = delete;
   ~ResidualPolicyDiscreteTimeApi() = default;
 
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)

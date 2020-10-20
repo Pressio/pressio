@@ -105,9 +105,9 @@ public:
 public:
   PreconditionedProblemDiscreteTimeApi() = delete;
   PreconditionedProblemDiscreteTimeApi(const PreconditionedProblemDiscreteTimeApi &) = default;
-  PreconditionedProblemDiscreteTimeApi & operator=(const PreconditionedProblemDiscreteTimeApi &) = default;
+  PreconditionedProblemDiscreteTimeApi & operator=(const PreconditionedProblemDiscreteTimeApi &) = delete;
   PreconditionedProblemDiscreteTimeApi(PreconditionedProblemDiscreteTimeApi &&) = default;
-  PreconditionedProblemDiscreteTimeApi & operator=(PreconditionedProblemDiscreteTimeApi &&) = default;
+  PreconditionedProblemDiscreteTimeApi & operator=(PreconditionedProblemDiscreteTimeApi &&) = delete;
   ~PreconditionedProblemDiscreteTimeApi() = default;
 
   template<

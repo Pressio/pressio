@@ -105,9 +105,9 @@ public:
 public:
   MaskedProblemDiscreteTimeApi() = delete;
   MaskedProblemDiscreteTimeApi(const MaskedProblemDiscreteTimeApi &) = default;
-  MaskedProblemDiscreteTimeApi & operator=(const MaskedProblemDiscreteTimeApi &) = default;
+  MaskedProblemDiscreteTimeApi & operator=(const MaskedProblemDiscreteTimeApi &) = delete;
   MaskedProblemDiscreteTimeApi(MaskedProblemDiscreteTimeApi &&) = default;
-  MaskedProblemDiscreteTimeApi & operator=(MaskedProblemDiscreteTimeApi &&) = default;
+  MaskedProblemDiscreteTimeApi & operator=(MaskedProblemDiscreteTimeApi &&) = delete;
   ~MaskedProblemDiscreteTimeApi() = default;
 
   template<

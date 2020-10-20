@@ -67,9 +67,9 @@ public:
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
   ResidualPolicyDiscreteTimeApi(const ResidualPolicyDiscreteTimeApi &) = default;
-  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = delete;
   ResidualPolicyDiscreteTimeApi(ResidualPolicyDiscreteTimeApi &&) = default;
-  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = delete;
   ~ResidualPolicyDiscreteTimeApi() = default;
 
   template< typename app_t>

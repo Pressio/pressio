@@ -95,9 +95,9 @@ public:
 public:
   PreconditionedProblemSteady() = delete;
   PreconditionedProblemSteady(const PreconditionedProblemSteady &) = default;
-  PreconditionedProblemSteady & operator=(const PreconditionedProblemSteady &) = default;
+  PreconditionedProblemSteady & operator=(const PreconditionedProblemSteady &) = delete;
   PreconditionedProblemSteady(PreconditionedProblemSteady &&) = default;
-  PreconditionedProblemSteady & operator=(PreconditionedProblemSteady &&) = default;
+  PreconditionedProblemSteady & operator=(PreconditionedProblemSteady &&) = delete;
   ~PreconditionedProblemSteady() = default;
 
   template <

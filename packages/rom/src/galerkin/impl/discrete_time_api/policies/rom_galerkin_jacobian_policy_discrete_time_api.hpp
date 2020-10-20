@@ -68,9 +68,9 @@ public:
 public:
   JacobianPolicyDiscreteTimeApi() = delete;
   JacobianPolicyDiscreteTimeApi(const JacobianPolicyDiscreteTimeApi &) = default;
-  JacobianPolicyDiscreteTimeApi & operator=(const JacobianPolicyDiscreteTimeApi &) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(const JacobianPolicyDiscreteTimeApi &) = delete;
   JacobianPolicyDiscreteTimeApi(JacobianPolicyDiscreteTimeApi &&) = default;
-  JacobianPolicyDiscreteTimeApi & operator=(JacobianPolicyDiscreteTimeApi &&) = default;
+  JacobianPolicyDiscreteTimeApi & operator=(JacobianPolicyDiscreteTimeApi &&) = delete;
   ~JacobianPolicyDiscreteTimeApi() = default;
 
   template< typename app_t>

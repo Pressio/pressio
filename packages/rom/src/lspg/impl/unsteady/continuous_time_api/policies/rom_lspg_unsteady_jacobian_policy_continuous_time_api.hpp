@@ -67,9 +67,9 @@ public:
 public:
   JacobianPolicyContinuousTimeApi() = delete;
   JacobianPolicyContinuousTimeApi(const JacobianPolicyContinuousTimeApi &) = default;
-  JacobianPolicyContinuousTimeApi & operator=(const JacobianPolicyContinuousTimeApi &) = default;
+  JacobianPolicyContinuousTimeApi & operator=(const JacobianPolicyContinuousTimeApi &) = delete;
   JacobianPolicyContinuousTimeApi(JacobianPolicyContinuousTimeApi &&) = default;
-  JacobianPolicyContinuousTimeApi & operator=(JacobianPolicyContinuousTimeApi &&) = default;
+  JacobianPolicyContinuousTimeApi & operator=(JacobianPolicyContinuousTimeApi &&) = delete;
   ~JacobianPolicyContinuousTimeApi() = default;
 
   /* for constructing this we need to deal with a few cases

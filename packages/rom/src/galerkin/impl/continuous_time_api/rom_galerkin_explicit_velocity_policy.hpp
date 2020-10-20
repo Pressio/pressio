@@ -67,9 +67,9 @@ public:
 public:
   ExplicitVelocityPolicy() = delete;
   ExplicitVelocityPolicy(const ExplicitVelocityPolicy &) = default;
-  ExplicitVelocityPolicy & operator=(const ExplicitVelocityPolicy &) = default;
+  ExplicitVelocityPolicy & operator=(const ExplicitVelocityPolicy &) = delete;
   ExplicitVelocityPolicy(ExplicitVelocityPolicy &&) = default;
-  ExplicitVelocityPolicy & operator=(ExplicitVelocityPolicy &&) = default;
+  ExplicitVelocityPolicy & operator=(ExplicitVelocityPolicy &&) = delete;
   ~ExplicitVelocityPolicy() = default;
 
   // 1. void ops

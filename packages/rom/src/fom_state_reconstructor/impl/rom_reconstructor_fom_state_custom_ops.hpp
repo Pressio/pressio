@@ -61,9 +61,9 @@ struct FomStateReconstructorCustomOps
 {
   FomStateReconstructorCustomOps() = delete;
   FomStateReconstructorCustomOps(const FomStateReconstructorCustomOps &) = default;
-  FomStateReconstructorCustomOps & operator=(const FomStateReconstructorCustomOps &) = default;
+  FomStateReconstructorCustomOps & operator=(const FomStateReconstructorCustomOps &) = delete;
   FomStateReconstructorCustomOps(FomStateReconstructorCustomOps &&) = default;
-  FomStateReconstructorCustomOps & operator=(FomStateReconstructorCustomOps &&) = default;
+  FomStateReconstructorCustomOps & operator=(FomStateReconstructorCustomOps &&) = delete;
   ~FomStateReconstructorCustomOps() = default;
 
   FomStateReconstructorCustomOps(const fom_state_type & fomStateIn,

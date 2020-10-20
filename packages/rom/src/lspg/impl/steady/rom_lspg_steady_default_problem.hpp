@@ -113,9 +113,9 @@ public:
 public:
   DefaultProblemSteady() = delete;
   DefaultProblemSteady(const DefaultProblemSteady &) = default;
-  DefaultProblemSteady & operator=(const DefaultProblemSteady &) = default;
+  DefaultProblemSteady & operator=(const DefaultProblemSteady &) = delete;
   DefaultProblemSteady(DefaultProblemSteady &&) = default;
-  DefaultProblemSteady & operator=(DefaultProblemSteady &&) = default;
+  DefaultProblemSteady & operator=(DefaultProblemSteady &&) = delete;
   ~DefaultProblemSteady() = default;
 
   template <

@@ -112,9 +112,9 @@ public:
 public:
   PreconditionedProblemContinuousTimeApi() = delete;
   PreconditionedProblemContinuousTimeApi(const PreconditionedProblemContinuousTimeApi &) = default;
-  PreconditionedProblemContinuousTimeApi & operator=(const PreconditionedProblemContinuousTimeApi &) = default;
+  PreconditionedProblemContinuousTimeApi & operator=(const PreconditionedProblemContinuousTimeApi &) = delete;
   PreconditionedProblemContinuousTimeApi(PreconditionedProblemContinuousTimeApi &&) = default;
-  PreconditionedProblemContinuousTimeApi & operator=(PreconditionedProblemContinuousTimeApi &&) = default;
+  PreconditionedProblemContinuousTimeApi & operator=(PreconditionedProblemContinuousTimeApi &&) = delete;
   ~PreconditionedProblemContinuousTimeApi() = default;
 
   /* specialize for:

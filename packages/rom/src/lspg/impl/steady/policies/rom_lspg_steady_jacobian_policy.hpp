@@ -64,9 +64,9 @@ public:
 public:
   JacobianPolicy() = delete;
   JacobianPolicy(const JacobianPolicy &) = default;
-  JacobianPolicy & operator=(const JacobianPolicy &) = default;
+  JacobianPolicy & operator=(const JacobianPolicy &) = delete;
   JacobianPolicy(JacobianPolicy &&) = default;
-  JacobianPolicy & operator=(JacobianPolicy &&) = default;
+  JacobianPolicy & operator=(JacobianPolicy &&) = delete;
   ~JacobianPolicy() = default;
 
   JacobianPolicy(fom_states_manager_t & fomStatesMngr,

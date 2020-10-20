@@ -110,9 +110,9 @@ public:
 public:
   MaskedProblemContinuousTimeApi() = delete;
   MaskedProblemContinuousTimeApi(const MaskedProblemContinuousTimeApi &) = default;
-  MaskedProblemContinuousTimeApi & operator=(const MaskedProblemContinuousTimeApi &) = default;
+  MaskedProblemContinuousTimeApi & operator=(const MaskedProblemContinuousTimeApi &) = delete;
   MaskedProblemContinuousTimeApi(MaskedProblemContinuousTimeApi &&) = default;
-  MaskedProblemContinuousTimeApi & operator=(MaskedProblemContinuousTimeApi &&) = default;
+  MaskedProblemContinuousTimeApi & operator=(MaskedProblemContinuousTimeApi &&) = delete;
   ~MaskedProblemContinuousTimeApi() = default;
 
   /* specialize for:
