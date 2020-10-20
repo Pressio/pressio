@@ -51,34 +51,33 @@
 
 #include "./impl/ode_explicit_stepper_compose_impl.hpp"
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
 
 template<typename stepper_tag, typename ...Args>
-using ExplicitStepper = 
-	typename ::pressio::ode::explicitmethods::impl::compose<
-		stepper_tag, 
-		typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-		>::type;
-
+using ExplicitStepper =
+  typename ::pressio::ode::explicitmethods::impl::compose<
+  stepper_tag,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
+  >::type;
 
 template<typename state_type, typename system_type, typename ...Args>
 auto createForwardEulerStepper(const state_type & state,
-						   const system_type & system,
-						   Args && ...args)
--> ExplicitStepper<explicitmethods::Euler, state_type, system_type, Args...>
+			       const system_type & system,
+			       Args && ...args)
 {
-	using type = ExplicitStepper<explicitmethods::Euler, state_type, system_type, Args...>;
-	return type(state, system, std::forward<Args>(args)...);
+  using type =
+    ExplicitStepper<explicitmethods::Euler, state_type, system_type, Args...>;
+  return type(state, system, std::forward<Args>(args)...);
 };
 
 template<typename state_type, typename system_type, typename ...Args>
 auto createRungeKutta4Stepper(const state_type & state,
 						   const system_type & system,
 						   Args && ...args)
--> ExplicitStepper<explicitmethods::RungeKutta4, state_type, system_type, Args...>
 {
-	using type = ExplicitStepper<explicitmethods::RungeKutta4, state_type, system_type, Args...>;
-	return type(state, system, std::forward<Args>(args)...);
+  using type =
+    ExplicitStepper<explicitmethods::RungeKutta4, state_type, system_type, Args...>;
+  return type(state, system, std::forward<Args>(args)...);
 };
 
 }} // end namespace pressio::ode

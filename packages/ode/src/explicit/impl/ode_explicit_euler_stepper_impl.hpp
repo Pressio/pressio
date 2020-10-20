@@ -66,14 +66,12 @@ class ExplicitEulerStepper
 public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
-
   static constexpr types::stepper_order_t order_value = 1;
+  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
 
 private:
-  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
-  using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-
-  system_wrapper_t systemObj_;
+  std::reference_wrapper<const system_type> systemObj_;
+  velocity_storage_t veloAuxStorage_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
@@ -81,17 +79,14 @@ private:
     std::reference_wrapper<const velocity_policy_type>
     >::type policy_;
 
-  velocity_storage_t veloAuxStorage_;
   const ops_t * udOps_ = nullptr;
 
 public:
   ExplicitEulerStepper() = delete;
-
-  ExplicitEulerStepper(const ExplicitEulerStepper &) = default; 
-  ExplicitEulerStepper & operator=(const ExplicitEulerStepper &) = default;
+  ExplicitEulerStepper(const ExplicitEulerStepper &) = default;
+  ExplicitEulerStepper & operator=(const ExplicitEulerStepper &) = delete;
   ExplicitEulerStepper(ExplicitEulerStepper &&) = default;
-  ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = default;
-
+  ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = delete;
   ~ExplicitEulerStepper() = default;
 
   // cnstr enabled if we are using pressio ops
@@ -103,8 +98,8 @@ public:
 		       const system_type & systemObj,
 		       const velocity_policy_type & policy)
     : systemObj_(systemObj),
-      policy_(policy),
-      veloAuxStorage_(policy.create(systemObj))
+      veloAuxStorage_(policy.create(systemObj)),
+      policy_(policy)
   {}
 
   // cnstr enabled if we are using user-defined ops
@@ -117,8 +112,8 @@ public:
 		       const velocity_policy_type & policy,
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
-      policy_(policy),
       veloAuxStorage_(policy.create(systemObj)),
+      policy_(policy),
       udOps_(&udOps)
   {}
 
@@ -135,8 +130,8 @@ public:
   ExplicitEulerStepper(const state_type & state,
 		       const system_type & systemObj)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj))
+      veloAuxStorage_(policy_.create(systemObj)),
+      policy_() // default construct policy
   {}
 
   // cnstr only enabled if
@@ -153,8 +148,8 @@ public:
 		       const system_type & systemObj,
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
       veloAuxStorage_(policy_.create(systemObj)),
+      policy_(), // default construct policy
       udOps_(&udOps)
   {}
 
@@ -174,7 +169,7 @@ public:
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
-    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut, 
+    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
       auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
@@ -190,7 +185,7 @@ public:
 	 const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
-    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut, 
+    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
       auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();

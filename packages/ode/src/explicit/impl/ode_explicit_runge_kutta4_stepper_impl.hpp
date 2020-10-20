@@ -71,14 +71,11 @@ public:
   static constexpr bool is_explicit = true;
 
   static constexpr types::stepper_order_t order_value = 4;
+  using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
 
 private:
-  using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
-  using system_wrapper_t    = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-
-  const ops_t * udOps_ = nullptr;
-  state_type tmpState_;
-  system_wrapper_t systemObj_;
+  std::reference_wrapper<const system_type> systemObj_;
+  velocity_storage_t veloAuxStorage_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
@@ -86,16 +83,15 @@ private:
     std::reference_wrapper<const velocity_policy_type>
   >::type policy_;
 
-  velocity_storage_t veloAuxStorage_;
+  state_type tmpState_;
+  const ops_t * udOps_ = nullptr;
 
 public:
   ExplicitRungeKutta4Stepper() = delete;
-
   ExplicitRungeKutta4Stepper(const ExplicitRungeKutta4Stepper & other) = default;
-  ExplicitRungeKutta4Stepper & operator=(const ExplicitRungeKutta4Stepper & other)  = default;
+  ExplicitRungeKutta4Stepper & operator=(const ExplicitRungeKutta4Stepper & other) = delete;
   ExplicitRungeKutta4Stepper(ExplicitRungeKutta4Stepper && other)  = default;
-  ExplicitRungeKutta4Stepper & operator=(ExplicitRungeKutta4Stepper && other)  = default;
-
+  ExplicitRungeKutta4Stepper & operator=(ExplicitRungeKutta4Stepper && other)  = delete;
   ~ExplicitRungeKutta4Stepper() = default;
 
   // the following cnstr is enabled if we are using pressio ops
@@ -106,10 +102,10 @@ public:
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const velocity_policy_type & policy)
-    : tmpState_{state},
-      systemObj_(systemObj),
+    : systemObj_(systemObj),
+      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
-      veloAuxStorage_(policy.create(systemObj))
+      tmpState_{state}
   {}
 
   // the following cnstr is enabled if we are using user-defined ops
@@ -121,11 +117,11 @@ public:
 			     const system_type & systemObj,
 			     const velocity_policy_type & policy,
 			     const _ops_t & udOps)
-    : udOps_(&udOps),
-      tmpState_{state},
-      systemObj_(systemObj),
+    : systemObj_(systemObj),
+      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
-      veloAuxStorage_(policy.create(systemObj))
+      tmpState_{state},
+      udOps_(&udOps)
   {}
 
   // the following cnstr is only enabled if
@@ -140,10 +136,10 @@ public:
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
-    : tmpState_{state},
-      systemObj_(systemObj),
+    : systemObj_(systemObj),
+      veloAuxStorage_(policy_.create(systemObj)),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj))
+      tmpState_{state}
   {}
 
   // the following cnstr is only enabled if
@@ -159,11 +155,11 @@ public:
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const _ops_t & udOps)
-    : udOps_(&udOps),
-      tmpState_{state},
-      systemObj_(systemObj),
+    : systemObj_(systemObj),
+      veloAuxStorage_(policy_.create(systemObj)),
       policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj))
+      tmpState_{state},
+      udOps_(&udOps)
   {}
 
 public:

@@ -62,43 +62,41 @@ template<
   >
 class StepperBDF1
 {
-
 public:
-  static constexpr bool is_implicit = true;
-  static constexpr bool is_explicit = false;
-  using aux_stepper_t   = void;
-
-  using tag_name = ::pressio::ode::implicitmethods::Euler;
-
-  static constexpr types::stepper_order_t order_value = 1;
-  static constexpr std::size_t numAuxStates = 1;
-  using system_wrapper_t  = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-  using aux_states_t = ::pressio::ode::AuxStatesManager<state_t, numAuxStates>;
-
-  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_t, residual_t>;
-  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_t, jacobian_t>;
-
-  // these need to be here because are detected by solver
+  // these aliases are detected by solver
   using scalar_type	= scalar_t;
   using state_type	= state_t;
   using residual_type	= residual_t;
   using jacobian_type	= jacobian_t;
 
+  static constexpr bool is_implicit = true;
+  static constexpr bool is_explicit = false;
+  static constexpr types::stepper_order_t order_value = 1;
+  static constexpr std::size_t numAuxStates = 1;
+  using tag_name = ::pressio::ode::implicitmethods::Euler;
+
+  using aux_states_t =
+    ::pressio::ode::AuxStatesManager<state_t, numAuxStates>;
+  using standard_res_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+    state_t, residual_t>;
+  using standard_jac_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+    state_t, jacobian_t>;
+
 public:
   StepperBDF1() = delete;
   StepperBDF1(const StepperBDF1 & other)  = default;
-  StepperBDF1 & operator=(const StepperBDF1 & other)  = default;
+  StepperBDF1 & operator=(const StepperBDF1 & other) = delete;
   StepperBDF1(StepperBDF1 && other)  = default;
-  StepperBDF1 & operator=(StepperBDF1 && other)  = default;
+  StepperBDF1 & operator=(StepperBDF1 && other) = delete;
   ~StepperBDF1() = default;
 
   StepperBDF1(const state_type & state,
 	      const system_type & systemObj,
 	      const residual_policy_t & resPolicyObj,
 	      const jacobian_policy_t  & jacPolicyObj)
-    : sys_{systemObj},
+    : systemObj_{systemObj},
       auxStates_{state},
       residual_obj_{resPolicyObj},
       jacobian_obj_{jacPolicyObj}
@@ -115,7 +113,7 @@ public:
     >
   StepperBDF1(const state_type & state,
 	      const system_type & systemObj)
-    : sys_{systemObj},
+    : systemObj_{systemObj},
       auxStates_{state}
   {}
 
@@ -197,20 +195,20 @@ public:
   residual_t createResidual() const
   {
     const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
-    return resPol.create(sys_.get());
+    return resPol.create(systemObj_.get());
   }
 
   jacobian_t createJacobian() const
   {
     const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
-    return jacPol.create(sys_.get());
+    return jacPol.create(systemObj_.get());
   }
 
   void residual(const state_t & odeState, residual_t & R) const
   {
     const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
     resPol.template compute<tag_name>(
-      odeState, this->auxStates_, this->sys_.get(),
+      odeState, this->auxStates_, this->systemObj_.get(),
       this->t_, this->dt_, this->step_, R);
   }
 
@@ -218,7 +216,7 @@ public:
   {
     const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
     jacPol.template compute<
-      tag_name>(odeState, this->auxStates_, this->sys_.get(),
+      tag_name>(odeState, this->auxStates_, this->systemObj_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
 
@@ -226,11 +224,11 @@ private:
   scalar_t t_  = {};
   scalar_t dt_ = {};
   types::step_t step_  = {};
-  system_wrapper_t sys_;
+  std::reference_wrapper<const system_type> systemObj_;
   aux_states_t auxStates_;
 
-  // conditionally set the type of the object knowing how to compute residual
-  // if we have a standard policy, then it takes a copy
+  // conditional type of the policies
+  // if we have a standard policy, then it is default constr
   // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_res_policy_t, residual_policy_t>::value,
@@ -238,15 +236,12 @@ private:
     std::reference_wrapper<const residual_policy_t>
     >::type residual_obj_;
 
-  // conditionally set the type of the object knowing how to compute jacobian
-  // if we have a standard policy, then it takes a copy
-  // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_jac_policy_t, jacobian_policy_t>::value,
     const jacobian_policy_t,
     std::reference_wrapper<const jacobian_policy_t>
     >::type jacobian_obj_;
-};//end class
+};
 
 }}}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
