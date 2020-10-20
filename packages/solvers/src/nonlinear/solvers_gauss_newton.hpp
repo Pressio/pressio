@@ -67,10 +67,9 @@ using composeGaussNewton_t =
   typename composeGaussNewton<system_t, Args...>::type;
 
 template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewton_t<system_t, Args...>
-createGaussNewton(const system_t & system,
-		  const state_t & state,
-		  Args && ... args)
+auto createGaussNewton(const system_t & system,
+		       const state_t & state,
+		       Args && ... args)
 {
   using return_t = composeGaussNewton_t<system_t, Args...>;
   return return_t(system, state, std::forward<Args>(args)...);
@@ -88,12 +87,10 @@ template<typename system_t, typename ... Args>
 using composeGaussNewtonQR_t =
   typename composeGaussNewtonQR<system_t, Args...>::type;
 
-
 template<typename system_t, typename state_t, typename ...Args>
-composeGaussNewtonQR_t<system_t, Args...>
-createGaussNewtonQR(const system_t & system,
-		    const state_t & state,
-		    Args && ...args)
+auto createGaussNewtonQR(const system_t & system,
+			 const state_t & state,
+			 Args && ...args)
 {
   using return_t = composeGaussNewtonQR_t<system_t, Args...>;
   return return_t(system, state, std::forward<Args>(args)...);

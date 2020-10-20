@@ -59,9 +59,7 @@ class ResidualStandardPolicy<
   state_type, residual_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    containers::predicates::is_wrapper<state_type>::value and
-    containers::predicates::is_wrapper<residual_type>::value
+    ::pressio::ode::concepts::implicit_residual<residual_type>::value
     >
   >
 {
@@ -97,7 +95,6 @@ public:
     return R;
   }
 
-
   template <
     typename ode_tag, typename prev_states_mgr_type,
     typename system_type, typename scalar_type
@@ -122,7 +119,6 @@ public:
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
-
 
   //-------------------------------
   // specialize for n == 1

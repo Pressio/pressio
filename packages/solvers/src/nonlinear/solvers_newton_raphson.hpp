@@ -64,8 +64,7 @@ using composeNewtonRaphson_t =
 
 
 template<typename system_t, typename state_t, typename ...Args>
-composeNewtonRaphson_t<system_t, Args...>
-createNewtonRaphson(const system_t & system,
+auto createNewtonRaphson(const system_t & system,
 			 const state_t & state,
 			 Args && ...args)
 {

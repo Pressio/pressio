@@ -59,9 +59,7 @@ class JacobianStandardPolicy<
   state_type, jacobian_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    containers::predicates::is_wrapper<state_type>::value and
-    containers::predicates::is_wrapper<jacobian_type>::value
+    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value
     >
   >
 {
@@ -97,7 +95,6 @@ public:
     return JJ;
   }
 
-
   template <
     typename ode_tag, typename prev_states_mgr_type,
     typename system_type, typename scalar_type
@@ -116,7 +113,6 @@ public:
     system.jacobian( *odeCurrentState.data(), t, *J.data());
     ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
   }
-
 
   //-------------------------------
   // specialize for n == 1

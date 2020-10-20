@@ -69,10 +69,9 @@ using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
 
 
 template<typename system_t, typename state_t, typename ...Args>
-composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>
-createLevenbergMarquardt(const system_t & system,
-			 const state_t & state,
-			 Args && ...args)
+auto createLevenbergMarquardt(const system_t & system,
+			      const state_t & state,
+			      Args && ...args)
 {
   using return_t = composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>;
   return return_t( system, state, std::forward<Args>(args)...);
