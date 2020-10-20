@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_discrete_time_system.hpp
+// rom_discrete_time_system_with_user_provided_apply_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
