@@ -40,14 +40,14 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_tolower)
-if(    NOT cmake_build_type_tolower STREQUAL "debug"
-   AND NOT cmake_build_type_tolower STREQUAL "release")
+if( NOT cmake_build_type_tolower STREQUAL "debug"
+    AND NOT cmake_build_type_tolower STREQUAL "release")
   message(FATAL_ERROR "Unknown build type \"${CMAKE_BUILD_TYPE}\".
     Allowed values are Debug, Release (case-insensitive).")
 endif()
 
 #=====================================================================
-# we need c++11
+# we need c++14
 #=====================================================================
 # commands to test if compiler supports C++11
 #include(CheckCXXCompilerFlag)
@@ -55,8 +55,7 @@ endif()
 #if(NOT COMPILER_SUPPORT_CPP11)
 #  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
 #endif()
-
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
