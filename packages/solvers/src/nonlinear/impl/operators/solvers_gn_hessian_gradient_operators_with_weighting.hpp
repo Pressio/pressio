@@ -72,13 +72,10 @@ private:
 
   mutable r_t r_;
   mutable r_t Mr_;
-
   j_t J_;
   j_t MJ_;
-
   g_t g_;
   h_t H_;
-
   const ud_ops_t * udOps_   = nullptr;
   const weighting_functor_t * functorM_= nullptr;
 

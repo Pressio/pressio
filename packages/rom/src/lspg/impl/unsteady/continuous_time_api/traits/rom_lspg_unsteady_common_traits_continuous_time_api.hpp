@@ -78,6 +78,8 @@ struct CommonTraitsContinuousTimeApi
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
+  using lspg_native_state_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   /* for LSPG, the lspg_residual_type = fom_velocity_type */
   using lspg_residual_t		= fom_velocity_t;

@@ -52,7 +52,6 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
 template<bool forPy, typename T> struct _systemMemberType;
-
 template<typename T> struct _systemMemberType<true, T> {
   using type = T; };
 template<typename T> struct _systemMemberType<false, T>{

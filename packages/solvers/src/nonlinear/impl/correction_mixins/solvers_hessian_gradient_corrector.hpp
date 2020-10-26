@@ -51,6 +51,30 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
+template<typename state_t, typename lin_solver_t, typename = void>
+struct _HGSolverMemberHelper
+{
+  using type = std::reference_wrapper<lin_solver_t>;
+};
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename state_t, typename lin_solver_t>
+struct _HGSolverMemberHelper<
+  state_t, lin_solver_t,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
+    >
+  >
+{
+  using type = lin_solver_t;
+};
+#endif
+
+template<typename...Args>
+using _HGSolverMemberHelper_t = typename _HGSolverMemberHelper<Args...>::type;
+
+
+
 template<
   typename T, typename state_type, typename lin_solver_t
   >
@@ -59,15 +83,11 @@ class HessianGradientCorrector : public T
 public:
   using state_t = state_type;
   using sc_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  using state_wrapped_t = typename ::pressio::containers::details::traits<state_type>::wrapped_t;
 
 private:
-  state_t correction_ = {};
-
-  typename std::conditional<
-    ::pressio::ops::predicates::is_object_pybind<lin_solver_t>::value,
-    lin_solver_t, std::reference_wrapper<lin_solver_t>
-    >::type solverObj_;
-
+  state_type correction_ = {};
+  typename _HGSolverMemberHelper<state_type, lin_solver_t>::type solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -75,40 +95,31 @@ private:
 public:
   HessianGradientCorrector() = delete;
 
-  template <typename system_t, typename ...Args>
+  template <typename system_t, typename lsT, typename ...Args>
   HessianGradientCorrector(const system_t & system,
-			   const state_t & state,
-			   lin_solver_t & solverObj,
+			   const state_type & state,
+			   lsT && solverIn,
 			   Args && ... args)
     : T(system, state, std::forward<Args>(args)...),
       correction_(state),
-      solverObj_(solverObj)
+      solverObj_(std::forward<lsT>(solverIn))
   {
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     ::pressio::ops::fill(correction_, zero);
   }
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // overload used for pressio4py since the state passed to the constructor
-  // is not a wrapper bbut a native pybind array, so we need the wrapped type.
-  // However, this is only true for the constructor.
-  // For the actual computation below, the state is wrapper type.
-  template <typename system_t, typename ...Args>
-  HessianGradientCorrector
-  (const system_t & system,
-   const typename ::pressio::containers::details::traits<state_t>::wrapped_t & state,
-   lin_solver_t & solverObj,
-   Args && ... args)
-    : T(system,
-	state_t(state) /*the parent needs a wrapped object*/,
-	std::forward<Args>(args)...),
-      correction_(state),
-      solverObj_(solverObj)
-  {
-    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
-    ::pressio::ops::fill(correction_, zero);
-  }
-#endif
+// // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <typename system_t, typename lsT, typename ...Args>
+  HessianGradientCorrector(const system_t & system,
+			   const state_wrapped_t & state,
+			   lsT && solverIn,
+			   Args && ... args)
+    : HessianGradientCorrector(system,
+			       state_type(state) /*needs a wrapped object*/,
+			       std::forward<lsT>(solverIn),
+			       std::forward<Args>(args)...)
+  {}
+// // #endif
 
   // copy constr and assign
   HessianGradientCorrector(HessianGradientCorrector const &) = default;
@@ -124,10 +135,10 @@ public:
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys,
-			 state_t & state,
+			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, 
+    T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
 
@@ -147,7 +158,7 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & correctionCRef() const{
+  const state_type & correctionCRef() const{
     return correction_;
   }
 
@@ -164,26 +175,12 @@ public:
   }
 
 private:
-  template <typename H_t, typename g_t, typename _lin_solver_t = lin_solver_t>
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  mpl::enable_if_t<!std::is_same<_lin_solver_t, pybind11::object>::value>
-#else
-  void
-#endif
-  doLinearSolve(H_t & H, const g_t & g)
+  template <typename H_t, typename g_t>
+   void doLinearSolve(H_t & H, const g_t & g)
   {
-    solverObj_.get().solve(H, g, correction_);
+    // I need to do this because solverObj can be a std::reference_wrapper
+    static_cast<lin_solver_t &>(solverObj_).solve(H, g, correction_);
   }
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template <typename H_t, typename g_t, typename _lin_solver_t = lin_solver_t>
-  mpl::enable_if_t<std::is_same<_lin_solver_t, pybind11::object>::value>
-  doLinearSolve(H_t & H, const g_t & g)
-  {
-    solverObj_.attr("solve")(*H.data(), *g.data(), *correction_.data());
-  }
-#endif
-
 };
 
 }}}}

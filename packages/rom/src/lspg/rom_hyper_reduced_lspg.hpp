@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_tags.hpp
+// rom_hyper_reduced_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,15 +46,33 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+#ifndef ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
+#define ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+#include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
 
-struct Default{};
-struct Preconditioned{};
-struct Masked{};
-struct HyperReduced{};
+namespace pressio{ namespace rom{ namespace lspg{ namespace experimental{
+
+/*
+  unsteady:
+  // this is used for shared-mem data structures where the indices are passed
+  // and pressio uses these to implement hyper-reduction
+  template<stepper_tag, fom_type, decoder_t, romstate_t, sample_to_stencil_t>
+*/
+template<typename T1, typename ...Args>
+using composeHyperReducedProblem =
+  typename std::conditional<
+  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+  ::pressio::rom::lspg::impl::composeUnsteady<
+    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
+    >,
+  void
+  >::type;
+
+template<typename T1, typename ...Args>
+using composeHyperReducedProblem_t =
+  typename composeHyperReducedProblem<T1, Args...>::type;
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+#endif  // ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_

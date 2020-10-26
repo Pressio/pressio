@@ -49,11 +49,9 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{ 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-
-template <typename stepper_tag, typename scalar_t>
-struct dtPrefactor;
+template <typename stepper_tag, typename scalar_t> struct dtPrefactor;
 
 template <typename scalar_t>
 struct dtPrefactor<::pressio::ode::implicitmethods::Euler, scalar_t>{
@@ -65,7 +63,6 @@ struct dtPrefactor<::pressio::ode::implicitmethods::BDF2, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf2<scalar_t>::c_f_;
 };
 // ------------------------------------------------------
-
 
 // regular c++ with user-defined OPS
 template <
@@ -93,38 +90,62 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 
-// when we deal with python and have void ops
 template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type
->
-mpl::enable_if_t< 
+  >
+mpl::enable_if_t<
  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
->
+  >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-			    const scalar_type	& dt,
-			    const decoder_jac_type & phi)
+		       const scalar_type	& dt,
+		       const decoder_jac_type & phi)
 {
-  auto & jphiNat = *jphi.data();
-  auto jphiMU = jphiNat.mutable_unchecked();
-
-  auto & phiNat  = *phi.data();
-  const auto phiMU  = phiNat.unchecked();
-
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = jphi.extent(0);
   const auto nCols = jphi.extent(1);
   for (std::size_t i=0; i<(std::size_t)nRows; ++i){
     for (std::size_t j=0; j<(std::size_t)nCols; ++j){
-      jphiMU(i,j) = phiMU(i,j) + prefactor*jphiMU(i,j);
+      jphi(i,j) = phi(i,j) + prefactor*jphi(i,j);
+    }
+  }
+}
+
+template <
+  typename stepper_tag,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  typename hyp_ind_t
+  >
+mpl::enable_if_t<
+ ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
+		       const decoder_jac_type & phi,
+		       const hyp_ind_t & hypIndices)
+{
+  // hypindices has same extent as sample mesh and contains
+  // indices of the entries in the state that correspond to
+  // the sample mesh points
+  assert(jphi.extent(0) == hypIndices.extent(0));
+
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
+  const auto nRows = jphi.extent(0);
+  const auto nCols = jphi.extent(1);
+  for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+  {
+    const auto rowInd = hypIndices[i];
+    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+      jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
     }
   }
 }
 #endif
-
 
 
 /*

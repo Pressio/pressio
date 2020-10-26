@@ -179,32 +179,26 @@ public:
   sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
 
 
-  template<
-    typename system_t,
-    typename _state_t = state_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    , mpl::enable_if_t<
-      !::pressio::containers::predicates::is_array_pybind<_state_t>::value, int
-      > = 0
-#endif
-    >
-  void solve(const system_t & system, _state_t & state)
+  template<typename system_t>
+  void solve(const system_t & system, state_t & state)
   {
     this->solveImpl(system, state);
   }
 
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template<typename system_t, typename state_t>
+  // this overload is needed when calling the solver from Python directly,
+  // For example, this happens when doing steady LSPG since
+  // the state vector is owned by the Python code
+  template<typename system_t, typename _state_t = state_t>
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_array_pybind<state_t>::value
+    ::pressio::containers::predicates::is_array_pybind<_state_t>::value
     >
-  solve(const system_t & system, state_t & state)
+  solve(const system_t & system, _state_t & state)
   {
     // here we want to view the state since we want to modify its data,
     // which is numpy array owned by the user inside their Python code.
     // upon exit of this function, the original state is changed.
-    ::pressio::containers::Vector<state_t> stateView(state, ::pressio::view());
+    ::pressio::containers::Vector<_state_t> stateView(state, ::pressio::view());
     this->solveImpl(system, stateView);
   }
 #endif

@@ -55,7 +55,7 @@ template <typename masker_t, typename maskable_policy>
 class MaskedResidualPolicy : public maskable_policy
 {
   using typename maskable_policy::residual_t;
-  using maskable_policy::R_;
+  mutable residual_t R_;
   std::reference_wrapper<const masker_t> maskerObj_;
 
 public:
@@ -66,13 +66,15 @@ public:
   MaskedResidualPolicy & operator=(MaskedResidualPolicy &&) = default;
   ~MaskedResidualPolicy() = default;
 
-  MaskedResidualPolicy(const maskable_policy & obj) 
-    : maskable_policy(obj){}
+  // MaskedResidualPolicy(const maskable_policy & obj)
+  //   : maskable_policy(obj){}
 
-  template <typename ... Args>
-  MaskedResidualPolicy(const masker_t & maskerObj, 
-      Args && ... args) 
+  template <typename fom_system_t, typename ... Args>
+  MaskedResidualPolicy(const masker_t & maskerObj,
+		       const fom_system_t & fomObj,
+		       Args && ... args)
     : maskable_policy(std::forward<Args>(args)...),
+      R_(maskable_policy::create(fomObj)),
       maskerObj_(maskerObj)
   {}
 
@@ -80,7 +82,6 @@ public:
   template <typename fom_system_t>
   residual_t create(const fom_system_t & systemObj) const
   {
-    R_ = maskable_policy::create(systemObj);
     return residual_t(maskerObj_.get().createApplyMaskResult(*R_.data()));
   }
 
@@ -102,7 +103,7 @@ public:
 	       const ::pressio::ode::types::step_t & step,
 	       residual_t & R) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStates, 
+    maskable_policy::template compute<stepper_tag>(state, prevStates,
             systemObj, time, dt, step, R_);
 
     maskerObj_.get().applyMask(*R_.data(), time, *R.data());
@@ -121,7 +122,7 @@ public:
     maskerObj_.get().applyMask(*R_.data(), *R.data());
   }
 
-};//end class
+};
 
 }}} //end namespace pressio::rom::decorator
 #endif  // ROM_DECORATORS_ROM_MASKED_RESIDUAL_POLICY_HPP_

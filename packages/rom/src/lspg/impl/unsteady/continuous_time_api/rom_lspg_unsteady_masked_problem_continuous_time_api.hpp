@@ -64,9 +64,10 @@ public:
   using fom_state_t		= typename traits::fom_state_t;
   using fom_velocity_t		= typename traits::fom_velocity_t;
   using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using fom_state_mngr_t	= typename traits::fom_states_manager_t;
   using masker_t		= typename traits::masker_t;
   using ud_ops_t		= typename traits::ud_ops_t;
   using lspg_matrix_t		= typename traits::lspg_matrix_t;
@@ -76,35 +77,24 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomNominalState_;
-  const fom_velocity_t		fomVelocityRef_;
-  const fom_state_reconstr_t	fomStateReconstructor_;
-  fom_states_manager_t		fomStatesMngr_;
-  lspg_matrix_t			jPhiMatrix_;
-  residual_policy_t	residualPolicy_;
-  jacobian_policy_t	jacobianPolicy_;
-
-  /* here we use conditional type if auxiliary stepper is non-void,
-   * otherwise we set it to a dummy type and we dont construct it */
-  typename std::conditional<
-    std::is_void<aux_stepper_t>::value,
-    ::pressio::utils::impl::empty, aux_stepper_t
-    >::type auxStepperObj_ = {};
-
-  // actual stepper object
-  stepper_t  stepperObj_;
+  using At = FomObjMixin<fom_system_t>;
+  using Bt = FomStatesMngrMixin<At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
+  using Ct = MaskedPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
+  using mem_t = StepperMixin<Ct, aux_stepper_t, stepper_t>;
+  mem_t members_;
 
 public:
   stepper_t & stepperRef(){
-    return stepperObj_;
+    return members_.stepperObj_;
   }
 
-  const fom_native_state_t & currentFomStateCRef() const{
-    return *fomStatesMngr_.currentFomStateCRef().data();
+  const fom_native_state_t & currentFomStateCRef() const
+  {
+    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
   }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
-    return fomStateReconstructor_;
+    return members_.fomStateReconstructor_;
   }
 
 public:
@@ -115,91 +105,18 @@ public:
   MaskedProblemContinuousTimeApi & operator=(MaskedProblemContinuousTimeApi &&) = delete;
   ~MaskedProblemContinuousTimeApi() = default;
 
-  /* specialize for:
-   * - the fom_system_t is regular c++
-   * - aux stepper is NOT needed (e.g. for BDF1)
-   * - ud_ops_t == void
-   */
+  /* ud_ops_t == void */
   template <
-    typename _fom_system_t = fom_system_t,
-    typename _aux_stepper_t = aux_stepper_t,
     typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
-      !::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
-      std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value,
-      int > = 0
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int > = 0
     >
-  MaskedProblemContinuousTimeApi(const _fom_system_t	& fomSystemObj,
+  MaskedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
 				 const decoder_t & decoder,
 				 const lspg_state_t & romStateIn,
 				 const fom_native_state_t & fomNominalStateNative,
 				 const masker_t & maskerObj)
-    : fomNominalState_(fomNominalStateNative),
-      fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      //
-      jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		  ( *decoder.jacobianCRef().data() )),
-      //
-      // here we pass a fom velocity object to the residual policy to
-      // use it to initialize the residual data
-      // since the lspg residual is of same type and size of the fom velocity
-      // (this is true w and w/o hyperreduction)
-      residualPolicy_(maskerObj, fomVelocityRef_, fomStatesMngr_),
-      jacobianPolicy_(maskerObj, fomStatesMngr_, jPhiMatrix_, decoder),
-      auxStepperObj_{},
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
-
-  /* specialize for:
-   * - the fom_system_t is regular c++
-   * - aux stepper is needed (e.g. for BDF2)
-   * - ud_ops_t == void
-   */
-  template <
-    typename _fom_system_t = fom_system_t,
-    typename _aux_stepper_t = aux_stepper_t,
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<
-      !::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value and
-      !std::is_void<_aux_stepper_t>::value and
-      std::is_void<_ud_ops_t>::value,
-      int > = 0
-    >
-  MaskedProblemContinuousTimeApi(const _fom_system_t & fomSystemObj,
-				 const decoder_t & decoder,
-				 const lspg_state_t & romStateIn,
-				 const fom_native_state_t & fomNominalStateNative,
-				 const masker_t & maskerObj)
-    : fomNominalState_(fomNominalStateNative),
-      fomVelocityRef_(fomSystemObj.createVelocity()),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      //
-      jPhiMatrix_(fomSystemObj.createApplyJacobianResult
-		  (*decoder.jacobianCRef().data())),
-      //
-      // here we pass a fom velocity object to the residual policy to
-      // use it to initialize the residual data
-      // since the lspg residual is of same type and size of the fom velocity
-      // (this is true w and w/o hyperreduction)
-      residualPolicy_(maskerObj, fomVelocityRef_, fomStatesMngr_),
-      jacobianPolicy_(maskerObj, fomStatesMngr_, jPhiMatrix_, decoder),
-      auxStepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_),
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_,
-		  jacobianPolicy_, auxStepperObj_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
-
+    : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative, maskerObj)
+  {}
 };
 
 }}}}}

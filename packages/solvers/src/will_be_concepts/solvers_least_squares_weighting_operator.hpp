@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_weighting_operator.hpp
+// solvers_least_squares_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,30 +46,41 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_
-#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
 template <
   typename T,
-  typename operand_t,
-  typename result_t,
+  typename r_t,
+  typename j_t,
   typename enable = void
 >
-struct weighting_operator : std::false_type{};
+struct least_squares_weighting_operator : std::false_type{};
 
-template <typename T, typename operand_t, typename  result_t>
-struct weighting_operator<
-  T, operand_t, result_t,
+template <typename T, typename r_t, typename j_t>
+struct least_squares_weighting_operator<
+  T, r_t, j_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>()
        (
-	std::declval<operand_t const &>(),
-	std::declval<result_t &>()
+	std::declval<r_t const &>(),
+	std::declval<r_t &>()
+	)
+       )
+      >::value
+  and
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<j_t const &>(),
+	std::declval<j_t &>()
 	)
        )
       >::value
@@ -77,4 +88,4 @@ struct weighting_operator<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_WEIGHTING_OPERATOR_HPP_
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

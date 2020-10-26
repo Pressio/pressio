@@ -54,13 +54,15 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename decoder_type
+  typename decoder_type,
+  typename ud_ops_type = void
   >
 class JacobianPolicyDiscreteTimeApi
 {
 
 public:
   using apply_jac_return_t = apply_jac_return_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   JacobianPolicyDiscreteTimeApi() = delete;
@@ -70,9 +72,26 @@ public:
   JacobianPolicyDiscreteTimeApi & operator=(JacobianPolicyDiscreteTimeApi &&) = delete;
   ~JacobianPolicyDiscreteTimeApi() = default;
 
+  // 1. void ops
+  template <
+    typename _ud_ops = ud_ops_type,
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
+    >
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
 				const decoder_type & decoder)
     : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
+
+  // 2. nonvoid ops
+  template <
+    typename _ud_ops = ud_ops_type,
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
+    >
+  JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
+				const decoder_type & decoder,
+				const _ud_ops & udOps)
+    : decoderObj_(decoder),
+      fomStatesMngr_(fomStatesMngr),
+      udOps_{&udOps}{}
 
 public:
   template <typename fom_system_t>
@@ -176,6 +195,7 @@ private:
 protected:
   std::reference_wrapper<const decoder_type> decoderObj_;
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
+  const ud_ops_type * udOps_ = {};
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

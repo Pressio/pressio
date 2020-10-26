@@ -64,40 +64,34 @@ public:
   using fom_native_state_t	= typename traits::fom_native_state_t;
   using fom_native_residual_t	= typename traits::fom_native_residual_t;
   using fom_state_t		= typename traits::fom_state_t;
-
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using ud_ops_t		= typename traits::ud_ops_t;
-
   using lspg_state_t		= typename traits::lspg_state_t;
   using lspg_residual_t		= typename traits::lspg_residual_t;
   using lspg_matrix_t		= typename traits::lspg_matrix_t;
-
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
-
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  const fom_state_t		fomNominalState_;
-  const fom_state_reconstr_t	fomStateReconstructor_;
-  fom_states_manager_t		fomStatesMngr_;
-  residual_policy_t	residualPolicy_;
-  jacobian_policy_t	jacobianPolicy_;
-  stepper_t		stepperObj_;
+  using At = FomObjMixin<fom_system_t>;
+  using Bt = FomStatesMngrMixin<
+    At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct = DefaultPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
+  using mem_t = StepperMixin<Ct, void, stepper_t>;
+  mem_t members_;
 
 public:
-  stepper_t & stepperRef(){
-    return stepperObj_;
-  }
+  stepper_t & stepperRef(){ return members_.stepperObj_; }
 
   const fom_native_state_t & currentFomStateCRef() const{
-    return *fomStatesMngr_.currentFomStateCRef().data();
+    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
   }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
-    return fomStateReconstructor_;
+    return members_.fomStateReconstructor_;
   }
 
 public:
@@ -108,51 +102,30 @@ public:
   DefaultProblemDiscreteTimeApi & operator=(DefaultProblemDiscreteTimeApi &&) = delete;
   ~DefaultProblemDiscreteTimeApi() = default;
 
+  /* ud_ops_t == void */
   template<
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
-  >
+    >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t	& decoder,
 				const lspg_state_t & romStateIn,
 				const fom_native_state_t & fomNominalStateNative)
-    : fomNominalState_(fomNominalStateNative),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      // construct policies
-      residualPolicy_(fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, decoder),
-      // construct stepper
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
+    : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative)
+  {}
 
-  template <
+  /* ud_ops_t != void */
+  template<
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
+  >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				const decoder_t	& decoder,
 				const lspg_state_t & romStateIn,
 				const fom_native_state_t & fomNominalStateNative,
 				const _ud_ops_t & udOps)
-    : fomNominalState_(fomNominalStateNative),
-      fomStateReconstructor_(fomNominalState_, decoder, udOps),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_, udOps),
-      // construct policies
-      residualPolicy_(fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, decoder),
-      // construct stepper
-      stepperObj_(romStateIn, fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
-
+    : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative, udOps)
+  {}
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

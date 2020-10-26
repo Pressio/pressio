@@ -84,9 +84,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-/*
- * for python binddings, enable when we have BDF1 and we do the computation
- */
+/* BDF1 and we use pressio::ops */
 template<
   typename stepper_tag,
   typename fom_states_manager_t,
@@ -109,6 +107,42 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
   // //R = y_n - y_nm1 - dt * R;
   ::pressio::ops::update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
+}
+
+/* BDF1 and hyper-reduction indices passed in */
+template<
+  typename stepper_tag,
+  typename fom_states_manager_t,
+  typename residual_type,
+  typename scalar_type,
+  typename hyp_ind_t
+  >
+::pressio::mpl::enable_if_t<
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+  >
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
+		       residual_type & R,
+		       const scalar_type & dt,
+		       const hyp_ind_t & hypIndices)
+{
+  const auto & fomStateAt_n   = fomStatesMngr.currentFomStateCRef();
+  const auto & fomStateAt_nm1 = fomStatesMngr.fomStatePrevStepCRef();
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
+  const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+
+  // hypindices has same extent as sample mesh and contains
+  // indices of the entries in the state that correspond to
+  // the sample mesh points
+
+  //R = y_n - y_nm1 - dt * R but we need to combine the correct entries
+  assert(R.extent(0) == hypIndices.extent(0));
+  for (std::size_t i=0; i<R.extent(0); ++i)
+  {
+    const auto yI = hypIndices[i];
+    R[i] = cn*fomStateAt_n[yI] + cnm1*fomStateAt_nm1[yI] + cf*R[i];
+  }
 }
 #endif
 

@@ -82,6 +82,7 @@ struct traits<
   using fom_state_t		= typename common_types_t::fom_state_t;
   using fom_velocity_t		= typename common_types_t::fom_velocity_t;
   using lspg_state_t		= typename common_types_t::lspg_state_t;
+  using lspg_native_state_t	= typename common_types_t::lspg_native_state_t;
   using lspg_residual_t		= typename common_types_t::lspg_residual_t;
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;

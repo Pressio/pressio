@@ -260,52 +260,6 @@ struct compose<
   using type = Solver<tag, corr_mixin>;
 };
 
-// --------------------------------------------------------------------------
-// COMPOSE GN or LM with Neq and r/j api, pressio ops and M=I for pressio4py
-// --------------------------------------------------------------------------
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<
-  typename system_t,
-  typename tag,
-  typename hessian_t
-  >
-struct compose<
-  system_t, tag,
-  mpl::enable_if_t<
-    // when dealing with pressio4py and the GN solver is created
-    // for solving steady or unsteady LSPG, system_t is NOT a pybind object.
-    // The system class is a python object only if one is trying
-    // to use GaussNewton to solve a nonlinear system written in python.
-    // For that case, I would say they are better off using other
-    // Python libraries for solvers, so disable that scenario for now.
-    !::pressio::ops::predicates::is_object_pybind<system_t>::value and
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<hessian_t>::value>,
-  pybind11::object, hessian_t, ::pressio::utils::p4pyTag
-  >
-{
-  using scalar_t = typename system_t::scalar_type;
-  using state_t = typename system_t::state_type;
-  using r_t = typename system_t::residual_type;
-  using j_t = typename system_t::jacobian_type;
-
-  using grad_t = state_t;
-  using linear_solver_t = pybind11::object;
-
-  using operators_t =
-    typename std::conditional<
-    std::is_same<tag, GaussNewton>::value,
-    HessianGradientOperatorsRJApiNoWeighting<hessian_t, grad_t, r_t, j_t>,
-    LMHessianGradientOperatorsRJApi<hessian_t, grad_t, r_t, j_t, void,
-				    HessianGradientOperatorsRJApiNoWeighting>
-    >::type;
-
-  using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
-  using type = Solver<tag, corr_mixin>;
-};
-#endif
-
-
-
 // ---------------------------------------------------------------------------
 // *** COMPOSE GN or LM with Neq and r/j api and optional ops and valid M  ***
 // ---------------------------------------------------------------------------
@@ -389,8 +343,7 @@ struct compose<
 
   using weighting_functor_t =
     typename std::conditional<
-    (::pressio::solvers::concepts::weighting_operator<extra_t, r_t, r_t>::value and
-     ::pressio::solvers::concepts::weighting_operator<extra_t, j_t, j_t>::value),
+    (::pressio::solvers::concepts::least_squares_weighting_operator<extra_t, r_t, j_t>::value),
     extra_t, void >::type;
 
   // the extra_t should be one of the two, cannot be both
@@ -420,8 +373,6 @@ struct compose<
     (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
      ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
-    /*need to check linSoler is not a pybind::objec to guard against ambigous TI */
-    !::pressio::ops::predicates::is_object_pybind<linear_solver_t>::value and
     !std::is_void<ud_ops_t>::value and
     !std::is_void<weighting_functor_t>::value
     >,
@@ -457,10 +408,8 @@ struct compose<
    "The ops type is not admissible for normal equations.");
 
   static_assert
-  (::pressio::solvers::concepts::weighting_operator<
-   weighting_functor_t, r_t, r_t>::value and
-   ::pressio::solvers::concepts::weighting_operator<
-   weighting_functor_t, j_t, j_t>::value,
+  (::pressio::solvers::concepts::least_squares_weighting_operator<
+   weighting_functor_t, r_t, j_t>::value,
    "The weighting_functor is not admissible");
 
   using operators_t =

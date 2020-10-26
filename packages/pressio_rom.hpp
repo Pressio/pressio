@@ -130,6 +130,7 @@
 #include "rom/src/lspg/rom_default_lspg.hpp"
 #include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
 #include "rom/src/lspg/rom_masked_lspg.hpp"
+#include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
 
 //----------------
 // wls

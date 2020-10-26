@@ -57,7 +57,7 @@ class MaskedJacobianPolicy : public maskable_policy
 
 public:
   using typename maskable_policy::apply_jac_return_t;
-  using maskable_policy::JJ_;
+  mutable apply_jac_return_t JJ_;
   std::reference_wrapper<const masker_t> maskerObj_;
 
 public:
@@ -68,13 +68,15 @@ public:
   MaskedJacobianPolicy & operator=(MaskedJacobianPolicy &&) = default;
   ~MaskedJacobianPolicy() = default;
 
-  MaskedJacobianPolicy(const maskable_policy & obj) 
-  : maskable_policy(obj){}
+  // MaskedJacobianPolicy(const maskable_policy & obj)
+  // : maskable_policy(obj){}
 
-  template <typename ... Args>
-  MaskedJacobianPolicy(const masker_t & maskerObj, 
-      Args && ... args) 
+  template <typename fom_system_t, typename ... Args>
+  MaskedJacobianPolicy(const masker_t & maskerObj,
+		       const fom_system_t & fomObj,
+		       Args && ... args)
     : maskable_policy(std::forward<Args>(args)...),
+      JJ_(maskable_policy::create(fomObj)),
       maskerObj_(maskerObj)
   {}
 
@@ -82,7 +84,6 @@ public:
   template <typename fom_system_t>
   apply_jac_return_t create(const fom_system_t & fomSystem) const
   {
-    JJ_ = maskable_policy::create(fomSystem);
     return apply_jac_return_t(maskerObj_.get().createApplyMaskResult(*JJ_.data()));
   }
 
@@ -103,22 +104,22 @@ public:
 	       const ::pressio::ode::types::step_t & step,
 	       jac_t & odeJJ) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr, 
+    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr,
         systemObj, time, dt, step, JJ_);
     maskerObj_.get().applyMask(*JJ_.data(), time, *odeJJ.data());
   }
 
   // steady case
   template <typename state_t, typename jac_t, typename fom_system_t>
-  void compute(const state_t & state, 
-               jac_t & odeJJ, 
+  void compute(const state_t & state,
+               jac_t & odeJJ,
                const fom_system_t & systemObj) const
   {
     maskable_policy::compute(state, JJ_, systemObj);
     maskerObj_.get().applyMask(*JJ_.data(), *odeJJ.data());
   }
 
-};//end class
+};
 
 }}} //end namespace pressio::rom::decorator
 #endif  // ROM_DECORATORS_ROM_MASKED_JACOBIAN_POLICY_HPP_

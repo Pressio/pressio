@@ -51,12 +51,17 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename residual_type, typename fom_states_manager_t>
+template <
+  typename residual_type,
+  typename fom_states_manager_t,
+  typename ud_ops_type = void
+  >
 class ResidualPolicyDiscreteTimeApi
 {
 
 public:
   using residual_t = residual_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
@@ -66,8 +71,23 @@ public:
   ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = delete;
   ~ResidualPolicyDiscreteTimeApi() = default;
 
+  // 1. void ops
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+    >
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr){}
+
+  // 2. nonvoid ops
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+    >
+  ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
+				const _ud_ops_t & udOps)
+    : fomStatesMngr_(fomStatesMngr), udOps_(&udOps)
+  {}
 
 public:
   template <typename fom_system_t>
@@ -183,6 +203,7 @@ protected:
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
+  const ud_ops_t * udOps_ = {};
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

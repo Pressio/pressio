@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_default_problem_continuous_time_api.hpp
+// rom_lspg_unsteady_hyp_red_problem_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,17 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_HYP_RED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_HYP_RED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template<bool forPy, typename T> struct _systemMemberType;
-template<typename T> struct _systemMemberType<true, T> { using type = T; };
-template<typename T> struct _systemMemberType<false, T>{
-  using type = ::pressio::utils::impl::empty;};
-
 template <typename ...Args>
-class DefaultProblemContinuousTimeApi
+class HyperReducedProblemContinuousTimeApi
 {
 public:
-  using this_t = DefaultProblemContinuousTimeApi<Args...>;
+  using this_t = HyperReducedProblemContinuousTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
   using fom_system_t		= typename traits::fom_system_t;
@@ -70,18 +66,24 @@ public:
   using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
-  using fom_state_mngr_t	= typename traits::fom_states_manager_t;
-  using ud_ops_t		= typename traits::ud_ops_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using aux_stepper_t		= typename traits::aux_stepper_t;
   using stepper_t		= typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
+  using sample_to_stencil_t     = typename traits::sample_to_stencil_t;
+  using sample_to_stencil_native_t =
+    typename ::pressio::containers::details::traits<sample_to_stencil_t>::wrapped_t;
+
 private:
+  sample_to_stencil_t	sTosInfo_;
+
   using At = FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = FomStatesMngrMixin<At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
-  using Ct = DefaultPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
+  using Bt = FomStatesMngrMixin<
+    At, void, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct = HypRedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
   using mem_t = StepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
@@ -97,55 +99,34 @@ public:
   }
 
 public:
-  DefaultProblemContinuousTimeApi() = delete;
-  DefaultProblemContinuousTimeApi(const DefaultProblemContinuousTimeApi &) = default;
-  DefaultProblemContinuousTimeApi & operator=(const DefaultProblemContinuousTimeApi &) = delete;
-  DefaultProblemContinuousTimeApi(DefaultProblemContinuousTimeApi &&) = default;
-  DefaultProblemContinuousTimeApi & operator=(DefaultProblemContinuousTimeApi &&) = delete;
-  ~DefaultProblemContinuousTimeApi() = default;
-
-  /* ud_ops_t == void */
-  template <
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int > = 0
-    >
-  DefaultProblemContinuousTimeApi(const fom_system_t & fomObj,
-				  const decoder_t & decoder,
-				  const lspg_state_t & romStateIn,
-				  const fom_native_state_t & fomNominalStateNative)
-    : members_(romStateIn, fomObj, decoder, fomNominalStateNative)
-  {}
-
-  /* ud_ops_t != void */
-  template <
-    typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
-    >
-  DefaultProblemContinuousTimeApi(const fom_system_t & fomObj,
-				  const decoder_t & decoder,
-				  const lspg_state_t & romStateIn,
-				  const fom_native_state_t & fomNominalStateNative,
-				  const _ud_ops_t & udOps)
-    : members_(romStateIn, fomObj, decoder, fomNominalStateNative, udOps)
-  {}
+  HyperReducedProblemContinuousTimeApi() = delete;
+  HyperReducedProblemContinuousTimeApi(const HyperReducedProblemContinuousTimeApi &) = default;
+  HyperReducedProblemContinuousTimeApi & operator=(const HyperReducedProblemContinuousTimeApi &) = delete;
+  HyperReducedProblemContinuousTimeApi(HyperReducedProblemContinuousTimeApi &&) = default;
+  HyperReducedProblemContinuousTimeApi & operator=(HyperReducedProblemContinuousTimeApi &&) = delete;
+  ~HyperReducedProblemContinuousTimeApi() = default;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
-    typename _ud_ops_t = ud_ops_t,
+    typename _aux_stepper_t = aux_stepper_t,
     ::pressio::mpl::enable_if_t<
-      _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      _binding_sentinel and
+      std::is_void<_aux_stepper_t>::value,
       int > = 0
     >
-  DefaultProblemContinuousTimeApi(pybind11::object fomObjPython,
-				  const decoder_t & decoder,
-				  const lspg_native_state_t & romStateIn,
-				  const fom_native_state_t fomNominalStateIn)
-    : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)
+  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObjPython,
+				       const decoder_t & decoder,
+				       const lspg_native_state_t & romStateIn,
+				       const fom_native_state_t fomNominalStateIn,
+				       sample_to_stencil_native_t sTosInfo)
+    : sTosInfo_(sTosInfo),
+      members_(lspg_state_t(romStateIn), fomObjPython,
+	       decoder, fomNominalStateIn, sTosInfo_)
   {}
 #endif
 
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_CONTINUOUS_TIME_API_HPP_

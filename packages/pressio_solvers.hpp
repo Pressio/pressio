@@ -84,7 +84,7 @@
 #include "solvers/src/nonlinear/solvers_nonlinear_tags.hpp"
 #include "solvers/src/nonlinear/solvers_nonlinear_enums.hpp"
 #include "solvers/src/will_be_concepts/solvers_ops_normal_equations_rj_api.hpp"
-#include "solvers/src/will_be_concepts/solvers_weighting_operator.hpp"
+#include "solvers/src/will_be_concepts/solvers_least_squares_weighting_operator.hpp"
 
 #include "solvers/src/nonlinear/impl/updaters/solvers_create_updater.hpp"
 #include "solvers/src/nonlinear/impl/updaters/solvers_apply_updater.hpp"

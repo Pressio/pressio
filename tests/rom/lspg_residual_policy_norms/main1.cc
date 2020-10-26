@@ -137,13 +137,13 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   using lspg_masked_residual_policy =
     ::pressio::rom::decorator::MaskedResidualPolicy<masker_t, lspg_residual_policy>;
 
-  const lspg_residual_policy rPol(fomObj.createVelocity(), fomStatesMngr);
+  const lspg_residual_policy rPol(fomStatesMngr);
 
   preconditioner_t Preconditioner;
-  const lspg_precond_residual_policy rPolPrecond(Preconditioner, fomObj.createVelocity(), fomStatesMngr);
+  const lspg_precond_residual_policy rPolPrecond(Preconditioner, fomStatesMngr);
 
   masker_t Masker(fomSize);
-  const lspg_masked_residual_policy rPolMasked(Masker, fomObj.createVelocity(), fomStatesMngr);
+  const lspg_masked_residual_policy rPolMasked(Masker, fomObj, fomStatesMngr);
 
   // ------------------------------------
   // ***** here we do the test *****

@@ -50,6 +50,7 @@
 #define ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
 
 #include "../rom_lspg_problem_tags.hpp"
+#include "./rom_lspg_unsteady_problem_members.hpp"
 
 //----------------------------------------
 // include for continuous_time_api
@@ -59,16 +60,20 @@
 
 #include "./continuous_time_api/policies/rom_lspg_unsteady_residual_policy_continuous_time_api.hpp"
 #include "./continuous_time_api/policies/rom_lspg_unsteady_jacobian_policy_continuous_time_api.hpp"
+#include "./continuous_time_api/policies/rom_lspg_unsteady_hyper_reduced_residual_policy_continuous_time_api.hpp"
+#include "./continuous_time_api/policies/rom_lspg_unsteady_hyper_reduced_jacobian_policy_continuous_time_api.hpp"
 
 //traits
 #include "./continuous_time_api/traits/rom_lspg_unsteady_common_traits_continuous_time_api.hpp"
 #include "./continuous_time_api/traits/rom_lspg_unsteady_default_problem_traits_continuous_time_api.hpp"
 #include "./continuous_time_api/traits/rom_lspg_unsteady_preconditioned_problem_traits_continuous_time_api.hpp"
 #include "./continuous_time_api/traits/rom_lspg_unsteady_masked_problem_traits_continuous_time_api.hpp"
+#include "./continuous_time_api/traits/rom_lspg_unsteady_hyper_reduced_problem_traits_continuous_time_api.hpp"
 //problems
 #include "./continuous_time_api/rom_lspg_unsteady_default_problem_continuous_time_api.hpp"
 #include "./continuous_time_api/rom_lspg_unsteady_preconditioned_problem_continuous_time_api.hpp"
 #include "./continuous_time_api/rom_lspg_unsteady_masked_problem_continuous_time_api.hpp"
+#include "./continuous_time_api/rom_lspg_unsteady_hyper_reduced_problem_continuous_time_api.hpp"
 
 //----------------------------------------
 // include for discrete_time_api
@@ -197,7 +202,7 @@ struct composeUnsteady<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
 };
 
-// default lspg user-defined dops
+// default lspg user-defined ops
 template<
   typename stepper_tag,
   typename fom_system_type,
@@ -262,6 +267,57 @@ struct composeUnsteady<
     ::pressio::rom::lspg::impl::unsteady::MaskedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, void>;
 };
+
+
+// hyper-reduced lspg pressio ops with provided mapping from sample to stencil mesh
+// this should only be enabled for shared-mem data structures
+template<
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename sample_to_stencil_t
+  >
+struct composeUnsteady<
+  ::pressio::rom::lspg::impl::HyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, sample_to_stencil_t>
+{
+  static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
+
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, sample_to_stencil_t, void>;
+};
+
+// // TODO: enable this only for types for which hyp-red is supported behind scenes
+// // hyper-reduced lspg can also be enabled without passing the sample-to-stencil info,
+// // and currently this is just a alias for the default since we can handle hyp-red
+// // there if data types are trilinos
+// template<
+//   typename stepper_tag,
+//   typename fom_system_type,
+//   typename decoder_type,
+//   typename lspg_state_type
+//   >
+// struct composeUnsteady<
+//   ::pressio::rom::lspg::impl::HyperReduced,
+//   mpl::enable_if_t<
+//     ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+//     >,
+//   stepper_tag, fom_system_type, decoder_type, lspg_state_type>
+//   : composeUnsteady<::pressio::rom::lspg::impl::Default,
+// 		     stepper_tag, fom_system_type, decoder_type, lspg_state_type>
+// {
+//   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
+
+//   using type =
+//     ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
+//     stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
+// };
+
 
 
 ///////////////////////////////////////////////////////
