@@ -55,12 +55,16 @@
 namespace pressio{ namespace rom{ namespace lspg{
 
 /*
-  unsteady:
+  steady cases:
+  template<fom_type, romstate_t, decoder_t>
+
+  unsteady cont-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t>
   template<stepper_tag, fom_type, decoder_t, romstate_t, udops_t>
 
-  steady:
-  template<fom_type, romstate_t, decoder_t>
+  unsteady discrete-time api:
+  template<stepper_tag, fom_type, decoder_t, romstate_t>
+  template<stepper_tag, fom_type, decoder_t, romstate_t, udops_t>
 */
 template<typename T1, typename ...Args>
 using composeDefaultProblem =

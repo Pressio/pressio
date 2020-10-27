@@ -269,8 +269,10 @@ struct composeUnsteady<
 };
 
 
-// hyper-reduced lspg pressio ops with provided mapping from sample to stencil mesh
-// this should only be enabled for shared-mem data structures
+// specialize for hyper-reduced lspg with pressio ops with provided
+// mapping from sample to stencil mesh.
+// currently only enabled for shared-mem data structures: eigen and pybind11
+// we know
 template<
   typename stepper_tag,
   typename fom_system_type,
@@ -401,7 +403,7 @@ struct composeUnsteady<
    "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
-    ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
+    ::pressio::rom::lspg::impl::unsteady::MaskedProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, lspg_state_type,
     decoder_type, masker_type, Args...>;
 };

@@ -68,9 +68,6 @@ public:
   MaskedJacobianPolicy & operator=(MaskedJacobianPolicy &&) = default;
   ~MaskedJacobianPolicy() = default;
 
-  // MaskedJacobianPolicy(const maskable_policy & obj)
-  // : maskable_policy(obj){}
-
   template <typename fom_system_t, typename ... Args>
   MaskedJacobianPolicy(const masker_t & maskerObj,
 		       const fom_system_t & fomObj,
@@ -102,21 +99,25 @@ public:
 	       const time_type & time,
 	       const time_type & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       jac_t & odeJJ) const
+	       jac_t & jacobian) const
   {
     maskable_policy::template compute<stepper_tag>(state, prevStatesMgr,
         systemObj, time, dt, step, JJ_);
-    maskerObj_.get().applyMask(*JJ_.data(), time, *odeJJ.data());
+    maskerObj_.get().applyMask(*JJ_.data(), time, *jacobian.data());
   }
 
   // steady case
-  template <typename state_t, typename jac_t, typename fom_system_t>
+  template <
+    typename state_t,
+    typename jac_t,
+    typename fom_system_t
+    >
   void compute(const state_t & state,
-               jac_t & odeJJ,
+               jac_t & jacobian,
                const fom_system_t & systemObj) const
   {
     maskable_policy::compute(state, JJ_, systemObj);
-    maskerObj_.get().applyMask(*JJ_.data(), *odeJJ.data());
+    maskerObj_.get().applyMask(*JJ_.data(), *jacobian.data());
   }
 
 };

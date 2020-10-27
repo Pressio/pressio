@@ -188,11 +188,11 @@ int main(int argc, char *argv[])
   // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   // using problem_t =
-  //   pressio::rom::lspg::composePreconditionedProblem<
+  //   pressio::rom::lspg::composePreconditionedDefaultProblem<
   //     ode_tag, fom_t, decoder_t, rom_state_t, precond_t,
   //   stepper_order, stepper_n_states>::type;
   // problem_t problem(appObj, decoderObj, romState, refState, PrecObj);
-  auto problem = pressio::rom::lspg::createPreconditionedProblemUnsteady<1,2>(
+  auto problem = pressio::rom::lspg::createPreconditionedDefaultProblemUnsteady<1,2>(
     appObj, decoderObj, romState, refState, PrecObj);
 
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver(fomSize, romSize, checkStr);

@@ -66,9 +66,6 @@ public:
   MaskedResidualPolicy & operator=(MaskedResidualPolicy &&) = default;
   ~MaskedResidualPolicy() = default;
 
-  // MaskedResidualPolicy(const maskable_policy & obj)
-  //   : maskable_policy(obj){}
-
   template <typename fom_system_t, typename ... Args>
   MaskedResidualPolicy(const masker_t & maskerObj,
 		       const fom_system_t & fomObj,
@@ -103,8 +100,8 @@ public:
 	       const ::pressio::ode::types::step_t & step,
 	       residual_t & R) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStates,
-            systemObj, time, dt, step, R_);
+    maskable_policy::template compute<stepper_tag>
+      (state, prevStates, systemObj, time, dt, step, R_);
 
     maskerObj_.get().applyMask(*R_.data(), time, *R.data());
   }
@@ -112,13 +109,15 @@ public:
   //-------------------------------
   // steady case
   //-------------------------------
-  template <typename state_t, typename fom_system_t, typename norm_value_type>
+  template <
+    typename state_t,
+    typename fom_system_t
+    >
   void compute(const state_t & state,
   	       residual_t & R,
   	       const fom_system_t & systemObj) const
   {
     maskable_policy::compute(state, R_, systemObj);
-
     maskerObj_.get().applyMask(*R_.data(), *R.data());
   }
 

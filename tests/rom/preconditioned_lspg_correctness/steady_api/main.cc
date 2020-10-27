@@ -150,10 +150,10 @@ int main(int argc, char *argv[])
   precond_t PrecObj;
 
   // using lspg_problem_type
-  //   = typename pressio::rom::lspg::composePreconditionedProblem<
+  //   = typename pressio::rom::lspg::composePreconditionedDefaultProblem<
   //     fom_t, decoder_t, rom_state_t, precond_t>::type;
   // lspg_problem_type lspgProblem(appObj, decoderObj, romState, refState, PrecObj);
-  auto lspgProblem = pressio::rom::lspg::createPreconditionedProblemSteady(
+  auto lspgProblem = pressio::rom::lspg::createPreconditionedDefaultProblemSteady(
     appObj, decoderObj, romState, refState, PrecObj);
   using traits = ::pressio::rom::details::traits<decltype(lspgProblem)>;
   static_assert( std::is_same<typename traits::ud_ops_t, void>::value, "");

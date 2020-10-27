@@ -100,13 +100,7 @@ public:
   PreconditionedProblemSteady & operator=(PreconditionedProblemSteady &&) = delete;
   ~PreconditionedProblemSteady() = default;
 
-  template <
-  typename _fom_system_t = fom_system_t,
-  ::pressio::mpl::enable_if_t<
-    !::pressio::ops::predicates::is_object_pybind<_fom_system_t>::value,
-    int> = 0
-  >
-  PreconditionedProblemSteady(const _fom_system_t & fomSystemObj,
+  PreconditionedProblemSteady(const fom_system_t & fomSystemObj,
 			      const decoder_t	& decoder,
 			      const lspg_state_t & romStateIn,
 			      const fom_native_state_t & fomNominalStateNative,

@@ -51,10 +51,11 @@
 
 #include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace experimental{
+namespace pressio{ namespace rom{ namespace lspg{
 
 /*
-  unsteady:
+  unsteady, possible choices:
+
   // this is used for shared-mem data structures where the indices are passed
   // and pressio uses these to implement hyper-reduction
   template<stepper_tag, fom_type, decoder_t, romstate_t, sample_to_stencil_t>
@@ -74,5 +75,5 @@ template<typename T1, typename ...Args>
 using composeHyperReducedProblem_t =
   typename composeHyperReducedProblem<T1, Args...>::type;
 
-}}}}
+}}}
 #endif  // ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_

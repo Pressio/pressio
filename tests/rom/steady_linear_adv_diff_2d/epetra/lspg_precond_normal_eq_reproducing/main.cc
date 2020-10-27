@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
   prec_t Prec;
 
   // using lspg_problem_type = 
-  //   typename pressio::rom::lspg::composePreconditionedProblem<
+  //   typename pressio::rom::lspg::composePreconditionedDefaultProblem<
   //   fom_adapter_t, decoder_t, lspg_state_t, prec_t>::type;
   // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM, Prec);
-  auto lspgProblem = pressio::rom::lspg::createPreconditionedProblemSteady(
+  auto lspgProblem = pressio::rom::lspg::createPreconditionedDefaultProblemSteady(
     appObjROM, decoderObj, yROM, *yRef, Prec);
 
   // linear solver

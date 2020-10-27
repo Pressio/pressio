@@ -59,9 +59,11 @@
 #include "./traits/rom_lspg_steady_common_traits.hpp"
 #include "./traits/rom_lspg_steady_default_problem_traits.hpp"
 #include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
+#include "./traits/rom_lspg_steady_masked_problem_traits.hpp"
 
 #include "./rom_lspg_steady_default_problem.hpp"
 #include "./rom_lspg_steady_preconditioned_problem.hpp"
+#include "./rom_lspg_steady_masked_problem.hpp"
 
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
@@ -93,7 +95,7 @@ struct composeSteady<
   fom_system_type, decoder_type, lspg_state_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::DefaultProblemSteady<
-      fom_system_type, lspg_state_type, decoder_type>;
+    fom_system_type, lspg_state_type, decoder_type>;
 };
 
 // precond
@@ -111,7 +113,25 @@ struct composeSteady<
   fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::PreconditionedProblemSteady<
-      fom_system_type, lspg_state_type, decoder_type, precond_type>;
+    fom_system_type, lspg_state_type, decoder_type, precond_type>;
+};
+
+// masked
+template<
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename masker_type
+  >
+struct composeSteady<
+  ::pressio::rom::lspg::impl::Masked,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    >,
+  fom_system_type, decoder_type, lspg_state_type, masker_type>
+{
+  using type = ::pressio::rom::lspg::impl::steady::MaskedProblemSteady<
+    fom_system_type, lspg_state_type, decoder_type, masker_type>;
 };
 
 }}}}

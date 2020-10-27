@@ -55,14 +55,17 @@
 namespace pressio{ namespace rom{ namespace lspg{
 
 /*
-  unsteady:
+  for steady we support:
+  template<fom_type, decoder_t, romstate_t, precond_t>
+
+  unsteady cont-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
 
-  cases for steady:
-  template<fom_type, decoder_t, romstate_t, precond_t>
+  unsteady discrete-time api:
+  template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
 */
 template<typename T1, typename ...Args>
-using composePreconditionedProblem =
+using composePreconditionedDefaultProblem =
   typename std::conditional<
   ::pressio::ode::predicates::is_stepper_tag<T1>::value,
   impl::composeUnsteady<
@@ -76,8 +79,8 @@ using composePreconditionedProblem =
   >::type;
 
 template<typename T1, typename ...Args>
-using composePreconditionedProblem_t =
-  typename composePreconditionedProblem<T1, Args...>::type;
+using composePreconditionedDefaultProblem_t =
+  typename composePreconditionedDefaultProblem<T1, Args...>::type;
 
 
 // create precond default steady
@@ -90,22 +93,22 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::steady_system<fom_system_type>::value,
-  composePreconditionedProblem_t<
+  composePreconditionedDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
-createPreconditionedProblemSteady(const fom_system_type & fomSysObj,
-				  const decoder_type & decoder,
-				  const rom_state_type & romStateIn,
-				  const fom_native_state & fomRef,
-				  Args && ...args)
+createPreconditionedDefaultProblemSteady(const fom_system_type & fomSysObj,
+					 const decoder_type & decoder,
+					 const rom_state_type & romStateIn,
+					 const fom_native_state & fomRef,
+					 Args && ...args)
 {
-  using return_t = composePreconditionedProblem_t<
+  using return_t = composePreconditionedDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 compatible with the fom state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,
@@ -123,22 +126,22 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
-  composePreconditionedProblem_t<
+  composePreconditionedDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
-createPreconditionedProblemUnsteady(const fom_system_type & fomSysObj,
-				    const decoder_type & decoder,
-				    const rom_state_type & romStateIn,
-				    const fom_native_state & fomRef,
-				    Args && ...args)
+createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
+					   const decoder_type & decoder,
+					   const rom_state_type & romStateIn,
+					   const fom_native_state & fomRef,
+					   Args && ...args)
 {
-  using return_t = composePreconditionedProblem_t<
+  using return_t = composePreconditionedDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 compatible with the fom state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,
@@ -158,7 +161,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composePreconditionedProblem_t<
+  composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -166,14 +169,14 @@ mpl::enable_if_t<
     Args...
     >
   >
-createPreconditionedProblemUnsteady(const fom_system_type & fomSysObj,
-				    const decoder_type & decoder,
-				    const rom_state_type & romStateIn,
-				    const fom_native_state & fomRef,
-				    const precond_type & prec,
-				    Args && ...args)
+createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
+					   const decoder_type & decoder,
+					   const rom_state_type & romStateIn,
+					   const fom_native_state & fomRef,
+					   const precond_type & prec,
+					   Args && ...args)
 {
-  using return_t = composePreconditionedProblem_t<
+  using return_t = composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -181,8 +184,8 @@ createPreconditionedProblemUnsteady(const fom_system_type & fomSysObj,
     Args...>;
 
   static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The fom reference state type deduced for the create function is not \
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 compatible with the fom state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,

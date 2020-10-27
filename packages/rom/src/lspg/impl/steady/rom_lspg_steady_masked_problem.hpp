@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_masked_problem_discrete_time_api.hpp
+// rom_lspg_steady_masked_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,75 +46,78 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_DISCRETE_TIME_API_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_DISCRETE_TIME_API_HPP_
+#ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_MASKED_PROBLEM_HPP_
+#define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_MASKED_PROBLEM_HPP_
 
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
-
-template<typename ...Args>
-class MaskedProblemDiscreteTimeApi
+template <typename...Args>
+class MaskedProblemSteady
 {
 public:
-  using this_t = MaskedProblemDiscreteTimeApi<Args...>;
+  using this_t = MaskedProblemSteady<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
   using fom_system_t		= typename traits::fom_system_t;
   using fom_native_state_t	= typename traits::fom_native_state_t;
-  using fom_native_residual_t	= typename traits::fom_native_residual_t;
   using fom_state_t		= typename traits::fom_state_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
-  using masker_t  = typename traits::masker_t;
-  using ud_ops_t		= typename traits::ud_ops_t;
-  using lspg_state_t		= typename traits::lspg_state_t;
-  using lspg_residual_t		= typename traits::lspg_residual_t;
+  using masker_t		= typename traits::masker_t;
   using lspg_matrix_t		= typename traits::lspg_matrix_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
-  using stepper_t		= typename traits::stepper_t;
+  using system_t		= typename traits::system_t;
 
 private:
-  using At = FomObjMixin<fom_system_t>;
-  using Bt = FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
-				fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = MaskedPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
-  using mem_t = StepperMixin<Ct, void, stepper_t>;
-  mem_t members_;
+  fom_state_t		fomNominalState_;
+  fom_state_reconstr_t	fomStateReconstructor_;
+  fom_states_manager_t	fomStatesMngr_;
+  residual_policy_t	residualPolicy_;
+  jacobian_policy_t	jacobianPolicy_;
+  system_t		systemObj_;
 
 public:
-  stepper_t & stepperRef(){ return members_.stepperObj_; }
-
-  const fom_native_state_t & currentFomStateCRef() const{
-    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
+  system_t & systemRef(){
+    return systemObj_;
   }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
-    return members_.fomStateReconstructor_;
+    return fomStateReconstructor_;
+  }
+
+  const fom_native_state_t & currentFomStateCRef() const{
+    return *fomStatesMngr_.currentFomStateCRef().data();
   }
 
 public:
-  MaskedProblemDiscreteTimeApi() = delete;
-  MaskedProblemDiscreteTimeApi(const MaskedProblemDiscreteTimeApi &) = default;
-  MaskedProblemDiscreteTimeApi & operator=(const MaskedProblemDiscreteTimeApi &) = delete;
-  MaskedProblemDiscreteTimeApi(MaskedProblemDiscreteTimeApi &&) = default;
-  MaskedProblemDiscreteTimeApi & operator=(MaskedProblemDiscreteTimeApi &&) = delete;
-  ~MaskedProblemDiscreteTimeApi() = default;
+  MaskedProblemSteady() = delete;
+  MaskedProblemSteady(const MaskedProblemSteady &) = default;
+  MaskedProblemSteady & operator=(const MaskedProblemSteady &) = delete;
+  MaskedProblemSteady(MaskedProblemSteady &&) = default;
+  MaskedProblemSteady & operator=(MaskedProblemSteady &&) = delete;
+  ~MaskedProblemSteady() = default;
 
-  template<
-    typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
-    >
-  MaskedProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
-			       const decoder_t & decoder,
-			       const lspg_state_t & romStateIn,
-			       const fom_native_state_t & fomNominalStateNative,
-			       const masker_t & maskerObj)
-    : members_(romStateIn, fomSystemObj, decoder,
-	       fomNominalStateNative, maskerObj)
-    {}
+  MaskedProblemSteady(const fom_system_t & fomSystemObj,
+		      const decoder_t	& decoder,
+		      const lspg_state_t & romStateIn,
+		      const fom_native_state_t & fomNominalStateNative,
+		      const masker_t & maskerObj)
+    : fomNominalState_(fomNominalStateNative),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
+      residualPolicy_(maskerObj, fomSystemObj, fomStatesMngr_),
+      jacobianPolicy_(maskerObj, fomSystemObj, fomStatesMngr_, decoder),
+      systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
+  {
+    // reconstruct current fom state so that we have something
+    // consistent with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
+
 };
 
-}}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_DISCRETE_TIME_API_HPP_
+}}}}}
+#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_MASKED_PROBLEM_HPP_
