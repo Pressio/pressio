@@ -108,6 +108,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // //R = y_n - y_nm1 - dt * R;
   ::pressio::ops::update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, cnm1);
 }
+#endif
+
 
 /* BDF1 and hyper-reduction indices passed in */
 template<
@@ -119,7 +121,12 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  (::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value or
+   ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value)
+#else
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+#endif
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
@@ -144,7 +151,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
     R[i] = cn*fomStateAt_n[yI] + cnm1*fomStateAt_nm1[yI] + cf*R[i];
   }
 }
-#endif
+
 
 
 

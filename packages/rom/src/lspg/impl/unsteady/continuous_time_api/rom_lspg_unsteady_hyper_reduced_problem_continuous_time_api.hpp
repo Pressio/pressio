@@ -115,6 +115,19 @@ public:
     : members_(romStateIn, fomObj, decoder, fomNominalStateIn)
   {}
 
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    ::pressio::mpl::enable_if_t<!_binding_sentinel, int > = 0
+    >
+  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
+				       const decoder_t & decoder,
+				       const lspg_state_t & romStateIn,
+				       const fom_native_state_t fomNominalStateIn,
+				       const sample_to_stencil_t & sTosInfo)
+    : members_(romStateIn, fomObj, decoder, fomNominalStateIn, sTosInfo)
+  {}
+
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,

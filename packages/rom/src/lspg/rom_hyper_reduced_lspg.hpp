@@ -89,5 +89,39 @@ template<typename T1, typename ...Args>
 using composeHyperReducedProblem_t =
   typename composeHyperReducedProblem<T1, Args...>::type;
 
+
+// unsteady (continuous-time api)
+template<
+  typename odetag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state,
+  typename sample_to_stencil_t
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  composeHyperReducedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t
+    >
+  >
+createHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
+				  const decoder_type & decoder,
+				  const rom_state_type & romStateIn,
+				  const fom_native_state & fomRef,
+				  const sample_to_stencil_t & sTosInfo)
+{
+  using return_t = composeHyperReducedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t>;
+
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
+compatible with the fom state type detected from adapter class");
+
+  return return_t(fomSysObj, decoder, romStateIn, fomRef, sTosInfo);
+}
+
+
 }}}
 #endif  // ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_

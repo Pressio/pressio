@@ -269,7 +269,6 @@ struct composeUnsteady<
 };
 
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // specialize for hyper-reduced lspg with pressio ops with provided
 // mapping from sample to stencil mesh.
 // currently only enabled for shared-mem data structures: eigen and pybind11
@@ -292,15 +291,18 @@ struct composeUnsteady<
   // currently only enable when fom types are eigen and pybind11 data structures
   using fom_state_type = typename fom_system_type::state_type;
   static_assert
-  (::pressio::containers::predicates::is_array_pybind<fom_state_type>::value,
-   "Unsteady hyper-reduced LSPG with continuous-time API with explicit \
-mapping from stencil to sample mesh is currently only enabled for pressio4py.");
+  (::pressio::containers::predicates::is_vector_eigen<fom_state_type>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+   or ::pressio::containers::predicates::is_array_pybind<fom_state_type>::value
+#endif
+   , "Unsteady hyper-reduced LSPG with continuous-time API with explicit \
+mapping from stencil to sample mesh is currently only enabled for eigen types or pressio4py.");
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, sample_to_stencil_t, void>;
 };
-#endif
+
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // hyper-reduced lspg is also supported without passing the sample-to-stencil info,

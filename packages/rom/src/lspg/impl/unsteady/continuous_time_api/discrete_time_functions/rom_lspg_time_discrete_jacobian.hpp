@@ -113,6 +113,8 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
     }
   }
 }
+#endif
+
 
 template <
   typename stepper_tag,
@@ -122,7 +124,11 @@ template <
   typename hyp_ind_t
   >
 mpl::enable_if_t<
- ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<lspg_matrix_type>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  or ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value)
+#endif
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type	& dt,
@@ -145,7 +151,7 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
     }
   }
 }
-#endif
+
 
 
 /*
@@ -168,8 +174,8 @@ template <
 #endif
 >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-			    const scalar_type	& dt,
-			    const decoder_jac_type & phi){
+		       const scalar_type	& dt,
+		       const decoder_jac_type & phi){
 
   assert( jphi.numVectors() == phi.numVectors() );
   assert( jphi.extent(0) == phi.extent(0) );
