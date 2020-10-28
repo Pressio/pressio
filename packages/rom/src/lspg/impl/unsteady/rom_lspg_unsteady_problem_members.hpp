@@ -113,12 +113,14 @@ struct FomStatesMngrMixin : T
 template <
   typename T,
   bool def, bool masked, bool prec, bool hypred,
-  typename ops_t, typename r_pol_t, typename j_pol_t
+  typename ... Args //ops_t, typename r_pol_t, typename j_pol_t
   >
 struct PoliciesMixin;
 
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
-struct PoliciesMixin<T, true, false, false, false, ops_t, r_pol_t, j_pol_t> : T
+struct PoliciesMixin<
+  T, true, false, false, false, ops_t, r_pol_t, j_pol_t
+  > : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -160,7 +162,9 @@ struct PoliciesMixin<T, true, false, false, false, ops_t, r_pol_t, j_pol_t> : T
 
 // specialize for masked
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
-struct PoliciesMixin<T, false, true, false, false, ops_t, r_pol_t, j_pol_t> : T
+struct PoliciesMixin<
+  T, false, true, false, false, ops_t, r_pol_t, j_pol_t
+  > : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -190,7 +194,9 @@ struct PoliciesMixin<T, false, true, false, false, ops_t, r_pol_t, j_pol_t> : T
 
 // specialize for precond
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
-struct PoliciesMixin<T, false, false, true, false, ops_t, r_pol_t, j_pol_t> : T
+struct PoliciesMixin<
+  T, false, false, true, false, ops_t, r_pol_t, j_pol_t
+  > : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -218,10 +224,44 @@ struct PoliciesMixin<T, false, false, true, false, ops_t, r_pol_t, j_pol_t> : T
   {}
 };
 
-// specialize for hyp-red
+// specialize for hyp-red with void stencil-to-sample mapping
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
-struct PoliciesMixin<T, false, false, false, true, ops_t, r_pol_t, j_pol_t> : T
+struct PoliciesMixin<
+  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, void
+  > : T
 {
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  PoliciesMixin() = delete;
+  PoliciesMixin(const PoliciesMixin &) = default;
+  PoliciesMixin & operator=(const PoliciesMixin &) = delete;
+  PoliciesMixin(PoliciesMixin &&) = default;
+  PoliciesMixin & operator=(PoliciesMixin &&) = delete;
+  ~PoliciesMixin() = default;
+
+  template<
+    typename T1, typename T2, typename T3, typename T4,
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
+  PoliciesMixin(const T1 & romStateIn,
+		const T2 & fomObj,
+		const T3 & decoder,
+		const T4 & fomNominalStateNative)
+    : T(fomObj, decoder, romStateIn, fomNominalStateNative),
+      residualPolicy_(T::fomStatesMngr_),
+      jacobianPolicy_(T::fomStatesMngr_, decoder)
+  {}
+};
+
+// specialize for hyp-red with stencil-to-sample mapping
+template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
+struct PoliciesMixin<
+  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, sTos_t
+  > : T
+{
+  sTos_t  meshToStencilMapper_;
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
@@ -243,10 +283,12 @@ struct PoliciesMixin<T, false, false, false, true, ops_t, r_pol_t, j_pol_t> : T
 		const T4 & fomNominalStateNative,
 		const T5 & meshToStencilMapper)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
-      residualPolicy_(T::fomStatesMngr_, meshToStencilMapper),
-      jacobianPolicy_(T::fomStatesMngr_, decoder, meshToStencilMapper)
+      meshToStencilMapper_(meshToStencilMapper),
+      residualPolicy_(T::fomStatesMngr_, meshToStencilMapper_),
+      jacobianPolicy_(T::fomStatesMngr_, decoder, meshToStencilMapper_)
   {}
 };
+
 
 template <typename T, typename ...Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;

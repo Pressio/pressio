@@ -98,6 +98,26 @@ struct composeSteady<
     fom_system_type, lspg_state_type, decoder_type>;
 };
 
+// hyper-reduced
+template<
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type
+  >
+struct composeSteady<
+  ::pressio::rom::lspg::impl::HyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    >,
+  fom_system_type, decoder_type, lspg_state_type
+  >
+  : composeSteady<fom_system_type, decoder_type, lspg_state_type>
+{
+  using base_t = composeSteady<fom_system_type, decoder_type, lspg_state_type>;
+  using typename base_t::type;
+};
+
+
 // precond
 template<
   typename fom_system_type,

@@ -269,10 +269,10 @@ struct composeUnsteady<
 };
 
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // specialize for hyper-reduced lspg with pressio ops with provided
 // mapping from sample to stencil mesh.
 // currently only enabled for shared-mem data structures: eigen and pybind11
-// we know
 template<
   typename stepper_tag,
   typename fom_system_type,
@@ -289,37 +289,51 @@ struct composeUnsteady<
 {
   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
+  // currently only enable when fom types are eigen and pybind11 data structures
+  using fom_state_type = typename fom_system_type::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_array_pybind<fom_state_type>::value,
+   "Unsteady hyper-reduced LSPG with continuous-time API with explicit \
+mapping from stencil to sample mesh is currently only enabled for pressio4py.");
+
   using type =
     ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, sample_to_stencil_t, void>;
 };
+#endif
 
-// // TODO: enable this only for types for which hyp-red is supported behind scenes
-// // hyper-reduced lspg can also be enabled without passing the sample-to-stencil info,
-// // and currently this is just a alias for the default since we can handle hyp-red
-// // there if data types are trilinos
-// template<
-//   typename stepper_tag,
-//   typename fom_system_type,
-//   typename decoder_type,
-//   typename lspg_state_type
-//   >
-// struct composeUnsteady<
-//   ::pressio::rom::lspg::impl::HyperReduced,
-//   mpl::enable_if_t<
-//     ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
-//     >,
-//   stepper_tag, fom_system_type, decoder_type, lspg_state_type>
-//   : composeUnsteady<::pressio::rom::lspg::impl::Default,
-// 		     stepper_tag, fom_system_type, decoder_type, lspg_state_type>
-// {
-//   static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// hyper-reduced lspg is also supported without passing the sample-to-stencil info,
+// enable this only for types for which hyp-red is supported behind scenes,
+// which currently are Trilinos data types
+template<
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type
+  >
+struct composeUnsteady<
+  ::pressio::rom::lspg::impl::HyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type>
+{
+  static_assert(valid_stepper_tag_continuous_time_api<stepper_tag>::value,"");
 
-//   using type =
-//     ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
-//     stepper_tag, fom_system_type, lspg_state_type, decoder_type, void>;
-// };
+  using fom_state_type = typename fom_system_type::state_type;
+  static_assert
+  (::pressio::containers::predicates::is_vector_tpetra<fom_state_type>::value or
+   ::pressio::containers::predicates::is_vector_epetra<fom_state_type>::value or
+   ::pressio::containers::predicates::is_vector_tpetra_block<fom_state_type>::value,
+   "Unsteady hyper-reduced LSPG with continuous-time API with automatic \
+enforcement for hyp-red is currently only supported for Trilinos data types.");
 
+  using type =
+    ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, void, void>;
+};
+#endif
 
 
 ///////////////////////////////////////////////////////
@@ -327,7 +341,7 @@ struct composeUnsteady<
 ///////////////////////////////////////////////////////
 
 /***
-  default lspg pressio ops
+     default lspg
 ***/
 template<
   typename stepper_tag,
@@ -353,7 +367,38 @@ struct composeUnsteady<
 };
 
 /***
-  Preconditioned lspg pressio ops
+     hyper-reduced lspg
+     (for now this is just an alias of the default since
+     there is no major difference with the default case with discrete-time api
+     because the user is supposed to assemble all operators anyway)
+***/
+template<
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename ...Args
+  >
+struct composeUnsteady<
+  ::pressio::rom::lspg::impl::HyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    >,
+  stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...
+  >
+  : composeUnsteady<::pressio::rom::lspg::impl::Default,
+		     stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>
+{
+  using base_t = composeUnsteady
+    <::pressio::rom::lspg::impl::Default,
+      stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>;
+
+  using typename base_t::type;
+};
+
+
+/***
+    Preconditioned lspg
 ***/
 template<
   typename stepper_tag,
@@ -376,12 +421,11 @@ struct composeUnsteady<
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
-    stepper_tag, fom_system_type, lspg_state_type,
-    decoder_type, precond_type, Args...>;
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, precond_type,Args...>;
 };
 
 /***
-  masked lspg pressio ops
+    masked lspg
 ***/
 template<
   typename stepper_tag,
@@ -404,8 +448,7 @@ struct composeUnsteady<
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::MaskedProblemDiscreteTimeApi<
-    stepper_tag, fom_system_type, lspg_state_type,
-    decoder_type, masker_type, Args...>;
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, Args...>;
 };
 
 }}}}

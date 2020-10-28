@@ -58,18 +58,26 @@ class HyperReducedProblemContinuousTimeApi;
 
 namespace details{
 
+/* remember that hype-reduction does not necessarily need the sample_to_stencil.
+   For Trilinos data structures, we can handle states and residuals that
+   with different extents by default since we can use the underlying data maps.
+   For shared-mem FOM using, e.g., eigen, or for pressio4py, sample_to_stencil
+   is needed because we can use it to easily enforse the hyp-red ourselves.
+   SO sample_to_stencil can be void in the formar scenario.
+ */
+
+
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
   typename decoder_type,
-  typename sample_to_stencil_type,
   typename ud_ops_type
   >
 struct traits<
   ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type,
-    decoder_type, sample_to_stencil_type, ud_ops_type
+    decoder_type, void, ud_ops_type
     >
   >
 {
@@ -78,7 +86,6 @@ struct traits<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
-  using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_native_velocity_t	= typename common_types_t::fom_native_velocity_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
@@ -94,12 +101,72 @@ struct traits<
   static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
   using ud_ops_t = ud_ops_type;
 
-  using sample_to_stencil_t = sample_to_stencil_type;
+  using sample_to_stencil_t = void;
+  using sample_to_stencil_native_t = void;
+
+  using residual_policy_t =
+    ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
+    lspg_residual_t, fom_states_manager_t, ud_ops_t>;
+
+  using jacobian_policy_t =
+    ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
+    fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t>;
+
+  using aux_stepper_t =
+    typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+    stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
+    residual_policy_t, jacobian_policy_t>::type;
+
+  // primary stepper type
+  using stepper_t = ::pressio::ode::ImplicitStepper<
+    stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
+    aux_stepper_t, residual_policy_t, jacobian_policy_t>;
+};
+
+
+template <
+  typename stepper_tag,
+  typename fom_system_type,
+  typename lspg_state_type,
+  typename decoder_type,
+  typename sample_to_stencil_type,
+  typename ud_ops_type
+  >
+struct traits<
+  ::pressio::rom::lspg::impl::unsteady::HyperReducedProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type,
+    decoder_type, sample_to_stencil_type, ud_ops_type
+    >,
+  mpl::enable_if_t< !std::is_void<sample_to_stencil_type>::value >
+  >
+{
+  using common_types_t =
+    ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
+      stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
+
+  using fom_system_t		= typename common_types_t::fom_system_t;
+  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
+  using fom_native_velocity_t	= typename common_types_t::fom_native_velocity_t;
+  using fom_state_t		= typename common_types_t::fom_state_t;
+  using fom_velocity_t		= typename common_types_t::fom_velocity_t;
+  using lspg_state_t		= typename common_types_t::lspg_state_t;
+  using lspg_native_state_t	= typename common_types_t::lspg_native_state_t;
+  using lspg_residual_t		= typename common_types_t::lspg_residual_t;
+  using decoder_t		= typename common_types_t::decoder_t;
+  using decoder_jac_t		= typename common_types_t::decoder_jac_t;
+  using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
+  using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
+  using ud_ops_t = ud_ops_type;
+
   static_assert
-  (
-   ::pressio::containers::predicates::is_vector_wrapper<sample_to_stencil_type>::value,
-      "The indices set for hyper-reduction must be in pressio vector wrapper."
-  );
+  (::pressio::containers::predicates::is_vector_wrapper<sample_to_stencil_type>::value,
+   "The indices set for hyper-reduction must be in pressio vector wrapper.");
+
+  using sample_to_stencil_t = sample_to_stencil_type;
+  using sample_to_stencil_native_t =
+    typename ::pressio::containers::details::traits<sample_to_stencil_t>::wrapped_t;
 
   using residual_policy_t =
     ::pressio::rom::lspg::impl::unsteady::HypRedResidualPolicyContinuousTimeApi<

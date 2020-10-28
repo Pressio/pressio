@@ -54,11 +54,22 @@
 namespace pressio{ namespace rom{ namespace lspg{
 
 /*
-  unsteady, possible choices:
+  steady:
+  template<fom_type, decoder_t, romstate_t>
 
-  // this is used for shared-mem data structures where the indices are passed
+
+  unsteady continuous-time api:
+
+  // for trilinos types pwe can figure out the mapping automatically
+  template<stepper_tag, fom_type, decoder_t, romstate_t>
+
+  // for shared-mem data structures where the indices are passed
   // and pressio uses these to implement hyper-reduction
   template<stepper_tag, fom_type, decoder_t, romstate_t, sample_to_stencil_t>
+
+
+  unsteady discrete-time api:
+  template<stepper_tag, fom_type, decoder_t, romstate_t>
 */
 template<typename T1, typename ...Args>
 using composeHyperReducedProblem =
@@ -68,7 +79,10 @@ using composeHyperReducedProblem =
     ::pressio::rom::lspg::impl::HyperReduced, void, T1,
     typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
     >,
-  void
+  ::pressio::rom::lspg::impl::composeSteady<
+    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
+    >
   >::type;
 
 template<typename T1, typename ...Args>

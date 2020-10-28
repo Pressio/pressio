@@ -116,7 +116,7 @@ compatible with the fom state type detected from adapter class");
 		  fomRef, masker);
 }
 
-// create default unsteady (continuous-time api)
+// unsteady (continuous-time api)
 template<
   typename odetag,
   typename fom_system_type,

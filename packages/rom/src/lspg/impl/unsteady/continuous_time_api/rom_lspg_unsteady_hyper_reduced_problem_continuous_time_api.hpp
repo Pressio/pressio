@@ -73,17 +73,15 @@ public:
   using stepper_t		= typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
-  using sample_to_stencil_t     = typename traits::sample_to_stencil_t;
-  using sample_to_stencil_native_t =
-    typename ::pressio::containers::details::traits<sample_to_stencil_t>::wrapped_t;
+  using sample_to_stencil_t        = typename traits::sample_to_stencil_t;
+  using sample_to_stencil_native_t = typename traits::sample_to_stencil_native_t;
 
 private:
-  sample_to_stencil_t	sTosInfo_;
-
-  using At = FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = FomStatesMngrMixin<
-    At, void, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = HypRedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
+  using At    = FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt    = FomStatesMngrMixin<At, void, fom_state_t,
+				   fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct    = HypRedPoliciesMixin<Bt, void, residual_policy_t,
+				    jacobian_policy_t, sample_to_stencil_t>;
   using mem_t = StepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
@@ -106,23 +104,29 @@ public:
   HyperReducedProblemContinuousTimeApi & operator=(HyperReducedProblemContinuousTimeApi &&) = delete;
   ~HyperReducedProblemContinuousTimeApi() = default;
 
+  template<
+    typename _sample_to_stencil_t = sample_to_stencil_t,
+    ::pressio::mpl::enable_if_t<std::is_void<_sample_to_stencil_t>::value, int > = 0
+    >
+  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
+				       const decoder_t & decoder,
+				       const lspg_state_t & romStateIn,
+				       const fom_native_state_t fomNominalStateIn)
+    : members_(romStateIn, fomObj, decoder, fomNominalStateIn)
+  {}
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
-    typename _aux_stepper_t = aux_stepper_t,
-    ::pressio::mpl::enable_if_t<
-      _binding_sentinel and
-      std::is_void<_aux_stepper_t>::value,
-      int > = 0
+    ::pressio::mpl::enable_if_t<_binding_sentinel, int > = 0
     >
-  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObjPython,
+  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObjPy,
 				       const decoder_t & decoder,
 				       const lspg_native_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn,
 				       sample_to_stencil_native_t sTosInfo)
-    : sTosInfo_(sTosInfo),
-      members_(lspg_state_t(romStateIn), fomObjPython,
-	       decoder, fomNominalStateIn, sTosInfo_)
+    : members_(lspg_state_t(romStateIn), fomObjPy, decoder,
+	       fomNominalStateIn, sTosInfo)
   {}
 #endif
 

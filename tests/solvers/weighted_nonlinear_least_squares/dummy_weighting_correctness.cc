@@ -7,14 +7,14 @@ struct WeightingOperator
   using residual_type = vec_type;
   using jacobian_type = mat_type;
 
-  void operator()(const residual_type & operand, 
+  void operator()(const residual_type & operand,
                   residual_type & result) const
   {
     // fake the operation
-    result.data()->setConstant(3.);   
+    result.data()->setConstant(3.);
   }
 
-  void operator()(const jacobian_type & operand, 
+  void operator()(const jacobian_type & operand,
                   jacobian_type & result) const
   {
     // fake the operation
@@ -33,7 +33,7 @@ struct MySystem
   mutable std::size_t iterCountR_ = {};
   mutable std::size_t iterCountJ_ = {};
 
-  MySystem(std::string & checkStr) 
+  MySystem(std::string & checkStr)
     : checkStr_(checkStr){}
 
   ~MySystem(){}
@@ -65,7 +65,7 @@ struct MySystem
   void jacobian(const state_type& x, jacobian_type & jac) const
   {
     ++iterCountJ_;
-  
+
     for (auto i=0; i<jac.extent(0); ++i)
       for (auto j=0; j<jac.extent(1); ++j)
         jac(i,j) += 1.;
