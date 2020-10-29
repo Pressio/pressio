@@ -46,11 +46,38 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_COMMON_HPP_
+#define PRESSIO_ROM_COMMON_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+/*
+   NOTE that the order below matters!
+   The clean/logical order allows us to avoid ending up with a tangled system.
+   NOTE also that this header by itself means nothing and if you use
+   it as such, you need to know what you are doing.
+   This header is placed here to help the "public" includes
+   named "pressio_rom_bla.hpp" at the top level.
+   Users of pressio should NOT rely on this, that is why this is
+   placed here. Users should rely only on the top-level
+   "pressio_rom_{lspg,galerkin,wls}.hpp".
+*/
+
+// need forward declarations
+#include "rom_fwd.hpp"
+
+// all predicates
+#include "./predicates/rom_predicates.hpp"
+
+// all will_be_concepts (depend on predicates)
+#include "./will_be_concepts/rom_will_be_concepts.hpp"
+
+// decoder classes (depend on concepts)
+#include "./decoder/rom_decoders.hpp"
+
+// fom states management classes (depend on the decoder)
+#include "./fom_states_management/rom_manager_fom_states_static.hpp"
+#include "./fom_states_management/rom_reconstructor_fom_state.hpp"
+
+// decorators
+#include "./decorators/rom_decorators.hpp"
 
 #endif

@@ -46,11 +46,29 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_SRC_PREDICATES_HPP_
+#define PRESSIO_ROM_SRC_PREDICATES_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+#include "./typedefs/rom_has_dense_matrix_typedef.hpp"
+
+#include "./decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
+#include "./decoder/rom_has_const_get_reference_to_jacobian.hpp"
+#include "./decoder/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
+
+#include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_result_return_void.hpp"
+#include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_time_result_return_void.hpp"
+#include "./masking_methods/rom_has_const_create_apply_mask_result_method_accept_operand_return_result.hpp"
+
+#include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_time_result_return_void.hpp"
+#include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
+
+#include "./residual_methods/rom_has_const_create_residual_method_return_result.hpp"
+#include "./residual_methods/rom_has_const_residual_method_accept_state_result_return_void.hpp"
+#include "./apply_jacobian_methods/rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp"
+#include "./apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void.hpp"
+#include "./apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_result_return_void.hpp"
+
+#include "./apply_discrete_time_jacobian_methods/rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
+#include "./apply_discrete_time_jacobian_methods/rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
 
 #endif

@@ -10,8 +10,8 @@ set(INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 # Dependency structure
 # mpl/utils/containers/ops/qr/svd/optimizers/solvers/ode/rom
 #
-# the apps package is not a real dependency of rom if 
-# pressio needs to be used as a library because apps is 
+# the apps package is not a real dependency of rom if
+# pressio needs to be used as a library because apps is
 # only used for testing
 #
 # The dependency structure is reflected in the order below.
@@ -53,14 +53,14 @@ install(FILES
 # install the src code from individual packages
 ##################################################
 
-install(DIRECTORY mpl		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY utils 	    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY mpl		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY utils 	DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY containers	DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY ops         DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY apps 		    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY qr 		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY svd 		    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ops		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY apps 		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY qr 		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY svd 		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 install(DIRECTORY optimizers	DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY solvers 	  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY ode		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-install(DIRECTORY rom		      DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY solvers 	DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ode		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY rom		DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")

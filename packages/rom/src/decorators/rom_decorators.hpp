@@ -46,11 +46,12 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_SRC_DECORATORS_HPP_
+#define PRESSIO_ROM_SRC_DECORATORS_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+#include "rom_preconditioned_decorator_residual.hpp"
+#include "rom_preconditioned_decorator_jacobian.hpp"
+#include "rom_masked_residual_policy.hpp"
+#include "rom_masked_jacobian_policy.hpp"
 
 #endif

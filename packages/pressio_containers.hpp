@@ -141,6 +141,7 @@ headers are included in (and classes found) in the proper order.
 // others
 //-------------------------------------------
 #include "containers/src/predicates/containers_is_wrapper.hpp"
+#include "containers/src/predicates/containers_are_wrappers.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
 #endif

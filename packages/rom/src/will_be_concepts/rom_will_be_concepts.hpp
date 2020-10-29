@@ -46,11 +46,33 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_SRC_WILL_BE_CONCEPTS_HPP_
+#define PRESSIO_ROM_SRC_WILL_BE_CONCEPTS_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+// fom and rom states
+#include "./various/rom_fom_state.hpp"
+#include "./various/rom_rom_state.hpp"
+
+// decoder
+#include "./decoder/rom_admissible_decoder.hpp"
+#include "./decoder/rom_decoder_jacobian.hpp"
+
+// custom ops
+#include "./custom_ops/rom_custom_ops_for_linear_decoder.hpp"
+#include "./custom_ops/rom_custom_ops_for_fom_state_reconstructor.hpp"
+#include "./custom_ops/rom_custom_ops_galerkin_continuous_time.hpp"
+#include "./custom_ops/rom_custom_ops_lspg_continuous_time.hpp"
+#include "./custom_ops/rom_custom_ops_lspg_discrete_time.hpp"
+
+// masker and preconditioner
+#include "./various/rom_masker.hpp"
+#include "./various/rom_preconditioner.hpp"
+
+// fom system
+#include "./system/rom_steady_system.hpp"
+#include "./system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
+#include "./system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./system/rom_continuous_time_system.hpp"
 
 #endif

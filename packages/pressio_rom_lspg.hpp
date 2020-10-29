@@ -46,11 +46,37 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_LSPG_INCLUDE_HPP_
+#define PRESSIO_ROM_LSPG_INCLUDE_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+/*
+   this header includes everything needed for LSPG.
+   NOTE that the order below matters!
+   Includes are ordered in a logical way and this
+   allows us to avoid ending up with a tangled system.
+*/
+
+// need all of the dependent packages
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_optimizers.hpp"
+#include "pressio_solvers.hpp"
+#include "pressio_ode.hpp"
+
+// common classes for rom
+#include "rom/src/pressio_rom_common.hpp"
+
+// lspg classes
+#include "rom/src/lspg/impl/rom_lspg_problem_members.hpp"
+#include "rom/src/lspg/impl/steady/rom_compose_steady_lspg_impl.hpp"
+#include "rom/src/lspg/impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
+#include "rom/src/lspg/rom_default_lspg.hpp"
+#include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
+#include "rom/src/lspg/rom_masked_lspg.hpp"
+#include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
 
 #endif

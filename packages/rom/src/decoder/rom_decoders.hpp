@@ -46,11 +46,13 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_SRC_DECODERS_HPP_
+#define PRESSIO_ROM_SRC_DECODERS_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+#include "./rom_linear_decoder.hpp"
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "./rom_py_decoder.hpp"
+#endif
 
 #endif

@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 
 struct ValidApp{
   const int32_t numDof_ = 15;

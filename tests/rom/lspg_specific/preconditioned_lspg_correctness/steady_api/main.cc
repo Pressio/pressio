@@ -1,27 +1,25 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "../helpers.hpp"
-
-constexpr double dt = 0.5;
 
 struct MyFakeApp
 {
   int N_ = {};
   std::string & sentinel_;
-  mutable int counter_  ={};
-  mutable int counter1_ ={};
+  mutable int counter_ = {};
+  mutable int counter1_ = {};
 
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
-  using velocity_type = state_type;
+  using residual_type = state_type;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
   MyFakeApp(int N, std::string & sentinel)
     : N_(N), sentinel_(sentinel){}
 
-  velocity_type createVelocity() const{
+  residual_type createResidual() const{
     return state_type(N_);
   }
 
@@ -32,21 +30,19 @@ public:
 
   void applyJacobian(const state_type &,
   		     const dense_matrix_type & B,
-  		     scalar_type time,
   		     dense_matrix_type & A) const
   {
     ++counter1_;
-    if(counter1_==1) A.setConstant(1.);
-    if(counter1_==2) A.setConstant(2.);
+    if (counter1_==1) A.setConstant(1);
+    if (counter1_==2) A.setConstant(2);
   }
 
-  void velocity(const state_type & state,
-		const double & time,
-		velocity_type & f) const
+  void residual(const state_type & state,
+		residual_type & r) const
   {
     ++counter_;
-    if(counter_==1) f.setConstant(1.);
-    if(counter_==2) f.setConstant(2.);
+    if (counter_==1) r.setConstant(1);
+    if (counter_==2) r.setConstant(2);
   }
 };
 
@@ -75,48 +71,52 @@ struct MyFakeSolver
     ++callCounter_;
     Eigen::MatrixXd trueJ(fomSize_, romSize_);
 
-    std::cout << "Solver call " << callCounter_ << " " << std::endl;
-
-    sys.residual(state, R_);
-    sys.jacobian(state, J_);
-
-    std::cout << *state.data() << std::endl;
-    std::cout << *R_.data() << std::endl;
-    std::cout << *J_.data() << std::endl;
-
-    if (callCounter_==1)
+    for (auto k=0; k<2; ++k)
     {
-      Eigen::VectorXd trueR(fomSize_); trueR.setConstant(-dt*1.0+1.);
-      if (!trueR.isApprox(*R_.data())) checkString_ = "FAILED";
+      std::cout << "Solver call " << callCounter_ << " " << k << std::endl;
 
-      for (auto i=0; i<trueJ.rows(); ++i){
-      	trueJ(i,0) = static_cast<double>(i) + 1.-dt*1.;
-      	trueJ(i,1) = static_cast<double>(i) + 1.-dt*1.;
-      	trueJ(i,2) = static_cast<double>(i) + 1.-dt*1.;
+      sys.residual(state, R_);
+      sys.jacobian(state, J_);
+
+      std::cout << *state.data() << std::endl;
+      std::cout << *R_.data() << std::endl;
+      std::cout << *J_.data() << std::endl;
+
+      if (callCounter_==1 and k==0)
+      {
+      	Eigen::VectorXd trueR(fomSize_); trueR.setConstant(2.);
+      	if (!trueR.isApprox(*R_.data())) checkString_ = "FAILED";
+
+      	for (auto i=0; i<trueJ.rows(); ++i){
+      	  trueJ(i,0) = 1.+static_cast<double>(i);
+	  trueJ(i,1) = 1.+static_cast<double>(i);
+	  trueJ(i,2) = 1.+static_cast<double>(i);
+      	}
+      	if (!trueJ.isApprox(*J_.data())) checkString_ = "FAILED";
       }
-      if (!trueJ.isApprox(*J_.data())) checkString_ = "FAILED";
-    }
 
-    if (callCounter_==2)
-    {
-      Eigen::VectorXd trueR(fomSize_); trueR.setConstant(-dt*2.+1.);
-      if (!trueR.isApprox(*R_.data())) checkString_ = "FAILED";
+      if (callCounter_==1 and k==1)
+      {
+      	Eigen::VectorXd trueR(fomSize_); trueR.setConstant(3.);
+      	if (!trueR.isApprox(*R_.data())) checkString_ = "FAILED";
 
-      for (auto i=0; i<trueJ.rows(); ++i){
-      	trueJ(i,0) = static_cast<double>(i) + 1.-dt*2.;
-      	trueJ(i,1) = static_cast<double>(i) + 1.-dt*2.;
-      	trueJ(i,2) = static_cast<double>(i) + 1.-dt*2.;
+      	for (auto i=0; i<trueJ.rows(); ++i){
+      	  trueJ(i,0) = 2.+static_cast<double>(i);
+	  trueJ(i,1) = 2.+static_cast<double>(i);
+	  trueJ(i,2) = 2.+static_cast<double>(i);
+      	}
+      	if (!trueJ.isApprox(*J_.data())) checkString_ = "FAILED";
       }
-      if (!trueJ.isApprox(*J_.data())) checkString_ = "FAILED";
+
+      for (auto i=0; i<state.extent(0); ++i) state(i) += 1.;
     }
   }
 };
 
-
 int main(int argc, char *argv[])
 {
   /*  verify correctness of sequence of calls
-      for preconditioned lspg.
+      for steady preconditioned lspg.
       This test only checks that the preconditioner is called correctly.
    */
 
@@ -149,18 +149,18 @@ int main(int argc, char *argv[])
   // prec obj
   precond_t PrecObj;
 
-  using odetag = pressio::ode::implicitmethods::Euler;
-  // using problem_t  =
-  //   pressio::rom::lspg::composePreconditionedDefaultProblem<
-  //     ode_tag, fom_t, decoder_t, rom_state_t, precond_t>::type;
-  // problem_t problem(appObj, decoderObj, romState, refState, PrecObj);
-  auto problem = pressio::rom::lspg::createPreconditionedDefaultProblemUnsteady<odetag>(
+  // using lspg_problem_type
+  //   = typename pressio::rom::lspg::composePreconditionedDefaultProblem<
+  //     fom_t, decoder_t, rom_state_t, precond_t>::type;
+  // lspg_problem_type lspgProblem(appObj, decoderObj, romState, refState, PrecObj);
+  auto lspgProblem = pressio::rom::lspg::createPreconditionedDefaultProblemSteady(
     appObj, decoderObj, romState, refState, PrecObj);
+  using traits = ::pressio::rom::details::traits<decltype(lspgProblem)>;
+  static_assert( std::is_same<typename traits::ud_ops_t, void>::value, "");
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(fomSize, romSize, checkStr);
-  pressio::ode::advanceNSteps(problem.stepperRef(),
-			      romState, 0.0, dt, 2, solver);
+  solver.solve(lspgProblem.systemRef(), romState);
 
   std::cout << checkStr <<  std::endl;
   return 0;

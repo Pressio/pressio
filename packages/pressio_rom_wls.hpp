@@ -46,11 +46,44 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_WLS_HPP_
+#define PRESSIO_ROM_WLS_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+/*
+   this header includes everything needed for WLS.
+   NOTE that the order below matters!
+   Includes are ordered in a logical way and this
+   allows us to avoid ending up with a tangled system.
+*/
+
+// need all of the dependent packages
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_optimizers.hpp"
+#include "pressio_solvers.hpp"
+#include "pressio_ode.hpp"
+
+// common classes for rom
+#include "rom/src/pressio_rom_common.hpp"
+
+// wls classes
+#include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
+#include "rom/src/wls/rom_wls_types.hpp"
+#include "rom/src/wls/rom_wls_jacobian_updating_tag.hpp"
+#include "rom/src/wls/rom_wls_jacobians_container.hpp"
+#include "rom/src/wls/rom_wls_preconditioners.hpp"
+
+#include "rom/src/wls/predicates/rom_wls_is_legitimate_preconditioner_type.hpp"
+#include "rom/src/wls/predicates/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
+#include "rom/src/wls/time_schemes/rom_wls_implicit_euler.hpp"
+#include "rom/src/wls/time_schemes/rom_wls_bdf2.hpp"
+#include "rom/src/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
+
+#include "rom/src/wls/rom_wls_hessian_gradient_system_api.hpp"
+#include "rom/src/wls/rom_wls_hessian_and_gradient_sequential_policy.hpp"
 
 #endif

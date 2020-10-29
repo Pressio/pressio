@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "custom_decoder.hpp"
 
 constexpr double dt = 0.5;
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
   // using problem_t  = pressio::rom::lspg::composeDefaultProblem<
     // ode_tag, fom_t, decoder_t, rom_state_t, stepper_order, stepper_n_states>::type;
   // problem_t problem(appObj, decoderObj, romState, refState);
-  // 1=order of steppe, 2=tot # of states needed 
+  // 1=order of steppe, 2=tot # of states needed
   auto problem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
     appObj, decoderObj, romState, refState);
 

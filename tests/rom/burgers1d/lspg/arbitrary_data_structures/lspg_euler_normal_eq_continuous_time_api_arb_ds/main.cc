@@ -1,6 +1,6 @@
 
 #include "pressio_apps.hpp"
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "utils_eigen.hpp"
 
 namespace{

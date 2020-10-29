@@ -147,29 +147,6 @@ struct least_squares_weighting_operator<
   least_squares_weighting_operator_accepting_wrappers<T, r_t, j_t>::value or
   least_squares_weighting_operator_accepting_native<T, r_t, j_t>::value
   >
-
-  //   std::is_void<
-  //     decltype
-  //     (
-  //      std::declval<T const>()
-  //      (
-  // 	std::declval<r_t const &>(),
-  // 	std::declval<r_t &>()
-  // 	)
-  //      )
-  //     >::value
-  // and
-  //   std::is_void<
-  //     decltype
-  //     (
-  //      std::declval<T const>()
-  //      (
-  // 	std::declval<j_t const &>(),
-  // 	std::declval<j_t &>()
-  // 	)
-  //      )
-  //     >::value
-  //   >
   > : std::true_type{};
 
 

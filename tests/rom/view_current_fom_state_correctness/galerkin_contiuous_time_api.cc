@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 #include "custom_decoder.hpp"
 
 struct MyFakeApp
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
   // this is my reference state, zero for now
   native_state_t refState(fomSize);
   refState.setConstant(0);
-  
+
   // define ROM state
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
   // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
   //   ode_tag, fom_t, decoder_t, rom_state_t>::type;
   // problem_t galerkinProb(appObj, decoderObj, romState, refState);
-  auto galerkinProb = 
+  auto galerkinProb =
     pressio::rom::galerkin::createDefaultProblem<ode_tag>(appObj, decoderObj, romState, refState);
 
   Observer Obs(checkStr, galerkinProb.currentFomStateCRef());

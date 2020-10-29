@@ -103,7 +103,7 @@ public:
 	       residual_t & residual) const
   {
     preconditionable_policy::template compute<
-      stepper_tag>(currentState, prevStates, systemObj, 
+      stepper_tag>(currentState, prevStates, systemObj,
         time, dt, step, residual);
 
     const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
@@ -114,7 +114,7 @@ public:
   // steady case
   //-------------------------------
   template <
-    typename lspg_state_t, 
+    typename lspg_state_t,
     typename fom_t
   >
   void compute(const lspg_state_t & currentState,

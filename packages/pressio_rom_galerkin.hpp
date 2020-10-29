@@ -46,11 +46,32 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_HPP_
-#define PRESSIO_ROM_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_HPP_
+#define PRESSIO_ROM_GALERKIN_HPP_
 
-#include "pressio_rom_galerkin.hpp"
-#include "pressio_rom_lspg.hpp"
-#include "pressio_rom_wls.hpp"
+/*
+   this header includes everything needed for GALERKIN.
+   NOTE that the order below matters!
+   Includes are ordered in a logical way and this
+   allows us to avoid ending up with a tangled system.
+*/
+
+
+// need all of the dependent packages
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_optimizers.hpp"
+#include "pressio_solvers.hpp"
+#include "pressio_ode.hpp"
+
+// common classes for rom
+#include "rom/src/pressio_rom_common.hpp"
+
+// galerkin classes
+#include "rom/src/galerkin/rom_compose_and_create_galerkin.hpp"
 
 #endif

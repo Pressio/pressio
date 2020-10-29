@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 
 struct MyMasker
 {
@@ -207,15 +207,15 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   sc_t rNorm2 = {};
   sc_t rNorm3 = {};
 
-  rPol.compute<ode_tag>(romState, romAuxStates, fomObj, 
+  rPol.compute<ode_tag>(romState, romAuxStates, fomObj,
     0.0, 0.5, 1,residual);
   rNorm1 = residual.data()->norm();
 
-  rPolPrecond.compute<ode_tag>(romState,romAuxStates,fomObj, 
+  rPolPrecond.compute<ode_tag>(romState,romAuxStates,fomObj,
     0.0, 0.5, 1,residual);
   rNorm2 = residual.data()->norm();
 
-  rPolMasked.compute<ode_tag>(romState, romAuxStates, fomObj, 
+  rPolMasked.compute<ode_tag>(romState, romAuxStates, fomObj,
     0.0, 0.5, 1,residual);
   rNorm3 = residual.data()->norm();
 

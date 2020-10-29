@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 #include "custom_decoder.hpp"
 
 struct MyFakeApp
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
   //   ode_tag, fom_t, rom_state_t, rom_jacobian_t,
   //   decoder_t, stepper_order, stepper_n_states>::type;
   // problem_t Problem(appObj, decoderObj, romState, refState);
-  auto Problem = 
+  auto Problem =
     pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
   Observer Obs(checkStr, Problem.currentFomStateCRef());

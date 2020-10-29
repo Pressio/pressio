@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 
 struct MyCustomDecoder
 {
@@ -351,10 +351,10 @@ int main(int argc, char *argv[])
   // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
-  //   ode_tag, fom_t, decoder_t, rom_state_t, rom_jacobian_t, 
+  //   ode_tag, fom_t, decoder_t, rom_state_t, rom_jacobian_t,
   //   stepper_order, stepper_n_states>::type;
   // problem_t Problem(appObj, decoderObj, romState, refState);
-  auto Problem = 
+  auto Problem =
     pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
   auto & stepperObj = Problem.stepperRef();

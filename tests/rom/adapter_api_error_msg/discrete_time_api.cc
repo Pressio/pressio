@@ -1,5 +1,6 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
+#include "pressio_rom_lspg.hpp"
 
 struct ValidAppDiscreteTimeApi{
 
