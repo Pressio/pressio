@@ -8,8 +8,8 @@ TEST(containers_sharedmem_kokkos, stridedSubviewLayoutLeft)
 
   m_t A("A",5,5);
   double val = 0.0;
-  for (auto j=0; j<A.extent(1); ++j)
-    for (auto i=0; i<A.extent(0); ++i)
+  for (std::size_t j=0; j<A.extent(1); ++j)
+    for (std::size_t i=0; i<A.extent(0); ++i)
       A(i,j) = (val+=1.);
 
   /*
@@ -23,7 +23,7 @@ TEST(containers_sharedmem_kokkos, stridedSubviewLayoutLeft)
   Kokkos::LayoutStride lo(5, A.stride(0)+A.stride(1));
   Kokkos::View<double*,Kokkos::LayoutStride> diag(A.data(), lo);
 
-  for (auto i=0; i<diag.extent(0); ++i)
+  for (std::size_t i=0; i<diag.extent(0); ++i)
     std::cout << diag(i) << std::endl;
   ASSERT_EQ(diag(0), 1.);
   ASSERT_EQ(diag(1), 7.);
@@ -38,8 +38,8 @@ TEST(containers_sharedmem_kokkos, stridedSubviewLayoutRight)
   using m_t = Kokkos::View<double**, Kokkos::LayoutRight,  Kokkos::HostSpace>;
   m_t A("A",5,5);
   double val = 0.0;
-  for (auto j=0; j<A.extent(1); ++j)
-    for (auto i=0; i<A.extent(0); ++i)
+  for (std::size_t j=0; j<A.extent(1); ++j)
+    for (std::size_t i=0; i<A.extent(0); ++i)
       A(i,j) = (val+=1.);
 
   /*
@@ -53,7 +53,7 @@ TEST(containers_sharedmem_kokkos, stridedSubviewLayoutRight)
   Kokkos::LayoutStride lo(5, A.stride(0)+A.stride(1));
   Kokkos::View<double*,Kokkos::LayoutStride> diag(A.data(), lo);
 
-  for (auto i=0; i<diag.extent(0); ++i)
+  for (std::size_t i=0; i<diag.extent(0); ++i)
     std::cout << diag(i) << std::endl;
   ASSERT_EQ(diag(0), 1.);
   ASSERT_EQ(diag(1), 7.);
