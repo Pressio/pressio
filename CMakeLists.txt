@@ -113,7 +113,7 @@ message("")
 #=====================================================================
 if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
   enable_testing()
-  #add_subdirectory(unit_tests)
+  add_subdirectory(unit_tests)
 endif()
 
 #=====================================================================
