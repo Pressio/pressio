@@ -56,11 +56,14 @@ class ResidualJacobianOperators
 {
   using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
 
-  // r_,J_ are the actual main operators
   r_t r_;
+
+  // J_ is mutable because when we have the fused_res_jac api, to compute the
+  // residualNorm (which is a const method), we call
+  // residualAndJacobian without recomputing J_ but J_ still needs to be passed
   mutable j_t J_;
 
-  // this is used for residualNorm method so that we don't modify the real operator r_
+  // auxR_ is used for residualNorm method so that we don't modify the real operator r_
   // which must be the same once computeOperators is called.
   mutable r_t auxR_;
 
@@ -85,7 +88,10 @@ public:
     : r_( system.createResidual() ),
       J_( system.createJacobian() ),
       auxR_( system.createResidual() )
-  {}
+  {
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(J_);
+  }
 
 public:
   void resetForNewCall()	{ /* no op */ }

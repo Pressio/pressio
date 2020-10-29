@@ -77,12 +77,15 @@ public:
   HessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
     : g_( system.createGradient() ),
       H_( system.createHessian() )
-  {}
+  {
+    ::pressio::ops::set_zero(g_);
+    ::pressio::ops::set_zero(H_);
+  }
 
 public:
   void resetForNewCall()		{ /* no op */ }
   h_t & hessianRef()			{ return H_; }
-  g_t & gradientRef()		{ return g_; }
+  g_t & gradientRef()			{ return g_; }
   const h_t & hessianCRef() const	{ return H_; }
   const g_t & gradientCRef() const	{ return g_; }
 

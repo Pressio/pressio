@@ -100,7 +100,12 @@ public:
       H_(::pressio::ops::product<h_t>(pT, pnT,
 				      ::pressio::utils::constants<sc_t>::one(),
 				      J_))
-  {}
+  {
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(J_);
+    ::pressio::ops::set_zero(g_);
+    ::pressio::ops::set_zero(H_);
+  }
 
   template <
     typename system_t,

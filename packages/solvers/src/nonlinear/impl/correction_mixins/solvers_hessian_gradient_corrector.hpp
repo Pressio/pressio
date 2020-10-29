@@ -108,7 +108,6 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-// // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename system_t, typename lsT, typename ...Args>
   HessianGradientCorrector(const system_t & system,
 			   const state_wrapped_t & state,
@@ -119,7 +118,6 @@ public:
 			       std::forward<lsT>(solverIn),
 			       std::forward<Args>(args)...)
   {}
-// // #endif
 
   // copy constr and assign
   HessianGradientCorrector(HessianGradientCorrector const &) = default;

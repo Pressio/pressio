@@ -98,7 +98,9 @@ public:
                                   const state_t & state)
     : HGOpRJApi_(system, state),
       lmH_(HGOpRJApi_.hessianCRef())
-  {}
+  {
+    ::pressio::ops::set_zero(lmH_);
+  }
 
   template <
    typename system_t,
@@ -116,11 +118,13 @@ public:
           ArgsIn && ...args)
     : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
       lmH_(HGOpRJApi_.hessianCRef())
-  {}
+  {
+    ::pressio::ops::set_zero(lmH_);
+  }
 
 public:
-  h_t & hessianRef()     { return lmH_; }
-  g_t & gradientRef()    { return HGOpRJApi_.gradientRef(); }
+  h_t & hessianRef()		   { return lmH_; }
+  g_t & gradientRef()		   { return HGOpRJApi_.gradientRef(); }
   const h_t & hessianCRef() const  { return lmH_; }
   const g_t & gradientCRef() const { return HGOpRJApi_.gradientCRef(); }
 
@@ -202,7 +206,9 @@ public:
 				  const state_t & state)
     : HGOpHGApi_(system, state),
       lmH_(HGOpHGApi_.hessianCRef())
-  {}
+  {
+    ::pressio::ops::set_zero(lmH_);
+  }
 
 public:
   void resetForNewCall(){

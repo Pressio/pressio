@@ -73,6 +73,7 @@ template <
 struct ops_normal_equations_rj_api<
   T, sc_t, H_t, g_t, J_t, r_t,
   ::pressio::mpl::enable_if_t<
+
     // 1. need non-void product returning J^T J
     std::is_same<
       decltype
@@ -82,15 +83,16 @@ struct ops_normal_equations_rj_api<
         std::declval< ::pressio::transpose >(),
         std::declval< ::pressio::nontranspose >(),
         std::declval< sc_t>(),
-        std::declval< 
+        std::declval<
           typename containers::details::traits<J_t>::wrapped_t const & >(),
-        std::declval< 
+        std::declval<
           typename containers::details::traits<J_t>::wrapped_t const & >()
         )
        ),
       H_t
-      >::value 
+      >::value
     and
+
     // 2. need void product computing  J^T J
     std::is_void<
       decltype
@@ -108,6 +110,7 @@ struct ops_normal_equations_rj_api<
        )
       >::value
     and
+
     // 3. need void product computing J^T r
     std::is_void<
       decltype
@@ -124,6 +127,7 @@ struct ops_normal_equations_rj_api<
        )
       >::value
     and
+
     // 4. need norm2 method
     std::is_same<
       decltype

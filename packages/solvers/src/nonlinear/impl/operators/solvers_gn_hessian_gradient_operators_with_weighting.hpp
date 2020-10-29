@@ -110,7 +110,14 @@ public:
               ::pressio::utils::constants<sc_t>::one(),
               J_)),
       functorM_(&functorM)
-  {}
+  {
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(Mr_);
+    ::pressio::ops::set_zero(J_);
+    ::pressio::ops::set_zero(MJ_);
+    ::pressio::ops::set_zero(g_);
+    ::pressio::ops::set_zero(H_);
+  }
 
   template <
    typename system_t,
