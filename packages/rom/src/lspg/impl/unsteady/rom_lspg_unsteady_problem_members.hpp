@@ -1,6 +1,6 @@
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP__
-#define ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP__
+#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
@@ -354,4 +354,4 @@ struct StepperMixin<T, void, stepper_t> : T
 };
 
 }}}}}
-#endif
+#endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_
