@@ -63,6 +63,10 @@ struct MyLinearSolver
   {
     count_++;
     pressio::ops::fill(x, 1.);
+    std::cout << "A" << std::endl;
+    std::cout << *A.data() << std::endl;
+    std::cout << "b" << std::endl;
+    std::cout << *b.data() << std::endl;
 
     if (count_ == 1)
     {
