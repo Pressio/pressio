@@ -127,7 +127,7 @@ mpl::enable_if_t<
   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<lspg_matrix_type>::value or
    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  or ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value)
+  or ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
 #endif
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
