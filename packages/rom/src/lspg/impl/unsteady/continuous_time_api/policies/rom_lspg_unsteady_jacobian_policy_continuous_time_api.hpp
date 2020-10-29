@@ -191,8 +191,7 @@ private:
 
     const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
     const auto & basis = decoderObj_.get().jacobianCRef();
-    const auto & currFomState = fomStatesMngr_.get().currentFomStateCRef();
-    fomSystemObj.applyJacobian(*currFomState.data(), *basis.data(), t, *romJac.data());
+    fomSystemObj.applyJacobian(*currentFomState.data(), *basis.data(), t, *romJac.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

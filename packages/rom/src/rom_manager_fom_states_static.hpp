@@ -94,9 +94,9 @@ public:
   ManagerFomStatesStatic(const reconstuctor_type & fomStateReconstr,
 			 const fom_state_type & fomState,
 			 const _ud_ops_t & udOps)
-    : fomStateReconstrObj_(fomStateReconstr),
-      data_(fomState),
-      udOps_(udOps)
+    : udOps_(udOps),
+      fomStateReconstrObj_(fomStateReconstr),
+      data_(fomState)
   {
     this->resetContainersToZero();
   }

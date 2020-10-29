@@ -346,8 +346,8 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 0.0);
 
-  using ode_tag = pressio::ode::implicitmethods::Arbitrary;
   using rom_jacobian_t = pressio::containers::DenseMatrix<Eigen::MatrixXd>;
+  // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
   // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
   // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
   // using problem_t = pressio::rom::galerkin::composeDefaultProblem<

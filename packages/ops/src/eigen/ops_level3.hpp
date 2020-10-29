@@ -146,8 +146,8 @@ product(::pressio::transpose modeA,
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
 
-  auto & CE = *C.data();
   const auto & AE = *A.data();
+  auto & CE = *C.data();
   CE = beta * CE + alpha * AE.transpose() * AE;
 }
 

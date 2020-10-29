@@ -145,7 +145,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
   //R = y_n - y_nm1 - dt * R but we need to combine the correct entries
   assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<R.extent(0); ++i)
+  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
   {
     const auto yI = hypIndices[i];
     R[i] = cn*fomStateAt_n[yI] + cnm1*fomStateAt_nm1[yI] + cf*R[i];
@@ -225,14 +225,12 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
-  auto & y_nm1 = fomStatesMngr.fomStatePrevStepCRef();
-  auto & y_nm2 = fomStatesMngr.fomStatePrevPrevStepCRef();
+  // auto & y_nm1 = fomStatesMngr.fomStatePrevStepCRef();
+  // auto & y_nm2 = fomStatesMngr.fomStatePrevPrevStepCRef();
   // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  ::pressio::ops::update(R, cf, fomStateAt_n, cn, y_nm1, cnm1, y_nm2, cnm2);
+  ::pressio::ops::update(R, cf, fomStateAt_n, cn, fomStateAt_nm1, 
+    cnm1, fomStateAt_nm2, cnm2);
 }
-
-
-
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS

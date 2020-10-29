@@ -18,11 +18,13 @@ public:
     : Nst_(Nst), Nsm_(Nsm), Nrom_(Nrom){}
 
   velocity_type createVelocity() const{
-    return state_type(Nsm_);
+    state_type v(Nsm_); v.setZero();
+    return v;
   }
 
   dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
-    return dense_matrix_type(Nsm_, B.cols());
+    dense_matrix_type A(Nsm_, B.cols()); A.setZero();
+    return A;
   }
 
   void velocity(const state_type & state,

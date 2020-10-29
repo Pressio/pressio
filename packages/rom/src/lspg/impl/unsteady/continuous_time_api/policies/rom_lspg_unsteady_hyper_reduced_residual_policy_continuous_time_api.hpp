@@ -106,6 +106,7 @@ public:
 				    fomSystemObj, time, dt, timeStep);
   }
 
+private:
   template <
     typename stepper_tag,
     typename lspg_state_t,

@@ -112,6 +112,7 @@ public:
 				    time, dt, timeStep);
   }
 
+private:
   template <
     typename stepper_tag,
     typename lspg_state_t,
@@ -136,8 +137,7 @@ public:
 
     const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
     const auto & basis = decoderObj_.get().jacobianCRef();
-    const auto & currFomState = fomStatesMngr_.get().currentFomStateCRef();
-    fomSystemObj.applyJacobian(*currFomState.data(), *basis.data(), t, *romJac.data());
+    fomSystemObj.applyJacobian(*currentFomState.data(), *basis.data(), t, *romJac.data());
 
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
       stepper_tag>(romJac, dt, decoderJacobian_.get(), sTosInfo_.get());
