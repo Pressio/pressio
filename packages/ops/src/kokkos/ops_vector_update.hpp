@@ -88,7 +88,7 @@ update(T1 & v,	 const scalar_t & a,
 	  const T2 & v1, const scalar_t & b)
 {
   static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
-  KokkosBlas::axpby(b, *v1.data(), a, *v.data());
+  ::KokkosBlas::axpby(b, *v1.data(), a, *v.data());
 }
 
 template<typename T1, typename T2, typename scalar_t>
@@ -100,7 +100,7 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 {
   static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-  KokkosBlas::axpby(b, *v1.data(), zero, *v.data());
+  ::KokkosBlas::axpby(b, *v1.data(), zero, *v.data());
 }
 
 //----------------------------------------------------------------------

@@ -49,6 +49,10 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_
 #define OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_
 
+#include "Tpetra_idot.hpp"
+#include <KokkosBlas1_axpby.hpp>
+#include "KokkosBlas2_gemv.hpp"
+
 namespace pressio{ namespace ops{
 
 /*
@@ -99,7 +103,7 @@ product(::pressio::nontranspose mode,
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank2 = yView.getLocalViewDevice();
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 
 
@@ -135,7 +139,7 @@ product(::pressio::nontranspose mode,
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -208,7 +212,7 @@ product(::pressio::transpose mode,
   v_t ATx(y.extent(0));
   auto request = Tpetra::idot(*ATx.data(), A_mvv, x_vv);
   request->wait();
-  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
+  ::KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 }}//end namespace pressio::ops

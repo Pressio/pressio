@@ -69,7 +69,7 @@ set_zero(T & v)
 
   using value_t	      = typename ::pressio::containers::details::traits<T>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants<value_t>::zero();
-  KokkosBlas::fill(*v.data(), zero);
+  ::KokkosBlas::fill(*v.data(), zero);
 }
 
 }}//end namespace pressio::ops

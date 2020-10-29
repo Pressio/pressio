@@ -96,7 +96,7 @@ product(::pressio::transpose modeA,
 
   const char ctA = 'T';
   const char ctB = 'N';
-  KokkosBlas::gemm(&ctA, &ctB, alpha, *A.data(), *B.data(), beta, *C.data());
+  ::KokkosBlas::gemm(&ctA, &ctB, alpha, *A.data(), *B.data(), beta, *C.data());
 }
 
 /*----------------------------------------

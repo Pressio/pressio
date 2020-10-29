@@ -79,7 +79,7 @@ update(T1 & mv,
     (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
      "operands need to have same execution space" );
 
-  KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
+  ::KokkosBlas::axpby(b, *mv1.data(), a, *mv.data());
 }
 
 template<typename T1, typename T2, typename scalar_t>
@@ -104,7 +104,7 @@ update(T1 & mv,
      "operands need to have same execution space" );
 
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-  KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());
+  ::KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());
 }
 
 }}//end namespace pressio::ops

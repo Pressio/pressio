@@ -70,7 +70,7 @@ dot(const T1 & a,
      "dot: types must have matching execution space");
 
   assert(a.extent(0) == b.extent(0));
-  return KokkosBlas::dot(*a.data(), *b.data() );
+  return ::KokkosBlas::dot(*a.data(), *b.data() );
 }
 
 template <typename T1, typename T2>

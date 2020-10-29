@@ -90,7 +90,7 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -121,7 +121,7 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank2 = y.data()->getLocalViewDevice();
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 }//end namespace pressio::ops::impl
 
@@ -204,7 +204,7 @@ product(::pressio::transpose mode,
   v_t ATx(y.extent(0));
   auto request = Tpetra::idot(*ATx.data(), *A.data(), *x.data());
   request->wait();
-  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
+  ::KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 // y = sharedmem vec not kokkos

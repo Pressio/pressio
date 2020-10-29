@@ -92,7 +92,7 @@ product(::pressio::nontranspose mode,
   assert( y.extent(0) == A.extent(0) );
   assert( A.extent(1) == x.extent(0) );
   const char ctA = 'N';
-  KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
+  ::KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
 
 //-------------------------------
@@ -130,7 +130,7 @@ product(::pressio::transpose mode,
   assert( y.extent(0) == A.extent(1) );
   assert( A.extent(0) == x.extent(0) );
   const char ctA = 'T';
-  KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
+  ::KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
 
 }}//end namespace pressio::ops

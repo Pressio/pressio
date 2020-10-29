@@ -70,7 +70,7 @@ fill(T & o,
     (!std::is_const<T>::value,
      "ops:filll: cannot fill a const-qualified wrapper of a Kokkos view");
 
-  KokkosBlas::fill( *o.data(), value );
+  ::KokkosBlas::fill( *o.data(), value );
 }
 
 }}//end namespace pressio::ops

@@ -49,8 +49,6 @@
 #ifndef OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
 #define OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
 
-#include<KokkosBlas1_axpby.hpp>
-
 namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------

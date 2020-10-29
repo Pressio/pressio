@@ -71,7 +71,7 @@ deep_copy(T1 & dest, const T2 & src)
     (!std::is_const<T1>::value,
      "ops:deep_copy: cannot copy to a const-qualified wrapper of a Kokkos view");
 
-  Kokkos::deep_copy(*dest.data(), *src.data());
+  ::Kokkos::deep_copy(*dest.data(), *src.data());
 }
 
 }}//end namespace pressio::ops

@@ -81,7 +81,7 @@ scale(T & o,
     (!std::is_const<T>::value,
      "ops:scale: cannot scale a const-qualified wrapper of a Kokkos view");
 
-  KokkosBlas::scal( *o.data(), value, *o.data() );
+  ::KokkosBlas::scal( *o.data(), value, *o.data() );
 }
 
 }}//end namespace pressio::ops
