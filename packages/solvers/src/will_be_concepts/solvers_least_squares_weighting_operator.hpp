@@ -57,12 +57,14 @@ template <
   typename j_t,
   typename enable = void
 >
-struct least_squares_weighting_operator : std::false_type{};
+struct least_squares_weighting_operator_accepting_wrappers : std::false_type{};
 
 template <typename T, typename r_t, typename j_t>
-struct least_squares_weighting_operator<
+struct least_squares_weighting_operator_accepting_wrappers<
   T, r_t, j_t,
   ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::are_wrappers<r_t,j_t>::value
+    and
     std::is_void<
       decltype
       (
@@ -73,7 +75,7 @@ struct least_squares_weighting_operator<
 	)
        )
       >::value
-  and
+    and
     std::is_void<
       decltype
       (
@@ -86,6 +88,90 @@ struct least_squares_weighting_operator<
       >::value
     >
   > : std::true_type{};
+
+
+
+template <
+  typename T,
+  typename r_t,
+  typename j_t,
+  typename enable = void
+>
+struct least_squares_weighting_operator_accepting_native : std::false_type{};
+
+template <typename T, typename r_t, typename j_t>
+struct least_squares_weighting_operator_accepting_native<
+  T, r_t, j_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::are_wrappers<r_t,j_t>::value
+    and
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<typename ::pressio::containers::details::traits<r_t>::wrapped_t const &>(),
+	std::declval<typename ::pressio::containers::details::traits<r_t>::wrapped_t &>()
+	)
+       )
+      >::value
+    and
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>()
+       (
+	std::declval<typename ::pressio::containers::details::traits<j_t>::wrapped_t const &>(),
+	std::declval<typename ::pressio::containers::details::traits<j_t>::wrapped_t &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+
+
+template <
+  typename T,
+  typename r_t,
+  typename j_t,
+  typename enable = void
+>
+struct least_squares_weighting_operator : std::false_type{};
+
+// specialize for when the operator takes wrappers
+template <typename T, typename r_t, typename j_t>
+struct least_squares_weighting_operator<
+  T, r_t, j_t,
+  ::pressio::mpl::enable_if_t<
+  least_squares_weighting_operator_accepting_wrappers<T, r_t, j_t>::value or
+  least_squares_weighting_operator_accepting_native<T, r_t, j_t>::value
+  >
+
+  //   std::is_void<
+  //     decltype
+  //     (
+  //      std::declval<T const>()
+  //      (
+  // 	std::declval<r_t const &>(),
+  // 	std::declval<r_t &>()
+  // 	)
+  //      )
+  //     >::value
+  // and
+  //   std::is_void<
+  //     decltype
+  //     (
+  //      std::declval<T const>()
+  //      (
+  // 	std::declval<j_t const &>(),
+  // 	std::declval<j_t &>()
+  // 	)
+  //      )
+  //     >::value
+  //   >
+  > : std::true_type{};
+
 
 }}} // namespace pressio::solvers::concepts
 #endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

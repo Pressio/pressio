@@ -1,25 +1,25 @@
 
-#include "pressio_solvers.hpp"
 #include "common.hpp"
+
 
 struct WeightingOperator
 {
-  using residual_type = vec_type;
-  using jacobian_type = mat_type;
-
-  void operator()(const residual_type & operand,
-                  residual_type & result) const
-  {
-    // fake the operation
+#ifdef USE_WRAPPERS
+  void operator()(const vec_type & operand, vec_type & result) const{
     result.data()->setConstant(3.);
   }
-
-  void operator()(const jacobian_type & operand,
-                  jacobian_type & result) const
-  {
-    // fake the operation
+  void operator()(const mat_type & operand, mat_type & result) const{
     result.data()->setConstant(2.2);
   }
+
+#elif USE_NATIVE
+  void operator()(const eig_vec & operand, eig_vec & result) const{
+    result.setConstant(3.);
+  }
+  void operator()(const eig_mat & operand, eig_mat & result) const{
+    result.setConstant(2.2);
+  }
+#endif
 };
 
 struct MySystem

@@ -51,6 +51,28 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
+template <typename r_t, typename j_t, typename T, typename operand_t, typename result_t>
+mpl::enable_if_t<
+  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
+  >
+_applyWeightingHelper(const T & functorM,
+		      const operand_t & operand,
+		      result_t & result)
+{
+  functorM(operand, result);
+};
+
+template <typename r_t, typename j_t, typename T, typename operand_t, typename result_t>
+mpl::enable_if_t<
+  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
+  >
+_applyWeightingHelper(const T & functorM,
+		      const operand_t & operand,
+		      result_t & result)
+{
+  functorM(*operand.data(), *result.data());
+};
+
 
 template <
   typename h_t,
@@ -177,13 +199,13 @@ public:
     // compute r from system object
     system.residual(state, r_);
     // apply M
-    (*functorM_)(r_, Mr_);
+    _applyWeightingHelper<r_t,j_t>(*functorM_, r_, Mr_);
 
     residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
-      (*functorM_)(J_, MJ_);
+      _applyWeightingHelper<r_t,j_t>(*functorM_, J_, MJ_);
       computeHessian();
     }
 
@@ -201,11 +223,11 @@ public:
   {
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
-    (*functorM_)(r_, Mr_);
+    _applyWeightingHelper<r_t,j_t>(*functorM_, r_, Mr_);
     residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
-      (*functorM_)(J_, MJ_);
+      _applyWeightingHelper<r_t,j_t>(*functorM_, J_, MJ_);
       computeHessian();
     }
 
@@ -221,7 +243,7 @@ public:
 	       sc_t & residualNorm) const
   {
     system.residual(state, r_);
-    (*functorM_)(r_, Mr_);
+    _applyWeightingHelper<r_t,j_t>(*functorM_, r_, Mr_);
     residualNorm = this->computeNorm();
   }
 
@@ -235,7 +257,7 @@ public:
   {
     // here we query system to recompute r_ only (that is why we pass false)
     system.residualAndJacobian(state, r_, J_, false);
-    (*functorM_)(r_, Mr_);
+    _applyWeightingHelper<r_t,j_t>(*functorM_, r_, Mr_);
     residualNorm = this->computeNorm();
   }
 
