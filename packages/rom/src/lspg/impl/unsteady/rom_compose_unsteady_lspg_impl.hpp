@@ -50,7 +50,6 @@
 #define ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
 
 #include "../rom_lspg_problem_tags.hpp"
-#include "./rom_lspg_unsteady_problem_members.hpp"
 
 //----------------------------------------
 // include for continuous_time_api

@@ -62,6 +62,7 @@ public:
   using fom_native_state_t	= typename traits::fom_native_state_t;
   using fom_state_t		= typename traits::fom_state_t;
   using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
@@ -72,24 +73,22 @@ public:
   using system_t		= typename traits::system_t;
 
 private:
-  fom_state_t		fomNominalState_;
-  fom_state_reconstr_t	fomStateReconstructor_;
-  fom_states_manager_t	fomStatesMngr_;
-  residual_policy_t	residualPolicy_;
-  jacobian_policy_t	jacobianPolicy_;
-  system_t		systemObj_;
+  using At = FomObjMixin<fom_system_t>;
+  using Bt = FomStatesMngrMixin<At, void, fom_state_t,
+				fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct = MaskedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
+  using mem_t = SystemMixin<Ct, system_t>;
+  mem_t members_;
 
 public:
-  system_t & systemRef(){
-    return systemObj_;
-  }
+  system_t & systemRef(){ return members_.systemObj_; }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
-    return fomStateReconstructor_;
+    return members_.fomStateReconstructor_;
   }
 
   const fom_native_state_t & currentFomStateCRef() const{
-    return *fomStatesMngr_.currentFomStateCRef().data();
+    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
   }
 
 public:
@@ -100,23 +99,14 @@ public:
   MaskedProblemSteady & operator=(MaskedProblemSteady &&) = delete;
   ~MaskedProblemSteady() = default;
 
-  MaskedProblemSteady(const fom_system_t & fomSystemObj,
+  MaskedProblemSteady(const fom_system_t & fomObj,
 		      const decoder_t	& decoder,
 		      const lspg_state_t & romStateIn,
 		      const fom_native_state_t & fomNominalStateNative,
 		      const masker_t & maskerObj)
-    : fomNominalState_(fomNominalStateNative),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      residualPolicy_(maskerObj, fomSystemObj, fomStatesMngr_),
-      jacobianPolicy_(maskerObj, fomSystemObj, fomStatesMngr_, decoder),
-      systemObj_(fomSystemObj, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consistent with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
-
+    : members_(romStateIn, fomObj, decoder,
+	       fomNominalStateNative, maskerObj)
+  {}
 };
 
 }}}}}

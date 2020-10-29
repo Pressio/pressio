@@ -80,6 +80,7 @@ struct traits<
   using fom_state_t		= typename common_traits::fom_state_t;
   using fom_residual_t		= typename common_traits::fom_residual_t;
   using lspg_state_t		= typename common_traits::lspg_state_t;
+  using lspg_native_state_t	= typename common_traits::lspg_native_state_t;
   using lspg_residual_t		= typename common_traits::lspg_residual_t;
   using decoder_t		= typename common_traits::decoder_t;
   using decoder_jac_t		= typename common_traits::decoder_jac_t;

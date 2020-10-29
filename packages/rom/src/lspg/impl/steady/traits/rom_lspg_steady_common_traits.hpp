@@ -71,7 +71,9 @@ struct CommonTraits
   using fom_residual_t	= ::pressio::containers::Vector<fom_native_residual_t>;
 
   // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
+  using lspg_state_t	    = lspg_state_type;
+  using lspg_native_state_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   // for LSPG, the rom residual type = containers::wrapper of application rhs
   using lspg_residual_t		= fom_residual_t;

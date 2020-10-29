@@ -49,8 +49,6 @@
 #ifndef ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
 #define ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
 
-#include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{
 
 /*

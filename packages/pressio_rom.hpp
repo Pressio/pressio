@@ -127,6 +127,9 @@
 //-----------------
 // LSPG
 //-----------------
+#include "rom/src/lspg/impl/rom_lspg_problem_members.hpp"
+#include "rom/src/lspg/impl/steady/rom_compose_steady_lspg_impl.hpp"
+#include "rom/src/lspg/impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
 #include "rom/src/lspg/rom_default_lspg.hpp"
 #include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
 #include "rom/src/lspg/rom_masked_lspg.hpp"

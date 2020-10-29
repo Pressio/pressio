@@ -51,34 +51,34 @@
 
 namespace pressio{ namespace rom{
 
-/* these are here just to make it easier for the users
-   so that they pass a rom problem and don't need to
-   worry about knowing that they need to get the stepper
-   and pass that to the ode integrators*/
+// /* these are here just to make it easier for the users
+//    so that they pass a rom problem and don't need to
+//    worry about knowing that they need to get the stepper
+//    and pass that to the ode integrators*/
 
-template<typename rom_problem_type, typename ...Args>
-void advanceNSteps(rom_problem_type & problem,
-		   Args && ...args)
-{
-  ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
+// template<typename rom_problem_type, typename ...Args>
+// void advanceNSteps(rom_problem_type & problem,
+// 		   Args && ...args)
+// {
+//   ::pressio::ode::advanceNSteps
+//     (problem.stepperRef(), std::forward<Args>(args)...);
+// }
 
-template<typename rom_problem_type, typename ...Args>
-void advanceToTargetTime(rom_problem_type & problem,
-			 Args && ...args)
-{
-  ::pressio::ode::advanceToTargetTime
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
+// template<typename rom_problem_type, typename ...Args>
+// void advanceToTargetTime(rom_problem_type & problem,
+// 			 Args && ...args)
+// {
+//   ::pressio::ode::advanceToTargetTime
+//     (problem.stepperRef(), std::forward<Args>(args)...);
+// }
 
-template<typename rom_problem_type, typename ...Args>
-void advanceToTargetTimeWithTimeStepRecovery(rom_problem_type & problem,
-					     Args && ...args)
-{
-  ::pressio::ode::advanceToTargetTime
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
+// template<typename rom_problem_type, typename ...Args>
+// void advanceToTargetTimeWithTimeStepRecovery(rom_problem_type & problem,
+// 					     Args && ...args)
+// {
+//   ::pressio::ode::advanceToTargetTime
+//     (problem.stepperRef(), std::forward<Args>(args)...);
+// }
 
 }}//end namespace pressio::rom
 #endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_

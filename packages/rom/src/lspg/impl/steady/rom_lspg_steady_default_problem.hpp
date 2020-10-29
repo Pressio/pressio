@@ -51,13 +51,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template<bool forPy, typename T> struct _systemMemberType;
-template<typename T> struct _systemMemberType<true, T> {
-  using type = T; };
-template<typename T> struct _systemMemberType<false, T>{
-  using type = ::pressio::utils::impl::empty;};
-
-
 template <typename ...Args>
 class DefaultProblemSteady
 {
@@ -69,6 +62,7 @@ public:
   using fom_native_state_t	= typename traits::fom_native_state_t;
   using fom_state_t		= typename traits::fom_state_t;
   using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using decoder_t		= typename traits::decoder_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
@@ -77,36 +71,24 @@ public:
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using system_t		= typename traits::system_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using lspg_native_state_t =
-    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
 private:
-  // when dealing with pressio4py, the fom_system_t is a C++ class in pressio4py
-  // that wraps the actual FOM python object. to construct this ROM problem,
-  // the Python code passes the python FOM object NOT a C++ object instantiated
-  // from fom_system_t, see constructor at the end for pressio4py.
-  // Therefore, ONLY when we deal with pressio4py, we make this problem store
-  // an object of the fom_system_t.
-  typename _systemMemberType<binding_sentinel, fom_system_t>::type fomObj_;
-
-  fom_state_t		fomNominalState_;
-  fom_state_reconstr_t	fomStateReconstructor_;
-  fom_states_manager_t	fomStatesMngr_;
-  residual_policy_t	residualPolicy_;
-  jacobian_policy_t	jacobianPolicy_;
-  system_t		systemObj_;
+  using At = FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt = FomStatesMngrMixin<At, void, fom_state_t,
+				fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct = DefaultPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
+  using mem_t = SystemMixin<Ct, system_t>;
+  mem_t members_;
 
 public:
-  system_t & systemRef(){
-    return systemObj_;
-  }
+  system_t & systemRef(){ return members_.systemObj_; }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
-    return fomStateReconstructor_;
+    return members_.fomStateReconstructor_;
   }
 
   const fom_native_state_t & currentFomStateCRef() const{
-    return *fomStatesMngr_.currentFomStateCRef().data();
+    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
   }
 
 public:
@@ -124,18 +106,9 @@ public:
   DefaultProblemSteady(const fom_system_t & fomObj,
 		       const decoder_t	& decoder,
 		       const lspg_state_t & romStateIn,
-		       const fom_native_state_t & fomNominalNative)
-    : fomNominalState_(fomNominalNative),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-      residualPolicy_(fomStatesMngr_),
-      jacobianPolicy_(fomStatesMngr_, decoder),
-      systemObj_(fomObj, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
+		       const fom_native_state_t & fomNominalStateNative)
+    : members_(romStateIn, fomObj, decoder, fomNominalStateNative)
+  {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
@@ -145,19 +118,9 @@ public:
   DefaultProblemSteady(pybind11::object fomObjPython,
 		       const decoder_t & decoder,
 		       const lspg_native_state_t & romStateIn,
-		       const fom_native_state_t fomNominalNative)
-  : fomObj_(fomObjPython),
-    fomNominalState_(fomNominalNative),
-    fomStateReconstructor_(fomNominalState_, decoder),
-    fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-    residualPolicy_(fomStatesMngr_),
-    jacobianPolicy_(fomStatesMngr_, decoder),
-    systemObj_(fomObj_, residualPolicy_, jacobianPolicy_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(lspg_state_t(romStateIn));
-  }
+		       const fom_native_state_t fomNominalStateNative)
+  : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateNative)
+  {}
 #endif
 };
 

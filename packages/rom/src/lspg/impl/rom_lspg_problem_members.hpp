@@ -1,8 +1,55 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+// rom_lspg_problem_members.hpp
+//                     		  Pressio
+//                             Copyright 2019
+//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
 
-#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_
-#define ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_PROBLEM_MEMBERS_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
 template<typename fom_system_t, bool isbinding=false>
 struct FomObjMixin;
@@ -70,7 +117,8 @@ struct FomStatesMngrMixin : T
   ~FomStatesMngrMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename _ops_t = ops_t,
+    typename T1, typename T2, typename T3, typename T4,
+    typename _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   FomStatesMngrMixin(const T1 & fomObj,
@@ -88,7 +136,8 @@ struct FomStatesMngrMixin : T
   }
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename _ops_t = ops_t,
+    typename T1, typename T2, typename T3, typename T4,
+    typename _ops_t = ops_t,
     mpl::enable_if_t<!std::is_void<_ops_t>::value, int > = 0
     >
   FomStatesMngrMixin(const T1 & fomObj,
@@ -113,10 +162,11 @@ struct FomStatesMngrMixin : T
 template <
   typename T,
   bool def, bool masked, bool prec, bool hypred,
-  typename ... Args //ops_t, typename r_pol_t, typename j_pol_t
+  typename ... Args
   >
 struct PoliciesMixin;
 
+// specialize for default
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
 struct PoliciesMixin<
   T, true, false, false, false, ops_t, r_pol_t, j_pol_t
@@ -255,7 +305,7 @@ struct PoliciesMixin<
   {}
 };
 
-// specialize for hyp-red with stencil-to-sample mapping
+// specialize for hyp-red with nonvoid stencil-to-sample mapping
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
 struct PoliciesMixin<
   T, false, false, false, true, ops_t, r_pol_t, j_pol_t, sTos_t
@@ -289,7 +339,7 @@ struct PoliciesMixin<
   {}
 };
 
-
+// aliases to make things easier
 template <typename T, typename ...Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;
 
@@ -305,6 +355,7 @@ using HypRedPoliciesMixin = PoliciesMixin<T, false, false, false, true, Args...>
 
 
 //---------------------------------------------------
+// stepper mixin
 //---------------------------------------------------
 // aux_stepper_t is valid
 template <typename T, typename aux_stepper_t, typename stepper_t>
@@ -353,5 +404,28 @@ struct StepperMixin<T, void, stepper_t> : T
   {}
 };
 
-}}}}}
+
+//---------------------------------------------------
+// system mixin (used for steady LSPG)
+//---------------------------------------------------
+template <typename T, typename system_t>
+struct SystemMixin : T
+{
+  system_t systemObj_;
+
+  SystemMixin() = delete;
+  SystemMixin(const SystemMixin &) = default;
+  SystemMixin & operator=(const SystemMixin &) = delete;
+  SystemMixin(SystemMixin &&) = default;
+  SystemMixin & operator=(SystemMixin &&) = delete;
+  ~SystemMixin() = default;
+
+  template<typename...Args>
+  SystemMixin(Args && ...args)
+    : T(std::forward<Args>(args)...),
+      systemObj_(T::fomCRef(), T::residualPolicy_, T::jacobianPolicy_)
+  {}
+};
+
+}}}}
 #endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_LSPG_UNSTEADY_PROBLEM_MEMBERS_HPP_

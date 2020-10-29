@@ -49,9 +49,6 @@
 #ifndef ROM_LSPG_ROM_PRECONDITIONED_DEFAULT_LSPG_HPP_
 #define ROM_LSPG_ROM_PRECONDITIONED_DEFAULT_LSPG_HPP_
 
-#include "./impl/steady/rom_compose_steady_lspg_impl.hpp"
-#include "./impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{
 
 /*
