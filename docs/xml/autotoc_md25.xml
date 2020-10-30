@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
-  <compounddef id="autotoc_md25" kind="page">
-    <compoundname>autotoc_md25</compoundname>
-    <title>Tutorials</title>
-    <detaileddescription>
-<para><bold>Tutorials should explain specific functionalities.</bold></para><para>Here we present a set of tutorials to cover some of ... </para>    </detaileddescription>
-  </compounddef>
-</doxygen>
