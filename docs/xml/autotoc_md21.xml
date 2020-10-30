@@ -2,10 +2,8 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="autotoc_md21" kind="page">
     <compoundname>autotoc_md21</compoundname>
-    <title>Hyperreduction example for Tpetra</title>
+    <title>Hyperreduction Example for Eigen</title>
     <detaileddescription>
-<para><itemizedlist>
-<listitem></listitem></itemizedlist>
-</para>    </detaileddescription>
+    </detaileddescription>
   </compounddef>
 </doxygen>
