@@ -104,11 +104,11 @@ public:
 
   sc_t & operator()(size_t i){
     assert(i < this->extent(0));
-    return data_(i);
+    return data_[i];
   };
   sc_t const & operator()(size_t i) const{
     assert(i < this->extent(0));
-    return data_(i);
+    return data_[i];
   };
 
   [[deprecated("Use operator() instead.")]] 

@@ -82,6 +82,13 @@ public:
     return data_[i];
   }
 
+  value_type & operator[](size_type i){
+    return data_[i];
+  }
+  value_type const & operator[](size_type i) const{
+    return data_[i];
+  }
+
   data_type * data(){
     return &data_;
   }
