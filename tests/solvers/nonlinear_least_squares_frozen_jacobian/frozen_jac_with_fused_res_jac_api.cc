@@ -43,12 +43,9 @@ public:
   {
     ++iterCountR_;
     for (auto i=0; i<R.extent(0); ++i)
-      R_[i] = R[i] + 1.;
+      R_(i) = R(i) + 1.;
 
     pressio::ops::deep_copy(R, R_);
-    // if (normKind == pressio::Norm::L2)
-    //   resNorm = R_.data()->norm();
-
     if (updateJacobian)
     {
       ++iterCountJ_;
@@ -63,14 +60,6 @@ public:
       }
     }
   }
-
-  // void residualNorm(const state_type &, 
-  //                   pressio::Norm normKind, 
-  //                   scalar_type & resNorm) const
-  // {
-  //   if (normKind == pressio::Norm::L2)
-  //     resNorm = R_.data()->norm();
-  // }
 };
 
 int main()

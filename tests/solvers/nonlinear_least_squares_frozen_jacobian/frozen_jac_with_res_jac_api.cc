@@ -38,10 +38,7 @@ struct MySystem
     ++iterCountR_;
 
     for (auto i=0; i<R.extent(0); ++i)
-      R[i] += 1.;
-
-    // if (normKind == pressio::Norm::L2)
-    //   normResidual = R.data()->norm();
+      R(i) += 1.;
   }
 
   void jacobian(const state_type& x, jacobian_type & jac) const

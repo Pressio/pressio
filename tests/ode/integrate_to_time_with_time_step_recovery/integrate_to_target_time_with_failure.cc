@@ -21,7 +21,7 @@ struct MyFakeStepper
     if (step==5 and (dt==0.1 or dt==0.05))
       throw pressio::eh::time_step_failure();
 
-    for (int i=0; i<odeState.extent(0); i++) odeState[i] += dt;
+    for (int i=0; i<odeState.extent(0); i++) odeState(i) += dt;
   }
 };
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   using ode_state_t = pressio::containers::Vector<vec_t>;
 
   ode_state_t y(3);
-  y[0] = 1.0; y[1] = 2.0; y[2] = 3.0;
+  y(0) = 1.0; y(1) = 2.0; y(2) = 3.0;
 
   MyFakeStepper<ode_state_t> stepper;
   MyFakeSolver solver;
@@ -61,40 +61,40 @@ int main(int argc, char *argv[])
 		      const ode_state_t & y)
 		   {
 		     if (step==1){
-		       if( std::abs(y[0]-1.1) > 1e-10 or
-			   std::abs(y[1]-2.1) > 1e-10 or
-			   std::abs(y[2]-3.1) > 1e-10)
+		       if( std::abs(y(0)-1.1) > 1e-10 or
+			   std::abs(y(1)-2.1) > 1e-10 or
+			   std::abs(y(2)-3.1) > 1e-10)
 			 checkStr = "FAILED";
 
 		       if (std::abs(time-0.1) > 1e-10) checkStr="FAILED";
 		     }
 		     if (step==3){
-		       if( std::abs(y[0]-1.25) > 1e-10 or
-			   std::abs(y[1]-2.25) > 1e-10 or
-			   std::abs(y[2]-3.25) > 1e-10)
+		       if( std::abs(y(0)-1.25) > 1e-10 or
+			   std::abs(y(1)-2.25) > 1e-10 or
+			   std::abs(y(2)-3.25) > 1e-10)
 			 checkStr = "FAILED";
 
 		       if (std::abs(time-0.25) > 1e-10) checkStr="FAILED";
 		     }
 		     if (step==5){
-		       if( std::abs(y[0]-1.375) > 1e-10 or
-			   std::abs(y[1]-2.375) > 1e-10 or
-			   std::abs(y[2]-3.375) > 1e-10)
+		       if( std::abs(y(0)-1.375) > 1e-10 or
+			   std::abs(y(1)-2.375) > 1e-10 or
+			   std::abs(y(2)-3.375) > 1e-10)
 			 checkStr = "FAILED";
 
 		       if (std::abs(time-0.375) > 1e-10) checkStr="FAILED";
 		     }
 		     // std::cout << step << " "
-		     // 	       << y[0] << " "
-		     // 	       << y[1] << std::endl;
+		     // 	       << y(0) << " "
+		     // 	       << y(1) << std::endl;
 		   };
 
   pressio::ode::advanceToTargetTimeWithTimeStepRecovery
     (stepper, y, 0., 0.5, solver, dtManager, collector);
 
-  if( std::abs(y[0]-1.575) > 1e-10 or
-      std::abs(y[1]-2.575) > 1e-10 or
-      std::abs(y[2]-3.575) > 1e-10)
+  if( std::abs(y(0)-1.575) > 1e-10 or
+      std::abs(y(1)-2.575) > 1e-10 or
+      std::abs(y(2)-3.575) > 1e-10)
     checkStr = "FAILED";
 
   std::cout << *y.data() << std::endl;

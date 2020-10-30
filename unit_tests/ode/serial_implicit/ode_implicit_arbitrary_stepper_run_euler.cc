@@ -368,9 +368,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+    EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+    EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+    EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
   }
 }
 
@@ -392,9 +392,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+    EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+    EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+    EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
   }
 }
 
@@ -417,9 +417,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    ASSERT_TRUE( S1.y_[0] != S2.y_[0]);
-    ASSERT_TRUE( S1.y_[1] != S2.y_[1]);
-    ASSERT_TRUE( S1.y_[2] != S2.y_[2]);
+    ASSERT_TRUE( S1.y_(0) != S2.y_(0));
+    ASSERT_TRUE( S1.y_(1) != S2.y_(1));
+    ASSERT_TRUE( S1.y_(2) != S2.y_(2));
   }
 }
 
@@ -440,9 +440,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
   S1.integrateToTimeWithStepSizeManagerLambda(finalTime);
   std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-  EXPECT_DOUBLE_EQ( S1.y_[0] , one );
-  EXPECT_DOUBLE_EQ( S1.y_[1] , two );
-  EXPECT_DOUBLE_EQ( S1.y_[2] , three);
+  EXPECT_DOUBLE_EQ( S1.y_(0) , one );
+  EXPECT_DOUBLE_EQ( S1.y_(1) , two );
+  EXPECT_DOUBLE_EQ( S1.y_(2) , three);
 }
 
 
@@ -470,9 +470,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
   S2.integrateForNSteps(nSteps);
   std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-  EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-  EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-  EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+  EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+  EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+  EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
 }
 
 

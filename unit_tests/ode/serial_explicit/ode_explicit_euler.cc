@@ -22,7 +22,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
 
   using state_t = containers::Vector<nstate_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   // using stepper_t = ode::ExplicitStepper<
   //   ode::explicitmethods::Euler, state_t, app_t>;
@@ -32,16 +32,16 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
   // integrate in time
   double dt = 0.1;
   ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
-  EXPECT_DOUBLE_EQ( y[0], 1.1);
-  EXPECT_DOUBLE_EQ( y[1], 2.2);
-  EXPECT_DOUBLE_EQ( y[2], 3.3);
+  EXPECT_DOUBLE_EQ( y(0), 1.1);
+  EXPECT_DOUBLE_EQ( y(1), 2.2);
+  EXPECT_DOUBLE_EQ( y(2), 3.3);
   std::cout << std::setprecision(14) << *y.data();
 
   // integrate in time
   ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
-  EXPECT_DOUBLE_EQ( y[0], 1.21);
-  EXPECT_DOUBLE_EQ( y[1], 2.42);
-  EXPECT_DOUBLE_EQ( y[2], 3.63);
+  EXPECT_DOUBLE_EQ( y(0), 1.21);
+  EXPECT_DOUBLE_EQ( y(1), 2.42);
+  EXPECT_DOUBLE_EQ( y(2), 3.63);
 }
 
 
@@ -54,7 +54,7 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
 
   using state_t = containers::Vector<nstate_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   // the standard policy
   using res_std_pol_t = ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
@@ -68,14 +68,14 @@ TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
   // integrate in time
   double dt = 0.1;
   ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
-  EXPECT_DOUBLE_EQ( y[0], 1.1);
-  EXPECT_DOUBLE_EQ( y[1], 2.2);
-  EXPECT_DOUBLE_EQ( y[2], 3.3);
+  EXPECT_DOUBLE_EQ( y(0), 1.1);
+  EXPECT_DOUBLE_EQ( y(1), 2.2);
+  EXPECT_DOUBLE_EQ( y(2), 3.3);
   std::cout << std::setprecision(14) << *y.data();
 
   // integrate in time
   ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
-  EXPECT_DOUBLE_EQ( y[0], 1.21);
-  EXPECT_DOUBLE_EQ( y[1], 2.42);
-  EXPECT_DOUBLE_EQ( y[2], 3.63);
+  EXPECT_DOUBLE_EQ( y(0), 1.21);
+  EXPECT_DOUBLE_EQ( y(1), 2.42);
+  EXPECT_DOUBLE_EQ( y(2), 3.63);
 }

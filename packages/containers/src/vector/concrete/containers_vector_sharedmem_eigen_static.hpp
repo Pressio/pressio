@@ -101,20 +101,22 @@ public:
     return &data_;
   }
 
-  ref_t operator [] (ord_t i){
+  ref_t operator()(ord_t i){
     assert(i < this->extent(0));
     return data_(i);
   };
-  const_ref_t operator [] (ord_t i) const{
+  const_ref_t operator()(ord_t i) const{
     assert(i < this->extent(0));
     return data_(i);
   };
 
-  ref_t operator()(ord_t i){
-    return (*this)[i];
+  [[deprecated("Use operator() instead.")]] 
+  ref_t operator[](ord_t i){
+    return (*this)(i);
   };
-  const_ref_t operator()(ord_t i) const{
-    return (*this)[i];
+  [[deprecated("Use operator() instead.")]] 
+  const_ref_t operator[](ord_t i) const{
+    return (*this)(i);
   };
 
   bool empty() const{

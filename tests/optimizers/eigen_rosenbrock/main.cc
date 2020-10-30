@@ -15,13 +15,13 @@ public:
   scalar_type operator()(const state_type & x) const
   {
     scalar_type val = {};
-    val = alpha_ * std::pow(std::pow( x[0], 2) - x[1], 2) + std::pow( x[0] - 1.0, 2);
+    val = alpha_ * std::pow(std::pow( x(0), 2) - x(1), 2) + std::pow( x(0) - 1.0, 2);
     return val;
   }
   void gradient( const state_type & x, state_type &g) const
   {
-    g[0] = 2.*alpha_*(std::pow(x[0], 2) - x[1])*2.*x[0] + 2.*(x[0]-1.);
-    g[1] = -2.*alpha_*(std::pow(x[0], 2) - x[1]);
+    g(0) = 2.*alpha_*(std::pow(x(0), 2) - x(1))*2.*x(0) + 2.*(x(0)-1.);
+    g(1) = -2.*alpha_*(std::pow(x(0), 2) - x(1));
   }
 };
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
   // Set Initial Guess
   state_t x(2);
-  x[0] = -3.; x[1] = -4.;
+  x(0) = -3.; x(1) = -4.;
 
   using opt_param_t = pressio::optimizers::Parameters<sc_t>;
   opt_param_t MyPars;
@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
   opt_prob_t optProblem(MyPars);
   optProblem.solve(rosenbrock, x);
 
-  std::cout << std::setprecision(15) << x[0] << " " << x[1] << std::endl;
+  std::cout << std::setprecision(15) << x(0) << " " << x(1) << std::endl;
 
-  const auto err1 = std::abs(0.999994936086583 - x[0]);
-  const auto err2 = std::abs(0.999989789232424 - x[1]);
+  const auto err1 = std::abs(0.999994936086583 - x(0));
+  const auto err2 = std::abs(0.999989789232424 - x(1));
   if (err1 < 1e-12 and err2 < 1e-12)
     std::cout << "PASSED" << std::endl;
   else

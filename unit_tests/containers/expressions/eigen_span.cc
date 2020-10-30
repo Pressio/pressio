@@ -10,13 +10,13 @@ namespace{
     {
       const auto sp = ::pressio::containers::span(a, 3, 2);
       EXPECT_EQ( sp.extent(0), 2 );
-      EXPECT_DOUBLE_EQ( sp[0], 13. );
-      EXPECT_DOUBLE_EQ( sp[1], 17. );
+      EXPECT_DOUBLE_EQ( sp(0), 13. );
+      EXPECT_DOUBLE_EQ( sp(1), 17. );
     }
     {
       const auto sp = ::pressio::containers::span(a, 2, 1);
       EXPECT_EQ( sp.extent(0), 1 );
-      EXPECT_DOUBLE_EQ( sp[0], 9. );
+      EXPECT_DOUBLE_EQ( sp(0), 9. );
     }
   }
 
@@ -29,15 +29,15 @@ namespace{
       EXPECT_EQ( sp.extent(0), 3 );
 
       // before changing it
-      EXPECT_DOUBLE_EQ( sp[0], 9. );
-      EXPECT_DOUBLE_EQ( sp[1], 13. );
-      EXPECT_DOUBLE_EQ( sp[2], 17. );
+      EXPECT_DOUBLE_EQ( sp(0), 9. );
+      EXPECT_DOUBLE_EQ( sp(1), 13. );
+      EXPECT_DOUBLE_EQ( sp(2), 17. );
       // modify
-      sp[0] = 44.;
+      sp(0) = 44.;
       // after
-      EXPECT_DOUBLE_EQ( sp[0], 44. );
-      EXPECT_DOUBLE_EQ( sp[1], 13. );
-      EXPECT_DOUBLE_EQ( sp[2], 17. );
+      EXPECT_DOUBLE_EQ( sp(0), 44. );
+      EXPECT_DOUBLE_EQ( sp(1), 13. );
+      EXPECT_DOUBLE_EQ( sp(2), 17. );
     }
 
     {
@@ -55,9 +55,9 @@ namespace{
   void testConst(const T & a){
     auto sp = pressio::containers::span(a, 2, 3);
     EXPECT_EQ( sp.extent(0), 3 );
-    EXPECT_DOUBLE_EQ( sp[0], 44. );
-    EXPECT_DOUBLE_EQ( sp[1], 13. );
-    EXPECT_DOUBLE_EQ( sp[2], 17. );
+    EXPECT_DOUBLE_EQ( sp(0), 44. );
+    EXPECT_DOUBLE_EQ( sp(1), 13. );
+    EXPECT_DOUBLE_EQ( sp(2), 17. );
     const auto &natEx = *sp.data();
     EXPECT_DOUBLE_EQ( natEx(0), 44. );
     EXPECT_DOUBLE_EQ( natEx(1), 13. );
@@ -95,14 +95,14 @@ TEST(containers_vector_eigen, spanConstructor){
   a(4) = 17.;
   a(5) = 21.;
 
-  // span elements a[2],a[3],a[4]
+  // span elements a(2),a(3),a(4)
   const auto sp = pressio::containers::span(a, 2, 3);
   EXPECT_EQ( sp.extent(0), 3 );
 
   const auto sp2 = pressio::containers::span(a, std::make_pair(2,5));
   EXPECT_EQ( sp2.extent(0), 3 );
 
-  EXPECT_DOUBLE_EQ(sp[0], sp2[0]);
-  EXPECT_DOUBLE_EQ(sp[1], sp2[1]);
-  EXPECT_DOUBLE_EQ(sp[2], sp2[2]);
+  EXPECT_DOUBLE_EQ(sp(0), sp2(0));
+  EXPECT_DOUBLE_EQ(sp(1), sp2(1));
+  EXPECT_DOUBLE_EQ(sp(2), sp2(2));
 }

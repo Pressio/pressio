@@ -75,9 +75,9 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
   // using lo_t = typename ::pressio::containers::details::traits<A_type>::local_ordinal_t;
   for (std::size_t i=0; i<(std::size_t)A.extentLocal(0); i++){
     //rowSum = zero;
-    y[i] = beta*y[i];
+    y(i) = beta*y(i);
     for (std::size_t j=0; j<(std::size_t)numVecs; j++){
-      y[i] += alpha * A(i,j) * x[j];
+      y(i) += alpha * A(i,j) * x(j);
     }
   }
 }
@@ -137,7 +137,7 @@ product(::pressio::transpose mode,
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
   {
     (*mvNatData)(i)->Dot(*vecNatData, &tmp);
-    y[i] = beta * y[i] + alpha * tmp;
+    y(i) = beta * y(i) + alpha * tmp;
   }
 }
 

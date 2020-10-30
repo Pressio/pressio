@@ -89,24 +89,6 @@ public:
     : data_(*other.data()){}
 
 public:
-  size_t extent(size_t k) const{
-    return data_.extent(k);
-  }
-
-  sc_t & operator[](size_t i){
-    return data_(i);
-  };
-  sc_t const & operator[](size_t i) const{
-    return data_(i);
-  };
-
-  sc_t & operator()(size_t i){
-    return data_(i);
-  };
-  sc_t const & operator()(size_t i) const{
-    return data_(i);
-  };
-
   wrapped_type const * data() const{
     return &data_;
   }
@@ -115,10 +97,32 @@ public:
     return &data_;
   }
 
+  size_t extent(size_t k) const{
+    assert(k == (size_t) 0);
+    return data_.extent(k);
+  }
+
+  sc_t & operator()(size_t i){
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+  sc_t const & operator()(size_t i) const{
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+
+  [[deprecated("Use operator() instead.")]] 
+  sc_t & operator[](size_t i){
+    return (*this)(i);
+  };
+  [[deprecated("Use operator() instead.")]] 
+  sc_t const & operator[](size_t i) const{
+    return (*this)(i);
+  };
+
 private:
   wrapped_type data_ = {};
-
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_

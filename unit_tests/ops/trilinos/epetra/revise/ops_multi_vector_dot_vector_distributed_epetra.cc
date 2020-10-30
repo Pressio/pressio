@@ -33,9 +33,9 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
     MV(2,2) = 3;
   }
 
-  b[0] = 1.0;
-  b[1] = 1.0;
-  b[2] = 1.0;
+  b(0) = 1.0;
+  b(1) = 1.0;
+  b(2) = 1.0;
 
   // store into eigen dynamic vector wrapper
   //MV dot b = c2
@@ -48,21 +48,9 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   // constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
   ::pressio::ops::product(::pressio::transpose(), 1., MV, b, 0., c2);
   EXPECT_EQ( c2.extent(0), 4);
-  EXPECT_NEAR(c2[0], 4.4, 1e-12);
-  EXPECT_NEAR(c2[1], 5.2, 1e-12);
-  EXPECT_NEAR(c2[2], 3., 1e-12);
-  EXPECT_NEAR(c2[3], 0., 1e-12);
+  EXPECT_NEAR(c2(0), 4.4, 1e-12);
+  EXPECT_NEAR(c2(1), 5.2, 1e-12);
+  EXPECT_NEAR(c2(2), 3., 1e-12);
+  EXPECT_NEAR(c2(3), 0., 1e-12);
   }
-
-  // // store into teuchos serial dense vector wrapper
-  // //MV dot b = c3
-  // using natvec_t3 = Teuchos::SerialDenseVector<int, double>;
-  // containers::Vector<natvec_t3> c3(4);
-  // ops::dot(MV, b, c3);
-  // EXPECT_EQ( c3.extent(0), 4);
-  // EXPECT_NEAR(c3[0], 4.4, 1e-12);
-  // EXPECT_NEAR(c3[1], 5.2, 1e-12);
-  // EXPECT_NEAR(c3[2], 3., 1e-12);
-  // EXPECT_NEAR(c3[3], 0., 1e-12);
-
 }

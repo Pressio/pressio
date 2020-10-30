@@ -36,25 +36,25 @@ struct EigenRosenbrock4Impl
 
   void residual(const state_type& x, residual_type & res) const
   {
-    auto x1 = x[0];
-    auto x2 = x[1];
-    auto x3 = x[2];
-    auto x4 = x[3];
-    res[0] = 10.*(x4 - x3*x3);
-    res[1] = 10.*(x3 - x2*x2);
-    res[2] = 10.*(x2 - x1*x1);
-    res[3] = (1.-x1);
-    res[4] = (1.-x2);
-    res[5] = (1.-x3);
+    auto x1 = x(0);
+    auto x2 = x(1);
+    auto x3 = x(2);
+    auto x4 = x(3);
+    res(0) = 10.*(x4 - x3*x3);
+    res(1) = 10.*(x3 - x2*x2);
+    res(2) = 10.*(x2 - x1*x1);
+    res(3) = (1.-x1);
+    res(4) = (1.-x2);
+    res(5) = (1.-x3);
     // if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
     // if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const 
   {
-    auto x1 = x[0];
-    auto x2 = x[1];
-    auto x3 = x[2];
+    auto x1 = x(0);
+    auto x2 = x(1);
+    auto x3 = x(2);
     auto & JJ = *jac.data();
     JJ.setZero();
 

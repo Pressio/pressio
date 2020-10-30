@@ -37,7 +37,7 @@ struct qrGoldr9c4Sol{
     EXPECT_EQ(y.extent(0), 4);
     for (auto i=0; i<y.extent(0); i++)
       EXPECT_NEAR( std::abs(trueYForRSolve_[i]),
-		   std::abs(y[i]), 1e-12 );
+		   std::abs(y(i)), 1e-12 );
   }
 
 private:

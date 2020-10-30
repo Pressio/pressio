@@ -21,7 +21,7 @@ struct InitView {
     // Acesss the View just like a Fortran array.  The layout depends
     // on the View's memory space, so don't rely on the View's
     // physical memory layout unless you know what you're doing.
-    a[i] = 2.0*i;
+    a(i) = 2.0*i;
   }
 };
 

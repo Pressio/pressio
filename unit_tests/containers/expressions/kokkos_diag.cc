@@ -24,14 +24,14 @@ TEST(containers_expressions_kokkos, diag1)
   const auto d = pressio::containers::diag(A);
   static_assert
     (std::is_const<
-     typename std::remove_reference<decltype(d[0])>::type
+     typename std::remove_reference<decltype(d(0))>::type
      >::value, "");
 
   EXPECT_EQ( d.extent(0), 4 );
-  EXPECT_DOUBLE_EQ( d[0], 1.2 );
-  EXPECT_DOUBLE_EQ( d[1], 6.2 );
-  EXPECT_DOUBLE_EQ( d[2], 11.2 );
-  EXPECT_DOUBLE_EQ( d[3], 16. );
+  EXPECT_DOUBLE_EQ( d(0), 1.2 );
+  EXPECT_DOUBLE_EQ( d(1), 6.2 );
+  EXPECT_DOUBLE_EQ( d(2), 11.2 );
+  EXPECT_DOUBLE_EQ( d(3), 16. );
 
   EXPECT_DOUBLE_EQ( A(0,0), 1.2 );
   EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
@@ -40,7 +40,7 @@ TEST(containers_expressions_kokkos, diag1)
 
   //change a, should change span too
   A(1,1)=43.;
-  EXPECT_DOUBLE_EQ( d[1], 43. );
+  EXPECT_DOUBLE_EQ( d(1), 43. );
 }
 
 
@@ -58,17 +58,17 @@ TEST(containers_expressions_kokkos, diag2)
   auto d = pressio::containers::diag(A);
   static_assert
     (!std::is_const<
-     typename std::remove_reference<decltype(d[0])>::type
+     typename std::remove_reference<decltype(d(0))>::type
      >::value, "");
 
   d(0) = 44.;
   d(2) = 22.;
 
   // both A and d should be changed
-  EXPECT_DOUBLE_EQ( d[0], 44. );
-  EXPECT_DOUBLE_EQ( d[1], 6.2 );
-  EXPECT_DOUBLE_EQ( d[2], 22. );
-  EXPECT_DOUBLE_EQ( d[3], 16. );
+  EXPECT_DOUBLE_EQ( d(0), 44. );
+  EXPECT_DOUBLE_EQ( d(1), 6.2 );
+  EXPECT_DOUBLE_EQ( d(2), 22. );
+  EXPECT_DOUBLE_EQ( d(3), 16. );
   EXPECT_DOUBLE_EQ( A(0,0), 44. );
   EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
   EXPECT_DOUBLE_EQ( A(2,2), 22. );
@@ -92,11 +92,11 @@ TEST(containers_expressions_kokkos, diag3)
   // since the matrix A is const, diag should be read-only
   static_assert
     (std::is_const<
-     typename std::remove_reference<decltype(d[0])>::type
+     typename std::remove_reference<decltype(d(0))>::type
      >::value, "");
 
-  EXPECT_DOUBLE_EQ( d[0], 1.2 );
-  EXPECT_DOUBLE_EQ( d[1], 6.2 );
-  EXPECT_DOUBLE_EQ( d[2], 11.2 );
-  EXPECT_DOUBLE_EQ( d[3], 16. );
+  EXPECT_DOUBLE_EQ( d(0), 1.2 );
+  EXPECT_DOUBLE_EQ( d(1), 6.2 );
+  EXPECT_DOUBLE_EQ( d(2), 11.2 );
+  EXPECT_DOUBLE_EQ( d(3), 16. );
 }

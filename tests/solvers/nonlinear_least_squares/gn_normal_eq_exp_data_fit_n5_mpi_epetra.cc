@@ -19,9 +19,9 @@ bool test1()
 
   problem_t problem;
   state_t x(problem.numUn_);
-  x[0] = 0.5;  x[1] = 1.5;
-  x[2] = -1.0; x[3] = 0.01;
-  x[4] = 0.02;
+  x(0) = 0.5;  x(1) = 1.5;
+  x(2) = -1.0; x(3) = 0.01;
+  x(4) = 0.02;
 
   using hessian_t = containers::DenseMatrix<Eigen::MatrixXd>;
 
@@ -52,9 +52,9 @@ bool test2()
 
   problem_t problem;
   state_t x(5);
-  x[0] = 0.5;  x[1] = 1.5;
-  x[2] = -1.0; x[3] = 0.01;
-  x[4] = 0.02;
+  x(0) = 0.5;  x(1) = 1.5;
+  x(2) = -1.0; x(3) = 0.01;
+  x(4) = 0.02;
 
   using hessian_t = containers::DenseMatrix<Eigen::MatrixXd>;
 
@@ -87,9 +87,9 @@ bool test3()
 
   problem_t problem;
   state_t x(5);
-  x[0] = 0.5;  x[1] = 1.5;
-  x[2] = -1.0; x[3] = 0.01;
-  x[4] = 0.02;
+  x(0) = 0.5;  x(1) = 1.5;
+  x(2) = -1.0; x(3) = 0.01;
+  x(4) = 0.02;
 
   using hessian_t = containers::DenseMatrix<Eigen::MatrixXd>;
 

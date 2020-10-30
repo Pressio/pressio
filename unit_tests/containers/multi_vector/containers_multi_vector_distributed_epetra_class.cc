@@ -73,13 +73,13 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 //   fillScalar(11.2);
 //   myvec_t v1( *getMap() );
 //   for (int i=0; i<v1.localSize(); i++){
-//     v1[i] = 11.2;
+//     v1(i) = 11.2;
 //   }
 //   for (int i=0; i<v1.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v1[i], (*getVector())[i] );
+//     EXPECT_DOUBLE_EQ( v1(i), (*getVector())(i) );
 //   }
-//   v1[3] = 56.;
-//   EXPECT_DOUBLE_EQ( v1[3], 56.0);
+//   v1(3) = 56.;
+//   EXPECT_DOUBLE_EQ( v1(3), 56.0);
 // }
 
 
@@ -91,7 +91,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 //   v1.putScalar(43.3);
 
 //   for (int i=0; i<v1.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v1[i], 43.3 );
+//     EXPECT_DOUBLE_EQ( v1(i), 43.3 );
 //   }
 // }
 
@@ -109,7 +109,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
 //   myvec_t v3 = v1 + v2;
 //   for (int i=0; i<v3.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v3[i], 4.3 + rankD );
+//     EXPECT_DOUBLE_EQ( v3(i), 4.3 + rankD );
 //   }
 //   //missing test for a case where vectors are incompatible
 // }
@@ -128,7 +128,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
 //   myvec_t v3 = v1 - v2;
 //   for (int i=0; i<v3.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v3[i], 2.3 + rankD );
+//     EXPECT_DOUBLE_EQ( v3(i), 2.3 + rankD );
 //   }
 //   //missing test for a case where vectors are incompatible
 // }
@@ -148,11 +148,11 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 //   myvec_t v3 = v1 * v2;
 //   for (int i=0; i<v3.localSize(); i++){
 //     if (getRank()==0)
-//       EXPECT_DOUBLE_EQ( v3[i], 3. );
+//       EXPECT_DOUBLE_EQ( v3(i), 3. );
 //     if (getRank()==1)
-//       EXPECT_DOUBLE_EQ( v3[i], 4. );
+//       EXPECT_DOUBLE_EQ( v3(i), 4. );
 //     if (getRank()==2)
-//       EXPECT_DOUBLE_EQ( v3[i], 5. );
+//       EXPECT_DOUBLE_EQ( v3(i), 5. );
 //   }
 //   //missing test for a case where vectors are incompatible
 // }
@@ -170,7 +170,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
 //   v1 += v2;
 //   for (int i=0; i<v1.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v1[i], 4. );
+//     EXPECT_DOUBLE_EQ( v1(i), 4. );
 //   }
 //   //missing test for a case where vectors are incompatible
 // }
@@ -188,7 +188,7 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
 //   v1 -= v2;
 //   for (int i=0; i<v1.localSize(); i++){
-//     EXPECT_DOUBLE_EQ( v1[i], 2. );
+//     EXPECT_DOUBLE_EQ( v1(i), 2. );
 //   }
 //   //missing test for a case where vectors are incompatible
 // }

@@ -78,7 +78,7 @@ public:
 		  Teuchos::DataAccess cv = Teuchos::Copy)
     : data_(cv, other){}
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   DenseMatrix & operator=(const DenseMatrix & other) = delete;
 
   // move cnstr and assign
@@ -90,10 +90,14 @@ public:
 
 public:
   sc_t & operator() (ord_t row, ord_t col){
+    assert(row < this->extent(0) );
+    assert(col < this->extent(1) );
     return data_(row,col);
   }
 
   sc_t const & operator() (ord_t row, ord_t col) const{
+    assert(row < this->extent(0) );
+    assert(col < this->extent(1) );
     return data_(row,col);
   }
 

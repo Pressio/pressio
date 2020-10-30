@@ -9,7 +9,7 @@ std::string checkStr {"PASSED"};
 template <typename T>
 void checkSol(const T & y, const std::vector<double> & trueS){
   for (size_t i=0; i< trueS.size(); i++){
-    if (std::abs(y[i] - trueS[i]) > eps) checkStr = "FAILED";
+    if (std::abs(y(i) - trueS[i]) > eps) checkStr = "FAILED";
   }
 }
 

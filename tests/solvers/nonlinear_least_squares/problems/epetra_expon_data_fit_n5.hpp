@@ -25,7 +25,7 @@ struct EpetraExpDataFitN5
 
   using state_type    = pressio::containers::Vector<Eigen::VectorXd>;
   using residual_type = pressio::containers::Vector<Epetra_Vector>;
-  using nat_vec_type  = pressio::containers::Vector<Epetra_Vector>;
+  using vecw_type  = pressio::containers::Vector<Epetra_Vector>;
   using jacobian_type = pressio::containers::MultiVector<Epetra_MultiVector>;
   using scalar_type   = double;
 
@@ -39,8 +39,8 @@ struct EpetraExpDataFitN5
 
   shptr<residual_type> R_     = {};
   shptr<jacobian_type> J_     = {};
-  shptr<nat_vec_type> tt_    = {}; // store the t value for the data
-  shptr<nat_vec_type> yy_    = {}; // store the y values
+  shptr<vecw_type> tt_    = {}; // store the t value for the data
+  shptr<vecw_type> yy_    = {}; // store the y values
 
   const std::vector<double> trueS = {0.37541005210628,
 				     1.9358469126255,
@@ -51,7 +51,7 @@ struct EpetraExpDataFitN5
   void storeTimes(){
     int i=0;
     for (auto const & it : myGel_){
-      (*tt_)[i] = 10. * static_cast<scalar_type>(it);
+      (*tt_)(i) = 10. * static_cast<scalar_type>(it);
       i++;
     };
   }
@@ -71,7 +71,7 @@ struct EpetraExpDataFitN5
 
     int i=0;
     for (auto const & it : myGel_){
-      (*yy_)[i] = allYs[it];
+      (*yy_)(i) = allYs[it];
       i++;
     };
   }
@@ -92,14 +92,14 @@ struct EpetraExpDataFitN5
 
     R_ = std::make_shared<residual_type>(*rowMap_);
     J_ = std::make_shared<jacobian_type>(*rowMap_, numUn_);
-    tt_ = std::make_shared<nat_vec_type>(*rowMap_);
-    yy_ = std::make_shared<nat_vec_type>(*rowMap_);
+    tt_ = std::make_shared<vecw_type>(*rowMap_);
+    yy_ = std::make_shared<vecw_type>(*rowMap_);
     storeTimes();
     storeYValues();
   }//setUp
 
   inline scalar_type model(const state_type & x, scalar_type t)const{
-    return x[0] + x[1] * exp(-t*x[3]) + x[2]*exp(-t*x[4]);
+    return x(0) + x(1) * exp(-t*x(3)) + x(2)*exp(-t*x(4));
   }
 
   residual_type createResidual() const{ return *R_; }
@@ -108,7 +108,7 @@ struct EpetraExpDataFitN5
   void residual(const state_type& x, residual_type & R) const 
   {
     for (auto i=0; i< NumMyElem_; i++){
-      R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
+      R(i) = (*yy_)(i) - this->model(x, (*tt_)(i));
     };
     // if (normKind == pressio::Norm::L2) R.data()->Norm2(&normResidual);
     // if (normKind == pressio::Norm::L1) R.data()->Norm1(&normResidual);
@@ -117,12 +117,12 @@ struct EpetraExpDataFitN5
   void jacobian(const state_type & x, jacobian_type & jac) const{
     for (int i=0; i<NumMyElem_; i++)
       {
-	scalar_type t = (*tt_)[i];
+	scalar_type t = (*tt_)(i);
 	jac(i,0) = -1.0;
-	jac(i,1) = -exp(-t*x[3]);
-	jac(i,2) = -exp(-t*x[4]);
-	jac(i,3) = x[1]*exp(-t*x[3])*t;
-	jac(i,4) = x[2]*exp(-t*x[4])*t;
+	jac(i,1) = -exp(-t*x(3));
+	jac(i,2) = -exp(-t*x(4));
+	jac(i,3) = x(1)*exp(-t*x(3))*t;
+	jac(i,4) = x(2)*exp(-t*x(4))*t;
       }
     //jac.data()->Print(std::cout);
   }//end jacobian

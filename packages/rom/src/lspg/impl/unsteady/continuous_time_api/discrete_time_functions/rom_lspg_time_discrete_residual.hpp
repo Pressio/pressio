@@ -147,8 +147,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   assert(R.extent(0) == hypIndices.extent(0));
   for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
   {
-    const auto yI = hypIndices[i];
-    R[i] = cn*fomStateAt_n[yI] + cnm1*fomStateAt_nm1[yI] + cf*R[i];
+    const auto yI = hypIndices(i);
+    R(i) = cn*fomStateAt_n(yI) + cnm1*fomStateAt_nm1(yI) + cf*R(i);
   }
 }
 
@@ -281,7 +281,7 @@ struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>
     constexpr auto cn   = ::pressio::ode::constants::bdf1<T>::c_n_;
     constexpr auto cnm1 = ::pressio::ode::constants::bdf1<T>::c_nm1_;
     const auto cf	  = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
-    R = cn*y_n[lid] + cnm1*y_nm1[lid] + cf*R;
+    R = cn*y_n(lid) + cnm1*y_nm1(lid) + cf*R;
   }
 };
 
@@ -301,7 +301,7 @@ struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF2>{
     constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
     constexpr auto cnm2 = ::pressio::ode::constants::bdf2<T>::c_nm2_;
     const auto cf	  = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
-    R = cn*y_n[lid] + cnm1*y_nm1[lid] + cnm2*y_nm2[lid] + cf*R;
+    R = cn*y_n(lid) + cnm1*y_nm1(lid) + cnm2*y_nm2(lid) + cf*R;
   }
 };
 
@@ -347,7 +347,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
     time_discrete_single_entry_epetra<
       stepper_tag
       >::template evaluate<
-	scalar_type, fom_states_manager_t>(dt, R[i], lid, fomStatesMngr);
+	scalar_type, fom_states_manager_t>(dt, R(i), lid, fomStatesMngr);
   }
 }
 

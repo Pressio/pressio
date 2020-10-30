@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
   // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.extent(0); i++){
-    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
+    if (std::abs(yFomFinal(i) - trueY[i]) > 1e-10)
       checkStr = "FAILED";
   }
   std::cout << checkStr <<  std::endl;

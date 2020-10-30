@@ -23,7 +23,7 @@ struct EigenExpDataFitN2
   void residual(const state_type& x, residual_type & res) const
   {
     for (auto i = 0; i < n; i++) {
-      res[i] = x[0] * exp(x[1]*times_[i]) - y_[i];
+      res(i) = x(0) * exp(x(1)*times_[i]) - y_[i];
     }
     // if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
     // if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
@@ -31,9 +31,9 @@ struct EigenExpDataFitN2
 
   void jacobian(const state_type & x, jacobian_type & jac) const {
     for (int i = 0; i < n; i++) {
-      double expval = exp(x[1] * times_[i]);
+      double expval = exp(x(1) * times_[i]);
       (*jac.data())(i,0) = expval;
-      (*jac.data())(i,1) = x[0]*times_[i]*expval;
+      (*jac.data())(i,1) = x(0)*times_[i]*expval;
     }
   }
 

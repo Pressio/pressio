@@ -98,7 +98,7 @@ public:
   MultiVector(const this_t & other) : MultiVector(*other.data())
   {}
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
   //   if(&other != this)
   //   {
@@ -117,7 +117,7 @@ public:
            *other.data(),
            ::pressio::utils::constants<sc_t>::zero() );
     return *this;
-  }  
+  }
 
   ~MultiVector() = default;
 
@@ -156,7 +156,6 @@ public:
     assert(i<=1);
     return (i==0) ? data_.getMap()->getNodeNumElements() : data_.getNumVectors();
   }
-
 
 private:
   void needSync(){

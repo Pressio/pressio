@@ -124,25 +124,25 @@ TEST(containers_vector_sharedmem_eigen_dyn,
 {
   w_t m_v3(4);
   ::testing::StaticAssertTypeEq<
-    decltype(m_v3[1]), double & >();
+    decltype(m_v3(1)), double & >();
 
   ASSERT_TRUE( m_v3.extent(0) == 4 );
-  m_v3[0] = 34.0;
-  m_v3[1] = 22.5;
-  m_v3[2] = 11.5;
-  m_v3[3] = 75.0;
-  EXPECT_DOUBLE_EQ( m_v3[0], 34.0);
-  EXPECT_DOUBLE_EQ( m_v3[1], 22.5);
-  EXPECT_DOUBLE_EQ( m_v3[2], 11.5);
-  EXPECT_DOUBLE_EQ( m_v3[3], 75.0);
-  m_v3[0] = 56.;
-  m_v3[3] = 44.;
-  EXPECT_DOUBLE_EQ( m_v3[0], 56.0);
-  EXPECT_DOUBLE_EQ( m_v3[3], 44.0);
+  m_v3(0) = 34.0;
+  m_v3(1) = 22.5;
+  m_v3(2) = 11.5;
+  m_v3(3) = 75.0;
+  EXPECT_DOUBLE_EQ( m_v3(0), 34.0);
+  EXPECT_DOUBLE_EQ( m_v3(1), 22.5);
+  EXPECT_DOUBLE_EQ( m_v3(2), 11.5);
+  EXPECT_DOUBLE_EQ( m_v3(3), 75.0);
+  m_v3(0) = 56.;
+  m_v3(3) = 44.;
+  EXPECT_DOUBLE_EQ( m_v3(0), 56.0);
+  EXPECT_DOUBLE_EQ( m_v3(3), 44.0);
 
   const w_t m_v4(4);
   ::testing::StaticAssertTypeEq<
-    decltype(m_v4[1]), const double & >();
+    decltype(m_v4(1)), const double & >();
 }
 
 TEST(containers_vector_sharedmem_eigen_dyn,

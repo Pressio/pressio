@@ -43,8 +43,8 @@ int main()
   solver.solve(A,b,y);
 
   std::string strOut = "PASSED";
-  const auto e1 = std::abs(y[0] - (-0.377)); 
-  const auto e2 = std::abs(y[1] - (0.662)); 
+  const auto e1 = std::abs(y(0) - (-0.377)); 
+  const auto e2 = std::abs(y(1) - (0.662)); 
   if (e1>1e-3 or e2>1e-3) strOut = "FAILED";
 
   std::cout << *y.data() << std::endl;

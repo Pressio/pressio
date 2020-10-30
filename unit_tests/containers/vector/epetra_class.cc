@@ -25,13 +25,13 @@ TEST_F(epetraVectorGlobSize15Fixture,
   x_->PutScalar(11.2);
   myvec_t v1( *x_ );
   for (int i=0; i<v1.extentLocal(0); i++){
-    v1[i] = 11.2;
+    v1(i) = 11.2;
   }
   for (int i=0; i<v1.extentLocal(0); i++){
-    EXPECT_DOUBLE_EQ( v1[i], (*x_)[i] );
+    EXPECT_DOUBLE_EQ( v1(i), (*x_)[i] );
   }
-  v1[3] = 56.;
-  EXPECT_DOUBLE_EQ( v1[3], 56.0);
+  v1(3) = 56.;
+  EXPECT_DOUBLE_EQ( v1(3), 56.0);
 }
 
 using vec_t = Epetra_Vector;

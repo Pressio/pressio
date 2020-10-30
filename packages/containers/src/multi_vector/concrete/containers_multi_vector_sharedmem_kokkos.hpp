@@ -130,6 +130,8 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator () (ord_t i, ord_t j){
+    assert(i < this_->extent(0));
+    assert(j < this_->extent(1));
     return data_(i,j);
   };
 
@@ -140,6 +142,8 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator () (ord_t i, ord_t j) const{
+    assert(i < this_->extent(0));
+    assert(j < this_->extent(1));
     return data_(i, j);
   };
 
@@ -157,8 +161,7 @@ public:
 
 private:
   wrap_t data_ = {};
-
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_

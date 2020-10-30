@@ -14,7 +14,7 @@ int main()
   problem_t problem;
 
   state_w_t x(3);
-  x[0] = -1.5; x[1] = 1.1; x[2] = 1.2;
+  x(0) = -1.5; x(1) = 1.1; x(2) = 1.2;
 
   using qr_solver_t = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_t qrSolver;

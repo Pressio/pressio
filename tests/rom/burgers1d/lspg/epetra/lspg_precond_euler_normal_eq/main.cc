@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     const int myn = yFomFinal.data()->Map().NumMyElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
-      if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+      if (std::abs(yFomFinal(i) - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }
 
   MPI_Finalize();

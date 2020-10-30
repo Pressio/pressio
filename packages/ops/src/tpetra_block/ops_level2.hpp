@@ -171,7 +171,7 @@ product(::pressio::transpose mode,
   for (ord_t i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA_mvv.getVector(i);
-    y[i] = beta*y[i] + alpha * colI->dot(xvv);
+    y(i) = beta*y(i) + alpha * colI->dot(xvv);
   }
 }
 

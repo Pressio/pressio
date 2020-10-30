@@ -47,9 +47,9 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated)
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << appObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }
 
 
@@ -103,8 +103,8 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser)
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << appObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }
 

@@ -92,16 +92,6 @@ public:
   ~DenseMatrix() = default;
 
 public:
-  sc_t & operator() (ord_t row, ord_t col){
-    // check if we are withinbound
-    return data_(row,col);
-  }
-
-  sc_t const & operator() (ord_t row, ord_t col) const{
-    // check if we are withinbound
-    return data_(row,col);
-  }
-
   wrap_t * data(){
     return &data_;
   };
@@ -109,6 +99,18 @@ public:
   wrap_t const * data() const{
     return &data_;
   };
+
+  sc_t & operator() (ord_t row, ord_t col){
+    assert(row < this->extent(0) );
+    assert(col < this->extent(1) );
+    return data_(row,col);
+  }
+
+  sc_t const & operator() (ord_t row, ord_t col) const{
+    assert(row < this->extent(0) );
+    assert(col < this->extent(1) );
+    return data_(row,col);
+  }
 
   ord_t extent(ord_t i) const {
     assert(i==0 or i==1);
@@ -118,7 +120,7 @@ public:
 private:
   wrap_t data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_EIGEN_STATIC_HPP_

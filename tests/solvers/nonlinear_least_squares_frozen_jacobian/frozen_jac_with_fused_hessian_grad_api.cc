@@ -48,7 +48,7 @@ struct MySystem
     ++iterCountR_;
 
     for (auto i=0; i<R_.extent(0); ++i)
-      R_[i] += 1.;
+      R_(i) += 1.;
 
     if (normKind == pressio::Norm::L2)
       residualNorm = R_.data()->norm();

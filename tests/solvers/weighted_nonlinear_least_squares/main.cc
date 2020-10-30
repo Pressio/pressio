@@ -1,7 +1,6 @@
 
 #include "common.hpp"
 
-
 struct WeightingOperator
 {
 #ifdef USE_WRAPPERS
@@ -56,7 +55,7 @@ struct MySystem
     ++iterCountR_;
 
     for (auto i=0; i<R.extent(0); ++i)
-      R[i] += 1.;
+      R(i) += 1.;
 
     // if (normKind == pressio::Norm::L2)
     //   normResidual = R.data()->norm();

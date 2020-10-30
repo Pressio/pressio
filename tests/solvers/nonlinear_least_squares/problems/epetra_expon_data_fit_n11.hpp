@@ -25,7 +25,7 @@ struct EpetraExpDataFitN11
 
   using state_type    = pressio::containers::Vector<Eigen::VectorXd>;
   using residual_type = pressio::containers::Vector<Epetra_Vector>;
-  using nat_vec_type  = pressio::containers::Vector<Epetra_Vector>;
+  using vecw_type  = pressio::containers::Vector<Epetra_Vector>;
   using jacobian_type = pressio::containers::MultiVector<Epetra_MultiVector>;
   using scalar_type   = double;
 
@@ -39,8 +39,8 @@ struct EpetraExpDataFitN11
 
   shptr<residual_type> R_     = {};
   shptr<jacobian_type> J_     = {};
-  shptr<nat_vec_type> tt_     = {}; // store the t value for the data
-  shptr<nat_vec_type> yy_     = {}; // store the y values
+  shptr<vecw_type> tt_     = {}; // store the t value for the data
+  shptr<vecw_type> yy_     = {}; // store the y values
 
   const std::vector<double> trueS = {1.3099771546537, 0.43155379466611,
 				     0.63366169898352, 0.59943053483825,
@@ -52,7 +52,7 @@ struct EpetraExpDataFitN11
   void storeTimes(){
     int i=0;
     for (auto const & it : myGel_){
-      (*tt_)[i] = static_cast<scalar_type>(it)/10.;
+      (*tt_)(i) = static_cast<scalar_type>(it)/10.;
       i++;
     };
   }
@@ -77,7 +77,7 @@ struct EpetraExpDataFitN11
 
     int i=0;
     for (auto const & it : myGel_){
-      (*yy_)[i] = allYs[it];
+      (*yy_)(i) = allYs[it];
       i++;
     };
   }
@@ -98,19 +98,19 @@ struct EpetraExpDataFitN11
 
     R_ = std::make_shared<residual_type>(*rowMap_);
     J_ = std::make_shared<jacobian_type>(*rowMap_, numUn_);
-    tt_ = std::make_shared<nat_vec_type>(*rowMap_);
-    yy_ = std::make_shared<nat_vec_type>(*rowMap_);
+    tt_ = std::make_shared<vecw_type>(*rowMap_);
+    yy_ = std::make_shared<vecw_type>(*rowMap_);
     storeTimes();
     storeYValues();
     std::cout << std::endl;
   }//setUp
 
   inline scalar_type model(const state_type & x, scalar_type t)const{
-    auto temp1 = exp(-x[4]*t);
-    auto temp2 = exp(-x[5] * (t-x[8]) * (t-x[8]) );
-    auto temp3 = exp(-x[6] * (t-x[9]) * (t-x[9]) );
-    auto temp4 = exp(-x[7] * (t-x[10]) * (t-x[10]) );
-    return x[0]*temp1 + x[1]*temp2 + x[2]*temp3 + x[3]*temp4;
+    auto temp1 = exp(-x(4)*t);
+    auto temp2 = exp(-x(5) * (t-x(8)) * (t-x(8)) );
+    auto temp3 = exp(-x(6) * (t-x(9)) * (t-x(9)) );
+    auto temp4 = exp(-x(7) * (t-x(10)) * (t-x(10)) );
+    return x(0)*temp1 + x(1)*temp2 + x(2)*temp3 + x(3)*temp4;
   }
 
   residual_type createResidual() const{ return *R_; }
@@ -119,30 +119,30 @@ struct EpetraExpDataFitN11
   void residual(const state_type& x, residual_type & R) const 
   {
     for (auto i=0; i< NumMyElem_; i++){
-      R[i] = (*yy_)[i] - this->model(x, (*tt_)[i]);
+      R(i) = (*yy_)(i) - this->model(x, (*tt_)(i));
     };
   }
 
   void jacobian(const state_type & x, jacobian_type & jac) const{
     for (int i=0; i<NumMyElem_; i++)
       {
-	scalar_type t = (*tt_)[i];
+	scalar_type t = (*tt_)(i);
 
-	auto temp1 = exp(-x[4]*t);
-	auto temp2 = exp(-x[5] * (t-x[8]) * (t-x[8]) );
-	auto temp3 = exp(-x[6] * (t-x[9]) * (t-x[9]) );
-	auto temp4 = exp(-x[7] * (t-x[10]) * (t-x[10]) );
+	auto temp1 = exp(-x(4)*t);
+	auto temp2 = exp(-x(5) * (t-x(8)) * (t-x(8)) );
+	auto temp3 = exp(-x(6) * (t-x(9)) * (t-x(9)) );
+	auto temp4 = exp(-x(7) * (t-x(10)) * (t-x(10)) );
 	jac(i,0) = -temp1;
 	jac(i,1) = -temp2;
 	jac(i,2) = -temp3;
 	jac(i,3) = -temp4;
-	jac(i,4) = x[0]*temp1*t;
-	jac(i,5) = x[1] * (t-x[8]) * (t-x[8])  * temp2;
-	jac(i,6) = x[2] * (t-x[9]) * (t-x[9])  * temp3;
-	jac(i,7) = x[3] * (t-x[10]) * (t-x[10]) * temp4;
-	jac(i,8) =  -2.*x[1]*x[5]*(t-x[8])*temp2;
-	jac(i,9) =  -2.*x[2]*x[6]*(t-x[9])*temp3;
-	jac(i,10) = -2.*x[3]*x[7]*(t-x[10])*temp4;
+	jac(i,4) = x(0)*temp1*t;
+	jac(i,5) = x(1) * (t-x(8)) * (t-x(8))  * temp2;
+	jac(i,6) = x(2) * (t-x(9)) * (t-x(9))  * temp3;
+	jac(i,7) = x(3) * (t-x(10)) * (t-x(10)) * temp4;
+	jac(i,8) =  -2.*x(1)*x(5)*(t-x(8))*temp2;
+	jac(i,9) =  -2.*x(2)*x(6)*(t-x(9))*temp3;
+	jac(i,10) = -2.*x(3)*x(7)*(t-x(10))*temp4;
       }
     //    jac.data()->Print(std::cout);
   }//end jacobian

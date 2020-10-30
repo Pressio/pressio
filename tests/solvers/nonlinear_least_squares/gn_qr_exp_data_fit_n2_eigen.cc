@@ -44,18 +44,19 @@ int main()
   using state_w_t = typename problem_t::state_type;
   using mat_type  = typename problem_t::jacobian_type;
   problem_t problem;
-  state_w_t x(2); x[0] = 2.0; x[1] = 0.25;
+  state_w_t x(2); 
+  x(0) = 2.0; x(1) = 0.25;
 
   using qr_solver_type = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_type qrSolver;
 
   auto GNSolver = pressio::solvers::nonlinear::createGaussNewtonQR(problem,x,qrSolver);
 
-  x[0] = 2.0; x[1] = 0.25;
+  x(0) = 2.0; x(1) = 0.25;
   testC1(sentinel, problem, x, GNSolver);
   std::cout << "\n" << std::endl;
 
-  x[0] = 2.0; x[1] = 0.25;
+  x(0) = 2.0; x(1) = 0.25;
   testC2(sentinel, problem, x, GNSolver);
   std::cout << "\n" << std::endl;
 

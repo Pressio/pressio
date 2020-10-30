@@ -23,7 +23,7 @@ TEST(ode_explicit_rk4,
 
   using state_t = containers::Vector<nstate_t>;
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   // using stepper_t = ode::ExplicitStepper<
   //   ode::explicitmethods::RungeKutta4, state_t, app_t>;
@@ -38,9 +38,9 @@ TEST(ode_explicit_rk4,
 
   appObj.analyticAdvanceRK4(dt);
 
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }
 
 
@@ -57,7 +57,7 @@ TEST(ode_explicit_rk4,
   // using res_t = containers::Vector<nveloc_t>;
 
   state_t y(3);
-  y[0] = 1.; y[1] = 2.; y[2] = 3.;
+  y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   // // the standard policy
   using res_std_pol_t = ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
@@ -76,7 +76,7 @@ TEST(ode_explicit_rk4,
 
   appObj.analyticAdvanceRK4(dt);
 
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }

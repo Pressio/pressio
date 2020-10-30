@@ -126,13 +126,13 @@ public:
     return &nativeExprObj_;
   }
 
-  ref_t operator[](std::size_t i)
+  ref_t operator()(std::size_t i)
   {
     assert(i < (std::size_t)extent_);
     return nativeExprObj_(i);
   }
 
-  const_ref_t operator[](std::size_t i) const
+  const_ref_t operator()(std::size_t i) const
   {
     assert(i < (std::size_t)extent_);
     return nativeExprObj_(i);
@@ -239,21 +239,10 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
-  operator[](size_t i)
+  operator()(size_t i)
   {
     assert(i < extent_);
     return nativeExprObj_(i);
-  }
-
-  template<typename _vector_t = vector_t>
-  mpl::enable_if_t<
-    !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
-  operator()(size_t i)
-  {
-    return (*this)[i];
   }
 
   // const subscripting
@@ -262,21 +251,32 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     const_ref_t
     >
-  operator[](size_t i) const
+  operator()(size_t i) const
   {
     assert(i < extent_);
     return nativeExprObj_(i);
   }
 
-  template<typename _vector_t = vector_t>
-  mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-    const_ref_t
-    >
-  operator()(size_t i) const
-  {
-    return (*this)[i];
-  }
+  // template<typename _vector_t = vector_t>
+  // mpl::enable_if_t<
+  //   !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
+  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+  //   ref_t
+  //   >
+  // operator()(size_t i)
+  // {
+  //   return (*this)[i];
+  // }
+
+  // template<typename _vector_t = vector_t>
+  // mpl::enable_if_t<
+  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+  //   const_ref_t
+  //   >
+  // operator()(size_t i) const
+  // {
+  //   return (*this)[i];
+  // }
 };
 #endif
 

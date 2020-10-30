@@ -17,17 +17,17 @@ struct NonLinearLeastSquareSystem
 
   void residual(const state_type& x, residual_type & res) const 
   {
-    res[0] = x[0] - x[1]*(2. - x[1]*(5. - x[1]) ) - 13.;
-    res[1] = x[0] - x[1]*(14. - x[1]*(1. + x[1]) ) - 29.;
+    res(0) = x(0) - x(1)*(2. - x(1)*(5. - x(1)) ) - 13.;
+    res(1) = x(0) - x(1)*(14. - x(1)*(1. + x(1)) ) - 29.;
     // if (normKind == pressio::Norm::L2)
     //   normResidual = res.data()->norm();
   }
 
   void jacobian(const state_type& x, jacobian_type & jac) const {
     jac.data()->coeffRef(0,0) = 1.;
-    jac.data()->coeffRef(0,1) = -x[1]*(2.*x[1] - 5.) + (5. - x[1])*x[1] - 2.;
+    jac.data()->coeffRef(0,1) = -x(1)*(2.*x(1) - 5.) + (5. - x(1))*x(1) - 2.;
     jac.data()->coeffRef(1,0) = 1.;
-    jac.data()->coeffRef(1,1) = x[1]*(x[1] + 1.) - (-2.*x[1] - 1.)*x[1] - 14.;
+    jac.data()->coeffRef(1,1) = x(1)*(x(1) + 1.) - (-2.*x(1) - 1.)*x(1) - 14.;
   }
 
   residual_type createResidual() const {
@@ -59,8 +59,8 @@ int main() {
   // LM with default update
   vector_w_t x0(2);
   {
-    x0[0] = 0.5;
-    x0[1] = -2.;
+    x0(0) = 0.5;
+    x0(1) = -2.;
 
     // using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
     //   NonLinearLeastSquareSystem, linear_solver_t>;
@@ -74,8 +74,8 @@ int main() {
   // LM with a different update
   vector_w_t x1(2);
   {
-    x1[0] = 0.5;
-    x1[1] = -2.;
+    x1(0) = 0.5;
+    x1(1) = -2.;
 
     // using lmsolver = pressio::solvers::nonlinear::composeLevenbergMarquardt<
     //   NonLinearLeastSquareSystem, linear_solver_t>::type;
@@ -100,14 +100,14 @@ int main() {
     solver.setMaxIterations(4);
     solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::LMSchedule1);
 
-    x2a[0] = 0.5; x2a[1] = -2.;
+    x2a(0) = 0.5; x2a(1) = -2.;
     solver.solve(sys, x2a);
 
-    x2b[0] = 0.5; x2b[1] = -2.;
+    x2b(0) = 0.5; x2b(1) = -2.;
     solver.solve(sys, x2b);
 
-    const bool b1 = abs(x2a[0] - x2b[0]) < 1e-13;
-    const bool b2 = abs(x2a[1] - x2b[1]) < 1e-13;
+    const bool b1 = abs(x2a(0) - x2b(0)) < 1e-13;
+    const bool b2 = abs(x2a(1) - x2b(1)) < 1e-13;
     if (!b1 or !b2){
       checkStr = "FAILED";
       std::cout << "LM sequential solves failed" << std::endl;
@@ -116,8 +116,8 @@ int main() {
 
   // check solution
   vector_w_t xstar(2);
-  xstar[0] = 11.412779;
-  xstar[1] = -0.896805;
+  xstar(0) = 11.412779;
+  xstar(1) = -0.896805;
 
   for (int i=0; i< 2; i++){
     if (abs((*x0.data())(i) - (*xstar.data())(i)) > 1e-6){

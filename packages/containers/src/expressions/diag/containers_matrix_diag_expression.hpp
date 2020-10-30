@@ -126,17 +126,19 @@ public:
     return nativeExprObj_(i);
   }
 
-  ref_t operator[](size_t i)
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
+  // [[deprecated("Use operator() instead.")]] 
+  // ref_t operator[](size_t i)
+  // {
+  //   assert(i < (size_t)extent_);
+  //   return nativeExprObj_(i);
+  // }
 
-  const_ref_t operator[](size_t i) const
-  {
-    assert(i < (size_t)extent_);
-    return nativeExprObj_(i);
-  }
+  // [[deprecated("Use operator() instead.")]] 
+  // const_ref_t operator[](size_t i) const
+  // {
+  //   assert(i < (size_t)extent_);
+  //   return nativeExprObj_(i);
+  // }
 };
 
 
@@ -219,21 +221,10 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
-  operator[](size_t i)
+  operator()(size_t i)
   {
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
-  }
-
-  template<typename _matrix_t = matrix_t>
-  mpl::enable_if_t<
-    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
-  operator()(size_t i)
-  {
-    return (*this)[i];
   }
 
   // const subscripting
@@ -242,21 +233,34 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     const_ref_t
     >
-  operator[](size_t i) const
+  operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
 
-  template<typename _matrix_t = matrix_t>
-  mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-    const_ref_t
-    >
-  operator()(size_t i) const
-  {
-    return (*this)[i];
-  }
+  // template<typename _matrix_t = matrix_t>
+  // [[deprecated("Use operator() instead.")]] 
+  // mpl::enable_if_t<
+  //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+  //   ref_t
+  //   >
+  // operator[](size_t i)
+  // {
+  //   return (*this)(i);
+  // }
+
+  // template<typename _matrix_t = matrix_t>
+  // [[deprecated("Use operator() instead.")]] 
+  // mpl::enable_if_t<
+  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+  //   const_ref_t
+  //   >
+  // operator[](size_t i) const
+  // {
+  //   return (*this)(i);
+  // }
 };
 #endif
 
@@ -336,33 +340,35 @@ public:
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
     ref_t
     >
-  operator[](size_t i)
+  operator()(size_t i)
   {
     assert(i < (size_t)extent_);
     return matObj_.get()(i,i);
-  }
-
-  template<typename _matrix_t = matrix_t>
-  mpl::enable_if_t<
-    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
-    ref_t
-    >
-  operator()(size_t i)
-  {
-    return (*this)[i];
   }
 
   // const subscripting
-  const_ref_t operator[](size_t i) const
+  const_ref_t operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
     return matObj_.get()(i,i);
   }
 
-  const_ref_t operator()(size_t i) const
-  {
-    return (*this)[i];
-  }
+  // template<typename _matrix_t = matrix_t>
+  // [[deprecated("Use operator() instead.")]] 
+  // mpl::enable_if_t<
+  //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+  //   ref_t
+  //   >
+  // operator()(size_t i)
+  // {
+  //   return (*this)(i);
+  // }
+
+  // [[deprecated("Use operator() instead.")]]   
+  // const_ref_t operator()(size_t i) const
+  // {
+  //   return (*this)(i);
+  // }
 };
 #endif
 

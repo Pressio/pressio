@@ -125,9 +125,9 @@ struct MyFakeSolver
       std::cout << i << "\n";
       try{
 	sys.residual(state, R);
-	state[0] += 0.1;
-	state[1] += 0.2;
-	state[2] += 0.3;
+	state(0) += 0.1;
+	state(1) += 0.2;
+	state(2) += 0.3;
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
 	throw ::pressio::eh::nonlinear_solve_failure();

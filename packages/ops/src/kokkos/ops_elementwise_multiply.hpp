@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 #include <KokkosBlas1_mult.hpp>
 
 //----------------------------------------------------------------------
-// computing:  y[i] = beta * y[i] + alpha * x[i] * z[i]
+// computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<

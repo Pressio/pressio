@@ -63,7 +63,7 @@ update(T & v, const scalar_t a, const T & v1, const scalar_t b)
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = a*v[i] + b*v1[i];
+    v(i) = a*v(i) + b*v1(i);
   }
 }
 
@@ -76,7 +76,7 @@ update(T & v, const T & v1, const scalar_t  b)
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = b*v1[i];
+    v(i) = b*v1(i);
   }
 }
 
@@ -94,7 +94,7 @@ update(T & v, const scalar_t &a,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = a*v[i] + b*v1[i] + c*v2[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i);
   }
 }
 
@@ -109,7 +109,7 @@ update(T & v,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = b*v1[i] + c*v2[i];
+    v(i) = b*v1(i) + c*v2(i);
   }
 }
 
@@ -129,7 +129,7 @@ update(T & v, const scalar_t &a,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
   }
 }
 
@@ -145,7 +145,7 @@ update(T & v,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
+    v(i) = b*v1(i) + c*v2(i) + d*v3(i);
   }
 }
 
@@ -166,7 +166,7 @@ update(T & v, const scalar_t &a,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
   }
 }
 
@@ -183,7 +183,7 @@ update(T & v,
   using int_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
   int_t n = v.length();
   for (int_t i=0; i<n; ++i){
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v(i) = b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
   }
 }
 

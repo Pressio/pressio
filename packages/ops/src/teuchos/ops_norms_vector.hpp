@@ -73,7 +73,7 @@ norm2(const vec_type & a)
   using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
   sc_t result = 0.0;
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a[i]*a[i];
+    result += a(i)*a(i);
   return std::sqrt(result);
 }
 

@@ -66,20 +66,20 @@ struct MyFakeSolver
       std::cout << i << "\n";
       try{
 	std::cout << "s: state" << " "
-		  << state[0] << " "
-		  << state[1] << " "
-		  << state[2] << std::endl;
+		  << state(0) << " "
+		  << state(1) << " "
+		  << state(2) << std::endl;
 
 	sys.residual(state, R);
 
 	std::cout << "s: res" << " "
-		  << R[0] << " "
-		  << R[1] << " "
-		  << R[2] << std::endl;
+		  << R(0) << " "
+		  << R(1) << " "
+		  << R(2) << std::endl;
 
-	state[0] += 0.1;
-	state[1] += 0.2;
-	state[2] += 0.3;
+	state(0) += 0.1;
+	state(1) += 0.2;
+	state(2) += 0.3;
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
 	throw ::pressio::eh::nonlinear_solve_failure();
@@ -91,28 +91,28 @@ struct MyFakeSolver
     // so the end of time step ==2 corresponds to count=4
     if (count_==4)
     {
-      if( std::abs(state[0]-1.4) > 1e-13 or
-    	  std::abs(state[1]-1.8) > 1e-13 or
-    	  std::abs(state[2]-2.2) > 1e-13){
+      if( std::abs(state(0)-1.4) > 1e-13 or
+    	  std::abs(state(1)-1.8) > 1e-13 or
+    	  std::abs(state(2)-2.2) > 1e-13){
     	checkStr_ = "FAILED";
       }
-      if( std::abs(R[0]-0.075) > 1e-13 or
-    	  std::abs(R[1]-0.175) > 1e-13 or
-    	  std::abs(R[2]-0.25) > 1e-13){
+      if( std::abs(R(0)-0.075) > 1e-13 or
+    	  std::abs(R(1)-0.175) > 1e-13 or
+    	  std::abs(R(2)-0.25) > 1e-13){
     	checkStr_ = "FAILED";
       }
     }
 
     if (count_==5)
     {
-      if( std::abs(state[0]-1.6) > 1e-13 or
-    	  std::abs(state[1]-2.2) > 1e-13 or
-    	  std::abs(state[2]-2.8) > 1e-13){
+      if( std::abs(state(0)-1.6) > 1e-13 or
+    	  std::abs(state(1)-2.2) > 1e-13 or
+    	  std::abs(state(2)-2.8) > 1e-13){
     	checkStr_ = "FAILED";
       }
-      if( std::abs(R[0]-0.0) > 1e-13 or
-    	  std::abs(R[1]-0.1) > 1e-13 or
-    	  std::abs(R[2]-0.1) > 1e-13){
+      if( std::abs(R(0)-0.0) > 1e-13 or
+    	  std::abs(R(1)-0.1) > 1e-13 or
+    	  std::abs(R(2)-0.1) > 1e-13){
     	checkStr_ = "FAILED";
       }
     }

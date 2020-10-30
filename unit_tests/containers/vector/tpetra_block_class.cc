@@ -57,7 +57,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 //   // now that we have a regular tpetra vector, we can check data
 //   Teuchos::ArrayRCP<const sc_t> dd = a_tp.getData();
 //   for (int i=0; i<a.extentLocal(0); i++){
-//     EXPECT_DOUBLE_EQ( dd[i], 1.22 );
+//     EXPECT_DOUBLE_EQ( dd(i), 1.22 );
 //   }
 // }
 
@@ -77,7 +77,7 @@ TEST_F(tpetraBlockVectorGlobSize15BlockSize5Fixture,
 //   // now that we have a regular tpetra vector, we can check data
 //   Teuchos::ArrayRCP<const sc_t> dd = a_tp.getData();
 //   for (int i=0; i<a.extentLocal(0); i++){
-//     EXPECT_DOUBLE_EQ( dd[i], 1.22 );
+//     EXPECT_DOUBLE_EQ( dd(i), 1.22 );
 //   }
 // }
 

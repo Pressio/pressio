@@ -62,7 +62,7 @@ update(T & v, const scalar_t a, const T & v1, const scalar_t b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = a*v[i] + b*v1[i];
+    v(i) = a*v(i) + b*v1(i);
 }
 
 template<typename T, typename scalar_t>
@@ -73,7 +73,7 @@ update(T & v, const T & v1, const scalar_t  b)
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = b*v1[i];
+    v(i) = b*v1(i);
 }
 
 
@@ -90,7 +90,7 @@ update(T & v, const scalar_t &a,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i);
 }
 
 template<typename T, typename scalar_t>
@@ -103,7 +103,7 @@ update(T & v,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = b*v1[i] + c*v2[i];
+    v(i) = b*v1(i) + c*v2(i);
 }
 
 
@@ -122,7 +122,7 @@ update(T & v, const scalar_t &a,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
 }
 
 template<typename T, typename scalar_t>
@@ -136,7 +136,7 @@ update(T & v,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
+    v(i) = b*v1(i) + c*v2(i) + d*v3(i);
 }
 
 //----------------------------------------------------------------------
@@ -155,7 +155,7 @@ update(T & v, const scalar_t &a,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
 }
 
 template<typename T, typename scalar_t>
@@ -170,7 +170,7 @@ update(T & v,
 {
   using int_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
   for (int_t i=0; i<v.extentLocal(0); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v(i) = b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
 }
 
 

@@ -18,7 +18,7 @@ TEST(ops_matrix_vector_product, eigenVectorDenseMatrix){
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();
   constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), alpha, myM, myV, beta, myR);
-  EXPECT_DOUBLE_EQ( myR[0], 16.0);
-  EXPECT_DOUBLE_EQ( myR[1], 28.0);
-  EXPECT_DOUBLE_EQ( myR[2], 6.0);
+  EXPECT_DOUBLE_EQ( myR(0), 16.0);
+  EXPECT_DOUBLE_EQ( myR(1), 28.0);
+  EXPECT_DOUBLE_EQ( myR(2), 6.0);
 }//end TEST

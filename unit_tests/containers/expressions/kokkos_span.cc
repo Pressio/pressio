@@ -25,7 +25,7 @@ TEST(containers_expressions_kokkos, span0)
   auto s = pressio::containers::span(aw, 3, 2);
   static_assert
     (std::is_const<
-     typename std::remove_reference<decltype(s[0])>::type
+     typename std::remove_reference<decltype(s(0))>::type
      >::value, "");
 }
 
@@ -39,14 +39,14 @@ TEST(containers_expressions_kokkos, span1)
 
   const auto sp = pressio::containers::span(a, 3, 2);
   EXPECT_EQ( sp.extent(0), 2 );
-  EXPECT_DOUBLE_EQ( sp[0], 13. );
-  EXPECT_DOUBLE_EQ( sp[1], 17. );
-  EXPECT_DOUBLE_EQ( a[3], 13. );
-  EXPECT_DOUBLE_EQ( a[4], 17. );
+  EXPECT_DOUBLE_EQ( sp(0), 13. );
+  EXPECT_DOUBLE_EQ( sp(1), 17. );
+  EXPECT_DOUBLE_EQ( a(3), 13. );
+  EXPECT_DOUBLE_EQ( a(4), 17. );
 
   //change a, should change span too
   a(3)=43.;
-  EXPECT_DOUBLE_EQ( sp[0], 43. );
+  EXPECT_DOUBLE_EQ( sp(0), 43. );
 }
 
 TEST(containers_expressions_kokkos, span2)
@@ -55,25 +55,25 @@ TEST(containers_expressions_kokkos, span2)
   using my_t = pressio::containers::Vector<n_t>;
   my_t a(6);
   fillVector(a);
-  EXPECT_DOUBLE_EQ( a[3], 13. );
-  EXPECT_DOUBLE_EQ( a[4], 17. );
+  EXPECT_DOUBLE_EQ( a(3), 13. );
+  EXPECT_DOUBLE_EQ( a(4), 17. );
 
   auto sp = pressio::containers::span(a, 3, 2);
   // sp can be assigned to
   static_assert
     (!std::is_const<
-     typename std::remove_reference<decltype(sp[0])>::type
+     typename std::remove_reference<decltype(sp(0))>::type
      >::value, "");
 
   // change values
-  sp[0] = 44.;
-  sp[1] = 55.;
+  sp(0) = 44.;
+  sp(1) = 55.;
 
   // both sp and a should be changed
-  EXPECT_DOUBLE_EQ( sp[0], 44. );
-  EXPECT_DOUBLE_EQ( sp[1], 55. );
-  EXPECT_DOUBLE_EQ( a[3], 44. );
-  EXPECT_DOUBLE_EQ( a[4], 55. );
+  EXPECT_DOUBLE_EQ( sp(0), 44. );
+  EXPECT_DOUBLE_EQ( sp(1), 55. );
+  EXPECT_DOUBLE_EQ( a(3), 44. );
+  EXPECT_DOUBLE_EQ( a(4), 55. );
 }
 
 TEST(containers_expressions_kokkos, span3)
@@ -85,21 +85,21 @@ TEST(containers_expressions_kokkos, span3)
   const my_t a(a0);
   static_assert
     (std::is_const<
-     typename std::remove_reference<decltype(a[0])>::type
+     typename std::remove_reference<decltype(a(0))>::type
      >::value, "");
 
-  EXPECT_DOUBLE_EQ( a[3], 13. );
-  EXPECT_DOUBLE_EQ( a[4], 17. );
+  EXPECT_DOUBLE_EQ( a(3), 13. );
+  EXPECT_DOUBLE_EQ( a(4), 17. );
 
   auto sp = pressio::containers::span(a, 3, 2);
   // since a is const, sp should be read-only
   static_assert
     (std::is_const<
-     typename std::remove_reference<decltype(sp[0])>::type
+     typename std::remove_reference<decltype(sp(0))>::type
      >::value, "");
 
-  EXPECT_DOUBLE_EQ( sp[0], 13. );
-  EXPECT_DOUBLE_EQ( sp[1], 17. );
-  EXPECT_DOUBLE_EQ( a[3],  13. );
-  EXPECT_DOUBLE_EQ( a[4],  17. );
+  EXPECT_DOUBLE_EQ( sp(0), 13. );
+  EXPECT_DOUBLE_EQ( sp(1), 17. );
+  EXPECT_DOUBLE_EQ( a(3),  13. );
+  EXPECT_DOUBLE_EQ( a(4),  17. );
 }

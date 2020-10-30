@@ -181,12 +181,12 @@ int main(int argc, char *argv[]){
   // check the reconstructed rom state
   for (auto i=0; i<veloRomSol.extent(0); i++){
     std::cout << std::setprecision(14)
-  	      << veloRomSol[i]
+  	      << veloRomSol(i)
   	      << " "
-  	      << residRomSol[i]
+  	      << residRomSol(i)
   	      << std::endl;
 
-    if (std::abs(veloRomSol[i] - residRomSol[i]) > 1e-13)
+    if (std::abs(veloRomSol(i) - residRomSol(i)) > 1e-13)
       checkStr = "FAILED";
   }
 
@@ -194,12 +194,12 @@ int main(int argc, char *argv[]){
   // check the reconstructed fom state
   for (auto i=0; i<veloFomSol.size(); i++){
     std::cout << std::setprecision(14)
-  	      << veloFomSol[i]
+  	      << veloFomSol(i)
   	      << " "
   	      << residFomSol[i]
   	      << std::endl;
 
-    if (std::abs(veloFomSol[i] - residFomSol[i]) > 1e-13)
+    if (std::abs(veloFomSol(i) - residFomSol(i)) > 1e-13)
       checkStr = "FAILED";
   }
 

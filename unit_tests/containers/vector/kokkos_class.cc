@@ -23,7 +23,7 @@ struct InitView {
     // Acesss the View just like a Fortran array.  The layout depends
     // on the View's memory space, so don't rely on the View's
     // physical memory layout unless you know what you're doing.
-    a[i] = 2.0*i;
+    a(i) = 2.0*i;
   }
 };
 
@@ -70,7 +70,7 @@ TEST(containers_vector_sharedmem_kokkos_class, Constructor)
   // Kokkos::parallel_reduce (N, ReduceFunctor<view_type>(a), sum);
   // printf ("Result: %f\n", sum);
 
-  using view_type2 = Kokkos::View<double[11]>;
+  using view_type2 = Kokkos::View<double[3]>;
   using myvec_t2 = containers::Vector<view_type2>;
   static_assert( containers::details::traits<myvec_t2>::is_static == 1, "" );
 

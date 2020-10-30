@@ -15,7 +15,7 @@ void checkSol(int rank, const T & y,
   else if (rank==3) shift = 15;
 
   for (auto i=0; i<5; i++){
-    if (std::abs(y[i] - trueS[i+shift]) > eps) checkStr = "FAILED";
+    if (std::abs(y(i) - trueS[i+shift]) > eps) checkStr = "FAILED";
   }
 }
 

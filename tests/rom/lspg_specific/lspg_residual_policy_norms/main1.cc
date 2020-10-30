@@ -156,17 +156,17 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   lspg_residual_t residual(fomSize);
 
   // set romY_n = {1,2,3,4}
-  romState[0] = 1.;
-  romState[1] = 2.;
-  romState[2] = 3.;
-  romState[3] = 4.;
+  romState(0) = 1.;
+  romState(1) = 2.;
+  romState(2) = 3.;
+  romState(3) = 4.;
 
   // set romY_n-1 = {4,1,2,1}
   auto &  romYnm1 = romAuxStates.stateAt(pressio::ode::nMinusOne());
-  romYnm1[0] = 4.;
-  romYnm1[1] = 1.;
-  romYnm1[2] = 2.;
-  romYnm1[3] = 1.;
+  romYnm1(0) = 4.;
+  romYnm1(1) = 1.;
+  romYnm1(2) = 2.;
+  romYnm1(3) = 1.;
 
   /* the compute call below should first compute the residual for BDF1:
 	R = phi*romY_n - phi*romY_n-1 - dt*f( phi*romY_n)

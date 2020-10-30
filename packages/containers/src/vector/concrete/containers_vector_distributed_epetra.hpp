@@ -97,20 +97,22 @@ public:
     return &data_;
   }
 
-  sc_t & operator [] (LO_t i){
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
-  sc_t const & operator [] (LO_t i) const{
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
-
   sc_t & operator()(LO_t i){
     assert(i < this->extentLocal(0));
     return data_[i];
   };
   sc_t const & operator()(LO_t i) const{
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
+
+  [[deprecated("Use operator() instead.")]] 
+  sc_t & operator[](LO_t i){
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
+  [[deprecated("Use operator() instead.")]] 
+  sc_t const & operator[](LO_t i) const{
     assert(i < this->extentLocal(0));
     return data_[i];
   };

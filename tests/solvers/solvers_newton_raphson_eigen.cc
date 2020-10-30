@@ -26,19 +26,15 @@ struct ValidSystem {
   void residual(const state_type& x, 
                 residual_type& res) const 
   {
-    res[0] =  x[0]*x[0]*x[0] + x[1] - 1.0;
-    res[1] = -x[0] + x[1]*x[1]*x[1] + 1.0;
-    // if (normKind == pressio::Norm::L2) 
-    //   norm = res.data()->norm();
-    // else if (normKind == pressio::Norm::L1) 
-    //   norm = res.data()->lpNorm<1>();
+    res(0) =  x(0)*x(0)*x(0) + x(1) - 1.0;
+    res(1) = -x(0) + x(1)*x(1)*x(1) + 1.0;
   }
 
   void jacobian(const state_type& x, jacobian_type& jac) const {
-    jac.data()->coeffRef(0, 0) = 3.0*x[0]*x[0];
+    jac.data()->coeffRef(0, 0) = 3.0*x(0)*x(0);
     jac.data()->coeffRef(0, 1) =  1.0;
     jac.data()->coeffRef(1, 0) = -1.0;
-    jac.data()->coeffRef(1, 1) = 3.0*x[1]*x[1];
+    jac.data()->coeffRef(1, 1) = 3.0*x(1)*x(1);
   }
 };
 
@@ -56,7 +52,7 @@ int main()
   // my solution vector
   state_t y(2);
   // initial condition
-  y[0] = 0.001; y[1] = 0.0001;
+  y(0) = 0.001; y(1) = 0.0001;
 
   // linear system
   using lin_solver_t = linear::Solver<linear::iterative::LSCG, jacobian_t>;
@@ -67,8 +63,8 @@ int main()
   NonLinSolver.solve(sys, y);
 
   std::string strOut = "PASSED";
-  const auto e1 = std::abs(y[0] - (1.)); 
-  const auto e2 = std::abs(y[1] - (0.)); 
+  const auto e1 = std::abs(y(0) - (1.)); 
+  const auto e2 = std::abs(y(1) - (0.)); 
   if (e1>1e-8 or e2>1e-8) strOut = "FAILED";
 
   std::cout <<  strOut << std::endl;

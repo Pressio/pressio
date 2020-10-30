@@ -16,7 +16,7 @@ int main()
 
   problem_t problem;
   state_t x(4);
-  x[0] = -0.05; x[1] = 1.1; x[2] = 1.2; x[3] = 1.5;
+  x(0) = -0.05; x(1) = 1.1; x(2) = 1.2; x(3) = 1.5;
 
   using lin_tag      = solvers::linear::direct::HouseholderQR;
   using lin_solver_t = solvers::linear::Solver<lin_tag, hessian_t>;

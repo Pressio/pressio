@@ -83,10 +83,10 @@ public:
     Kokkos::deep_copy(data_, src);
   }
 
-  explicit DenseMatrix(wrap_t && src) 
+  explicit DenseMatrix(wrap_t && src)
     : data_(std::move(src)){}
 
-  DenseMatrix(const std::string & label, 
+  DenseMatrix(const std::string & label,
               size_t e1, size_t e2)
     : data_{label, e1, e2}
   {}
@@ -103,7 +103,7 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   DenseMatrix & operator=(const DenseMatrix & other) = delete;
 
   // move cnstr and assign
@@ -122,6 +122,8 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator () (ord_t i, ord_t j){
+    assert(i < this->extent(0) );
+    assert(j < this->extent(1) );
     return data_(i,j);
   };
 
@@ -132,6 +134,8 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator () (ord_t i, ord_t j) const{
+    assert(i < this->extent(0) );
+    assert(j < this->extent(1) );
     return data_(i, j);
   };
 

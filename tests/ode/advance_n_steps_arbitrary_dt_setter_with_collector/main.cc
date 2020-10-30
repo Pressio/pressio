@@ -11,7 +11,7 @@ struct MyFakeStepper
 	      const pressio::ode::types::step_t & step,
 	      solver_type & solver)
   {
-    for (int i=0; i<odeState.extent(0); i++) odeState[i] += dt;
+    for (int i=0; i<odeState.extent(0); i++) odeState(i) += dt;
   }
 };
 
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
   using ode_state_t = pressio::containers::Vector<vec_t>;
 
   ode_state_t y(3);
-  y[0] = 1.0; y[1] = 2.0; y[2] = 3.0;
+  y(0) = 1.0; y(1) = 2.0; y(2) = 3.0;
 
   MyFakeStepper<ode_state_t> stepper;
   MyFakeSolver solver;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		     if (step==3) trueY = &true3;
 
 		     for (auto i=0; i<3; ++i){
-		       if( std::abs(y[i]-(*trueY)[i]) > 1e-11 )
+		       if( std::abs(y(i)-(*trueY)[i]) > 1e-11 )
 			 checkStr = "FAILED";
 		     }
 		   };

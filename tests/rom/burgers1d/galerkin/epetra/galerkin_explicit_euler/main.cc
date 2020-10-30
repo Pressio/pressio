@@ -83,7 +83,7 @@ const std::vector<double> bdf1Sol
   if (rank==1)  shift = 25;
   int myn = yFomFinal.data()->Map().NumMyElements();
   for (auto i=0; i<myn; i++){
-    if(std::abs(yFomFinal[i] - bdf1Sol[i+shift]) > 1e-12 ){
+    if(std::abs(yFomFinal(i) - bdf1Sol[i+shift]) > 1e-12 ){
       checkStr = "FAILED";
       break;
     }
