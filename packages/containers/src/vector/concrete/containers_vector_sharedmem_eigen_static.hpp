@@ -77,7 +77,7 @@ public:
 
   // copy cnstr
   Vector(Vector const & other) = default;
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(Vector const & other) = delete;
 
   /* move semantics for static vectors do not invalidate
@@ -93,20 +93,6 @@ public:
   ~Vector() = default;
 
 public:
-  ref_t operator [] (ord_t i){
-    return data_(i);
-  };
-  const_ref_t operator [] (ord_t i) const{
-    return data_(i);
-  };
-
-  ref_t operator()(ord_t i){
-    return data_(i);
-  };
-  const_ref_t operator()(ord_t i) const{
-    return data_(i);
-  };
-
   wrap_t const * data() const{
     return &data_;
   }
@@ -114,6 +100,22 @@ public:
   wrap_t * data(){
     return &data_;
   }
+
+  ref_t operator [] (ord_t i){
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+  const_ref_t operator [] (ord_t i) const{
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+
+  ref_t operator()(ord_t i){
+    return (*this)[i];
+  };
+  const_ref_t operator()(ord_t i) const{
+    return (*this)[i];
+  };
 
   bool empty() const{
     return this->size()==0 ? true : false;
@@ -127,6 +129,6 @@ public:
 private:
   wrap_t data_ = {};
 
-};//end class
+};
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_EIGEN_STATIC_HPP_

@@ -72,9 +72,9 @@ class Vector<
 public:
   Vector() = delete;
 
-  // something seems wrong with 
-  //    data_(other.data_, Teuchos::Copy){} 
-  // for tpetra block, so don't use that. 
+  // something seems wrong with
+  //    data_(other.data_, Teuchos::Copy){}
+  // for tpetra block, so don't use that.
   // just construct the vecrtor using map and block size.
 
   explicit Vector(const wrapped_type & vecobj)
@@ -86,7 +86,7 @@ public:
      ::pressio::utils::constants<sc_t>::zero());
   }
 
-  explicit Vector(wrapped_type && vecobj) 
+  explicit Vector(wrapped_type && vecobj)
     : Vector(vecobj){}
 
   explicit Vector(const map_t & mapO, LO_t blockSize)
@@ -96,14 +96,14 @@ public:
   // copy cnstr delegating (for now) to the one above
   Vector(Vector const & other) : Vector(*other.data()){}
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
 
 
-  /*something is wrong with the move for blockVector, 
+  /*something is wrong with the move for blockVector,
     I get all sorts of strange behaviors.
-  
-    for example this: 
+
+    for example this:
     using vec_t = tpetra::BlockVector<>;
     vec_t a(*map, 3);
     a.putScalar(1.);
@@ -115,7 +115,7 @@ public:
   */
   // move cnstr
   Vector(Vector && other) : Vector(*other.data()){}
-  //   : data_(other.data_, Teuchos::Copy){} 
+  //   : data_(other.data_, Teuchos::Copy){}
 
   // move assignment
   Vector & operator=(Vector && other)
@@ -124,7 +124,7 @@ public:
            *other.data(),
            ::pressio::utils::constants<sc_t>::zero() );
     return *this;
-  }  
+  }
 
   ~Vector() = default;
 
@@ -154,7 +154,7 @@ public:
 private:
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_

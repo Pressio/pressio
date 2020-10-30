@@ -87,7 +87,7 @@ public:
   // copy cnstr
   Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
   //   if (&other != this){
   //     assert(this->extentLocal(0) == other.extentLocal(0));
@@ -104,11 +104,10 @@ public:
   ~Vector() = default;
 
 public:
-
-  void print(std::string tag) const{
-    Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense
-      (std::cout << std::setprecision(15), data_, tag, tag);
-  }
+  // void print(std::string tag) const{
+  //   Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense
+  //     (std::cout << std::setprecision(15), data_, tag, tag);
+  // }
 
   wrapped_type const * data() const{
     return &data_;
@@ -134,7 +133,7 @@ public:
 
 private:
   wrapped_type data_ = {};
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_HPP_

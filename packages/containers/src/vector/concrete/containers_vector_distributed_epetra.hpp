@@ -78,7 +78,7 @@ public:
   // copy cnstr
   Vector(Vector const & other) = default;
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(Vector const & other) = delete;
 
   // move cnstr
@@ -89,6 +89,14 @@ public:
   ~Vector() = default;
 
 public:
+  wrapped_type const * data() const{
+    return &data_;
+  }
+
+  wrapped_type * data(){
+    return &data_;
+  }
+
   sc_t & operator [] (LO_t i){
     assert(i < this->extentLocal(0));
     return data_[i];
@@ -107,14 +115,6 @@ public:
     return data_[i];
   };
 
-  wrapped_type const * data() const{
-    return &data_;
-  }
-
-  wrapped_type * data(){
-    return &data_;
-  }
-
   GO_t extent(std::size_t i) const{
     assert(i==0);
     return data_.GlobalLength();
@@ -128,7 +128,7 @@ public:
 private:
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_

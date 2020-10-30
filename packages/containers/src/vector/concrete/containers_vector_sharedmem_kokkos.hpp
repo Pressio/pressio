@@ -105,7 +105,7 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
 
   // move cnstr and assign
@@ -124,6 +124,13 @@ public:
   ~Vector() = default;
 
 public:
+  wrapped_type const * data() const{
+    return &data_;
+  }
+  wrapped_type * data(){
+    return &data_;
+  }
+
   template<typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
@@ -131,6 +138,7 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator [] (ord_t i){
+    assert(i < this->extent(0));
     return data_(i);
   };
 
@@ -141,6 +149,7 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator [] (ord_t i) const{
+    assert(i < this->extent(0));
     return data_(i);
   };
 
@@ -151,6 +160,7 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator () (ord_t i){
+    assert(i < this->extent(0));
     return data_(i);
   };
 
@@ -161,15 +171,9 @@ public:
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator () (ord_t i) const{
+    assert(i < this->extent(0));
     return data_(i);
   };
-
-  wrapped_type const * data() const{
-    return &data_;
-  }
-  wrapped_type * data(){
-    return &data_;
-  }
 
   bool empty() const{
     return data_.extent(0)==0 ? true : false;
@@ -183,7 +187,7 @@ public:
 private:
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_
