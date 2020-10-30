@@ -47,7 +47,7 @@ The pressio C++ library is divided into several packages:</para>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">apps</mcss:span>  </para>
 </entry><entry thead="no"><para>suites of mini-apps used for basic testing  </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/apps/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>n2   </para>
+</entry><entry thead="no"><para>2   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>  </para>
