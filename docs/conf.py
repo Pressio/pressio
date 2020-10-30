@@ -7,7 +7,7 @@ LINKS_NAVBAR1 = [
   #("<a href=\"md_pages_get_started.html\">Get Started</a>",
   ("<a href=>Get Started</a>", # empty href so that get started only has children
    [
-     ("<a href=\"md_pages_getstarted_packages.html\">Subpackages</a>",),
+     ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
      ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),

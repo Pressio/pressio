@@ -10,8 +10,6 @@
   </compound>
   <compound refid="adapter__unsteady__lspg__api_8md" kind="file"><name>adapter_unsteady_lspg_api.md</name>
   </compound>
-  <compound refid="examples_8md" kind="file"><name>examples.md</name>
-  </compound>
   <compound refid="example1_8md" kind="file"><name>example1.md</name>
   </compound>
   <compound refid="get__started_8md" kind="file"><name>get_started.md</name>
@@ -33,8 +31,6 @@
   <compound refid="hyperred__tpetra__example_8md" kind="file"><name>hyperred_tpetra_example.md</name>
   </compound>
   <compound refid="main_8md" kind="file"><name>main.md</name>
-  </compound>
-  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
   </compound>
   <compound refid="tutorial1_8md" kind="file"><name>tutorial1.md</name>
   </compound>
@@ -60,8 +56,6 @@
   </compound>
   <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
   </compound>
-  <compound refid="md_pages_examples" kind="page"><name>md_pages_examples</name>
-  </compound>
   <compound refid="md_pages_get_started" kind="page"><name>md_pages_get_started</name>
   </compound>
   <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
@@ -81,8 +75,6 @@
   <compound refid="md_pages_hyperreduction" kind="page"><name>md_pages_hyperreduction</name>
   </compound>
   <compound refid="md_pages_tutorials_tutorial1" kind="page"><name>md_pages_tutorials_tutorial1</name>
-  </compound>
-  <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
   </compound>
   <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
   </compound>

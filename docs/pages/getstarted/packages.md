@@ -1,5 +1,5 @@
 
-# Subpackages
+# Packages
 
 @m_class{m-block m-info}
 
