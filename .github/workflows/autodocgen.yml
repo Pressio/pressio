@@ -21,53 +21,40 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
+
       - name: Install doxygen
         run: sudo apt-get install doxygen
-          
+
+# #       # Runs a single command using the runners shell
+# #       - name: Running doxygen
+# #         run: |
+# #           pwd
+# #           cd docs/
+# #           doxygen Doxyfile
+
 #       # Runs a single command using the runners shell
-#       - name: Running doxygen
+#       - name: Generate html
+#         run: |
+#           cd ..
+#           git clone https://github.com/mosra/m.css.git
+#           cd m.css/documentation
+#           pwd
+#           ls -lh ../../pressio/docs/
+#           ./doxygen.py ../../pressio/docs/conf.py
+
+#       - name: Commit changes
 #         run: |
 #           pwd
 #           cd docs/
-#           doxygen Doxyfile
-          
-      # Runs a single command using the runners shell
-      - name: Generate html
-        run: |
-          cd ..
-          git clone https://github.com/mosra/m.css.git
-          cd m.css/documentation
-          pwd
-          ls -lh ../../pressio/docs/
-          ./doxygen.py ../../pressio/docs/conf.py
-          
-      - name: Commit changes
-        run: |
-          pwd
-          cd docs/
-          touch temp_file.txt
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add html
-          git add html/*.*
-          git add xml
-          git add xml/*.*
-          git commit -m "Generated html and xml via github action" -a
-          
-          
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-                    
-#       # Runs a single command using the runners shell
-#       - name: Run a one-line script
-#         run: echo Hello, world!
+#           git config --local user.email "action@github.com"
+#           git config --local user.name "GitHub Action"
+#           git add html
+#           git add html/*.*
+#           git add xml
+#           git add xml/*.*
+#           git commit -m "Generated html and xml via github action" -a
 
-#       # Runs a set of commands using the runners shell
-#       - name: Run a multi-line script
-#         run: |
-#           pwd
-#           echo Add other actions to build,
-#           echo test, and deploy your project.
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
