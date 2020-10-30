@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.13">
   <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
   </compound>
   <compound refid="adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
@@ -48,65 +48,51 @@
   </compound>
   <compound refid="license_8md" kind="file"><name>license.md</name>
   </compound>
-  <compound refid="md_pages_adapter_api" kind="page"><name>md_pages_adapter_api</name>
+  <compound refid="autotoc_md0" kind="page"><name>autotoc_md0</name>
   </compound>
-  <compound refid="md_pages_adapter_apis_adapter_discrete_time_api" kind="page"><name>md_pages_adapter_apis_adapter_discrete_time_api</name>
+  <compound refid="autotoc_md1" kind="page"><name>autotoc_md1</name>
   </compound>
-  <compound refid="md_pages_adapter_apis_adapter_galerkin_api" kind="page"><name>md_pages_adapter_apis_adapter_galerkin_api</name>
+  <compound refid="autotoc_md2" kind="page"><name>autotoc_md2</name>
   </compound>
-  <compound refid="md_pages_adapter_apis_adapter_steady_lspg_api" kind="page"><name>md_pages_adapter_apis_adapter_steady_lspg_api</name>
+  <compound refid="autotoc_md5" kind="page"><name>autotoc_md5</name>
   </compound>
-  <compound refid="md_pages_adapter_apis_adapter_unsteady_lspg_api" kind="page"><name>md_pages_adapter_apis_adapter_unsteady_lspg_api</name>
+  <compound refid="autotoc_md8" kind="page"><name>autotoc_md8</name>
   </compound>
-  <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
+  <compound refid="autotoc_md12" kind="page"><name>autotoc_md12</name>
   </compound>
-  <compound refid="md_pages_examples" kind="page"><name>md_pages_examples</name>
+  <compound refid="autotoc_md13" kind="page"><name>autotoc_md13</name>
   </compound>
-  <compound refid="md_pages_get_started" kind="page"><name>md_pages_get_started</name>
+  <compound refid="autotoc_md14" kind="page"><name>autotoc_md14</name>
   </compound>
-  <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
+  <compound refid="autotoc_md15" kind="page"><name>autotoc_md15</name>
   </compound>
-  <compound refid="md_pages_getstarted_build_and_install" kind="page"><name>md_pages_getstarted_build_and_install</name>
+  <compound refid="autotoc_md16" kind="page"><name>autotoc_md16</name>
   </compound>
-  <compound refid="md_pages_getstarted_packages" kind="page"><name>md_pages_getstarted_packages</name>
+  <compound refid="autotoc_md19" kind="page"><name>autotoc_md19</name>
   </compound>
-  <compound refid="md_pages_getstarted_pressio_app" kind="page"><name>md_pages_getstarted_pressio_app</name>
+  <compound refid="autotoc_md20" kind="page"><name>autotoc_md20</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_eigen_example" kind="page"><name>md_pages_hyperreduction_hyperred_eigen_example</name>
+  <compound refid="autotoc_md21" kind="page"><name>autotoc_md21</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_how_to_enable" kind="page"><name>md_pages_hyperreduction_hyperred_how_to_enable</name>
+  <compound refid="autotoc_md22" kind="page"><name>autotoc_md22</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_tpetra_example" kind="page"><name>md_pages_hyperreduction_hyperred_tpetra_example</name>
+  <compound refid="autotoc_md23" kind="page"><name>autotoc_md23</name>
   </compound>
-  <compound refid="md_pages_hyperreduction" kind="page"><name>md_pages_hyperreduction</name>
+  <compound refid="autotoc_md24" kind="page"><name>autotoc_md24</name>
   </compound>
-  <compound refid="md_pages_tutorials_tutorial1" kind="page"><name>md_pages_tutorials_tutorial1</name>
+  <compound refid="autotoc_md29" kind="page"><name>autotoc_md29</name>
   </compound>
-  <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
+  <compound refid="autotoc_md30" kind="page"><name>autotoc_md30</name>
   </compound>
-  <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
+  <compound refid="autotoc_md31" kind="page"><name>autotoc_md31</name>
   </compound>
-  <compound refid="md_pages_various_formulation_lspg" kind="page"><name>md_pages_various_formulation_lspg</name>
+  <compound refid="autotoc_md32" kind="page"><name>autotoc_md32</name>
   </compound>
-  <compound refid="md_pages_various_formulation_wls" kind="page"><name>md_pages_various_formulation_wls</name>
+  <compound refid="autotoc_md33" kind="page"><name>autotoc_md33</name>
   </compound>
-  <compound refid="md_pages_various_license" kind="page"><name>md_pages_various_license</name>
+  <compound refid="autotoc_md34" kind="page"><name>autotoc_md34</name>
   </compound>
-  <compound refid="md_pages_various" kind="page"><name>md_pages_various</name>
-  </compound>
-  <compound refid="dir_ba97ba3ce07c772fb98545b004f56066" kind="dir"><name>pages/adapter_apis</name>
-  </compound>
-  <compound refid="dir_c8b5f49f42f70cbb2789196c6be03b08" kind="dir"><name>pages/examples</name>
-  </compound>
-  <compound refid="dir_72e76ac6147c72c291306ebceacd125b" kind="dir"><name>pages/getstarted</name>
-  </compound>
-  <compound refid="dir_c47e5d700743d14fcf5d1e609c4d899d" kind="dir"><name>pages/hyperreduction</name>
-  </compound>
-  <compound refid="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir"><name>pages</name>
-  </compound>
-  <compound refid="dir_d37f90f6dfa16220c69059cd0bfa7aa7" kind="dir"><name>pages/tutorials</name>
-  </compound>
-  <compound refid="dir_641e6e2d6329e01ae5e5715108e316c1" kind="dir"><name>pages/various</name>
+  <compound refid="autotoc_md35" kind="page"><name>autotoc_md35</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>
