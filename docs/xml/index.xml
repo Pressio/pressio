@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.13">
+  <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
+  </compound>
+  <compound refid="adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
+  </compound>
+  <compound refid="adapter__galerkin__api_8md" kind="file"><name>adapter_galerkin_api.md</name>
+  </compound>
+  <compound refid="adapter__steady__lspg__api_8md" kind="file"><name>adapter_steady_lspg_api.md</name>
+  </compound>
+  <compound refid="adapter__unsteady__lspg__api_8md" kind="file"><name>adapter_unsteady_lspg_api.md</name>
+  </compound>
+  <compound refid="examples_8md" kind="file"><name>examples.md</name>
+  </compound>
+  <compound refid="example1_8md" kind="file"><name>example1.md</name>
+  </compound>
+  <compound refid="get__started_8md" kind="file"><name>get_started.md</name>
+  </compound>
+  <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
+  </compound>
+  <compound refid="build__and__install_8md" kind="file"><name>build_and_install.md</name>
+  </compound>
+  <compound refid="packages_8md" kind="file"><name>packages.md</name>
+  </compound>
+  <compound refid="pressio__app_8md" kind="file"><name>pressio_app.md</name>
+  </compound>
+  <compound refid="hyperreduction_8md" kind="file"><name>hyperreduction.md</name>
+  </compound>
+  <compound refid="hyperred__eigen__example_8md" kind="file"><name>hyperred_eigen_example.md</name>
+  </compound>
+  <compound refid="hyperred__how__to__enable_8md" kind="file"><name>hyperred_how_to_enable.md</name>
+  </compound>
+  <compound refid="hyperred__tpetra__example_8md" kind="file"><name>hyperred_tpetra_example.md</name>
+  </compound>
+  <compound refid="main_8md" kind="file"><name>main.md</name>
+  </compound>
+  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
+  </compound>
+  <compound refid="tutorial1_8md" kind="file"><name>tutorial1.md</name>
+  </compound>
+  <compound refid="various_8md" kind="file"><name>various.md</name>
+  </compound>
+  <compound refid="formulation__galerkin_8md" kind="file"><name>formulation_galerkin.md</name>
+  </compound>
+  <compound refid="formulation__lspg_8md" kind="file"><name>formulation_lspg.md</name>
+  </compound>
+  <compound refid="formulation__wls_8md" kind="file"><name>formulation_wls.md</name>
+  </compound>
+  <compound refid="license_8md" kind="file"><name>license.md</name>
+  </compound>
+  <compound refid="autotoc_md0" kind="page"><name>autotoc_md0</name>
+  </compound>
+  <compound refid="autotoc_md1" kind="page"><name>autotoc_md1</name>
+  </compound>
+  <compound refid="autotoc_md2" kind="page"><name>autotoc_md2</name>
+  </compound>
+  <compound refid="autotoc_md5" kind="page"><name>autotoc_md5</name>
+  </compound>
+  <compound refid="autotoc_md8" kind="page"><name>autotoc_md8</name>
+  </compound>
+  <compound refid="autotoc_md12" kind="page"><name>autotoc_md12</name>
+  </compound>
+  <compound refid="autotoc_md13" kind="page"><name>autotoc_md13</name>
+  </compound>
+  <compound refid="autotoc_md14" kind="page"><name>autotoc_md14</name>
+  </compound>
+  <compound refid="autotoc_md15" kind="page"><name>autotoc_md15</name>
+  </compound>
+  <compound refid="autotoc_md16" kind="page"><name>autotoc_md16</name>
+  </compound>
+  <compound refid="autotoc_md19" kind="page"><name>autotoc_md19</name>
+  </compound>
+  <compound refid="autotoc_md20" kind="page"><name>autotoc_md20</name>
+  </compound>
+  <compound refid="autotoc_md21" kind="page"><name>autotoc_md21</name>
+  </compound>
+  <compound refid="autotoc_md22" kind="page"><name>autotoc_md22</name>
+  </compound>
+  <compound refid="autotoc_md23" kind="page"><name>autotoc_md23</name>
+  </compound>
+  <compound refid="autotoc_md24" kind="page"><name>autotoc_md24</name>
+  </compound>
+  <compound refid="autotoc_md29" kind="page"><name>autotoc_md29</name>
+  </compound>
+  <compound refid="autotoc_md30" kind="page"><name>autotoc_md30</name>
+  </compound>
+  <compound refid="autotoc_md31" kind="page"><name>autotoc_md31</name>
+  </compound>
+  <compound refid="autotoc_md32" kind="page"><name>autotoc_md32</name>
+  </compound>
+  <compound refid="autotoc_md33" kind="page"><name>autotoc_md33</name>
+  </compound>
+  <compound refid="autotoc_md34" kind="page"><name>autotoc_md34</name>
+  </compound>
+  <compound refid="autotoc_md35" kind="page"><name>autotoc_md35</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

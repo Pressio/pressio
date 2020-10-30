@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="autotoc_md5" kind="page">
+    <compoundname>autotoc_md5</compoundname>
+    <title>FOM Adapter API for Steady LSPG</title>
+    <detaileddescription>
+<para>Note that the adapter classes shown below serve the purpose of interfacing your native application with pressio, but the actual object instantiated from one of these should be created as part of your application. These classes do <bold>not</bold> contain anything strictly related to pressio, but just contain types native to your application.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> (fix)</para><para>The adapter class should look like:</para><para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterSteadyLSPG</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>following<sp/>aliases<sp/>MUST<sp/>be<sp/>exposed<sp/>because<sp/>Pressio<sp/>detects<sp/>them.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>these<sp/>are<sp/>not<sp/>visible,<sp/>mispelled<sp/>or<sp/>not<sp/>found,<sp/>you<sp/>get<sp/>a<sp/>compile-time<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>because<sp/>your<sp/>adapter<sp/>class<sp/>does<sp/>not<sp/>the<sp/>right<sp/>API</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>native<sp/>scalar<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>native<sp/>state<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>native<sp/>residual<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>dense_matrix_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>native<sp/>dense<sp/>matrix<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>creates<sp/>the<sp/>residual<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>This<sp/>is<sp/>only<sp/>called<sp/>once<sp/>to<sp/>create<sp/>the<sp/>operators,<sp/>does<sp/>not<sp/>need<sp/>to<sp/>contain<sp/>real<sp/>data.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>createResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>creates<sp/>the<sp/>result<sp/>of<sp/>applying<sp/>the<sp/>jacobian<sp/>to<sp/>the<sp/>argument</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>This<sp/>is<sp/>only<sp/>called<sp/>once<sp/>to<sp/>create<sp/>the<sp/>operators,<sp/>does<sp/>not<sp/>need<sp/>to<sp/>contain<sp/>real<sp/>data.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>dense_matrix_type<sp/>createApplyJacobianResult(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>dense_matrix_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residual(state,<sp/>r)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>computes<sp/>the<sp/>result<sp/>of<sp/>applying<sp/>the<sp/>jacobian<sp/>to<sp/>the<sp/>argument:<sp/>A<sp/><sp/>=<sp/>Jacobian<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyJacobian(state,<sp/>B,<sp/>A)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>computes:<sp/>A<sp/>=<sp/>Jac<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para></parblock></para><para><linebreak/>
+ </para><para>If you want a preconditioned steady LSPG problem, then the above class must be extended to add:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterSteadyLSPG</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>everything<sp/>from<sp/>above</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>residual_type<sp/>&amp;<sp/>r)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>dense_matrix_type<sp/>&amp;<sp/>jac)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para></parblock></para>    </detaileddescription>
+  </compounddef>
+</doxygen>
