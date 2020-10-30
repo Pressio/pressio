@@ -115,12 +115,6 @@ public:
   discrete_time_jacobian_type createDiscreteTimeJacobian() const
   {
     discrete_time_jacobian_type J(3,3);
-    // typedef Eigen::Triplet<scalar_type> Tr;
-    // std::vector<Tr> tripletList;
-    // tripletList.push_back( Tr( 0, 0, 0.) );
-    // tripletList.push_back( Tr( 1, 1, 0.) );
-    // tripletList.push_back( Tr( 2, 2, 0.) );
-    // J.setFromTriplets(tripletList.begin(), tripletList.end());
     return J;
   }
 
@@ -131,7 +125,7 @@ public:
                             discrete_time_residual_type & R,
                             Args && ... args) const
   {
-    this->timeDiscreteResidualImpl( step, time, dt, R, 
+    this->timeDiscreteResidualImpl( step, time, dt, R,
       std::forward<Args>(args)... );
   }
 
@@ -142,12 +136,12 @@ public:
                             discrete_time_jacobian_type & J,
                             Args && ... states) const
   {
-    this->timeDiscreteJacobianImpl(step, time, dt, 
+    this->timeDiscreteJacobianImpl(step, time, dt,
       J, std::forward<Args>(states)... );
   }
 
 private:
-  void velocity(const state_type & yIn,
+  void computeVelocity(const state_type & yIn,
     const scalar_type & t,
     velocity_type & f) const{
     f = -10. * yIn;
@@ -158,7 +152,7 @@ private:
     return f;
   };
 
-  void jacobian(const state_type & yIn,
+  void computeJacobian(const state_type & yIn,
       const scalar_type & t,
     jacobian_type & JJ) const
   {
@@ -170,10 +164,10 @@ private:
     JJ.setFromTriplets(tripletList.begin(), tripletList.end());
   };
 
-  jacobian_type createJacobian() const{
-    jacobian_type JJ(3,3);
-    return JJ;
-  };
+  // jacobian_type createJacobian() const{
+  //   jacobian_type JJ(3,3);
+  //   return JJ;
+  // };
 
   template <typename step_t, typename state_type>
   void timeDiscreteResidualImpl(const step_t & step,
@@ -184,12 +178,8 @@ private:
         const state_type & ynm1) const
   {
     auto f =  this->createVelocity();
-    this->velocity(yn, time, f);
+    this->computeVelocity(yn, time, f);
     R = yn - ynm1 - dt * f;
-    // if (normKind==::pressio::Norm::L2)
-    //   normValue = R.norm();
-    // if (normKind==::pressio::Norm::L1)
-    //   normValue = R.lpNorm<1>();
   }
 
   template <typename step_t, typename state_t>
@@ -200,7 +190,7 @@ private:
         const state_t & yn,
         const state_t & ynm1) const
   {
-    this->jacobian(yn, time, J);
+    this->computeJacobian(yn, time, J);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     J.coeffs() *= -dt;
     J.coeffRef(0,0) += one;
@@ -230,7 +220,6 @@ struct Bdf1Solver
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
     stepper_t, lin_solver_t>;
-  // using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
 
   app_t appObj_ = {};
   state_t y_ = {};
