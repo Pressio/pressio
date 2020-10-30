@@ -1,0 +1,120 @@
+
+
+\begin{DoxyParagraph}{What is this page about?}
+This page describes the dependencies of {\ttfamily pressio} and its installation process. By the end, you should be able to clone pressio, install it, and point to the installed headers from your application.
+\end{DoxyParagraph}
+
+
+{\ttfamily pressio} is header-\/only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-\/party libraries, one needs to account for this. See below for the details. \hypertarget{md_pages_getstarted_build_and_install_autotoc_md15}{}\doxysection{Dependencies}\label{md_pages_getstarted_build_and_install_autotoc_md15}
+Some packages of {\ttfamily pressio} contain code and implementations that are specific to third-\/party libraries (T\+P\+Ls). For example, the {\ttfamily containers} and {\ttfamily ops} packages of {\ttfamily pressio} contain thin wrappers and kernels that are custom-\/built for target libraries. The main reason for doing this is that we aim to alleviate the user from writing custom operations and allows {\ttfamily pressio} to decide when and how to leverage the native libraries\textquotesingle{} operations to obtain the best performance. This should facilitate the integration and use of {\ttfamily pressio} by existing applications. Obviously, this is a growing capability and we currently only provide built-\/in support to some external H\+PC libraries (see below). We can distinguish between {\itshape optional} and {\itshape required} dependencies.
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ T\+PL Library Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Optional/\+Required  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version Known to Work   }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ T\+PL Library Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Optional/\+Required  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version Known to Work   }\\\cline{1-3}
+\endhead
+Eigen  &Required  &3.\+3.\+7   \\\cline{1-3}
+Trilinos  &Optional  &12.\+17.\+00   \\\cline{1-3}
+M\+PI  &Optional  &--   \\\cline{1-3}
+Kokkos  &Optional  &3.\+1.\+0   \\\cline{1-3}
+B\+L\+AS  &Optional  &--   \\\cline{1-3}
+L\+A\+P\+A\+CK  &Optional  &--   \\\cline{1-3}
+Pybind11  &Optional  &v2.\+5   \\\cline{1-3}
+Google\+Test  &Optional  &1.\+10.\+0   \\\cline{1-3}
+&&\\\cline{1-3}
+\end{longtabu}
+
+
+Enabling/disabling specific dependencies is done via the following cmake variables\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Variable  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Default Value   }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Variable  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Default Value   }\\\cline{1-3}
+\endhead
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+E\+I\+G\+EN}  &self-\/explanatory  &{\ttfamily ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS}  &self-\/explanatory  &{\ttfamily O\+FF}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+M\+PI}  &self-\/explanatory  &{\ttfamily O\+FF} automatically {\ttfamily ON} if {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS=ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+K\+O\+K\+K\+OS}  &self-\/explanatory  &{\ttfamily O\+FF}; automatically {\ttfamily ON} if {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS=ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+E\+U\+C\+H\+O\+S\+\_\+\+T\+I\+M\+E\+RS}  &self-\/explanatory  &{\ttfamily O\+FF} automatically {\ttfamily ON} if {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS=ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+B\+L\+AS}  &self-\/explanatory  &{\ttfamily O\+FF}; automatically {\ttfamily ON} if {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+L\+A\+P\+A\+CK=ON} or {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS=ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+L\+A\+P\+A\+CK}  &self-\/explanatory  &{\ttfamily O\+FF}; automatically {\ttfamily ON} if {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+B\+L\+AS=ON} or {\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+T\+R\+I\+L\+I\+N\+OS=ON}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+T\+P\+L\+\_\+\+P\+Y\+B\+I\+N\+D11}  &self-\/explanatory  &{\ttfamily O\+FF}   \\\cline{1-3}
+{\ttfamily P\+R\+E\+S\+S\+I\+O\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+D\+E\+B\+U\+G\+\_\+\+P\+R\+I\+NT}  &to enable debugging print statements  &{\ttfamily O\+FF}   \\\cline{1-3}
+\end{longtabu}
+
+
+
+
+\begin{DoxyParagraph}{}
+Eigen is the only required dependency because it is the default choice for instantiating the R\+OM data structures and solving the (dense) R\+OM problem.
+\end{DoxyParagraph}
+Obviously, the choice of which T\+P\+Ls to enable is related to your application\textquotesingle{}s dependency requirements. For example, if you have an application that relies on Trilinos data structures and want to use {\ttfamily pressio}, then it makes sense to enable the Trilinos dependency. On the contrary, if you have an application that relies only on Eigen data structures, then it makes sense to only leave only Eigen on and disable the rest.
+
+Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then {\ttfamily pressio} automatically enables also Kokkos, B\+L\+AS, L\+A\+P\+A\+CK and M\+PI. The reason for this choice is that in a production scenario---which is what pressio mainly targets---it is reasonable to expect a user to have Trilinos built with B\+L\+AS, L\+A\+P\+A\+CK, M\+PI and Kokkos support.
+
+There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring B\+L\+AS and L\+A\+P\+A\+CK to be simulateneously on.\hypertarget{md_pages_getstarted_build_and_install_autotoc_md16}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_getstarted_build_and_install_autotoc_md16}
+We suggest to follow these steps\+: 
+\begin{DoxyEnumerate}
+\item Clone \href{https://github.com/Pressio/pressio}{\texttt{ pressio}} (defaults to the master branch)
+
+
+\item Create a build and install subdirectories 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd <where-\/you-\/cloned-\/pressio>}
+\DoxyCodeLine{mkdir build \&\& mkdir install}
+\end{DoxyCode}
+ 
+
+
+\item Use cmake to configure by passing to the comand line the target list of cmake variables to define. For example, if we want to enable support in {\ttfamily pressio} for Trilinos and the debug prints, we would do\+: 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{export PRESSIO\_SRC=<where-\/you-\/cloned-\/pressio>}
+\DoxyCodeLine{cd <where-\/you-\/cloned-\/pressio>/build}
+\DoxyCodeLine{}
+\DoxyCodeLine{cmake -\/D CMAKE\_INSTALL\_PREFIX=../install \(\backslash\)}
+\DoxyCodeLine{      -\/D PRESSIO\_ENABLE\_TPL\_TRILINOS=ON \(\backslash\)}
+\DoxyCodeLine{      -\/D PRESSIO\_ENABLE\_DEBUG\_PRINT=ON \(\backslash\)}
+\DoxyCodeLine{      \$\{PRESSIO\_SRC\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{make install \# nothing is built, just headers copied to installation}
+\end{DoxyCode}
+ 
+
+Note that this step does {\bfseries{not}} build anything because {\ttfamily pressio} is header-\/only, but only processes the cmake arguments and copies the pressio headers to the install prefix {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install}. If you want, you can inspect the file {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install/presssio\+\_\+cmake\+\_\+config.h} which contains the cmake variables defined.
+
+We also remark that during the step above pressio does not need to know if and where a target T\+PL exists in your system. Above you are simply telling Pressio that you have a certain T\+PL and want to enable the corresponding code in pressio for later use. Those T\+P\+Ls will be needed when you build any code that {\itshape uses} pressio.
+
+
+\item When building your application, you point to the installed headers and include the {\ttfamily pressio} header {\ttfamily pressio.\+hpp}, for example as\+: 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio.hpp"{}}}
+\DoxyCodeLine{\textcolor{comment}{// ...}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()\{}
+\DoxyCodeLine{  \textcolor{comment}{// do what you need}}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+  
+\end{DoxyEnumerate}
+
+
+
+\begin{DoxyParagraph}{Warning\+:}
+The procedue above is highly advised because it enables {\ttfamily pressio} to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to its source code and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constrants. Therefore, we suggest to use the steps above. 
+\end{DoxyParagraph}

@@ -1,0 +1,47 @@
+Note that the adapter classes shown below serve the purpose of interfacing your native application with pressio, but the actual object instantiated from one of these should be created as part of your application. These classes do {\bfseries{not}} contain anything strictly related to pressio, but just contain types native to your application. todo (fix)\hypertarget{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md6}{}\doxysection{Basic Steady L\+S\+P\+G problem}\label{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md6}
+The adapter class should look like\+:
+
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterSteadyLSPG}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// ...}}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{comment}{// The following aliases MUST be exposed because Pressio detects them.}}
+\DoxyCodeLine{  \textcolor{comment}{// If these are not visible, mispelled or not found, you get a compile-\/time error}}
+\DoxyCodeLine{  \textcolor{comment}{// because your adapter class does not the right API}}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type       = \textcolor{comment}{/* your native scalar type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type        = \textcolor{comment}{/* your native state type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type     = \textcolor{comment}{/* your native residual type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} dense\_matrix\_type = \textcolor{comment}{/* your native dense matrix type */}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{comment}{// creates the residual object}}
+\DoxyCodeLine{  \textcolor{comment}{// This is only called once to create the operators, does not need to contain real data.}}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// creates the result of applying the jacobian to the argument}}
+\DoxyCodeLine{  \textcolor{comment}{// This is only called once to create the operators, does not need to contain real data.}}
+\DoxyCodeLine{  dense\_matrix\_type createApplyJacobianResult(\textcolor{keyword}{const} dense\_matrix\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residual(state, r) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// computes the result of applying the jacobian to the argument: A  = Jacobian B}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyJacobian(state, B, A) \textcolor{keyword}{const}; \textcolor{comment}{// computes: A = Jac B}}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+ 
+
+~\newline
+ \hypertarget{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md7}{}\doxysubsection{Preconditioned steady L\+S\+PG}\label{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md7}
+If you want a preconditioned steady L\+S\+PG problem, then the above class must be extended to add\+:  
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterSteadyLSPG}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// everything from above}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type \&, residual\_type \& r) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type \&, dense\_matrix\_type \& jac) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+ 
