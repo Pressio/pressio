@@ -1,13 +1,27 @@
 # Pressio C++
 
-*Leading-edge projection-based reduced order models (\proms) for 
+*Leading-edge projection-based reduced order models (\proms) for
 dynamical systems in science and engineering.*
 
-You landed on the C++ documentation! 
-If this is a mistake, please refer to the [project website](https://pressio.github.io/)  
+You landed on the documentation of the C++ library!
+If this is a mistake, please go back to the [project website](https://pressio.github.io/).
+
+## Getting Started
+You can start by reading the description of [packages](./md_pages_getstarted_packages.html) composing this C++ library,
+and the [installation process](./md_pages_getstarted_build_and_install.html).
+Untill we start filling the tutorials and examples, you can peek at the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library.
+
+## License and Citation
+The full license is available [here](https://pressio.github.io/various/license/).
+
+We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
+
+## Questions?
+Find us on Slack: https://pressioteam.slack.com or open an issue on github.
 
 
-<!-- 
+
+<!--
 @m_class{m-note m-success}
 
 Pressio is an open-source project aimed at enabling leading-edge projection-based
@@ -62,7 +76,7 @@ later on to aid this step. For example interfacing with efficient
 POD libraries, providing tools for specific mesh formats (exodus).
  -->
 
-<!-- 
+<!--
 ## The Pressio framework
 \pressioproj is a computational *framework*, comprising a (growing) collection of repositories :
 

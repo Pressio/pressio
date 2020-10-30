@@ -5,7 +5,7 @@
   <title>FOM Adapter discrete-time API | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -25,20 +25,21 @@
         <div class="m-row">
           <ol class="m-col-t-6 m-col-m-none">
             <li>
-              <a href="md_pages_get_started.html">Get Started</a>
+              <a href=>Get Started</a>
               <ol>
+                <li><a href="md_pages_getstarted_packages.html">Subpackages</a></li>
                 <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
                 <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
               </ol>
             </li>
             <li>
-              <a href="md_pages_tutorials.html">Tutorials</a>
+              <a href=>Tutorials</a>
               <ol>
                 <li><a href="md_pages_tutorials_tutorial1.html">Tutorial1</a></li>
               </ol>
             </li>
             <li>
-              <a href="md_pages_examples.html">Full Examples</a>
+              <a href=>Full Examples</a>
               <ol>
                 <li><a href="md_pages_examples_example1.html">Example1</a></li>
               </ol>
@@ -80,7 +81,7 @@
           FOM Adapter discrete-time API
         </h1>
 <div><pre class="m-code"><span class="k">class</span>
-<span class="err">{</span>
+<span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="c1">//..;</span>
   <span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="c1">//...;</span>
@@ -95,7 +96,7 @@
     <span class="k">return</span> <span class="n">A</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
@@ -106,7 +107,7 @@
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">discreteTimeResidualImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...</span> <span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">applyDiscreteTimeJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
@@ -163,7 +164,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.18 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

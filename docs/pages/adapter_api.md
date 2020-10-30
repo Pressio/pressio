@@ -1,9 +1,8 @@
 
 # FOM Adapter API
 
-As discussed in [this](./md_pages_getstarted_pressio_app.html) section of the get started page,
-the adapter class is what lets pressio communicate with
-an external application.
+#As discussed in [this](./md_pages_getstarted_pressio_app.html) section of the get started page,
+The adapter class sits between pressio and the external application.
 This adapter class---if needed---must meet a specific API.
 
 Pressio supports two variants of the API,

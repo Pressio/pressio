@@ -1,0 +1,42 @@
+
+
+\begin{DoxyParagraph}{What is this page about?}
+This page describes the structure of C++ pressio library. By the end, you should be able to understand the structure with its main packages, and the logic behind.
+\end{DoxyParagraph}
+The pressio C++ library is divided into several packages\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package ~\newline
+ name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Maturity ~\newline
+ (0--5)   }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package ~\newline
+ name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Maturity ~\newline
+ (0--5)   }\\\cline{1-4}
+\endhead
+mpl  &metaprogramming functionalities  &\href{https://github.com/Pressio/pressio/tree/master/packages/mpl/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+utils  &common functionalities, e.\+g., I/O helpers, static constants, etc  &\href{https://github.com/Pressio/pressio/tree/master/packages/utils/src}{\texttt{ Source}}  &NA   \\\cline{1-4}
+containers  &wrappers for vectors, matrices and multi-\/vectors, ~\newline
+ expressions (span, diagonal and subspan)  &\href{https://github.com/Pressio/pressio/tree/master/packages/containers/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+ops  &shared-\/memory and distributed linear algebra kernels  &\href{https://github.com/Pressio/pressio/tree/master/packages/ops/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+apps  &suites of mini-\/apps used for basic testing  &\href{https://github.com/Pressio/pressio/tree/master/packages/apps/src}{\texttt{ Source}}  &n2   \\\cline{1-4}
+qr  &QR factorization functionalities  &\href{https://github.com/Pressio/pressio/tree/master/packages/qr/src}{\texttt{ Source}}  &2   \\\cline{1-4}
+solvers  &linear and non-\/linear solvers ~\newline
+ (e.\+g., Newton-\/\+Raphson, Gauss-\/\+Newton, Levenberg-\/\+Marquardt)  &\href{https://github.com/Pressio/pressio/tree/master/packages/solvers/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+ode  &explicit and implict time steppers and integrators  &\href{https://github.com/Pressio/pressio/tree/master/packages/ode/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+rom  &reduced-\/order modeling algorithms  &\href{https://github.com/Pressio/pressio/tree/master/packages/rom/src}{\texttt{ Source}}  &3   \\\cline{1-4}
+\end{longtabu}
+
+
+The top-\/down order used above is informative of the dependency structure and mutual visibility. For example, every package depends on {\ttfamily mpl}. The {\ttfamily ops} package depends only on {\ttfamily mpl}, {\ttfamily utils}, {\ttfamily containers}. At the bottom of the stack we have the {\ttfamily rom} package which requires all the others.
+
+Splitting the framework into separate packages has several benefits.
+\begin{DoxyItemize}
+\item Maintability\+: {\ttfamily pressio} can be more easily developed and maintained since packages depend on one another through well-\/defined public interfaces, and appropriate namespaces are used to organize classes.
+\item Selective usability\+: this modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically. 
+\end{DoxyItemize}

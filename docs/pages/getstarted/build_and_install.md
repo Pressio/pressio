@@ -1,14 +1,13 @@
 
-
 # Installation and Dependencies
 
 
 @m_class{m-block m-info}
 
-@parblock This page describes the dependencies of `pressio` and its installation process.
-By the end, you should be able to get pressio, install it,
+@par What is this page about?
+This page describes the dependencies of `pressio` and its installation process.
+By the end, you should be able to clone pressio, install it,
 and point to the installed headers from your application.
-@endparblock
 
 
 @m_class{m-block m-info}
