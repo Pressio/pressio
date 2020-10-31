@@ -2,7 +2,7 @@
 # Overview
 
 Pressio is a collection of repositories providing reduced-order models (ROMs) capabilties.
-It is open-source project aimed at enabling leading-edge projection-based
+It is a open-source project aimed at enabling leading-edge projection-based
 reduced order models (pROMs) for dynamical systems in science and engineering.
 
 Specifically, this repository contains the C++ library.
