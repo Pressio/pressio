@@ -45,19 +45,19 @@ jobs:
           ls -lh .
           cd ../../m.css/documentation
           ./doxygen.py ../../pressio/docs/conf.py
-          ls -lh ../../pressio/docs/
-      - name: Commit changes
-        run: |
-          pwd
-          cd pressio/docs/
-          ls -lh .
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add html
-          git add xml
-          git add latex
-          git add .
-          git commit -m "Generated html and xml via github action" --allow-empty  
+          ls -lh ../../pressio/docs/html/
+      # - name: Commit changes
+      #   run: |
+      #     pwd
+      #     cd pressio/docs/
+      #     ls -lh .
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git add html
+      #     git add xml
+      #     git add latex
+      #     git add .
+      #     git commit -m "Generated html and xml via github action" --allow-empty  
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
