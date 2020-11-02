@@ -31,7 +31,7 @@ jobs:
 # #           pwd
 # #           cd docs/
 # #           doxygen Doxyfile
-
+      
       # Runs a single command using the runners shell
       - name: Generate html
         run: |
@@ -41,6 +41,8 @@ jobs:
           pwd
           ls -lh ../../pressio/docs/
           ./doxygen.py ../../pressio/docs/conf.py
+          ls -lh ../../pressio/docs/
+
 
 #       - name: Commit changes
 #         run: |
