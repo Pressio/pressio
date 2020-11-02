@@ -45,15 +45,16 @@ jobs:
           ls -lh .
           ../../m.css/documentation/doxygen.py conf.py
           ls -lh .
-      # - name: Commit changes
-      #   run: |
-      #     pwd
-      #     cd docs/
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add html
+      - name: Commit changes
+        run: |
+          pwd
+          cd pressio/docs/
+          ls -lh .
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add html
       #     git add html/*.*
-      #     git add xml
+          git add xml
       #     git add xml/*.*
       #     git commit -m "Generated html and xml via github action"
       # - name: Push changes
