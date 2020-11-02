@@ -37,12 +37,10 @@ jobs:
           ls -lh
       - name: Generate documentation
         run: |
-          cd m.css/documentation
-          ls -lh ../../pressio/docs/
-          ./doxygen.py ../../pressio/docs/conf.py
-          ls -lh ../../pressio/docs/
-          cd ~/
-          cd pressio
+          cd pressio/docs
+          ls -lh .
+          ../../m.css/documentation/doxygen.py conf.py
+          ls -lh .
           git status
       # - name: Commit changes
       #   run: |
