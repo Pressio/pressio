@@ -41,6 +41,9 @@ jobs:
           ls -lh ../../pressio/docs/
           ./doxygen.py ../../pressio/docs/conf.py
           ls -lh ../../pressio/docs/
+          cd ~/
+          cd pressio
+          git status
       # - name: Commit changes
       #   run: |
       #     pwd
