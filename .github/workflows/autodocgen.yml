@@ -40,6 +40,7 @@ jobs:
       - name: Generate documentation
         run: |
           cd pressio/docs
+          pwd
           rm -rf html/ xml/ latex/ 
           git branch 
           ls -lh .
