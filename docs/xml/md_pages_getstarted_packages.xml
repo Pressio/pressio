@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="md_pages_getstarted_packages" kind="page">
     <compoundname>md_pages_getstarted_packages</compoundname>
-    <title>Subpackages</title>
+    <title>Packages</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -10,73 +10,62 @@
 <para><simplesect kind="par"><title>What is this page about?</title><para>This page describes the structure of C++ pressio library. By the end, you should be able to understand the structure with its main packages, and the logic behind.</para>
 </simplesect>
 The pressio C++ library is divided into several packages:</para>
-<para><table rows="10" cols="4"><row>
+<para><table rows="10" cols="3"><row>
 <entry thead="yes"><para>Package <linebreak/>
  name  </para>
 </entry><entry thead="yes"><para>Description  </para>
-</entry><entry thead="yes"><para>Link  </para>
-</entry><entry thead="yes"><para>Maturity <linebreak/>
- (0<ndash/>5)   </para>
+</entry><entry thead="yes"><para>Link   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>  </para>
 </entry><entry thead="no"><para>metaprogramming functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/mpl/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/mpl/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>  </para>
 </entry><entry thead="no"><para>common functionalities, e.g., I/O helpers, static constants, etc  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/utils/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>NA   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/utils/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">containers</mcss:span>  </para>
 </entry><entry thead="no"><para>wrappers for vectors, matrices and multi-vectors, <linebreak/>
  expressions (span, diagonal and subspan)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/containers/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/containers/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>  </para>
 </entry><entry thead="no"><para>shared-memory and distributed linear algebra kernels  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ops/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ops/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">apps</mcss:span>  </para>
 </entry><entry thead="no"><para>suites of mini-apps used for basic testing  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/apps/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>n2   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/apps/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>  </para>
 </entry><entry thead="no"><para>QR factorization functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/qr/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>2   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/qr/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers</mcss:span>  </para>
 </entry><entry thead="no"><para>linear and non-linear solvers <linebreak/>
  (e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/solvers/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/solvers/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>  </para>
 </entry><entry thead="no"><para>explicit and implict time steppers and integrators  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ode/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ode/src">Source</ulink>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>  </para>
 </entry><entry thead="no"><para>reduced-order modeling algorithms  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/rom/src">Source</ulink>  </para>
-</entry><entry thead="no"><para>3   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/rom/src">Source</ulink>   </para>
 </entry></row>
 </table>
 </para>
-<para>The top-down order used above is informative of the dependency structure and mutual visibility. For example, every package depends on <computeroutput>mpl</computeroutput>. The <computeroutput>ops</computeroutput> package depends only on <computeroutput>mpl</computeroutput>, <computeroutput>utils</computeroutput>, <computeroutput>containers</computeroutput>. At the bottom of the stack we have the <computeroutput>rom</computeroutput> package which requires all the others.</para>
+<para>The top-down order used above is informative of the dependency structure. For example, every package depends on <computeroutput>mpl</computeroutput>. The <computeroutput>ops</computeroutput> package depends only on <computeroutput>mpl</computeroutput>, <computeroutput>utils</computeroutput>, <computeroutput>containers</computeroutput>. At the bottom of the stack we have the <computeroutput>rom</computeroutput> package which requires all the others.</para>
 <para>Splitting the framework into separate packages has several benefits.<itemizedlist>
 <listitem><para>Maintability: <computeroutput>pressio</computeroutput> can be more easily developed and maintained since packages depend on one another through well-defined public interfaces, and appropriate namespaces are used to organize classes.</para>
 </listitem><listitem><para>Selective usability: this modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically. </para>
