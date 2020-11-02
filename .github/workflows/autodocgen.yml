@@ -40,11 +40,11 @@ jobs:
       - name: Generate documentation
         run: |
           cd pressio/docs
+          rm -rf html/ xml/ latex/ 
           git branch 
           ls -lh .
           ../../m.css/documentation/doxygen.py conf.py
           ls -lh .
-          git status
       # - name: Commit changes
       #   run: |
       #     pwd
