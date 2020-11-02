@@ -32,15 +32,15 @@ jobs:
 # #           cd docs/
 # #           doxygen Doxyfile
 
-#       # Runs a single command using the runners shell
-#       - name: Generate html
-#         run: |
-#           cd ..
-#           git clone https://github.com/mosra/m.css.git
-#           cd m.css/documentation
-#           pwd
-#           ls -lh ../../pressio/docs/
-#           ./doxygen.py ../../pressio/docs/conf.py
+      # Runs a single command using the runners shell
+      - name: Generate html
+        run: |
+          cd ..
+          git clone https://github.com/mosra/m.css.git
+          cd m.css/documentation
+          pwd
+          ls -lh ../../pressio/docs/
+          ./doxygen.py ../../pressio/docs/conf.py
 
 #       - name: Commit changes
 #         run: |
