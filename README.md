@@ -11,6 +11,11 @@ You can find the full user-guide [here](https://pressio.github.io/pressio/html/i
 
 The full Pressio project site can be found [here](https://pressio.github.io).
 
+# License and Citation
+The full license is available [here](https://pressio.github.io/various/license/).
+
+We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
+
 
 <!-- * `pressio-tutorials`: C++ tutorials explaining how to use `pressio` and its functionalities; -->
 
