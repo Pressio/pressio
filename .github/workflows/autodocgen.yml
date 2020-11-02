@@ -35,7 +35,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Generate html
         run: |
-          sudo aptitude install texlive-fonts-recommended texlive-fonts-extra
+          sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
           sudo apt-get install dvipng
           cd ..
           git clone https://github.com/mosra/m.css.git
