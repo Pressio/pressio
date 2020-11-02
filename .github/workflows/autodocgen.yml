@@ -35,6 +35,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Generate html
         run: |
+          sudo apto-get install latex
           cd ..
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
