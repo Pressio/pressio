@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="autotoc_md18" kind="page">
+    <compoundname>autotoc_md18</compoundname>
+    <title>How does Pressio interact with your application?</title>
+    <detaileddescription>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span><itemizedlist>
+<listitem><para>describe how pressio interacts with the app</para></listitem><listitem><para>use paper to extract things</para></listitem><listitem><para>use Eric&apos;s schematic if he lets us </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>
