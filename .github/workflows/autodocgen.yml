@@ -30,7 +30,6 @@ jobs:
         run: |
           sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
           sudo apt-get install dvipng
-          pip install jinja2 Pygments
           cd ..
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
