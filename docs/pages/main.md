@@ -6,6 +6,7 @@ dynamical systems in science and engineering.*
 You landed on the documentation of the C++ library!
 If this is a mistake, please go back to the [project website](https://pressio.github.io/).
 
+
 ## Getting Started
 You can start by reading the description of [packages](./md_pages_getstarted_packages.html) composing this C++ library,
 and the [installation process](./md_pages_getstarted_build_and_install.html).
