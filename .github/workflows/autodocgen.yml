@@ -28,8 +28,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Generate html
         run: |
-          pip install jinja2 Pygments
           sudo apt install texlive-base texlive-latex-extra texlive-fonts-extra texlive-fonts-recommended
+          pip install jinja2 Pygments
           cd ..
           git clone https://github.com/mosra/m.css.git
           cd m.css/documentation
