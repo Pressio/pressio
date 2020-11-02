@@ -20,17 +20,19 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: Install doxygen
         run: sudo apt-get install doxygen
       
       # Runs a single command using the runners shell
-      - name: Setup TPLs
+      - name: Install TPLs
         run: |
           sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
           sudo apt-get install dvipng
-          git clone https://github.com:Pressio/pressio.git
+      - name: Clone repos
+        run: |
+          git clone https://github.com/Pressio/pressio.git
           git clone https://github.com/mosra/m.css.git
           ls -lh
       # - name: Generate documentation
