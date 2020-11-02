@@ -43,8 +43,7 @@ jobs:
           rm -rf html/ xml/ latex/ 
           git branch 
           ls -lh .
-          cd
-          cd m.css/documentation
+          cd ../../m.css/documentation
           ./doxygen.py ../../pressio/docs/conf.py
           ls -lh ../../pressio/docs/
       - name: Commit changes
