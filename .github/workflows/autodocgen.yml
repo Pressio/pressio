@@ -32,7 +32,7 @@ jobs:
           sudo apt-get install dvipng
       - name: Clone repos
         run: |
-          git clone https://github.com/Pressio/pressio.git
+          git clone -b docsUpdate https://github.com/Pressio/pressio.git
           git clone https://github.com/mosra/m.css.git
           ls -lh
       - name: Generate documentation
@@ -52,8 +52,7 @@ jobs:
       #     git add html/*.*
       #     git add xml
       #     git add xml/*.*
-      #     git commit -m "Generated html and xml via github action" -a
-
+      #     git commit -m "Generated html and xml via github action"
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
