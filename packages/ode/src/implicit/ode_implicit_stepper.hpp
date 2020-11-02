@@ -49,13 +49,13 @@
 #ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
 #define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
 
-#include "./impl/ode_implicit_stepper_composer_impl.hpp"
+#include "./impl/ode_implicit_stepper_compose_impl.hpp"
 
 namespace pressio{ namespace ode{
 
 template<typename stepper_tag, typename ...Args>
 using ImplicitStepper =
-  typename ::pressio::ode::implicitmethods::impl::Composer<stepper_tag, void, Args...>::type;
+  typename ::pressio::ode::implicitmethods::impl::compose<stepper_tag, void, Args...>::type;
 
 }} // end namespace pressio::ode
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_

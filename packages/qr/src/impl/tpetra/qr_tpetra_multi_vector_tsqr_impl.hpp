@@ -69,12 +69,14 @@ public:
   TpetraMVTSQR() = default;
   ~TpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & A) 
+  {
     auto nVecs = A.numVectors();
     auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(*A.data(), *Qmat_->data(), *localR_.get(), false);
+    tsqrAdaptor_.factorExplicit(*const_cast<matrix_t &>(A).data(), 
+      *Qmat_->data(), *localR_.get(), false);
 
     //::pressio::utils::io::print_stdout(*localR_.get());
 // #ifdef PRESSIO_ENABLE_DEBUG_PRINT
@@ -118,7 +120,7 @@ public:
     !containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
-  getCRefRFactor() const {
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(this->localR_->values());
     return *this->Rmat_;
   }
@@ -129,12 +131,12 @@ public:
     containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
-  getCRefRFactor() const {
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
     return *this->Rmat_;
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 

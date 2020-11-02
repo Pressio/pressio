@@ -55,36 +55,58 @@ template <typename matrix_type, typename fom_state_type, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
   using jacobian_type  = matrix_type;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
+  using jacobian_native_t =
+    typename ::pressio::containers::details::traits<matrix_type>::wrapped_t;
 
 private:
-  using scalar_t   = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
-  matrix_type mappingJacobian_ = {};
-  const ops_t & udOps_;
+  const matrix_type mappingJacobian_ = {};
+  std::reference_wrapper<const ops_t> udOps_;
 
 public:
   LinearDecoderWithCustomOps() = delete;
-  LinearDecoderWithCustomOps(const jacobian_type & matIn, const ops_t & udOps)
-    : mappingJacobian_(matIn), udOps_{udOps}{}
+  LinearDecoderWithCustomOps(const LinearDecoderWithCustomOps &) = default;
+  LinearDecoderWithCustomOps & operator=(const LinearDecoderWithCustomOps &) = default;
+  LinearDecoderWithCustomOps(LinearDecoderWithCustomOps &&) = default;
+  LinearDecoderWithCustomOps & operator=(LinearDecoderWithCustomOps &&) = default;
+  ~LinearDecoderWithCustomOps() = default;
 
-  // applyMapping is templated because gen_coords_t is something that behaves like a vector
-  // e.g. for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
+
+  // /* note that here we make the constructor templated
+  //    such that we can pass either
+  //    the pressio wrapper type 'jacobian_matrix_type' or
+  //    the native type wrapped by it 'jacobian_native_t'.
+  //    Also, by templating this constructor we enable
+  //    universal reference so that it is forwarded accordingly.
+  //  */
+  template<typename T>
+  LinearDecoderWithCustomOps(T && matIn,
+			     const ops_t & udOps)
+    : mappingJacobian_(std::forward<T>(matIn)),
+      udOps_{udOps}{}
+
+  // applyMapping is templated because the type of the generalized coordinates
+  // is something that behaves like a vector but not strictly a vector:
+  // for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
   template <typename gen_coords_t>
   void applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    udOps_.product(::pressio::nontranspose(), one, *mappingJacobian_.data(), operand, zero, *result.data());
+    udOps_.get().product(::pressio::nontranspose(), one, *mappingJacobian_.data(),
+		   operand, zero, *result.data());
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return mappingJacobian_;
   }
 
-  // template<typename gen_coords_t>
-  // void updateJacobian(const gen_coords_t & genCoordinates) const
-  // {
-  //   //no op
-  // }
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    //no op
+  }
 
 };//end
 

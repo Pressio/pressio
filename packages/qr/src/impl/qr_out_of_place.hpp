@@ -57,7 +57,7 @@ class QRSolver<
   matrix_type, algo, false, void, Q_type,
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_multi_vector_wrapper<matrix_type>::value or
-    containers::predicates::is_matrix_wrapper<matrix_type>::value
+    containers::predicates::is_dense_matrix_wrapper<matrix_type>::value
     >
   > : public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_compute_t,
       public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_solve_t
@@ -77,7 +77,7 @@ public:
   ~QRSolver() = default;
 
 private:
-  void computeThinImpl(matrix_type & A){
+  void computeThinImpl(const matrix_type & A){
     myImpl_.computeThinOutOfPlace(A);
   }
 
@@ -97,7 +97,7 @@ private:
   }
 
   const Q_t & cRefQFactorImpl() const {
-    return myImpl_.getCRefQFactor();
+    return myImpl_.QFactor();
   }
 
 private:
@@ -144,7 +144,7 @@ private:
 //   }
 
 //   const Q_t & cRefQFactorImpl() const {
-//     return myImpl_.getCRefQFactor();
+//     return myImpl_.QFactor();
 //   }
 
 //   template < typename vector_in_t, typename vector_out_t>
@@ -161,7 +161,7 @@ private:
 //   }
 
 //   const R_type & cRefRFactorImpl() const {
-//     return myImpl_.getCRefRFactor();
+//     return myImpl_.RFactor();
 //   }
 
 // public:

@@ -59,7 +59,7 @@ template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_multi_vector_arbitrary<wrapped_type>::value
+    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<MultiVector<wrapped_type>,
@@ -89,6 +89,41 @@ struct traits<
   static constexpr bool is_matrix = false;
   static constexpr bool is_multi_vector = true;
 };
+
+
+//*******************************
+// for eigen dynamic multivector
+//*******************************
+template<typename wrapped_type>
+struct traits<
+  MultiVector<wrapped_type>,
+    ::pressio::mpl::enable_if_t<
+      ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type, false, false, true,
+  WrappedPackageIdentifier::Eigen, true
+  >
+{
+  static constexpr WrappedMultiVectorIdentifier
+  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using data_cp_return_t = wrapped_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic= true;
+
+  using scalar_t  = typename wrapped_type::Scalar;
+  using ordinal_t = typename wrapped_type::StorageIndex;
+  using size_t    = ordinal_t;
+
+  static constexpr bool is_admissible_for_expression_templates = true;
+};
+
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -236,40 +271,6 @@ struct traits<
 
 
 //*******************************
-// for eigen dynamic multivector
-//*******************************
-template<typename wrapped_type>
-struct traits<
-  MultiVector<wrapped_type>,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::predicates::is_dynamic_multi_vector_eigen<wrapped_type>::value
-    >
-  >
-  : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type, false, false, true,
-  WrappedPackageIdentifier::Eigen, true
-  >
-{
-  static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
-
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using data_cp_return_t = wrapped_type;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_t  = typename wrapped_type::Scalar;
-  using ordinal_t = typename wrapped_type::StorageIndex;
-  using size_t    = ordinal_t;
-
-  static constexpr bool is_admissible_for_expression_templates = true;
-};
-
-
-//*******************************
 // Kokkos multi vector
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -277,7 +278,7 @@ template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
-      containers::predicates::is_multi_vector_kokkos<wrapped_type>::value
+      containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
     >
   >
   : public containers_shared_traits<

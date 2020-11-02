@@ -83,27 +83,32 @@ struct traits<
 
   using const_reference_t = typename std::conditional<
     std::is_const<v_type>::value, scalar_t, scalar_t const &
-  >::type;
+    >::type;
 
   // type of the native expression
-  using _native_expr_t = decltype(
-    std::declval<wrapped_t>().segment( std::declval<size_t>(),
-				       std::declval<size_t>() )
-    );
-  using _const_native_expr_t = decltype(
-    std::declval<const wrapped_t>().segment( std::declval<size_t>(),
-					     std::declval<size_t>() )
-    );
+  using _native_expr_t =
+    decltype
+    (
+     std::declval<wrapped_t>().segment( std::declval<size_t>(),
+					std::declval<size_t>() )
+     );
+
+  using _const_native_expr_t =
+    decltype
+    (
+     std::declval<const wrapped_t>().segment( std::declval<size_t>(),
+					      std::declval<size_t>() )
+     );
+
   using native_expr_t = typename std::conditional<
     std::is_const<v_type>::value,
     _const_native_expr_t,
     _native_expr_t
-  >::type;
+    >::type;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;
 };
-
 
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -126,30 +131,35 @@ struct traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
+  using scalar_t	= typename traits<v_type>::scalar_t;
   using wrapped_t	= typename traits<v_type>::wrapped_t;
   using execution_space = typename traits<v_type>::execution_space;
+  using memory_space	= typename traits<v_type>::memory_space;
   using device_t	= typename traits<v_type>::device_t;
   using device_type	= typename traits<v_type>::device_t;
-  using scalar_t	= typename traits<v_type>::scalar_t;
   using ordinal_t	= typename traits<v_type>::ordinal_t;
   using size_t		= ordinal_t;
   using pair_t		= std::pair<size_t, size_t>;
-
-  using reference_t = scalar_t &;
+  using reference_t	  = scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  // type of the native expression
-  using _native_expr_t = decltype(
-    Kokkos::subview(std::declval<wrapped_t>(), std::declval<pair_t>())
-    );
-  using _const_native_expr_t = decltype(
-      Kokkos::subview(std::declval<const wrapped_t>(), std::declval<pair_t>())
-    );
+  using _native_expr_t =
+    decltype
+    (
+     Kokkos::subview(std::declval<wrapped_t>(), std::declval<pair_t>())
+     );
+
+  using _const_native_expr_t =
+    decltype
+    (
+     Kokkos::subview(std::declval<const wrapped_t>(), std::declval<pair_t>())
+     );
+
   using native_expr_t = typename std::conditional<
     std::is_const<v_type>::value,
     _const_native_expr_t,
     _native_expr_t
-  >::type;
+    >::type;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;

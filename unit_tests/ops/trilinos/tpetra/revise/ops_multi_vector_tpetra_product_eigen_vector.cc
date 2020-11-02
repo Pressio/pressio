@@ -62,10 +62,10 @@ TEST_F(tpetraMultiVectorGlobSize9Fixture,
   using vec_t = containers::Vector<eigv_t>;
   STATIC_ASSERT_IS_CONTAINERS_VECTOR_WRAPPER(vec_t);
   vec_t b(bn);
-  b[0] = 1.;
-  b[1] = 2.;
-  b[2] = 3.;
-  b[3] = 4.;
+  b(0) = 1.;
+  b(1) = 2.;
+  b(2) = 3.;
+  b(3) = 4.;
 
   auto res = ops::product(MV, b);
   auto cc2 = res.data()->getLocalView<Kokkos::HostSpace>();

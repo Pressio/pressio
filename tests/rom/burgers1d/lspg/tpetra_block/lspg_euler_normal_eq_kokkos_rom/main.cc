@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_tpetra.hpp"
 
@@ -40,7 +40,6 @@ int main(int argc, char *argv[]){
     // app object
     constexpr int numCell = 20;
     fom_t appobj( {5.0, 0.02, 0.02}, numCell, Comm);
-    auto t0 = static_cast<scalar_t>(0);
     scalar_t dt = 0.01;
 
     // read from file the jacobian of the decoder
@@ -48,7 +47,8 @@ int main(int argc, char *argv[]){
     auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis.txt", romSize,
                    numCell, Comm, appobj.getDataMap());
     native_dmat_t tpb_phi(*tpw_phi.data(), *appobj.getDataMap(), 1);
-    decoder_t decoderObj(tpb_phi);
+    decoder_jac_t phi(tpb_phi);
+    decoder_t decoderObj(phi);
 
     // for this problem, my reference state = initial state
     auto & yRef = appobj.getInitialState();
@@ -58,35 +58,33 @@ int main(int argc, char *argv[]){
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Euler;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-          ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
+    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
+    //       ode_tag, fom_t, decoder_t, lspg_state_t>::type;
+    // lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>
+      (appobj, decoderObj, yROM, yRef);
 
     // linear solver for hessian
     // hessian comes up in GN solver, it is (J phi)^T (J phi)
     // use leftlayout so we access blas/lapack easily
     using kll = Kokkos::LayoutLeft;
     using k2dLl_d = Kokkos::View<scalar_t**, kll, exe_space>;
-    using hessian_t  = pressio::containers::Matrix<k2dLl_d>;
+    using hessian_t  = pressio::containers::DenseMatrix<k2dLl_d>;
     using solver_tag   = pressio::solvers::linear::direct::getrs;
     using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-      lspg_stepper_t,
-      pressio::solvers::nonlinear::DefaultUpdate,
-      linear_solver_t>;
-    nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(
+      lspgProblem.stepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);
+    auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
     auto yFF_v = yFomFinal.data()->getVectorView().getData();
 
     // this is a reproducing ROM test, so the final reconstructed state

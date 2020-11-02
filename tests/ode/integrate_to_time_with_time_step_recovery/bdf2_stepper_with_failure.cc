@@ -62,26 +62,25 @@ struct MyFakeSolver
     std::cout << count_ << "\n";
 
     state_t R(3);
-    double normValue = {};
     for (int i=0; i<2; ++i)
     {
       std::cout << i << "\n";
       try{
 	std::cout << "s: state" << " "
-		  << state[0] << " "
-		  << state[1] << " "
-		  << state[2] << std::endl;
+		  << state(0) << " "
+		  << state(1) << " "
+		  << state(2) << std::endl;
 
-	sys.residual(state, R, ::pressio::Norm::L2, normValue);
+	sys.residual(state, R);
 
 	std::cout << "s: res" << " "
-		  << R[0] << " "
-		  << R[1] << " "
-		  << R[2] << std::endl;
+		  << R(0) << " "
+		  << R(1) << " "
+		  << R(2) << std::endl;
 
-	state[0] += 0.1;
-	state[1] += 0.2;
-	state[2] += 0.3;
+	state(0) += 0.1;
+	state(1) += 0.2;
+	state(2) += 0.3;
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
 	throw ::pressio::eh::nonlinear_solve_failure();
@@ -94,9 +93,9 @@ struct MyFakeSolver
     // we should have these conditions satisfied
     if (count_==4)
     {
-      if( std::abs(state[0]-1.4) > 1e-13 or
-    	  std::abs(state[1]-1.8) > 1e-13 or
-    	  std::abs(state[2]-2.2) > 1e-13){
+      if( std::abs(state(0)-1.4) > 1e-13 or
+    	  std::abs(state(1)-1.8) > 1e-13 or
+    	  std::abs(state(2)-2.2) > 1e-13){
     	checkStr_ = "FAILED";
       }
 
@@ -104,26 +103,26 @@ struct MyFakeSolver
       const double trueR0 = 1.3-(4./3.)*1.2+(1./3.)*1.-(2./3.)*0.025;
       const double trueR1 = 1.6-(4./3.)*1.4+(1./3.)*1.-(2./3.)*0.025;
       const double trueR2 = 1.9-(4./3.)*1.6+(1./3.)*1.-(2./3.)*0.025*2.;
-      if( std::abs(R[0]-trueR0) > 1e-13 or
-      	  std::abs(R[1]-trueR1) > 1e-13 or
-      	  std::abs(R[2]-trueR2) > 1e-13){
+      if( std::abs(R(0)-trueR0) > 1e-13 or
+      	  std::abs(R(1)-trueR1) > 1e-13 or
+      	  std::abs(R(2)-trueR2) > 1e-13){
       	checkStr_ = "FAILED";
       }
     }
 
     if (count_==5)
     {
-      if( std::abs(state[0]-1.6) > 1e-13 or
-    	  std::abs(state[1]-2.2) > 1e-13 or
-    	  std::abs(state[2]-2.8) > 1e-13){
+      if( std::abs(state(0)-1.6) > 1e-13 or
+    	  std::abs(state(1)-2.2) > 1e-13 or
+    	  std::abs(state(2)-2.8) > 1e-13){
     	checkStr_ = "FAILED";
       }
       const double trueR0 = 1.5-(4./3.)*1.4+(1./3.)*1.2-(2./3.)*0.1;
       const double trueR1 = 2.0-(4./3.)*1.8+(1./3.)*1.4-(2./3.)*0.1;
       const double trueR2 = 2.5-(4./3.)*2.2+(1./3.)*1.6-(2./3.)*0.1*2.;
-      if( std::abs(R[0]-trueR0) > 1e-13 or
-    	  std::abs(R[1]-trueR1) > 1e-13 or
-    	  std::abs(R[2]-trueR2) > 1e-13){
+      if( std::abs(R(0)-trueR0) > 1e-13 or
+    	  std::abs(R(1)-trueR1) > 1e-13 or
+    	  std::abs(R(2)-trueR2) > 1e-13){
     	checkStr_ = "FAILED";
       }
     }
@@ -141,7 +140,7 @@ int main(int argc, char *argv[])
 
   using state_t		= ::pressio::containers::Vector<nstate_t>;
   using res_t		= ::pressio::containers::Vector<nvelo_t>;
-  using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
+  using jac_t		= ::pressio::containers::SparseMatrix<njacobian_t>;
 
   auto dtManager =
     [](const ::pressio::ode::types::step_t & step,

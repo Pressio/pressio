@@ -12,7 +12,8 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
 			       int nrows, int ncols,
 			       rcpcomm_t Comm,
 			       rcpmap_t rowMap)
-  -> pressio::containers::MultiVector<Tpetra::MultiVector<>>{
+  -> pressio::containers::MultiVector<Tpetra::MultiVector<>>
+{
 
   Tpetra::MultiVector<> AD(rowMap, ncols);
 
@@ -33,17 +34,16 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
   return ADW;
 }
 
-
 template <typename comm_t, typename map_t>
-auto readBasis(
-  std::string filename,
-  int romSize, int numCell,
-  comm_t Comm,
-  const map_t rowMap)
+auto readBasis(std::string filename,
+	       int romSize, int numCell,
+	       comm_t Comm,
+	       const map_t rowMap)
   ->pressio::containers::MultiVector<Tpetra::MultiVector<>>
 {
   std::vector<std::vector<double>> A0;
   ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);
+
   // read basis into a MultiVector
   return convertFromVVecToMultiVec(A0, numCell, romSize, Comm, rowMap);
 }
@@ -51,4 +51,3 @@ auto readBasis(
 }}}}// end namespace pressio::rom::test::tpetra
 
 #endif
-

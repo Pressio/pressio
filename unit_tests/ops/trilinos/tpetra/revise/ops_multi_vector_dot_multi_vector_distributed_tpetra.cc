@@ -121,7 +121,7 @@ TEST(ops, TpetraMultiVectorDotMultiVector){
   }
 
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
-  using eig_mat_w = containers::Matrix<eig_mat>;
+  using eig_mat_w = containers::DenseMatrix<eig_mat>;
 
   eig_mat TT(4,2);
   TT(0,0) = 0.0; TT(0,1) = 4.0;

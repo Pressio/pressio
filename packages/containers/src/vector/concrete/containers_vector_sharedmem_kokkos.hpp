@@ -52,12 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_vector_kokkos<wrapped_type>::value
-	       >
-	     >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_vector_kokkos<wrapped_type>::value
+    >
+  >
 {
 
   using this_t = Vector<wrapped_type>;
@@ -77,61 +77,83 @@ public:
   // of a view WITHOUT doing shallow copy.
   // We create a new object and deep_copy original.
 
-  explicit Vector(const wrapped_type src)
-    : data_{src.label(), src.extent(0)}{
+  explicit Vector(const wrapped_type & src)
+    : data_{src.label(), src.extent(0)}
+  {
     Kokkos::deep_copy(data_, src);
   }
+
+  Vector(wrapped_type && src) : data_(std::move(src)){}
 
   Vector(const std::string & label, ord_t e1) : data_{label, e1}{}
 
   Vector(const ord_t e1) : data_{"empty", e1}{}
 
-  // copy constructor implements copy semantics (for time being)
+  /* copy constructor and asign implement value semantics.
+     Hence, when we copyConstruct a kokkos wrapper
+     we want to make sure that the new object does not
+     view the previous one
+     so the following should be true:
+	Vector a(...)
+	a(0) = 0.5
+	Vector b(a)
+	b(0) =1.1
+	a(0) == 0.5 // should be true
+  */
   Vector(const Vector & other)
     : data_{other.data_.label(), other.data_.extent(0)}{
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // copy assign implments copy semantics not view (for time being)
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert(this->extent(0) == other.extent(0));
-      Kokkos::deep_copy(data_, *other.data());
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(const Vector & other) = delete;
 
   // move cnstr and assign
-  Vector(Vector && other)
-    : data_{other.data_.label(), other.data_.extent(0)}{
-    Kokkos::deep_copy(data_, other.data_);
-  }
+  Vector(Vector && other) = default;
+  //   : data_{other.data_.label(), other.data_.extent(0)}{
+  //   Kokkos::deep_copy(data_, other.data_);
+  // }
 
-  Vector & operator=(Vector && other){
-    assert(this->extent(0) == other.extent(0));
-    Kokkos::deep_copy(data_, *other.data());
-    return *this;
-  }
+  Vector & operator=(Vector && other)= default;
+  //   assert(this->extent(0) == other.extent(0));
+  //   Kokkos::deep_copy(data_, *other.data());
+  //   return *this;
+  // }
 
+  // destructor
   ~Vector() = default;
 
+public:
+  wrapped_type const * data() const{
+    return &data_;
+  }
+  wrapped_type * data(){
+    return &data_;
+  }
+
   template<typename _wrapped_type = wrapped_type>
+  [[deprecated("Use operator() instead.")]]
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
-  operator [] (ord_t i){
+  operator[](ord_t i)
+  {
+    assert(i < this->extent(0));
     return data_(i);
   };
 
   template<typename _wrapped_type = wrapped_type>
+  [[deprecated("Use operator() instead.")]]
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
-  operator [] (ord_t i) const{
+  operator[](ord_t i) const
+  {
+    assert(i < this->extent(0));
     return data_(i);
   };
 
@@ -141,7 +163,9 @@ public:
     // for UMV space, needs to be fixed
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
-  operator () (ord_t i){
+  operator()(ord_t i)
+  {
+    assert(i < this->extent(0));
     return data_(i);
   };
 
@@ -151,16 +175,11 @@ public:
       // for UMV space, needs to be fixed
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
-  operator () (ord_t i) const{
+  operator()(ord_t i) const
+  {
+    assert(i < this->extent(0));
     return data_(i);
   };
-
-  wrapped_type const * data() const{
-    return &data_;
-  }
-  wrapped_type * data(){
-    return &data_;
-  }
 
   bool empty() const{
     return data_.extent(0)==0 ? true : false;
@@ -172,10 +191,9 @@ public:
   }
 
 private:
-  friend VectorSharedMemBase< this_t >;
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_

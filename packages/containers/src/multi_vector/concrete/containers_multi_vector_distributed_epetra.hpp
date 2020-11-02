@@ -52,14 +52,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class MultiVector<wrapped_type,
-     typename
-     std::enable_if<
-       ::pressio::containers::predicates::is_multi_vector_epetra<
-	    wrapped_type>::value
-       >::type
-     >
-  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
+class MultiVector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_multi_vector_epetra<
+      wrapped_type>::value
+    >
+  >
 {
 
 private:
@@ -82,8 +81,8 @@ public:
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy 
+  MultiVector & operator=(const MultiVector & other) = delete;
   // move cnstr
   MultiVector(MultiVector && o) = default;
   // move assignment
@@ -104,14 +103,6 @@ public:
     return data_[icol][irow];
   }
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.Update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-public:
   wrap_t const * data() const{
     return &data_;
   }
@@ -148,7 +139,6 @@ public:
   }
 
 private:
-  friend MultiVectorDistributedBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

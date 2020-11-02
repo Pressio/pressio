@@ -58,8 +58,12 @@ template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
   >
-deep_copy(T & dest, const T & src){
-  dest = src;
+deep_copy(T & dest, const T & src)
+{
+	using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
+	dest.data()->update(::pressio::utils::constants<sc_t>::one(),
+		 *src.data(),
+		 ::pressio::utils::constants<sc_t>::zero() );
 }
 
 }}//end namespace pressio::ops

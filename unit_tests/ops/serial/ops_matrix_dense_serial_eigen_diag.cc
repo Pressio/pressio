@@ -3,36 +3,33 @@
 #include "pressio_ops.hpp"
 namespace{
 
-  void tester(int i){
-  }
-
   template <typename matrix_t, typename vec_t>
   void testAddition(matrix_t A, vec_t v, vec_t v2)
   {
     {
       auto diagvals = pressio::containers::diag(A);
-      ::pressio::ops::do_update(diagvals,1.,v,2.);
+      ::pressio::ops::update(diagvals,1.,v,2.);
       EXPECT_DOUBLE_EQ( diagvals(0), 3.2 );
       EXPECT_DOUBLE_EQ( diagvals(1), 10.2 );
       EXPECT_DOUBLE_EQ( diagvals(2), 17.2 );
       EXPECT_DOUBLE_EQ( diagvals(3), 24.  );
-      ::pressio::ops::do_update(diagvals,v,2.);
+      ::pressio::ops::update(diagvals,v,2.);
       EXPECT_DOUBLE_EQ( diagvals(0), 2. );
       EXPECT_DOUBLE_EQ( diagvals(1), 4. );
       EXPECT_DOUBLE_EQ( diagvals(2), 6. );
       EXPECT_DOUBLE_EQ( diagvals(3), 8. );
-      ::pressio::ops::do_update(diagvals,2.,v,2.,v2,2.);
+      ::pressio::ops::update(diagvals,2.,v,2.,v2,2.);
       EXPECT_DOUBLE_EQ( diagvals(0), 28. );
       EXPECT_DOUBLE_EQ( diagvals(1), 36.  );
-      ::pressio::ops::do_update(diagvals,v,2.,v2,2.);
+      ::pressio::ops::update(diagvals,v,2.,v2,2.);
       EXPECT_DOUBLE_EQ( diagvals(0), 24. );
       EXPECT_DOUBLE_EQ( diagvals(1), 28. );
 
       //cycle through rest of ops to check
-      ::pressio::ops::do_update(diagvals,4.,v,2.,v2,2.,v2,2.);
-      ::pressio::ops::do_update(diagvals,v,2.,v2,2.,v2,2.);
-      ::pressio::ops::do_update(diagvals,4.,v,2.,v2,2.,v2,2.,v2,3.);
-      ::pressio::ops::do_update(diagvals,v,2.,v2,2.,v2,2.,v2,3.);
+      ::pressio::ops::update(diagvals,4.,v,2.,v2,2.,v2,2.);
+      ::pressio::ops::update(diagvals,v,2.,v2,2.,v2,2.);
+      ::pressio::ops::update(diagvals,4.,v,2.,v2,2.,v2,2.,v2,3.);
+      ::pressio::ops::update(diagvals,v,2.,v2,2.,v2,2.,v2,3.);
     }
   }
 
@@ -81,8 +78,8 @@ TEST(containers_matrix_serial_eigen_diag_ops, diag)
   using eigmat_t_float = Eigen::Matrix<float,-1,-1>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
-  using myM_t_float = pressio::containers::Matrix<eigmat_t_float>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
+  using myM_t_float = pressio::containers::DenseMatrix<eigmat_t_float>;
   using myV_t = pressio::containers::Vector<eigvec_t>;
 
 
@@ -119,7 +116,7 @@ TEST(containers_matrix_serial_eigen_diag_ops, diagRowMajor)
   using eigmat_t = Eigen::Matrix<double,-1,-1,Eigen::RowMajor>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::Matrix<eigmat_t>;
+  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
   using myV_t = pressio::containers::Vector<eigvec_t>;
 
 

@@ -65,9 +65,13 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<B_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value
+  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
+  and
+  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<B_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<B_type>::value)
+  and
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -77,22 +81,33 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers. */
+  static_assert
+    (!std::is_const<C_type>::value,
+     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<
+     A_type, B_type, C_type>::value,
+     "operands need to have same execution space" );
 
   const char ctA = 'T';
   const char ctB = 'N';
-  KokkosBlas::gemm(&ctA, &ctB, alpha, *A.data(), *B.data(), beta, *C.data());
+  ::KokkosBlas::gemm(&ctA, &ctB, alpha, *A.data(), *B.data(), beta, *C.data());
 }
 
-
 /*----------------------------------------
-* special case A==B (for now use impl above)
+* special case A==B and op(A)=A^T, op(B)=B
 ------------------------------------------*/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value
+  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
+  and
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -106,8 +121,10 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<C_type>::value,
+  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
+  and
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,

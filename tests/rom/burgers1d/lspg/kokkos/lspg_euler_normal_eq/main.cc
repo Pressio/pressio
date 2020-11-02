@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_kokkos.hpp"
 
@@ -25,7 +25,6 @@ int main(int argc, char *argv[]){
   using decoder_d_t	= pressio::rom::LinearDecoder<decoder_jac_d_t, fom_state_t_d>;
 
   std::string checkStr {"PASSED"};
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
   Kokkos::initialize (argc, argv);
   {
@@ -33,7 +32,6 @@ int main(int argc, char *argv[]){
     constexpr int numCell = 20;
     fom_t appobj({{5.0, 0.02, 0.02}}, numCell);
     const scalar_t dt = 0.01;
-    constexpr auto t0 = zero;
 
     constexpr int romSize = 11;
 
@@ -53,32 +51,30 @@ int main(int argc, char *argv[]){
 
     // define LSPG type
     using ode_tag  = pressio::ode::implicitmethods::Euler;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-      ode_tag, fom_t, lspg_state_d_t, decoder_d_t>::type;
-    using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-    lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
+    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, lspg_state_d_t>::type;
+    // lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>
+      (appobj, decoderObj, yROM, yRef);
 
     // linear solver
-    using hessian_t  = pressio::containers::Matrix<typename fom_t::mv_d>;
+    using hessian_t  = pressio::containers::DenseMatrix<typename fom_t::mv_d>;
     using solver_tag   = pressio::solvers::linear::direct::getrs;
     using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-      lspg_stepper_t,
-      pressio::solvers::nonlinear::DefaultUpdate,
-      linear_solver_t>;
-    nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(
+      lspgProblem.stepperRef(), yROM, linSolverObj);
     solver.setTolerance(1e-14);
     // I know this should converge in few iters at every step
     solver.setMaxIterations(5);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    const auto yFomFinal_d = lspgProblem.getFomStateReconstructorCRef()(yROM);
+    const auto yFomFinal_d = lspgProblem.fomStateReconstructorCRef()(yROM);
 
     // create a host mirror for yFomFinal
     native_state_t_h yFomFinal_h("yFF_h", numCell);

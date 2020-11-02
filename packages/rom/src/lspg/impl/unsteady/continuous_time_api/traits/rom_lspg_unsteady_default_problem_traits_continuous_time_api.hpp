@@ -49,19 +49,33 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio{ namespace rom{
+
+//fwd declare problem class
+namespace lspg{ namespace impl{ namespace unsteady{
+template <typename ...>
+class DefaultProblemContinuousTimeApi;
+}}}// end namespace pressio::rom::lspg::impl::unsteady
+
+namespace details{
 
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
-  typename ... Args
+  typename decoder_type,
+  typename ud_ops_type
   >
-struct DefaultProblemTraitsContinuousTimeApi
+struct traits<
+  ::pressio::rom::lspg::impl::unsteady::DefaultProblemContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type
+    >
+  >
 {
   // pick the common types holder
-  using common_types_t = ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
-        stepper_tag, fom_system_type, lspg_state_type, Args...>;
+  using common_types_t =
+    ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
+    stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -69,32 +83,35 @@ struct DefaultProblemTraitsContinuousTimeApi
   using fom_state_t		= typename common_types_t::fom_state_t;
   using fom_velocity_t		= typename common_types_t::fom_velocity_t;
   using lspg_state_t		= typename common_types_t::lspg_state_t;
+  using lspg_native_state_t	= typename common_types_t::lspg_native_state_t;
   using lspg_residual_t		= typename common_types_t::lspg_residual_t;
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
   using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-  using ud_ops_t		= typename common_types_t::ud_ops_t;
+  using ud_ops_t = ud_ops_type;
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
-  // policy to compute the LSPG time-discrete residual
-  using lspg_residual_policy_t	= ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
+  using residual_policy_t	=
+    ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
     lspg_residual_t, fom_states_manager_t, ud_ops_t>;
-  static_assert( !std::is_void<lspg_residual_policy_t>::value, "");
 
-  // policy to compute the LSPG time-discrete jacobian
-  using lspg_jacobian_policy_t	= ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
+  using jacobian_policy_t =
+    ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
     fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t>;
-  static_assert( !std::is_void<lspg_jacobian_policy_t>::value, "");
 
-  using aux_stepper_t = typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+  using aux_stepper_t =
+    typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
     stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_system_type,
-    lspg_residual_policy_t, lspg_jacobian_policy_t>::type;
+    residual_policy_t, jacobian_policy_t>::type;
 
-  using lspg_stepper_t =
-     ::pressio::ode::ImplicitStepper<stepper_tag, lspg_state_t, lspg_residual_t,
-      lspg_matrix_t, fom_system_type, aux_stepper_t, lspg_residual_policy_t, lspg_jacobian_policy_t>;
-};//end class
+  using stepper_t =
+    ::pressio::ode::ImplicitStepper<
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t,
+    fom_system_type, aux_stepper_t,
+    residual_policy_t, jacobian_policy_t>;
+};
 
-}}}}}//end  namespace pressio::rom::lspg::unstedy::impl
+}}}//end  namespace pressio::rom::lspg::unstedy::impl
 #endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_

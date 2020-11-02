@@ -37,12 +37,12 @@ struct RunTest{
     // wrap device matrix
     wmv mvA_d(A_d);
 
-    using ret_t = ::pressio::containers::Matrix<k2d_d>;
+    using ret_t = ::pressio::containers::DenseMatrix<k2d_d>;
     // self-dot
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     auto C_d = ::pressio::ops::product<ret_t>(::pressio::transpose(), ::pressio::nontranspose(), alpha, mvA_d);
 
-    using expected_ret_t = ::pressio::containers::Matrix<k2d_d>;
+    using expected_ret_t = ::pressio::containers::DenseMatrix<k2d_d>;
     static_assert( std::is_same< decltype(C_d), expected_ret_t>::value, "");
 
     // create host mirror of C_d
@@ -68,12 +68,5 @@ TEST(ops_multi_vector_kokkos, dotSelf_dLL){
   // kokkos initialize and finalize already set from environment, see CMakeList
 
   using d_lay = Kokkos::LayoutLeft;
-  RunTest<d_lay> r1;
-}
-
-TEST(ops_multi_vector_kokkos, dotSelf_dLR){
-  // kokkos initialize and finalize already set from environment, see CMakeList
-
-  using d_lay = Kokkos::LayoutRight;
   RunTest<d_lay> r1;
 }

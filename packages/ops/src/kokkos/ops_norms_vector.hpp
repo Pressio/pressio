@@ -63,7 +63,7 @@ template <
 auto norm1(const vec_type & a)
   -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
-  return KokkosBlas::nrm1(*a.data());
+  return ::KokkosBlas::nrm1(*a.data());
 }
 
 template <
@@ -75,7 +75,7 @@ template <
 auto norm2(const vec_type & a)
   -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
-  return KokkosBlas::nrm2(*a.data());
+  return ::KokkosBlas::nrm2(*a.data());
 }
 
 }}//end namespace pressio::ops

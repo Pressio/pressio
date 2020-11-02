@@ -1,6 +1,6 @@
 
 #include "pressio_apps.hpp"
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 #include "utils_eigen.hpp"
 
 namespace
@@ -127,6 +127,7 @@ struct EulerGalerkinWithVelocityApi
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t, ops_t>;
 
+  static_assert(pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_t>::value, "");
   static_assert(pressio::rom::concepts::continuous_time_system<fom_t>::value, "");
 
   static_assert(pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
@@ -147,7 +148,6 @@ struct EulerGalerkinWithVelocityApi
     // adapter
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
-    const auto t0 = pressio::utils::constants<scalar_t>::zero();
 
     ops_t myOps;
 
@@ -161,7 +161,7 @@ struct EulerGalerkinWithVelocityApi
     decoder_t decoderObj(phi, myOps);
 
     // this is my reference state
-    auto & y0n = appObj.getInitialState();
+    auto y0n = appObj.getInitialState();
 
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
@@ -172,17 +172,23 @@ struct EulerGalerkinWithVelocityApi
     pressio::ops::resize(yROM_, romSize);
     pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
+    static_assert
+    (pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_t>::value,"");
+
     using ode_tag = pressio::ode::explicitmethods::Euler;
-    using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
-      ode_tag, fom_t, rom_state_t, decoder_t, ops_t>::type;
-    problem_t galerkinProb(appObj, y0n, decoderObj, yROM_, t0, myOps);
+    // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, rom_state_t, ops_t>::type;
+    // problem_t galerkinProb(fomObj, decoderObj, yROM_, y0n, myOps);
+    auto galerkinProb =
+      pressio::rom::galerkin::createDefaultProblem<ode_tag>
+      (fomObj, decoderObj, yROM_, y0n, myOps);
 
     scalar_t fint = 35;
     auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-    pressio::ode::advanceNSteps(galerkinProb.getStepperRef(), yROM_, 0.0, dt, nSteps);
+    pressio::ode::advanceNSteps(galerkinProb.stepperRef(), yROM_, 0.0, dt, nSteps);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = galerkinProb.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = galerkinProb.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };

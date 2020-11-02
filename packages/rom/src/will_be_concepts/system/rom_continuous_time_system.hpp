@@ -58,8 +58,8 @@ template<typename T>
 struct continuous_time_system<
   T,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_explicit_system<T>::value or
-    ::pressio::rom::concepts::continuous_time_implicit_system<T>::value 
+    ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<T>::value or
+    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<T>::value 
     >
   > : std::true_type{};
 

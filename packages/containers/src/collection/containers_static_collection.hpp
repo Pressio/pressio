@@ -54,7 +54,7 @@
 namespace pressio{ namespace containers{
 
 template<typename T, std::size_t n>
-using StaticCollection = ::pressio::containers::impl::StaticCollection<T, n>;
+using IndexableStaticCollection = ::pressio::containers::impl::IndexableStaticCollection<T, n>;
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_

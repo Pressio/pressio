@@ -70,19 +70,18 @@ struct is_expression<
   > : std::true_type{};
 
 
+// template <typename T, typename enable = void>
+// struct is_diag_expression : std::false_type{};
 
-template <typename T, typename enable = void>
-struct is_diag_expression : std::false_type{};
+// template <typename T>
+// struct is_diag_expression<
+//   ::pressio::containers::expressions::DiagExpr<T>
+//   > : std::true_type{};
 
-template <typename T>
-struct is_diag_expression<
-  ::pressio::containers::expressions::DiagExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_diag_expression<
-  const ::pressio::containers::expressions::DiagExpr<T>
-  > : is_diag_expression<T>{};
+// template <typename T>
+// struct is_diag_expression<
+//   const ::pressio::containers::expressions::DiagExpr<T>
+//   > : is_diag_expression<T>{};
 
 }}} // namespace pressio::containers::predicates
 #endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

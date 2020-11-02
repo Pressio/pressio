@@ -77,7 +77,7 @@ public:
     // maximum number of optimization iterations.
     maxIters_ = maxIter;
   }
-  int getMaxIterations() const{
+  int maxIterations() const{
     return maxIters_;
   }
 
@@ -113,7 +113,7 @@ template <typename scalar_type>
 void convertToRolParameterList(const Parameters<scalar_type> & params,
 			       ROL::ParameterList & rolParList)
 {
-  rolParList.sublist("Status Test").set("Iteration Limit", params.getMaxIterations());
+  rolParList.sublist("Status Test").set("Iteration Limit", params.maxIterations());
   rolParList.sublist("Status Test").set("Gradient Tolerance", params.getGradientNormOptimalityTolerance());
   rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
 

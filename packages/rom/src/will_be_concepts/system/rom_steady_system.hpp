@@ -87,6 +87,47 @@ template<>
 struct steady_system<pybind11::object, void> : std::true_type{};
 #endif
 
+} // namespace pressio::rom::concepts
 
-}}} // namespace pressio::rom::concepts
+template <typename T>
+struct find_discrepancies_with_steady_system_api
+{
+  static_assert
+    (::pressio::containers::predicates::has_scalar_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) scalar typedef");
+  static_assert
+    (::pressio::ode::predicates::has_state_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) state typedef");
+  static_assert
+    (::pressio::ode::predicates::has_residual_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) residual typedef");
+  static_assert
+    (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) dense_matrix typedef");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_create_residual_method_return_result<
+     T, typename T::residual_type>::value,
+     "Your steady adapter class is without (or has a wrong) create residual method");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type
+      >::value,
+     "Your steady adapter class is without (or has a wrong) residual method");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+     T, typename T::dense_matrix_type, typename T::dense_matrix_type >::value,
+     "Your steady adapter class is without (or has a wrong) create apply jacobian result method");
+
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
+      T,  typename T::state_type,  typename T::dense_matrix_type, typename T::dense_matrix_type >::value,
+     "Your steady adapter class is without (or has a wrong) apply jacobian method");
+
+  static constexpr bool value = true;
+};
+
+}} // namespace pressio::rom
 #endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_

@@ -60,7 +60,6 @@ class Vector<
       >::value
     >
   >
-  : public VectorDistributedBase< Vector<wrapped_type> >
 {
 
   using this_t		= Vector<wrapped_type>;
@@ -73,68 +72,63 @@ class Vector<
 public:
   Vector() = delete;
 
-  /* Block MV/V still missing a copy constructor,
-   * see https://github.com/trilinos/Trilinos/issues/4627
-   * so for now we construct this one using other's data */
+  // something seems wrong with
+  //    data_(other.data_, Teuchos::Copy){}
+  // for tpetra block, so don't use that.
+  // just construct the vecrtor using map and block size.
 
   explicit Vector(const wrapped_type & vecobj)
-    : data_( *vecobj.getMap(),
-  	     vecobj.getBlockSize()){
+    : data_( *vecobj.getMap(), vecobj.getBlockSize())
+  {
     // just a trick to copy data
     data_.update(::pressio::utils::constants<sc_t>::one(),
-		 vecobj,
-		 ::pressio::utils::constants<sc_t>::zero());
+     vecobj,
+     ::pressio::utils::constants<sc_t>::zero());
   }
 
-  // here we do not default the copy and move because if we did that,
-  // it would use the tpetra copy/move which have view semantics
-  // which is not what we want here (for the time being)
+  explicit Vector(wrapped_type && vecobj)
+    : Vector(vecobj){}
+
+  explicit Vector(const map_t & mapO, LO_t blockSize)
+    : data_(mapO, blockSize){}
+
 
   // copy cnstr delegating (for now) to the one above
   Vector(Vector const & other) : Vector(*other.data()){}
 
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      this->data_.update(::pressio::utils::constants<sc_t>::one(),
-			 *other.data(),
-			 ::pressio::utils::constants<sc_t>::zero() );
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(const Vector & other) = delete;
 
+
+  /*something is wrong with the move for blockVector,
+    I get all sorts of strange behaviors.
+
+    for example this:
+    using vec_t = tpetra::BlockVector<>;
+    vec_t a(*map, 3);
+    a.putScalar(1.);
+    ASSERT_EQ( a.getVectorView().norm1(), 45. );
+    vec_t b(std::move(a));
+    ASSERT_EQ( b.getVectorView().norm1(), 45. );
+
+    for now let's not implement move for tpetra block wrapper.
+  */
   // move cnstr
   Vector(Vector && other) : Vector(*other.data()){}
+  //   : data_(other.data_, Teuchos::Copy){}
 
   // move assignment
-  Vector & operator=(Vector && other){
+  Vector & operator=(Vector && other)
+  {
     this->data_.update(::pressio::utils::constants<sc_t>::one(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::zero() );
+           *other.data(),
+           ::pressio::utils::constants<sc_t>::zero() );
     return *this;
   }
 
   ~Vector() = default;
 
 public:
-  // compound add assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants<sc_t>::one(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::one() );
-    return *this;
-  }
-
-  // compound add assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    this->data_.update(::pressio::utils::constants<sc_t>::negOne(),
-		       *other.data(),
-		       ::pressio::utils::constants<sc_t>::one() );
-    return *this;
-  }
-
   wrapped_type const * data() const{
     return &data_;
   }
@@ -158,10 +152,9 @@ public:
   }
 
 private:
-  friend VectorDistributedBase< this_t >;
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_

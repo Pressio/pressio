@@ -134,20 +134,6 @@ public:
     A->Multiply(false, B, C);
   }
 
-  void applyPreconditioner(const state_type & yState,
-                           dense_matrix_type & C) const 
-  {
-    // do nothing, preconditioner is identity
-    std::cout << "identiy precond" << std::endl;
-  }
-
-  void applyPreconditioner(const state_type & yState,
-                           residual_type & rhs) const 
-  {
-    // do nothing, preconditioner is identity
-    std::cout << "identiy precond" << std::endl;
-  }
-
 private:
   SteadyLinAdvDiff2dEpetra appObj_;
 

@@ -53,16 +53,13 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value 
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-scale(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
+scale(T & v,
+      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  using traits	 = ::pressio::containers::details::traits<T>;
-  using scalar_t = typename traits::scalar_t;
-  using ord_t	 = typename traits::ordinal_t;
-  auto proxy = v.data()->mutable_unchecked();
-  for (ord_t i=0; i<v.extent(0); ++i)
-    proxy(i) *= value;
+  for (std::size_t i=0; i<v.extent(0); ++i)
+    v(i) *= value;
 }
 
 }}//end namespace pressio::ops

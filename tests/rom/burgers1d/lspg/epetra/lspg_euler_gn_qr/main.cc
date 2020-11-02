@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
@@ -28,7 +28,6 @@ int main(int argc, char *argv[]){
   // app object
   constexpr int numCell = 20;
   fom_t appobj( {5.0, 0.02, 0.02}, numCell, &Comm);
-  auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
   // read from file the jacobian of the decoder
@@ -52,31 +51,29 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
-  using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-    ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
-
-  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-  using rom_jac_t     = typename lspg_problem::lspg_matrix_t;
+  // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
+  //   ode_tag, fom_t, decoder_t, lspg_state_t>::type;
+  // lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>
+    (appobj, decoderObj, yROM, yRef);
 
   // GaussNewton solver
+  using rom_jac_t = typename decltype(lspgProblem)::traits::lspg_matrix_t;
   using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
   qr_solver_type qrSolver;
 
-  using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewtonQR_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::armijoUpdate,
-    qr_solver_type>;
-  gnsolver_t solver(lspgProblem.getStepperRef(), yROM, qrSolver);
+  auto solver = pressio::solvers::nonlinear::createGaussNewtonQR(
+    lspgProblem.stepperRef(), yROM, qrSolver);
+  solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters at every step
   solver.setMaxIterations(5);
 
   // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
+  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
 
   // this is a reproducing ROM test, so the final reconstructed state
@@ -86,7 +83,7 @@ int main(int argc, char *argv[]){
     const int myn = yFomFinal.data()->Map().NumMyElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
-      if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+      if (std::abs(yFomFinal(i) - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }
 
   MPI_Finalize();

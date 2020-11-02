@@ -55,11 +55,9 @@ template <typename wrapped_type>
 class Vector<
   wrapped_type,
   mpl::enable_if_t<
-    details::traits<Vector<wrapped_type>>::wrapped_vector_identifier
-    == details::WrappedVectorIdentifier::Arbitrary
+    ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
     >
   >
-  : public ContainerBase< Vector<wrapped_type>>
 {
   using this_t = Vector<wrapped_type>;
   using size_t = typename details::traits<this_t>::size_t;
@@ -70,7 +68,7 @@ public:
   template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value, 
+      std::is_default_constructible<_wrapped_type>::value,
       int > = 0
   >
   Vector(){};
@@ -91,17 +89,6 @@ public:
     : data_(*other.data()){}
 
 public:
-  size_t extent(size_t k) const{
-    return data_.extent(k);
-  }
-
-  sc_t & operator()(size_t i){
-    return data_(i);
-  };
-  sc_t const & operator()(size_t i) const{
-    return data_(i);
-  };
-
   wrapped_type const * data() const{
     return &data_;
   }
@@ -110,11 +97,32 @@ public:
     return &data_;
   }
 
-private:
-  friend ContainerBase<this_t>;
-  wrapped_type data_ = {};
+  size_t extent(size_t k) const{
+    assert(k == (size_t) 0);
+    return data_.extent(k);
+  }
 
-};//end class
+  sc_t & operator()(size_t i){
+    assert(i < this->extent(0));
+    return data_[i];
+  };
+  sc_t const & operator()(size_t i) const{
+    assert(i < this->extent(0));
+    return data_[i];
+  };
+
+  [[deprecated("Use operator() instead.")]] 
+  sc_t & operator[](size_t i){
+    return (*this)(i);
+  };
+  [[deprecated("Use operator() instead.")]] 
+  sc_t const & operator[](size_t i) const{
+    return (*this)(i);
+  };
+
+private:
+  wrapped_type data_ = {};
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_

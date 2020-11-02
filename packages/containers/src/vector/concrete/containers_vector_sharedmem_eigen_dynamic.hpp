@@ -56,14 +56,14 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_dynamic_vector_eigen<wrapped_type>::value
-	       >
-	     >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
+class Vector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_dynamic_vector_eigen<wrapped_type>::value
+    >
+  >
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  , public ROL::Vector< typename wrapped_type::Scalar>
+  : public ROL::Vector< typename wrapped_type::Scalar>
 #endif
 {
 
@@ -78,63 +78,31 @@ class Vector<wrapped_type,
 public:
   Vector() = default;
 
+  explicit Vector(const wrap_t & src) : data_(src){}
+
   explicit Vector(ord_t insize){
     data_.resize(insize);
     data_.setConstant( ::pressio::utils::constants<sc_t>::zero() );
   }
-  explicit Vector(const wrap_t & src) : data_(src){}
+
+  Vector(wrap_t && src) : data_(std::move(src)){}
 
   // copy cnstr
   Vector(Vector const & other) = default;
-  // copy assignment
-  Vector & operator=(const Vector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(const Vector & other) = delete;
+
+  /* move semantics, see:
+     https://gitlab.com/libeigen/eigen/-/issues/2000 */
   // move cnstr
   Vector(Vector && o) = default;
   // move assignment
   Vector & operator=(Vector && other) = default;
+
   // destructor
   ~Vector() = default;
 
 public:
-  // assignment with value
-  this_t & operator=(const sc_t & value){
-    for (ord_t i = 0; i != data_.size(); ++i)
-      data_[i] = value;
-    return *this;
-  }
-
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    this->data_ += *other.data();
-    return *this;
-  }
-
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    assert( other.extent(0) == this->extent(0) );
-    this->data_ -= *other.data();
-    return *this;
-  }
-
-public:
-
-  ref_t operator [] (ord_t i){
-    return data_(i);
-  };
-  const_ref_t operator [] (ord_t i) const{
-    return data_(i);
-  };
-
-  ref_t operator()(ord_t i){
-    return data_[i];
-  };
-  const_ref_t operator()(ord_t i) const{
-    return data_[i];
-  };
-
   wrap_t const * data() const{
     return &data_;
   }
@@ -146,6 +114,24 @@ public:
   wrap_t dataCp(){
     return data_;
   }
+
+  ref_t operator()(ord_t i){
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+  const_ref_t operator()(ord_t i) const{
+    assert(i < this->extent(0));
+    return data_(i);
+  };
+
+  [[deprecated("Use operator() instead.")]] 
+  ref_t operator[](ord_t i){
+    return (*this)(i);
+  };
+  [[deprecated("Use operator() instead.")]] 
+  const_ref_t operator[](ord_t i) const{
+    return (*this)(i);
+  };
 
   bool empty() const{
     return this->extent(0)==0 ? true : false;
@@ -197,16 +183,15 @@ public:
     auto  b_ptr = clone();
     auto& b_ref = static_cast<this_t&>(*b_ptr);
     b_ref.zero();
-    b_ref[i] = sc_t(1);
+    b_ref(i) = sc_t(1);
     return b_ptr;
   }
 #endif
 
 private:
-  friend VectorSharedMemBase< this_t >;
   wrap_t data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_

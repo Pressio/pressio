@@ -1,3 +1,0 @@
-
-add_serial_utest_kokkos(solvers_linear_dense_kokkos 
-	solvers_linear_dense_kokkos.cc)

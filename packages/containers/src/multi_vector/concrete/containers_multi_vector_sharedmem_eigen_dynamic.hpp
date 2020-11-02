@@ -52,12 +52,12 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class MultiVector<wrapped_type,
-		  ::pressio::mpl::enable_if_t<
-		    ::pressio::containers::predicates::is_dynamic_multi_vector_eigen<
-		      wrapped_type>::value>
-		  >
-  : public MultiVectorSharedMemBase< MultiVector<wrapped_type> >
+class MultiVector<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
+    >
+  >
 {
 
 private:
@@ -69,18 +69,20 @@ private:
 public:
   MultiVector() = default;
 
-  MultiVector(ord_t length, ord_t numVectors)
-    : data_(length, numVectors){
+  explicit MultiVector(const wrap_t & other) : data_(other){}
+
+  MultiVector(ord_t length, ord_t numVectors) : data_(length, numVectors)
+  {
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  explicit MultiVector(const wrap_t & other)
-    : data_(other){}
+  MultiVector(wrap_t && other) : data_(std::move(other)){}
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other) = default;
+  // delete copy assign to force usage of ops::deep_copy
+  MultiVector & operator=(const MultiVector & other) = delete;
+
   // move cnstr
   MultiVector(MultiVector && o) = default;
   // move assignment
@@ -90,19 +92,20 @@ public:
 
 
 public:
-  sc_t & operator()(ord_t irow, ord_t iVec){
-    assert(iVec < this->numVectors() );
+  sc_t & operator()(ord_t irow, ord_t iVec)
+  {
     assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
-  sc_t const & operator()(ord_t irow, ord_t iVec)const{
-    assert(iVec < this->numVectors() );
+  sc_t const & operator()(ord_t irow, ord_t iVec) const
+  {
     assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
-public:
   ord_t numVectors() const{
     return data_.cols();
   }
@@ -125,7 +128,6 @@ public:
   }
 
 private:
-  friend MultiVectorSharedMemBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

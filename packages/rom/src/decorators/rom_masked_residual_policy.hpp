@@ -51,29 +51,35 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-
-template <typename maskable_policy>
+template <typename masker_t, typename maskable_policy>
 class MaskedResidualPolicy : public maskable_policy
 {
   using typename maskable_policy::residual_t;
-  using typename maskable_policy::ud_ops_t;
-  using maskable_policy::R_;
-  using maskable_policy::udOps_;
-  using maskable_policy::fomStatesMngr_;
+  mutable residual_t R_;
+  std::reference_wrapper<const masker_t> maskerObj_;
 
 public:
   MaskedResidualPolicy() = delete;
-  MaskedResidualPolicy(const maskable_policy & obj) : maskable_policy(obj){}
+  MaskedResidualPolicy(const MaskedResidualPolicy &) = default;
+  MaskedResidualPolicy & operator=(const MaskedResidualPolicy &) = default;
+  MaskedResidualPolicy(MaskedResidualPolicy &&) = default;
+  MaskedResidualPolicy & operator=(MaskedResidualPolicy &&) = default;
+  ~MaskedResidualPolicy() = default;
 
-  template <typename ... Args>
-  MaskedResidualPolicy(Args && ... args) : maskable_policy(std::forward<Args>(args)...){}
+  template <typename fom_system_t, typename ... Args>
+  MaskedResidualPolicy(const masker_t & maskerObj,
+		       const fom_system_t & fomObj,
+		       Args && ... args)
+    : maskable_policy(std::forward<Args>(args)...),
+      R_(maskable_policy::create(fomObj)),
+      maskerObj_(maskerObj)
+  {}
 
 public:
   template <typename fom_system_t>
   residual_t create(const fom_system_t & systemObj) const
   {
-    R_ = maskable_policy::create(systemObj);
-    return residual_t(systemObj.createApplyMaskResult(*R_.data()));
+    return residual_t(maskerObj_.get().createApplyMaskResult(*R_.data()));
   }
 
   //-------------------------------
@@ -84,8 +90,7 @@ public:
     typename state_t,
     typename prev_states_t,
     typename fom_system_t,
-    typename time_type,
-    typename norm_value_type
+    typename time_type
     >
   void compute(const state_t & state,
 	       const prev_states_t & prevStates,
@@ -93,67 +98,30 @@ public:
 	       const time_type & time,
 	       const time_type & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & R,
-	       ::pressio::Norm normKind,
-	       norm_value_type & normValue) const
+	       residual_t & R) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStates, systemObj, time,
-						   dt, step, R_, normKind, normValue);
+    maskable_policy::template compute<stepper_tag>
+      (state, prevStates, systemObj, time, dt, step, R_);
 
-    systemObj.applyMask(*R_.data(), time, *R.data());
-
-    // need to compute norm since after the mask the object is a different
-    comouteNormOfMaskedResidual(R, normKind, normValue);
+    maskerObj_.get().applyMask(*R_.data(), time, *R.data());
   }
 
   //-------------------------------
   // steady case
   //-------------------------------
-  template <typename state_t, typename fom_system_t, typename norm_value_type>
+  template <
+    typename state_t,
+    typename fom_system_t
+    >
   void compute(const state_t & state,
-	       residual_t & R,
-	       const fom_system_t & systemObj,
-	       ::pressio::Norm normKind,
-	       norm_value_type & normValue) const
+  	       residual_t & R,
+  	       const fom_system_t & systemObj) const
   {
-    maskable_policy::compute(state, R_, systemObj, normKind, normValue);
-
-    systemObj.applyMask(*R_.data(), *R.data());
-
-    // need to compute norm since after the mask the object is a different
-    comouteNormOfMaskedResidual(R, normKind, normValue);
+    maskable_policy::compute(state, R_, systemObj);
+    maskerObj_.get().applyMask(*R_.data(), *R.data());
   }
 
-private:
-  template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
-  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
-  comouteNormOfMaskedResidual(const residual_t & R,
-                              ::pressio::Norm normKind,
-                              norm_value_type & normValue) const
-  {
-    if (normKind == ::pressio::Norm::L2)
-      normValue = udOps_->norm2(*R_.data());
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = udOps_->norm1(*R_.data());
-    else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
-  }
-
-  template <typename norm_value_type, typename _ud_ops_t = ud_ops_t>
-  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
-  comouteNormOfMaskedResidual(const residual_t & R,
-                              ::pressio::Norm normKind,
-                              norm_value_type & normValue) const
-  {
-    if (normKind == ::pressio::Norm::L2)
-      normValue = ::pressio::ops::norm2(R_);
-    else if (normKind == ::pressio::Norm::L1)
-      normValue = ::pressio::ops::norm1(R_);
-    else
-      throw std::runtime_error("Invalid norm kind for lspg unsteady residual policy");
-  }
-
-};//end class
+};
 
 }}} //end namespace pressio::rom::decorator
 #endif  // ROM_DECORATORS_ROM_MASKED_RESIDUAL_POLICY_HPP_

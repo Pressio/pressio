@@ -75,7 +75,7 @@ TEST(ops_multi_vector_eigen, mv_dot_mvEigen_ColMajorMatrix){
   Data d;
   // matrix with left layout
   using eig_mat_t = Eigen::Matrix<double, -1, -1, Eigen::ColMajor>;
-  using mat_t = ::pressio::containers::Matrix<eig_mat_t>;
+  using mat_t = ::pressio::containers::DenseMatrix<eig_mat_t>;
   doDot<mat_t>(d.A,d.B);
 }
 
@@ -83,7 +83,7 @@ TEST(ops_multi_vector_eigen, mv_dot_mvEigen_RowMajorMatrix){
   Data d;
   // matrix with right layout
   using eig_mat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
-  using mat_t = ::pressio::containers::Matrix<eig_mat_t>;
+  using mat_t = ::pressio::containers::DenseMatrix<eig_mat_t>;
   doDot<mat_t>(d.A,d.B);
 }
 
@@ -91,7 +91,7 @@ TEST(ops_multi_vector_eigen, mv_dot_mvEigen_ColMajorMatrix_subspanStore){
   Data d;
   // matrix with left layout
   using eig_mat_t = Eigen::Matrix<double, -1, -1, Eigen::ColMajor>;
-  using mat_t = ::pressio::containers::Matrix<eig_mat_t>;
+  using mat_t = ::pressio::containers::DenseMatrix<eig_mat_t>;
 
   // make a matrix bit enough
   mat_t C(20, 25);

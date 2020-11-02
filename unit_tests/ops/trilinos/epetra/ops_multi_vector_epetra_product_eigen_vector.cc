@@ -45,10 +45,10 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   eigv_t bn;
   using vec_t = containers::Vector<eigv_t>;
   vec_t b(bn);
-  b[0] = 1.;
-  b[1] = 2.;
-  b[2] = 3.;
-  b[3] = 4.;
+  b(0) = 1.;
+  b(1) = 2.;
+  b(2) = 3.;
+  b(3) = 4.;
 
   using res_t = containers::Vector<Epetra_Vector>;
   res_t res(*x_);
@@ -56,21 +56,21 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
   res.data()->Print(std::cout);
 
   if (rank_==0){
-    EXPECT_DOUBLE_EQ( res[0], 5.6);
-    EXPECT_DOUBLE_EQ( res[1], 1.2);
-    EXPECT_DOUBLE_EQ( res[2], 8.0);
+    EXPECT_DOUBLE_EQ( res(0), 5.6);
+    EXPECT_DOUBLE_EQ( res(1), 1.2);
+    EXPECT_DOUBLE_EQ( res(2), 8.0);
   }
 
   if (rank_==1){
-    EXPECT_DOUBLE_EQ( res[0], 0.0);
-    EXPECT_DOUBLE_EQ( res[1], 0.0);
-    EXPECT_DOUBLE_EQ( res[2], 9.0);
+    EXPECT_DOUBLE_EQ( res(0), 0.0);
+    EXPECT_DOUBLE_EQ( res(1), 0.0);
+    EXPECT_DOUBLE_EQ( res(2), 9.0);
   }
 
   if (rank_==2){
-    EXPECT_DOUBLE_EQ( res[0], 0.);
-    EXPECT_DOUBLE_EQ( res[1], 0.);
-    EXPECT_DOUBLE_EQ( res[2], 0.);
+    EXPECT_DOUBLE_EQ( res(0), 0.);
+    EXPECT_DOUBLE_EQ( res(1), 0.);
+    EXPECT_DOUBLE_EQ( res(2), 0.);
   }
 
 }

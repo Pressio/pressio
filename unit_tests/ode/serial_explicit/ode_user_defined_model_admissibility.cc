@@ -25,5 +25,5 @@ TEST(user_defined_model, admissibleExplicitOde){
 
   using app_t = ::pressio::ode::testing::fakeAppForTraitsForExp;
   static_assert(
-    ode::concepts::continuous_time_explicit_system<app_t>::value, "");
+    ode::concepts::continuous_time_system_without_user_provided_jacobian<app_t>::value, "");
 }

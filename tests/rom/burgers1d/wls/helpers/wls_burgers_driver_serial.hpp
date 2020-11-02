@@ -86,7 +86,7 @@ std::string doRun()
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC
-  const fom_state_t & fomStateReference = fomStateInitCond;
+  const fom_state_t & fomNominalState = fomStateInitCond;
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
   constexpr pressio::rom::wls::window_size_t numStepsInWindow = 5;
@@ -99,7 +99,7 @@ std::string doRun()
 
   //  lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;
-  linear_solver_t linear_solver;
+  linear_solver_t linearSolver;
 
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
@@ -109,19 +109,16 @@ std::string doRun()
 
   // create policy and wls system
   int jacobianUpdateFrequency = 2;
-  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
-  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomNominalState, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
+  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomNominalState, linearSolver);
 
   // create the wls state
   wls_state_t  wlsState(wlsSize);
   pressio::ops::set_zero(wlsState);
 
   // NL solver
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    wls_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
-  gn_t GNSolver(wlsSystem, wlsState, linear_solver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(
+    wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(5);
 
@@ -146,7 +143,7 @@ std::string doRun()
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomStateInitCond);
   pressio::ops::set_zero(yFinal);
-  const auto fomStateReconstructor = wlsSystem.getFomStateReconstructorCRef();
+  const auto fomStateReconstructor = wlsSystem.fomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(),fomSize, dt);
 

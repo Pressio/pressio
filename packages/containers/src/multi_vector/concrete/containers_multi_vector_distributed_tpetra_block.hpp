@@ -60,7 +60,6 @@ class MultiVector<
       >::value
     >
   >
-  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
 {
 
 private:
@@ -74,28 +73,51 @@ private:
   using mpicomm_t = typename details::traits<this_t>::communicator_t;
 
 public:
+  /* Block MV/V still missing a copy constructor,
+   * see https://github.com/trilinos/Trilinos/issues/4627*/
+
   MultiVector() = delete;
 
-  /* Block MV/V still missing a copy constructor,
-   * see https://github.com/trilinos/Trilinos/issues/4627
-   * so for now we construct this one using other's data */
+  MultiVector(const map_t & map, LO_t blockSize, LO_t numVectors)
+    : data_(map, blockSize, numVectors){}
+
+  // explicit MultiVector(wrap_t && other)
+  //   : data_(std::move(other.data_)){}
 
   explicit MultiVector(const wrap_t & other)
     : data_( *other.getMap(),
 	     other.getBlockSize(),
-	     other.getNumVectors()){
+	     other.getNumVectors())
+  {
     // just a trick to copy data
     data_.update(::pressio::utils::constants<sc_t>::one(),
-		 other,
-		 ::pressio::utils::constants<sc_t>::zero());
+		 other, ::pressio::utils::constants<sc_t>::zero());
   }
 
-  // delegate (for now) to the one above
-  MultiVector(const this_t & other)
-    : MultiVector(*other.data()){}
+  // copy constructor (delegate to above)
+  MultiVector(const this_t & other) : MultiVector(*other.data())
+  {}
 
-  MultiVector(const map_t & map, LO_t blockSize, LO_t numVectors)
-    : data_(map, blockSize, numVectors){}
+  // delete copy assign to force usage of ops::deep_copy
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if(&other != this)
+  //   {
+  //     data_.update(::pressio::utils::constants<sc_t>::one(),
+		//    *other.data(), ::pressio::utils::constants<sc_t>::zero());
+  //   }
+  //   return *this;
+  // }
+
+  // move and move assign: use copy because move not working for tblock
+  MultiVector(MultiVector && other) : MultiVector(*other.data()){}
+
+  MultiVector & operator=(MultiVector && other)
+  {
+    this->data_.update(::pressio::utils::constants<sc_t>::one(),
+           *other.data(),
+           ::pressio::utils::constants<sc_t>::zero() );
+    return *this;
+  }
 
   ~MultiVector() = default;
 
@@ -130,11 +152,10 @@ public:
   }
 
   LO_t extentLocal(std::size_t i) const{
-    // each process owns all cols 
+    // each process owns all cols
     assert(i<=1);
     return (i==0) ? data_.getMap()->getNodeNumElements() : data_.getNumVectors();
   }
-
 
 private:
   void needSync(){
@@ -145,7 +166,6 @@ private:
   }
 
 private:
-  friend MultiVectorDistributedBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

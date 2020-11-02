@@ -28,7 +28,7 @@ struct MyOps
 {
   using v_t = std::vector<double>;
 
-  void do_update(v_t & v, const double c,
+  void update(v_t & v, const double c,
   			const v_t & v0, const double a,
   			const v_t & v1, const double b) const
   {
@@ -36,7 +36,7 @@ struct MyOps
       v[i] = c*v[i] + a*v0[i] + b*v1[i];
   }
 
-  void do_update(v_t & v,
+  void update(v_t & v,
   			const v_t & v0, const double a,
   			const v_t & v1, const double b) const
   {
@@ -44,7 +44,7 @@ struct MyOps
       v[i] = a*v0[i] + b*v1[i];
   }
 
-  void do_update(v_t & v,
+  void update(v_t & v,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,
@@ -54,7 +54,7 @@ struct MyOps
       v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 
-  void do_update(v_t & v, const double a,
+  void update(v_t & v, const double a,
 			const v_t & v1, const double b,
 			const v_t & v2, const double c,
 			const v_t & v3, const double d,
@@ -69,20 +69,21 @@ TEST(ode_explicit_rk4, userDefinedOps){
   using namespace pressio;
   using app_t	    = MyApp;
   using nstate_t    = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
+  // using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
+  // using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
 
   auto yptr = y.data();
   (*yptr)[0] = 1.; (*yptr)[1] = 2.; (*yptr)[2] = 3.;
 
   MyOps opsObj;
-  using stepper_t = ode::ExplicitStepper<
-    ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
-  stepper_t stepperObj(y, appObj, opsObj);
+  // using stepper_t = ode::ExplicitStepper<
+  //   ode::explicitmethods::RungeKutta4, state_t, app_t, res_t, MyOps>;
+  // stepper_t stepperObj(y, appObj, opsObj);
+  auto stepperObj = ode::createRungeKutta4Stepper(y, appObj, opsObj);
 
   // integrate in time
   double dt = 0.1;

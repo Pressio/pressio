@@ -70,7 +70,7 @@ class TpetraMVHouseholderUsingEigen
 
   using Q_t = Q_type<MV>;
   using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
+  using eig_mat_w	= containers::DenseMatrix<eig_dyn_mat>;
   using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
   help_impl_t myImpl_	= {};
 
@@ -91,12 +91,14 @@ public:
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 
-  void computeThinOutOfPlace(matrix_t & A)
+  void computeThinOutOfPlace(const matrix_t & Ain)
   {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto rows = A.extent(0);
     auto cols = A.numVectors();
     auto ArowMap = A.data()->getMap();
@@ -114,7 +116,7 @@ public:
     A2.data()->doImport(*A.data(), importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix
-    containers::Matrix<Eigen::MatrixXd> eA2W(rows,cols);
+    containers::DenseMatrix<Eigen::MatrixXd> eA2W(rows,cols);
     for (int j=0;j<cols;j++){
       auto colData = A2.data()->getData(j);
       for (int i=0;i<rows;i++)
@@ -133,7 +135,7 @@ public:
     // Rmat_ = std::make_shared<R_type>(Rm);
 
     // store Q into replicated Tpetra::Multivector
-    const auto & Q2 = *(myImpl_.getCRefQFactor().data());
+    const auto & Q2 = *(myImpl_.QFactor().data());
     Q_t locQ( rcp_local_map, Q2.cols() );
     auto trilD = locQ.data();
     trilD->template sync<Kokkos::HostSpace>();

@@ -62,12 +62,10 @@ template<
   >
 class System
 {
-  typename std::conditional<
-    ::pressio::ops::predicates::is_object_pybind<fom_system_type>::value,
-    const fom_system_type, const fom_system_type & >::type fomSystemObj_;
 
-  const residual_policy_type & residualEvaluator_;
-  const jacobian_policy_type & jacobianEvaluator_;
+  std::reference_wrapper<const fom_system_type>	     fomSystemObj_;
+  std::reference_wrapper<const residual_policy_type> residualEvaluator_;
+  std::reference_wrapper<const jacobian_policy_type> jacobianEvaluator_;
   mutable lspg_residual_type R_;
   mutable lspg_jacobian_type J_;
 
@@ -80,6 +78,10 @@ public:
 
 public:
   System() = delete;
+  System(const System &) = default;
+  System & operator=(const System &) = delete;
+  System(System &&) = default;
+  System & operator=(System &&) = delete;
   ~System() = default;
 
   System(const fom_system_type & fomSystemObj,
@@ -88,8 +90,8 @@ public:
     : fomSystemObj_(fomSystemObj),
       residualEvaluator_(resPolicyObj),
       jacobianEvaluator_(jacPolicyObj),
-      R_(residualEvaluator_.create(fomSystemObj_)),
-      J_(jacobianEvaluator_.create(fomSystemObj_))
+      R_(residualEvaluator_.get().create(fomSystemObj_.get())),
+      J_(jacobianEvaluator_.get().create(fomSystemObj_.get()))
     {}
 
 public:
@@ -104,30 +106,29 @@ public:
   }
 
   void residual(const lspg_state_type & romState,
-		lspg_residual_type & R,
-		::pressio::Norm normKind,
-		scalar_type & nrmValue) const
+		lspg_residual_type & R) const
   {
-    residualEvaluator_.template compute(romState, R, fomSystemObj_, normKind, nrmValue);
+    residualEvaluator_.get().template compute(romState, R, fomSystemObj_.get());
   }
 
   void jacobian(const lspg_state_type & romState, lspg_jacobian_type & J) const
   {
-    jacobianEvaluator_.template compute(romState, J, fomSystemObj_);
+    jacobianEvaluator_.get().template compute(romState, J, fomSystemObj_.get());
   }
 
   // the following are needed to interface with the optimizers
   scalar_type operator()(const state_type & romState) const
   {
-    scalar_type normR = {};
-    this->residual(romState, R_, ::pressio::Norm::L2, normR);
+    // scalar_type normR = {};
+    this->residual(romState, R_);
+    const auto normR = ::pressio::ops::norm2(R_);
     return normR*normR;
   }
 
   void gradient( const state_type & romState, state_type & g) const
   {
-    scalar_type normR = {};
-    this->residual(romState, R_, ::pressio::Norm::L2, normR);
+    // scalar_type normR = {};
+    this->residual(romState, R_);//, ::pressio::Norm::L2, normR);
     this->jacobian(romState, J_);
     constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
     constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();

@@ -3,9 +3,8 @@
 #include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-
-
-TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
+TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated)
+{
   using namespace pressio;
 
   using app_t = ode::testing::refAppForImpEigen;
@@ -16,7 +15,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 
@@ -36,8 +35,7 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   lin_solver_t linSolverObj;
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
   nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
@@ -49,13 +47,14 @@ TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated){
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << appObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }
 
 
-TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
+TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser)
+{
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -65,15 +64,15 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
 
   using state_t = containers::Vector<nstate_t>;
   using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::Matrix<njacobian_t>;
+  using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
   *y.data() = appObj.getInitCond();
 
   // define auxiliary policies and stepper
   using res_pol_t
-    = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, app_t, res_t>;
+    = ode::implicitmethods::policy::ResidualStandardPolicy<state_t, res_t>;
   using jac_pol_t
-    = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, app_t, jac_t>;
+    = ode::implicitmethods::policy::JacobianStandardPolicy<state_t, jac_t>;
 
   using aux_stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler,
@@ -92,8 +91,7 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   lin_solver_t linSolverObj;
 
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
    nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
 
   // integrate in time
@@ -105,8 +103,8 @@ TEST(ode_implicit_bdf2, numericsStdResidualPolPassedByUser){
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
   appObj.analyticAdvanceBDF2NSteps(dt, 3);
   std::cout << std::setprecision(14) << appObj.y << "\n";
-  EXPECT_DOUBLE_EQ(y[0], appObj.y[0]);
-  EXPECT_DOUBLE_EQ(y[1], appObj.y[1]);
-  EXPECT_DOUBLE_EQ(y[2], appObj.y[2]);
+  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
+  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
+  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }
 

@@ -51,20 +51,43 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename residual_type, typename fom_states_manager_t>
+template <
+  typename residual_type,
+  typename fom_states_manager_t,
+  typename ud_ops_type = void
+  >
 class ResidualPolicyDiscreteTimeApi
 {
 
 public:
-  static constexpr bool isResidualPolicy_ = true;
   using residual_t = residual_type;
+  using ud_ops_t = ud_ops_type;
 
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
+  ResidualPolicyDiscreteTimeApi(const ResidualPolicyDiscreteTimeApi &) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(const ResidualPolicyDiscreteTimeApi &) = delete;
+  ResidualPolicyDiscreteTimeApi(ResidualPolicyDiscreteTimeApi &&) = default;
+  ResidualPolicyDiscreteTimeApi & operator=(ResidualPolicyDiscreteTimeApi &&) = delete;
   ~ResidualPolicyDiscreteTimeApi() = default;
 
+  // 1. void ops
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+    >
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr){}
+
+  // 2. nonvoid ops
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
+    >
+  ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
+				const _ud_ops_t & udOps)
+    : fomStatesMngr_(fomStatesMngr), udOps_(&udOps)
+  {}
 
 public:
   template <typename fom_system_t>
@@ -87,13 +110,10 @@ public:
 	       const scalar_t		& time,
 	       const scalar_t		& dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm	normKind,
-	       scalar_t	& normValue) const
+	       residual_t & romR) const
   {
     this->compute_impl(romState, romPrevStates, fomSystemObj,
-		       time, dt, step,
-		       romR, normKind, normValue);
+		       time, dt, step, romR);
   }
 
 private:
@@ -107,14 +127,14 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStatesMngr_.reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
     /* the previous FOM states should only be recomputed when the time step changes
      * we do not need to reconstruct all the FOM states, we just need to reconstruct
      * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStatesMngr_ << romPrevStates.get(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates.stateAt(ode::nMinusOne());
       storedStep_ = step;
     }
   }
@@ -128,18 +148,17 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm   normKind,
-	       scalar_t & normValue) const
+	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
 
     try{
-      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, fomSystemObj,
-						   time, dt, step, romR,
-						   normKind, normValue);
+      fomSystemObj.discreteTimeResidual(step, time, dt,
+					*romR.data(),
+					*yn.data(),
+					*ynm1.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -155,20 +174,21 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR,
-	       ::pressio::Norm   normKind,
-	       scalar_t & normValue) const
+	       residual_t & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
-    const auto & yn   = fomStatesMngr_.getCRefToCurrentFomState();
-    const auto & ynm1 = fomStatesMngr_.getCRefToFomStatePrevStep();
-    const auto & ynm2 = fomStatesMngr_.getCRefToFomStatePrevPrevStep();
+    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
+    const auto & ynm2 = fomStatesMngr_.get().fomStatePrevPrevStepCRef();
 
     try{
-      ::pressio::rom::queryFomDiscreteTimeResidual(yn, ynm1, ynm2, fomSystemObj,
-						   time, dt, step,
-						   romR, normKind, normValue);
+      fomSystemObj.discreteTimeResidual(step, time, dt,
+					*romR.data(),
+					*yn.data(),
+					*ynm1.data(),
+					*ynm2.data());
+
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -182,7 +202,8 @@ protected:
   // FOM states if we are not in a new time step.
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
-  fom_states_manager_t & fomStatesMngr_;
+  std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
+  const ud_ops_t * udOps_ = {};
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

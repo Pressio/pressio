@@ -1,5 +1,11 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils)
 
+add_subdirectory(adapter_api_error_msg)
+
+add_subdirectory(lspg_specific)
+add_subdirectory(view_current_fom_state_correctness)
+add_subdirectory(variable_decoder_jacobian_correctness)
+
 add_subdirectory(burgers1d)
 add_subdirectory(steady_linear_adv_diff_2d)

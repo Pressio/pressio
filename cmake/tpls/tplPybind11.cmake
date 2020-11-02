@@ -1,6 +1,8 @@
 
 
-option(PRESSIO_ENABLE_TPL_PYBIND11 "Enable Pybind11 TPL" OFF)
+if(PRESSIO_ENABLE_TPL_Pybind11)
+  message("> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
+endif()
 
 function(pybind11_fatal)
   message(FATAL_ERROR "I cannot find the Pybind11 library.

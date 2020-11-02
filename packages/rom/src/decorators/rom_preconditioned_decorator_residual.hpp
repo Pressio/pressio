@@ -51,26 +51,31 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-template <typename preconditionable_policy>
+template <typename preconditioner_t, typename preconditionable_policy>
 class PreconditionedResidualPolicy : public preconditionable_policy
 {
-
   using typename preconditionable_policy::residual_t;
   using preconditionable_policy::fomStatesMngr_;
+  std::reference_wrapper<const preconditioner_t> preconditionerObj_;
 
 public:
   PreconditionedResidualPolicy() = delete;
+  PreconditionedResidualPolicy(const PreconditionedResidualPolicy &) = default;
+  PreconditionedResidualPolicy & operator=(const PreconditionedResidualPolicy &) = default;
+  PreconditionedResidualPolicy(PreconditionedResidualPolicy &&) = default;
+  PreconditionedResidualPolicy & operator=(PreconditionedResidualPolicy &&) = default;
+  ~PreconditionedResidualPolicy() = default;
 
   PreconditionedResidualPolicy(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
   {}
 
   template <typename ... Args>
-  PreconditionedResidualPolicy(Args && ... args)
-    : preconditionable_policy(std::forward<Args>(args)...)
+  PreconditionedResidualPolicy(const preconditioner_t & preconditionerIn,
+                               Args && ... args)
+    : preconditionable_policy(std::forward<Args>(args)...),
+      preconditionerObj_(preconditionerIn)
   {}
-
-  ~PreconditionedResidualPolicy() = default;
 
 public:
   template <typename fom_system_t>
@@ -92,34 +97,34 @@ public:
   void compute(const state_t & currentState,
 	       const prev_states_t & prevStates,
 	       const fom_system_t & systemObj,
-	       const scalar_t & t,
+	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & residual,
-	       ::pressio::Norm normKind,
-	       scalar_t & normValue) const
+	       residual_t & residual) const
   {
     preconditionable_policy::template compute<
-      stepper_tag>(currentState, prevStates, systemObj, t, dt, step, residual, normKind, normValue);
+      stepper_tag>(currentState, prevStates, systemObj,
+        time, dt, step, residual);
 
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), t, *residual.data());
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), time, *residual.data());
   }
 
   //-------------------------------
   // steady case
   //-------------------------------
-  template <typename lspg_state_t, typename fom_t, typename norm_val_t>
+  template <
+    typename lspg_state_t,
+    typename fom_t
+  >
   void compute(const lspg_state_t & currentState,
               residual_t & residual,
-              const fom_t & systemObj,
-              ::pressio::Norm normKind,
-              norm_val_t & normValue) const
+              const fom_t & systemObj) const
   {
-    preconditionable_policy::compute(currentState, residual, systemObj, normKind, normValue);
+    preconditionable_policy::compute(currentState, residual, systemObj);
 
-    const auto & yFom = fomStatesMngr_.getCRefToCurrentFomState();
-    systemObj.applyPreconditioner(*yFom.data(), *residual.data());
+    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
+    preconditionerObj_.get().applyPreconditioner(*yFom.data(), *residual.data());
   }
 
 };//end class

@@ -53,19 +53,24 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template<
-  typename system_t,
-  template<typename...> class update,
-  typename ... Args
-  >
-using composeNewtonRaphson = impl::compose<system_t, impl::NewtonRaphson, update, Args...>;
+template<typename system_t, typename ... Args>
+using composeNewtonRaphson = impl::composeNewRaph<
+  system_t,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template<
-  typename system_t,
-  template<typename...> class update,
-  typename ... Args
-  >
-using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, update, Args...>::type;
+template<typename system_t, typename ... Args>
+using composeNewtonRaphson_t =
+  typename composeNewtonRaphson<system_t, Args...>::type;
+
+
+template<typename system_t, typename state_t, typename ...Args>
+auto createNewtonRaphson(const system_t & system,
+			 const state_t & state,
+			 Args && ...args)
+{
+  using return_t = composeNewtonRaphson_t<system_t, Args...>;
+  return return_t( system, state, std::forward<Args>(args)...);
+}
 
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_

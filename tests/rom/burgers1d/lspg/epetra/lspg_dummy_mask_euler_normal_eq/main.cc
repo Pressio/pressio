@@ -1,10 +1,11 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
+#include "utils_epetra_identity_masked.hpp"
 
 int main(int argc, char *argv[]){
-  using fom_t		= pressio::apps::Burgers1dEpetraIdentityMask;
+  using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
@@ -28,7 +29,6 @@ int main(int argc, char *argv[]){
   // app object
   constexpr int numCell = 20;
   fom_t appobj( {5.0, 0.02, 0.02}, numCell, &Comm);
-  auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
   // read from file the jacobian of the decoder
@@ -49,37 +49,34 @@ int main(int argc, char *argv[]){
   // initialize to zero (this has to be done)
   pressio::ops::fill(yROM, 0.0);
 
-  static_assert(::pressio::rom::concepts::continuous_time_system_maskable_rom<fom_t>::value, "");
-
+  // define LSPG type
+  using mask_t = pressio::rom::test::Burgers1dEpetraIdentityMask;
+  mask_t masker(&Comm, appobj.getDataMap());
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
   using lspg_problem = typename pressio::rom::lspg::composeMaskedProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t>::type;
-  using lspg_stepper_t = typename lspg_problem::lspg_stepper_t;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM, t0);
+      ode_tag, fom_t, decoder_t, lspg_state_t, mask_t>::type;
+  lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef, masker);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t  = pressio::containers::DenseMatrix<eig_dyn_mat>;
   using solver_tag   = pressio::solvers::linear::iterative::LSCG;
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
-  nls_t solver(lspgProblem.getStepperRef(), yROM, linSolverObj);
+  auto solver = pressio::solvers::nonlinear::createGaussNewton(
+    lspgProblem.stepperRef(), yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
   // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM, 0.0, dt, 10, solver);
+  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
 
   // this is a reproducing ROM test, so the final reconstructed state
@@ -89,7 +86,7 @@ int main(int argc, char *argv[]){
     const int myn = yFomFinal.data()->Map().NumMyElements();
     const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
     for (auto i=0; i<myn; i++)
-      if (std::abs(yFomFinal[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+      if (std::abs(yFomFinal(i) - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }
 
   MPI_Finalize();

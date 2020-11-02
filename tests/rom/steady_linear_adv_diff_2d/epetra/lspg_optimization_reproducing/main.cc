@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
@@ -66,13 +66,15 @@ int main(int argc, char *argv[]){
   lspg_state_t yROM(romSize);
   pressio::ops::fill(yROM, 0.0);
 
-  // define LSPG type
-  using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-    fom_adapter_t, lspg_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj);
+  // // define LSPG type
+  // using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
+  //   fom_adapter_t, decoder_t, lspg_state_t>::type;
+  // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
+    appObjROM, decoderObj, yROM, *yRef);
 
-  using rom_system_t = typename lspg_problem_type::lspg_system_t;
-  auto & system = lspgProblem.getSystemRef();
+  using rom_system_t = typename decltype(lspgProblem)::system_t;
+  auto & system = lspgProblem.systemRef();
 
   using opt_param_t = pressio::optimizers::Parameters<scalar_t>;
   opt_param_t MyPars;
@@ -90,10 +92,10 @@ int main(int argc, char *argv[]){
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom);
-  pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
+  pressio::ops::update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 

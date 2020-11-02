@@ -1,6 +1,6 @@
 
 #include "pressio_apps.hpp"
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "utils_eigen.hpp"
 
 namespace{
@@ -174,7 +174,7 @@ struct EulerLSPGWithResidualApi
 
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   // hessian comes up in GN solver, it is (J phi)^T (J phi)
-  using hessian_t	= pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
 
   using ops1_t		= myOpsResidualApi<scalar_t, native_dmat_t>;
   using opsGN_t		= myOpsGN<native_dmat_t, scalar_t>;
@@ -202,7 +202,6 @@ struct EulerLSPGWithResidualApi
     // adapter
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
-    const auto t0 = pressio::utils::constants<scalar_t>::zero();
 
     ops1_t myOps1;
     opsGN_t myOps2;
@@ -226,14 +225,14 @@ struct EulerLSPGWithResidualApi
     pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-
-    using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
-      ode_tag, fom_t, lspg_state_t, decoder_t, stepper_order, stepper_n_states, ops1_t>::type;
-    using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
-    lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, t0, myOps1);
+    // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    // using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states, ops1_t>::type;
+    // lspg_problem lspgProblem(fomObj, decoderObj, yROM_, yRef, myOps1);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
+      fomObj, decoderObj, yROM_, yRef, myOps1);
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
@@ -241,20 +240,17 @@ struct EulerLSPGWithResidualApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    using gnsolver_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t, opsGN_t>;
-    // using gnsolver_t   = pressio::solvers::nonlinear::GaussNewton<lspg_stepper_t, linear_solver_t, opsGN_t>;
-    gnsolver_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj, myOps2);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(
+              lspgProblem.stepperRef(), yROM_, linSolverObj, myOps2);
+
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };

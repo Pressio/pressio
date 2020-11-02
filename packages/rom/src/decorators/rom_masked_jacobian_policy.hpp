@@ -51,31 +51,37 @@
 
 namespace pressio{ namespace rom{ namespace decorator{
 
-
-template <typename maskable_policy>
+template <typename masker_t, typename maskable_policy>
 class MaskedJacobianPolicy : public maskable_policy
 {
 
 public:
   using typename maskable_policy::apply_jac_return_t;
-  using maskable_policy::JJ_;
-  using maskable_policy::fomStatesMngr_;
+  mutable apply_jac_return_t JJ_;
+  std::reference_wrapper<const masker_t> maskerObj_;
 
 public:
   MaskedJacobianPolicy() = delete;
-  MaskedJacobianPolicy(const maskable_policy & obj) : maskable_policy(obj)
-  {}
+  MaskedJacobianPolicy(const MaskedJacobianPolicy &) = default;
+  MaskedJacobianPolicy & operator=(const MaskedJacobianPolicy &) = default;
+  MaskedJacobianPolicy(MaskedJacobianPolicy &&) = default;
+  MaskedJacobianPolicy & operator=(MaskedJacobianPolicy &&) = default;
+  ~MaskedJacobianPolicy() = default;
 
-  template <typename ... Args>
-  MaskedJacobianPolicy(Args && ... args) : maskable_policy(std::forward<Args>(args)...)
+  template <typename fom_system_t, typename ... Args>
+  MaskedJacobianPolicy(const masker_t & maskerObj,
+		       const fom_system_t & fomObj,
+		       Args && ... args)
+    : maskable_policy(std::forward<Args>(args)...),
+      JJ_(maskable_policy::create(fomObj)),
+      maskerObj_(maskerObj)
   {}
 
 public:
   template <typename fom_system_t>
   apply_jac_return_t create(const fom_system_t & fomSystem) const
   {
-    JJ_ = maskable_policy::create(fomSystem);
-    return apply_jac_return_t(fomSystem.createApplyMaskResult(*JJ_.data()));
+    return apply_jac_return_t(maskerObj_.get().createApplyMaskResult(*JJ_.data()));
   }
 
   // unsteady case
@@ -93,21 +99,28 @@ public:
 	       const time_type & time,
 	       const time_type & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       jac_t & odeJJ) const
+	       jac_t & jacobian) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr, systemObj, time, dt, step, JJ_);
-    systemObj.applyMask(*JJ_.data(), time, *odeJJ.data());
+    maskable_policy::template compute<stepper_tag>(state, prevStatesMgr,
+        systemObj, time, dt, step, JJ_);
+    maskerObj_.get().applyMask(*JJ_.data(), time, *jacobian.data());
   }
 
   // steady case
-  template <typename state_t, typename jac_t, typename fom_system_t>
-  void compute(const state_t & state, jac_t & odeJJ, const fom_system_t & systemObj) const
+  template <
+    typename state_t,
+    typename jac_t,
+    typename fom_system_t
+    >
+  void compute(const state_t & state,
+               jac_t & jacobian,
+               const fom_system_t & systemObj) const
   {
     maskable_policy::compute(state, JJ_, systemObj);
-    systemObj.applyMask(*JJ_.data(), *odeJJ.data());
+    maskerObj_.get().applyMask(*JJ_.data(), *jacobian.data());
   }
 
-};//end class
+};
 
 }}} //end namespace pressio::rom::decorator
 #endif  // ROM_DECORATORS_ROM_MASKED_JACOBIAN_POLICY_HPP_

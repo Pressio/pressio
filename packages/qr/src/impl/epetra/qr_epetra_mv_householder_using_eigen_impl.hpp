@@ -64,7 +64,7 @@ class EpetraMVHouseholderUsingEigen
   using Q_t = Q_type<MV>;
 
   using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= containers::Matrix<eig_dyn_mat>;
+  using eig_mat_w	= containers::DenseMatrix<eig_dyn_mat>;
   using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
   help_impl_t myImpl_	= {};
 
@@ -85,7 +85,7 @@ public:
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 
@@ -95,7 +95,8 @@ public:
     myImpl_.applyRTranspose(vecIn, y);
   }
 
-  void computeThinOutOfPlace(matrix_t & A){
+  void computeThinOutOfPlace(const matrix_t & A)
+  {
     auto rows = A.extent(0);
     auto cols = A.numVectors();
     auto & ArowMap = A.data()->Map();
@@ -123,7 +124,7 @@ public:
     // Rmat_ = std::make_shared<R_type>( Rm.block(0,0,n,n) );
 
     // store Q into replicated Epetra_Multivector
-    const auto & Q2 = *(myImpl_.getCRefQFactor().data());
+    const auto & Q2 = *(myImpl_.QFactor().data());
     Q_t locQ(locMap,Q2.cols());
     for (int i=0;i<Q2.rows();i++)
       for (int j=0;j<Q2.cols();j++)

@@ -58,7 +58,7 @@ class ModGramSchmidtMVEpetra<matrix_t, R_t, MV_t, Q_type, void>
   using int_t	     = int;
   using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using eig_dyn_mat  =  Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using R_nat_t	     = containers::Matrix<eig_dyn_mat>;
+  using R_nat_t	     = containers::DenseMatrix<eig_dyn_mat>;
   using Q_t	     = Q_type<MV_t>;
   static constexpr sc_t one_ = static_cast<sc_t>(1);
   static constexpr sc_t zero_ = static_cast<sc_t>(0);
@@ -67,7 +67,10 @@ public:
   ModGramSchmidtMVEpetra() = default;
   ~ModGramSchmidtMVEpetra() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & Ain) 
+  {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto nVecs = A.numVectors();
     auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
@@ -84,9 +87,9 @@ public:
       qk->Update( rkkInv, *ak, zero_ );
 
       for (auto j=k+1; j<A.numVectors(); j++){
-	auto & aj = (*A.data())(j);
-	qk->Dot(*aj, &localR_(k,j));
-	aj->Update(-localR_(k,j), *qk, one_);
+	     auto & aj = (*A.data())(j);
+	     qk->Dot(*aj, &localR_(k,j));
+	     aj->Update(-localR_(k,j), *qk, one_);
       }
     }
   }
@@ -113,7 +116,7 @@ public:
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 

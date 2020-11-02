@@ -53,7 +53,6 @@ namespace pressio{ namespace ops{
 
 /*
  * y = beta * y + alpha*op(A)*x
- *
 */
 
 //-------------------------------
@@ -61,7 +60,7 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
   containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
   containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
   >
@@ -72,8 +71,18 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
+  // currently not working for expressions because expressions
+  // do not have a .data() method and might have non-contiguous layout
+  // so we cannot just pass them to blas/lapack, we need to handle them separatly
+  static_assert
+    (!containers::predicates::is_expression<A_type>::value and
+     !containers::predicates::is_expression<x_type>::value and
+     !containers::predicates::is_expression<y_type>::value,
+     "Cannot yet handle expressions for ops::product for pybind11");
+
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
@@ -91,7 +100,8 @@ product(::pressio::nontranspose mode,
   constexpr auto ione	    = ::pressio::utils::constants<int>::one();
   constexpr auto transA	    = izero;
   constexpr auto overWritey = ione;
-  pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE, izero, ione, izero, ione, transA, overWritey);
+  pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE,
+			izero, ione, izero, ione, transA, overWritey);
 }
 
 //-------------------------------
@@ -99,7 +109,7 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
   containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
   containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
   >
@@ -110,8 +120,18 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
+  // currently not working for expressions because expressions
+  // do not have a .data() method and might have non-contiguous layout
+  // so we cannot just pass them to blas/lapack, we need to handle them separatly
+  static_assert
+    (!containers::predicates::is_expression<A_type>::value and
+     !containers::predicates::is_expression<x_type>::value and
+     !containers::predicates::is_expression<y_type>::value,
+     "Cannot yet handle expressions for ops::product for pybind11");
+
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
@@ -129,9 +149,9 @@ product(::pressio::transpose mode,
   constexpr auto ione	    = ::pressio::utils::constants<int>::one();
   constexpr auto transA	    = ione;
   constexpr auto overWritey = ione;
-  pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE, izero, ione, izero, ione, transA, overWritey);
+  pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE,
+			izero, ione, izero, ione, transA, overWritey);
 }
-
 
 //-------------------------------
 // specialize for op(A) = A
@@ -139,7 +159,7 @@ product(::pressio::transpose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
   containers::predicates::is_fstyle_array_pybind<x_type>::value and
   containers::predicates::is_fstyle_array_pybind<y_type>::value
   >
@@ -150,6 +170,15 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
+  // currently not working for expressions because expressions
+  // do not have a .data() method and might have non-contiguous layout
+  // so we cannot just pass them to blas/lapack, we need to handle them separatly
+  static_assert
+    (!containers::predicates::is_expression<A_type>::value and
+     !containers::predicates::is_expression<x_type>::value and
+     !containers::predicates::is_expression<y_type>::value,
+     "Cannot yet handle expressions for ops::product for pybind11");
+
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
@@ -164,7 +193,8 @@ product(::pressio::nontranspose mode,
   constexpr auto ione	    = ::pressio::utils::constants<int>::one();
   constexpr auto transA     = izero;
   constexpr auto overWritey = ione;
-  pyblas_.attr("dgemv")(alpha, AE, x, beta, y, izero, ione, izero, ione, transA, overWritey);
+  pyblas_.attr("dgemv")(alpha, AE, x, beta, y,
+			izero, ione, izero, ione, transA, overWritey);
 }
 
 }}//end namespace pressio::ops

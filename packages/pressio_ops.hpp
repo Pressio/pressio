@@ -55,6 +55,11 @@
 
 #include "ops/src/ops_fwd.hpp"
 
+// will be concepts
+#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_vector_wrapper.hpp"
+#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
+
+
 // predicates
 #include "ops/src/predicates/ops_has_method_deep_copy.hpp"
 #include "ops/src/predicates/ops_has_method_set_zero.hpp"
@@ -66,10 +71,10 @@
 #include "ops/src/predicates/ops_has_void_method_product_mat_vec.hpp"
 #include "ops/src/predicates/ops_has_method_add_to_diagonal.hpp"
 #include "ops/src/predicates/ops_has_method_scale.hpp"
-#include "ops/src/predicates/ops_has_method_do_update_one_term.hpp"
-#include "ops/src/predicates/ops_has_method_do_update_two_terms.hpp"
-#include "ops/src/predicates/ops_has_method_do_update_three_terms.hpp"
-#include "ops/src/predicates/ops_has_method_do_update_four_terms.hpp"
+#include "ops/src/predicates/ops_has_method_update_one_term.hpp"
+#include "ops/src/predicates/ops_has_method_update_two_terms.hpp"
+#include "ops/src/predicates/ops_has_method_update_three_terms.hpp"
+#include "ops/src/predicates/ops_has_method_update_four_terms.hpp"
 
 // ops_is_object_pybind: not within preproc direc because we need to use it
 // even when pybind is disabled
@@ -86,10 +91,10 @@
 #include "ops/src/eigen/ops_min_max.hpp"
 #include "ops/src/eigen/ops_level2.hpp"
 #include "ops/src/eigen/ops_level3.hpp"
-#include "ops/src/eigen/ops_multi_vector_do_update.hpp"
+#include "ops/src/eigen/ops_multi_vector_update.hpp"
 #include "ops/src/eigen/ops_norms_vector.hpp"
 #include "ops/src/eigen/ops_dot.hpp"
-#include "ops/src/eigen/ops_vector_do_update.hpp"
+#include "ops/src/eigen/ops_vector_update.hpp"
 #include "ops/src/eigen/ops_elementwise_multiply.hpp"
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -101,10 +106,11 @@
 #include "ops/src/kokkos/ops_level2.hpp"
 #include "ops/src/kokkos/ops_level3.hpp"
 #include "ops/src/kokkos/ops_norms_vector.hpp"
-#include "ops/src/kokkos/ops_vector_do_update_kokkos_functors.hpp"
-#include "ops/src/kokkos/ops_vector_do_update.hpp"
-#include "ops/src/kokkos/ops_multi_vector_do_update.hpp"
+#include "ops/src/kokkos/ops_vector_update_kokkos_functors.hpp"
+#include "ops/src/kokkos/ops_vector_update.hpp"
+#include "ops/src/kokkos/ops_multi_vector_update.hpp"
 #include "ops/src/kokkos/ops_dot.hpp"
+#include "ops/src/kokkos/ops_elementwise_multiply.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -116,7 +122,7 @@
 #include "ops/src/epetra/ops_level2.hpp"
 #include "ops/src/epetra/ops_level3.hpp"
 #include "ops/src/epetra/ops_norms_vector.hpp"
-#include "ops/src/epetra/ops_vector_do_update.hpp"
+#include "ops/src/epetra/ops_vector_update.hpp"
 #include "ops/src/epetra/ops_dot.hpp"
 
 // teuchos
@@ -124,7 +130,7 @@
 #include "ops/src/teuchos/ops_fill.hpp"
 #include "ops/src/teuchos/ops_deep_copy.hpp"
 #include "ops/src/teuchos/ops_norms_vector.hpp"
-#include "ops/src/teuchos/ops_vector_do_update.hpp"
+#include "ops/src/teuchos/ops_vector_update.hpp"
 #include "ops/src/teuchos/ops_level2.hpp"
 
 // Tpetra
@@ -134,8 +140,8 @@
 #include "ops/src/tpetra/ops_level2.hpp"
 #include "ops/src/tpetra/ops_level3.hpp"
 #include "ops/src/tpetra/ops_norms_vector.hpp"
-#include "ops/src/tpetra/ops_vector_do_update.hpp"
-#include "ops/src/tpetra/ops_multi_vector_do_update.hpp"
+#include "ops/src/tpetra/ops_vector_update.hpp"
+#include "ops/src/tpetra/ops_multi_vector_update.hpp"
 #include "ops/src/tpetra/ops_dot.hpp"
 
 // Tpetra block
@@ -145,19 +151,22 @@
 #include "ops/src/tpetra_block/ops_level2.hpp"
 #include "ops/src/tpetra_block/ops_level3.hpp"
 #include "ops/src/tpetra_block/ops_norms_vector.hpp"
-#include "ops/src/tpetra_block/ops_vector_do_update.hpp"
-#include "ops/src/tpetra_block/ops_multi_vector_do_update.hpp"
+#include "ops/src/tpetra_block/ops_vector_update.hpp"
+#include "ops/src/tpetra_block/ops_multi_vector_update.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // pybind11
+#include "ops/src/pybind11/ops_fill.hpp"
 #include "ops/src/pybind11/ops_set_zero.hpp"
 #include "ops/src/pybind11/ops_deep_copy.hpp"
-#include "ops/src/pybind11/ops_norms_vector.hpp"
-#include "ops/src/pybind11/ops_vector_do_update.hpp"
+#include "ops/src/pybind11/ops_vector_update.hpp"
 #include "ops/src/pybind11/ops_level2.hpp"
 #include "ops/src/pybind11/ops_level3.hpp"
 #include "ops/src/pybind11/ops_scale.hpp"
+#include "ops/src/pybind11/ops_dot.hpp"
+#include "ops/src/pybind11/ops_norms_vector.hpp"
+#include "ops/src/pybind11/ops_elementwise_multiply.hpp"
 #endif
 
 #endif

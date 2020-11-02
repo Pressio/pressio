@@ -56,14 +56,13 @@
 #include "pressio_qr.hpp"
 #include "pressio_svd.hpp"
 
-#include "solvers/src/solvers_fwd.hpp"
 #include "solvers/src/solvers_meta_static_checks.hpp"
 #include "solvers/src/solvers_exceptions.hpp"
 
 // base classes
 #include "solvers/src/base/solvers_iterative_base.hpp"
-#include "solvers/src/base/solvers_linear_base.hpp"
 
+// predicates
 #include "solvers/src/predicates/typedefs/solvers_has_matrix_typedef.hpp"
 #include "solvers/src/predicates/typedefs/solvers_has_gradient_typedef.hpp"
 #include "solvers/src/predicates/typedefs/solvers_has_hessian_typedef.hpp"
@@ -82,16 +81,24 @@
 //************************************
 // *** non-linear ***
 //************************************
+#include "solvers/src/nonlinear/solvers_nonlinear_tags.hpp"
+#include "solvers/src/nonlinear/solvers_nonlinear_enums.hpp"
+#include "solvers/src/will_be_concepts/solvers_ops_normal_equations_rj_api.hpp"
+#include "solvers/src/will_be_concepts/solvers_least_squares_weighting_operator.hpp"
+
+#include "solvers/src/nonlinear/impl/updaters/solvers_create_updater.hpp"
+#include "solvers/src/nonlinear/impl/updaters/solvers_apply_updater.hpp"
+
+#include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_newton_raphson.hpp"
 #include "solvers/src/predicates/solvers_has_const_residualnorm_method_accept_state_norm_return_void.hpp"
 #include "solvers/src/predicates/solvers_has_const_create_residual_method_return_result.hpp"
 #include "solvers/src/predicates/solvers_has_const_create_jacobian_method_return_result.hpp"
 #include "solvers/src/predicates/solvers_has_const_jacobian_method_accept_state_result_return_void.hpp"
-#include "solvers/src/predicates/solvers_has_const_residual_method_accept_state_result_norm_return_void.hpp"
-#include "solvers/src/predicates/solvers_has_const_residualandjacobian_method_accept_state_result_norm_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_residual_method_accept_state_result_return_void.hpp"
+#include "solvers/src/predicates/solvers_has_const_residualandjacobian_method_accept_state_result_return_void.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_fused_residual_jacobian.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_residual_jacobian.hpp"
 #include "solvers/src/nonlinear/impl/solvers_printer.hpp"
-#include "solvers/src/nonlinear/solvers_updating_criteria.hpp"
 
 // *** non-linear least-squares *** //
 #include "solvers/src/predicates/solvers_has_const_create_hessian_method_return_result.hpp"
@@ -101,7 +108,7 @@
 #include "solvers/src/predicates/solvers_has_const_hessianandgradient_method_accept_state_result_norm_return_void.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_fused_hessian_gradient.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_hessian_gradient.hpp"
-#include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_least_squares_solver.hpp"
+#include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_nonlinear_least_squares.hpp"
 #include "solvers/src/will_be_concepts/solvers_legitimate_qr_solver_for_gn_qr.hpp"
 #include "solvers/src/nonlinear/solvers_gauss_newton.hpp"
 #include "solvers/src/nonlinear/solvers_levenberg_merquardt.hpp"

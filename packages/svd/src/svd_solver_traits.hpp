@@ -69,40 +69,40 @@ struct svd_traits<const T> : svd_traits<T> {};
 //---------------------------------------------------------------
 
   
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template <typename matrix_type,
-	  template <typename...> class lsv_type,
-	  template <typename...> class rsv_type,
-	  typename sval_type>
-struct svd_traits<Solver<
-		    matrix_type,
-		    lsv_type,
-		    rsv_type,
-		    sval_type,
-		    typename
-		    std::enable_if<
-		      containers::predicates::is_sparse_matrix_epetra<
-			typename
-			containers::details::traits<matrix_type>::wrapped_t
-			>::value
-		      >::type
-		    >
-		  >{
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// template <typename matrix_type,
+// 	  template <typename...> class lsv_type,
+// 	  template <typename...> class rsv_type,
+// 	  typename sval_type>
+// struct svd_traits<Solver<
+// 		    matrix_type,
+// 		    lsv_type,
+// 		    rsv_type,
+// 		    sval_type,
+// 		    typename
+// 		    std::enable_if<
+// 		      containers::predicates::is_sparse_matrix_epetra<
+// 			typename
+// 			containers::details::traits<matrix_type>::wrapped_t
+// 			>::value
+// 		      >::type
+// 		    >
+// 		  >{
 
-  using derived_t = Solver<matrix_type, lsv_type, rsv_type, sval_type>;
+//   using derived_t = Solver<matrix_type, lsv_type, rsv_type, sval_type>;
 
-  using matrix_t = matrix_type;
-  using native_matrix_t =
-    typename containers::details::traits<matrix_type>::wrapped_t;
-  using scalar_t =
-    typename containers::details::traits<matrix_type>::scalar_t;
-  using lsv_t = lsv_type<Epetra_MultiVector>;
-  using rsv_t = rsv_type<Epetra_MultiVector>;
-  using sval_t = sval_type;
+//   using matrix_t = matrix_type;
+//   using native_matrix_t =
+//     typename containers::details::traits<matrix_type>::wrapped_t;
+//   using scalar_t =
+//     typename containers::details::traits<matrix_type>::scalar_t;
+//   using lsv_t = lsv_type<Epetra_MultiVector>;
+//   using rsv_t = rsv_type<Epetra_MultiVector>;
+//   using sval_t = sval_type;
 
-};
-#endif
-//---------------------------------------------------------------
+// };
+// #endif
+// //---------------------------------------------------------------
 
   
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS

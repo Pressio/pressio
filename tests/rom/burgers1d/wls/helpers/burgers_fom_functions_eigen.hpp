@@ -12,8 +12,8 @@ decoder_d_t readBasis( pressio::apps::Burgers1dEigen & appObj,
 		       std::size_t romSize,
 		       std::size_t fomSize)
 {
-  const auto phiNative = pressio::rom::test::eigen::readBasis("basis_euler.txt", romSize, fomSize);
-  decoder_d_t decoderObj(phiNative);
+  const auto phi = pressio::rom::test::eigen::readBasis("basis_euler.txt", romSize, fomSize);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
@@ -23,8 +23,8 @@ decoder_d_t readBasis(pressio::apps::Burgers1dEigen & appObj,
 		      std::size_t romSize,
 		      std::size_t fomSize)
 {
-  const auto phiNative = pressio::rom::test::eigen::readBasis("basis_bdf2.txt", romSize, fomSize);
-  decoder_d_t decoderObj(phiNative);
+  const auto phi = pressio::rom::test::eigen::readBasis("basis_bdf2.txt", romSize, fomSize);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
@@ -36,7 +36,7 @@ std::string checkSol(pressio::apps::Burgers1dEigen & appObj,
 {
   std::string checkStr {"PASSED"};
   for (int_t i=0;i<fomSize;i++){
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
+    if (std::abs(yFinal(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
   }
   return checkStr;
 }
@@ -49,8 +49,8 @@ decoder_d_t readBasis( pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 		       std::size_t romSize,
 		       std::size_t fomSize)
 {
-  const auto phiNative = pressio::rom::test::eigen::readBasis("basis_euler.txt", romSize, fomSize);
-  decoder_d_t decoderObj(phiNative);
+  const auto phi = pressio::rom::test::eigen::readBasis("basis_euler.txt", romSize, fomSize);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
@@ -60,8 +60,8 @@ decoder_d_t readBasis(pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 		      std::size_t romSize,
 		      std::size_t fomSize)
 {
-  const auto phiNative = pressio::rom::test::eigen::readBasis("basis_bdf2.txt", romSize, fomSize);
-  decoder_d_t decoderObj(phiNative);
+  const auto phi = pressio::rom::test::eigen::readBasis("basis_bdf2.txt", romSize, fomSize);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
@@ -73,7 +73,7 @@ std::string checkSol(pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 {
   std::string checkStr {"PASSED"};
   for (int_t i=0;i<fomSize;i++){
-    if (std::abs(yFinal[i] - trueY[i]) > 1e-10) checkStr = "FAILED";
+    if (std::abs(yFinal(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
   }
   return checkStr;
 }

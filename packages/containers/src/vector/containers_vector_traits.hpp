@@ -52,21 +52,22 @@
 namespace pressio{ namespace containers{ namespace details{
 
 /********************************
-an arbitrary vector is one
-for which a user must provide ops
+an arbitrary vector
 *******************************/
 template <typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_vector_arbitrary<wrapped_type>::value
+    containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Undefined,
-				    false>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Arbitrary,
+  false
+  >
 {
 
   using wrapped_t = wrapped_type;
@@ -80,9 +81,6 @@ struct traits<
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Arbitrary;
-
-  static constexpr WrappedPackageIdentifier
-  wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
 
   static constexpr bool is_vector = true;
   static constexpr bool is_matrix = false;
@@ -100,11 +98,12 @@ struct traits<
     containers::predicates::is_static_row_vector_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Eigen,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Eigen,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -134,11 +133,12 @@ struct traits<
     containers::predicates::is_static_column_vector_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Eigen,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Eigen,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -168,11 +168,12 @@ struct traits<
     containers::predicates::is_dynamic_row_vector_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Eigen,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Eigen,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -205,11 +206,12 @@ struct traits<
     containers::predicates::is_dynamic_column_vector_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Eigen,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Eigen,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -243,11 +245,12 @@ struct traits<
     containers::predicates::is_dense_vector_teuchos<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-			       WrappedPackageIdentifier::Trilinos,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Trilinos,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -279,11 +282,12 @@ struct traits<
     containers::predicates::is_vector_epetra<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Trilinos,
+  false>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -313,14 +317,16 @@ struct traits<
 template<typename wrapped_type>
 struct traits<
   Vector<wrapped_type>,
-  mpl::enable_if_t<containers::predicates::is_vector_tpetra<wrapped_type>::value
-		   >
+  mpl::enable_if_t<
+    containers::predicates::is_vector_tpetra<wrapped_type>::value
+    >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-			       WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Trilinos,
+  false>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -433,11 +439,12 @@ struct traits<
     containers::predicates::is_vector_tpetra_block<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-			       WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Trilinos,
+  false>
 {
 
   static constexpr WrappedVectorIdentifier
@@ -476,7 +483,6 @@ struct traits<
 #endif
 
 
-
 //*******************************
 // Pybind array
 //*******************************
@@ -488,15 +494,18 @@ struct traits<
       containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<Vector<wrapped_type>,
-				    wrapped_type,
-				    true, false, false,
-				    WrappedPackageIdentifier::Pybind,
-				    true>
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Pybind,
+  true>
 {
 
   static constexpr WrappedVectorIdentifier
   wrapped_vector_identifier = WrappedVectorIdentifier::Pybind;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
   using scalar_t	 = typename wrapped_type::value_type;
   using ordinal_t	 = std::size_t;
@@ -507,12 +516,8 @@ struct traits<
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
-
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
 
   // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;

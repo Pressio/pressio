@@ -53,27 +53,38 @@
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value,
+  typename ::pressio::containers::details::traits<T1>::scalar_t
   >
-dot(const T & a, const T & b,
-    typename ::pressio::containers::details::traits<T>::scalar_t & result)
+dot(const T1 & a,
+    const T2 & b)
 {
+  static_assert
+    (containers::predicates::are_scalar_compatible<T1, T2>::value,
+     "dot: types are not scalar compatible");
+  static_assert
+    (containers::predicates::have_matching_execution_space<T1, T2>::value,
+     "dot: types must have matching execution space");
+
   assert(a.extent(0) == b.extent(0));
-  result = KokkosBlas::dot(*a.data(), *b.data() );
+  return ::KokkosBlas::dot(*a.data(), *b.data() );
 }
 
-template <typename T>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
   >
-dot(const T & a, const T & b)
+dot(const T1 & a,
+    const T2 & b,
+    typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
-  assert(a.extent(0) == b.extent(0));
-  return KokkosBlas::dot(*a.data(), *b.data() );
+  result = ::pressio::ops::dot(a,b);
 }
+
 
 }}//end namespace pressio::ops
 #endif  // OPS_KOKKOS_OPS_DOT_HPP_

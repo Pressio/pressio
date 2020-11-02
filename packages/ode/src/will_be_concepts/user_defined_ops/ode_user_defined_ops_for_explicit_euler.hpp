@@ -67,7 +67,7 @@ template<typename T,
 struct user_defined_ops_for_explicit_euler<
   T, scalar_t, state_t, residual_t,
     mpl::enable_if_t<
-      ::pressio::ops::predicates::has_method_do_update_one_term<
+      ::pressio::ops::predicates::has_method_update_one_term<
 	T,
 	scalar_t,
 	typename containers::details::traits<state_t>::wrapped_t,

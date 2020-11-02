@@ -66,8 +66,8 @@ template <
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value
-  /*and ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value*/
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -75,7 +75,7 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B,
 	const scalar_type beta,
-	::pressio::containers::MatrixSharedMemBase<C_type> & C)
+	C_type & C)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
 		"Types are not scalar compatible");

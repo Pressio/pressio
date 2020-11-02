@@ -40,15 +40,15 @@ public:
     resultNativeObj = jacNativeObj * romStateNativeObj;
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 
-  // template <typename rom_state_type>
-  // void updateJacobian(const rom_state_type &) const
-  // {
-  //   // no op, the Jacobian is fixed
-  // }
+  template <typename rom_state_type>
+  void updateJacobian(const rom_state_type &) const
+  {
+    // no op, the Jacobian is fixed
+  }
 };//end
 
 #endif

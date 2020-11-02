@@ -78,7 +78,7 @@ TEST(ops, TpetraMultiVectorDotSelfStoreEigenMatWrapper){
   }
 
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
-  using eig_mat_w = containers::Matrix<eig_mat>;
+  using eig_mat_w = containers::DenseMatrix<eig_mat>;
 
   eig_mat TT(4,4);
   TT(0,0)=17.; TT(0,1)=0.; TT(0,2)=5.; TT(0,3)=2.;
@@ -157,7 +157,7 @@ TEST(ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
 
   // the true values
   using eig_mat = Eigen::Matrix< double, Eigen::Dynamic, Eigen::Dynamic>;
-  using eig_mat_w = containers::Matrix<eig_mat>;
+  using eig_mat_w = containers::DenseMatrix<eig_mat>;
   eig_mat TT(4,4);
   TT(0,0)=17.; TT(0,1)=0.; TT(0,2)=5.; TT(0,3)=2.;
   TT(1,0)=0.; TT(1,1)=18.; TT(1,2)=6.; TT(1,3)=7.;
@@ -170,7 +170,7 @@ TEST(ops, TpetraMultiVectorDotSelfStoreKokkosMatWrapper){
     using kll = Kokkos::LayoutLeft;
     using k2d_d = Kokkos::View<double**, kll, device_t>;
     using k2d_h = typename k2d_d::HostMirror;
-    using mat_t = pressio::containers::Matrix<k2d_d>;
+    using mat_t = pressio::containers::DenseMatrix<k2d_d>;
     STATIC_ASSERT_IS_CONTAINERS_MATRIX_WRAPPER(mat_t);
     // C is a matrix wrapper of dense kokkos matrix
     auto C = ops::dot_self<mvec_t, mat_t>(A);

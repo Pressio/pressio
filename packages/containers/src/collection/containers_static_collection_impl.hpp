@@ -61,11 +61,15 @@ namespace pressio{ namespace containers{ namespace impl{
  */
 
 template<typename T, std::size_t n>
-class StaticCollection
+class IndexableStaticCollection
 {
-  static_assert( ::pressio::containers::predicates::is_wrapper<T>::value
-		 , "Currently, you can only create a StaticCollection of types \
-which have pressio wrappers.");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<T>::value,
+    "You can only create a IndexableStaticCollection of a pressio container type.");
+
+  static_assert
+  (!::pressio::containers::predicates::is_expression<T>::value,
+    "You cannot create a IndexableStaticCollection of pressio expressions.");
 
 public:
   using value_type    = T;
@@ -74,6 +78,16 @@ public:
 
   static constexpr std::size_t size() {
     return n;
+  }
+
+  T & operator[](std::size_t i){
+    assert( i<n );
+    return data_[i];
+  }
+
+  T const & operator[](std::size_t i) const{
+    assert( i<n );
+    return data_[i];
   }
 
   T & operator()(std::size_t i){
@@ -86,54 +100,71 @@ public:
     return data_[i];
   }
 
-  data_type & data(){
-    return data_;
-  }
+  // data_type & data(){
+  //   return data_;
+  // }
 
-  data_type const & data() const{
-    return data_;
-  }
-
-private:
-  data_type data_;
+  // data_type const & data() const{
+  //   return data_;
+  // }
 
 public:
-  StaticCollection() = delete;
+
+  template <
+  typename _T = T,
+  mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0
+  >
+  IndexableStaticCollection(){};
 
   // constructor for n == 1
   template <std::size_t _n = n, mpl::enable_if_t<_n == 1, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y}}{}
 
   // constructor for n == 2
   template <std::size_t _n = n, mpl::enable_if_t<_n == 2, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y}}{}
 
   // constructor for n == 3
   template <std::size_t _n = n, mpl::enable_if_t<_n == 3, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y,y}}{}
 
   // constructor for n == 4
   template <std::size_t _n = n, mpl::enable_if_t<_n == 4, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y,y,y}}{}
 
   // constructor for n == 5
   template <std::size_t _n = n, mpl::enable_if_t<_n == 5, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y,y,y,y}}{}
 
   // constructor for n == 6
   template <std::size_t _n = n, mpl::enable_if_t<_n == 6, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y,y,y,y,y}}{}
 
   // constructor for n == 7
   template <std::size_t _n = n, mpl::enable_if_t<_n == 7, int> = 0>
-  StaticCollection(T const & y)
+  IndexableStaticCollection(T const & y)
     : data_{{y,y,y,y,y,y,y}}{}
+
+  // copy cnstr
+  IndexableStaticCollection(IndexableStaticCollection const & other) = default;
+  // copy assignment
+  IndexableStaticCollection & operator=(IndexableStaticCollection const & other) = default;
+  // move cnstr
+  IndexableStaticCollection(IndexableStaticCollection && other) = default;
+  // move assignment
+  IndexableStaticCollection & operator=(IndexableStaticCollection && other) = default;
+  // destructor
+  ~IndexableStaticCollection() = default;
+
+private:
+  data_type data_;
+
 };
 
 }}}//end namespace pressio::containers::impl

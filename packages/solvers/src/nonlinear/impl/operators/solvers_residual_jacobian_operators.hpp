@@ -56,16 +56,24 @@ class ResidualJacobianOperators
 {
   using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
 
-  // this is used for residualNorm method so that we don't modify the real operator r_
+  r_t r_;
+
+  // J_ is mutable because when we have the fused_res_jac api, to compute the
+  // residualNorm (which is a const method), we call
+  // residualAndJacobian without recomputing J_ but J_ still needs to be passed
+  mutable j_t J_;
+
+  // auxR_ is used for residualNorm method so that we don't modify the real operator r_
   // which must be the same once computeOperators is called.
   mutable r_t auxR_;
 
-  // r_,J_ are the actual main operators
-  r_t r_;
-  j_t J_;
-
 public:
   ResidualJacobianOperators() = delete;
+  ResidualJacobianOperators(ResidualJacobianOperators const &) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators const &) = default;
+  ResidualJacobianOperators(ResidualJacobianOperators && o) = default;
+  ResidualJacobianOperators & operator=(ResidualJacobianOperators && o) = default;
+  ~ResidualJacobianOperators() = default;
 
   template <
     typename system_t, typename state_t,
@@ -75,52 +83,86 @@ public:
       int
      > = 0
   >
-  ResidualJacobianOperators(const system_t & system, const state_t & state)
-    : auxR_( system.createResidual() ),
-      r_( system.createResidual() ),
-      J_( system.createJacobian() ){}
+  ResidualJacobianOperators(const system_t & system,
+			    const state_t & state)
+    : r_( system.createResidual() ),
+      J_( system.createJacobian() ),
+      auxR_( system.createResidual() )
+  {
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(J_);
+  }
 
 public:
-  r_t & getResidual(){ return r_; }
-  j_t & getJacobian(){ return J_; }
-  const r_t & getResidual() const{ return r_; }
-  const j_t & getJacobian() const{ return J_; }
+  void resetForNewCall()	{ /* no op */ }
+  r_t & residualRef()		{ return r_; }
+  j_t & jacobianRef()		{ return J_; }
+  const r_t & residualCRef() const { return r_; }
+  const j_t & jacobianCRef() const { return J_; }
 
-  void resetForNewCall(){
-    //no op
+  template <typename T>
+  void setParameter(std::string key, T value) {
+    throw std::runtime_error("ResidualJacobian operators do not have parameters");
   }
 
-  template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
-  residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm) const
-  {
-    system.residual(state, auxR_, normType, residualNorm);
-  }
-
-  template< typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
-  residualNorm(const system_t & system, const state_t & state,
-	       ::pressio::Norm normType, sc_t & residualNorm)
-  {
-    system.residualNorm(state, normType, residualNorm);
+  sc_t getParameter(std::string key) const {
+    throw std::runtime_error("ResidualJacobian operators do not have parameters");
+    return {};
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_residual_jacobian<system_t>::value>
-  computeOperators(const system_t & sys, const state_t & state,
-		   ::pressio::Norm normType, sc_t & residualNorm)
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+  >
+  computeOperators(const system_t & sys,
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian=true)
   {
-    sys.residual(state, r_, normType, residualNorm);
-    sys.jacobian(state, J_);
+
+    sys.residual(state, r_);
+    residualNorm = ::pressio::ops::norm2(r_);
+
+    if  (recomputeSystemJacobian){
+      sys.jacobian(state, J_);
+    }
   }
 
   template<typename system_t, typename state_t>
-  mpl::enable_if_t<pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value>
-  computeOperators(const system_t & sys, const state_t & state,
-		   ::pressio::Norm normType, sc_t & residualNorm)
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    >
+  computeOperators(const system_t & sys,
+		   const state_t & state,
+		   sc_t & residualNorm,
+		   bool recomputeSystemJacobian=true)
   {
-    sys.residualAndJacobian(state, r_, J_, normType, residualNorm);
+    sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    residualNorm = ::pressio::ops::norm2(r_);
+  }
+
+  template< typename system_t, typename state_t>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    >
+  residualNorm(const system_t & system,
+         const state_t & state,
+         sc_t & residualNorm) const
+  {
+    system.residual(state, auxR_);
+    residualNorm = ::pressio::ops::norm2(auxR_);
+  }
+
+  template< typename system_t, typename state_t>
+  mpl::enable_if_t<
+    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    >
+  residualNorm(const system_t & system,
+         const state_t & state,
+         sc_t & residualNorm) const
+  {
+    system.residualAndJacobian(state, auxR_, J_, false);
+    residualNorm = ::pressio::ops::norm2(auxR_);
   }
 
 };

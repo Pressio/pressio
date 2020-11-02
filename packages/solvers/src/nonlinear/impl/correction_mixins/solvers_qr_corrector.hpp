@@ -52,48 +52,75 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<
-  typename T, typename state_t, typename qr_solver_t, ::pressio::Norm normType
+  typename T, typename state_type, typename qr_solver_t
   >
 class QRCorrector : public T
 {
+public:
+  using state_t = state_type;
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
+private:
   state_t correction_ = {};
   state_t QTResid_ = {};
   state_t g_ = {};
 
-  qr_solver_t & solverObj_;
+  std::reference_wrapper<qr_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
 
 public:
-  static constexpr auto normType_ = normType;
-
   QRCorrector() = delete;
 
   template <typename system_t>
-  QRCorrector(const system_t & system, const state_t & state, qr_solver_t & solverObj)
-    : T(system, state), correction_(state), QTResid_(state), g_(state), solverObj_(solverObj)
-  {}
+  QRCorrector(const system_t & system,
+	      const state_t & state,
+	      qr_solver_t & solverObj)
+    : T(system, state),
+      correction_(state),
+      QTResid_(state),
+      g_(state),
+      solverObj_(solverObj)
+  {
+    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
+    ::pressio::ops::fill(correction_, zero);
+    ::pressio::ops::fill(QTResid_, zero);
+    ::pressio::ops::fill(g_, zero);
+  }
+
+  // copy constr and assign
+  QRCorrector(QRCorrector const &) = default;
+  QRCorrector & operator=(QRCorrector const &) = default;
+
+  // move constr and assign
+  QRCorrector(QRCorrector && o) = default;
+  QRCorrector & operator=(QRCorrector && o) = default;
+
+  // destr
+  ~QRCorrector() = default;
 
 public:
   template <typename system_t>
-  void computeCorrection(const system_t & sys, state_t & state)
+  void computeCorrection(const system_t & sys,
+			 state_t & state,
+			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, normType, residNormCurrCorrStep_);
-    auto & r = T::getResidual();
-    auto & J = T::getJacobian();
+    T::computeOperators(sys, state, 
+			residNormCurrCorrStep_,
+			recomputeSystemJacobian);
+    const auto & r = T::residualCRef();
+    const auto & J = T::jacobianCRef();
 
     // J = QR
-    solverObj_.computeThin(J);
-    // compute RTResid_ = Q^T r
-    solverObj_.applyQTranspose(r, QTResid_);
+    solverObj_.get().computeThin(J);
+    // compute Q^T r
+    solverObj_.get().applyQTranspose(r, QTResid_);
     // compute gradient = R^T Q^T r
-    solverObj_.applyRTranspose(QTResid_, g_);
+    solverObj_.get().applyRTranspose(QTResid_, g_);
 
     // solve: R correction = Q^T Residual
-    solverObj_.solve(QTResid_, correction_);
+    solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 
@@ -107,8 +134,12 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & getCorrection() const{
+  const state_t & correctionCRef() const{
     return correction_;
+  }
+
+  const state_t & gradientCRef() const{
+    return g_;
   }
 
   const sc_t & correctionNormCurrentCorrectionStep() const{
@@ -119,18 +150,8 @@ public:
     return gradientNormCurrCorrStep_;
   }
 
-  const state_t & getGradient() const{
-    return g_;
-  }
-
   const sc_t & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
-  }
-
-  template< typename system_t>
-  void residualNorm(const system_t & system, const state_t & state, sc_t & result) const
-  {
-    T::residualNorm(system, state, normType, result);
   }
 
 };

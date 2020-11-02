@@ -1,11 +1,5 @@
 
-add_subdirectory(meta)
-add_subdirectory(serial)
+add_subdirectory(api_checks)
 
-if(PRESSIO_ENABLE_TPL_MPI)
-  add_subdirectory(mpi)
-endif()
-
-if(PRESSIO_ENABLE_TPL_KOKKOS)
-  add_subdirectory(kokkos)
-endif()
+set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/solvers_nonlinear_tolerances.cc)
+add_serial_utest(solvers_nonlinear_tolerances ${SRC1})

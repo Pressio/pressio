@@ -12,8 +12,11 @@
   </compound>
   <compound refid="example1_8md" kind="file"><name>example1.md</name>
   </compound>
+<<<<<<< HEAD
   <compound refid="get__started_8md" kind="file"><name>get_started.md</name>
   </compound>
+=======
+>>>>>>> testB
   <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
   </compound>
   <compound refid="build__and__install_8md" kind="file"><name>build_and_install.md</name>
@@ -56,8 +59,11 @@
   </compound>
   <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
   </compound>
+<<<<<<< HEAD
   <compound refid="md_pages_get_started" kind="page"><name>md_pages_get_started</name>
   </compound>
+=======
+>>>>>>> testB
   <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
   </compound>
   <compound refid="md_pages_getstarted_build_and_install" kind="page"><name>md_pages_getstarted_build_and_install</name>

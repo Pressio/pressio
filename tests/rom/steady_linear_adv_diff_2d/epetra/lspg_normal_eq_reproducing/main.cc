@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
@@ -66,38 +66,37 @@ int main(int argc, char *argv[]){
   lspg_state_t yROM(romSize);
   pressio::ops::fill(yROM, 0.0);
 
-  // define LSPG type
-  using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-      fom_adapter_t, lspg_state_t, decoder_t>::type;
-  lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj);
-  using rom_system_t = typename lspg_problem_type::lspg_system_t;
+  // // define LSPG type
+  // using lspg_problem_type = pressio::rom::lspg::composeDefaultProblem_t<
+  //     fom_adapter_t, decoder_t, lspg_state_t>;
+  // lspg_problem_type lspgProblem(appObjROM, decoderObj, yROM, *yRef);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
+    appObjROM, decoderObj, yROM, *yRef);
+
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t  = pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t  = pressio::containers::DenseMatrix<eig_dyn_mat>;
   using solver_tag   = pressio::solvers::linear::iterative::LSCG;
   using linear_solver_t = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    rom_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
-  nls_t solver(lspgProblem.getSystemRef(), yROM, linSolverObj);
+  auto solver = pressio::solvers::nonlinear::createGaussNewton(
+      lspgProblem.systemRef(), yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.getSystemRef(), yROM);
+  solver.solve(lspgProblem.systemRef(), yROM);
 
   std::cout << std::setprecision(15) << *yROM.data() << std::endl;
 
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */
   // reconstruct the fom corresponding to our rom final state
-  auto yFomApprox = lspgProblem.getFomStateReconstructorCRef()(yROM);
+  auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
   auto errorVec(yFom);
-  pressio::ops::do_update(errorVec, yFom, 1., yFomApprox, -1.);
+  pressio::ops::update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::ops::norm2(errorVec);
   if( norm2err > 1e-12 ) checkStr = "FAILED";
 

@@ -127,30 +127,31 @@ struct traits<
   >,
   public matrix_shared_traits<false>
 {
+  static constexpr auto wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
 
+  using scalar_t	= typename traits<matrix_type>::scalar_t;
   using wrapped_t	= typename traits<matrix_type>::wrapped_t;
   using execution_space = typename traits<matrix_type>::execution_space;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
-  using ordinal_t = typename traits<matrix_type>::ordinal_t;
-  using size_t    = ordinal_t;
-  using pair_t = std::pair<size_t, size_t>;
-
-  // the reference type is conditionnal because the native expression
-  // returns by value when object is const
-  using reference_t = scalar_t &;
+  using memory_space	= typename traits<matrix_type>::memory_space;
+  using ordinal_t	= typename traits<matrix_type>::ordinal_t;
+  using size_t		= ordinal_t;
+  using pair_t		= std::pair<size_t, size_t>;
+  using reference_t	  = scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  // type of the native expression
-  // type of the native expression
   using _native_expr_t = decltype
     (
      Kokkos::subview(std::declval<wrapped_t>(),
-		     std::declval<pair_t>(), std::declval<pair_t>())
+		     std::declval<pair_t>(),
+		     std::declval<pair_t>())
     );
   using _const_native_expr_t = decltype
     (
      Kokkos::subview(std::declval<const wrapped_t>(),
-		     std::declval<pair_t>(), std::declval<pair_t>())
+		     std::declval<pair_t>(),
+		     std::declval<pair_t>())
      );
   using native_expr_t = typename std::conditional<
     std::is_const<matrix_type>::value,
@@ -159,11 +160,7 @@ struct traits<
   >::type;
 
   using const_data_return_t = native_expr_t const *;
-  using data_return_t = native_expr_t *;
-
-  static constexpr auto wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
+  using data_return_t	    = native_expr_t *;
 };
 #endif
 

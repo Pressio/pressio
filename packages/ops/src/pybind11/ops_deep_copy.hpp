@@ -55,13 +55,26 @@ template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
   >
-deep_copy(T & dest, const T & src){
-  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
+deep_copy(T & dest, const T & src)
+{
   assert( dest.extent(0) == src.extent(0) );
-  auto dest_proxy = dest.data()->mutable_unchecked();
-  const auto src_proxy  = src.data()->unchecked();
-  for (ord_t i=0; i<dest.extent(0); ++i){
-    dest_proxy(i) = src_proxy(i);
+  for (std::size_t i=0; i<dest.extent(0); ++i){
+    dest(i) = src(i);
+  }
+}
+
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<T>::value
+  >
+deep_copy(T & dest, const T & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  assert( dest.extent(1) == src.extent(1) );
+  for (std::size_t i=0; i<dest.extent(0); ++i){
+    for (std::size_t j=0; j<dest.extent(0); ++j){
+      dest(i,j) = src(i,j);
+    }
   }
 }
 

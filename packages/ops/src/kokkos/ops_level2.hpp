@@ -65,7 +65,8 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and 
+  (containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
+   containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value ) and
   containers::predicates::is_vector_wrapper_kokkos<x_type>::value
   >
 product(::pressio::nontranspose mode,
@@ -75,15 +76,23 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
-  static_assert(::pressio::containers::predicates::have_matching_execution_space<A_type, x_type, y_type>::value,
-		"operands need to have same execution space" );
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers. */
+  static_assert
+    (!std::is_const<y_type>::value,
+     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<
+     A_type, x_type, y_type>::value,
+     "operands need to have same execution space" );
 
   assert( y.extent(0) == A.extent(0) );
   assert( A.extent(1) == x.extent(0) );
   const char ctA = 'N';
-  KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
+  ::KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
 
 //-------------------------------
@@ -91,25 +100,37 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value and
-  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
+  (containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
+   containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value) and
+  containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  containers::predicates::is_vector_wrapper_kokkos<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	::pressio::containers::VectorSharedMemBase<y_type> & y)
+	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
-  static_assert(::pressio::containers::predicates::have_matching_execution_space<A_type, x_type, y_type>::value,
-		"operands need to have same execution space" );
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers.
+   */
+  static_assert
+    (!std::is_const<y_type>::value,
+     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<
+     A_type,x_type, y_type>::value,
+     "operands need to have same execution space" );
 
   assert( y.extent(0) == A.extent(1) );
   assert( A.extent(0) == x.extent(0) );
   const char ctA = 'T';
-  KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
+  ::KokkosBlas::gemv( &ctA, alpha, *A.data(), *x.data(), beta, *y.data() );
 }
 
 }}//end namespace pressio::ops

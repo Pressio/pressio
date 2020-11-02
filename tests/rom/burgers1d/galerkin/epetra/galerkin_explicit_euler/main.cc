@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
@@ -44,7 +44,6 @@ const std::vector<double> bdf1Sol
   // app object
   int numCell = 50;
   fom_t appobj({5.0, 0.02, 0.02}, numCell, &Comm);
-  auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
 
   // store (whichever way you want) the jacobian of the decoder
@@ -63,18 +62,20 @@ const std::vector<double> bdf1Sol
   pressio::ops::fill(yROM, 0.0);
 
   using ode_tag = pressio::ode::explicitmethods::Euler;
-  using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
-    ode_tag, fom_t, rom_state_t, decoder_t>::type;
-  problem_t galerkinProb(appobj, y0n, decoderObj, yROM, t0);
+  // using problem_t =
+  // pressio::rom::galerkin::composeDefaultProblem<ode_tag, fom_t, decoder_t, rom_state_t>::type;
+  // problem_t galerkinProb(appobj, decoderObj, yROM, y0n);
+  auto galerkinProb =
+    pressio::rom::galerkin::createDefaultProblem<ode_tag>(appobj, decoderObj, yROM, y0n);
 
   scalar_t fint = 35;
   auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-  pressio::ode::advanceNSteps(galerkinProb.getStepperRef(), yROM, 0.0, dt, nSteps);
+  pressio::ode::advanceNSteps(galerkinProb.stepperRef(), yROM, 0.0, dt, nSteps);
 
   std::cout << *yROM.data() << std::endl;
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = galerkinProb.getFomStateReconstructorCRef()(yROM);
+  auto yFomFinal = galerkinProb.fomStateReconstructorCRef()(yROM);
   yFomFinal.data()->Print(std::cout << std::setprecision(14));
 
   // check against gold solution
@@ -82,7 +83,7 @@ const std::vector<double> bdf1Sol
   if (rank==1)  shift = 25;
   int myn = yFomFinal.data()->Map().NumMyElements();
   for (auto i=0; i<myn; i++){
-    if(std::abs(yFomFinal[i] - bdf1Sol[i+shift]) > 1e-12 ){
+    if(std::abs(yFomFinal(i) - bdf1Sol[i+shift]) > 1e-12 ){
       checkStr = "FAILED";
       break;
     }

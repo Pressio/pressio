@@ -59,7 +59,7 @@ template<typename T>
   ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
   >
 deep_copy(T & dest, const T & src){
-  dest = src;
+  *dest.data() = *src.data();
 }
 
 }}//end namespace pressio::ops

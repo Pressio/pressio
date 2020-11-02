@@ -5,8 +5,8 @@
 #include <gtest/gtest.h>
 #include "pressio_containers.hpp"
 
-#include <Tpetra_Experimental_BlockVector.hpp>
-#include <Tpetra_Experimental_BlockMultiVector.hpp>
+#include <Tpetra_BlockVector.hpp>
+#include <Tpetra_BlockMultiVector.hpp>
 
 #include <Tpetra_Map.hpp>
 #include <Teuchos_CommHelpers.hpp>
@@ -28,7 +28,7 @@ struct tpetraBlockVectorGlobSize15BlockSize5Fixture
 public:
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Experimental::BlockVector<>;
+  using vec_t = Tpetra::BlockVector<>;
 
   using ST = typename vec_t::scalar_type;
   using LO = typename vec_t::local_ordinal_type;
@@ -65,7 +65,7 @@ public:
 
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
-  using mvec_t = Tpetra::Experimental::BlockMultiVector<>;
+  using mvec_t = Tpetra::BlockMultiVector<>;
   using ST = typename mvec_t::scalar_type;
   using LO = typename mvec_t::local_ordinal_type;
   using GO = typename mvec_t::global_ordinal_type;

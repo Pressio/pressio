@@ -51,42 +51,59 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <typename matrix_type, typename fom_state_type>
+template <typename jacobian_matrix_type, typename fom_state_type>
 struct LinearDecoderWithPressioOps
 {
-  using jacobian_type  = matrix_type;
+  using jacobian_type  = jacobian_matrix_type;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
+  using jacobian_native_t =
+    typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
 
 private:
-  using scalar_t	  = typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
-  using fom_native_t	  = typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
-  using jacobian_native_t = typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
-
-  matrix_type mappingJacobian_ = {};
+  const jacobian_type jacobianOfDecoder_ = {};
 
 public:
   LinearDecoderWithPressioOps() = delete;
-  LinearDecoderWithPressioOps(const jacobian_type & matIn) : mappingJacobian_(matIn){}
-  LinearDecoderWithPressioOps(const jacobian_native_t & matIn) : mappingJacobian_(matIn){}
+  LinearDecoderWithPressioOps(const LinearDecoderWithPressioOps &) = default;
+  LinearDecoderWithPressioOps & operator=(const LinearDecoderWithPressioOps &) = default;
+  LinearDecoderWithPressioOps(LinearDecoderWithPressioOps &&) = default;
+  LinearDecoderWithPressioOps & operator=(LinearDecoderWithPressioOps &&) = default;
+  ~LinearDecoderWithPressioOps() = default;
 
-  // applyMapping is templated because gen_coords_t is something that behaves like a vector
-  // e.g. for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
+  // /* note that here we make the constructor templated
+  //    such that we can pass either
+  //    the pressio wrapper type 'jacobian_matrix_type' or
+  //    the native type wrapped by it 'jacobian_native_t'.
+  //    Also, by templating this constructor we enable
+  //    universal reference so that it is forwarded accordingly.
+  //  */
+  template<typename T>
+  LinearDecoderWithPressioOps(T && matIn)
+    : jacobianOfDecoder_(std::forward<T>(matIn)){}
+
+public:
+  // applyMapping is templated because the type of the generalized coordinates
+  // is something that behaves like a vector but not strictly a vector:
+  // for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
   template <typename gen_coords_t, typename fom_state_t = fom_state_type>
   void applyMapping(const gen_coords_t & operand, fom_state_t & result) const
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::product(::pressio::nontranspose(), one, mappingJacobian_, operand, zero, result);
+    ::pressio::ops::product(::pressio::nontranspose(), one,
+			    jacobianOfDecoder_, operand, zero, result);
   }
 
-  const jacobian_type & getReferenceToJacobian() const{
-    return mappingJacobian_;
+  const jacobian_type & jacobianCRef() const{
+    return jacobianOfDecoder_;
   }
 
-  // template<typename gen_coords_t>
-  // void updateJacobian(const gen_coords_t & genCoordinates) const
-  // {
-  //   //no op
-  // }
+  template<typename gen_coords_t>
+  void updateJacobian(const gen_coords_t & genCoordinates) const
+  {
+    //no op
+  }
 };
 
 }}}//end namespace pressio::rom::impl

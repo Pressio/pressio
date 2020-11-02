@@ -58,7 +58,6 @@ class Vector<
     containers::predicates::is_array_pybind<wrapped_type>::value
     >
   >
-  : public VectorSharedMemBase< Vector<wrapped_type> >
 {
 
   using this_t	    = Vector<wrapped_type>;
@@ -68,10 +67,10 @@ class Vector<
   using wrap_t	    = typename mytraits::wrapped_t;
   using data_r_t    = typename mytraits::data_return_t;
   using const_data_r_t  = typename mytraits::const_data_return_t;
-  // using ref_t      = typename mytraits::reference_t;
-  // using const_ref_t = typename mytraits::const_reference_t;
-  // using mut_proxy_t = typename mytraits::mut_proxy_t;
-  // using proxy_t	    = typename mytraits::proxy_t;
+  using ref_t      = typename mytraits::reference_t;
+  using const_ref_t = typename mytraits::const_reference_t;
+  using mut_proxy_t = typename mytraits::mut_proxy_t;
+  using proxy_t	    = typename mytraits::proxy_t;
 
 public:
   Vector() = delete;
@@ -104,7 +103,8 @@ public:
   // use only if you know what you are doing
   // it is currently used only in specific places
   Vector(wrap_t src, ::pressio::view)
-    : data_{src}{
+    : data_{src}
+  {
     assert( data_.ndim() == 1 );
   }
 
@@ -120,50 +120,29 @@ public:
       proxy(i) = srcPx(i);
   }
 
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert( other.ndim() == 1 );
-      assert(this->extent(0) == other.extent(0));
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     assert( other.ndim() == 1 );
+  //     assert(this->extent(0) == other.extent(0));
 
-      // copy data from src to this
-      auto proxy = data_.mutable_unchecked();
-      const auto srcPx = other.data_.unchecked();
-      for (ord_t i=0; i<other.extent(0); ++i)
-  	proxy_(i) = srcPx(i);
-    }
-    return *this;
-  }
+  //     // copy data from src to this
+  //     auto proxy = data_.mutable_unchecked();
+  //     const auto srcPx = other.data_.unchecked();
+  //     for (ord_t i=0; i<other.extent(0); ++i)
+  // 	proxy_(i) = srcPx(i);
+  //   }
+  //   return *this;
+  // }
 
-  // // move cnstr and assign
-  // Vector(Vector && other);
-  // Vector & operator=(Vector && o) = delete;
+  // move cnstr and assign
+  Vector(Vector && other) = default;
+  Vector & operator=(Vector && o) = delete;
 
   // destructor
   ~Vector(){};
 
 public:
-  ord_t extent(ord_t i) const {
-    assert( i == 0 );
-    return data_.shape(0);
-  }
-
-  // sc_t & operator [] (ord_t i){
-  //   return mutProxy_(i);
-  // };
-
-  // sc_t const & operator [] (ord_t i) const{
-  //   return proxy_(i);
-  // };
-
-  // ref_t operator()(ord_t i){
-  //   return mutProxy_(i);
-  // };
-
-  // const_ref_t operator()(ord_t i) const{
-  //   return proxy_(i);
-  // };
-
   const_data_r_t data() const{
     return &data_;
   }
@@ -176,10 +155,41 @@ public:
     return this->extent(0)==0 ? true : false;
   }
 
+  proxy_t proxy() const{
+    return data_.unchecked();
+  }
+
+  mut_proxy_t proxy(){
+    return data_.mutable_unchecked();
+  }
+
+  ord_t extent(ord_t i) const {
+    assert( i == 0 );
+    return data_.shape(0);
+  }
+
+  ref_t operator()(ord_t i){
+    assert(i < this->extent(0));
+    return data_.mutable_at(i);
+  };
+
+  const_ref_t operator()(ord_t i) const{
+    assert(i < this->extent(0));
+    return data_.at(i);
+  };
+
+  [[deprecated("Use operator() instead.")]] 
+  ref_t operator[](ord_t i){ 
+    return (*this)(i); 
+  };
+  [[deprecated("Use operator() instead.")]] 
+  const_ref_t operator[](ord_t i) const{ 
+    return (*this)(i); 
+  };
+
 private:
-  friend VectorSharedMemBase< this_t >;
   wrap_t data_ = {};
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_PYBIND11_HPP_

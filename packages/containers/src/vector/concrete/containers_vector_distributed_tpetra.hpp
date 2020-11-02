@@ -54,14 +54,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     typename
-	     std::enable_if<
-	       ::pressio::containers::predicates::is_vector_tpetra<
-		 wrapped_type>::value
-	       >::type
-	     >
-  : public VectorDistributedBase< Vector<wrapped_type> >
+class Vector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_tpetra<
+      wrapped_type>::value
+    >
+  >
 {
 
   using this_t = Vector<wrapped_type>;
@@ -75,61 +74,40 @@ public:
   // default cnstr
   Vector() = delete;
 
-  // cnstrs
   explicit Vector(const wrapped_type & vecobj)
     // use the deep_copy cnstr
     : data_(vecobj, Teuchos::Copy){}
 
+  explicit Vector(wrapped_type && vecobj)
+    : data_(std::move(vecobj)){}
+
   explicit Vector(Teuchos::RCP<const map_t> mapO)
     : data_(mapO){}
 
-  // here we do not default the copy and move because if we did that,
-  // it would use the tpetra copy/move which have view semantics
-  // which is not what we want here (for the time being)
-
   // copy cnstr
   Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
-  // copy assignment
-  Vector & operator=(const Vector & other){
-    if (&other != this){
-      assert(this->extentLocal(0) == other.extentLocal(0));
-      data_.assign( *other.data() );
-    }
-    return *this;
-  }
+
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(const Vector & other) = delete;
+  //   if (&other != this){
+  //     assert(this->extentLocal(0) == other.extentLocal(0));
+  //     data_.assign( *other.data() );
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr
-  Vector(Vector && other) : data_(*other.data(), Teuchos::Copy){}
-
-  // move assignment
-  Vector & operator=(Vector && other){
-    assert(this->extentLocal(0) == other.extentLocal(0));
-    data_.assign( *other.data() );
-    return *this;
-  }
+  Vector(Vector && other) = default;
+  Vector & operator=(Vector && other) = default;
 
   // destructor
   ~Vector() = default;
 
 public:
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  this_t & operator-=(const this_t & other) {
-    this->data_.update(-1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-  void print(std::string tag) const{
-    Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense
-      (std::cout << std::setprecision(15), data_, tag, tag);
-  }
+  // void print(std::string tag) const{
+  //   Tpetra::MatrixMarket::Writer<wrapped_type>::writeDense
+  //     (std::cout << std::setprecision(15), data_, tag, tag);
+  // }
 
   wrapped_type const * data() const{
     return &data_;
@@ -154,9 +132,8 @@ public:
   }
 
 private:
-  friend VectorDistributedBase< this_t >;
   wrapped_type data_ = {};
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_HPP_

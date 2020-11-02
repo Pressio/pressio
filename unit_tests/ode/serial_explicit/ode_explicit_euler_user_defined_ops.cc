@@ -29,13 +29,13 @@ struct MyOps
 {
   using v_t = std::vector<scalar_t>;
 
-  void do_update(v_t & v, const v_t & v1, const scalar_t b) const
+  void update(v_t & v, const v_t & v1, const scalar_t b) const
   {
     for (size_t i=0; i<v.size(); ++i)
       v[i] = b*v1[i];
   }
 
-  void do_update(v_t & v, const scalar_t a,
+  void update(v_t & v, const scalar_t a,
 			const v_t & v1, const scalar_t b) const
   {
     for (size_t i=0; i<v.size(); ++i)
@@ -48,11 +48,9 @@ TEST(ode_explicit_euler, userDefinedOps){
   using app_t	   = MyApp;
   using scalar_t = typename app_t::scalar_type;
   using nstate_t = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
   app_t appObj;
 
   using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
   state_t y(3);
 
   auto yptr = y.data();
@@ -60,10 +58,11 @@ TEST(ode_explicit_euler, userDefinedOps){
 
   using ops_t = MyOps<scalar_t>;
   ops_t myOps;
-  using ode_tag = pressio::ode::explicitmethods::Euler;
-  using stepper_t = ode::ExplicitStepper<
-    ode_tag, state_t, app_t, res_t, scalar_t, ops_t>;
-  stepper_t stepperObj(y, appObj, myOps);
+
+  // using ode_tag = pressio::ode::explicitmethods::Euler;
+  // using stepper_t = ode::ExplicitStepper<ode_tag, state_t, app_t, ops_t>;
+  // stepper_t stepperObj(y, appObj, myOps);
+  auto stepperObj = ode::createForwardEulerStepper(y, appObj, myOps);
 
   // integrate in time
   double dt = 0.1;

@@ -60,67 +60,64 @@ template<
   typename standard_velocity_policy_type,
   typename ops_t
   >
-class ExplicitEulerStepperImpl
+class ExplicitEulerStepper
 {
 
 public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
-
   static constexpr types::stepper_order_t order_value = 1;
+  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
 
 private:
-  using velocity_storage_t = VelocitiesContainer<velocity_type, 1>;
-  using system_wrapper_t   = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-
-  system_wrapper_t systemObj_;
+  std::reference_wrapper<const system_type> systemObj_;
+  velocity_storage_t veloAuxStorage_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
     const standard_velocity_policy_type,
-    const velocity_policy_type &
-  >::type policy_;
+    std::reference_wrapper<const velocity_policy_type>
+    >::type policy_;
 
-  velocity_storage_t veloAuxStorage_;
   const ops_t * udOps_ = nullptr;
 
 public:
-  ExplicitEulerStepperImpl() = delete;
-  ~ExplicitEulerStepperImpl() = default;
-  ExplicitEulerStepperImpl(const ExplicitEulerStepperImpl &) = delete;
-  ExplicitEulerStepperImpl & operator=(const ExplicitEulerStepperImpl &) = delete;
-  ExplicitEulerStepperImpl(ExplicitEulerStepperImpl &&) = delete;
-  ExplicitEulerStepperImpl & operator=(ExplicitEulerStepperImpl &&) = delete;
+  ExplicitEulerStepper() = delete;
+  ExplicitEulerStepper(const ExplicitEulerStepper &) = default;
+  ExplicitEulerStepper & operator=(const ExplicitEulerStepper &) = delete;
+  ExplicitEulerStepper(ExplicitEulerStepper &&) = default;
+  ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = delete;
+  ~ExplicitEulerStepper() = default;
 
-  // the following cnstr is enabled if we are using pressio ops
+  // cnstr enabled if we are using pressio ops
   template <
     typename _ops_t = ops_t,
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
-  >
-  ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & systemObj,
-                           const velocity_policy_type & policy)
+    >
+  ExplicitEulerStepper(const state_type & state,
+		       const system_type & systemObj,
+		       const velocity_policy_type & policy)
     : systemObj_(systemObj),
-      policy_(policy),
-      veloAuxStorage_(policy_.create(systemObj))
+      veloAuxStorage_(policy.create(systemObj)),
+      policy_(policy)
   {}
 
-  // the following cnstr is enabled if we are using user-defined ops
+  // cnstr enabled if we are using user-defined ops
   template <
     typename _ops_t = ops_t,
     mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
-  >
-  ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & systemObj,
-                           const velocity_policy_type & policy,
-                           const _ops_t & udOps)
+    >
+  ExplicitEulerStepper(const state_type & state,
+		       const system_type & systemObj,
+		       const velocity_policy_type & policy,
+		       const _ops_t & udOps)
     : systemObj_(systemObj),
+      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
-      veloAuxStorage_(policy_.create(systemObj)),
       udOps_(&udOps)
   {}
 
-  // the following cnstr is only enabled if
+  // cnstr only enabled
   // policy is default constructible and we are using pressio ops
   template <
     typename _vel_pol_t = velocity_policy_type,
@@ -129,15 +126,15 @@ public:
       std::is_void<_ops_t>::value and
       std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
-  >
-  ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & systemObj)
+    >
+  ExplicitEulerStepper(const state_type & state,
+		       const system_type & systemObj)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj))
+      veloAuxStorage_(policy_.create(systemObj)),
+      policy_() // default construct policy
   {}
 
-  // the following cnstr is only enabled if
+  // cnstr only enabled if
   // policy is default constructible and we are using user-defined ops
   template <
     typename _vel_pol_t = velocity_policy_type,
@@ -146,13 +143,13 @@ public:
       !std::is_void<_ops_t>::value and
       std::is_default_constructible<_vel_pol_t>::value,
       int > = 0
-  >
-  ExplicitEulerStepperImpl(const state_type & state,
-                           const system_type & systemObj,
-                           const _ops_t & udOps)
+    >
+  ExplicitEulerStepper(const state_type & state,
+		       const system_type & systemObj,
+		       const _ops_t & udOps)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
       veloAuxStorage_(policy_.create(systemObj)),
+      policy_(), // default construct policy
       udOps_(&udOps)
   {}
 
@@ -172,10 +169,11 @@ public:
   {
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
-    policy_.compute(stateInOut, auxRhs0, systemObj_.get(), time);
+    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
+      auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::do_update(stateInOut, one, auxRhs0, dt);
+    ::pressio::ops::update(stateInOut, one, auxRhs0, dt);
   }
 
   /* user provides custom ops */
@@ -187,10 +185,11 @@ public:
 	 const types::step_t & step)
   {
     auto & auxRhs0 = veloAuxStorage_(0);
-    policy_.compute(stateInOut, auxRhs0, systemObj_.get(), time);
+    static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
+      auxRhs0, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    udOps_->do_update(*stateInOut.data(), one, *auxRhs0.data(), dt);
+    udOps_->update(*stateInOut.data(), one, *auxRhs0.data(), dt);
   }
 };
 

@@ -70,7 +70,8 @@ struct LinearSolverSelector<
   tag, MatrixT,
   mpl::enable_if_t<
     ::pressio::solvers::linear::details::traits<tag>::iterative and
-    (::pressio::containers::predicates::is_matrix_wrapper_eigen<MatrixT>::value or
+    (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
+     ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<MatrixT>::value or
      ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value)
     >
   >
@@ -85,9 +86,9 @@ struct LinearSolverSelector<
   tag, MatrixT,
   mpl::enable_if_t<
     ::pressio::solvers::linear::details::traits<tag>::direct and
-    (::pressio::containers::predicates::is_matrix_wrapper_eigen<MatrixT>::value or
-     ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value)
-    >
+    (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
+     ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<MatrixT>::value or
+     ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value)    >
   >
 {
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;

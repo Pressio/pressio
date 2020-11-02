@@ -6,29 +6,41 @@
 
 namespace pressio{ namespace testing{ namespace wls{
 
-template <typename decoder_d_t,typename fom_dmat_t,  typename rcpcomm_t>
+template <typename decoder_d_t,typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj,
 		       ::pressio::ode::implicitmethods::Euler odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {
-  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize, fomSize,
-						       Comm, appObj.getDataMap());
-  fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
-  decoder_d_t decoderObj(tpb_phi);
+  // read basis in a tpetra mv
+  auto tp_phi = pressio::rom::test::tpetra::readBasis("basis_euler.txt", romSize, fomSize,
+						      Comm, appObj.getDataMap());
+
+  // construct a tpetra_block mv from a tpetra mv
+  using tpb_mv = typename pressio::apps::Burgers1dTpetraBlock::dense_matrix_type;
+  tpb_mv tpb_phi(*tp_phi.data(), *appObj.getDataMap(), 1 /*1 is block size*/ );
+  typename decoder_d_t::jacobian_type phi(tpb_phi);
+
+  decoder_d_t decoderObj(phi);
   return decoderObj;
 }
 
-template <typename decoder_d_t,typename fom_dmat_t, typename rcpcomm_t>
+template <typename decoder_d_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj,
 		       ::pressio::ode::implicitmethods::BDF2 odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {
-  auto tpw_phi = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize, fomSize,
-						       Comm, appObj.getDataMap());
-  fom_dmat_t tpb_phi(*tpw_phi.data(), *appObj.getDataMap(), 1);
-  decoder_d_t decoderObj(tpb_phi);
+  // read basis in a tpetra mv
+  auto tp_phi = pressio::rom::test::tpetra::readBasis("basis_bdf2.txt", romSize,
+						      fomSize, Comm, appObj.getDataMap());
+
+  // construct a tpetra_block mv from a tpetra mv
+  using tpb_mv = typename pressio::apps::Burgers1dTpetraBlock::dense_matrix_type;
+  tpb_mv tpb_phi(*tp_phi.data(), *appObj.getDataMap(), 1  /*1 is block size*/);
+  typename decoder_d_t::jacobian_type phi(tpb_phi);
+
+  decoder_d_t decoderObj(phi);
   return decoderObj;
 }
 
@@ -41,8 +53,10 @@ std::string checkSol(pressio::apps::Burgers1dTpetraBlock & appObj,
   auto yFF_v = const_cast<y1_t&>(yFinal).data()->getVectorView().getData();
   int shift = (rank==0) ? 0 : 10;
   const int myn = yFinal.data()->getMap()->getNodeNumElements();
-  for (auto i=0; i<myn; i++)
+  for (auto i=0; i<myn; i++){
     if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+    if (std::isnan(yFF_v[i])) checkStr = "FAILED";
+  }
 
   return checkStr;
 }

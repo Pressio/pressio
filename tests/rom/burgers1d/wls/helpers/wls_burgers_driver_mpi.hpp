@@ -12,7 +12,8 @@
 
 namespace{
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::Euler odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::implicitmethods::Euler odeTag,
+	     const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
@@ -20,7 +21,8 @@ auto readSol(::pressio::ode::implicitmethods::Euler odeTag, const std::size_t fo
 }
 
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag,
+	     const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
@@ -57,7 +59,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
   //reference state is equal to the IC
-  const fom_state_t & fomStateReference = fomStateInitCond;
+  const fom_state_t & fomNominalState = fomStateInitCond;
 
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
@@ -67,11 +69,11 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   constexpr pressio::rom::wls::window_size_t numWindows = (finalTime/dt)/numStepsInWindow;
 
   // create/read jacobian of the decoder
-  auto decoderObj = readBasis<decoder_t,fom_dmat_t>(appObj,ode_tag(),romSize,fomSize,Comm);
+  auto decoderObj = readBasis<decoder_t>(appObj,ode_tag(),romSize,fomSize,Comm);
 
   // lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;
-  linear_solver_t linear_solver;
+  linear_solver_t linearSolver;
 
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
@@ -80,19 +82,16 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
   // create policy and wls system
   int jacobianUpdateFrequency = 1;
-  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomStateReference, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
-  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomStateReference, linear_solver);
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomNominalState, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
+  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomNominalState, linearSolver);
 
   // create the wls state
   wls_state_t  wlsState(wlsSize);
   pressio::ops::set_zero(wlsState);
 
   // NL solver
-  using gn_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    wls_system_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
-  gn_t GNSolver(wlsSystem, wlsState, linear_solver);
+  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(
+    wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(5);
 
@@ -119,7 +118,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
   fom_state_t yFinal(fomStateInitCond);
   pressio::ops::set_zero(yFinal);
-  const auto fomStateReconstructor = wlsSystem.getFomStateReconstructorCRef();
+  const auto fomStateReconstructor = wlsSystem.fomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(), fomSize, dt);
   std::string checkStr = checkSol(appObj ,yFinal,trueY,rank);

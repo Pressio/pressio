@@ -57,18 +57,19 @@
 // burgers1d
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
+
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_masked.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_identity_masked.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
+
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
 #endif
+
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"

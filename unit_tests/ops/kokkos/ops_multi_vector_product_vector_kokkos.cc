@@ -95,10 +95,3 @@ TEST(ops_multi_vector_kokkos, dot_vector_dLL){
   using d_lay = Kokkos::LayoutLeft;
   RunTest<d_lay> r1;
 }
-
-TEST(ops_multi_vector_kokkos, dot_vector_dLR){
-  // kokkos initialize and finalize already set from environment, see CMakeList
-
-  using d_lay = Kokkos::LayoutRight;
-  RunTest<d_lay> r1;
-}

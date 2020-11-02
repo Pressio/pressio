@@ -90,7 +90,7 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -121,7 +121,7 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank2 = y.data()->getLocalViewDevice();
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 }//end namespace pressio::ops::impl
 
@@ -133,12 +133,13 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<x_type>::value
+  !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const ::pressio::containers::VectorSharedMemBase<x_type> & x,
+	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
@@ -203,7 +204,7 @@ product(::pressio::transpose mode,
   v_t ATx(y.extent(0));
   auto request = Tpetra::idot(*ATx.data(), *A.data(), *x.data());
   request->wait();
-  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
+  ::KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 // y = sharedmem vec not kokkos
@@ -211,14 +212,15 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value
+  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	::pressio::containers::VectorSharedMemBase<y_type> & y)
+	y_type & y)
 {
   // dot product of each vector in A with vecB
   /* Apparently, trilinos does not support this...
@@ -234,7 +236,7 @@ product(::pressio::transpose mode,
   for (std::size_t i=0; i<(std::size_t)numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = A.data()->getVector(i);
-    y[i] = beta * y[i] + alpha * colI->dot(*x.data());
+    y(i) = beta * y(i) + alpha * colI->dot(*x.data());
   }
 }
 

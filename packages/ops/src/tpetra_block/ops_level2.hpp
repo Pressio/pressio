@@ -49,6 +49,10 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_
 #define OPS_TPETRA_BLOCK_OPS_LEVEL2_HPP_
 
+#include "Tpetra_idot.hpp"
+#include <KokkosBlas1_axpby.hpp>
+#include "KokkosBlas2_gemv.hpp"
+
 namespace pressio{ namespace ops{
 
 /*
@@ -99,7 +103,7 @@ product(::pressio::nontranspose mode,
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank2 = yView.getLocalViewDevice();
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
 
 
@@ -111,12 +115,13 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<x_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
-	const ::pressio::containers::VectorSharedMemBase<x_type> & x,
+	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
@@ -134,7 +139,7 @@ product(::pressio::nontranspose mode,
   // so getLocalView returns a rank-2 view so in order to get
   // view with rank==1 I need to explicitly get the subview of that
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
-  KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
+  ::KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
 
@@ -147,14 +152,15 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<x_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value
+  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
-	::pressio::containers::VectorSharedMemBase<y_type> & y)
+	y_type & y)
 {
   /* workaround the non-constness of getVectorView*/
   using wrapped_t = typename containers::details::traits<x_type>::wrapped_t;
@@ -165,7 +171,7 @@ product(::pressio::transpose mode,
   for (ord_t i=0; i<numVecs; i++){
     // colI is a Teuchos::RCP<Vector<...>>
     const auto colI = mvA_mvv.getVector(i);
-    y[i] = beta*y[i] + alpha * colI->dot(xvv);
+    y(i) = beta*y(i) + alpha * colI->dot(xvv);
   }
 }
 
@@ -206,7 +212,7 @@ product(::pressio::transpose mode,
   v_t ATx(y.extent(0));
   auto request = Tpetra::idot(*ATx.data(), A_mvv, x_vv);
   request->wait();
-  KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
+  ::KokkosBlas::axpby(alpha, *ATx.data(), beta, *y.data());
 }
 
 }}//end namespace pressio::ops

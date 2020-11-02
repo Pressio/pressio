@@ -59,6 +59,10 @@
 #include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
 #include "utils/src/utils_set_stream_precision.hpp"
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "utils/src/utils_p4py_tag.hpp"
+#endif
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
 #include "utils/src/utils_teuchos_performance_monitor.hpp"
 #endif

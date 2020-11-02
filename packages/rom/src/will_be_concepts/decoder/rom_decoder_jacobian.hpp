@@ -58,7 +58,7 @@ template<typename T>
 struct decoder_jacobian<T,
  typename std::enable_if<
    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
-   ::pressio::containers::predicates::is_matrix_wrapper<T>::value
+   ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
    >::type
   > : std::true_type{};
 

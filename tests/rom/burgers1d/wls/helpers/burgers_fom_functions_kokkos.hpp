@@ -15,7 +15,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dKokkos & appObj,
   using fom_dmat_t = typename decoder_d_t::jacobian_type;
   fom_dmat_t phi("phi", fomSize, 11);
   pressio::rom::test::kokkos::readBasis("basis_euler.txt", romSize, fomSize, *phi.data());
-  decoder_d_t decoderObj(phi);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 
@@ -27,7 +27,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dKokkos & appObj,
   using fom_dmat_t = typename decoder_d_t::jacobian_type;
   fom_dmat_t phi("phi", fomSize, 11);
   pressio::rom::test::kokkos::readBasis("basis_bdf2.txt", romSize, fomSize, *phi.data());
-  decoder_d_t decoderObj(phi);
+  decoder_d_t decoderObj(std::move(phi));
   return decoderObj;
 }
 

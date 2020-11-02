@@ -20,7 +20,6 @@ int main(int argc, char *argv[]){
     using app_t			= pressio::apps::Burgers1dKokkos;
     using scalar_t		= typename app_t::scalar_type;
     using app_state_t		= typename app_t::state_type;
-    using app_rhs_t		= typename app_t::velocity_type;
 
     //-------------------------------
     // create app object
@@ -31,13 +30,12 @@ int main(int argc, char *argv[]){
 
     // types for ode
     using ode_state_t = pressio::containers::Vector<app_state_t>;
-    using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
-
     ode_state_t y(y0n);
-    using ode_tag = pressio::ode::explicitmethods::Euler;
-    using stepper_t = pressio::ode::ExplicitStepper
-      <ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
-    stepper_t stepperObj(y, appObj);
+    // using ode_tag = pressio::ode::explicitmethods::Euler;
+    // using stepper_t = pressio::ode::ExplicitStepper
+    //   <ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
+    // stepper_t stepperObj(y, appObj);
+    auto stepperObj = pressio::ode::createForwardEulerStepper(y, appObj);
 
     // integrate in time
     scalar_t fint = 35;

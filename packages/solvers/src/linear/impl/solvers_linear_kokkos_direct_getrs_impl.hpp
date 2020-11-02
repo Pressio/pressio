@@ -63,12 +63,12 @@ namespace pressio { namespace solvers { namespace linear{ namespace impl{
 
 template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>
-  : public LinearBase<MatrixT, KokkosDirect<::pressio::solvers::linear::direct::getrs, MatrixT>>
 {
 public:
-  static_assert( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
-  		 ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
-  		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
+  static_assert
+    ( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
+      ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
+      "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
   using solver_tag	= ::pressio::solvers::linear::direct::getrs;
   using this_t          = KokkosDirect<solver_tag, MatrixT>;
@@ -76,8 +76,6 @@ public:
   using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
   using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
   using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
-
-  using base_t  = LinearBase<MatrixT, this_t>;
   using solver_traits   = linear::details::traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
@@ -102,8 +100,6 @@ public:
 #endif
   }
 
-private:
-
 // because this uses teuchos lapack wrapper
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   /*
@@ -125,7 +121,47 @@ private:
       typename containers::details::traits<_MatrixT>::execution_space
       >::value
   >
-  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y) {
+  solve(const _MatrixT & A, const T& b, T & y)
+  {
+    if (!auxMat_){
+      auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("getrsAuxM",
+						       A.extent(0),
+						       A.extent(1)));
+    }
+    else{
+      if (A.extent(0) != auxMat_->extent(0) or
+	  A.extent(1) != auxMat_->extent(1))
+	{
+	  Kokkos::resize(*auxMat_->data(), A.extent(0), A.extent(1));
+	}
+    }
+
+    ::pressio::ops::deep_copy(*auxMat_, A);
+    this->solveAllowMatOverwrite(*auxMat_, b, y);
+  }
+
+
+  /*
+   * enable if:
+   * the matrix has layout left (i.e. column major)
+   * T is a kokkos vector wrapper
+   * has host execution space
+   * T and MatrixT have same execution space
+   */
+  template < typename _MatrixT = MatrixT, typename T>
+  mpl::enable_if_t<
+    mpl::is_same<
+      typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft
+      >::value and
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
+    ::pressio::containers::details::traits<T>::has_host_execution_space and
+    mpl::is_same<
+      typename containers::details::traits<T>::execution_space,
+      typename containers::details::traits<_MatrixT>::execution_space
+      >::value
+  >
+  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
+  {
     assert(A.extent(0) == b.extent(0) );
     assert(A.extent(1) == y.extent(0) );
     // gerts is for square matrices
@@ -182,7 +218,7 @@ private:
       typename containers::details::traits<_MatrixT>::execution_space
     >::value
     >
-  solveAllowMatOverwriteImpl(_MatrixT & A, const T& b, T & y)
+  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
   {
     assert(A.extent(0) == b.extent(0) );
     assert(A.extent(1) == y.extent(0) );
@@ -237,10 +273,9 @@ private:
   }
 #endif
 
-  friend base_t;
-
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
+  std::unique_ptr<MatrixT> auxMat_ = nullptr;
 #endif
 
 #if defined PRESSIO_ENABLE_TPL_KOKKOS and defined KOKKOS_ENABLE_CUDA

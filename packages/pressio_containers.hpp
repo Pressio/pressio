@@ -49,14 +49,22 @@
 #ifndef PRESSIO_CONTAINERS_HPP_
 #define PRESSIO_CONTAINERS_HPP_
 
+/*************** IMPORTANT **************
+The order below matters because this is how we make sure
+headers are included in (and classes found) in the proper order.
+****************************************/
+
+// dependencies
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
 
+// general headers
 #include "containers/src/containers_ConfigDefs.hpp"
 #include "containers/src/containers_fwd.hpp"
 #include "containers/src/containers_wrapped_types_enum.hpp"
 #include "containers/src/containers_shared_traits.hpp"
 
+// some common predicates
 #include "containers/src/predicates/typedefs/containers_has_communicator_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_data_map_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_global_ordinal_typedef.hpp"
@@ -66,34 +74,74 @@
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
 #endif
+
+//-----------------------------------------
+// predicates for native types detection
+//-----------------------------------------
+// for pybind we don't have a distinction for vec/mat/mv, because pybind arrays
+// can have dimensions. so there is not yet a way to detect if it is a vector at compile time.
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "containers/src/predicates/containers_native_pybind_array_meta.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_pybind_array.hpp"
 #endif
 
-//------------------
-// BASE
-//------------------
-#include "containers/src/base/containers_vector_sharedmem_base.hpp"
-#include "containers/src/base/containers_vector_distributed_base.hpp"
-#include "containers/src/base/containers_multi_vector_sharedmem_base.hpp"
-#include "containers/src/base/containers_multi_vector_distributed_base.hpp"
-#include "containers/src/base/containers_matrix_sharedmem_base.hpp"
-#include "containers/src/base/containers_matrix_distributed_base.hpp"
-#include "containers/src/base/containers_container_sharedmem_base.hpp"
-#include "containers/src/base/containers_container_distributed_base.hpp"
-#include "containers/src/base/containers_container_base.hpp"
+//*** vector ****
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_vector.hpp"
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "containers/src/predicates/native_types_detection/containers_native_kokkos_vector.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "containers/src/predicates/native_types_detection/containers_native_epetra_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_teuchos_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_tpetra_block_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_tpetra_vector.hpp"
+#endif
 
-// VECTOR
+//*** matrix ****
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "containers/src/predicates/native_types_detection/containers_native_kokkos_dense_matrix.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "containers/src/predicates/native_types_detection/containers_native_epetra_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_teuchos_dense_matrix.hpp"
+#endif
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_sparse_matrix.hpp"
+
+//*** multi vector ****
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "containers/src/predicates/native_types_detection/containers_native_kokkos_multi_vector.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "containers/src/predicates/native_types_detection/containers_native_epetra_multi_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_tpetra_block_multi_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_tpetra_multi_vector.hpp"
+#endif
+#include "containers/src/predicates/native_types_detection/containers_native_eigen_multi_vector.hpp"
+
+// arbitrary must be at end because they depend on the above
+#include "containers/src/predicates/native_types_detection/containers_native_arbitrary_vector.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_arbitrary_dense_matrix.hpp"
+#include "containers/src/predicates/native_types_detection/containers_native_arbitrary_multi_vector.hpp"
+
+
+//-------------------------------------------
+// includes actual Vector/Matrix/MV classes
+//-------------------------------------------
 #include "containers/src/vector/pressio_containers_vector_include.hpp"
-// MATRIX
-#include "containers/src/matrix/pressio_containers_matrix_include.hpp"
-// MULTI VECTOR
+#include "containers/src/dense_matrix/pressio_containers_dense_matrix_include.hpp"
+#include "containers/src/sparse_matrix/pressio_containers_sparse_matrix_include.hpp"
 #include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
+
+//-------------------------------------------
 // expressions
+//-------------------------------------------
 #include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
+//-------------------------------------------
 // others
+//-------------------------------------------
 #include "containers/src/predicates/containers_is_wrapper.hpp"
+#include "containers/src/predicates/containers_are_wrappers.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
 #endif

@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_galerkin.hpp"
 #include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
@@ -15,7 +15,7 @@ struct GalerkinBDF1WithResidualApi
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using eig_dyn_mat   = Eigen::Matrix<scalar_t, -1, -1>;
   using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
-  using rom_jacobian_t = pressio::containers::Matrix<eig_dyn_mat>;
+  using rom_jacobian_t = pressio::containers::DenseMatrix<eig_dyn_mat>;
 
   using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
@@ -31,7 +31,6 @@ struct GalerkinBDF1WithResidualApi
     constexpr int numCell = 20;
     Eigen::Vector3d mu(5.0, 0.02, 0.02);
     fom_t appobj( mu, numCell);
-    auto t0 = static_cast<scalar_t>(0);
     scalar_t dt = 0.01;
 
     // read from file the jacobian of the decoder
@@ -54,17 +53,18 @@ struct GalerkinBDF1WithResidualApi
     ::pressio::ops::resize(yROM_, romSize);
     ::pressio::ops::fill(yROM_, 0.0);
 
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    //using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
+    //   ode_tag, fom_t, decoder_t, rom_state_t, rom_jacobian_t,
+    // stepper_order, stepper_n_states>::type;
+    // problem_t Problem(appobj, decoderObj, yROM_, yRef);
+    auto Problem =
+      pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>
+      (appobj, decoderObj, yROM_, yRef);
 
-    using problem_t = pressio::rom::galerkin::composeDefaultProblem<
-      ode_tag, fom_t, rom_state_t, rom_jacobian_t,
-      decoder_t, stepper_order, stepper_n_states>::type;
-    using stepper_t  = typename problem_t::stepper_t;
-    problem_t Problem(appobj, yRef, decoderObj, yROM_, t0);
-
-    auto & stepperObj = Problem.getStepperRef();
+    auto & stepperObj = Problem.stepperRef();
 
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
@@ -72,9 +72,7 @@ struct GalerkinBDF1WithResidualApi
     linear_solver_t linSolverObj;
 
     // nonlinear system
-    using nonlinear_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-      stepper_t, pressio::solvers::nonlinear::DefaultUpdate,linear_solver_t>;
-    nonlinear_solver_t solver(stepperObj, yROM_, linSolverObj);
+    auto solver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, yROM_, linSolverObj);
     solver.setTolerance(1e-12);
     solver.setMaxIterations(4);
 
@@ -82,7 +80,7 @@ struct GalerkinBDF1WithResidualApi
     pressio::ode::advanceNSteps(stepperObj, yROM_, 0.0, dt, 15, solver);
 
     // compute the fom corresponding to our rom final state
-    auto yFomFinal = Problem.getFomStateReconstructorCRef()(yROM_);
+    auto yFomFinal = Problem.fomStateReconstructorCRef()(yROM_);
     fomSol_ = *yFomFinal.data();
   }
 };
@@ -119,7 +117,7 @@ int main(int argc, char *argv[]){
 1.01905007725692e+00,
 1.02105354928633e+00};
 
-  if ((std::size_t)residFomSol.size() != gold.size()) 
+  if ((std::size_t)residFomSol.size() != gold.size())
     checkStr = "FAILED";
 
   // check the reconstructed fom state

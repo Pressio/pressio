@@ -52,14 +52,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class Vector<wrapped_type,
-	     typename
-	     std::enable_if<
-	       ::pressio::containers::predicates::is_vector_epetra<
-		 wrapped_type>::value
-	       >::type
-	     >
-  : public VectorDistributedBase< Vector<wrapped_type> >
+class Vector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_epetra<
+      wrapped_type>::value
+    >
+  >
 {
 
   using this_t = Vector<wrapped_type>;
@@ -78,8 +77,10 @@ public:
 
   // copy cnstr
   Vector(Vector const & other) = default;
-  // copy assignment
-  Vector & operator=(Vector const & other) = default;
+
+  // delete copy assign to force usage of ops::deep_copy
+  Vector & operator=(Vector const & other) = delete;
+
   // move cnstr
   Vector(Vector && other) = default;
   // move assignment
@@ -88,14 +89,13 @@ public:
   ~Vector() = default;
 
 public:
-  sc_t & operator [] (LO_t i){
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
-  sc_t const & operator [] (LO_t i) const{
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
+  wrapped_type const * data() const{
+    return &data_;
+  }
+
+  wrapped_type * data(){
+    return &data_;
+  }
 
   sc_t & operator()(LO_t i){
     assert(i < this->extentLocal(0));
@@ -106,27 +106,16 @@ public:
     return data_[i];
   };
 
-  // compound assignment when type(b) = type(this)
-  // this += b
-  Vector & operator+=(const Vector & other) {
-    this->data_.Update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-  // compound assignment when type(b) = type(this)
-  // this -= b
-  Vector & operator-=(const Vector & other) {
-    this->data_.Update(-1.0, *other.data(), 1.0 );
-    return *this;
-  }
-
-  wrapped_type const * data() const{
-    return &data_;
-  }
-
-  wrapped_type * data(){
-    return &data_;
-  }
+  [[deprecated("Use operator() instead.")]] 
+  sc_t & operator[](LO_t i){
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
+  [[deprecated("Use operator() instead.")]] 
+  sc_t const & operator[](LO_t i) const{
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
 
   GO_t extent(std::size_t i) const{
     assert(i==0);
@@ -139,10 +128,9 @@ public:
   }
 
 private:
-  friend VectorDistributedBase< this_t >;
   wrapped_type data_ = {};
 
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_

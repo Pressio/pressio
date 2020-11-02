@@ -53,7 +53,6 @@ namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
 template<
   typename state_type,
-  typename system_type,
   typename velocity_type = state_type,
   typename enable = void>
 class VelocityStandardPolicy;
@@ -62,30 +61,31 @@ class VelocityStandardPolicy;
  * state_type = velocity_type
  * both are wrappers from containers
  */
-template<
-  typename state_type,
-  typename system_type
-  >
+template<typename state_type>
 class VelocityStandardPolicy<
-  state_type, system_type, state_type,
+  state_type, state_type,
   mpl::enable_if_t<
     containers::predicates::is_vector_wrapper<state_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    and mpl::not_same<system_type, pybind11::object >::value
-#endif
     >
   >
 {
 public:
   VelocityStandardPolicy() = default;
+
+  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
+  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
+  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
+  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
+
   ~VelocityStandardPolicy() = default;
 
+  template <typename system_type>
   state_type create(const system_type & system) const
   {
     return state_type(system.createVelocity());
   }
 
-  template < typename scalar_type>
+  template <typename system_type, typename scalar_type>
   void compute(const state_type & state,
 	       state_type & f,
 	       const system_type & system,

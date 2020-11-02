@@ -1,5 +1,5 @@
 
-#include "pressio_rom.hpp"
+#include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 #include "custom_mapping.hpp"
@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   fom_t appobj( mu, numCell);
 
-  auto t0 = static_cast<scalar_t>(0);
   scalar_t dt = 0.01;
   constexpr int romSize = 11;
 
@@ -40,43 +39,41 @@ int main(int argc, char *argv[])
   ::pressio::ops::resize(yROM_, romSize);
   ::pressio::ops::fill(yROM_, 0.0);
 
-  // define LSPG type
-  using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, 
-        lspg_state_t, decoder_t, stepper_order, stepper_n_states>::type;
-  using lspg_stepper_t	 = typename lspg_problem::lspg_stepper_t;
-  lspg_problem lspgProblem(appobj, yRef, decoderObj, yROM_, t0);
+  // // define LSPG type
+  // using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
+  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, 
+  //       decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
+  // lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
+    appobj, decoderObj, yROM_, yRef);
 
   // linear solver
   using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
-  using hessian_t	 = pressio::containers::Matrix<eig_dyn_mat>;
+  using hessian_t	 = pressio::containers::DenseMatrix<eig_dyn_mat>;
   using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
   using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolverObj;
 
   // GaussNewton solver with normal equations
-  using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    lspg_stepper_t,
-    pressio::solvers::nonlinear::DefaultUpdate,
-    linear_solver_t>;
-  nls_t solver(lspgProblem.getStepperRef(), yROM_, linSolverObj);
+  auto solver = pressio::solvers::nonlinear::createGaussNewton(
+    lspgProblem.stepperRef(), yROM_, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(4);
 
   // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.getStepperRef(), yROM_, 0.0, dt, 10, solver);
+  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
-  auto yFomFinal = lspgProblem.getFomStateReconstructorCRef()(yROM_);
+  auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);
 
   // this is a reproducing ROM test, so the final reconstructed state
   // has to match the FOM solution obtained with euler, same time-step, for 10 steps
   // const auto trueY = pressio::apps::test::Burg1DtrueImpEulerN20t010;
   const auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(numCell, dt, 0.10);
   for (auto i=0; i<yFomFinal.extent(0); i++){
-    if (std::abs(yFomFinal[i] - trueY[i]) > 1e-10)
+    if (std::abs(yFomFinal(i) - trueY[i]) > 1e-10)
       checkStr = "FAILED";
   }
   std::cout << checkStr <<  std::endl;

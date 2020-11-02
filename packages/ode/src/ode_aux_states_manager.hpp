@@ -54,16 +54,43 @@ namespace pressio{ namespace ode{
 template<typename T, std::size_t n>
 class AuxStatesManager;
 
-// partially specialize for implicit scheme
 template<typename T, std::size_t n>
 class AuxStatesManager
 {
-public:
-  using data_type = ::pressio::containers::StaticCollection<T, n>;
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<T>::value,
+   "AuxStatesManager only supports pressio containers.");
 
-  template <typename ... Args>
+  static_assert
+  (!::pressio::containers::predicates::is_expression<T>::value,
+   "AuxStatesManager does NOT support pressio expressions.");
+
+public:
+  using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
+
+  template <
+    typename _T = T,
+    mpl::enable_if_t<
+      std::is_default_constructible<_T>::value, int
+      > = 0
+  >
+  AuxStatesManager(){};
+
+  template <
+    typename ... Args,
+    mpl::enable_if_t<sizeof...(Args) >= 1, int > = 0
+    >
   AuxStatesManager(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
+
+  // copy cnstr
+  AuxStatesManager(AuxStatesManager const & other) = default;
+  // copy assignment
+  AuxStatesManager & operator=(AuxStatesManager const & other) = default;
+  // move cnstr
+  AuxStatesManager(AuxStatesManager && other) = default;
+  // move assignment
+  AuxStatesManager & operator=(AuxStatesManager && other) = default;
 
   ~AuxStatesManager() = default;
 
@@ -73,20 +100,28 @@ public:
   }
 
   // n-1
-  T & get(ode::nMinusOne tag){ return data_(0); }
-  T const & get(ode::nMinusOne tag) const{ return data_(0); }
+  T & refStateAt(ode::nMinusOne tag){ return data_(0); }
+  T const & cRefStateAt(ode::nMinusOne tag) const{ return data_(0); }
+  T & stateAt(ode::nMinusOne tag){ return data_(0); }
+  T const & stateAt(ode::nMinusOne tag) const{ return data_(0); }
 
   // n-2
-  T & get(ode::nMinusTwo tag){ return data_(1); }
-  T const & get(ode::nMinusTwo tag) const{ return data_(1); }
+  T & refStateAt(ode::nMinusTwo tag){ return data_(1); }
+  T const & cRefStateAt(ode::nMinusTwo tag) const{ return data_(1); }
+  T & stateAt(ode::nMinusTwo tag){ return data_(1); }
+  T const & stateAt(ode::nMinusTwo tag) const{ return data_(1); }
 
   // n-3
-  T & get(ode::nMinusThree tag){ return data_(2); }
-  T const & get(ode::nMinusThree tag) const{ return data_(2); }
+  T & refStateAt(ode::nMinusThree tag){ return data_(2); }
+  T const & cRefStateAt(ode::nMinusThree tag) const{ return data_(2); }
+  T & stateAt(ode::nMinusThree tag){ return data_(2); }
+  T const & stateAt(ode::nMinusThree tag) const{ return data_(2); }
 
   // n-4
-  T & get(ode::nMinusFour tag){ return data_(3); }
-  T const & get(ode::nMinusFour tag) const{ return data_(3); }
+  T & refStateAt(ode::nMinusFour tag){ return data_(3); }
+  T const & cRefStateAt(ode::nMinusFour tag) const{ return data_(3); }
+  T & stateAt(ode::nMinusFour tag){ return data_(3); }
+  T const & stateAt(ode::nMinusFour tag) const{ return data_(3); }
 
 private:
   data_type data_;

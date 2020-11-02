@@ -51,29 +51,29 @@
 
 namespace pressio{ namespace rom{ namespace wls{  namespace impl{
 
-template<typename decoder_jac_t>
+template<typename jac_t>
 class FrozenJacobiansContainer
 {
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
+  using wls_jacs_t   = std::vector<jac_t>;
 
 public:
   FrozenJacobiansContainer(const window_size_t timeStencilSize,
 			   const window_size_t numStepsInWindow,
-			   const decoder_jac_t  & phi )
+			   const jac_t  & phi )
     :  wlsJacs_( std::min(timeStencilSize+1, numStepsInWindow)*numStepsInWindow, phi),
        jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
   {}
 
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const{
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const{
     return stepNumLocal*jacStencilSize_;
   }
 
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index){
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index){
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  const decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const{
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const{
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:
@@ -83,29 +83,29 @@ private:
 };
 
 
-template<typename decoder_jac_t>
+template<typename jac_t>
 class NonFrozenJacobiansContainer
 {
-  using wls_jacs_t   = std::vector<decoder_jac_t>;
+  using wls_jacs_t   = std::vector<jac_t>;
 
 public:
   NonFrozenJacobiansContainer(const window_size_t timeStencilSize,
 			      const window_size_t numStepsInWindow,
-			      const decoder_jac_t  & phi)
+			      const jac_t  & phi)
     :  wlsJacs_( std::min(timeStencilSize+1,numStepsInWindow), phi),
        jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
   {}
 
-  window_size_t getJacobianIndexOffset(window_size_t stepNumLocal) const {
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const {
     return 0;
   }
 
-  decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) {
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) {
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  const decoder_jac_t & getLocalJacobian(window_size_t stepNumLocal, int jacobian_index) const {
-    return wlsJacs_[getJacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const {
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:

@@ -57,12 +57,19 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
   ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_matrix_wrapper_kokkos<T>::value
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
   >
-set_zero(T & v){
+set_zero(T & v)
+{
+  /* make sure we don't pass const objects to be modified.
+     In kokkos it is legal to modify const views, not for pressio wrappers. */
+  static_assert
+    (!std::is_const<T>::value,
+     "cannot modify a const-qualified wrapper of a Kokkos view");
+
   using value_t	      = typename ::pressio::containers::details::traits<T>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants<value_t>::zero();
-  KokkosBlas::fill(*v.data(), zero);
+  ::KokkosBlas::fill(*v.data(), zero);
 }
 
 }}//end namespace pressio::ops

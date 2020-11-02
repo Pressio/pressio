@@ -70,29 +70,28 @@ public:
   using residual_type = residual_t;
   using jacobian_type = jacobian_t;
 
-public:
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
-
-  using tag_name = ::pressio::ode::implicitmethods::BDF2;
-
   static constexpr types::stepper_order_t order_value = 2;
   static constexpr std::size_t numAuxStates = 2;
-  using system_wrapper_t  = ::pressio::ode::impl::OdeSystemWrapper<system_type>;
-  using aux_states_t = ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
+  using tag_name = ::pressio::ode::implicitmethods::BDF2;
 
-  using standard_res_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    state_type, system_type, residual_type>;
-  using standard_jac_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    state_type, system_type, jacobian_type>;
+  using aux_states_t =
+    ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
+  using standard_res_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+    state_type, residual_type>;
+  using standard_jac_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+    state_type, jacobian_type>;
 
 public:
   StepperBDF2() = delete;
+  StepperBDF2(const StepperBDF2 & other)  = default;
+  StepperBDF2 & operator=(const StepperBDF2 & other) = delete;
+  StepperBDF2(StepperBDF2 && other)  = default;
+  StepperBDF2 & operator=(StepperBDF2 && other) = delete;
   ~StepperBDF2() = default;
-  StepperBDF2(const StepperBDF2 & other)  = delete;
-  StepperBDF2 & operator=(const StepperBDF2 & other)  = delete;
-  StepperBDF2(StepperBDF2 && other)  = delete;
-  StepperBDF2 & operator=(StepperBDF2 && other)  = delete;
 
   StepperBDF2(const state_type & state,
 	      const system_type & systemObj,
@@ -100,7 +99,7 @@ public:
 	      const jacobian_policy_t & jacPolicyObj,
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
-      sys_{systemObj},
+      systemObj_{systemObj},
       auxStates_{state},
       recoveryState_{state},
       residual_obj_{resPolicyObj},
@@ -120,7 +119,7 @@ public:
 	      const system_type & systemObj,
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
-      sys_{systemObj},
+      systemObj_{systemObj},
       auxStates_{state},
       recoveryState_{state}
   {}
@@ -173,7 +172,7 @@ public:
     if (step == 1){
       // step ==1 means that we are going from y_0 to y_1
       // auxStates_(0) now holds y_0
-      ::pressio::ops::deep_copy(this->auxStates_.get(nm1()), odeState);
+      ::pressio::ops::deep_copy(this->auxStates_.stateAt(nm1()), odeState);
       auxStepper_.doStep(odeState, t, dt, step, solver);
     }
     if (step >= 2)
@@ -183,8 +182,8 @@ public:
       // step == 3 means that we are going from y_2 to y_3, so:
       //		y_n-2 = y_1 and y_n-1 = y_2
 
-      auto & odeState_nm1 = this->auxStates_.get(nm1());
-      auto & odeState_nm2 = this->auxStates_.get(nm2());
+      auto & odeState_nm1 = this->auxStates_.stateAt(nm1());
+      auto & odeState_nm2 = this->auxStates_.stateAt(nm2());
       ::pressio::ops::deep_copy(recoveryState_, odeState_nm2);
       ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState);
@@ -212,27 +211,29 @@ public:
 
   residual_t createResidual() const
   {
-    return this->residual_obj_.create(sys_.get());
+    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
+    return resPol.create(systemObj_.get());
   }
 
   jacobian_t createJacobian() const
   {
-    return this->jacobian_obj_.create(sys_.get());
+    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
+    return jacPol.create(systemObj_.get());
   }
 
-  void residual(const state_t & odeState, residual_t & R,
-    ::pressio::Norm normKind, scalar_t & normValue) const
+  void residual(const state_t & odeState, residual_t & R) const
   {
-    this->residual_obj_.template compute<tag_name>(
-      odeState,  this->auxStates_, this->sys_.get(),
-      this->t_, this->dt_, this->step_, R,
-      normKind, normValue);
+    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
+    resPol.template compute<tag_name>(
+      odeState,  this->auxStates_, this->systemObj_.get(),
+      this->t_, this->dt_, this->step_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    this->jacobian_obj_.template compute<
-      tag_name>(odeState, this->auxStates_, this->sys_.get(),
+    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
+    jacPol.template compute<
+      tag_name>(odeState, this->auxStates_, this->systemObj_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
 
@@ -242,30 +243,26 @@ private:
   scalar_t t_  = {};
   scalar_t dt_ = {};
   types::step_t step_  = {};
-  system_wrapper_t sys_;
+  std::reference_wrapper<const system_type> systemObj_;
   aux_states_t auxStates_;
 
   // state object to ensure the strong guarantee for handling excpetions
   state_type recoveryState_;
 
-  // conditionally set the type of the object knowing how to compute residual
-  // if we have a standard policy, then it takes a copy
+  // if we have a standard policy, then default constr
   // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_res_policy_t, residual_policy_t>::value,
     const residual_policy_t,
-    const residual_policy_t &
+    std::reference_wrapper<const residual_policy_t>
     >::type residual_obj_;
 
-  // conditionally set the type of the object knowing how to compute jacobian
-  // if we have a standard policy, then it takes a copy
-  // if we have a user-defined policy, we take a const & to it
   typename std::conditional<
     mpl::is_same<standard_jac_policy_t, jacobian_policy_t>::value,
     const jacobian_policy_t,
-    const jacobian_policy_t &
+    std::reference_wrapper<const jacobian_policy_t>
     >::type jacobian_obj_;
-};//end class
+};
 
 }}} // end namespace pressio::ode::implicitmethods
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_

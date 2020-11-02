@@ -41,7 +41,7 @@ struct observer{
 template <typename T>
 void checkSol(const T & y, const std::vector<double> & trueS){
   for (size_t i=0; i< trueS.size(); i++)
-    if (std::abs(y[i] - trueS[i]) > eps) checkStr = "FAILED";
+    if (std::abs(y(i) - trueS[i]) > eps) checkStr = "FAILED";
 }
 
 int main(int argc, char *argv[]){
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
   // types for ode
   using ode_state_t = pressio::containers::Vector<app_state_t>;
   using ode_res_t   = pressio::containers::Vector<app_rhs_t>;
-  using ode_jac_t   = pressio::containers::Matrix<app_jacob_t>;
+  using ode_jac_t   = pressio::containers::SparseMatrix<app_jacob_t>;
 
   ode_state_t y(y0n);
   using ode_tag = pressio::ode::implicitmethods::Euler;
@@ -74,10 +74,12 @@ int main(int argc, char *argv[]){
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
 
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
-  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
+  // using nl_solver_t = pressio::solvers::nonlinear::NewtonRaphson<
+  //   stepper_t, lin_solver_t>;
+  // nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);  
+  auto NonLinSolver= 
+    pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y, linSolverObj);
+
   NonLinSolver.setTolerance(1e-13);
   NonLinSolver.setMaxIterations(200);
 

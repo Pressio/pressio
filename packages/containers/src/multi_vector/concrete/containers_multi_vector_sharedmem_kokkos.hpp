@@ -55,10 +55,9 @@ template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_multi_vector_kokkos<wrapped_type>::value
+    containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
     >
   >
-  : public MultiVectorSharedMemBase<MultiVector<wrapped_type>>
 {
 
   using this_t = MultiVector<wrapped_type>;
@@ -76,10 +75,13 @@ class MultiVector<
 public:
   MultiVector() = default;
 
-  explicit MultiVector(const wrap_t src)
+  explicit MultiVector(const wrap_t & src)
     : data_{src.label(), src.extent(0), src.extent(1)}{
     Kokkos::deep_copy(data_, src);
   }
+
+  MultiVector(wrap_t && src)
+    : data_(std::move(src)){}
 
   MultiVector(const std::string & label, size_t e1, size_t e2)
     : data_{label, e1, e2}{}
@@ -93,31 +95,19 @@ public:
     Kokkos::deep_copy(data_, other.data_);
   }
 
-  // copy assign implments copy semantics not view (for time being)
-  MultiVector & operator=(const MultiVector & other){
-    if (&other != this){
-      assert(this->length() == other.length());
-      assert(this->numVectors() == other.numVectors());
-      Kokkos::deep_copy(data_, *other.data());
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if (&other != this){
+  //     assert(this->length() == other.length());
+  //     assert(this->numVectors() == other.numVectors());
+  //     Kokkos::deep_copy(data_, *other.data());
+  //   }
+  //   return *this;
+  // }
 
   // move cnstr and assign
-  MultiVector(MultiVector && other)
-    : data_{other.data_.label(),
-	    other.data_.extent(0),
-	    other.data_.extent(1)}
-  {
-    Kokkos::deep_copy(data_, other.data_);
-  }
-
-  MultiVector & operator=(MultiVector && other){
-    assert(this->length() == other.length());
-    assert(this->numVectors() == other.numVectors());
-    Kokkos::deep_copy(data_, *other.data());
-    return *this;
-  }
+  MultiVector(MultiVector && other) = default;
+  MultiVector & operator=(MultiVector && other) = default;
 
   ~MultiVector() = default;
 
@@ -133,6 +123,30 @@ public:
     return data_;
   }
 
+  template< typename _wrapped_type = wrapped_type >
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t &>
+  operator () (ord_t i, ord_t j){
+    assert(i < this->extent(0));
+    assert(j < this->extent(1));
+    return data_(i,j);
+  };
+
+  template< typename _wrapped_type = wrapped_type >
+  mpl::enable_if_t<
+    // todo: not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator () (ord_t i, ord_t j) const{
+    assert(i < this->extent(0));
+    assert(j < this->extent(1));
+    return data_(i, j);
+  };
+
   ord_t extent(ord_t i) const {
     return data_.extent(i);
   }
@@ -146,10 +160,8 @@ public:
   }
 
 private:
-  friend MultiVectorSharedMemBase<this_t>;
   wrap_t data_ = {};
-
-};//end class
+};
 
 }}//end namespace pressio::containers
 #endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_

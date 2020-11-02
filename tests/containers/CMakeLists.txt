@@ -1,0 +1,2 @@
+
+add_subdirectory(wrapper_static_error_messages)

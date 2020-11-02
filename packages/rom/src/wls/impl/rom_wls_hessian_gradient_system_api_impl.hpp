@@ -59,8 +59,8 @@ class SystemHessianGradientApi
   // in all cases we need types to be wrappers from containers
   static_assert(::pressio::containers::predicates::is_vector_wrapper<wls_state_type>::value,
 		"For WLS, the state_type must be a pressio container vector");
-  static_assert(::pressio::containers::predicates::is_matrix_wrapper<wls_hessian_type>::value,
-		"WLS: hessian_type must be a pressio container matrix");
+  static_assert(::pressio::containers::predicates::is_dense_matrix_wrapper<wls_hessian_type>::value,
+		"WLS: hessian_type must be a pressio container dense matrix");
 
 public:
   // aliases for scalar, state, gradient and hessian NEEDED for solver to detect
@@ -84,7 +84,7 @@ private:
   window_size_t numStepsInWindow_ = {};
 
   // policy for evaluating the hessian and gradient
-  const policy_t & hessianGradientPolicy_;
+  std::reference_wrapper<const policy_t> hessianGradientPolicy_;
 
   // cache the size of the wls problem: romSize*numStepsInWindow
   window_size_t wlsProblemSize_ = romSize_*numStepsInWindow_;
@@ -111,9 +111,9 @@ public:
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
-			   const fom_state_t & fomStateReference,
+			   const fom_state_t & fomNominalState,
 			   const wls_state_type & wlsStateIcIn)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomStateReference)
+    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
   {
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
     auto wlsInitialStateNm1   = containers::span(wlsStateIC_, spanStartIndex, romSize_);
@@ -125,9 +125,17 @@ public:
   ::pressio::mpl::enable_if_t<
     ::pressio::mpl::is_detected<::pressio::solvers::predicates::has_matrix_typedef, linear_solver_type>::value and
     !std::is_void<typename linear_solver_type::matrix_type>::value and
-    ::pressio::mpl::publicly_inherits_from<
-      linear_solver_type,
-      ::pressio::solvers::LinearBase<typename linear_solver_type::matrix_type, linear_solver_type>
+    // has a solveAllowMatOverwrite method
+    std::is_void<
+      decltype
+      (
+       std::declval<linear_solver_type>().solveAllowMatOverwrite
+       (
+        std::declval<typename linear_solver_type::matrix_type &>(), 
+        std::declval<wls_state_type const &>(), 
+        std::declval<wls_state_type &>()
+        )
+       )
       >::value,
       int > = 0
   >
@@ -136,17 +144,17 @@ public:
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
-			   const fom_state_t & fomStateReference,
+			   const fom_state_t & fomNominalState,
   			   linear_solver_type & linSolverObj)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomStateReference)
+    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
     wls_state_type wlsStateTmp(romSize);
-    const auto & decoderJac = decoderObj.getReferenceToJacobian();
+    const auto & decoderJac = decoderObj.jacobianCRef();
 
     ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj, decoderJac,
-  									  fomStateInitCondition, fomStateReference,
+  									  fomStateInitCondition, fomNominalState,
 									  wlsStateTmp);
 
     const auto spanStartIndex = romSize_*(timeStencilSize_-1);
@@ -160,16 +168,16 @@ private:
 			   const window_size_t numStepsInWindow,
 			   const decoder_t & decoderObj,
 			   const policy_t & policy,
-			   const fom_state_t & fomStateReference)
+			   const fom_state_t & fomNominalState)
     : romSize_(romSize),
       numStepsInWindow_{numStepsInWindow},
       hessianGradientPolicy_(policy),
       wlsStateIC_(wlsStencilSize_),
-      fomStateReconstructor_(fomStateReference, decoderObj)
+      fomStateReconstructor_(fomNominalState, decoderObj)
   {}
 
 public:
-  const fom_state_reconstr_t & getFomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
 
@@ -187,13 +195,14 @@ public:
 			  hessian_type		      & hessian,
 			  gradient_type		      & gradient,
 			  const pressio::Norm & normType,
-			  scalar_type		      & rnorm) const
+			  scalar_type		      & rnorm,
+        bool recomputeJacobian) const
   {
     if (normType != ::pressio::Norm::L2)
       throw std::runtime_error("cannot call WLS with a norm != L2");
 
     rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_(
+    hessianGradientPolicy_.get()(
 			   wls_state,
 			   wlsStateIC_,
 			   hessian,
@@ -214,7 +223,7 @@ public:
       throw std::runtime_error("cannot call WLS with a norm != L2");
 
     rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_.computeResidualNorm(
+    hessianGradientPolicy_.get().computeResidualNorm(
 			   wls_state,
 			   wlsStateIC_,
 			   fomStateReconstructor_,

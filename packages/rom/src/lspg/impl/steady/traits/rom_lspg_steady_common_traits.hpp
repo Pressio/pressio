@@ -51,77 +51,71 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename fom_system_t, typename lspg_state_t, typename enable = void>
-struct ExtractNativeHelper;
-
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,mpl::enable_if_t<
-     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-#endif
-  >
-{
-  using fom_native_state_t    = typename fom_system_t::state_type;
-  using fom_native_residual_t = typename fom_system_t::residual_type;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-  >
-{
-  using fom_native_state_t     = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-  using fom_native_residual_t = fom_native_state_t;
-};
-#endif
-// ------------------------------------------------------------------------------------
-
-
 template <
   typename fom_system_type,
-  typename decoder_type,
   typename lspg_state_type,
-  typename ...Args
+  typename decoder_type
   >
 struct CommonTraits
 {
   // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_residual_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_residual_t;
+  using fom_system_t	      = fom_system_type;
+  using fom_native_state_t    = typename fom_system_t::state_type;
+  using fom_native_residual_t = typename fom_system_t::residual_type;
 
   // fom wrapper types
   using fom_state_t	= ::pressio::containers::Vector<fom_native_state_t>;
   using fom_residual_t	= ::pressio::containers::Vector<fom_native_residual_t>;
 
   // rom state type (passed in)
-  using lspg_state_t		= lspg_state_type;
+  using lspg_state_t	    = lspg_state_type;
+  using lspg_native_state_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   // for LSPG, the rom residual type = containers::wrapper of application rhs
-  // i.e. the wrapped fom rhs type
   using lspg_residual_t		= fom_residual_t;
 
   // decoder types (passed in)
-  using decoder_t		= decoder_type;
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
+
+  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
+   * * J is the jacobian of the fom rhs
+   * * decoder_jac_t is the type of the decoder jacobian
+   * In more complex cases, we might have (something)*J*decoder_jac_t,
+   * where (something) is product of few matrices.
+   * For now, set lspg_matrix_t to be of same type as decoder_jac_t
+   * if phi is MV<>, then lspg_matrix_t = containers::MV<>
+   * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
+   * not a bad assumption since all matrices are left-applied to decoder_jac_t
+   */
+  using lspg_matrix_t		= decoder_jac_t;
 
   // fro now, later on this needs to be detected from args
   using ud_ops_t = void;
 
   // fom state reconstructor type
-  using fom_state_reconstr_t	= FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  using fom_state_reconstr_t =
+    FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // class type holding fom states data: we only need to store one FOM state
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, 1, fom_state_reconstr_t, void>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, void>;
+
+  // sentinel to tell if we are doing bindings for p4py:
+  // always false if pybind is disabled, otherwise detect from rom state
+  static constexpr bool binding_sentinel =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value;
+#else
+  false;
+#endif
 };
 
 }}}}}

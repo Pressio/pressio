@@ -51,33 +51,33 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
+  typename ::pressio::containers::details::traits<T>::scalar_t
   >
-norm1(const vec_type & a)
+norm1(const T & a)
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
+  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   sc_t result = ::pressio::utils::constants<sc_t>::zero();
-  const auto a_proxy = a.data()->unchecked();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += std::abs(a_proxy(i));
+  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
+    result += std::abs(a(i));
+  }
   return result;
 }
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
+  typename ::pressio::containers::details::traits<T>::scalar_t
   >
-norm2(const vec_type & a)
+norm2(const T & a)
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
-  sc_t result = ::pressio::utils::constants<sc_t>::zero();
-  const auto a_proxy = a.data()->unchecked();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++)
-    result += a_proxy(i)*a_proxy(i);
+  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
+  auto result = ::pressio::utils::constants<sc_t>::zero();
+  for (std::size_t i=0; i<a.extent(0); i++){
+    result += a(i)*a(i);
+  }
   return std::sqrt(result);
 }
 

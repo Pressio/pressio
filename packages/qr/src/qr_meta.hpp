@@ -57,7 +57,7 @@ struct is_legitimate_r_type : std::false_type {};
 template <typename T>
 struct is_legitimate_r_type<T,
 	 ::pressio::mpl::enable_if_t<
-	   containers::predicates::is_matrix_wrapper<T>::value and
+	   containers::predicates::is_dense_matrix_wrapper<T>::value and
 	   containers::details::traits<T>::is_shared_mem and
 	   containers::details::traits<T>::is_dense
 	   >

@@ -54,14 +54,13 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class MultiVector<wrapped_type,
-     typename
-     std::enable_if<
-       ::pressio::containers::predicates::is_multi_vector_tpetra<
-	    wrapped_type>::value
-       >::type
-     >
-  : public MultiVectorDistributedBase< MultiVector<wrapped_type> >
+class MultiVector<
+  wrapped_type,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_multi_vector_tpetra<
+      wrapped_type>::value
+    >
+  >
 {
 
 private:
@@ -77,50 +76,35 @@ private:
 public:
   MultiVector() = default;
 
+  explicit MultiVector(const wrap_t & other)
+    // use the deep_copy constructor
+    : data_(other, Teuchos::Copy){}
+
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
     : data_(mapobj, numVectors){}
 
   MultiVector(const map_t & mapobj, GO_t numVectors)
     : data_( Teuchos::rcpFromRef(mapobj), numVectors ){}
 
-  explicit MultiVector(const wrap_t & other)
-    // use the deep_copy constructor
-    : data_(other, Teuchos::Copy){}
+  explicit MultiVector(wrap_t && other)
+    : data_(std::move(other)){}
 
   // copy constr
   MultiVector(const MultiVector & other)
     : data_(*other.data(), Teuchos::Copy){}
 
-  // copy assignment
-  MultiVector & operator=(const MultiVector & other){
-    if(&other != this){
-      assert(this->localSize() == other.localSize());
-      data_.assign( *other.data() );
-    }
-    return *this;
-  }
+  // delete copy assign to force usage of ops::deep_copy
+  MultiVector & operator=(const MultiVector & other) = delete;
+  //   if(&other != this){data_.assign( *other.data() );}
+  //   return *this;
+  // }
 
   // move cnstr
-  MultiVector(MultiVector && other)
-    // use the deep_copy constructor
-    : data_(*other.data(), Teuchos::Copy){}
-
+  MultiVector(MultiVector && other) = default;
   // move assignment
-  MultiVector & operator=(MultiVector && other){
-    assert(this->localSize() == other.localSize());
-    data_.assign( *other.data() );
-    return *this;
-  }
+  MultiVector & operator=(MultiVector && other) = default;
 
   ~MultiVector() = default;
-
-public:
-  // compound assignment when type(b) = type(this)
-  // this += b
-  this_t & operator+=(const this_t & other) {
-    this->data_.update(1.0, *other.data(), 1.0 );
-    return *this;
-  }
 
 public:
   wrap_t const * data() const{
@@ -159,7 +143,6 @@ public:
   }
 
 private:
-  friend MultiVectorDistributedBase< this_t >;
   wrap_t data_ = {};
 
 };//end class

@@ -74,7 +74,10 @@ public:
   TpetraBlockMVTSQR() = default;
   ~TpetraBlockMVTSQR() = default;
 
-  void computeThinOutOfPlace(matrix_t & A) {
+  void computeThinOutOfPlace(const matrix_t & Ain)
+  {
+    auto & A = const_cast<matrix_t &>(Ain);
+
     auto nVecs	   = A.numVectors();
     auto blockSize = A.data()->getBlockSize();
     createLocalRIfNeeded(nVecs);
@@ -118,7 +121,7 @@ public:
     !containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
-  getCRefRFactor() const {
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(this->localR_->values());
     return *this->Rmat_;
   }
@@ -129,12 +132,12 @@ public:
     containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
     const T &
   >
-  getCRefRFactor() const {
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
     return *this->Rmat_;
   }
 
-  const Q_t & getCRefQFactor() const {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 

@@ -115,12 +115,6 @@ public:
   discrete_time_jacobian_type createDiscreteTimeJacobian() const
   {
     discrete_time_jacobian_type J(3,3);
-    // typedef Eigen::Triplet<scalar_type> Tr;
-    // std::vector<Tr> tripletList;
-    // tripletList.push_back( Tr( 0, 0, 0.) );
-    // tripletList.push_back( Tr( 1, 1, 0.) );
-    // tripletList.push_back( Tr( 2, 2, 0.) );
-    // J.setFromTriplets(tripletList.begin(), tripletList.end());
     return J;
   }
 
@@ -129,11 +123,10 @@ public:
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_residual_type & R,
-                            ::pressio::Norm normKind, 
-                            scalar_type & normVal,
                             Args && ... args) const
   {
-    this->timeDiscreteResidualImpl( step, time, dt, R, normKind, normVal, std::forward<Args>(args)... );
+    this->timeDiscreteResidualImpl( step, time, dt, R,
+      std::forward<Args>(args)... );
   }
 
   template <typename step_t, typename ... Args>
@@ -143,11 +136,12 @@ public:
                             discrete_time_jacobian_type & J,
                             Args && ... states) const
   {
-    this->timeDiscreteJacobianImpl(step, time, dt, J, std::forward<Args>(states)... );
+    this->timeDiscreteJacobianImpl(step, time, dt,
+      J, std::forward<Args>(states)... );
   }
 
 private:
-  void velocity(const state_type & yIn,
+  void computeVelocity(const state_type & yIn,
     const scalar_type & t,
     velocity_type & f) const{
     f = -10. * yIn;
@@ -158,7 +152,7 @@ private:
     return f;
   };
 
-  void jacobian(const state_type & yIn,
+  void computeJacobian(const state_type & yIn,
       const scalar_type & t,
     jacobian_type & JJ) const
   {
@@ -170,29 +164,22 @@ private:
     JJ.setFromTriplets(tripletList.begin(), tripletList.end());
   };
 
-  jacobian_type createJacobian() const{
-    jacobian_type JJ(3,3);
-    return JJ;
-  };
+  // jacobian_type createJacobian() const{
+  //   jacobian_type JJ(3,3);
+  //   return JJ;
+  // };
 
   template <typename step_t, typename state_type>
   void timeDiscreteResidualImpl(const step_t & step,
         const scalar_type & time,
         const scalar_type & dt,
         residual_type & R,
-        ::pressio::Norm normKind,
-        scalar_type & normValue,
         const state_type & yn,
         const state_type & ynm1) const
   {
     auto f =  this->createVelocity();
-    this->velocity(yn, time, f);
+    this->computeVelocity(yn, time, f);
     R = yn - ynm1 - dt * f;
-
-    if (normKind==::pressio::Norm::L2)
-      normValue = R.norm();
-    if (normKind==::pressio::Norm::L1)
-      normValue = R.lpNorm<1>();
   }
 
   template <typename step_t, typename state_t>
@@ -203,7 +190,7 @@ private:
         const state_t & yn,
         const state_t & ynm1) const
   {
-    this->jacobian(yn, time, J);
+    this->computeJacobian(yn, time, J);
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     J.coeffs() *= -dt;
     J.coeffRef(0,0) += one;
@@ -223,7 +210,7 @@ struct Bdf1Solver
 
   using state_t		= ::pressio::containers::Vector<nstate_t>;
   using res_t		= ::pressio::containers::Vector<nveloc_t>;
-  using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
+  using jac_t		= ::pressio::containers::SparseMatrix<njacobian_t>;
 
   using stepper_t = ::pressio::ode::ImplicitStepper<
             ::pressio::ode::implicitmethods::Euler,
@@ -232,9 +219,7 @@ struct Bdf1Solver
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
-  // using nonlin_solver_t = ::pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, sc_t>;
+    stepper_t, lin_solver_t>;
 
   app_t appObj_ = {};
   state_t y_ = {};
@@ -257,7 +242,7 @@ struct Bdf1Solver
 struct CustomBdf1Solver
 {
   using app_t		= MyAppDiscreteTimeAPI;
-  static_assert(::pressio::ode::concepts::discrete_time_system_implicit_stepping<app_t>::value, "");
+  static_assert(::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<app_t>::value, "");
 
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
@@ -266,7 +251,7 @@ struct CustomBdf1Solver
 
   using state_t		= ::pressio::containers::Vector<nstate_t>;
   using res_t		= ::pressio::containers::Vector<nresid_t>;
-  using jac_t		= ::pressio::containers::Matrix<njacobian_t>;
+  using jac_t		= ::pressio::containers::SparseMatrix<njacobian_t>;
 
   using my_custom_order = ::pressio::ode::types::StepperOrder<1>;
   using my_num_states	= ::pressio::ode::types::StepperTotalNumberOfStates<2>;
@@ -278,8 +263,7 @@ struct CustomBdf1Solver
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
   using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, pressio::solvers::nonlinear::DefaultUpdate,
-    lin_solver_t>;
+    stepper_t, lin_solver_t>;
 
   app_t appObj_		= {};
   state_t y_		= {};
@@ -373,9 +357,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerConstDt)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+    EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+    EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+    EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
   }
 }
 
@@ -397,9 +381,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetter)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-    EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-    EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+    EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+    EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+    EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
   }
 }
 
@@ -422,9 +406,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterWithWrongDt)
     S2.integrateForNSteps(N);
     std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-    ASSERT_TRUE( S1.y_[0] != S2.y_[0]);
-    ASSERT_TRUE( S1.y_[1] != S2.y_[1]);
-    ASSERT_TRUE( S1.y_[2] != S2.y_[2]);
+    ASSERT_TRUE( S1.y_(0) != S2.y_(0));
+    ASSERT_TRUE( S1.y_(1) != S2.y_(1));
+    ASSERT_TRUE( S1.y_(2) != S2.y_(2));
   }
 }
 
@@ -445,9 +429,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
   S1.integrateToTimeWithStepSizeManagerLambda(finalTime);
   std::cout << std::setprecision(14) << *S1.y_.data() << "\n";
 
-  EXPECT_DOUBLE_EQ( S1.y_[0] , one );
-  EXPECT_DOUBLE_EQ( S1.y_[1] , two );
-  EXPECT_DOUBLE_EQ( S1.y_[2] , three);
+  EXPECT_DOUBLE_EQ( S1.y_(0) , one );
+  EXPECT_DOUBLE_EQ( S1.y_(1) , two );
+  EXPECT_DOUBLE_EQ( S1.y_(2) , three);
 }
 
 
@@ -475,9 +459,9 @@ TEST(ode_implicit, arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
   S2.integrateForNSteps(nSteps);
   std::cout << std::setprecision(14) << *S2.y_.data() << "\n";
 
-  EXPECT_DOUBLE_EQ( S1.y_[0], S2.y_[0]);
-  EXPECT_DOUBLE_EQ( S1.y_[1], S2.y_[1]);
-  EXPECT_DOUBLE_EQ( S1.y_[2], S2.y_[2]);
+  EXPECT_DOUBLE_EQ( S1.y_(0), S2.y_(0));
+  EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
+  EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
 }
 
 

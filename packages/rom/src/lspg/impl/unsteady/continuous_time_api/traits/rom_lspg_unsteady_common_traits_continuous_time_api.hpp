@@ -55,52 +55,22 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename fom_system_t, typename lspg_state_t, typename enable = void>
-struct ExtractNativeHelper;
-
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,mpl::enable_if_t<
-     !::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-#endif
-  >
-{
-  using fom_native_state_t    = typename fom_system_t::state_type;
-  using fom_native_velocity_t = typename fom_system_t::velocity_type;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_system_t, typename lspg_state_t>
-struct ExtractNativeHelper<
-  fom_system_t, lspg_state_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value
-    >
-  >
-{
-  using fom_native_state_t    = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-  using fom_native_velocity_t = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-};
-#endif
-// ------------------------------------------------------------------------------------
-
-
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
-  typename ...Args>
+  typename decoder_type,
+  typename ud_ops_type
+  >
 struct CommonTraitsContinuousTimeApi
 {
   // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  using scalar_t =
+    typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
 
-  using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_state_t;
-  using fom_native_velocity_t	= typename ExtractNativeHelper<fom_system_t, lspg_state_type>::fom_native_velocity_t;
+  using fom_system_t	      = fom_system_type;
+  using fom_native_state_t    = typename fom_system_type::state_type;
+  using fom_native_velocity_t = typename fom_system_type::velocity_type;
 
   // fom wrapper types
   using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
@@ -108,17 +78,23 @@ struct CommonTraitsContinuousTimeApi
 
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
+  using lspg_native_state_t =
+    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   /* for LSPG, the lspg_residual_type = fom_velocity_type */
   using lspg_residual_t		= fom_velocity_t;
 
-  // verify that args contains a valid decoder type
-  using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-    lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
-		"A valid decoder type must be passed to define a LSPG problem");
-  using decoder_jac_t = typename decoder_t::jacobian_type;
+  // verify that we have a valid decoder type
+  // using ic2 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
+  //   lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
+  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
+  // static_assert(!std::is_void<decoder_t>::value and ic2::value < sizeof... (Args),
+  // "A valid decoder type must be passed to define a LSPG problem");
+  static_assert
+  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
+   "A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
+  using decoder_jac_t = typename decoder_type::jacobian_type;
 
   /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
    * * J is the jacobian of the fom rhs
@@ -127,26 +103,39 @@ struct CommonTraitsContinuousTimeApi
    * where (something) is product of few matrices.
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = containers::MV<>
-   * if phi is Matrix<>, then we have containers::Matrix<>
+   * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
    * not bad assumption since all matrices are left-applied to decoder_jac_t
    */
   using lspg_matrix_t		= decoder_jac_t;
 
-  // if we have an admissible user-defined ops
-  using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
-    decoder_jac_t, lspg_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_lspg_continuous_time, Args...>;
-  using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
+  // // if we have an admissible user-defined ops
+  // using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+  //   decoder_jac_t, lspg_state_t, fom_state_t,
+  //   ::pressio::rom::concepts::custom_ops_lspg_continuous_time, Args...>;
+  // using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void,icUdOps::value,Args...>;
 
   // fom state reconstructor type
   using fom_state_reconstr_t =
-    typename FomStateReconHelper<ud_ops_t>::template type<scalar_t, fom_state_t, decoder_t>;
+    typename FomStateReconHelper<ud_ops_type>::template type<scalar_t,
+							     fom_state_t,
+							     decoder_t>;
 
-  // total num of fom states (i.e. stencil size plus the state at current step) needed
+  // total num of fom states (i.e. stencil size plus the state at current step)
   static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t = ::pressio::rom::ManagerFomStatesStatic<fom_state_t, numStates, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t =
+    ::pressio::rom::ManagerFomStatesStatic<numStates, fom_state_t,
+					   fom_state_reconstr_t, ud_ops_type>;
+
+  // sentinel to tell if we are doing bindings for p4py:
+  // always false if pybind is disabled, otherwise detect from rom state
+  static constexpr bool binding_sentinel =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<lspg_state_t>::value;
+#else
+  false;
+#endif
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl
