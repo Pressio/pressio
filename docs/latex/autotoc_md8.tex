@@ -1,0 +1,40 @@
+todo say that for L\+S\+PG, the adapater is the one for galerkin plus something
+
+For a basic unsteady L\+S\+PG with the {\itshape continuous-\/time} A\+PI we have\+:
+
+ 
+\begin{DoxyCode}
+\textcolor{keyword}{class }AdapterUnsteadyLSPG\{
+\textcolor{keyword}{public}:
+  \textcolor{keyword}{using} scalar\_type =
+  \textcolor{keyword}{using} state\_type =
+  \textcolor{keyword}{using} velocity\_type =
+  \textcolor{keyword}{using} dense\_matrix\_type =
+
+\textcolor{keyword}{public}:
+  velocity\_type createVelocity() \textcolor{keyword}{const};
+  dense\_matrix\_type createApplyJacobianResult(\textcolor{keyword}{const} dense\_matrix\_type &) \textcolor{keyword}{const};
+
+  \textcolor{keywordtype}{void} velocity(state, time, velo) \textcolor{keyword}{const};
+  \textcolor{keywordtype}{void} applyJacobian(state, \textcolor{keyword}{const} dense\_matrix\_type & B, time, dense\_matrix\_type & A) \textcolor{keyword}{const}; \textcolor{comment}{// computes: A
+       = Jac B}
+\};
+\end{DoxyCode}
+ 
+
+If you want a preconditioned problem, then the above class must be extended to add\+:  
+\begin{DoxyCode}
+\textcolor{keyword}{class }AdapterSteadyLSPG
+\{
+  \textcolor{comment}{// everything from above}
+
+  \textcolor{comment}{// for preconditioned problem}
+  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type&, \textcolor{keyword}{const} scalar\_type &t, velocity\_type & maskedObj) \textcolor{keyword}{const};
+  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type&, \textcolor{keyword}{const} scalar\_type &t, dense\_matrix\_type & discreteTimeJ) \textcolor{keyword}{
+      const};
+
+\};
+\end{DoxyCode}
+ 
+
+The discrete-\/time A\+PI for L\+S\+PG is the same as for all methods, and you can see it \href{./md_pages_adapter_apis_adapter_discrete_time_api.html}{\tt here}. 
