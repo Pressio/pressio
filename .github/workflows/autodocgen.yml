@@ -43,8 +43,10 @@ jobs:
           rm -rf html/ xml/ latex/ 
           git branch 
           ls -lh .
-          ../../m.css/documentation/doxygen.py conf.py
-          ls -lh .
+          cd
+          cd m.css/documentation
+          ./doxygen.py ../../pressio/docs/conf.py
+          ls -lh ../../pressio/docs/
       - name: Commit changes
         run: |
           pwd
