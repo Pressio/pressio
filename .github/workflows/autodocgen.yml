@@ -57,10 +57,10 @@ jobs:
           git add xml
           git add latex
           git add .
-          git commit -m "Generated html and xml via github action"  
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          directory: 'pressio/'
+          git commit -m "Generated html and xml via github action" --allow-empty  
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ github.ref }}
+      #     directory: 'pressio/'
