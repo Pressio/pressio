@@ -35,12 +35,12 @@ jobs:
           git clone https://github.com/Pressio/pressio.git
           git clone https://github.com/mosra/m.css.git
           ls -lh
-      # - name: Generate documentation
-      #   run: |
-      #     cd m.css/documentation
-      #     ls -lh ../../pressio/docs/
-      #     ./doxygen.py ../../pressio/docs/conf.py
-      #     ls -lh ../../pressio/docs/
+      - name: Generate documentation
+        run: |
+          cd pressio/docs
+          ls -lh .
+          ../../m.css/documentation/doxygen.py conf.py
+          ls -lh .
       # - name: Commit changes
       #   run: |
       #     pwd
