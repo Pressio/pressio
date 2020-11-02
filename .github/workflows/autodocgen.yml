@@ -30,6 +30,8 @@ jobs:
         run: |
           sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
           sudo apt-get install dvipng
+          pip install --upgrade pip
+          pip install jinja2 Pygments
       - name: Clone repos
         run: |
           git clone -b docsUpdate https://github.com/Pressio/pressio.git
@@ -38,6 +40,7 @@ jobs:
       - name: Generate documentation
         run: |
           cd pressio/docs
+          git branch 
           ls -lh .
           ../../m.css/documentation/doxygen.py conf.py
           ls -lh .
