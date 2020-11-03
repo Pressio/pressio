@@ -6,9 +6,9 @@ name: Auto Generate Docs
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ docsUpdate ]
   pull_request:
-    branches: [ master ]
+    branches: [ docsUpdate ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,36 +20,50 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: Install doxygen
         run: sudo apt-get install doxygen
-      
-      # Runs a single command using the runners shell
-      - name: Generate html
-        run: |
-          sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
-          sudo apt-get install dvipng
-          cd ..
-          git clone https://github.com/mosra/m.css.git
-          cd m.css/documentation
-          pwd
-          ls -lh ../../pressio/docs/
-          ./doxygen.py ../../pressio/docs/conf.py
-          ls -lh ../../pressio/docs/
+      # # Runs a single command using the runners shell
+      # - name: Install TPLs
+      #   run: |
+      #     sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
+      #     sudo apt-get install dvipng
+      #     pip install --upgrade pip
+      #     pip install jinja2 Pygments
+
+      # - name: Clone repos
+      #   run: |
+      #     git clone -b docsUpdate https://github.com/Pressio/pressio.git
+      #     git clone https://github.com/mosra/m.css.git
+      #     ls -lh
+
+      # - name: Generate documentation
+      #   run: |
+      #     cd pressio/docs
+      #     pwd
+      #     rm -rf html/ xml/ latex/
+      #     git branch
+      #     ls -lh .
+      #     cd ../../m.css/documentation
+      #     ./doxygen.py ../../pressio/docs/conf.py
+      #     ls -lh ../../pressio/docs/html/
+
       # - name: Commit changes
       #   run: |
       #     pwd
-      #     cd docs/
+      #     cd pressio/docs/
+      #     ls -lh .
       #     git config --local user.email "action@github.com"
       #     git config --local user.name "GitHub Action"
       #     git add html
-      #     git add html/*.*
       #     git add xml
-      #     git add xml/*.*
-      #     git commit -m "Generated html and xml via github action" -a
-
+      #     git add latex
+      #     git add .
+      #     git commit -m "Generated html and xml via github action" --allow-empty
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
       #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ github.ref }}
+      #     directory: 'pressio/'

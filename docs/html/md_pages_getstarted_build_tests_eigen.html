@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hyperreduction | Pressio|C++</title>
+  <title>Build Tests with Eigen only | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -29,6 +29,7 @@
               <ol>
                 <li><a href="md_pages_getstarted_packages.html">Packages</a></li>
                 <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
+                <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
                 <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
               </ol>
             </li>
@@ -78,9 +79,22 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          Hyperreduction
+          Build Tests with Eigen only
         </h1>
-<ul><li>describe here what it is, why, etc</li><li>link to all subpages</li><li>link to tools repo with scritps for hyper-reduction for exodus, etc, once we have it</li></ul>
+<aside class="m-block m-info"><h3>What does this page describe?</h3><p>This page shows the steps to build the unit and regression tests in <code>pressio</code> depending only on Eigen (and GoogleTest). By the end, you should be able to have pressio built with GoogleTest and Eigen enabled, run the test suite inside.</p></aside><aside class="m-note m-default"><h4>Why can this be useful?</h4><p>If you just want a quick way to get the code up-and-running and ready to play around with, these steps are what you want. Once you have the build ready, you can easily test/play/explore.</p></aside><aside class="m-note m-default"><h4>Disclaimer</h4><p>The guide below does <strong>not</strong> assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to you!</p></aside><section id="autotoc_md18"><h2><a href="#autotoc_md18">Prerequisites</a></h2><p>In order for the steps below to be successful, you need:</p><ul><li>C and C++11 compilers: either Clang or GNU</li><li>CMake &gt;= 3.11.0</li><li>Bash &gt;= 3.2.57</li></ul></section><section id="autotoc_md19"><h2><a href="#autotoc_md19">1. Prep</a></h2><p>Create (or choose) a directory where you want to clone all repos needed and where to put all builds, e,g.:</p><pre class="m-code">mkdir <span class="nv">$HOME</span>/pressio_repos
+mkdir <span class="nv">$HOME</span>/pressio_builds</pre><p>To make things easier and cleaner below, create environment variables to refer to these directories:</p><pre class="m-code"><span class="nb">export</span> <span class="nv">PRESSIO_REPOS</span><span class="o">=</span><span class="nv">$HOME</span>/pressio_repos
+<span class="nb">export</span> <span class="nv">PRESSIO_BUILDS</span><span class="o">=</span><span class="nv">$HOME</span>/pressio_builds</pre><p>Unless you already have them, set the following compilers environment variable:</p><pre class="m-code"><span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>&lt;path-to-your-C-compiler&gt;
+<span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>&lt;path-to-your-CXX-compiler&gt;</pre><p>These are needed because <code>CC</code> and <code>CXX</code> are used to do all the builds.</p></section><section id="autotoc_md20"><h2><a href="#autotoc_md20">2. Cloning</a></h2><p>You need to clone the following repos:</p><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>
+git clone git@github.com:Pressio/pressio-builder.git
+git clone git@github.com:Pressio/pressio.git</pre></section><section id="autotoc_md21"><h2><a href="#autotoc_md21">3. Install TPLs</a></h2><p>To get and installed Eigen and Gtest, you can simply run the command:</p><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio-builder
+./main_tpls.sh -dryrun<span class="o">=</span>no -tpls<span class="o">=</span>eigen,gtest -target-dir<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span></pre></section><section id="autotoc_md22"><h2><a href="#autotoc_md22">4. Build the tests</a></h2><p>From the same directory, i.e. <code>${PRESSIO_REPOS}/pressio-builder</code>, run the command:</p><pre class="m-code">./main_pressio.sh <span class="se">\</span>
+    -dryrun<span class="o">=</span>no <span class="se">\</span>
+    -pressio-src<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio <span class="se">\</span>
+    -target-dir<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span> <span class="se">\</span>
+    -gtest-path<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/gtest/install <span class="se">\</span>
+    -eigen-path<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/eigen/install
+    -cmake-generator-name<span class="o">=</span>default_with_tests</pre></section><section id="autotoc_md23"><h2><a href="#autotoc_md23">5. Running the tests</a></h2><p>To run the tests, you can follow this:</p><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/pressio/build
+ctest</pre><p>To learn more about ctest, you can do <code>ctest --help</code>.</p></section>
       </div>
     </div>
   </div>
@@ -125,7 +139,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
