@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace containers{ namespace expressions{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_t>
 struct SubspanExpr<
   matrix_t,
@@ -141,7 +142,7 @@ public:
     return nativeExprObj_(i, j);
   }
 };
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename matrix_t>

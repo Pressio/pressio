@@ -73,9 +73,6 @@ struct linear_solver_for_newton_raphson<
         )
        )
       >::value
-    // ::pressio::mpl::publicly_inherits_from<
-    //   T, ::pressio::solvers::LinearBase<typename T::matrix_type, T>
-    //   >::value
     >
   > : std::true_type{};
 

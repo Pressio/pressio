@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace containers{ namespace expressions{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_t>
 struct DiagExpr<
   matrix_t,
@@ -126,21 +127,21 @@ public:
     return nativeExprObj_(i);
   }
 
-  // [[deprecated("Use operator() instead.")]] 
+  // [[deprecated("Use operator() instead.")]]
   // ref_t operator[](size_t i)
   // {
   //   assert(i < (size_t)extent_);
   //   return nativeExprObj_(i);
   // }
 
-  // [[deprecated("Use operator() instead.")]] 
+  // [[deprecated("Use operator() instead.")]]
   // const_ref_t operator[](size_t i) const
   // {
   //   assert(i < (size_t)extent_);
   //   return nativeExprObj_(i);
   // }
 };
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename matrix_t>
@@ -240,7 +241,7 @@ public:
   }
 
   // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]] 
+  // [[deprecated("Use operator() instead.")]]
   // mpl::enable_if_t<
   //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
   //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
@@ -252,7 +253,7 @@ public:
   // }
 
   // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]] 
+  // [[deprecated("Use operator() instead.")]]
   // mpl::enable_if_t<
   //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
   //   const_ref_t
@@ -354,7 +355,7 @@ public:
   }
 
   // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]] 
+  // [[deprecated("Use operator() instead.")]]
   // mpl::enable_if_t<
   //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
   //   ref_t
@@ -364,7 +365,7 @@ public:
   //   return (*this)(i);
   // }
 
-  // [[deprecated("Use operator() instead.")]]   
+  // [[deprecated("Use operator() instead.")]]
   // const_ref_t operator()(size_t i) const
   // {
   //   return (*this)(i);

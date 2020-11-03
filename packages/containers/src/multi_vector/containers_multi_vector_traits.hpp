@@ -91,6 +91,7 @@ struct traits<
 };
 
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 //*******************************
 // for eigen dynamic multivector
 //*******************************
@@ -123,7 +124,7 @@ struct traits<
 
   static constexpr bool is_admissible_for_expression_templates = true;
 };
-
+#endif
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS

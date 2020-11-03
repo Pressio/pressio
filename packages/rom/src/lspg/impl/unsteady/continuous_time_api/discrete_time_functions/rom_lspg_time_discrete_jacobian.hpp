@@ -113,8 +113,6 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
     }
   }
 }
-#endif
-
 
 template <
   typename stepper_tag,
@@ -124,11 +122,7 @@ template <
   typename hyp_ind_t
   >
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<lspg_matrix_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  or ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
-#endif
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type	& dt,
@@ -151,13 +145,49 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
     }
   }
 }
+#endif
 
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <
+  typename stepper_tag,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type,
+  typename hyp_ind_t
+  >
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<lspg_matrix_type>::value or
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
+		       const decoder_jac_type & phi,
+		       const hyp_ind_t & hypIndices)
+{
+  // hypindices has same extent as sample mesh and contains
+  // indices of the entries in the state that correspond to
+  // the sample mesh points
+  assert(jphi.extent(0) == hypIndices.extent(0));
+
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
+  const auto nRows = jphi.extent(0);
+  const auto nCols = jphi.extent(1);
+  for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+  {
+    const auto rowInd = hypIndices(i);
+    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+      jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
+    }
+  }
+}
+#endif
 
 /*
- * for EIGEN or Kokkos, with Euler
+ * for EIGEN or Kokkos, with Euler and no hyper-reduction
  * only if jphi, phi are of same size
 */
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <
   typename stepper_tag,
   typename lspg_matrix_type,
@@ -165,17 +195,13 @@ template <
   typename decoder_jac_type
 >
 ::pressio::mpl::enable_if_t<
-  (containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
-   containers::predicates::is_multi_vector_wrapper_eigen<decoder_jac_type>::value)
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  or
-  (containers::predicates::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
-   containers::predicates::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value)
-#endif
+  containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
 >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type	& dt,
-		       const decoder_jac_type & phi){
+		       const decoder_jac_type & phi)
+{
 
   assert( jphi.numVectors() == phi.numVectors() );
   assert( jphi.extent(0) == phi.extent(0) );
@@ -187,11 +213,38 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
   ::pressio::ops::update(jphi, prefactor, phi, one);
 }
+#endif
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <
+  typename stepper_tag,
+  typename lspg_matrix_type,
+  typename scalar_type,
+  typename decoder_jac_type
+>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
+  containers::predicates::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value
+>
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
+		       const decoder_jac_type & phi)
+{
+
+  assert( jphi.numVectors() == phi.numVectors() );
+  assert( jphi.extent(0) == phi.extent(0) );
+
+  // prefactor (f) multiplying f*dt*J*phi
+  const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
+
+  // jphi = phi + prefactor*dt*jphi
+  constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+  ::pressio::ops::update(jphi, prefactor, phi, one);
+}
+#endif
 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-
 
 /* for trilinos data structures, support hyper-reduction too.
  * When we have hyper-reduction and we need to calculate the

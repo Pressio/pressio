@@ -57,8 +57,8 @@ class EigenDirect
   static_assert
   ( ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<MatrixT>::value or
     ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<MatrixT>::value or
-  		 ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value,
-  		 "Eigen direct solver needs a matrix type = wrapper of an eigen matrix");
+    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<MatrixT>::value,
+    "Eigen direct solver needs a matrix type = wrapper of an eigen matrix");
 
 public:
   using matrix_type	= MatrixT;
@@ -68,11 +68,13 @@ public:
   using solver_traits   = linear::details::traits<solver_tag>;
   using native_solver_t = typename solver_traits::template eigen_solver_type<native_mat_t>;
 
-  static_assert( solver_traits::eigen_enabled == true,
-		 "the native solver must be from Eigen to use in EigenDirect");
+  static_assert
+  ( solver_traits::eigen_enabled == true,
+    "the native solver must be from Eigen to use in EigenDirect");
 
-  static_assert( solver_traits::direct == true,
-		 "the native eigen solver must be direct to use in EigenDirect");
+  static_assert
+  ( solver_traits::direct == true,
+    "the native eigen solver must be direct to use in EigenDirect");
 
 public:
   EigenDirect() = default;

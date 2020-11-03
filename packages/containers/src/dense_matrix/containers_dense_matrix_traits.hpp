@@ -87,6 +87,7 @@ struct traits<
 };
 
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 //***********************************
 // eigen dense matrix
 //***********************************
@@ -124,6 +125,7 @@ struct traits<
   using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
 };
+#endif //PRESSIO_ENABLE_TPL_EIGEN
 
 
 //**********************************

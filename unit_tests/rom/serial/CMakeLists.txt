@@ -1,6 +1,7 @@
 
-add_serial_utest(rom_lspg_continuous_time_api_meta rom_lspg_continuous_time_api_meta.cc)
-add_serial_utest(rom_wls_continuous_time_api_meta rom_wls_continuous_time_api_meta.cc)
-
-add_serial_utest(rom_lspg_discrete_time_api_meta rom_lspg_discrete_time_api_meta.cc)
-add_serial_utest(rom_lspg_discrete_time_api_stepper rom_lspg_discrete_time_api_stepper.cc)
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  add_serial_utest(rom_lspg_continuous_time_api_meta rom_lspg_continuous_time_api_meta.cc)
+  add_serial_utest(rom_wls_continuous_time_api_meta  rom_wls_continuous_time_api_meta.cc)
+  add_serial_utest(rom_lspg_discrete_time_api_meta rom_lspg_discrete_time_api_meta.cc)
+  add_serial_utest(rom_lspg_discrete_time_api_stepper rom_lspg_discrete_time_api_stepper.cc)
+endif()

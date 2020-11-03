@@ -51,6 +51,20 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename jacobian_type, typename scalar_type>
+void discrete_time_jacobian(jacobian_type & jac,
+			    const scalar_type & dt,
+			    ::pressio::ode::implicitmethods::Euler)
+{
+  /* this is here for compilation purposes only when only pybind11 is enabled
+     otherwise it would not compile.
+     This should never be called. if it is, it means something is wrong*/
+  assert(1==0);
+}
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   (containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value or
@@ -66,11 +80,10 @@ discrete_time_jacobian(jacobian_type & jac,
   ::pressio::ops::addToDiagonal(jac, cn);
 }
 
-
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
->
+  >
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::BDF2)
@@ -81,6 +94,7 @@ discrete_time_jacobian(jacobian_type & jac,
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cn);
 }
+#endif
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename jacobian_type, typename scalar_type>

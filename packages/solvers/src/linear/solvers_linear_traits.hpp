@@ -49,6 +49,7 @@
 #ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_
 #define SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include <Eigen/Core>
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Householder>
@@ -56,63 +57,81 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>
 #include <Eigen/OrderingMethods>
+#endif
 
 namespace pressio{ namespace solvers{ namespace linear { namespace details {
 
-// Solvers traits
 template <typename T>
 struct traits {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = false;
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   static constexpr bool eigen_enabled = false;
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
   static constexpr bool kokkos_enabled = false;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::iterative::CG> {
+struct traits<::pressio::solvers::linear::iterative::CG>
+{
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
-  >
+    >
   using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
-  static constexpr bool direct        = false;
-  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::iterative::Bicgstab> {
+struct traits<::pressio::solvers::linear::iterative::Bicgstab>
+{
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
-  >
+    >
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
-  static constexpr bool direct        = false;
-  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::iterative::LSCG> {
+struct traits<::pressio::solvers::linear::iterative::LSCG>
+{
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
     typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
   >
   using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
 
-  static constexpr bool direct        = false;
-  static constexpr bool iterative     = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
+struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR>
+{
 
+  static constexpr bool iterative = false;
+  static constexpr bool direct = true;
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   /* if matrix is dense, use Eigen::ColPivHouseholderQR.
    * if the native matrix is sparse, then use Eigen::SparseQR.
    * to use SparseQR, the matrix has to be:
@@ -131,81 +150,95 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR> {
       Eigen::ColPivHouseholderQR<MatrixT>
       >::type;
 
-  static constexpr bool iterative = false;
-  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::direct::HouseholderQR> {
+struct traits<::pressio::solvers::linear::direct::HouseholderQR>
+{
+  static constexpr bool iterative = false;
+  static constexpr bool direct = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <typename MatrixT>
   using eigen_solver_type = Eigen::HouseholderQR<MatrixT>;
 
-  static constexpr bool iterative = false;
-  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::direct::PartialPivLU> {
+struct traits<::pressio::solvers::linear::direct::PartialPivLU>
+{
+  static constexpr bool iterative = false;
+  static constexpr bool direct = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <typename MatrixT>
   using eigen_solver_type = Eigen::PartialPivLU<MatrixT>;
 
-  static constexpr bool iterative = false;
-  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#endif
 };
 
 template <>
-struct traits<::pressio::solvers::linear::direct::potrsL> {
+struct traits<::pressio::solvers::linear::direct::potrsL>
+{
+  static constexpr bool iterative = false;
+  static constexpr bool direct = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <typename MatrixT>
   using eigen_solver_type = Eigen::LLT<MatrixT, Eigen::Lower>;
-
-  static constexpr bool iterative = false;
-  static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
+#endif
+
 #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
   static constexpr bool kokkos_enabled = true;
 #endif
 };
 
-
 template <>
-struct traits<::pressio::solvers::linear::direct::potrsU> {
+struct traits<::pressio::solvers::linear::direct::potrsU>
+{
+  static constexpr bool direct = true;
+  static constexpr bool eigen_enabled = true;
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <typename MatrixT>
   using eigen_solver_type = Eigen::LLT<MatrixT, Eigen::Upper>;
+#endif
 
-  static constexpr bool direct = true;
-  static constexpr bool eigen_enabled = true;
 #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
   static constexpr bool kokkos_enabled = true;
 #endif
 };
 
+template <>
+struct traits<::pressio::solvers::linear::direct::getrs>
+{
+  static constexpr bool direct = true;
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+  static constexpr bool eigen_enabled = false;
+#endif
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
-template <>
-struct traits<::pressio::solvers::linear::direct::getrs> {
-
-  static constexpr bool direct = true;
-  // for now, disable eigen, enable it later
-  static constexpr bool eigen_enabled = false;
   static constexpr bool kokkos_enabled = true;
-};
-
-template <>
-struct traits<::pressio::solvers::linear::direct::geqrf> {
-
-  static constexpr bool direct = true;
-  // for now, disable eigen, enable it later
-  static constexpr bool eigen_enabled = false;
-  static constexpr bool kokkos_enabled = true;
-};
 #endif
+};
+
+template <>
+struct traits<::pressio::solvers::linear::direct::geqrf>
+{
+  static constexpr bool direct = true;
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+  static constexpr bool eigen_enabled = false;
+#endif
+#if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
+  static constexpr bool kokkos_enabled = true;
+#endif
+};
 
 }}}}//end namespace pressio::solvers::linear::details
 #endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_

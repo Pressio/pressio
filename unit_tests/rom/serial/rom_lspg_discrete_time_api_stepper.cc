@@ -4,7 +4,6 @@
 
 struct ValidApp
 {
-
   const int32_t numDof_ = 15;
 
   using scalar_type	= double;

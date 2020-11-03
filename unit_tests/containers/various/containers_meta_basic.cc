@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "pressio_containers.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 TEST(containers_meta_basic, isTeuchosRCP){
   using namespace pressio;
 
@@ -20,7 +19,6 @@ TEST(containers_meta_basic, isTeuchosRCP){
   EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t1>::value, false);
   EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t2>::value, false);
   EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t3>::value, false);
-  EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t4>::value, true); 
-  EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t5>::value, true); 
+  EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t4>::value, true);
+  EXPECT_EQ( containers::predicates::is_teuchos_rcp<foo_t5>::value, true);
 }
-#endif

@@ -50,9 +50,11 @@
 #define CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 
 /* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */ 
+concrete classes depend on traits which depend on predicates. */
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_eigen.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_pybind.hpp"
 #endif
@@ -68,12 +70,14 @@ concrete classes depend on traits which depend on predicates. */
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper_arbitrary.hpp"
 #include "./wrapper_detection_predicates/containers_is_vector_wrapper.hpp"
 
-// traits 
+// traits
 #include "./containers_vector_traits.hpp"
 
 // concrete types
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
 #include "./concrete/containers_vector_sharedmem_eigen_static.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "./concrete/containers_vector_sharedmem_pybind11.hpp"
 #endif

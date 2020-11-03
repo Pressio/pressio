@@ -69,9 +69,10 @@ template<typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::geqrf, MatrixT>
 {
 public:
-  static_assert( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
-  		 ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
-  		 "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
+  static_assert
+    ( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
+      ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
+      "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
   using solver_tag	= ::pressio::solvers::linear::direct::geqrf;
   using this_t          = KokkosDirect<solver_tag, MatrixT>;

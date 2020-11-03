@@ -54,17 +54,25 @@ namespace pressio{ namespace ops{ namespace concepts {
 template<typename T, typename enable = void>
 struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename T>
 struct sharedmem_host_accessible_dense_matrix_wrapper<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
-#ifdef PRESSIO_ENABLE_TPLS_TRILINOS
-    or ::pressio::containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value
-#endif
    >
   > : std::true_type{};
+#endif
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct sharedmem_host_accessible_dense_matrix_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value
+   >
+  > : std::true_type{};
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename T>

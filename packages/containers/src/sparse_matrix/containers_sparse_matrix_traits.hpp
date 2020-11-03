@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace containers{ namespace details{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 //***********************************
 // eigen sparse matrix
 //***********************************
@@ -86,6 +87,7 @@ struct traits<
   static constexpr bool is_row_major = wrapped_type::IsRowMajor;
   static constexpr bool is_col_major = !is_row_major;
 };
+#endif //PRESSIO_ENABLE_TPL_EIGEN
 
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_SPARSE_MATRIX_CONTAINERS_SPARSE_MATRIX_TRAITS_HPP_

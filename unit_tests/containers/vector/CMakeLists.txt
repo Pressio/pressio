@@ -4,19 +4,12 @@ set(exeRootName containers_vector)
 #############
 ### EIGEN ###
 #############
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_dynamic_class.cc)
-add_serial_utest(${exeRootName}_eigen_dynamic_class ${SRC1})
-
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_static_class.cc)
-add_serial_utest(${exeRootName}_eigen_static_class ${SRC1})
-
-# ################
-# ### PYBIND11 ###
-# ################
-# if(PRESSIO_ENABLE_TPL_PYBIND11)
-#   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/pybind_class.cc)
-#   add_serial_utest(${exeRootName}_pybind11_class ${SRC})
-# endif()
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_dynamic_class.cc)
+  add_serial_utest(${exeRootName}_eigen_dynamic_class ${SRC1})
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/eigen_static_class.cc)
+  add_serial_utest(${exeRootName}_eigen_static_class ${SRC1})
+endif()
 
 ##############
 ### KOKKOS ###

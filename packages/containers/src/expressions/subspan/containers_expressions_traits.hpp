@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace containers{ namespace details{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
@@ -107,7 +108,7 @@ struct traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 };
-
+#endif
 
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS

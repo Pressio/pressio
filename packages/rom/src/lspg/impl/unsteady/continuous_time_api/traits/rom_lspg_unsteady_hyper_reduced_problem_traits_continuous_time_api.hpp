@@ -61,7 +61,7 @@ namespace details{
 /* remember that hype-reduction does not necessarily need the sample_to_stencil.
    For Trilinos data structures, we can handle states and residuals that
    with different extents by default since we can use the underlying data maps.
-   For shared-mem FOM using, e.g., eigen, or for pressio4py, sample_to_stencil
+   For shared-mem FOM sample_to_stencil
    is needed because we can use it to easily enforse the hyp-red ourselves.
    SO sample_to_stencil can be void in the formar scenario.
  */

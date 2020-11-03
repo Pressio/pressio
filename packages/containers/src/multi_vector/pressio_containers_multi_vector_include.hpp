@@ -50,9 +50,11 @@
 #define CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
 
 /* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */ 
+concrete classes depend on traits which depend on predicates. */
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_eigen.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_epetra.hpp"
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_tpetra_block.hpp"
@@ -68,7 +70,9 @@ concrete classes depend on traits which depend on predicates. */
 #include "./containers_multi_vector_traits.hpp"
 
 // concrete types
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./concrete/containers_multi_vector_sharedmem_eigen_dynamic.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./concrete/containers_multi_vector_distributed_epetra.hpp"
 #include "./concrete/containers_multi_vector_distributed_tpetra_block.hpp"

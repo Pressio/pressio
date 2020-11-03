@@ -49,8 +49,10 @@
 #ifndef SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
 #define SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_SOLVER_SELECTOR_IMPL_HPP_
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "solvers_linear_eigen_direct_impl.hpp"
 #include "solvers_linear_eigen_iterative_impl.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "solvers_linear_kokkos_direct_geqrf_impl.hpp"
 #include "solvers_linear_kokkos_direct_getrs_impl.hpp"
@@ -65,6 +67,7 @@ struct LinearSolverSelector{
   using type = void;
 };
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename tag, typename MatrixT>
 struct LinearSolverSelector<
   tag, MatrixT,
@@ -95,7 +98,7 @@ struct LinearSolverSelector<
   using solver_traits   = linear::details::traits<tag>;
   using type = ::pressio::solvers::linear::impl::EigenDirect<tag, MatrixT>;
 };
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename tag, typename MatrixT>

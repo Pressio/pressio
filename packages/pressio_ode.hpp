@@ -123,7 +123,6 @@
 #include "ode/src/implicit/standard_policies/ode_implicit_jacobian_standard_policy.hpp"
 #include "ode/src/implicit/ode_implicit_stepper.hpp"
 
-
 // --------------
 // integrators
 // --------------

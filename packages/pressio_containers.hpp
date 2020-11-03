@@ -51,20 +51,20 @@
 
 /*************** IMPORTANT **************
 The order below matters because this is how we make sure
-headers are included in (and classes found) in the proper order.
+headers are included (and classes found) in the proper order.
 ****************************************/
 
-// dependencies
+// pressio dependencies
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
 
-// general headers
+// generic
 #include "containers/src/containers_ConfigDefs.hpp"
 #include "containers/src/containers_fwd.hpp"
 #include "containers/src/containers_wrapped_types_enum.hpp"
 #include "containers/src/containers_shared_traits.hpp"
 
-// some common predicates
+// common predicates
 #include "containers/src/predicates/typedefs/containers_has_communicator_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_data_map_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_global_ordinal_typedef.hpp"
@@ -85,7 +85,9 @@ headers are included in (and classes found) in the proper order.
 #endif
 
 //*** vector ****
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_vector.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/native_types_detection/containers_native_kokkos_vector.hpp"
 #endif
@@ -104,8 +106,10 @@ headers are included in (and classes found) in the proper order.
 #include "containers/src/predicates/native_types_detection/containers_native_epetra_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_teuchos_dense_matrix.hpp"
 #endif
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_sparse_matrix.hpp"
+#endif
 
 //*** multi vector ****
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -116,16 +120,17 @@ headers are included in (and classes found) in the proper order.
 #include "containers/src/predicates/native_types_detection/containers_native_tpetra_block_multi_vector.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_tpetra_multi_vector.hpp"
 #endif
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "containers/src/predicates/native_types_detection/containers_native_eigen_multi_vector.hpp"
+#endif
 
 // arbitrary must be at end because they depend on the above
 #include "containers/src/predicates/native_types_detection/containers_native_arbitrary_vector.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_arbitrary_dense_matrix.hpp"
 #include "containers/src/predicates/native_types_detection/containers_native_arbitrary_multi_vector.hpp"
 
-
 //-------------------------------------------
-// includes actual Vector/Matrix/MV classes
+// include actual Vector/Matrix/MV classes
 //-------------------------------------------
 #include "containers/src/vector/pressio_containers_vector_include.hpp"
 #include "containers/src/dense_matrix/pressio_containers_dense_matrix_include.hpp"

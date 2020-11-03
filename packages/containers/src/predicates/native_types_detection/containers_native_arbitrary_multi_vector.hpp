@@ -74,6 +74,7 @@ namespace pressio{ namespace containers{ namespace predicates {
 template <typename T, typename enable = void>
 struct is_admissible_as_multi_vector_arbitrary : std::false_type
 {
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
   // an Eigen row major matrix is admissible for an arbitrary 
   static_assert
   (!containers::predicates::is_dense_row_major_matrix_eigen<T>::value,
@@ -87,6 +88,7 @@ struct is_admissible_as_multi_vector_arbitrary : std::false_type
   static_assert
   (!containers::predicates::is_vector_eigen<T>::value,
    "You cannot wrap an Eigen vector as a pressio::containers::MultiVector<>.");
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   static_assert
@@ -113,10 +115,13 @@ template <typename T>
 struct is_admissible_as_multi_vector_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value and
-    !containers::predicates::is_dense_row_major_matrix_eigen<T>::value and
-    !containers::predicates::is_sparse_matrix_eigen<T>::value and
-    !containers::predicates::is_vector_eigen<T>::value
+    !std::is_void<T>::value
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    and !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
+    and !containers::predicates::is_dense_row_major_matrix_eigen<T>::value
+    and !containers::predicates::is_sparse_matrix_eigen<T>::value
+    and !containers::predicates::is_vector_eigen<T>::value
+#endif    
     //
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
     and !containers::predicates::is_multi_vector_epetra<T>::value
