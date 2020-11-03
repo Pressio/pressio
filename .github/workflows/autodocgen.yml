@@ -24,29 +24,32 @@ jobs:
 
       - name: Install doxygen
         run: sudo apt-get install doxygen
-      
-      # Runs a single command using the runners shell
-      - name: Install TPLs
-        run: |
-          sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
-          sudo apt-get install dvipng
-          pip install --upgrade pip
-          pip install jinja2 Pygments
-      - name: Clone repos
-        run: |
-          git clone -b docsUpdate https://github.com/Pressio/pressio.git
-          git clone https://github.com/mosra/m.css.git
-          ls -lh
-      - name: Generate documentation
-        run: |
-          cd pressio/docs
-          pwd
-          rm -rf html/ xml/ latex/ 
-          git branch 
-          ls -lh .
-          cd ../../m.css/documentation
-          ./doxygen.py ../../pressio/docs/conf.py
-          ls -lh ../../pressio/docs/html/
+
+      # # Runs a single command using the runners shell
+      # - name: Install TPLs
+      #   run: |
+      #     sudo apt-get install texlive-fonts-recommended texlive-fonts-extra
+      #     sudo apt-get install dvipng
+      #     pip install --upgrade pip
+      #     pip install jinja2 Pygments
+
+      # - name: Clone repos
+      #   run: |
+      #     git clone -b docsUpdate https://github.com/Pressio/pressio.git
+      #     git clone https://github.com/mosra/m.css.git
+      #     ls -lh
+
+      # - name: Generate documentation
+      #   run: |
+      #     cd pressio/docs
+      #     pwd
+      #     rm -rf html/ xml/ latex/
+      #     git branch
+      #     ls -lh .
+      #     cd ../../m.css/documentation
+      #     ./doxygen.py ../../pressio/docs/conf.py
+      #     ls -lh ../../pressio/docs/html/
+
       # - name: Commit changes
       #   run: |
       #     pwd
@@ -58,7 +61,7 @@ jobs:
       #     git add xml
       #     git add latex
       #     git add .
-      #     git commit -m "Generated html and xml via github action" --allow-empty  
+      #     git commit -m "Generated html and xml via github action" --allow-empty
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
       #   with:
