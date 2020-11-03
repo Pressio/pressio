@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// rom_lspg_unsteady_problem_solve_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,45 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_INCLUDE_HPP_
-#define PRESSIO_ROM_LSPG_INCLUDE_HPP_
+#ifndef ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#define ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 
-/*
-   this header includes everything needed for LSPG.
-   NOTE that the order below matters!
-   Includes are ordered in a logical way and this
-   allows us to avoid ending up with a tangled system.
-*/
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-// need all of the dependent packages
-#include "pressio_mpl.hpp"
-#include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
-#include "pressio_ops.hpp"
-#include "pressio_qr.hpp"
-#include "pressio_svd.hpp"
-#include "pressio_optimizers.hpp"
-#include "pressio_solvers.hpp"
-#include "pressio_ode.hpp"
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-// common classes for rom
-#include "rom/src/pressio_rom_common.hpp"
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
 
-// lspg classes
-#include "rom/src/lspg/impl/rom_lspg_problem_members.hpp"
-#include "rom/src/lspg/impl/steady/rom_compose_steady_lspg_impl.hpp"
-#include "rom/src/lspg/impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
-#include "rom/src/lspg/rom_default_lspg.hpp"
-#include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
-#include "rom/src/lspg/rom_masked_lspg.hpp"
-#include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
-#include "rom/src/lspg/rom_lspg_problem_solve_functions.hpp"
-#endif
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+
+  ::pressio::ode::advanceToTargetTime
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+}// end namespace lspg::impl
+
+}}}//end namespace pressio::rom::lspg::impl
+#endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_

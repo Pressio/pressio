@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;
   solver_t solver(maskSize, romSize, checkStr);
-  solver.solve(lspgProblem.systemRef(), romState);
+  pressio::rom::lspg::solveSteady(lspgProblem, solver, romState);
 
   std::cout << checkStr <<  std::endl;
   return 0;

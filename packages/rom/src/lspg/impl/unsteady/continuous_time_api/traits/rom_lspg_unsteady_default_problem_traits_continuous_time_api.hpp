@@ -72,7 +72,9 @@ struct traits<
     >
   >
 {
-  // pick the common types holder
+  static const bool is_steady_lspg = false;
+  static const bool is_unsteady_lspg = true;
+
   using common_types_t =
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;

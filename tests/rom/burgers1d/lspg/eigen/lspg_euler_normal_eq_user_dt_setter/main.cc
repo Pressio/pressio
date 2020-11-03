@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
   setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 
   // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, 10, solver, setter);
+  pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, 10, solver, setter);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);

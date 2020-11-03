@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_n_steps_explicit.hpp
+// rom_lspg_unsteady_problem_solve_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,46 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
-#define ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#ifndef ROM_GALERKIN_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
+#define ROM_GALERKIN_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace rom{ namespace galerkin{
 
-// /* these are here just to make it easier for the users
-//    so that they pass a rom problem and don't need to
-//    worry about knowing that they need to get the stepper
-//    and pass that to the ode integrators*/
+/* these are here just to make it easier for the users
+   so that they pass a rom problem and don't need to
+   worry about knowing that they need to get the stepper
+   and pass that to the ode integrators */
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceNSteps(rom_problem_type & problem,
-// 		   Args && ...args)
-// {
-//   ::pressio::ode::advanceNSteps
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+/************************************
+	      UNSTEADY
+***********************************/
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceToTargetTime(rom_problem_type & problem,
-// 			 Args && ...args)
-// {
-//   ::pressio::ode::advanceToTargetTime
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+/* fixed number of steps */
+template<typename rom_problem_type, typename ...Args>
+void advanceNSteps
+(rom_problem_type & problem, Args && ...args)
+{
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceToTargetTimeWithTimeStepRecovery(rom_problem_type & problem,
-// 					     Args && ...args)
-// {
-//   ::pressio::ode::advanceToTargetTime
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+/* to target time */
+template<typename rom_problem_type, typename ...Args>
+void advanceToTargetTime
+(rom_problem_type & problem, Args && ...args)
+{
+  ::pressio::ode::advanceToTargetTime
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
 
-}}//end namespace pressio::rom
+/* to target time with step recovery */
+template<typename rom_problem_type, typename ...Args>
+void advanceToTargetTimeWithTimeStepRecovery
+(rom_problem_type & problem, Args && ...args)
+{
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+}}}//end namespace pressio::rom::galerkin
 #endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_

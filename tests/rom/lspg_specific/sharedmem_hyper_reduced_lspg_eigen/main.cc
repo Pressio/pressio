@@ -253,8 +253,7 @@ int main(int argc, char *argv[])
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
 
-  pressio::ode::advanceNSteps(problem.stepperRef(),
-			      romState, 0.0, 0.2, 1, solver);
+  pressio::rom::lspg::solveNSequentialMinimizations(problem,romState, 0.0, 0.2, 1, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

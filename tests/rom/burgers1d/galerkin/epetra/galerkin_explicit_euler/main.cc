@@ -70,7 +70,7 @@ const std::vector<double> bdf1Sol
 
   scalar_t fint = 35;
   auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
-  pressio::ode::advanceNSteps(galerkinProb.stepperRef(), yROM, 0.0, dt, nSteps);
+  pressio::rom::galerkin::advanceNSteps(galerkinProb, yROM, 0.0, dt, nSteps);
 
   std::cout << *yROM.data() << std::endl;
 
