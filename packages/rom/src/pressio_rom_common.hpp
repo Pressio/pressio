@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// pressio_rom_common.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_COMMON_HPP_
-#define PRESSIO_ROM_COMMON_HPP_
+#ifndef ROM_PRESSIO_ROM_COMMON_HPP_
+#define ROM_PRESSIO_ROM_COMMON_HPP_
 
 /*
    NOTE that the order below matters!
@@ -80,4 +80,4 @@
 // decorators
 #include "./decorators/rom_decorators.hpp"
 
-#endif
+#endif  // ROM_PRESSIO_ROM_COMMON_HPP_

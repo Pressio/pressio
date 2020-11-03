@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_solve_functions.hpp
+// rom_galerkin_problem_advance_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
-#define ROM_GALERKIN_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
+#ifndef ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_
+#define ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
@@ -88,4 +88,4 @@ void advanceToTargetTimeWithTimeStepRecovery
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#endif  // ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_

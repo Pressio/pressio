@@ -1,0 +1,114 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+// rom_lspg_create_solver_functions.hpp
+//                     		  Pressio
+//                             Copyright 2019
+//    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
+
+#ifndef ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
+#define ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
+
+
+namespace pressio{ namespace rom{ namespace lspg{
+
+namespace impl{
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+  typename rom_problem_t::system_t
+  >
+_extractSystemOrStepper(rom_problem_t & problem)
+{
+  return problem.systemRef();
+}
+
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_unsteady_lspg,
+  typename rom_problem_t::stepper_t
+  >
+_extractSystemOrStepper(rom_problem_t & problem)
+{
+  return problem.stepperRef();
+}
+}//end namespace impl
+
+
+/* these are here for two reasons:
+   (1) to check that a solver is compatible with a lspg problem
+   (2) to allow users to pass a rom problem and don't need to
+   worry about knowing that they need to extract the stepper
+   or the system object
+   (3) potentially, we could create functions to pick the
+   best solver ourselves */
+
+/* ========================
+	Gauss-Newton
+   ========================*/
+template<typename rom_problem_t, typename ...Args>
+auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
+{
+  return ::pressio::solvers::nonlinear::createGaussNewton
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
+}
+
+template<typename rom_problem_t, typename ...Args>
+auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
+{
+  return ::pressio::solvers::nonlinear::createGaussNewtonQR
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
+}
+
+/* ========================
+      LevenbergMarquardt
+   ========================*/
+template<typename rom_problem_t, typename ...Args>
+auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args && ... args)
+{
+  return ::pressio::solvers::nonlinear::createLevenbergMarquardt
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
+}
+
+}}}//end namespace pressio::rom::lspg
+#endif  // ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_

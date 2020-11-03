@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_FOM_STATE_HPP_
+#define ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_FOM_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
@@ -63,4 +63,4 @@ struct fom_state<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#endif  // ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_FOM_STATE_HPP_

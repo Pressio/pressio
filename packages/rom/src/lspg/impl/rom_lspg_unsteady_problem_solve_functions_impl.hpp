@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_solve_functions.hpp
+// rom_lspg_unsteady_problem_solve_functions_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#define ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -87,4 +87,4 @@ void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
 }// end namespace lspg::impl
 
 }}}//end namespace pressio::rom::lspg::impl
-#endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#endif  // ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_

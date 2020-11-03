@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_decoders.hpp
+// rom_galerkin_create_solver_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,27 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_DECODERS_HPP_
-#define ROM_DECODER_ROM_DECODERS_HPP_
+#ifndef ROM_GALERKIN_ROM_GALERKIN_CREATE_SOLVER_FUNCTIONS_HPP_
+#define ROM_GALERKIN_ROM_GALERKIN_CREATE_SOLVER_FUNCTIONS_HPP_
 
-#include "./rom_linear_decoder.hpp"
+namespace pressio{ namespace rom{ namespace galerkin{
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./rom_py_decoder.hpp"
-#endif
+/* these are here for two reasons:
+   (1) to check that a solver is compatible with a galerkin problem
+   (2) to allow users to pass a rom problem and don't need to
+   worry about knowing that they need to extract the stepper
+   (3) potentially, we could create functions to pick the
+   best solver ourselves */
 
-#endif  // ROM_DECODER_ROM_DECODERS_HPP_
+/* ========================
+    createNewtonRaphson
+   ========================*/
+template<typename rom_problem_t, typename ...Args>
+auto createNewtonRaphsonSolver(rom_problem_t & problem, Args && ... args)
+{
+  return ::pressio::solvers::nonlinear::createNewtonRaphson
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+}}}//end namespace pressio::rom::lspg
+#endif  // ROM_GALERKIN_ROM_GALERKIN_CREATE_SOLVER_FUNCTIONS_HPP_

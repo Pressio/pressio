@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// pressio_rom_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -78,5 +78,7 @@
 #include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
 #include "rom/src/lspg/rom_masked_lspg.hpp"
 #include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
+#include "rom/src/lspg/rom_lspg_create_solver_functions.hpp"
 #include "rom/src/lspg/rom_lspg_problem_solve_functions.hpp"
+
 #endif

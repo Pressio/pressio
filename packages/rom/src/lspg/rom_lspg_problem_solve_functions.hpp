@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_solve_functions.hpp
+// rom_lspg_problem_solve_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
-#define ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_HPP_
+#ifndef ROM_LSPG_ROM_LSPG_PROBLEM_SOLVE_FUNCTIONS_HPP_
+#define ROM_LSPG_ROM_LSPG_PROBLEM_SOLVE_FUNCTIONS_HPP_
 
 #include "./impl/rom_lspg_unsteady_problem_solve_functions_impl.hpp"
 
@@ -180,4 +180,4 @@ void solveSequentialResidualMinimizationProblemToTargetTimeWithRecovery
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#endif  // ROM_LSPG_ROM_LSPG_PROBLEM_SOLVE_FUNCTIONS_HPP_

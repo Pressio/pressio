@@ -240,13 +240,10 @@ struct EulerLSPGWithResidualApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(
-              lspgProblem.stepperRef(), yROM_, linSolverObj, myOps2);
-
+    auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
-
-    // integrate in time
+    // solve
     pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state

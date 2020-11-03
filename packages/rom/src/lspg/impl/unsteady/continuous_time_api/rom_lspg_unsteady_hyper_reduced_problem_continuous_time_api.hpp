@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_hyp_red_problem_continuous_time_api.hpp
+// rom_lspg_unsteady_hyper_reduced_problem_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

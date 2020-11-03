@@ -87,11 +87,10 @@ int main(int argc, char *argv[])
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.systemRef(), yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.systemRef(), yROM);
+  pressio::rom::lspg::solveSteady(lspgProblem, yROM, solver);
 
   /* the ROM is run for a parameter point that was used to generate
    * the basis, so we should recover the FOM solution exactly */

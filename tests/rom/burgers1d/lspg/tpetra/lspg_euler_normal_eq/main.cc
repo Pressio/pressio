@@ -64,12 +64,11 @@ int main(int argc, char *argv[]){
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.stepperRef(), yROM, linSolverObj);
+    auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 
-    // integrate in time
+    // solve
     pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state

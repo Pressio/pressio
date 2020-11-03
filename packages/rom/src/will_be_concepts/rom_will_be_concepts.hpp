@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// rom_will_be_concepts.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_SRC_WILL_BE_CONCEPTS_HPP_
-#define PRESSIO_ROM_SRC_WILL_BE_CONCEPTS_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
+#define ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
 
 // fom and rom states
 #include "./various/rom_fom_state.hpp"
@@ -75,4 +75,4 @@
 #include "./system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
 #include "./system/rom_continuous_time_system.hpp"
 
-#endif
+#endif  // ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
