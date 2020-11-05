@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_problem_advance_functions.hpp
+// rom_galerkin_problem_solve_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,62 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_
-#define ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_
+#ifndef ROM_GALERKIN_ROM_GALERKIN_PROBLEM_SOLVE_FUNCTIONS_HPP_
+#define ROM_GALERKIN_ROM_GALERKIN_PROBLEM_SOLVE_FUNCTIONS_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-/* these are here just to make it easier for the users
-   so that they pass a rom problem and don't need to
-   worry about knowing that they need to get the stepper
-   and pass that to the ode integrators */
+/* these functions make it easier for the users because
+   they pass a rom problem and don't need to extract from
+   the problem the stepper and pass that to the integrators */
 
-/************************************
-	      UNSTEADY
-***********************************/
+/*--------------------------------------------
+  solve for fixed number of steps
+  -------------------------------------------- */
+// for pressio4py I cannot use variadic templates,
+// so need to specify the various cases, for now
+// just expose some subcases, not all
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename rom_problem_type, typename state_t, typename timet, typename collector_t
+  >
+void solveNSteps
+(rom_problem_type & problem, state_t & stateIn,
+ timet t0, timet dt, ::pressio::ode::types::step_t num_steps,
+ pybind11::object pyCollector)
+{
+  collector_t collector(pyCollector);
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), stateIn, t0, dt, num_steps, collector);
+}
 
-/* fixed number of steps */
+#else
+
 template<typename rom_problem_type, typename ...Args>
-void advanceNSteps
+void solveNSteps
 (rom_problem_type & problem, Args && ...args)
 {
   ::pressio::ode::advanceNSteps
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
+#endif
 
-/* to target time */
+/*--------------------------------------------
+  solve to target time
+  -------------------------------------------- */
 template<typename rom_problem_type, typename ...Args>
-void advanceToTargetTime
+void solveToTargetTime
 (rom_problem_type & problem, Args && ...args)
 {
   ::pressio::ode::advanceToTargetTime
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
-/* to target time with step recovery */
+/*--------------------------------------------
+  solve to target time with step recovery
+  -------------------------------------------- */
 template<typename rom_problem_type, typename ...Args>
-void advanceToTargetTimeWithTimeStepRecovery
+void solveToTargetTimeWithTimeStepRecovery
 (rom_problem_type & problem, Args && ...args)
 {
   ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
@@ -88,4 +109,4 @@ void advanceToTargetTimeWithTimeStepRecovery
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_GALERKIN_PROBLEM_ADVANCE_FUNCTIONS_HPP_
+#endif  // ROM_GALERKIN_ROM_GALERKIN_PROBLEM_SOLVE_FUNCTIONS_HPP_

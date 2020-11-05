@@ -74,6 +74,6 @@
 // galerkin classes
 #include "rom/src/galerkin/rom_compose_and_create_galerkin.hpp"
 #include "rom/src/galerkin/rom_galerkin_create_solver_functions.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_advance_functions.hpp"
+#include "rom/src/galerkin/rom_galerkin_problem_solve_functions.hpp"
 
 #endif

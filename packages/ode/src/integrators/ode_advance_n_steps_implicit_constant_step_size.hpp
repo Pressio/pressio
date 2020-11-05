@@ -103,6 +103,7 @@ template<
   typename stepper_type,
   typename native_python_state_type,
   typename time_type,
+  typename collector_type,
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
@@ -118,6 +119,7 @@ advanceNSteps(stepper_type & stepper,
 	      const time_type	 startTime,
 	      const time_type	 dt,
 	      const types::step_t numSteps,
+	      collector_type & collector,
 	      solver_type & solver)
 {
 
@@ -135,7 +137,7 @@ but the state type you are using is not admissible for implicit time-stepping.")
   using step_policy = impl::ImplicitDoStepBasic<solver_type>;
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, vec_wrapper_t>;
-  collector_t collector;
+  //collector_t collector;
   advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateView,
 				   collector, stepper, solver);
 }

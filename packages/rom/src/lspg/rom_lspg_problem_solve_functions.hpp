@@ -53,7 +53,7 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-/* these are here just to make it easier for the users
+/* these functions make it easier for the users
    so that they pass a rom problem and don't need to
    worry about knowing that they need to get the stepper
    and pass that to the ode integrators or the system to
@@ -62,13 +62,10 @@ namespace pressio{ namespace rom{ namespace lspg{
 /************************************
 	      STEADY
 ***********************************/
-// allow romState and solver to be passed in both orders
 template<typename rom_problem_t, typename rom_state_t, typename solver_t>
-mpl::enable_if_t<
-  ::pressio::rom::concepts::rom_state<rom_state_t>::value and
-  !::pressio::rom::concepts::rom_state<solver_t>::value
-  >
-solveSteady(rom_problem_t & problem, rom_state_t & romState, solver_t & solver)
+void solveSteady(rom_problem_t & problem,
+		 rom_state_t & romState,
+		 solver_t & solver)
 {
   static_assert
     (::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
@@ -77,22 +74,14 @@ solveSteady(rom_problem_t & problem, rom_state_t & romState, solver_t & solver)
   solver.solve(problem.systemRef(), romState);
 }
 
-template<typename rom_problem_t, typename rom_state_t, typename solver_t>
-mpl::enable_if_t<
-  ::pressio::rom::concepts::rom_state<rom_state_t>::value and
-  !::pressio::rom::concepts::rom_state<solver_t>::value
-  >
-solveSteady(rom_problem_t & problem, solver_t & solver, rom_state_t & romState)
-{
-  solveSteady(problem, romState, solver);
-}
-
 
 /************************************
 	      UNSTEADY
 ***********************************/
+/*--------------------------------------------
+  solve for fixed number of steps
+  --------------------------------------------*/
 
-/* fixed number of steps */
 template<typename rom_problem_type, typename ...Args>
 void solveNTimes
 (rom_problem_type & problem, Args && ...args)
@@ -100,12 +89,38 @@ void solveNTimes
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
 
+// For pressio4py, I cannot handle the variadic case so I need to specify
+// the number of arguments and this will work. For now leave to just
+// a specific case, we can add more later.
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<
+  typename rom_problem_type, typename state_t, typename timet,
+  typename collector_t, typename solver_t
+  >
+void solveNSequentialMinimizations(rom_problem_type & problem,
+				   state_t & stateInOut,
+				   timet t0,
+				   timet dt,
+				   const ::pressio::ode::types::step_t numSteps,
+				   pybind11::object pyCollector,
+				   solver_t & solver)
+{
+  collector_t collector(pyCollector);
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateInOut, t0, dt,
+       numSteps, collector, solver);
+}
+
+#else
+
 template<typename rom_problem_type, typename ...Args>
 void solveNSequentialMinimizations
 (rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
+#endif
+
 
 template<typename rom_problem_type, typename ...Args>
 void solveNSequentialResidualMinimizations
@@ -121,7 +136,9 @@ void solveSequentialResidualMinimizationProblemNTimes
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
 
-/* to target time */
+/*--------------------------------------------
+  solve to target time
+  -------------------------------------------- */
 template<typename rom_problem_type, typename ...Args>
 void solveToTargetTime
 (rom_problem_type & problem, Args && ...args)
@@ -150,7 +167,9 @@ void solveSequentialResidualMinimizationProblemToTargetTime
   impl::_lspgUnsteadyToTime(problem, std::forward<Args>(args)...);
 }
 
-/* to target time with step recovery */
+/*--------------------------------------------
+  advance to target time with step recovery
+  -------------------------------------------- */
 template<typename rom_problem_type, typename ...Args>
 void solveToTargetTimeWithRecovery
 (rom_problem_type & problem, Args && ...args)

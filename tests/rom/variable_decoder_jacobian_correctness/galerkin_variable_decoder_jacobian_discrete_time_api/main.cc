@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
     pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t,1,2>(appObj, decoderObj, romState, refState);
 
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize, checkStr);
-  pressio::rom::galerkin::advanceNSteps(Problem, romState, 0.0, 0.1, 2, solver);
+  pressio::rom::galerkin::solveNSteps(Problem, romState, 0.0, 0.1, 2, solver);
 
   //std::cout << *romState.data() << std::endl;
 

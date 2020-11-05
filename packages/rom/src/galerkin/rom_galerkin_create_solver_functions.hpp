@@ -51,12 +51,17 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-/* these are here for two reasons:
-   (1) to check that a solver is compatible with a galerkin problem
-   (2) to allow users to pass a rom problem and don't need to
-   worry about knowing that they need to extract the stepper
-   (3) potentially, we could create functions to pick the
-   best solver ourselves */
+/* why using this over just instantiating a solver directly?
+   (1) we can limit the solver types admissible for a galerkin problem
+   we know that right now only newton-raphson makes sense for galerkin
+
+   (2) allows users to pass a rom problem object without needing
+   to know that the rom problem has a stepper object inside which would
+   need to be extracted and passed to the solver
+
+   (3) potentially, we could specialize these functions to pick the
+   best solver/parameters ourselves based on some conditions
+*/
 
 /* ========================
     createNewtonRaphson

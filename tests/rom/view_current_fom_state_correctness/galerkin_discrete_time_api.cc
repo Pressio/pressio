@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
   Observer Obs(checkStr, Problem.currentFomStateCRef());
 
   MyFakeSolver<rom_state_t, rom_jacobian_t> solver(romSize);
-  pressio::rom::galerkin::advanceNSteps(Problem, romState, 0.0, 0.5, 2, Obs, solver);
+  pressio::rom::galerkin::solveNSteps(Problem, romState, 0.0, 0.5, 2, Obs, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

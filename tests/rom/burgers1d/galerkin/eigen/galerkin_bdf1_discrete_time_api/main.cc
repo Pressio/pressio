@@ -75,7 +75,7 @@ struct GalerkinBDF1WithResidualApi
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::rom::galerkin::advanceNSteps(Problem, yROM_, 0.0, dt, 15, solver);
+    pressio::rom::galerkin::solveNSteps(Problem, yROM_, 0.0, dt, 15, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = Problem.fomStateReconstructorCRef()(yROM_);

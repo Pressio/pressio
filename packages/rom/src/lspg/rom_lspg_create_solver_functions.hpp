@@ -49,7 +49,6 @@
 #ifndef ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
 #define ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
 
-
 namespace pressio{ namespace rom{ namespace lspg{
 
 namespace impl{
@@ -74,17 +73,20 @@ _extractSystemOrStepper(rom_problem_t & problem)
 }
 }//end namespace impl
 
+/* why using this over just instantiating a solver directly?
+   (1) we can limit the solver types admissible for a galerkin problem
+   we know that right now only newton-raphson makes sense for galerkin
 
-/* these are here for two reasons:
-   (1) to check that a solver is compatible with a lspg problem
-   (2) to allow users to pass a rom problem and don't need to
-   worry about knowing that they need to extract the stepper
-   or the system object
-   (3) potentially, we could create functions to pick the
-   best solver ourselves */
+   (2) allows users to pass a rom problem object without needing
+   to know that the rom problem has a stepper object inside which would
+   need to be extracted and passed to the solver
+
+   (3) potentially, we could specialize these functions to pick the
+   best solver/parameters ourselves based on some conditions
+*/
 
 /* ========================
-	Gauss-Newton
+    Gauss-Newton normal-eq
    ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
@@ -93,6 +95,9 @@ auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
     (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
+/* ========================
+	Gauss-Newton QR
+   ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
 {

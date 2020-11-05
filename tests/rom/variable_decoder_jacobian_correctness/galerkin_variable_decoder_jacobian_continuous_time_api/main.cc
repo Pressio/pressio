@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
   // problem_t galerkinProb(appObj, decoderObj, romState, refState);
   auto galerkinProb =
     pressio::rom::galerkin::createDefaultProblem<ode_tag>(appObj, decoderObj, romState, refState);
-  pressio::rom::galerkin::advanceNSteps(galerkinProb, romState, 0.0, 0.1, 3);
+  pressio::rom::galerkin::solveNSteps(galerkinProb, romState, 0.0, 0.1, 3);
 
   std::vector<scalar_t> trueS{6,9,12,15,18};
   for  (int i=0; i<5; ++i){
