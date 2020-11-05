@@ -62,14 +62,14 @@ template<typename system_t, typename ... Args>
 using composeNewtonRaphson_t =
   typename composeNewtonRaphson<system_t, Args...>::type;
 
-
 template<typename system_t, typename state_t, typename ...Args>
 auto createNewtonRaphson(const system_t & system,
 			 const state_t & state,
 			 Args && ...args)
+-> composeNewtonRaphson_t<system_t, Args...>
 {
-  using return_t = composeNewtonRaphson_t<system_t, Args...>;
-  return return_t( system, state, std::forward<Args>(args)...);
+  return composeNewtonRaphson_t<system_t, Args...>
+  ( system, state, std::forward<Args>(args)...);
 }
 
 }}}
