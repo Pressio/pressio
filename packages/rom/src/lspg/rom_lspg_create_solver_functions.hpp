@@ -90,6 +90,9 @@ _extractSystemOrStepper(rom_problem_t & problem)
    ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
+->
+  decltype(::pressio::solvers::nonlinear::createGaussNewton
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...))
 {
   return ::pressio::solvers::nonlinear::createGaussNewton
     (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
@@ -100,6 +103,8 @@ auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
    ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
+->  decltype(::pressio::solvers::nonlinear::createGaussNewtonQR
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...))
 {
   return ::pressio::solvers::nonlinear::createGaussNewtonQR
     (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);
@@ -110,6 +115,8 @@ auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
    ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args && ... args)
+->  decltype(::pressio::solvers::nonlinear::createLevenbergMarquardt
+    (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...))
 {
   return ::pressio::solvers::nonlinear::createLevenbergMarquardt
     (impl::_extractSystemOrStepper(problem), std::forward<Args>(args)...);

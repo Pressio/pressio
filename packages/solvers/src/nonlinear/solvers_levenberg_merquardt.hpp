@@ -72,9 +72,10 @@ template<typename system_t, typename state_t, typename ...Args>
 auto createLevenbergMarquardt(const system_t & system,
 			      const state_t & state,
 			      Args && ...args)
+-> composeLevenbergMarquardt_t<system_t, Args...>
 {
-  using return_t = composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>;
-  return return_t( system, state, std::forward<Args>(args)...);
+  return composeLevenbergMarquardt_t<system_t, Args...>
+  ( system, state, std::forward<Args>(args)...);
 }
 
 }}}

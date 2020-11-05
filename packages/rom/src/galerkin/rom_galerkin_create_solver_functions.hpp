@@ -68,6 +68,8 @@ namespace pressio{ namespace rom{ namespace galerkin{
    ========================*/
 template<typename rom_problem_t, typename ...Args>
 auto createNewtonRaphsonSolver(rom_problem_t & problem, Args && ... args)
+-> decltype(::pressio::solvers::nonlinear::createNewtonRaphson
+    (problem.stepperRef(), std::forward<Args>(args)...))
 {
   return ::pressio::solvers::nonlinear::createNewtonRaphson
     (problem.stepperRef(), std::forward<Args>(args)...);
