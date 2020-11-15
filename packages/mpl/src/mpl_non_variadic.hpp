@@ -61,6 +61,8 @@
 #include "not_same.hpp"
 #include "detection_idiom.hpp"
 #include "remove_cvref.hpp"
+#include "remove_reference.hpp"
+#include "not_void.hpp"
 
 #include "has_addition_assign_operator.hpp"
 #include "has_addition_operator.hpp"

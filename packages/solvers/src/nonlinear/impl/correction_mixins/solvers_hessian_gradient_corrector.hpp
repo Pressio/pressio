@@ -51,33 +51,7 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<typename state_t, typename lin_solver_t, typename = void>
-struct _HGSolverMemberHelper
-{
-  using type = std::reference_wrapper<lin_solver_t>;
-};
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename state_t, typename lin_solver_t>
-struct _HGSolverMemberHelper<
-  state_t, lin_solver_t,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<state_t>::value
-    >
-  >
-{
-  using type = lin_solver_t;
-};
-#endif
-
-template<typename...Args>
-using _HGSolverMemberHelper_t = typename _HGSolverMemberHelper<Args...>::type;
-
-
-
-template<
-  typename T, typename state_type, typename lin_solver_t
-  >
+template<typename T, typename state_type, typename lin_solver_t>
 class HessianGradientCorrector : public T
 {
 public:
@@ -87,7 +61,7 @@ public:
 
 private:
   state_type correction_ = {};
-  typename _HGSolverMemberHelper<state_type, lin_solver_t>::type solverObj_;
+  ::pressio::utils::possibly_owning_reference_wrapper<lin_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -119,15 +93,10 @@ public:
 			       std::forward<Args>(args)...)
   {}
 
-  // copy constr and assign
   HessianGradientCorrector(HessianGradientCorrector const &) = default;
   HessianGradientCorrector & operator=(HessianGradientCorrector const &) = default;
-
-  // move constr and assign
   HessianGradientCorrector(HessianGradientCorrector && o) = default;
   HessianGradientCorrector & operator=(HessianGradientCorrector && o) = default;
-
-  // destr
   ~HessianGradientCorrector() = default;
 
 public:
@@ -174,10 +143,9 @@ public:
 
 private:
   template <typename H_t, typename g_t>
-   void doLinearSolve(H_t & H, const g_t & g)
+  void doLinearSolve(H_t & H, const g_t & g)
   {
-    // I need to do this because solverObj can be a std::reference_wrapper
-    static_cast<lin_solver_t &>(solverObj_).solve(H, g, correction_);
+    solverObj_.get().solve(H, g, correction_);
   }
 };
 

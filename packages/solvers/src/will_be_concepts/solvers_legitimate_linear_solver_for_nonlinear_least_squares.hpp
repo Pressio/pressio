@@ -57,7 +57,12 @@ template <
   typename rhs_type = state_type,
   typename enable = void
   >
-struct linear_solver_for_nonlinear_least_squares : std::false_type{};
+struct linear_solver_for_nonlinear_least_squares : std::false_type
+{
+  static_assert
+  (!std::is_const<T>::value,
+   "The linear solver type cannot be cv-qualified: maybe you are using a const object?");
+};
 
 template <typename T, typename state_type>
 struct linear_solver_for_nonlinear_least_squares<

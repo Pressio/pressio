@@ -52,7 +52,11 @@
 namespace pressio{ namespace solvers{ namespace concepts {
 
 template <typename T, typename state_type, typename enable = void>
-struct linear_solver_for_newton_raphson : std::false_type{};
+struct linear_solver_for_newton_raphson : std::false_type
+{
+  static_assert
+  (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
+};
 
 template <typename T, typename state_type>
 struct linear_solver_for_newton_raphson<
