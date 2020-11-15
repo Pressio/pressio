@@ -126,7 +126,7 @@ public:
       H_(udOps.template product<h_t>(pT, pnT,
 				     utils::constants<sc_t>::one(),
 				     *J_.data(), *J_.data())),
-      udOps_(&udOps)
+      udOps_(udOps)
   {}
 
 public:
