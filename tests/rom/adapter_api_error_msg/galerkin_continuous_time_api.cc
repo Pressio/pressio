@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   using ode_name_t = pressio::ode::explicitmethods::Euler;
-  using problem_t = pressio::rom::galerkin::composeDefaultProblem_t<
+  using problem_t = pressio::rom::galerkin::impl::composeDefaultProblem_t<
     ode_name_t, app_t, decoder_t, lspg_state_t>;
 
   // we should never get here because this test fails
