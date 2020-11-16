@@ -51,9 +51,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-///////////////////////////////////////////
-///		MASKED			///
-///////////////////////////////////////////
 /*
   steady:
   template<fom_type, decoder_t, romstate_t, masker_t>
@@ -64,6 +61,7 @@ namespace pressio{ namespace rom{ namespace lspg{
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, masker_t>
 */
+namespace impl{
 template<typename T1, typename ...Args>
 using composeMaskedProblem =
   typename std::conditional<
@@ -80,6 +78,8 @@ using composeMaskedProblem =
 
 template<typename T1, typename ...Args>
 using composeMaskedProblem_t = typename composeMaskedProblem<T1, Args...>::type;
+} //end namespace impl
+
 
 // create masked steady
 template<
@@ -91,7 +91,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::steady_system<fom_system_type>::value,
-  composeMaskedProblem_t<
+  impl::composeMaskedProblem_t<
     fom_system_type, decoder_type, rom_state_type, masker_type
     >
   >
@@ -101,7 +101,7 @@ createMaskedProblemSteady(const fom_system_type & fomSysObj,
 			  const fom_native_state & fomRef,
 			  const masker_type & masker)
 {
-  using return_t = composeMaskedProblem_t<
+  using return_t = impl::composeMaskedProblem_t<
     fom_system_type, decoder_type, rom_state_type, masker_type>;
 
   static_assert
@@ -124,7 +124,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composeMaskedProblem_t<
+  impl::composeMaskedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, masker_type
     >
   >
@@ -134,7 +134,7 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    const fom_native_state & fomRef,
 			    const masker_type & masker)
 {
-  using return_t = composeMaskedProblem_t<
+  using return_t = impl::composeMaskedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, masker_type>;
 
   static_assert
@@ -157,7 +157,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composeMaskedProblem_t<
+  impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -170,7 +170,7 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    const fom_native_state & fomNominalState,
 			    const masker_type & masker)
 {
-  using return_t = composeMaskedProblem_t<
+  using return_t = impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::types::StepperOrder<order>,

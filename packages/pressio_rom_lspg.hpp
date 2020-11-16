@@ -78,7 +78,7 @@
 #include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
 #include "rom/src/lspg/rom_masked_lspg.hpp"
 #include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
-#include "rom/src/lspg/rom_lspg_create_solver_functions.hpp"
-#include "rom/src/lspg/rom_lspg_problem_solve_functions.hpp"
+#include "rom/src/lspg/rom_create_solver_functions.hpp"
+#include "rom/src/lspg/rom_solve_problem_functions.hpp"
 
 #endif

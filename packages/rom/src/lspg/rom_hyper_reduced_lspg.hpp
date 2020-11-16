@@ -69,6 +69,8 @@ namespace pressio{ namespace rom{ namespace lspg{
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t>
 */
+
+namespace impl{
 template<typename T1, typename ...Args>
 using composeHyperReducedProblem =
   typename std::conditional<
@@ -86,7 +88,35 @@ using composeHyperReducedProblem =
 template<typename T1, typename ...Args>
 using composeHyperReducedProblem_t =
   typename composeHyperReducedProblem<T1, Args...>::type;
+} //end namespace impl
 
+
+// create steady
+template<
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::steady_system<fom_system_type>::value,
+  impl::composeHyperReducedProblem_t<fom_system_type, decoder_type, rom_state_type>
+  >
+createHyperReducedProblemSteady(const fom_system_type & fomSysObj,
+				const decoder_type & decoder,
+				const rom_state_type & romStateIn,
+				const fom_native_state & fomNominalState)
+{
+  using return_t = impl::composeHyperReducedProblem_t<
+    fom_system_type, decoder_type, rom_state_type>;
+
+  static_assert
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
+
+  return return_t(fomSysObj, decoder, romStateIn, fomNominalState);
+}
 
 // unsteady (continuous-time api)
 template<
@@ -99,7 +129,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composeHyperReducedProblem_t<
+  impl::composeHyperReducedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t
     >
   >
@@ -109,7 +139,7 @@ createHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
 				  const fom_native_state & fomRef,
 				  const sample_to_stencil_t & sTosInfo)
 {
-  using return_t = composeHyperReducedProblem_t<
+  using return_t = impl::composeHyperReducedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t>;
 
   static_assert
@@ -120,6 +150,47 @@ compatible with the fom state type detected from adapter class");
   return return_t(fomSysObj, decoder, romStateIn, fomRef, sTosInfo);
 }
 
+// unsteady (discrete-time api)
+template<
+  std::size_t order,
+  std::size_t totNumStates,
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state,
+  typename ...Args
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  impl::composeHyperReducedProblem_t<
+    pressio::ode::implicitmethods::Arbitrary,
+    fom_system_type, decoder_type, rom_state_type,
+    ::pressio::ode::types::StepperOrder<order>,
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+    Args...
+    >
+  >
+createHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
+				  const decoder_type & decoder,
+				  const rom_state_type & romStateIn,
+				  const fom_native_state & fomNominalState,
+				  Args && ...args)
+{
+  using return_t = impl::composeHyperReducedProblem_t<
+    pressio::ode::implicitmethods::Arbitrary,
+    fom_system_type, decoder_type, rom_state_type,
+    ::pressio::ode::types::StepperOrder<order>,
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+    Args...>;
+
+  static_assert
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
+
+  return return_t(fomSysObj, decoder, romStateIn,
+		  fomNominalState, std::forward<Args>(args)...);
+}
 
 }}}
 #endif  // ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_

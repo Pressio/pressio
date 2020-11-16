@@ -111,12 +111,13 @@ struct composeSteady<
     >,
   fom_system_type, decoder_type, lspg_state_type
   >
-  : composeSteady<fom_system_type, decoder_type, lspg_state_type>
+  : composeSteady<::pressio::rom::lspg::impl::Default, void,
+		   fom_system_type, decoder_type, lspg_state_type>
 {
-  using base_t = composeSteady<fom_system_type, decoder_type, lspg_state_type>;
+  using base_t = composeSteady<::pressio::rom::lspg::impl::Default, void,
+				fom_system_type, decoder_type, lspg_state_type>;
   using typename base_t::type;
 };
-
 
 // precond
 template<

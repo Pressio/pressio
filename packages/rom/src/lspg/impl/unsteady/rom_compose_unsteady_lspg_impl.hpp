@@ -394,11 +394,11 @@ struct composeUnsteady<
     >,
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...
   >
-  : composeUnsteady<::pressio::rom::lspg::impl::Default,
+  : composeUnsteady<::pressio::rom::lspg::impl::Default, void,
 		     stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>
 {
   using base_t = composeUnsteady
-    <::pressio::rom::lspg::impl::Default,
+    <::pressio::rom::lspg::impl::Default, void,
       stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>;
 
   using typename base_t::type;

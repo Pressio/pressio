@@ -61,6 +61,7 @@ namespace pressio{ namespace rom{ namespace lspg{
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
 */
+namespace impl{
 template<typename T1, typename ...Args>
 using composePreconditionedDefaultProblem =
   typename std::conditional<
@@ -78,6 +79,7 @@ using composePreconditionedDefaultProblem =
 template<typename T1, typename ...Args>
 using composePreconditionedDefaultProblem_t =
   typename composePreconditionedDefaultProblem<T1, Args...>::type;
+} //end namespace impl
 
 
 // create precond default steady
@@ -90,7 +92,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::steady_system<fom_system_type>::value,
-  composePreconditionedDefaultProblem_t<
+  impl::composePreconditionedDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
@@ -100,7 +102,7 @@ createPreconditionedDefaultProblemSteady(const fom_system_type & fomSysObj,
 					 const fom_native_state & fomRef,
 					 Args && ...args)
 {
-  using return_t = composePreconditionedDefaultProblem_t<
+  using return_t = impl::composePreconditionedDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
@@ -123,7 +125,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
-  composePreconditionedDefaultProblem_t<
+  impl::composePreconditionedDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
@@ -133,7 +135,7 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   const fom_native_state & fomRef,
 					   Args && ...args)
 {
-  using return_t = composePreconditionedDefaultProblem_t<
+  using return_t = impl::composePreconditionedDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
@@ -158,7 +160,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composePreconditionedDefaultProblem_t<
+  impl::composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -173,7 +175,7 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   const precond_type & prec,
 					   Args && ...args)
 {
-  using return_t = composePreconditionedDefaultProblem_t<
+  using return_t = impl::composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::types::StepperOrder<order>,

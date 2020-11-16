@@ -63,6 +63,8 @@ namespace pressio{ namespace rom{ namespace lspg{
   template<stepper_tag, fom_type, decoder_t, romstate_t>
   template<stepper_tag, fom_type, decoder_t, romstate_t, udops_t>
 */
+
+namespace impl{
 template<typename T1, typename ...Args>
 using composeDefaultProblem =
   typename std::conditional<
@@ -79,6 +81,7 @@ using composeDefaultProblem =
 
 template<typename T1, typename ...Args>
 using composeDefaultProblem_t = typename composeDefaultProblem<T1, Args...>::type;
+} //end namespace impl
 
 
 // create default steady
@@ -90,14 +93,14 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::steady_system<fom_system_type>::value,
-  composeDefaultProblem_t<fom_system_type, decoder_type, rom_state_type>
+  impl::composeDefaultProblem_t<fom_system_type, decoder_type, rom_state_type>
   >
 createDefaultProblemSteady(const fom_system_type & fomSysObj,
 			   const decoder_type & decoder,
 			   const rom_state_type & romStateIn,
 			   const fom_native_state & fomNominalState)
 {
-  using return_t = composeDefaultProblem_t<
+  using return_t = impl::composeDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type>;
 
   static_assert
@@ -119,7 +122,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
-  composeDefaultProblem_t<
+  impl::composeDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
@@ -129,7 +132,7 @@ createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 			     const fom_native_state & fomNominalState,
 			     Args && ...args)
 {
-  using return_t = composeDefaultProblem_t<
+  using return_t = impl::composeDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
@@ -153,7 +156,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  composeDefaultProblem_t<
+  impl::composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -167,7 +170,7 @@ createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 			     const fom_native_state & fomNominalState,
 			     Args && ...args)
 {
-  using return_t = composeDefaultProblem_t<
+  using return_t = impl::composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type,
     ::pressio::ode::types::StepperOrder<order>,

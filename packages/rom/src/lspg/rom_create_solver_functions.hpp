@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
-#define ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
+#ifndef ROM_LSPG_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
+#define ROM_LSPG_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{
 
@@ -123,4 +123,4 @@ auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args && ... args)
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif  // ROM_LSPG_ROM_LSPG_CREATE_SOLVER_FUNCTIONS_HPP_
+#endif  // ROM_LSPG_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
