@@ -55,6 +55,7 @@ struct Default{};
 struct Preconditioned{};
 struct Masked{};
 struct HyperReduced{};
+struct PreconditionedHyperReduced{};
 
 }}}}
 #endif  // ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_

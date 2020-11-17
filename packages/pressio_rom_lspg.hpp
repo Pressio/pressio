@@ -80,6 +80,8 @@
 #include "rom/src/lspg/rom_create_preconditioned_default_lspg_problem.hpp"
 #include "rom/src/lspg/rom_create_masked_lspg_problem.hpp"
 #include "rom/src/lspg/rom_create_hyper_reduced_lspg_problem.hpp"
+#include "rom/src/lspg/rom_create_preconditioned_hyper_reduced_lspg_problem.hpp"
+
 #include "rom/src/lspg/rom_create_solver_functions.hpp"
 #include "rom/src/lspg/rom_solve_problem_functions.hpp"
 

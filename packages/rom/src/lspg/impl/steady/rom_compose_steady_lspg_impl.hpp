@@ -61,12 +61,13 @@
 #include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
 #include "./traits/rom_lspg_steady_masked_problem_traits.hpp"
 #include "./traits/rom_lspg_steady_hyper_reduced_problem_traits.hpp"
+#include "./traits/rom_lspg_steady_preconditioned_hyper_reduced_problem_traits.hpp"
 
 #include "./rom_lspg_steady_default_problem.hpp"
 #include "./rom_lspg_steady_preconditioned_problem.hpp"
 #include "./rom_lspg_steady_masked_problem.hpp"
 #include "./rom_lspg_steady_hyper_reduced_problem.hpp"
-
+#include "./rom_lspg_steady_preconditioned_hyper_reduced_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -152,6 +153,24 @@ struct composeSteady<
 {
   using type = ::pressio::rom::lspg::impl::steady::HyperReducedProblemSteady<
     fom_system_type, lspg_state_type, decoder_type>;
+};
+
+// preconditioned hyper reduced
+template<
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type,
+  typename precond_type
+  >
+struct composeSteady<
+  ::pressio::rom::lspg::impl::PreconditionedHyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    >,
+  fom_system_type, decoder_type, lspg_state_type, precond_type>
+{
+  using type = ::pressio::rom::lspg::impl::steady::PreconditionedHyperReducedProblemSteady<
+    fom_system_type, lspg_state_type, decoder_type, precond_type>;
 };
 
 }}}}

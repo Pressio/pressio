@@ -158,6 +158,39 @@ using composeHyperReducedProblem_t =
 
 
 /*
+  ====================================
+  === preconditioned hyper reduced ===
+  ====================================
+
+  for steady we support:
+  template<fom_type, decoder_t, romstate_t, precond_t>
+
+  unsteady cont-time api:
+  template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
+
+  unsteady discrete-time api:
+  template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
+*/
+template<typename T1, typename ...Args>
+using composePreconditionedHyperReducedProblem =
+  typename std::conditional<
+  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+  ::pressio::rom::lspg::impl::composeUnsteady<
+    ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
+    >,
+  ::pressio::rom::lspg::impl::composeSteady<
+    ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
+    >
+  >::type;
+
+template<typename T1, typename ...Args>
+using composePreconditionedHyperReducedProblem_t =
+  typename composePreconditionedHyperReducedProblem<T1, Args...>::type;
+
+
+/*
   =====================
   === masked ===
   =====================

@@ -110,11 +110,11 @@
 #include "solvers/src/will_be_concepts/system/solvers_system_hessian_gradient.hpp"
 #include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_nonlinear_least_squares.hpp"
 #include "solvers/src/will_be_concepts/solvers_legitimate_qr_solver_for_gn_qr.hpp"
-#include "solvers/src/nonlinear/solvers_gauss_newton_create.hpp"
-#include "solvers/src/nonlinear/solvers_levenberg_merquardt_create.hpp"
+#include "solvers/src/nonlinear/solvers_create_gauss_newton.hpp"
+#include "solvers/src/nonlinear/solvers_create_levenberg_merquardt.hpp"
 
 // *** Newton-Raphson *** //
-#include "solvers/src/nonlinear/solvers_newton_raphson_create.hpp"
+#include "solvers/src/nonlinear/solvers_create_newton_raphson.hpp"
 
 // // Gauss-Newton conservative rom
 // #include "solvers/src/nonlinear/gn_conservative_rom/solvers_gauss_newton_conservative.hpp"
