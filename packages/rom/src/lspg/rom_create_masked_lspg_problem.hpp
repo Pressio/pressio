@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_masked_lspg.hpp
+// rom_create_masked_lspg_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,10 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_MASKED_LSPG_HPP_
-#define ROM_LSPG_ROM_MASKED_LSPG_HPP_
+#ifndef ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_
+#define ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{
-
-/*
-  steady:
-  template<fom_type, decoder_t, romstate_t, masker_t>
-
-  unsteady cont-time api:
-  template<stepper_tag, fom_type, decoder_t, romstate_t, masker_t>
-
-  unsteady discrete-time api:
-  template<stepper_tag, fom_type, decoder_t, romstate_t, masker_t>
-*/
-namespace impl{
-template<typename T1, typename ...Args>
-using composeMaskedProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  impl::composeUnsteady<
-    impl::Masked, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  impl::composeSteady<
-    impl::Masked, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
-
-template<typename T1, typename ...Args>
-using composeMaskedProblem_t = typename composeMaskedProblem<T1, Args...>::type;
-} //end namespace impl
-
 
 // create masked steady
 template<
@@ -186,4 +156,4 @@ compatible with the FOM state type detected from adapter class");
 }
 
 }}}
-#endif  // ROM_LSPG_ROM_MASKED_LSPG_HPP_
+#endif  // ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_

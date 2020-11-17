@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_members.hpp
+// rom_problem_members.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#define ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -71,6 +71,7 @@ struct FomObjMixin<fom_system_t, false>
   const fom_system_t & fomCRef() const{ return fomObj_.get(); }
 };
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename fom_system_t>
 struct FomObjMixin<fom_system_t, true>
 {
@@ -89,10 +90,11 @@ struct FomObjMixin<fom_system_t, true>
   FomObjMixin & operator=(FomObjMixin &&) = delete;
   ~FomObjMixin() = default;
 
-  FomObjMixin(fom_system_t fomObjIn) : fomObj_(fomObjIn){}
+  FomObjMixin(pybind11::object pyFomObj) : fomObj_(pyFomObj){}
 
   const fom_system_t & fomCRef() const{ return fomObj_; }
 };
+#endif
 
 //---------------------------------------------------
 //---------------------------------------------------
@@ -428,4 +430,4 @@ struct SystemMixin : T
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_

@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_ROM_COMPOSE_UNSTEADY_LSPG_IMPL_HPP_
 
-#include "../rom_lspg_problem_tags.hpp"
+#include "../rom_problem_tags.hpp"
 
 //----------------------------------------
 // include for continuous_time_api
@@ -267,7 +267,6 @@ struct composeUnsteady<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, masker_type, void>;
 };
 
-
 // specialize for hyper-reduced lspg with pressio ops with provided
 // mapping from sample to stencil mesh.
 // currently only enabled for shared-mem data structures: eigen and pybind11
@@ -309,11 +308,9 @@ mapping from stencil to sample mesh is currently only enabled for eigen types or
 };
 #endif
 
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // hyper-reduced lspg is also supported without passing the sample-to-stencil info,
-// enable this only for types for which hyp-red is supported behind scenes,
-// which currently are Trilinos data types
+// but this is enabled only for Trilinos data types
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<
   typename stepper_tag,
   typename fom_system_type,
@@ -403,7 +400,6 @@ struct composeUnsteady<
 
   using typename base_t::type;
 };
-
 
 /***
     Preconditioned lspg

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_hyper_reduced_lspg.hpp
+// rom_create_default_lspg_problem.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,52 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
-#define ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
+#ifndef ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
+#define ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-/*
-  steady:
-  template<fom_type, decoder_t, romstate_t>
-
-
-  unsteady continuous-time api:
-
-  // for trilinos types pwe can figure out the mapping automatically
-  template<stepper_tag, fom_type, decoder_t, romstate_t>
-
-  // for shared-mem data structures where the indices are passed
-  // and pressio uses these to implement hyper-reduction
-  template<stepper_tag, fom_type, decoder_t, romstate_t, sample_to_stencil_t>
-
-
-  unsteady discrete-time api:
-  template<stepper_tag, fom_type, decoder_t, romstate_t>
-*/
-
-namespace impl{
-template<typename T1, typename ...Args>
-using composeHyperReducedProblem =
-  typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
-
-template<typename T1, typename ...Args>
-using composeHyperReducedProblem_t =
-  typename composeHyperReducedProblem<T1, Args...>::type;
-} //end namespace impl
-
-
-// create steady
+// create default steady
 template<
   typename fom_system_type,
   typename decoder_type,
@@ -100,14 +60,14 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::steady_system<fom_system_type>::value,
-  impl::composeHyperReducedProblem_t<fom_system_type, decoder_type, rom_state_type>
+  impl::composeDefaultProblem_t<fom_system_type, decoder_type, rom_state_type>
   >
-createHyperReducedProblemSteady(const fom_system_type & fomSysObj,
-				const decoder_type & decoder,
-				const rom_state_type & romStateIn,
-				const fom_native_state & fomNominalState)
+createDefaultProblemSteady(const fom_system_type & fomSysObj,
+			   const decoder_type & decoder,
+			   const rom_state_type & romStateIn,
+			   const fom_native_state & fomNominalState)
 {
-  using return_t = impl::composeHyperReducedProblem_t<
+  using return_t = impl::composeDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type>;
 
   static_assert
@@ -118,39 +78,40 @@ compatible with the FOM state type detected from adapter class");
   return return_t(fomSysObj, decoder, romStateIn, fomNominalState);
 }
 
-// unsteady (continuous-time api)
+// create default unsteady (continuous-time api)
 template<
   typename odetag,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename sample_to_stencil_t
+  typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  impl::composeHyperReducedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t
+  ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
+  impl::composeDefaultProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >
   >
-createHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
-				  const decoder_type & decoder,
-				  const rom_state_type & romStateIn,
-				  const fom_native_state & fomRef,
-				  const sample_to_stencil_t & sTosInfo)
+createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
+			     const decoder_type & decoder,
+			     const rom_state_type & romStateIn,
+			     const fom_native_state & fomNominalState,
+			     Args && ...args)
 {
-  using return_t = impl::composeHyperReducedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, sample_to_stencil_t>;
+  using return_t = impl::composeDefaultProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
   static_assert
-    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-     "The fom reference state type deduced for the create function is not \
-compatible with the fom state type detected from adapter class");
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The type deduced for the FOM nominal state passed to the create function is not \
+compatible with the FOM state type detected from adapter class");
 
-  return return_t(fomSysObj, decoder, romStateIn, fomRef, sTosInfo);
+  return return_t(fomSysObj, decoder, romStateIn,
+		  fomNominalState, std::forward<Args>(args)...);
 }
 
-// unsteady (discrete-time api)
+// create default unsteady (discrete-time api)
 template<
   std::size_t order,
   std::size_t totNumStates,
@@ -162,7 +123,7 @@ template<
   >
 mpl::enable_if_t<
   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-  impl::composeHyperReducedProblem_t<
+  impl::composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -170,13 +131,13 @@ mpl::enable_if_t<
     Args...
     >
   >
-createHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
-				  const decoder_type & decoder,
-				  const rom_state_type & romStateIn,
-				  const fom_native_state & fomNominalState,
-				  Args && ...args)
+createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
+			     const decoder_type & decoder,
+			     const rom_state_type & romStateIn,
+			     const fom_native_state & fomNominalState,
+			     Args && ...args)
 {
-  using return_t = impl::composeHyperReducedProblem_t<
+  using return_t = impl::composeDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type,
     ::pressio::ode::types::StepperOrder<order>,
@@ -193,4 +154,4 @@ compatible with the FOM state type detected from adapter class");
 }
 
 }}}
-#endif  // ROM_LSPG_ROM_HYPER_REDUCED_LSPG_HPP_
+#endif  // ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_

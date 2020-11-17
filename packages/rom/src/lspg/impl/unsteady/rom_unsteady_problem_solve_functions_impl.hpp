@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_levenberg_merquardt_create.hpp
+// rom_unsteady_problem_solve_functions_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,45 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_CREATE_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_CREATE_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
-
-template<typename system_t, typename state_t, typename ...Args>
-auto createLevenbergMarquardt(const system_t & system,
-			      const state_t & state,
-			      Args && ...args)
-  -> impl::composeLevenbergMarquardt_t<system_t, Args...>
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
 {
-  return impl::composeLevenbergMarquardt_t<system_t, Args...>
-  ( system, state, std::forward<Args>(args)...);
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_CREATE_HPP_
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+
+  ::pressio::ode::advanceToTargetTime
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+}// end namespace lspg::impl
+
+}}}//end namespace pressio::rom::lspg::impl
+#endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_

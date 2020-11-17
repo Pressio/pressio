@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_tags.hpp
+// rom_view_problem_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,15 +46,32 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
+#define ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-struct Default{};
-struct Preconditioned{};
-struct Masked{};
-struct HyperReduced{};
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+  typename rom_problem_t::system_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
+{
+  return problem.systemRef();
+}
 
-}}}}
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_unsteady_lspg,
+  typename rom_problem_t::stepper_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
+{
+  return problem.stepperRef();
+}
+
+}//end namespace impl
+
+}}}//end namespace pressio::rom::lspg
+#endif  // ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_

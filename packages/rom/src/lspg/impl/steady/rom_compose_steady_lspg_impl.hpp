@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_STEADY_ROM_COMPOSE_STEADY_LSPG_IMPL_HPP_
 #define ROM_LSPG_IMPL_STEADY_ROM_COMPOSE_STEADY_LSPG_IMPL_HPP_
 
-#include "../rom_lspg_problem_tags.hpp"
+#include "../rom_problem_tags.hpp"
 
 #include "./policies/rom_lspg_steady_residual_policy.hpp"
 #include "./policies/rom_lspg_steady_jacobian_policy.hpp"
@@ -60,10 +60,12 @@
 #include "./traits/rom_lspg_steady_default_problem_traits.hpp"
 #include "./traits/rom_lspg_steady_preconditioned_problem_traits.hpp"
 #include "./traits/rom_lspg_steady_masked_problem_traits.hpp"
+#include "./traits/rom_lspg_steady_hyper_reduced_problem_traits.hpp"
 
 #include "./rom_lspg_steady_default_problem.hpp"
 #include "./rom_lspg_steady_preconditioned_problem.hpp"
 #include "./rom_lspg_steady_masked_problem.hpp"
+#include "./rom_lspg_steady_hyper_reduced_problem.hpp"
 
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
@@ -98,28 +100,7 @@ struct composeSteady<
     fom_system_type, lspg_state_type, decoder_type>;
 };
 
-// hyper-reduced
-template<
-  typename fom_system_type,
-  typename decoder_type,
-  typename lspg_state_type
-  >
-struct composeSteady<
-  ::pressio::rom::lspg::impl::HyperReduced,
-  mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
-    >,
-  fom_system_type, decoder_type, lspg_state_type
-  >
-  : composeSteady<::pressio::rom::lspg::impl::Default, void,
-		   fom_system_type, decoder_type, lspg_state_type>
-{
-  using base_t = composeSteady<::pressio::rom::lspg::impl::Default, void,
-				fom_system_type, decoder_type, lspg_state_type>;
-  using typename base_t::type;
-};
-
-// precond
+// preconditioned default
 template<
   typename fom_system_type,
   typename decoder_type,
@@ -153,6 +134,24 @@ struct composeSteady<
 {
   using type = ::pressio::rom::lspg::impl::steady::MaskedProblemSteady<
     fom_system_type, lspg_state_type, decoder_type, masker_type>;
+};
+
+// hyper-reduced
+template<
+  typename fom_system_type,
+  typename decoder_type,
+  typename lspg_state_type
+  >
+struct composeSteady<
+  ::pressio::rom::lspg::impl::HyperReduced,
+  mpl::enable_if_t<
+    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    >,
+  fom_system_type, decoder_type, lspg_state_type
+  >
+{
+  using type = ::pressio::rom::lspg::impl::steady::HyperReducedProblemSteady<
+    fom_system_type, lspg_state_type, decoder_type>;
 };
 
 }}}}

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_solve_functions.hpp
+// rom_solve_problem_functions.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
 #define ROM_LSPG_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
 
-#include "./impl/rom_lspg_unsteady_problem_solve_functions_impl.hpp"
+#include "./impl/unsteady/rom_unsteady_problem_solve_functions_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
