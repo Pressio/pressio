@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson_create.hpp
+// solvers_create_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_CREATE_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_CREATE_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -64,4 +64,4 @@ auto createNewtonRaphson(const system_t & system,
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_CREATE_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_

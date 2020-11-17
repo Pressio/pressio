@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gauss_newton_create.hpp
+// solvers_create_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_CREATE_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_CREATE_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
@@ -76,4 +76,4 @@ auto createGaussNewtonQR(const system_t & system,
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_GAUSS_NEWTON_CREATE_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
