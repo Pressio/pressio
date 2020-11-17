@@ -1,20 +1,23 @@
 
 #include "pressio_rom_lspg.hpp"
 
-struct Preconditioner
+class Preconditioner
 {
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
-  using residual_type = state_type;
+  using velocity_type = state_type;
   using dense_matrix_type = Eigen::MatrixXd;
 
+public:
   void applyPreconditioner(const state_type & yState,
-			   residual_type & operand) const
+			   scalar_type time,
+			   velocity_type & operand) const
   {
     for (auto i=0; i<operand.size(); ++i) operand(i)+=1.;
   }
 
   void applyPreconditioner(const state_type & yState,
+			   scalar_type time,
 			   dense_matrix_type & operand) const
   {
     assert(operand.cols()==3);
@@ -29,20 +32,18 @@ struct MyFakeApp
   int Nst_ = {};
   int Nsm_ = {};
   int Nrom_ = {};
-  mutable int countR_ = {};
-  mutable int countA_ = {};
 
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
-  using residual_type = state_type;
+  using velocity_type = state_type;
   using dense_matrix_type = Eigen::MatrixXd;
 
 public:
   MyFakeApp(int Nst, int Nsm, int Nrom)
     : Nst_(Nst), Nsm_(Nsm), Nrom_(Nrom){}
 
-  residual_type createResidual() const{
+  velocity_type createVelocity() const{
     state_type v(Nsm_); v.setZero();
     return v;
   }
@@ -52,45 +53,27 @@ public:
     return A;
   }
 
-  void residual(const state_type & state,
-		residual_type & f) const
+  void velocity(const state_type & state,
+		const double & time,
+		velocity_type & f) const
   {
-    countR_++;
-    if (countR_==1){
-      f(0) = 1.1;
-      f(1) = 2.2;
-      f(2) = 3.3;
-      f(3) = 4.4;
-      f(4) = 5.5;
-    }
-    if (countR_==2){
-      f(0) = 2.1;
-      f(1) = 3.2;
-      f(2) = 4.3;
-      f(3) = 5.4;
-      f(4) = 6.5;
-    }
+    f(0) = 1.1;
+    f(1) = 2.2;
+    f(2) = 3.3;
+    f(3) = 4.4;
+    f(4) = 5.5;
   }
 
   void applyJacobian(const state_type &,
   		     const dense_matrix_type & B,
+  		     scalar_type time,
   		     dense_matrix_type & A) const
   {
-    countA_++;
-    if (countA_==1){
-      for (auto j=0; j<A.cols(); ++j) A(0,j) = 1.0;
-      for (auto j=0; j<A.cols(); ++j) A(1,j) = 2.0;
-      for (auto j=0; j<A.cols(); ++j) A(2,j) = 3.0;
-      for (auto j=0; j<A.cols(); ++j) A(3,j) = 4.0;
-      for (auto j=0; j<A.cols(); ++j) A(4,j) = 5.0;
-    }
-    if (countA_==2){
-      for (auto j=0; j<A.cols(); ++j) A(0,j) = 2.0;
-      for (auto j=0; j<A.cols(); ++j) A(1,j) = 3.0;
-      for (auto j=0; j<A.cols(); ++j) A(2,j) = 4.0;
-      for (auto j=0; j<A.cols(); ++j) A(3,j) = 5.0;
-      for (auto j=0; j<A.cols(); ++j) A(4,j) = 6.0;
-    }
+    for (auto j=0; j<A.cols(); ++j) A(0,j) = 2.0;
+    for (auto j=0; j<A.cols(); ++j) A(1,j) = 3.0;
+    for (auto j=0; j<A.cols(); ++j) A(2,j) = 4.0;
+    for (auto j=0; j<A.cols(); ++j) A(3,j) = 5.0;
+    for (auto j=0; j<A.cols(); ++j) A(4,j) = 6.0;
   }
 };
 
@@ -115,19 +98,19 @@ struct MyLinearSolver
 
     if (count_ == 1)
     {
-      Eigen::VectorXd bGold(3); bGold.setConstant(-97.);
+      Eigen::VectorXd bGold(3); bGold.setConstant(-7.24);
       if (!bGold.isApprox(*b.data())) sentinel_ = "FAILED";
 
-      Eigen::MatrixXd hGold(3,3); hGold.setConstant(90.);
+      Eigen::MatrixXd hGold(3,3); hGold.setConstant(215.8);
       if (!hGold.isApprox(*A.data())) sentinel_ = "FAILED";
     }
 
     if (count_ == 2)
     {
-      Eigen::VectorXd bGold(3); bGold.setConstant(-143.5);
+      Eigen::VectorXd bGold(3); bGold.setConstant(-645.04);
       if (!bGold.isApprox(*b.data())) sentinel_ = "FAILED";
 
-      Eigen::MatrixXd hGold(3,3); hGold.setConstant(135.);
+      Eigen::MatrixXd hGold(3,3); hGold.setConstant(215.8);
       if (!hGold.isApprox(*A.data())) sentinel_ = "FAILED";
     }
   }
@@ -159,62 +142,105 @@ int main(int argc, char *argv[])
                       ...  ;
                      10 10 10]
 
-  - the fomObj returns the residual at the sample mesh points:
-	f = [1.1 2.2 3.3 4.4 5.5] for first call
-	f = [2.1 3.2 4.3 5.4 6.5] for second call
-
+  - we do one time steps: t0 -> t1, with dt = 0.2
+  - the fomObj returns the velocity at the sample mesh points:
+          f = [1.1 2.2 3.3 4.4 5.5]
   - the fomObj returns the applyJac which has size (Nsmesh, romSize)
-    applyJac = [1 1 1; for first call
-                2 2 2;
-                3 3 3;
-                4 4 4;
-                5 5 5]
-    applyJac = [2 2 2; for second call
+    applyJac = [2 2 2;
                 3 3 3;
                 4 4 4;
                 5 5 5;
-		6 6 6]
+                6 6 6]
+  - the prec adds 1 to each entry of the given operand to act on
 
+  =========================
+  =========================
+        time step 1
+  =========================
+  =========================
 
   *************************************
-  *** first call to linear solver we have ***
+  *** first call to solver we have ***
   *************************************
-  R = applyPrec to f so that we have [2.1 3.2 4.3 5.4 6.5]
+  romState     = [0 0 0],
+  fomState_n   = [0 ... 0]
+  fomState_n-1 = [0 ... 0]
 
-  lspgJac after precond =  [2 2 2;
-			    3 3 3;
-			    4 4 4;
-			    5 5 5;
-			    6 6 6]
+  R = applyPrec to (y_n - y_nm-1 - dt*f)
+    = applyPrec to [-0.22 -0.44 -0.66 -0.88 -1.1]
+    = [1-0.22 1-0.44 1-0.66 1-0.88 1-1.1]
+    = [0.78 0.56 0.34 0.12 -0.1]
+
+  lspgJac = applyPrec to (I*phi - dt*df/dy*phi)
+  where I*phi is only taken at the sample mesh points
+  and df/dy*phi = [2 2 2;
+                   3 3 3;
+                   4 4 4;
+                   5 5 5;
+                   6 6 6]
+  we get:
+  lspgJac before prec = [2-dt*2 2-dt*2 2-dt*2;    [1.6 1.6 1.6;
+			 5-dt*3 5-dt*3 5-dt*3;     4.4 4.4 4.4;
+			 6-dt*4 6-dt*4 6-dt*4; =   5.2 5.2 5.2;
+			 8-dt*5 8-dt*5 8-dt*5;     7.0 7.0 7.0;
+			 9-dt*6 9-dt*6 9-dt*6]     7.8 7.8 7.8]
+  lspgJac = lspgJac += 1
+          = [2.6 2.6 2.6
+	     5.4 5.4 5.4
+	     6.2 6.2 6.2
+	     8.0 8.0 8.0
+	     8.8 8.8 8.8]
 
   so that the first call to the linear solver should have:
-  b = -lspgJac^T R = [ -97 -97 -97 ]
+  b = -lspgJac^T R = [ -7.24 -7.24 -7.24]
   neg sign because of the sign convention in pressio
 
   A = (lspgJac)^T (lspgJac) =
-        [90. 90. 90.;
-         90. 90. 90.;
-         90. 90. 90.]
+        [215.8 215.8 215.8;
+         215.8 215.8 215.8;
+         215.8 215.8 215.8]
+
 
   *************************************
-  *** second call to linear solver we have ***
+  *** second call to solver we have ***
   *************************************
-  R = applyPrec to f so that we have [3.1 4.2 5.3 6.4 7.5]
+  romState     = [1 1 1],
+  fomState_n   = [3 6 9 12 15 18 21 24 27 30]
+  fomState_n-1 = [0 ... 0]
 
-  lspgJac after precond =  [3 3 3;
-			    4 4 4;
-			    5 5 5;
-			    6 6 6;
-			    7 7 7]
+  R = applyPrc to (y_n - y_nm-1 - dt*f)
+    = applyPrec to [6-0.22 15-0.44 18-0.66 24-0.88 27-1.1]
+    = applyPrec to [5.78 14.56 17.34 23.12 25.9]
+    = [6.78 15.56 18.34 24.12 26.9]
+
+  lspgJac = applyPrec to (I*phi - dt*df/dy*phi)
+  where I*phi is only taken at the sample mesh points
+  and df/dy*phi = [2 2 2;
+                   3 3 3;
+                   4 4 4;
+                   5 5 5;
+                   6 6 6]
+  we get:
+  lspgJac befor prec = [2-dt*2 2-dt*2 2-dt*2;    [1.6 1.6 1.6;
+			5-dt*3 5-dt*3 5-dt*3;     4.4 4.4 4.4;
+			6-dt*4 6-dt*4 6-dt*4; =   5.2 5.2 5.2;
+			8-dt*5 8-dt*5 8-dt*5;     7.0 7.0 7.0;
+			9-dt*6 9-dt*6 9-dt*6]     7.8 7.8 7.8]
+  lspgJac = lspgJac += 1
+          = [2.6 2.6 2.6
+	     5.4 5.4 5.4
+	     6.2 6.2 6.2
+	     8.0 8.0 8.0
+	     8.8 8.8 8.8]
 
   so that the first call to the linear solver should have:
-  b = -lspgJac^T R = [ -143.5 -143.5 -143.5 ]
-  neg sign because of the sign convention in pressio
+  b = -lspgJac^T R = [ -645.04 -645.04 -645.04 ]
+  the neg sign because of the sign convention in pressio
 
   A = (lspgJac)^T (lspgJac) =
-        [135. 135. 135.;
-         135. 135. 135.;
-         135. 135. 135.]
+  [215.8 215.8 215.8;
+   215.8 215.8 215.8;
+   215.8 215.8 215.8]
   */
 
   std::string checkStr {"PASSED"};
@@ -250,14 +276,20 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 0.0);
 
+  pressio::containers::Vector<Eigen::Matrix<int,-1,1>> hrIndices(Nsmesh);
+  hrIndices(0) = 1;
+  hrIndices(1) = 4;
+  hrIndices(2) = 5;
+  hrIndices(3) = 7;
+  hrIndices(4) = 8;
+
   // prec obj
   Preconditioner precObj;
 
-  // lspg problem
-  auto problem = pressio::rom::lspg::createPreconditionedHyperReducedProblemSteady
-    (appObj, decoderObj, romState, refState, precObj);
+  using odetag = pressio::ode::implicitmethods::Euler;
+  auto problem = pressio::rom::lspg::createPreconditionedHyperReducedProblemUnsteady<odetag>
+    (appObj, decoderObj, romState, refState, precObj, hrIndices);
 
-  // linear solver
   MyLinearSolver linSolverObj(checkStr);
 
   // GaussNewton solver with normal equations
@@ -265,7 +297,7 @@ int main(int argc, char *argv[])
   solver.setMaxIterations(2);
   solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
 
-  pressio::rom::lspg::solveSteady(problem,romState, solver);
+  pressio::rom::lspg::solveNSequentialMinimizations(problem,romState, 0.0, 0.2, 1, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-// create precond hyper_reduced steady
+// precond hyper_reduced steady
 template<
   typename fom_system_type,
   typename decoder_type,
@@ -83,40 +83,40 @@ compatible with the fom state type detected from adapter class");
 		  fomRef, std::forward<Args>(args)...);
 }
 
-/*
-// // create precond unsteady (continuous-time api)
-// template<
-//   typename odetag,
-//   typename fom_system_type,
-//   typename decoder_type,
-//   typename rom_state_type,
-//   typename fom_native_state,
-//   typename ...Args
-//   >
-// mpl::enable_if_t<
-//   ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
-//   impl::composePreconditionedDefaultProblem_t<
-//     odetag, fom_system_type, decoder_type, rom_state_type, Args...
-//     >
-//   >
-// createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
-// 					   const decoder_type & decoder,
-// 					   const rom_state_type & romStateIn,
-// 					   const fom_native_state & fomRef,
-// 					   Args && ...args)
-// {
-//   using return_t = impl::composePreconditionedDefaultProblem_t<
-//     odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
+// precond hyperreduced unsteady (continuous-time api)
+template<
+  typename odetag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename rom_state_type,
+  typename fom_native_state,
+  typename ...Args
+  >
+mpl::enable_if_t<
+  ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
+  impl::composePreconditionedHyperReducedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, Args...
+    >
+  >
+createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
+						const decoder_type & decoder,
+						const rom_state_type & romStateIn,
+						const fom_native_state & fomRef,
+						Args && ...args)
+{
+  using return_t = impl::composePreconditionedHyperReducedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
-//   static_assert
-//     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-//      "The fom reference state type deduced for the create function is not \
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 // compatible with the fom state type detected from adapter class");
 
-//   return return_t(fomSysObj, decoder, romStateIn,
-// 		  fomRef, std::forward<Args>(args)...);
-// }
+  return return_t(fomSysObj, decoder, romStateIn,
+		  fomRef, std::forward<Args>(args)...);
+}
 
+/*
 // // create preconditioned unsteady (discrete-time api)
 // template<
 //   std::size_t order,
@@ -130,7 +130,7 @@ compatible with the fom state type detected from adapter class");
 //   >
 // mpl::enable_if_t<
 //   ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
-//   impl::composePreconditionedDefaultProblem_t<
+//   impl::composePreconditionedHyperReducedProblem_t<
 //     pressio::ode::implicitmethods::Arbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
 //     ::pressio::ode::types::StepperOrder<order>,
@@ -138,14 +138,14 @@ compatible with the fom state type detected from adapter class");
 //     Args...
 //     >
 //   >
-// createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
+// createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
 // 					   const decoder_type & decoder,
 // 					   const rom_state_type & romStateIn,
 // 					   const fom_native_state & fomRef,
 // 					   const precond_type & prec,
 // 					   Args && ...args)
 // {
-//   using return_t = impl::composePreconditionedDefaultProblem_t<
+//   using return_t = impl::composePreconditionedHyperReducedProblem_t<
 //     pressio::ode::implicitmethods::Arbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
 //     ::pressio::ode::types::StepperOrder<order>,

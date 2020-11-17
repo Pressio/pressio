@@ -76,7 +76,7 @@ private:
   using At = FomObjMixin<fom_system_t>;
   using Bt = FomStatesMngrMixin<At, void, fom_state_t,
 				fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = PrecHypRedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
+  using Ct = PrecHypRedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t, void>;
   using mem_t = SystemMixin<Ct, system_t>;
   mem_t members_;
 

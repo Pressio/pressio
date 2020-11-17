@@ -344,7 +344,7 @@ struct PoliciesMixin<
 // specialize for preconditioned hyp-red with void stencil-to-sample mapping
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
 struct PoliciesMixin<
-  T, false, false, true, true, ops_t, r_pol_t, j_pol_t
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, void
   > : T
 {
   r_pol_t residualPolicy_;
@@ -373,6 +373,41 @@ struct PoliciesMixin<
   {}
 };
 
+// specialize for preconditioned hyp-red with nonvoid stencil-to-sample mapping
+template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
+struct PoliciesMixin<
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, sTos_t
+  > : T
+{
+  sTos_t  meshToStencilMapper_;
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  PoliciesMixin() = delete;
+  PoliciesMixin(const PoliciesMixin &) = default;
+  PoliciesMixin & operator=(const PoliciesMixin &) = delete;
+  PoliciesMixin(PoliciesMixin &&) = default;
+  PoliciesMixin & operator=(PoliciesMixin &&) = delete;
+  ~PoliciesMixin() = default;
+
+  template<
+    typename T1, typename T2, typename T3, typename T4, typename T5, typename T6,
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
+  PoliciesMixin(const T1 & romStateIn,
+		const T2 & fomObj,
+		const T3 & decoder,
+		const T4 & fomNominalStateNative,
+		const T5 & preconditioner,
+		const T6 & meshToStencilMapper)
+    : T(fomObj, decoder, romStateIn, fomNominalStateNative),
+      meshToStencilMapper_(meshToStencilMapper),
+      residualPolicy_(preconditioner, T::fomStatesMngr_, meshToStencilMapper_),
+      jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder, meshToStencilMapper_)
+  {}
+};
+
 // aliases to make things easier
 template <typename T, typename ...Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;
@@ -388,7 +423,6 @@ using HypRedPoliciesMixin = PoliciesMixin<T, false, false, false, true, Args...>
 
 template <typename T, typename ...Args>
 using PrecHypRedPoliciesMixin = PoliciesMixin<T, false, false, true, true, Args...>;
-
 
 
 //---------------------------------------------------
