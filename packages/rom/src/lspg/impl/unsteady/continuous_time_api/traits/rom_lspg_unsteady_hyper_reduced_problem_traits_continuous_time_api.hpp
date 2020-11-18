@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_preconditioned_problem_traits_continuous_time_api.hpp
+// rom_lspg_unsteady_hyper_reduced_problem_traits_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -61,7 +61,7 @@ namespace details{
 /* remember that hype-reduction does not necessarily need the sample_to_stencil.
    For Trilinos data structures, we can handle states and residuals that
    with different extents by default since we can use the underlying data maps.
-   For shared-mem FOM using, e.g., eigen, or for pressio4py, sample_to_stencil
+   For shared-mem FOM sample_to_stencil
    is needed because we can use it to easily enforse the hyp-red ourselves.
    SO sample_to_stencil can be void in the formar scenario.
  */
@@ -81,6 +81,8 @@ struct traits<
     >
   >
 {
+  static const bool is_unsteady_lspg = true;
+
   using common_types_t =
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
@@ -140,6 +142,9 @@ struct traits<
   mpl::enable_if_t< !std::is_void<sample_to_stencil_type>::value >
   >
 {
+  static const bool is_steady_lspg = false;
+  static const bool is_unsteady_lspg = true;
+
   using common_types_t =
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
       stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;

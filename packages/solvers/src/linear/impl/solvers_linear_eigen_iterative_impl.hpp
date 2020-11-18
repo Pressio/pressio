@@ -77,10 +77,6 @@ public:
 		 "The native eigen solver must be iterative to use in EigenIterative");
 
 public:
-  EigenIterative() = default;
-  EigenIterative(const EigenIterative &) = delete;
-  ~EigenIterative() = default;
-
   iteration_t numIterationsExecuted() const
   {
     return mysolver_.iterations();
@@ -116,6 +112,7 @@ public:
     this->solve(b, y);
   }
 
+private:
   friend base_iterative;
   native_solver_t mysolver_ = {};
 };

@@ -52,27 +52,20 @@
 namespace pressio{ namespace solvers{ namespace linear {
 
 namespace iterative{
-  struct CG {};
-  struct LSCG {};
-  struct Bicgstab {};
-}//end iterative
+struct CG {};
+struct LSCG {};
+struct Bicgstab {};
+}
 
 namespace direct{
-  struct HouseholderQR {};
-  struct ColPivHouseholderQR {};
-  struct PartialPivLU {};
-  struct potrsL {};
-  struct potrsU {};
-
-  #if defined PRESSIO_ENABLE_TPL_TRILINOS or defined PRESSIO_ENABLE_TPL_KOKKOS
-  struct getrs{};
-  struct geqrf{};
-  #endif
-}//end direct
-
-// // Preconditioner types
-// struct Jacobi {};
-// struct DefaultPreconditioner {};
+struct HouseholderQR {};
+struct ColPivHouseholderQR {};
+struct PartialPivLU {};
+struct potrsL {};
+struct potrsU {};
+struct getrs{};
+struct geqrf{};
+}
 
 }}}//end namespace pressio::solvers::linear
 

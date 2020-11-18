@@ -62,14 +62,13 @@ int main(int argc, char *argv[]){
     using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
     qr_solver_type qrSolver;
 
-    auto solver = pressio::solvers::nonlinear::createGaussNewtonQR(
-      lspgProblem.stepperRef(), yROM, qrSolver);
+    auto solver = pressio::rom::lspg::createGaussNewtonQRSolver(lspgProblem, yROM, qrSolver);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
     solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
 
-    // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
+    // solve
+    pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);

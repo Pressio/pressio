@@ -47,15 +47,15 @@ if( NOT cmake_build_type_tolower STREQUAL "debug"
 endif()
 
 #=====================================================================
-# we need c++14
+# c++ standard
 #=====================================================================
-# commands to test if compiler supports C++11
-#include(CheckCXXCompilerFlag)
-#check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
-#if(NOT COMPILER_SUPPORT_CPP11)
-#  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
-#endif()
-set(CMAKE_CXX_STANDARD 14)
+# commands to test if compiler supports standard
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORT_CPP11)
+if(NOT COMPILER_SUPPORT_CPP11)
+  message(FATAL_ERROR "Compiler does not support -std=c++11. This is required.")
+endif()
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -104,7 +104,6 @@ include(tplBlas)
 include(tplLapack)
 include(tplKokkos)
 message("")
-
 
 #=====================================================================
 # unit tests are enabled if

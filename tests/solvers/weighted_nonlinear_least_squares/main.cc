@@ -80,20 +80,19 @@ int main()
     system_t sysObj(checkStr);
 
     MyLinSolverNormalEq linSolverObj(checkStr);
-    WeightingOperator M;
 
     using state_t = typename system_t::state_type;
     state_t x(numVars);
 
 #if defined USE_GN_NEQ
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(sysObj,x,linSolverObj,M);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(sysObj,x,linSolverObj, WeightingOperator());
     solver.setMaxIterations(2);
     solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
     solver.solve(sysObj, x);
 #endif
 
 #if defined USE_LM_NEQ
-    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sysObj,x,linSolverObj,M);
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sysObj,x,linSolverObj, WeightingOperator());
     solver.setMaxIterations(2);
     solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
     solver.solve(sysObj, x);

@@ -126,24 +126,20 @@ int main()
 
 // test GN normal eq
 #if defined USE_GN_NEQ
-    using solver = pressio::solvers::nonlinear::composeGaussNewton_t<
-      system_t, MyLinSolverNormalEq>;
-    solver solver1(sysObj, x, linSolverObj);
-    solver1.setMaxIterations(6);
-    solver1.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
-    solver1.setSystemJacobianUpdateFreq(3);
-    solver1.solve(sysObj, x);
+    auto solver = pressio::solvers::nonlinear::createGaussNewton(sysObj, x, linSolverObj);    
+    solver.setMaxIterations(6);
+    solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
+    solver.setSystemJacobianUpdateFreq(3);
+    solver.solve(sysObj, x);
 #endif
 
 // test LM 
 #if defined USE_LM_NEQ
-    using solver = pressio::solvers::nonlinear::composeLevenbergMarquardt_t<
-      system_t, MyLinSolverNormalEq>;
-    solver solver1(sysObj, x, linSolverObj);
-    solver1.setMaxIterations(6);
-    solver1.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
-    solver1.setSystemJacobianUpdateFreq(3);
-    solver1.solve(sysObj, x);
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sysObj, x, linSolverObj);    
+    solver.setMaxIterations(6);
+    solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
+    solver.setSystemJacobianUpdateFreq(3);
+    solver.solve(sysObj, x);
 #endif
   }
 

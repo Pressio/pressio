@@ -72,7 +72,9 @@ public:
     return wrappedObj_(ex);
   }
 
-  void gradient( ROL::Vector<scalar_type> &g, const ROL::Vector<scalar_type> &x, scalar_type &tol )
+  void gradient( ROL::Vector<scalar_type> &g,
+		 const ROL::Vector<scalar_type> &x,
+		 scalar_type &tol )
   {
     const state_type & x2 = static_cast<const state_type&>(x);
     state_type	     & g2 = static_cast<state_type&>(g);

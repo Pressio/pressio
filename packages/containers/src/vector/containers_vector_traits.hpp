@@ -88,6 +88,7 @@ struct traits<
 };
 
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 //*******************************
 // Eigen STATIC ROW vector
 //*******************************
@@ -232,6 +233,7 @@ struct traits<
   using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
 };
+#endif //PRESSIO_ENABLE_TPL_EIGEN
 
 
 //*******************************

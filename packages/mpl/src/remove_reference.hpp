@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_levenberg_merquardt.hpp
+// remove_reference.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,22 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
+#ifndef MPL_REMOVE_REFERENCE_HPP_
+#define MPL_REMOVE_REFERENCE_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace mpl{
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+template<class T>
+struct remove_reference;
 
-template<typename system_t, typename ... Args>
-using composeLM = impl::compose<
-  system_t, LM, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
+template<class T>
+struct remove_reference{
+  using type = typename std::remove_reference<T>::type;
+};
 
-template<typename system_t, typename ... Args>
-using composeLM_t = typename composeLM<system_t, Args...>::type;
+template<class T>
+using remove_reference_t = typename remove_reference<T>::type;
 
-template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt = composeLM<system_t, Args...>;
+}} // namespace pressio::mpl
 
-template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
-
-
-template<typename system_t, typename state_t, typename ...Args>
-auto createLevenbergMarquardt(const system_t & system,
-			      const state_t & state,
-			      Args && ...args)
-{
-  using return_t = composeLevenbergMarquardt_t<system_t, typename std::decay<Args>::type...>;
-  return return_t( system, state, std::forward<Args>(args)...);
-}
-
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
+#endif  // MPL_REMOVE_REFERENCE_HPP_

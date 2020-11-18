@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// rom_predicates.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_SRC_PREDICATES_HPP_
-#define PRESSIO_ROM_SRC_PREDICATES_HPP_
+#ifndef ROM_PREDICATES_ROM_PREDICATES_HPP_
+#define ROM_PREDICATES_ROM_PREDICATES_HPP_
 
 #include "./typedefs/rom_has_dense_matrix_typedef.hpp"
 
@@ -71,4 +71,4 @@
 #include "./apply_discrete_time_jacobian_methods/rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
 #include "./apply_discrete_time_jacobian_methods/rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
 
-#endif
+#endif  // ROM_PREDICATES_ROM_PREDICATES_HPP_

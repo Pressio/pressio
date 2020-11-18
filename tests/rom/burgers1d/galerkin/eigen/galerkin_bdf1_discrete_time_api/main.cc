@@ -64,20 +64,18 @@ struct GalerkinBDF1WithResidualApi
       pressio::rom::galerkin::createDefaultProblem<rom_jacobian_t, 1, 2>
       (appobj, decoderObj, yROM_, yRef);
 
-    auto & stepperObj = Problem.stepperRef();
-
     // linear solver
     using solver_tag	 = pressio::solvers::linear::iterative::LSCG;
     using linear_solver_t  = pressio::solvers::linear::Solver<solver_tag, rom_jacobian_t>;
     linear_solver_t linSolverObj;
 
     // nonlinear system
-    auto solver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, yROM_, linSolverObj);
+    auto solver = pressio::rom::galerkin::createNewtonRaphsonSolver(Problem, yROM_, linSolverObj);
     solver.setTolerance(1e-12);
     solver.setMaxIterations(4);
 
     // integrate in time
-    pressio::ode::advanceNSteps(stepperObj, yROM_, 0.0, dt, 15, solver);
+    pressio::rom::galerkin::solveNSteps(Problem, yROM_, 0.0, dt, 15, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = Problem.fomStateReconstructorCRef()(yROM_);

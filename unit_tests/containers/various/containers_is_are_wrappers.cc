@@ -4,7 +4,6 @@
 
 using eigvec_d_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
-
 TEST(containers_meta, is_wrapper)
 {
   using myv1_t = pressio::containers::Vector<eigvec_d_t>;

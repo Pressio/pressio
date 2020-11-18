@@ -62,7 +62,6 @@ template <
   typename pre_states_type,
   typename scalar_type
   >
-// mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
 void discrete_time_residual(const state_type	& odeCurrentState,
 			    residual_type & R,
 			    const pre_states_type & prevStates,
@@ -83,7 +82,6 @@ template <
   typename pre_states_type,
   typename scalar_type
   >
-// mpl::enable_if_t<std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
 void discrete_time_residual(const state_type	& odeCurrentState,
 			    residual_type & R,
 			    const pre_states_type & prevStates,
@@ -102,9 +100,9 @@ void discrete_time_residual(const state_type	& odeCurrentState,
   // R contains already f(y_n,t_n) so we can just update R by doing
   // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
   ::pressio::ops::update(R, cf,
-			    odeCurrentState, cn,
-			    prevStates.stateAt(nm1()), cnm1,
-			    prevStates.stateAt(nm2()), cnm2);
+			 odeCurrentState, cn,
+			 prevStates.stateAt(nm1()), cnm1,
+			 prevStates.stateAt(nm2()), cnm2);
 }
 
 }}}//end namespace pressio::ode::impl

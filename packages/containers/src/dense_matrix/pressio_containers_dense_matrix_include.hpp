@@ -50,9 +50,11 @@
 #define CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
 
 /* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */ 
+concrete classes depend on traits which depend on predicates. */
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_epetra.hpp"
 #include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_teuchos.hpp"
@@ -70,8 +72,10 @@ concrete classes depend on traits which depend on predicates. */
 #include "./containers_dense_matrix_traits.hpp"
 
 // concrete
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
 #include "./concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
+#endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./concrete/containers_matrix_dense_distributed_epetra.hpp"
 #include "./concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"

@@ -106,7 +106,8 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value,
+  ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value,
+  // ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -133,6 +134,7 @@ product(::pressio::transpose modeA,
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  // ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
@@ -208,11 +210,11 @@ product(::pressio::transpose modeA,
 }
 
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  (::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value),
+  ::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -222,6 +224,27 @@ product(::pressio::transpose modeA,
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
 		"Types are not scalar compatible");
+
+  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+  C_type C(A.numVectors(), A.numVectors());
+  product(modeA, modeB, alpha, A, zero, C);
+  return C;
+}
+#endif
+
+template <typename C_type, typename A_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value,
+  C_type
+  >
+product(::pressio::transpose modeA,
+  ::pressio::nontranspose modeB,
+  const scalar_type alpha,
+  const A_type & A)
+{
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+    "Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());

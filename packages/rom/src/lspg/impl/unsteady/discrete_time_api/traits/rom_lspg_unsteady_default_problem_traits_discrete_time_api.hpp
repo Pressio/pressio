@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_TRAITS_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ 
+namespace pressio{ namespace rom{
 
 //fwd declare problem class
 namespace lspg{ namespace impl{ namespace unsteady{
@@ -72,7 +72,8 @@ struct traits<
     >
   >
 {
-  // pick the common types holder
+  static const bool is_unsteady_lspg = true;
+
   using common_types_t =
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsDiscreteTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, Args...>;

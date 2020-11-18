@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "pressio_containers.hpp"
 
-
 TEST(containers_meta_detect_typedefs, scalarTypedefDetect)
 {
   using namespace pressio;
@@ -50,7 +49,7 @@ TEST(containers_meta_detect_typedefs, ordinalTypedefDetect)
     using ordinal_type = int;
     ordinal_type x;
   };
-  EXPECT_EQ( containers::predicates::has_ordinal_typedef<C>::value, true);  
+  EXPECT_EQ( containers::predicates::has_ordinal_typedef<C>::value, true);
 }
 
 
@@ -84,7 +83,7 @@ TEST(containers_meta_detect_typedefs, localglobalOrdinalTypedefDetect)
     using global_ordinal_type = int;
     global_ordinal_type x2;
   };
-  EXPECT_EQ( containers::predicates::has_local_ordinal_typedef<C>::value, true);  
+  EXPECT_EQ( containers::predicates::has_local_ordinal_typedef<C>::value, true);
   EXPECT_EQ( containers::predicates::has_global_ordinal_typedef<C>::value, true);
 }
 
@@ -119,7 +118,6 @@ TEST(containers_meta_detect_typedefs, mapCommTypedefDetect)
     using communicator_type = int;
     communicator_type x2;
   };
-  EXPECT_EQ( containers::predicates::has_data_map_typedef<C>::value, true);  
+  EXPECT_EQ( containers::predicates::has_data_map_typedef<C>::value, true);
   EXPECT_EQ( containers::predicates::has_communicator_typedef<C>::value, true);
 }
-

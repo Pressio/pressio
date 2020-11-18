@@ -73,6 +73,9 @@ struct traits<
     >
   >
 {
+  static const bool is_steady_lspg = false;
+  static const bool is_unsteady_lspg = true;
+
   using common_types_t =
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
@@ -132,8 +135,7 @@ struct traits<
   using stepper_t = ::pressio::ode::ImplicitStepper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     aux_stepper_t, residual_policy_t, jacobian_policy_t>;
-
-};//end class
+};
 
 }}}//end  namespace pressio::rom::lspg::unstedy::impl
 #endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_PRECONDITIONED_PROBLEM_TRAITS_CONTINUOUS_TIME_API_HPP_

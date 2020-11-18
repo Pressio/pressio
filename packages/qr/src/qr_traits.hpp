@@ -160,7 +160,7 @@ struct impl_class_helper<
 };
 #endif
 
-
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <
   typename matrix_t, typename R_t, typename wrap_Q_type, template <typename...> class Q_type>
 struct impl_class_helper<
@@ -184,8 +184,9 @@ struct impl_class_helper<
 {
   using impl_t = impl::QRHouseholderEigenMultiVectorWrapper<matrix_t, R_t, Q_type>;
 };
+#endif
 
-
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 /*
  * specialize for:
  *	Eigen::DenseMatrixWrapper,
@@ -226,7 +227,7 @@ struct traits<
   using base_solve_t	= QRSolveBase<concrete_t>;
   using impl_t		= typename impl_class_helper<matrix_t, algo_t, void, nat_Q_t, Q_type>::impl_t;
 };
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 

@@ -19,7 +19,6 @@ void readBasis(std::string filename, result_t & phi)
 }
 }
 
-
 template <typename sc_t, typename dec_jac_t>
 struct myOpsResidualApi
 {
@@ -203,8 +202,8 @@ struct EulerLSPGWithResidualApi
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
 
-    ops1_t myOps1;
-    opsGN_t myOps2;
+    const ops1_t myOps1;
+    const opsGN_t myOps2;
 
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;
@@ -240,14 +239,11 @@ struct EulerLSPGWithResidualApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(
-              lspgProblem.stepperRef(), yROM_, linSolverObj, myOps2);
-
+    auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
-
-    // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
+    // solve
+    pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);

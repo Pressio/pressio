@@ -49,14 +49,17 @@
 #ifndef CONTAINERS_SPARSE_MATRIX_PRESSIO_CONTAINERS_SPARSE_MATRIX_INCLUDE_HPP_
 #define CONTAINERS_SPARSE_MATRIX_PRESSIO_CONTAINERS_SPARSE_MATRIX_INCLUDE_HPP_
 
-// predicates for wrappers
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./wrapper_detection_predicates/containers_is_sparse_matrix_wrapper_eigen.hpp"
+#endif
 #include "./wrapper_detection_predicates/containers_is_sparse_matrix_wrapper.hpp"
 
 // traits
 #include "./containers_sparse_matrix_traits.hpp"
 
 // concrete
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
+#endif
 
 #endif  // CONTAINERS_SPARSE_MATRIX_PRESSIO_CONTAINERS_SPARSE_MATRIX_INCLUDE_HPP_

@@ -67,6 +67,7 @@ class QRSolveBase;
 
 namespace impl{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<
   typename matrix_type,
   typename R_t = void,
@@ -80,8 +81,11 @@ template<
   template <typename...> class Q_type = containers::MultiVector,
   typename enable= void>
 class QRHouseholderEigenMultiVectorWrapper;
+#endif
+
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<
   typename matrix_t,
   typename R_t,
@@ -93,6 +97,7 @@ template<
   typename R_t,
   template <typename...> class Q_type = containers::MultiVector>
 class TpetraMVHouseholderUsingEigen;
+#endif
 
 template<
   typename matrix_t,

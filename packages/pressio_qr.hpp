@@ -71,7 +71,9 @@
 #include "qr/src/impl/qr_out_of_place.hpp"
 #include "qr/src/impl/qr_in_place.hpp"
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "qr/src/impl/eigen/qr_eigen_dense_out_of_place_impl.hpp"
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "qr/src/impl/epetra/qr_epetra_multi_vector_tsqr_impl.hpp"

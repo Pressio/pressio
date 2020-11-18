@@ -59,7 +59,6 @@
 #include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_vector_wrapper.hpp"
 #include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
 
-
 // predicates
 #include "ops/src/predicates/ops_has_method_deep_copy.hpp"
 #include "ops/src/predicates/ops_has_method_set_zero.hpp"
@@ -82,6 +81,7 @@
 
 
 // Eigen
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "ops/src/eigen/ops_set_zero.hpp"
 #include "ops/src/eigen/ops_scale.hpp"
 #include "ops/src/eigen/ops_fill.hpp"
@@ -96,9 +96,10 @@
 #include "ops/src/eigen/ops_dot.hpp"
 #include "ops/src/eigen/ops_vector_update.hpp"
 #include "ops/src/eigen/ops_elementwise_multiply.hpp"
+#endif
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 // Kokkos
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "ops/src/kokkos/ops_set_zero.hpp"
 #include "ops/src/kokkos/ops_scale.hpp"
 #include "ops/src/kokkos/ops_fill.hpp"
@@ -113,8 +114,8 @@
 #include "ops/src/kokkos/ops_elementwise_multiply.hpp"
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // Epetra
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "ops/src/epetra/ops_set_zero.hpp"
 #include "ops/src/epetra/ops_fill.hpp"
 #include "ops/src/epetra/ops_deep_copy.hpp"
@@ -155,8 +156,8 @@
 #include "ops/src/tpetra_block/ops_multi_vector_update.hpp"
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // pybind11
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "ops/src/pybind11/ops_fill.hpp"
 #include "ops/src/pybind11/ops_set_zero.hpp"
 #include "ops/src/pybind11/ops_deep_copy.hpp"

@@ -55,9 +55,7 @@ int main(int argc, char *argv[]){
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
-  using lspg_problem = typename pressio::rom::lspg::composeMaskedProblem<
-      ode_tag, fom_t, decoder_t, lspg_state_t, mask_t>::type;
-  lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef, masker);
+  auto lspgProblem = pressio::rom::lspg::createMaskedProblemUnsteady<ode_tag>(appobj, decoderObj, yROM, yRef, masker);
 
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
@@ -67,13 +65,12 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  auto solver = pressio::solvers::nonlinear::createGaussNewton(
-    lspgProblem.stepperRef(), yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(200);
 
-  // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, dt, 10, solver);
+  // solve
+  pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, 10, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);

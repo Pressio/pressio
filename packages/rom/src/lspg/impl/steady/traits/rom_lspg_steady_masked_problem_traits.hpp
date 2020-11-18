@@ -71,6 +71,9 @@ struct traits<
     >
   >
 {
+  static const bool is_steady_lspg = true;
+  static const bool is_unsteady_lspg = false;
+
   using common_traits =
     ::pressio::rom::lspg::impl::steady::CommonTraits<
     fom_system_type, lspg_state_type, decoder_type>;

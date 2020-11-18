@@ -29,9 +29,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated)
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
 
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
-  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj,y,linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;
@@ -71,12 +69,8 @@ TEST(ode_implicit_euler, guesserLambda)
   using lin_solver_t = solvers::linear::Solver<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
 
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
-  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj,y,linSolverObj);
   NonLinSolver.setMaxIterations(0);
-  // using nonlinear_solver_t = pressio::solvers::NewtonRaphson<stepper_t, lin_solver_t, double>;
-  // nonlinear_solver_t solverO(stepperObj, y, linSolverObj);
 
   // integrate in time
   const auto testLambda = [](const ode::types::step_t & step,
@@ -127,10 +121,7 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser)
   using lin_solver_t = solvers::linear::Solver<
       solvers::linear::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
-  nl_solver_t NonLinSolver(stepperObj, y, linSolverObj);
+  auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj,y,linSolverObj);
 
   // integrate in time
   ::pressio::ode::types::step_t nSteps = 2;

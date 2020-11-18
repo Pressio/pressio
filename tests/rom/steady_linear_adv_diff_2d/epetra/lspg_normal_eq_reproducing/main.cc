@@ -73,7 +73,6 @@ int main(int argc, char *argv[]){
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
     appObjROM, decoderObj, yROM, *yRef);
 
-
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t  = pressio::containers::DenseMatrix<eig_dyn_mat>;
@@ -82,11 +81,10 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.systemRef(), yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.systemRef(), yROM);
+  pressio::rom::lspg::solveSteady(lspgProblem, yROM, solver);
 
   std::cout << std::setprecision(15) << *yROM.data() << std::endl;
 

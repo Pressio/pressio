@@ -230,8 +230,11 @@ struct EulerLSPGWithVelocityApi
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
 
-    ops1_t myOps1;
-    opsGN_t myOps2;
+    const ops1_t myOps1;
+    const opsGN_t myOps2;
+
+    static_assert
+      (std::is_const<decltype(myOps2)>::value, "");
 
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;
@@ -253,9 +256,6 @@ struct EulerLSPGWithVelocityApi
 
     // define LSPG type
     using odetag  = pressio::ode::implicitmethods::Euler;
-    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<
-    //   ode_tag, fom_t, decoder_t, lspg_state_t, ops1_t>::type;
-    // lspg_problem lspgProblem(fomObj, yRef, decoderObj, yROM_, myOps1);
     auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<odetag>(
       fomObj, decoderObj, yROM_, yRef, myOps1);
 
@@ -265,13 +265,11 @@ struct EulerLSPGWithVelocityApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(
-              lspgProblem.stepperRef(), yROM_, linSolverObj, myOps2);
+    auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM_, linSolverObj, myOps2);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
-
-    // integrate in time
-    pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM_, 0.0, dt, 10, solver);
+    //solve
+    pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM_, 0.0, dt, 10, solver);
 
     // compute the fom corresponding to our rom final state
     auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM_);

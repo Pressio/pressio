@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver
     (maskSize, romSize, checkStr);
 
-  pressio::ode::advanceNSteps(problem.stepperRef(), romState, 0.0, dt, 1, solver);
+  pressio::rom::lspg::solveNSequentialMinimizations(problem, romState, 0.0, dt, 1, solver);
 
   std::cout << checkStr <<  std::endl;
   return 0;

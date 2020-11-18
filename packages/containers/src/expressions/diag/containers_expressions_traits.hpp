@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace containers{ namespace details{
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::DiagExpr<matrix_type>,
@@ -97,7 +98,7 @@ struct traits<
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;
 };
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename matrix_type>

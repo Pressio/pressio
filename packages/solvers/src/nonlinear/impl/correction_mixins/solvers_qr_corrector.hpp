@@ -51,9 +51,7 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<
-  typename T, typename state_type, typename qr_solver_t
-  >
+template<class T, class state_type, class qr_solver_t>
 class QRCorrector : public T
 {
 public:
@@ -65,7 +63,7 @@ private:
   state_t QTResid_ = {};
   state_t g_ = {};
 
-  std::reference_wrapper<qr_solver_t> solverObj_;
+  ::pressio::utils::possibly_owning_reference_wrapper<qr_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -89,15 +87,10 @@ public:
     ::pressio::ops::fill(g_, zero);
   }
 
-  // copy constr and assign
   QRCorrector(QRCorrector const &) = default;
   QRCorrector & operator=(QRCorrector const &) = default;
-
-  // move constr and assign
   QRCorrector(QRCorrector && o) = default;
   QRCorrector & operator=(QRCorrector && o) = default;
-
-  // destr
   ~QRCorrector() = default;
 
 public:
@@ -106,7 +99,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
-    T::computeOperators(sys, state, 
+    T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);
     const auto & r = T::residualCRef();

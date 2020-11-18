@@ -38,22 +38,28 @@ jobs:
         cd ..
         mkdir pressio_repos
         PARENT_DIR=$(pwd)
-        echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR
-        echo ::set-env name=PRESSIO_REPOS::$PARENT_DIR/pressio_repos
-        echo ::set-env name=PRESSIO_BUILDS::$PARENT_DIR/pressio_builds
+        echo "WORKSPACE_PARENT_DIR=$PARENT_DIR" >> $GITHUB_ENV
+        echo "PRESSIO_REPOS=$PARENT_DIR/pressio_repos" >> $GITHUB_ENV
+        echo "PRESSIO_BUILDS=$PARENT_DIR/pressio_builds" >> $GITHUB_ENV
+        #echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR
+        #echo ::set-env name=PRESSIO_REPOS::$PARENT_DIR/pressio_repos
+        #echo ::set-env name=PRESSIO_BUILDS::$PARENT_DIR/pressio_builds
         ${{ matrix.config.requirements }}
+
     - name: Cloning Pressio Builder...
       run: |
         cd ${{ env.PRESSIO_REPOS }}
         git clone git://github.com/Pressio/pressio-builder.git
         cd pressio-builder
         git checkout master
+
     - name: Get TPLs...
       run: |
         export TERM=xterm
         docker run -di perrinel/ubuntu-pressio-tpl
         TNAME=$(docker ps --format "{{.Names}}")
         docker cp $TNAME:/home/pressio_builds ${{ env.WORKSPACE_PARENT_DIR }}
+
     - name: Run main_pressio script
       env:
         CC: ${{ matrix.config.cc }}

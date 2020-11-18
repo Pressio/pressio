@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_hyp_red_problem_continuous_time_api.hpp
+// rom_lspg_unsteady_hyper_reduced_problem_continuous_time_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -127,13 +127,12 @@ public:
     : members_(romStateIn, fomObj, decoder, fomNominalStateIn, sTosInfo)
   {}
 
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
     ::pressio::mpl::enable_if_t<_binding_sentinel, int > = 0
     >
-  HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObjPy,
+  HyperReducedProblemContinuousTimeApi(pybind11::object fomObjPy,
 				       const decoder_t & decoder,
 				       const lspg_native_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn,

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_linear_base.hpp
+// rom_view_problem_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,53 +46,32 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_
-#define SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
+#define ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
 
-namespace pressio{ namespace solvers{
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-/**
- * Base class for linear solver
- *
- * @section DESCRIPTION
- *
- * This class defines the public interface for a linear solver class.
- */
-template<typename MatrixT, typename Derived>
-struct LinearBase 
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+  typename rom_problem_t::system_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
 {
+  return problem.systemRef();
+}
 
-  LinearBase() = default;
-  LinearBase(const LinearBase&) = delete;
-  // ~LinearBase() = default;
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_unsteady_lspg,
+  typename rom_problem_t::stepper_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
+{
+  return problem.stepperRef();
+}
 
-  template <typename CompatibleMatrixT>
-  void resetLinearSystem(const CompatibleMatrixT& A)
-  {
-    static_assert(solvers::predicates::are_matrix_compatible<
-		  MatrixT, CompatibleMatrixT>::value,
-		  "Matrix types not compatible");
+}//end namespace impl
 
-    static_cast<Derived&>(*this).resetLinearSystem(A);
-  }
-
-  template <typename VectorT>
-  void solve(const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solve(b, x);
-  }
-
-  template <typename VectorT>
-  void solve(const MatrixT & A, const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solve(A, b, x);
-  }
-
-  // this method allows solver to overwrite matrix
-  template <typename VectorT>
-  void solveAllowMatOverwrite(MatrixT & A, const VectorT & b, VectorT& x) {
-    static_cast<Derived&>(*this).solveAllowMatOverwrite(A, b, x);
-  }
-
-};
-
-}}//end namespace pressio::solvers
-#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_BASE_HPP_
+}}}//end namespace pressio::rom::lspg
+#endif  // ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_

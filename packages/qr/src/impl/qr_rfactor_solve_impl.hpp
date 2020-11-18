@@ -57,7 +57,8 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template< typename vector_type, typename R_type> 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template< typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and
   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<R_type>::value
@@ -71,7 +72,7 @@ solve(const vector_type & rhs,
 
   *nat_y = (*nat_R).template triangularView<Eigen::Upper>().solve(*nat_rhs);
 }
-
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename vector_type, typename R_type>
@@ -103,44 +104,7 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 }
 #endif
 
-
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-// template<
-//   typename vector_type,
-//   typename R_type,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and
-//     ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
-//     > * = nullptr
-//   >
-// void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
-// {
-//   // n is not used here, call the one above
-//   solve(rhs, Rmatrix, y);
-// }
-
-// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-// template<typename vector_type,
-// 	 typename R_type,
-// 	 int n,
-// 	 ::pressio::mpl::enable_if_t<
-// 	   ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and
-// 	   ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value and
-// 	   n != utils::constants::dynamic and n>=1
-// 	   > * = nullptr>
-// void solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
-// {
-//   //using ord_t = typename R_type::element_type::ordinalType;
-//   using sc_t  = typename R_type::element_type::scalarType;
-
-//   //  auto vecSize = rhs.size();
-//   using eigMat = Eigen::Matrix<sc_t, n, n>;
-//   containers::DenseMatrix<eigMat> eigR( Rmatrix->values() );
-//   solve(rhs, eigR, y);
-// }
-// #endif
-
+#if defined(PRESSIO_ENABLE_TPL_TRILINOS) and defined(PRESSIO_ENABLE_TPL_EIGEN)
 template<typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson.hpp
+// solvers_create_levenberg_merquardt.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,22 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MERQUARDT_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MERQUARDT_HPP_
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
 namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = impl::composeNewRaph<
-  system_t,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
-
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson_t =
-  typename composeNewtonRaphson<system_t, Args...>::type;
-
-
 template<typename system_t, typename state_t, typename ...Args>
-auto createNewtonRaphson(const system_t & system,
-			 const state_t & state,
-			 Args && ...args)
+auto createLevenbergMarquardt(const system_t & system,
+			      const state_t & state,
+			      Args && ...args)
+  -> impl::composeLevenbergMarquardt_t<system_t, Args...>
 {
-  using return_t = composeNewtonRaphson_t<system_t, Args...>;
-  return return_t( system, state, std::forward<Args>(args)...);
+  return impl::composeLevenbergMarquardt_t<system_t, Args...>
+  ( system, state, std::forward<Args>(args)...);
 }
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_LEVENBERG_MERQUARDT_HPP_

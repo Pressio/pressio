@@ -127,7 +127,8 @@ See requirements in ode_is_legitimate_collector.hpp");
 template<
   typename stepper_type,
   typename native_python_state_type,
-  typename time_type
+  typename time_type,
+  typename collector_type
   >
 mpl::enable_if_t<
   ::pressio::ode::concepts::explicitly_steppable<
@@ -141,7 +142,8 @@ advanceNSteps(stepper_type & stepper,
 	      native_python_state_type & odeStateInOut,
 	      const time_type start_time,
 	      const time_type dt,
-	      const ::pressio::ode::types::step_t num_steps)
+	      const ::pressio::ode::types::step_t num_steps,
+	      collector_type & collector)
 {
   // here we want to view the odeStateInOut since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
@@ -150,12 +152,19 @@ advanceNSteps(stepper_type & stepper,
   using wrap_state_type = ::pressio::containers::Vector<native_python_state_type>;
   wrap_state_type odeStateView(odeStateInOut, ::pressio::view());
 
+  static_assert
+    (::pressio::ode::concepts::collector<collector_type, time_type, wrap_state_type>::value,
+     "You are trying to call advanceNSteps with an explicit stepper \
+and a collector, but the collector type you are using is not admissible. \
+It does not meet the API of a valid collector. \
+See requirements in ode_is_legitimate_collector.hpp");
+
   using step_policy = impl::ExplicitDoStepBasic;
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, wrap_state_type>;
-  collector_t collector;
   advancer_t::execute<step_policy>(num_steps, start_time,
-				   dt, odeStateView, collector, stepper);
+				   dt, odeStateView,
+				   collector, stepper);
 }
 #endif
 

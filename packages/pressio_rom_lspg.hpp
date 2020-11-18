@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// pressio_rom_lspg.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -70,13 +70,19 @@
 // common classes for rom
 #include "rom/src/pressio_rom_common.hpp"
 
-// lspg classes
-#include "rom/src/lspg/impl/rom_lspg_problem_members.hpp"
+// lspg classes (don't rely on impl ones, these might change)
+#include "rom/src/lspg/impl/rom_problem_members.hpp"
 #include "rom/src/lspg/impl/steady/rom_compose_steady_lspg_impl.hpp"
 #include "rom/src/lspg/impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
-#include "rom/src/lspg/rom_default_lspg.hpp"
-#include "rom/src/lspg/rom_preconditioned_default_lspg.hpp"
-#include "rom/src/lspg/rom_masked_lspg.hpp"
-#include "rom/src/lspg/rom_hyper_reduced_lspg.hpp"
+#include "rom/src/lspg/impl/rom_compose_problem.hpp"
+
+#include "rom/src/lspg/rom_create_default_lspg_problem.hpp"
+#include "rom/src/lspg/rom_create_preconditioned_default_lspg_problem.hpp"
+#include "rom/src/lspg/rom_create_masked_lspg_problem.hpp"
+#include "rom/src/lspg/rom_create_hyper_reduced_lspg_problem.hpp"
+#include "rom/src/lspg/rom_create_preconditioned_hyper_reduced_lspg_problem.hpp"
+
+#include "rom/src/lspg/rom_create_solver_functions.hpp"
+#include "rom/src/lspg/rom_solve_problem_functions.hpp"
 
 #endif

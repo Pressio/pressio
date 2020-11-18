@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
   Observer Obs(checkStr, currFomState);
 
   MyFakeSolver<rom_state_t, typename decoder_t::jacobian_type> solver(fomSize, romSize);
-  pressio::ode::advanceNSteps(problem.stepperRef(), romState,
+  pressio::rom::lspg::solveNSequentialMinimizations(problem, romState,
   			      0.0, dt, 2, Obs, solver);
 
   std::cout << checkStr <<  std::endl;

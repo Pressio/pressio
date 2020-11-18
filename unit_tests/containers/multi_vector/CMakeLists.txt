@@ -4,8 +4,10 @@ set(exeRootName containers_multi_vector)
 #############
 ### EIGEN ###
 #############
-set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_eigen_dynamic_class.cc)
-add_serial_utest(${exeRootName}_eigen_dynamic "${SRC1}")
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/${exeRootName}_eigen_dynamic_class.cc)
+  add_serial_utest(${exeRootName}_eigen_dynamic "${SRC1}")
+endif()
 
 ##############
 ### KOKKOS ###

@@ -46,27 +46,43 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
+#ifndef ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_ROM_STATE_HPP_
+#define ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_ROM_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace concepts {
 
 template<typename T, typename enable = void>
 struct rom_state : std::false_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename T>
 struct rom_state<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+    >
+  > : std::true_type{};
+#endif
+
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    or ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
-#endif
+template<typename T>
+struct rom_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
    >
   > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct rom_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+   >
+  > : std::true_type{};
+#endif
 
 }}} // namespace pressio::ode::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
+#endif  // ROM_WILL_BE_CONCEPTS_VARIOUS_ROM_ROM_STATE_HPP_

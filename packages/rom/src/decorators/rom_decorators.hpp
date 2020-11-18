@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// rom_decorators.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,12 +46,12 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_SRC_DECORATORS_HPP_
-#define PRESSIO_ROM_SRC_DECORATORS_HPP_
+#ifndef ROM_DECORATORS_ROM_DECORATORS_HPP_
+#define ROM_DECORATORS_ROM_DECORATORS_HPP_
 
 #include "rom_preconditioned_decorator_residual.hpp"
 #include "rom_preconditioned_decorator_jacobian.hpp"
 #include "rom_masked_residual_policy.hpp"
 #include "rom_masked_jacobian_policy.hpp"
 
-#endif
+#endif  // ROM_DECORATORS_ROM_DECORATORS_HPP_

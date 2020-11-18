@@ -40,7 +40,7 @@ std::string checkSol(pressio::apps::Burgers1dTpetra & appObj,
   int shift = (rank==0) ? 0 : 10;
   const int myn = yFinal.data()->getMap()->getNodeNumElements();
   for (auto i=0; i<myn; i++)
-    if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
+    if ((std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) or std::isnan(yFF_v[i])) checkStr = "FAILED";
   return checkStr;
 }
 

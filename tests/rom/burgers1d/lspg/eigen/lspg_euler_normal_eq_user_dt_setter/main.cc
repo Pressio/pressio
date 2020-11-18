@@ -81,8 +81,7 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver with normal equations
-  auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.stepperRef(), yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters every step
   solver.setMaxIterations(4);
@@ -94,8 +93,8 @@ int main(int argc, char *argv[]){
      setter_t, pressio::ode::types::step_t, scalar_t>::value,"");
   setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 
-  // integrate in time
-  pressio::ode::advanceNSteps(lspgProblem.stepperRef(), yROM, 0.0, 10, solver, setter);
+  // solve
+  pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, 10, solver, setter);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);

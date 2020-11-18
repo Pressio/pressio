@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// pressio_rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -73,5 +73,7 @@
 
 // galerkin classes
 #include "rom/src/galerkin/rom_compose_and_create_galerkin.hpp"
+#include "rom/src/galerkin/rom_galerkin_create_solver_functions.hpp"
+#include "rom/src/galerkin/rom_galerkin_problem_solve_functions.hpp"
 
 #endif

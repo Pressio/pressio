@@ -73,7 +73,7 @@ std::string checkSol(pressio::apps::Burgers1dEigenDiscreteTimeApi & appObj,
 {
   std::string checkStr {"PASSED"};
   for (int_t i=0;i<fomSize;i++){
-    if (std::abs(yFinal(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
+    if ((std::abs(yFinal(i) - trueY[i]) > 1e-10) or std::isnan(yFinal(i))) checkStr = "FAILED";
   }
   return checkStr;
 }

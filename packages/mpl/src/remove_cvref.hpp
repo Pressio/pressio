@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_advance_n_steps_explicit.hpp
+// remove_cvref.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,22 @@
 //@HEADER
 */
 
-#ifndef ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
-#define ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#ifndef MPL_REMOVE_CVREF_HPP_
+#define MPL_REMOVE_CVREF_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio{ namespace mpl{
 
-// /* these are here just to make it easier for the users
-//    so that they pass a rom problem and don't need to
-//    worry about knowing that they need to get the stepper
-//    and pass that to the ode integrators*/
+template<class T>
+struct remove_cvref;
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceNSteps(rom_problem_type & problem,
-// 		   Args && ...args)
-// {
-//   ::pressio::ode::advanceNSteps
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+template<class T>
+struct remove_cvref{
+  using type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+};
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceToTargetTime(rom_problem_type & problem,
-// 			 Args && ...args)
-// {
-//   ::pressio::ode::advanceToTargetTime
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+template<class T>
+using remove_cvref_t = typename remove_cvref<T>::type;
 
-// template<typename rom_problem_type, typename ...Args>
-// void advanceToTargetTimeWithTimeStepRecovery(rom_problem_type & problem,
-// 					     Args && ...args)
-// {
-//   ::pressio::ode::advanceToTargetTime
-//     (problem.stepperRef(), std::forward<Args>(args)...);
-// }
+}} // namespace pressio::mpl
 
-}}//end namespace pressio::rom
-#endif  // ROM_ROM_UNSTEADY_PROBLEM_ADVANCERS_HPP_
+#endif  // MPL_REMOVE_CVREF_HPP_

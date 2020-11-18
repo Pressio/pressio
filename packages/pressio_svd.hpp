@@ -60,7 +60,7 @@
 
 #include "svd/src/svd_solver_traits.hpp"
 #include "svd/src/svd_solver_generic_base.hpp"
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#if defined(PRESSIO_ENABLE_TPL_TRILINOS) and defined(PRESSIO_ENABLE_TPL_EIGEN)
 #include "svd/src/svd_multi_vector_epetra.hpp"
 #endif
 

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom.hpp
+// rom_decoders.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_SRC_DECODERS_HPP_
-#define PRESSIO_ROM_SRC_DECODERS_HPP_
+#ifndef ROM_DECODER_ROM_DECODERS_HPP_
+#define ROM_DECODER_ROM_DECODERS_HPP_
 
 #include "./rom_linear_decoder.hpp"
 
@@ -55,4 +55,4 @@
 #include "./rom_py_decoder.hpp"
 #endif
 
-#endif
+#endif  // ROM_DECODER_ROM_DECODERS_HPP_

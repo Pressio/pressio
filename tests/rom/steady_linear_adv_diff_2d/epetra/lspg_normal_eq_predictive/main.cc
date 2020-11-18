@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
   // // define LSPG type
   // using lspg_problem_type = typename pressio::rom::lspg::composeDefaultProblem<
   //     fom_adapter_t, decoder_t, lspg_state_t>::type;
-  // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);  
+  // lspg_problem_type lspgProblem(appObjROM, *yRef, decoderObj, yROM);
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemSteady(
     appObjROM, decoderObj, yROM, *yRef);
 
@@ -82,12 +82,11 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver
-  auto solver = pressio::solvers::nonlinear::createGaussNewton(
-      lspgProblem.systemRef(), yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-14);
   solver.setMaxIterations(200);
-  solver.solve(lspgProblem.systemRef(), yROM);
-
+  pressio::rom::lspg::solveSteady(lspgProblem, yROM, solver);
+  
   // reconstruct the fom corresponding to our rom final state
   auto yFomApprox = lspgProblem.fomStateReconstructorCRef()(yROM);
   appObjROM.printStateToFile("rom.txt", *yFomApprox.data());
@@ -95,7 +94,7 @@ int main(int argc, char *argv[]){
   /* this is a predictive run, so we should recover FOM
    * solution only approximately */
   auto normFomY = pressio::ops::norm2(yFom);
-  auto errorVec(yFom); 
+  auto errorVec(yFom);
   pressio::ops::update(errorVec, yFom, 1., yFomApprox, -1.);
   const auto norm2err = pressio::ops::norm2(errorVec);
   if( (norm2err/normFomY)*100 > 0.1 ) checkStr = "FAILED";
