@@ -1,6 +1,6 @@
 name: Github Actions for Pressio
 
-# on: [push]
+on: [push]
 
 jobs:
   build:
