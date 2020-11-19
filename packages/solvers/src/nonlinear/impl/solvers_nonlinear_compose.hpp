@@ -363,7 +363,7 @@ struct compose<
   using weighting_functor_t =
     typename std::conditional<
     (::pressio::solvers::concepts::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
-    extra_nocvref_t, void >::type;
+    extra_t, void >::type;
 
   // the extra_t should be one of the two, cannot be both
   static_assert
