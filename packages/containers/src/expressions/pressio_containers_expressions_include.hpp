@@ -61,6 +61,11 @@
 #include "./diag/containers_expressions_traits.hpp"
 #include "./diag/containers_diag.hpp"
 
+#include "./asdiagonalmatrix/containers_vector_asdiagonalmatrix_expression.hpp"
+#include "./asdiagonalmatrix/containers_asdiagonalmatrix_traits.hpp"
+#include "./asdiagonalmatrix/containers_is_expression_asdiagonalmatrix.hpp"
+#include "./asdiagonalmatrix/containers_asdiagonalmatrix_create.hpp"
+
 #include "containers_is_expression.hpp"
 
 #endif  // CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_

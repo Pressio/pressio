@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_expression.hpp
+// containers_span.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,32 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
-#define CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CREATE_HPP_
+#define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CREATE_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
-
-template <typename T, typename enable = void>
-struct is_expression : std::false_type{};
+namespace pressio{ namespace containers{
 
 template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::SubspanExpr<T>
-  > : std::true_type{};
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper<T>::value,
+  typename details::traits<T>::asdiagonalmatrix_const_ret_t
+  >
+asDiagonalMatrix(const T & vecObj)
+{
+  using return_t = typename details::traits<T>::asdiagonalmatrix_const_ret_t;
+  return return_t(vecObj);
+}
 
 template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::SpanExpr<T>
-  > : std::true_type{};
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper<T>::value,
+  typename details::traits<T>::asdiagonalmatrix_ret_t
+  >
+asDiagonalMatrix(T & vecObj)
+{
+  using return_t = typename details::traits<T>::asdiagonalmatrix_ret_t;
+  return return_t(vecObj);
+}
 
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::DiagExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
-  > : std::true_type{};
-
-
-// template <typename T, typename enable = void>
-// struct is_diag_expression : std::false_type{};
-
-// template <typename T>
-// struct is_diag_expression<
-//   ::pressio::containers::expressions::DiagExpr<T>
-//   > : std::true_type{};
-
-// template <typename T>
-// struct is_diag_expression<
-//   const ::pressio::containers::expressions::DiagExpr<T>
-//   > : is_diag_expression<T>{};
-
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CREATE_HPP_

@@ -52,7 +52,6 @@
 namespace pressio{
 
 struct view{};
-
 struct matrixFull{};
 struct matrixUpperTriangular{};
 struct matrixLowerTriangular{};
@@ -60,73 +59,31 @@ struct matrixLowerTriangular{};
 namespace containers{
 
 namespace details {
+template<class T, class enable = void> struct traits;
+template<class T> struct traits<const T> : traits<T> {};
+}//end namespace pressio::containers::details
+
+template <class wrapped_type, class Enable = void> class Vector;
+template <class wrapped_type, class Enable = void> class MultiVector;
+template <class wrapped_type, class Enable = void> class DenseMatrix;
+template <class wrapped_type, class Enable = void> class SparseMatrix;
+
+namespace predicates{
+template<class T, class enable = void>
+struct is_sharedmem_vector_wrapper : std::false_type{};
+template<class T, class enable = void>
+struct is_sharedmem_host_accessible_vector_wrapper : std::false_type{};
 template<typename T, typename enable = void>
-struct traits;
-
-template<typename T>
-struct traits<const T> : traits<T> {};
-}//end namespace containers::details
-
-template<typename derived_type>
-class ContainerBase;
-
-template<typename derived_type>
-class ContainerDistributedBase;
-template<typename derived_type>
-class ContainerSharedMemBase;
-
-template<typename derived_type>
-class DenseMatrixDistributedBase;
-template<typename derived_type>
-class DenseMatrixSharedMemBase;
-
-template<typename derived_type>
-class MultiVectorDistributedBase;
-template<typename derived_type>
-class MultiVectorSharedMemBase;
-
-template<typename derived_type>
-class VectorDistributedBase;
-template<typename derived_type>
-class VectorSharedMemBase;
-
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class Vector;
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class MultiVector;
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class DenseMatrix;
-
-template <
-  typename wrapped_type,
-  typename Enable = void>
-class SparseMatrix;
-
+struct is_sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
+}//end namespace pressio::containers::predicates
 
 namespace expressions{
-
-template <typename derived_type>
-class BaseExpr{};
-
-template <typename mat_t, typename enable = void>
-struct SubspanExpr;
-
-template <typename vec_t, typename enable = void>
-struct SpanExpr;
-
-template <typename mat_t, typename enable = void>
-struct DiagExpr;
-
-}
+template <class derived_type> class BaseExpr{};
+template <class mat_t, class enable = void> struct SubspanExpr;
+template <class vec_t, class enable = void> struct SpanExpr;
+template <class mat_t, class enable = void> struct DiagExpr;
+template <class vec_t, class enable = void> struct AsDiagonalMatrixExpr;
+}//end namespace pressio::containers::expresssions
 
 }} // end namespace pressio::containers
 #endif  // CONTAINERS_CONTAINERS_FWD_HPP_

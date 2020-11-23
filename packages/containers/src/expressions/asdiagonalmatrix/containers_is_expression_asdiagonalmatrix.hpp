@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_expression.hpp
+// containers_is_expression_asdiagonalmatrix.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,23 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
-#define CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
+#define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_expression : std::false_type{};
+struct asdiagonalmatrix_expression : std::false_type{};
 
 template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::SubspanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::SpanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::DiagExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
+struct asdiagonalmatrix_expression<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
   > : std::true_type{};
 
-
-// template <typename T, typename enable = void>
-// struct is_diag_expression : std::false_type{};
-
-// template <typename T>
-// struct is_diag_expression<
-//   ::pressio::containers::expressions::DiagExpr<T>
-//   > : std::true_type{};
-
-// template <typename T>
-// struct is_diag_expression<
-//   const ::pressio::containers::expressions::DiagExpr<T>
-//   > : is_diag_expression<T>{};
+template <typename T>
+struct asdiagonalmatrix_expression<
+  const ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
+  > : asdiagonalmatrix_expression<T>{};
 
 }}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
