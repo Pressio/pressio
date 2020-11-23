@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_containers_vector_include.hpp
+// containers_sharedmem_host_accessible_vector_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,53 +46,45 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
-#define CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
+#ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+#define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
 
-/* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */
+namespace pressio{ namespace containers{ namespace predicates {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./wrapper_predicates/containers_is_vector_wrapper_eigen.hpp"
+template<typename T>
+struct is_sharedmem_host_accessible_vector_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+   >
+  > : std::true_type{};
 #endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_predicates/containers_is_vector_wrapper_pybind.hpp"
-#endif
+
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_predicates/containers_is_vector_wrapper_epetra.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_teuchos.hpp"
+template<typename T>
+struct is_sharedmem_host_accessible_vector_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
+   >
+  > : std::true_type{};
 #endif
+
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./wrapper_predicates/containers_is_vector_wrapper_kokkos.hpp"
+template<typename T>
+struct is_sharedmem_host_accessible_vector_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
+    and
+    std::is_same<
+      typename ::pressio::containers::details::traits<T>::memory_space,
+      Kokkos::HostSpace
+      >::value
+   >
+  > : std::true_type{};
 #endif
-#include "./wrapper_predicates/containers_is_vector_wrapper_arbitrary.hpp"
-#include "./wrapper_predicates/containers_is_sharedmem_vector_wrapper.hpp"
-#include "./wrapper_predicates/containers_is_sharedmem_host_accessible_vector_wrapper.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper.hpp"
 
-// traits
-#include "./containers_vector_traits.hpp"
-
-// concrete types
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
-#include "./concrete/containers_vector_sharedmem_eigen_static.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./concrete/containers_vector_sharedmem_pybind11.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./concrete/containers_vector_distributed_epetra.hpp"
-#include "./concrete/containers_vector_distributed_tpetra_block.hpp"
-#include "./concrete/containers_vector_distributed_tpetra.hpp"
-#include "./concrete/containers_vector_sharedmem_teuchos_serial_dense.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./concrete/containers_vector_sharedmem_kokkos.hpp"
-#endif
-#include "./concrete/containers_vector_arbitrary.hpp"
-
-
-#endif  // CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
+}}} // namespace pressio::containers::predicates
+#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_

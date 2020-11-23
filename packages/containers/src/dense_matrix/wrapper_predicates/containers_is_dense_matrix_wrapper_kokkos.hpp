@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_containers_dense_matrix_include.hpp
+// containers_is_dense_matrix_wrapper_kokkos.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,55 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
-#define CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
+#ifndef CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_KOKKOS_HPP_
+#define CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_KOKKOS_HPP_
 
-/* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */
+namespace pressio{ namespace containers{ namespace predicates {
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_epetra.hpp"
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_teuchos.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_kokkos.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_pybind11.hpp"
-#endif
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_arbitrary.hpp"
-#include "./wrapper_predicates/containers_is_dense_matrix_wrapper.hpp"
-#include "./wrapper_predicates/containers_is_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
+template <typename T, typename enable = void>
+struct is_dynamic_dense_matrix_wrapper_kokkos : std::false_type {};
 
-// traits
-#include "./containers_dense_matrix_traits.hpp"
+template <typename T>
+struct is_dynamic_dense_matrix_wrapper_kokkos<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_matrix &&
+       containers::details::traits<T>::is_dynamic &&
+       (containers::details::traits<T>::wrapped_matrix_identifier==
+	containers::details::WrappedMatrixIdentifier::DenseKokkos)
+       >
+  >
+  : std::true_type{};
 
-// concrete
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./concrete/containers_matrix_dense_sharedmem_eigen_dynamic.hpp"
-#include "./concrete/containers_matrix_dense_sharedmem_eigen_static.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./concrete/containers_matrix_dense_distributed_epetra.hpp"
-#include "./concrete/containers_matrix_dense_sharedmem_teuchos_serial.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./concrete/containers_matrix_dense_sharedmem_kokkos.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./concrete/containers_matrix_dense_sharedmem_pybind11.hpp"
-#endif
-#include "./concrete/containers_matrix_dense_arbitrary.hpp"
 
-#endif  // CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
+
+template <typename T, typename enable = void>
+struct is_static_dense_matrix_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_static_dense_matrix_wrapper_kokkos<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_matrix &&
+       containers::details::traits<T>::is_static &&
+       (containers::details::traits<T>::wrapped_matrix_identifier==
+	containers::details::WrappedMatrixIdentifier::DenseKokkos)
+       >
+  >
+  : std::true_type{};
+
+
+
+template <typename T, typename enable = void>
+struct is_dense_matrix_wrapper_kokkos : std::false_type {};
+
+template <typename T>
+struct is_dense_matrix_wrapper_kokkos<
+  T, ::pressio::mpl::enable_if_t<
+       containers::details::traits<T>::is_matrix &&
+       containers::details::traits<T>::wrapped_matrix_identifier==
+       containers::details::WrappedMatrixIdentifier::DenseKokkos
+       >
+  >
+  : std::true_type{};
+
+}}}//end namespace pressio::containers::predicates
+#endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_KOKKOS_HPP_
