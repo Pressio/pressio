@@ -53,6 +53,7 @@ namespace pressio{ namespace solvers{ namespace nonlinear{
 
 struct NewtonRaphson{};
 struct GaussNewton{};
+struct IrwGaussNewton{};
 struct GaussNewtonQR{};
 struct LevenbergMarquardt{};
 using LM = LevenbergMarquardt;

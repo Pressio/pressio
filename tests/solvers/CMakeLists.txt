@@ -3,6 +3,7 @@ add_subdirectory(linear)
 add_subdirectory(nonlinear_least_squares)
 add_subdirectory(nonlinear_least_squares_frozen_jacobian)
 add_subdirectory(weighted_nonlinear_least_squares)
+add_subdirectory(irwls_gauss_newton)
 
 if (PRESSIO_ENABLE_TPL_EIGEN)
 add_serial_exe_and_test(newton_raphson_eigen
