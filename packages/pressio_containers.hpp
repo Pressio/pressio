@@ -79,7 +79,7 @@ headers are included (and classes found) in the proper order.
 // predicates for native types detection
 //-----------------------------------------
 // for pybind we don't have a distinction for vec/mat/mv, because pybind arrays
-// can have dimensions. so there is not yet a way to detect if it is a vector at compile time.
+// there is no way to detect if it is a vector or something else at compile time.
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 #include "containers/src/predicates/native_types_detection/containers_native_pybind_array.hpp"
 #endif
@@ -147,10 +147,10 @@ headers are included (and classes found) in the proper order.
 //-------------------------------------------
 #include "containers/src/predicates/containers_is_wrapper.hpp"
 #include "containers/src/predicates/containers_are_wrappers.hpp"
+#include "containers/src/predicates/containers_are_scalar_compatible.hpp"
+#include "containers/src/collection/containers_static_collection.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
 #endif
-#include "containers/src/predicates/containers_are_scalar_compatible.hpp"
-#include "containers/src/collection/containers_static_collection.hpp"
 
 #endif

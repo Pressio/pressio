@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_sharedmem_host_accessible_vector_wrapper.hpp
+// ops_pow.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,48 +46,30 @@
 //@HEADER
 */
 
-#ifndef OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
-#define OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+#ifndef OPS_TPETRA_OPS_POW_HPP_
+#define OPS_TPETRA_OPS_POW_HPP_
 
-namespace pressio{ namespace ops{ namespace concepts {
+namespace pressio{ namespace ops{
 
-template<typename T, typename enable = void>
-struct sharedmem_host_accessible_vector_wrapper : std::false_type{};
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  >
+pow(T & x,
+    const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
+{
+  using ord_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
+  //using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
+  //using at = Kokkos::Details::ArithTraits<sc_t>;
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
-   >
-  > : std::true_type{};
-#endif
+  auto x_kv = x.data()->getLocalViewDevice();
+  Kokkos::parallel_for(x.extentLocal(0),
+		       KOKKOS_LAMBDA (const ord_t& i)
+		       {
+			 using std::pow;
+			 x_kv(i,0) = pow(x_kv(i,0), exponent);
+		       });
+}
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
-   >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
-struct sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
-    and
-    std::is_same<
-      typename ::pressio::containers::details::traits<T>::memory_space,
-      Kokkos::HostSpace
-      >::value
-   >
-  > : std::true_type{};
-#endif
-
-}}} // namespace pressio::ops::concepts
-#endif  // OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_POW_HPP_

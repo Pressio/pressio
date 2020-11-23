@@ -55,10 +55,6 @@
 
 #include "ops/src/ops_fwd.hpp"
 
-// will be concepts
-#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_vector_wrapper.hpp"
-#include "ops/src/will_be_concepts/ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
-
 // predicates
 #include "ops/src/predicates/ops_has_method_deep_copy.hpp"
 #include "ops/src/predicates/ops_has_method_set_zero.hpp"
@@ -76,9 +72,8 @@
 #include "ops/src/predicates/ops_has_method_update_four_terms.hpp"
 
 // ops_is_object_pybind: not within preproc direc because we need to use it
-// even when pybind is disabled
+// even when pybind is disabled, in which case it will always be false
 #include "ops/src/predicates/ops_is_object_pybind.hpp"
-
 
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -95,6 +90,7 @@
 #include "ops/src/eigen/ops_norms_vector.hpp"
 #include "ops/src/eigen/ops_dot.hpp"
 #include "ops/src/eigen/ops_vector_update.hpp"
+#include "ops/src/eigen/ops_pow.hpp"
 #include "ops/src/eigen/ops_elementwise_multiply.hpp"
 #endif
 
@@ -112,6 +108,7 @@
 #include "ops/src/kokkos/ops_multi_vector_update.hpp"
 #include "ops/src/kokkos/ops_dot.hpp"
 #include "ops/src/kokkos/ops_elementwise_multiply.hpp"
+#include "ops/src/kokkos/ops_pow.hpp"
 #endif
 
 // Epetra
@@ -125,6 +122,8 @@
 #include "ops/src/epetra/ops_norms_vector.hpp"
 #include "ops/src/epetra/ops_vector_update.hpp"
 #include "ops/src/epetra/ops_dot.hpp"
+#include "ops/src/epetra/ops_pow.hpp"
+#include "ops/src/epetra/ops_elementwise_multiply.hpp"
 
 // teuchos
 #include "ops/src/teuchos/ops_set_zero.hpp"
@@ -144,6 +143,8 @@
 #include "ops/src/tpetra/ops_vector_update.hpp"
 #include "ops/src/tpetra/ops_multi_vector_update.hpp"
 #include "ops/src/tpetra/ops_dot.hpp"
+#include "ops/src/tpetra/ops_pow.hpp"
+#include "ops/src/tpetra/ops_elementwise_multiply.hpp"
 
 // Tpetra block
 #include "ops/src/tpetra_block/ops_set_zero.hpp"
@@ -154,6 +155,8 @@
 #include "ops/src/tpetra_block/ops_norms_vector.hpp"
 #include "ops/src/tpetra_block/ops_vector_update.hpp"
 #include "ops/src/tpetra_block/ops_multi_vector_update.hpp"
+#include "ops/src/tpetra_block/ops_pow.hpp"
+#include "ops/src/tpetra_block/ops_elementwise_multiply.hpp"
 #endif
 
 // pybind11

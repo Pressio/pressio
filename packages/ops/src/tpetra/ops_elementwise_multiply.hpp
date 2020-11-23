@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_sharedmem_host_accessible_dense_matrix_wrapper.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,48 +46,31 @@
 //@HEADER
 */
 
-#ifndef OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
-#define OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
+#ifndef OPS_TPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_TPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio{ namespace ops{ namespace concepts {
+namespace pressio{ namespace ops{
 
-template<typename T, typename enable = void>
-struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
+//----------------------------------------------------------------------
+// computing elementwise:  y = beta * y + alpha * x * z
+//----------------------------------------------------------------------
+template <typename T, typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value
+  >
+elementwise_multiply
+(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::containers::details::traits<T>::scalar_t beta,
+ T2 & y)
+{
+  assert(x.extent(0)==z.extent(0));
+  assert(z.extent(0)==y.extent(0));
+  y.data()->elementWiseMultiply(alpha, *x.data(), *z.data(), beta);
+}
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
-   >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value
-   >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
-struct sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
-    and
-    std::is_same<
-      typename ::pressio::containers::details::traits<T>::memory_space,
-      Kokkos::HostSpace
-      >::value
-   >
-  > : std::true_type{};
-#endif
-
-}}} // namespace pressio::ops::concepts
-#endif  // OPS_WILL_BE_CONCEPTS_OPS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
