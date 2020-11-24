@@ -84,16 +84,16 @@ public:
   ~LMHessianGradientOperatorsRJApi() = default;
 
   template <
-   typename system_t,
-   typename state_t,
-   typename _ud_ops_t = ud_ops_t,
+    typename system_t,
+    typename state_t,
+    typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_t>::value,
       int
-     > = 0
-  >
+      > = 0
+    >
   LMHessianGradientOperatorsRJApi(const system_t & system,
                                   const state_t & state)
     : HGOpRJApi_(system, state),
@@ -103,19 +103,19 @@ public:
   }
 
   template <
-   typename system_t,
-   typename state_t,
-   typename ...ArgsIn,
+    typename system_t,
+    typename state_t,
+    typename ...ArgsIn,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
-     > = 0
-  >
+      > = 0
+    >
   LMHessianGradientOperatorsRJApi(const system_t & system,
-          const state_t & state,
-          ArgsIn && ...args)
+				  const state_t & state,
+				  ArgsIn && ...args)
     : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
       lmH_(HGOpRJApi_.hessianCRef())
   {

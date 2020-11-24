@@ -49,6 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 
+#include "./operators/solvers_weighting_irwls.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_hg_api.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_no_weighting.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_with_weighting.hpp"
@@ -363,7 +364,7 @@ struct compose<
   using weighting_functor_t =
     typename std::conditional<
     (::pressio::solvers::concepts::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
-    extra_nocvref_t, void >::type;
+    extra_t, void >::type;
 
   // the extra_t should be one of the two, cannot be both
   static_assert
@@ -440,23 +441,54 @@ struct compose<
 };
 
 
+// ------------------------------------------------------------
+// COMPOSE IRW GN with Neq and r/j api, pressio ops and M=I
+// ------------------------------------------------------------
+template<
+  typename system_t,
+  typename linear_solver_t
+  >
+struct compose<
+  system_t, IrwGaussNewton,
+  mpl::enable_if_t<
+    ::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+    ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    >,
+  linear_solver_t
+  >
+{
+  //if we get here, system_t meets r/j api
+  using scalar_t = typename system_t::scalar_type;
+  using state_t = typename system_t::state_type;
+  using r_t = typename system_t::residual_type;
+  using j_t = typename system_t::jacobian_type;
+  using grad_t = state_t;
+
+  using weighting_t = ::pressio::solvers::nonlinear::impl::IrwWeightingOperator<r_t, j_t>;
+  using type = typename compose<system_t, GaussNewton, void, linear_solver_t, weighting_t>::type;
+};
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
 template<typename system_t, typename ... Args>
 using composeGaussNewton = compose<system_t, GaussNewton, void, Args...>;
-
 template<typename system_t, typename ... Args>
 using composeGaussNewton_t = typename composeGaussNewton<system_t, Args...>::type;
 
 template<typename system_t, typename ... Args>
 using composeLM = compose<system_t, LM, void, Args...>;
-
 template<typename system_t, typename ... Args>
 using composeLM_t = typename composeLM<system_t, Args...>::type;
 
 template<typename system_t, typename ... Args>
 using composeLevenbergMarquardt = composeLM<system_t, Args...>;
-
 template<typename system_t, typename ... Args>
 using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
+
+template<typename system_t, typename lin_s_t>
+using composeIrwGaussNewton = compose<system_t, IrwGaussNewton, void, lin_s_t>;
+template<typename system_t, typename lin_s_t>
+using composeIrwGaussNewton_t = typename composeIrwGaussNewton<system_t, lin_s_t>::type;
 
 }}}}
 #endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_

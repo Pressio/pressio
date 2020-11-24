@@ -75,5 +75,25 @@ auto createGaussNewtonQR(const system_t & system,
     (system, state, std::forward<Args>(args)...);
 }
 
+
+//***** IRWGN *******
+namespace experimental{
+template<typename system_t, typename state_t, typename linear_solver_t>
+auto createIRWGaussNewton(const system_t & system,
+			  const state_t & state,
+			  linear_solver_t && linSolver)
+  -> impl::composeIrwGaussNewton_t<system_t, linear_solver_t>
+{
+  using c_t = impl::composeIrwGaussNewton<system_t, linear_solver_t>;
+  using w_t = typename c_t::weighting_t;
+  using return_t = typename c_t::type;
+
+  w_t W(system);
+  return return_t(system, state,
+		  std::forward<linear_solver_t>(linSolver),
+		  std::move(W));
+}
+}// end namespace experimental
+
 }}}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_

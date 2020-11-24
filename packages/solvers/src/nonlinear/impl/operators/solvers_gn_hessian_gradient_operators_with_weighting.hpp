@@ -51,7 +51,43 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <typename r_t, typename j_t, typename T, typename operand_t, typename result_t>
+template <class r_t, class j_t, class T, class operand_t, class result_t>
+mpl::enable_if_t<
+  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
+  >
+_applyWeightingHelper(const T & functorM,
+		      const operand_t & operand,
+		      result_t & result,
+		      bool is_irwls,
+		      int callCount)
+{
+  if(is_irwls && callCount > 1)
+  {
+    functorM(operand, result);
+  }else{
+    functorM(operand, result);
+  }
+};
+
+template <class r_t, class j_t, class T, class operand_t, class result_t>
+mpl::enable_if_t<
+  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
+  >
+_applyWeightingHelper(const T & functorM,
+		      const operand_t & operand,
+		      result_t & result,
+		      bool is_irwls,
+		      int callCount)
+{
+  if(is_irwls && callCount > 1)
+  {
+    functorM(*operand.data(), *result.data());
+  }else{
+    functorM(*operand.data(), *result.data());
+  }
+};
+
+template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
   ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
   >
@@ -62,7 +98,7 @@ _applyWeightingHelper(const T & functorM,
   functorM(operand, result);
 };
 
-template <typename r_t, typename j_t, typename T, typename operand_t, typename result_t>
+template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
   ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
   >
@@ -72,6 +108,8 @@ _applyWeightingHelper(const T & functorM,
 {
   functorM(*operand.data(), *result.data());
 };
+
+
 
 
 template <
@@ -91,6 +129,7 @@ private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
+  int callCount_ = 0;
   mutable r_t r_;
   mutable r_t Mr_;
   j_t J_;
@@ -99,6 +138,12 @@ private:
   h_t H_;
   ::pressio::utils::possibly_owning_reference_wrapper<ud_ops_type> udOps_;
   ::pressio::utils::possibly_owning_reference_wrapper<weighting_functor_t> functorM_;
+
+  static constexpr auto is_irwls =
+    std::is_same<
+    weighting_functor_t,
+    ::pressio::solvers::nonlinear::impl::IrwWeightingOperator<r_t, j_t>
+    >::value;
 
 public:
   WeightedHessianGradientOperatorsRJApi() = delete;
@@ -111,26 +156,27 @@ public:
   template <
     typename system_t,
     typename state_t,
+    typename _weigh_t,
     typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_type>::value,
       int
-     > = 0
-  >
+      > = 0
+    >
   WeightedHessianGradientOperatorsRJApi(const system_t & system,
-        const state_t & state,
-        const weighting_functor_t & functorM)
-    : r_(system.createResidual()),
-      Mr_(r_),
-      J_(system.createJacobian()),
-      MJ_(J_),
-      g_(state),
-      H_(::pressio::ops::product<h_t>(pT, pnT,
-				      ::pressio::utils::constants<sc_t>::one(),
-				      J_)),
-      functorM_(functorM)
+					const state_t & state,
+					_weigh_t && functorM)
+  : r_(system.createResidual()),
+    Mr_(r_),
+    J_(system.createJacobian()),
+    MJ_(J_),
+    g_(state),
+    H_(::pressio::ops::product<h_t>(pT, pnT,
+				    ::pressio::utils::constants<sc_t>::one(),
+				    J_)),
+    functorM_(std::forward<_weigh_t>(functorM))
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(Mr_);
@@ -143,36 +189,46 @@ public:
   template <
     typename system_t,
     typename state_t,
+    typename _weigh_t,
     typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
       and !std::is_void<_ud_ops_type>::value,
       int
-     > = 0
-  >
+      > = 0
+    >
   WeightedHessianGradientOperatorsRJApi(const system_t & system,
-        const state_t & state,
-        const _ud_ops_type & udOps,
-        const weighting_functor_t & functorM)
-    : r_(system.createResidual()),
-      Mr_(r_),
-      J_(system.createJacobian()),
-      MJ_(J_),
-      g_(state),
-      H_(udOps.template product<h_t>(pT, pnT,
-             utils::constants<sc_t>::one(),
-             *J_.data(), *J_.data())),
-      udOps_(udOps),
-      functorM_(functorM)
+					const state_t & state,
+					_ud_ops_type && udOps,
+					_weigh_t && functorM)
+  : r_(system.createResidual()),
+    Mr_(r_),
+    J_(system.createJacobian()),
+    MJ_(J_),
+    g_(state),
+    H_(udOps.template product<h_t>(pT, pnT,
+				   utils::constants<sc_t>::one(),
+				   *J_.data(), *J_.data())),
+    udOps_(std::forward<_ud_ops_type>(udOps)),
+    functorM_(std::forward<_weigh_t>(functorM))
   {}
 
 public:
-  void resetForNewCall()	   { /* no op */ }
+  void resetForNewCall() {
+    callCount_ = 0;
+  }
+
   h_t & hessianRef()		   { return H_; }
   g_t & gradientRef()		   { return g_; }
   const h_t & hessianCRef() const  { return H_; }
   const g_t & gradientCRef() const { return g_; }
+
+  template<bool _is_irwls = is_irwls>
+  mpl::enable_if_t<_is_irwls> set_p(sc_t pIn)
+  {
+    functorM_.get().set_p(pIn);
+  }
 
   sc_t getParameter(std::string key) const
   {
@@ -195,16 +251,18 @@ public:
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
+    callCount_++;
+
     // compute r from system object
     system.residual(state, r_);
     // apply M
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
+    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
 
     residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
-      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_);
+      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
       computeHessian();
     }
 
@@ -220,13 +278,14 @@ public:
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    callCount_++;
 
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
+    system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
+    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
     residualNorm = this->computeNorm();
 
     if (recomputeSystemJacobian){
-      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_);
+      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
       computeHessian();
     }
 
@@ -269,7 +328,7 @@ private:
   }
 
   template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
-  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value, sc_t >
+  mpl::enable_if_t< mpl::not_void<_ud_ops_type>::value, sc_t >
   computeNorm() const
   {
     return std::sqrt(udOps_.get().dot(r_, Mr_));
@@ -285,6 +344,15 @@ private:
   }
 
   template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< mpl::not_void<_ud_ops_type>::value >
+  computeHessian()
+  {
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
+    udOps_.get().product(pT, pnT, alpha, *J_.data(), *MJ_.data(), beta, H_);
+  }
+
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
   mpl::enable_if_t< std::is_void<_ud_ops_type>::value >
   computeGradient()
   {
@@ -297,16 +365,7 @@ private:
   }
 
   template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
-  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value >
-  computeHessian()
-  {
-    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
-    udOps_.get().product(pT, pnT, alpha, *J_.data(), *MJ_.data(), beta, H_);
-  }
-
-  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
-  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value >
+  mpl::enable_if_t< mpl::not_void<_ud_ops_type>::value >
   computeGradient()
   {
     constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();

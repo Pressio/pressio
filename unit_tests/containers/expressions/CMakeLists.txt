@@ -6,7 +6,9 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
     ${CMAKE_CURRENT_SOURCE_DIR}/eigen_span.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/eigen_subspan.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/eigen_diag.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/expressions_are_static_eigen.cc)
+    ${CMAKE_CURRENT_SOURCE_DIR}/eigen_asdiagonalmatrix.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/expressions_are_static_eigen.cc
+    )
   add_serial_utest(${exeRootName}_serial "${SRC1}")
 endif()
 

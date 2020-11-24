@@ -53,20 +53,21 @@
 concrete classes depend on traits which depend on predicates. */
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_eigen.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_epetra.hpp"
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_teuchos.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_epetra.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_teuchos.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_kokkos.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_kokkos.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_pybind11.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_pybind11.hpp"
 #endif
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper_arbitrary.hpp"
-#include "./wrapper_detection_predicates/containers_is_dense_matrix_wrapper.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper_arbitrary.hpp"
+#include "./wrapper_predicates/containers_is_dense_matrix_wrapper.hpp"
+#include "./wrapper_predicates/containers_is_sharedmem_host_accessible_dense_matrix_wrapper.hpp"
 
 // traits
 #include "./containers_dense_matrix_traits.hpp"

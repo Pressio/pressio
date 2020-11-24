@@ -3,6 +3,7 @@
 
 struct WeightingOperator
 {
+
 #ifdef USE_WRAPPERS
   void operator()(const vec_type & operand, vec_type & result) const{
     result.data()->setConstant(3.);
@@ -56,9 +57,6 @@ struct MySystem
 
     for (auto i=0; i<R.extent(0); ++i)
       R(i) += 1.;
-
-    // if (normKind == pressio::Norm::L2)
-    //   normResidual = R.data()->norm();
   }
 
   void jacobian(const state_type& x, jacobian_type & jac) const
@@ -85,14 +83,16 @@ int main()
     state_t x(numVars);
 
 #if defined USE_GN_NEQ
-    auto solver = pressio::solvers::nonlinear::createGaussNewton(sysObj,x,linSolverObj, WeightingOperator());
+    auto solver = pressio::solvers::nonlinear::createGaussNewton
+      (sysObj,x,linSolverObj, WeightingOperator());
     solver.setMaxIterations(2);
     solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
     solver.solve(sysObj, x);
 #endif
 
 #if defined USE_LM_NEQ
-    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt(sysObj,x,linSolverObj, WeightingOperator());
+    auto solver = pressio::solvers::nonlinear::createLevenbergMarquardt
+      (sysObj,x,linSolverObj, WeightingOperator());
     solver.setMaxIterations(2);
     solver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
     solver.solve(sysObj, x);

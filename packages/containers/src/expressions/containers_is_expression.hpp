@@ -69,6 +69,11 @@ struct is_expression<
   ::pressio::containers::expressions::DiagExpr<T>
   > : std::true_type{};
 
+template <typename T>
+struct is_expression<
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
+  > : std::true_type{};
+
 
 // template <typename T, typename enable = void>
 // struct is_diag_expression : std::false_type{};
