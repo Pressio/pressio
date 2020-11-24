@@ -267,8 +267,8 @@ product(::pressio::nontranspose modeA,
   auto Btpb = *B.data(); //mv
 
   auto Ctp = Ctpb.getMultiVectorView();
-  using Atpb_t = decltype(mpl::remove_cvref<Atpb>::type);
-  auto Atp = const_cast<Atpb>(Atpb).getVectorView();
+  using Atpb_t = mpl::remove_cvref_t<decltype(Atpb)>;
+  auto Atp = const_cast<Atpb_t &>(Atpb).getVectorView();
   auto Btp = Btpb.getMultiVectorView();
 
   Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);

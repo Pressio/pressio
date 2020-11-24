@@ -160,6 +160,7 @@
 #include "ops/src/tpetra_block/ops_norms_vector.hpp"
 #include "ops/src/tpetra_block/ops_vector_update.hpp"
 #include "ops/src/tpetra_block/ops_multi_vector_update.hpp"
+#include "ops/src/tpetra_block/ops_dot.hpp"
 #include "ops/src/tpetra_block/ops_pow.hpp"
 #include "ops/src/tpetra_block/ops_elementwise_multiply.hpp"
 #endif
