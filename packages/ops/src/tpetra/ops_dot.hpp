@@ -59,6 +59,10 @@ template <typename T1, typename T2>
   >
 dot(const T1 & a, const T2 & b)
 {
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
+
   assert(a.extent(0) == b.extent(0));
   return a.data()->dot(*b.data());
 }
@@ -68,9 +72,8 @@ template <typename T1, typename T2>
   ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value
   >
-dot(const vec_type & a,
-    const vec_type & b,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+dot(const T1 & a, const T2 & b,
+    typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
   result = dot(a,b);
 }

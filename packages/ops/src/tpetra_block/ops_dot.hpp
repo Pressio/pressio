@@ -59,6 +59,10 @@ template <typename T1, typename T2>
   >
 dot(const T1 & a, const T2 & b)
 {
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
+
   assert(a.extent(0) == b.extent(0));
   // I have to constcast here because for block vector getVectorView is non-const
   auto a_tp = const_cast<T1 &>(a).data()->getVectorView();
@@ -75,10 +79,6 @@ dot(const T1 & a,
     const T2 & b,
     typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
-
   result = dot(a,b);
 }
 
