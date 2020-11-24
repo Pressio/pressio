@@ -6,12 +6,14 @@ set(SRC1
   ${CMAKE_CURRENT_SOURCE_DIR}/tpetra/ops_asdiagonalmatrix_product_multivector.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tpetra/ops_vector_elementwise_multiply.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tpetra/ops_vector_pow.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tpetra/ops_vector_abs.cc
 )
 add_utest_mpi(ops_tpetra "${SRC1}" gTestMain_tpetra 3)
 
 set(SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_block/ops_vector_pow.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_block/ops_vector_elementwise_multiply.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tpetra_block/ops_vector_abs.cc
 )
 add_utest_mpi(ops_tpetra_block "${SRC}" gTestMain_tpetra 3)
 
