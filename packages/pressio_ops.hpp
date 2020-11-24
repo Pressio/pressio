@@ -77,6 +77,7 @@
 
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
+#include "ops/src/eigen/ops_abs.hpp"
 #include "ops/src/eigen/ops_set_zero.hpp"
 #include "ops/src/eigen/ops_scale.hpp"
 #include "ops/src/eigen/ops_fill.hpp"
@@ -96,6 +97,7 @@
 
 // Kokkos
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "ops/src/kokkos/ops_abs.hpp"
 #include "ops/src/kokkos/ops_set_zero.hpp"
 #include "ops/src/kokkos/ops_scale.hpp"
 #include "ops/src/kokkos/ops_fill.hpp"
@@ -113,6 +115,7 @@
 
 // Epetra
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "ops/src/epetra/ops_abs.hpp"
 #include "ops/src/epetra/ops_set_zero.hpp"
 #include "ops/src/epetra/ops_fill.hpp"
 #include "ops/src/epetra/ops_deep_copy.hpp"
@@ -134,6 +137,7 @@
 #include "ops/src/teuchos/ops_level2.hpp"
 
 // Tpetra
+#include "ops/src/tpetra/ops_abs.hpp"
 #include "ops/src/tpetra/ops_set_zero.hpp"
 #include "ops/src/tpetra/ops_fill.hpp"
 #include "ops/src/tpetra/ops_deep_copy.hpp"
@@ -147,6 +151,7 @@
 #include "ops/src/tpetra/ops_elementwise_multiply.hpp"
 
 // Tpetra block
+#include "ops/src/tpetra_block/ops_abs.hpp"
 #include "ops/src/tpetra_block/ops_set_zero.hpp"
 #include "ops/src/tpetra_block/ops_fill.hpp"
 #include "ops/src/tpetra_block/ops_deep_copy.hpp"
