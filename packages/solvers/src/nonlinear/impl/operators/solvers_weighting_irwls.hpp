@@ -102,7 +102,7 @@ public:
     // don't compute weights here since they have been computed above
 
     // view the weights as a diagonal matrix
-    auto wMat = ::pressio::containers::asDiagonalMatrix(w_);
+    const auto wMat = ::pressio::containers::asDiagonalMatrix(w_);
 
     // WJ = W * Jin
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
@@ -116,17 +116,24 @@ public:
 private:
   void computeExponent()
   {
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
     constexpr auto two = ::pressio::utils::constants<sc_t>::two();
-    constexpr auto onehalf = one/two;
-    exponent_ = (p_ - two)*onehalf;
+    if (p_==two) throw std::runtime_error("irwls does not support using p=2!");
+    exponent_ = (p_ - two);
   }
 
-  void computeWeights(const r_t & e) const
+  void computeWeights(const r_t & err) const
   {
-    // w = e^(p-2)/2
-    ::pressio::ops::deep_copy(w_, e);
-    ::pressio::ops::pow(w_,exponent_);
+    // compute w = |e|^(p-2)
+    // use a small epsilong to guard against diving by zero
+    // when exponent < 0
+
+    constexpr auto two = ::pressio::utils::constants<sc_t>::two();
+    if (p_ > two){
+      ::pressio::ops::abs_pow(w_, err, exponent_);
+    }
+    else{
+      ::pressio::ops::abs_pow(w_, err, exponent_, 0.00001);
+    }
   }
 };
 
