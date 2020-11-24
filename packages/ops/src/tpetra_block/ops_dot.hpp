@@ -51,28 +51,37 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<vec_type>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value,
+  typename ::pressio::containers::details::traits<T1>::scalar_t
   >
-dot(const vec_type & a,
-    const vec_type & b,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+dot(const T1 & a, const T2 & b)
 {
   assert(a.extent(0) == b.extent(0));
-  result = a.data()->getVectorView().dot(b.data()->getVectorView());
+  // I have to constcast here because for block vector getVectorView is non-const
+  auto a_tp = const_cast<T1 &>(a).data()->getVectorView();
+  auto b_tp = const_cast<T2 &>(b).data()->getVectorView();
+  return a_tp.dot(b_tp);
 }
 
-template <typename vec_type>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
   >
-dot(const vec_type & a, const vec_type & b)
+dot(const T1 & a,
+    const T2 & b,
+    typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
-  assert(a.extent(0) == b.extent(0));
-  return a.data()->getVectorView().dot(b.data()->getVectorView());
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
+
+  result = dot(a,b);
 }
+
 
 }}//end namespace pressio::ops
 #endif  // OPS_TPETRA_BLOCK_OPS_DOT_HPP_
