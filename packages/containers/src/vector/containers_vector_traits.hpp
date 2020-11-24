@@ -311,6 +311,8 @@ struct traits<
 
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+  using asdiagonalmatrix_ret_t	 = expressions::AsDiagonalMatrixExpr<Vector<wrapped_type>>;
+  using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Vector<wrapped_type>>;
 };
 #endif
 
@@ -375,6 +377,62 @@ struct traits<
 
 
 //*******************************
+// for block tpetra vector
+//*******************************
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename wrapped_type>
+struct traits<
+  Vector<wrapped_type>,
+  mpl::enable_if_t<
+    containers::predicates::is_vector_tpetra_block<wrapped_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  Vector<wrapped_type>,
+  wrapped_type,
+  true, false, false,
+  WrappedPackageIdentifier::Trilinos,
+  false>
+{
+
+  static constexpr WrappedVectorIdentifier
+  wrapped_vector_identifier = WrappedVectorIdentifier::TpetraBlock;
+
+  using scalar_t = typename wrapped_type::impl_scalar_type;
+  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
+  using global_ordinal_t = typename wrapped_type::global_ordinal_type;
+  using data_map_t = typename wrapped_type::map_type;
+  using size_t    = global_ordinal_t;
+
+  using const_data_return_t = wrapped_type const *;
+  using data_return_t = wrapped_type *;
+  using mag_t = scalar_t;
+
+  /* node is a Tpetra concept, defined as:
+   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
+   * where memory space is taken from the execution_space
+   */
+  using node_t = typename wrapped_type::node_type;
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
+  // device_type is just an (execution space, memory space) pair.
+  // defined as: Kokkos::Device<execution_space, memory_space>
+  // so from the device we can get the device execution and memory space
+  using device_t = typename wrapped_type::device_type;
+  using device_mem_space_t = typename device_t::memory_space;
+  using device_exec_space_t = typename device_t::execution_space;
+  // store types for host
+  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+  using communicator_t = decltype(std::declval<data_map_t>().getComm());
+  using asdiagonalmatrix_ret_t	 = expressions::AsDiagonalMatrixExpr<Vector<wrapped_type>>;
+  using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Vector<wrapped_type>>;
+};
+#endif
+
+//*******************************
 // Kokkos vector
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
@@ -431,61 +489,6 @@ struct traits<
      || std::is_same<execution_space, Kokkos::OpenMP>::value
      #endif
      );
-};
-#endif
-
-
-//*******************************
-// for block tpetra vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename wrapped_type>
-struct traits<
-  Vector<wrapped_type>,
-  mpl::enable_if_t<
-    containers::predicates::is_vector_tpetra_block<wrapped_type>::value
-    >
-  >
-  : public containers_shared_traits<
-  Vector<wrapped_type>,
-  wrapped_type,
-  true, false, false,
-  WrappedPackageIdentifier::Trilinos,
-  false>
-{
-
-  static constexpr WrappedVectorIdentifier
-  wrapped_vector_identifier = WrappedVectorIdentifier::TpetraBlock;
-
-  using scalar_t = typename wrapped_type::impl_scalar_type;
-  using local_ordinal_t = typename wrapped_type::local_ordinal_type;
-  using global_ordinal_t = typename wrapped_type::global_ordinal_type;
-  using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;
-
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using mag_t = scalar_t;
-
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
-  using node_t = typename wrapped_type::node_type;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  // device_type is just an (execution space, memory space) pair.
-  // defined as: Kokkos::Device<execution_space, memory_space>
-  // so from the device we can get the device execution and memory space
-  using device_t = typename wrapped_type::device_type;
-  using device_mem_space_t = typename device_t::memory_space;
-  using device_exec_space_t = typename device_t::execution_space;
-  // store types for host
-  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
-  using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 #endif
 

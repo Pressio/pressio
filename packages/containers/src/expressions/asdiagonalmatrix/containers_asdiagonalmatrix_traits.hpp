@@ -113,8 +113,63 @@ struct traits<
   using scalar_t  = typename traits<v_type>::scalar_t;
   using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
   using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
-  using size_t = global_ordinal_t;
+  using size_t = typename traits<v_type>::size_t;
 };
+
+template <typename v_type>
+struct traits<
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<v_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
+  typename details::traits<v_type>::wrapped_t,
+  //isVector=false, isMatrix=true, isMv=false
+  false, true, false,
+  WrappedPackageIdentifier::Trilinos,
+  true
+  >,
+    public matrix_shared_traits<false>
+{
+  static constexpr auto wrapped_matrix_identifier=WrappedMatrixIdentifier::TpetraBlock;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = false;
+  using wrapped_t = typename traits<v_type>::wrapped_t;
+  using scalar_t  = typename traits<v_type>::scalar_t;
+  using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
+  using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
+  using size_t = typename traits<v_type>::size_t;
+};
+
+template <typename v_type>
+struct traits<
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_epetra<v_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
+  typename details::traits<v_type>::wrapped_t,
+  //isVector=false, isMatrix=true, isMv=false
+  false, true, false,
+  WrappedPackageIdentifier::Trilinos,
+  true
+  >,
+    public matrix_shared_traits<false>
+{
+  static constexpr auto wrapped_matrix_identifier=WrappedMatrixIdentifier::Epetra;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = false;
+  using wrapped_t = typename traits<v_type>::wrapped_t;
+  using scalar_t  = typename traits<v_type>::scalar_t;
+  using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
+  using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
+  using size_t = typename traits<v_type>::size_t;
+};
+
 #endif
 
 }}}//end namespace pressio::containers::details

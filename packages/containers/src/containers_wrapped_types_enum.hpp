@@ -97,6 +97,8 @@ enum class WrappedMatrixIdentifier{
    SparseEigen,
    DensePybind,
    Tpetra,
+   TpetraBlock,
+   Epetra,
    DenseArbitrary
 };
 
