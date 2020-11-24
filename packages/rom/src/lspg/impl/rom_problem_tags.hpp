@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_newton_raphson.hpp
+// rom_problem_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,16 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_
+#define ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+struct Default{};
+struct Preconditioned{};
+struct Masked{};
+struct HyperReduced{};
+struct PreconditionedHyperReduced{};
 
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = impl::composeNewRaph<
-  system_t,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
-
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson_t =
-  typename composeNewtonRaphson<system_t, Args...>::type;
-
-template<typename system_t, typename state_t, typename ...Args>
-auto createNewtonRaphson(const system_t & system,
-			 const state_t & state,
-			 Args && ...args)
--> composeNewtonRaphson_t<system_t, Args...>
-{
-  return composeNewtonRaphson_t<system_t, Args...>
-  ( system, state, std::forward<Args>(args)...);
-}
-
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NEWTON_RAPHSON_HPP_
+}}}}
+#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_

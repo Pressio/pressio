@@ -19,7 +19,6 @@ void readBasis(std::string filename, result_t & phi)
 }
 }
 
-
 template <typename sc_t, typename dec_jac_t>
 struct myOpsResidualApi
 {
@@ -203,8 +202,8 @@ struct EulerLSPGWithResidualApi
     fom_t fomObj(appObj);
     scalar_t dt = 0.01;
 
-    ops1_t myOps1;
-    opsGN_t myOps2;
+    const ops1_t myOps1;
+    const opsGN_t myOps2;
 
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;

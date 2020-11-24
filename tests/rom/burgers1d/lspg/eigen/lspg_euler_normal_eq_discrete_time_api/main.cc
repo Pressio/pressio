@@ -52,14 +52,13 @@ struct EulerLSPGWithResidualApi
     ::pressio::ops::fill(yROM_, 0.0);
 
     // // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-    using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t,
-        decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
-    lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);
-    // auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(
-    //   appobj, decoderObj, yROM_, yRef);
+    // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t,
+    //     decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
+    // lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);
+    auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(appobj, decoderObj, yROM_, yRef);
 
     // linear solver
     using eig_dyn_mat	 = Eigen::Matrix<scalar_t, -1, -1>;
@@ -131,10 +130,6 @@ struct EulerLSPGWithVelocityApi
 
     // define LSPG type
     using ode_tag = pressio::ode::implicitmethods::Euler;
-    // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag,
-    //     fom_t, decoder_t, lspg_state_t>::type;
-    // using lspg_stepper_t	 = typename lspg_problem::stepper_t;
-    // lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);
     auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
       appobj, decoderObj, yROM_, yRef);
 
@@ -146,9 +141,6 @@ struct EulerLSPGWithVelocityApi
     linear_solver_t linSolverObj;
 
     // GaussNewton solver with normal equations
-    // using nls_t = pressio::solvers::nonlinear::composeGaussNewton_t<
-    //   lspg_stepper_t, linear_solver_t>;
-    // nls_t solver(lspgProblem.stepperRef(), yROM_, linSolverObj);
     auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM_, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_tags.hpp
+// remove_reference.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,15 +46,22 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+#ifndef MPL_REMOVE_REFERENCE_HPP_
+#define MPL_REMOVE_REFERENCE_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+namespace pressio{ namespace mpl{
 
-struct Default{};
-struct Preconditioned{};
-struct Masked{};
-struct HyperReduced{};
+template<class T>
+struct remove_reference;
 
-}}}}
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_TAGS_HPP_
+template<class T>
+struct remove_reference{
+  using type = typename std::remove_reference<T>::type;
+};
+
+template<class T>
+using remove_reference_t = typename remove_reference<T>::type;
+
+}} // namespace pressio::mpl
+
+#endif  // MPL_REMOVE_REFERENCE_HPP_

@@ -74,13 +74,8 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
 
   static_assert(::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value, "");
 
-  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;
-  using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
-  using lspg_problem = pressio::rom::lspg::composeDefaultProblem<
-    ode_name_t, app_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
+  auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(appobj, decoderObj, yROM, yRef);
 
-  lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef);
   std::cout << &lspgProblem << std::endl;
   // here we just test that the problem is constructed
 }

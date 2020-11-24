@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_utils.hpp
+// not_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,17 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_UTILS_HPP_
-#define PRESSIO_UTILS_HPP_
+#ifndef MPL_NOT_VOID_HPP_
+#define MPL_NOT_VOID_HPP_
 
-#include "pressio_mpl.hpp"
+namespace pressio { namespace mpl {
 
-#include "utils/src/utils_ConfigDefs.hpp"
+template<class T>
+struct not_void: std::true_type {};
 
-#include "utils/src/utils_crtp_helper.hpp"
-#include "utils/src/utils_static_constants.hpp"
-#include "utils/src/utils_empty.hpp"
-#include "utils/src/utils_possibly_owning_ref_wrapper.hpp"
-#include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
-#include "utils/src/utils_set_stream_precision.hpp"
+template<>
+struct not_void<void> : std::false_type {};
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "utils/src/utils_p4py_tag.hpp"
-#endif
+}} // end namespace pressio::mpl
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-#include "utils/src/utils_teuchos_performance_monitor.hpp"
-#endif
-
-#include "utils/src/io/utils_colorize_print.hpp"
-#include "utils/src/io/utils_print_helper.hpp"
-
-#endif
+#endif  // MPL_NOT_VOID_HPP_

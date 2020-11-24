@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_utils.hpp
+// solvers_create_gauss_newton.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,34 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_UTILS_HPP_
-#define PRESSIO_UTILS_HPP_
+#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#define SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
 
-#include "pressio_mpl.hpp"
+#include "./impl/solvers_nonlinear_compose.hpp"
 
-#include "utils/src/utils_ConfigDefs.hpp"
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-#include "utils/src/utils_crtp_helper.hpp"
-#include "utils/src/utils_static_constants.hpp"
-#include "utils/src/utils_empty.hpp"
-#include "utils/src/utils_possibly_owning_ref_wrapper.hpp"
-#include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
-#include "utils/src/utils_set_stream_precision.hpp"
+//***** GN with NEQ *******
+template<typename system_t, typename state_t, typename ...Args>
+auto createGaussNewton(const system_t & system,
+		       const state_t & state,
+		       Args && ... args)
+  -> impl::composeGaussNewton_t<system_t, Args...>
+{
+  return impl::composeGaussNewton_t<system_t, Args...>
+    (system, state, std::forward<Args>(args)...);
+}
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "utils/src/utils_p4py_tag.hpp"
-#endif
+//***** GN with QR *******
+template<typename system_t, typename state_t, typename ...Args>
+auto createGaussNewtonQR(const system_t & system,
+			 const state_t & state,
+			 Args && ...args)
+  -> impl::composeGaussNewtonQR_t<system_t, Args...>
+{
+  return impl::composeGaussNewtonQR_t<system_t, Args...>
+    (system, state, std::forward<Args>(args)...);
+}
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-#include "utils/src/utils_teuchos_performance_monitor.hpp"
-#endif
-
-#include "utils/src/io/utils_colorize_print.hpp"
-#include "utils/src/io/utils_print_helper.hpp"
-
-#endif
+}}}
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_

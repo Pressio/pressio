@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_utils.hpp
+// rom_unsteady_problem_solve_functions_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,45 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_UTILS_HPP_
-#define PRESSIO_UTILS_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 
-#include "pressio_mpl.hpp"
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-#include "utils/src/utils_ConfigDefs.hpp"
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-#include "utils/src/utils_crtp_helper.hpp"
-#include "utils/src/utils_static_constants.hpp"
-#include "utils/src/utils_empty.hpp"
-#include "utils/src/utils_possibly_owning_ref_wrapper.hpp"
-#include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
-#include "utils/src/utils_set_stream_precision.hpp"
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "utils/src/utils_p4py_tag.hpp"
-#endif
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-#include "utils/src/utils_teuchos_performance_monitor.hpp"
-#endif
+  ::pressio::ode::advanceToTargetTime
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
 
-#include "utils/src/io/utils_colorize_print.hpp"
-#include "utils/src/io/utils_print_helper.hpp"
+template<typename rom_problem_type, typename ...Args>
+void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-#endif
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+    (problem.stepperRef(), std::forward<Args>(args)...);
+}
+
+}// end namespace lspg::impl
+
+}}}//end namespace pressio::rom::lspg::impl
+#endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_

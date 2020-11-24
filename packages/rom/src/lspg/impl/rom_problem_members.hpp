@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_problem_members.hpp
+// rom_problem_members.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#define ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -71,6 +71,7 @@ struct FomObjMixin<fom_system_t, false>
   const fom_system_t & fomCRef() const{ return fomObj_.get(); }
 };
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename fom_system_t>
 struct FomObjMixin<fom_system_t, true>
 {
@@ -89,10 +90,11 @@ struct FomObjMixin<fom_system_t, true>
   FomObjMixin & operator=(FomObjMixin &&) = delete;
   ~FomObjMixin() = default;
 
-  FomObjMixin(fom_system_t fomObjIn) : fomObj_(fomObjIn){}
+  FomObjMixin(pybind11::object pyFomObj) : fomObj_(pyFomObj){}
 
   const fom_system_t & fomCRef() const{ return fomObj_; }
 };
+#endif
 
 //---------------------------------------------------
 //---------------------------------------------------
@@ -242,7 +244,7 @@ struct PoliciesMixin<
   {}
 };
 
-// specialize for precond
+// specialize for precond default
 template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
 struct PoliciesMixin<
   T, false, false, true, false, ops_t, r_pol_t, j_pol_t
@@ -339,6 +341,73 @@ struct PoliciesMixin<
   {}
 };
 
+// specialize for preconditioned hyp-red with void stencil-to-sample mapping
+template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+struct PoliciesMixin<
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, void
+  > : T
+{
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  PoliciesMixin() = delete;
+  PoliciesMixin(const PoliciesMixin &) = default;
+  PoliciesMixin & operator=(const PoliciesMixin &) = delete;
+  PoliciesMixin(PoliciesMixin &&) = default;
+  PoliciesMixin & operator=(PoliciesMixin &&) = delete;
+  ~PoliciesMixin() = default;
+
+  template<
+    typename T1, typename T2, typename T3, typename T4, typename T5,
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
+  PoliciesMixin(const T1 & romStateIn,
+		const T2 & fomObj,
+		const T3 & decoder,
+		const T4 & fomNominalStateNative,
+		const T5 & preconditioner)
+    : T(fomObj, decoder, romStateIn, fomNominalStateNative),
+      residualPolicy_(preconditioner, T::fomStatesMngr_),
+      jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder)
+  {}
+};
+
+// specialize for preconditioned hyp-red with nonvoid stencil-to-sample mapping
+template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
+struct PoliciesMixin<
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, sTos_t
+  > : T
+{
+  sTos_t  meshToStencilMapper_;
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  PoliciesMixin() = delete;
+  PoliciesMixin(const PoliciesMixin &) = default;
+  PoliciesMixin & operator=(const PoliciesMixin &) = delete;
+  PoliciesMixin(PoliciesMixin &&) = default;
+  PoliciesMixin & operator=(PoliciesMixin &&) = delete;
+  ~PoliciesMixin() = default;
+
+  template<
+    typename T1, typename T2, typename T3, typename T4, typename T5, typename T6,
+    typename _ops_t = ops_t,
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
+  PoliciesMixin(const T1 & romStateIn,
+		const T2 & fomObj,
+		const T3 & decoder,
+		const T4 & fomNominalStateNative,
+		const T5 & preconditioner,
+		const T6 & meshToStencilMapper)
+    : T(fomObj, decoder, romStateIn, fomNominalStateNative),
+      meshToStencilMapper_(meshToStencilMapper),
+      residualPolicy_(preconditioner, T::fomStatesMngr_, meshToStencilMapper_),
+      jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder, meshToStencilMapper_)
+  {}
+};
+
 // aliases to make things easier
 template <typename T, typename ...Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;
@@ -352,6 +421,8 @@ using PrecondPoliciesMixin = PoliciesMixin<T, false, false, true, false, Args...
 template <typename T, typename ...Args>
 using HypRedPoliciesMixin = PoliciesMixin<T, false, false, false, true, Args...>;
 
+template <typename T, typename ...Args>
+using PrecHypRedPoliciesMixin = PoliciesMixin<T, false, false, true, true, Args...>;
 
 
 //---------------------------------------------------
@@ -428,4 +499,4 @@ struct SystemMixin : T
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_

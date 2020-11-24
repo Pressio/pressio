@@ -86,9 +86,9 @@ int main(int argc, char *argv[])
 
   using problem =
 #if defined DO_LSPG
-    pressio::rom::lspg::composeDefaultProblem<
+    pressio::rom::lspg::impl::composeDefaultProblem<
 #else
-    pressio::rom::galerkin::composeDefaultProblem<
+    pressio::rom::galerkin::impl::composeDefaultProblem<
 #endif
     ode_name_t, app_t, decoder_t, rom_state_t, stepper_order, stepper_n_states>::type;
 

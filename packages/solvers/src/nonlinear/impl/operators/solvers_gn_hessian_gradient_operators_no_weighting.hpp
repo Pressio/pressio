@@ -62,7 +62,6 @@ class HessianGradientOperatorsRJApiNoWeighting
 {
 public:
   using sc_t  = typename ::pressio::containers::details::traits<h_t>::scalar_t;
-  using ud_ops_t = ud_ops_type;
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
@@ -72,7 +71,7 @@ private:
   mutable j_t J_;
   g_t g_;
   h_t H_;
-  const ud_ops_t * udOps_   = nullptr;
+  ::pressio::utils::possibly_owning_reference_wrapper<ud_ops_type> udOps_;
 
 public:
   HessianGradientOperatorsRJApiNoWeighting() = delete;
@@ -85,11 +84,11 @@ public:
   template <
     typename system_t,
     typename state_t,
-    typename _ud_ops_t = ud_ops_type,
+    typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
-      and std::is_void<_ud_ops_t>::value,
+      and std::is_void<_ud_ops_type>::value,
       int
       > = 0
     >
@@ -110,24 +109,24 @@ public:
   template <
     typename system_t,
     typename state_t,
-    typename _ud_ops_t = ud_ops_type,
+    typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
       (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
        pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
-      and !std::is_void<_ud_ops_t>::value,
+      and !std::is_void<_ud_ops_type>::value,
       int
       > = 0
     >
   HessianGradientOperatorsRJApiNoWeighting(const system_t & system,
 					   const state_t & state,
-					   const _ud_ops_t & udOps)
+					   const _ud_ops_type & udOps)
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(state),
       H_(udOps.template product<h_t>(pT, pnT,
 				     utils::constants<sc_t>::one(),
 				     *J_.data(), *J_.data())),
-      udOps_(&udOps)
+      udOps_(udOps)
   {}
 
 public:
@@ -221,9 +220,9 @@ public:
   }
 
 private:
-  template<typename _ud_ops_t = ud_ops_t>
+  template<typename _ud_ops_type = ud_ops_type>
   mpl::enable_if_t<
-  std::is_void<_ud_ops_t>::value,
+  std::is_void<_ud_ops_type>::value,
   sc_t
   >
   computeNormR() const
@@ -231,15 +230,15 @@ private:
     return ::pressio::ops::norm2(r_);
   }
 
-  template<typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, sc_t >
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value, sc_t >
   computeNormR() const
   {
-    return udOps_->norm2(*r_.data());
+    return udOps_.get().norm2(*r_.data());
   }
 
-  template<typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< std::is_void<_ud_ops_type>::value >
   computeHessian()
   {
     constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
@@ -247,8 +246,8 @@ private:
     ::pressio::ops::product(pT, pnT, alpha, J_, beta, H_);
   }
 
-  template<typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< std::is_void<_ud_ops_type>::value >
   computeGradient()
   {
     constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
@@ -259,23 +258,23 @@ private:
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }
 
-  template<typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value >
   computeHessian()
   {
     constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
-    udOps_->product(pT, pnT, alpha, *J_.data(), *J_.data(), beta, H_);
+    udOps_.get().product(pT, pnT, alpha, *J_.data(), *J_.data(), beta, H_);
   }
 
-  template<typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
+  template<typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>>
+  mpl::enable_if_t< !std::is_void<_ud_ops_type>::value >
   computeGradient()
   {
     constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     // compute gradient (g_ = J^T r)
-    udOps_->product(pT, alpha, *J_.data(), *r_.data(), beta, g_);
+    udOps_.get().product(pT, alpha, *J_.data(), *r_.data(), beta, g_);
     // scale because of sign convention
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }

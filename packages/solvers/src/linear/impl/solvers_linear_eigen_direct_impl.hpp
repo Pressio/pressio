@@ -77,10 +77,6 @@ public:
     "the native eigen solver must be direct to use in EigenDirect");
 
 public:
-  EigenDirect() = default;
-  EigenDirect(const EigenDirect &) = delete;
-  ~EigenDirect() = default;
-
   void resetLinearSystem(const MatrixT& A) {
     mysolver_.compute(*A.data());
   }
@@ -102,6 +98,7 @@ public:
     this->solve(b, y);
   }
 
+private:
   native_solver_t mysolver_ = {};
 };
 

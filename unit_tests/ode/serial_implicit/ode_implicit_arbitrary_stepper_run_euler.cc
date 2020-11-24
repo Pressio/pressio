@@ -218,8 +218,8 @@ struct Bdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
+  // using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+  //   stepper_t, lin_solver_t>;
 
   app_t appObj_ = {};
   state_t y_ = {};
@@ -233,7 +233,9 @@ struct Bdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    // nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+
     ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
@@ -262,8 +264,8 @@ struct CustomBdf1Solver
 
   using lin_solver_name = ::pressio::solvers::linear::iterative::Bicgstab;
   using lin_solver_t = ::pressio::solvers::linear::Solver<lin_solver_name, jac_t>;
-  using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
-    stepper_t, lin_solver_t>;
+  // using nl_solver_t = pressio::solvers::nonlinear::composeNewtonRaphson_t<
+  //   stepper_t, lin_solver_t>;
 
   app_t appObj_		= {};
   state_t y_		= {};
@@ -277,14 +279,16 @@ struct CustomBdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    // nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
     ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambda(int steps)
   {
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    // nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -297,7 +301,8 @@ struct CustomBdf1Solver
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
   {
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    // nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -309,7 +314,7 @@ struct CustomBdf1Solver
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
   {
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -326,7 +331,8 @@ struct CustomBdf1Solver
       >::value, "");
 
     lin_solver_t linSolverObj;
-    nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    // nl_solver_t solverO(stepperObj_, y_, linSolverObj);
+    auto solverO = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::types::step_t;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;

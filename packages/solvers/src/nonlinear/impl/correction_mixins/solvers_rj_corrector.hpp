@@ -51,9 +51,7 @@
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template<
-  typename T, typename state_type, typename lin_solver_t
-  >
+template<class T, class state_type, class lin_solver_t>
 class RJCorrector : public T
 {
 public:
@@ -62,7 +60,7 @@ public:
 
 private:
   state_t correction_ = {};
-  std::reference_wrapper<lin_solver_t> solverObj_;
+  ::pressio::utils::possibly_owning_reference_wrapper<lin_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
@@ -82,15 +80,10 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-  // copy constr and assign
   RJCorrector(RJCorrector const &) = default;
   RJCorrector & operator=(RJCorrector const &) = default;
-
-  // move constr and assign
   RJCorrector(RJCorrector && o) = default;
   RJCorrector & operator=(RJCorrector && o) = default;
-
-  // destr
   ~RJCorrector() = default;
 
 public:

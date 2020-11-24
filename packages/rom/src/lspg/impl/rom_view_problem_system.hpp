@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_levenberg_merquardt.hpp
+// rom_view_problem_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,32 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
+#define ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
-
-template<typename system_t, typename ... Args>
-using composeLM = impl::compose<
-  system_t, LM, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
-
-template<typename system_t, typename ... Args>
-using composeLM_t = typename composeLM<system_t, Args...>::type;
-
-template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt = composeLM<system_t, Args...>;
-
-template<typename system_t, typename ... Args>
-using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
-
-
-template<typename system_t, typename state_t, typename ...Args>
-auto createLevenbergMarquardt(const system_t & system,
-			      const state_t & state,
-			      Args && ...args)
--> composeLevenbergMarquardt_t<system_t, Args...>
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+  typename rom_problem_t::system_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
 {
-  return composeLevenbergMarquardt_t<system_t, Args...>
-  ( system, state, std::forward<Args>(args)...);
+  return problem.systemRef();
 }
 
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_LEVENBERG_MERQUARDT_HPP_
+template<typename rom_problem_t>
+::pressio::mpl::enable_if_t<
+  ::pressio::rom::details::traits<rom_problem_t>::is_unsteady_lspg,
+  typename rom_problem_t::stepper_t
+  >
+_SystemOrStepper(rom_problem_t & problem)
+{
+  return problem.stepperRef();
+}
+
+}//end namespace impl
+
+}}}//end namespace pressio::rom::lspg
+#endif  // ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_lspg_unsteady_problem_solve_functions_impl.hpp
+// remove_cvref.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,22 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#ifndef MPL_REMOVE_CVREF_HPP_
+#define MPL_REMOVE_CVREF_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+namespace pressio{ namespace mpl{
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
-{
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+template<class T>
+struct remove_cvref;
 
-  ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
+template<class T>
+struct remove_cvref{
+  using type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+};
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
-{
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+template<class T>
+using remove_cvref_t = typename remove_cvref<T>::type;
 
-  ::pressio::ode::advanceToTargetTime
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
+}} // namespace pressio::mpl
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
-{
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
-
-  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
-    (problem.stepperRef(), std::forward<Args>(args)...);
-}
-
-}// end namespace lspg::impl
-
-}}}//end namespace pressio::rom::lspg::impl
-#endif  // ROM_LSPG_IMPL_ROM_LSPG_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#endif  // MPL_REMOVE_CVREF_HPP_

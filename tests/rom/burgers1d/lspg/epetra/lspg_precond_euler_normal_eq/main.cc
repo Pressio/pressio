@@ -55,9 +55,6 @@ int main(int argc, char *argv[])
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
-  // using lspg_problem = typename pressio::rom::lspg::composePreconditionedDefaultProblem<
-  //   ode_tag, fom_t, decoder_t, lspg_state_t, precond_t>::type;
-  // lspg_problem lspgProblem(appobj, decoderObj, yROM, yRef, Prec);
   auto lspgProblem = pressio::rom::lspg::createPreconditionedDefaultProblemUnsteady<ode_tag>(
     appobj, decoderObj, yROM, yRef, Prec);
 

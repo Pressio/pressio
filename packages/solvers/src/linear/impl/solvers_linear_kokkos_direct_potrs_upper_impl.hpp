@@ -112,21 +112,21 @@ public:
   >
   solve(const _MatrixT & A, const T& b, T & y)
   {
-    if (!auxMat_){
-      auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("potrsUppAuxM",
-						       A.extent(0),
-						       A.extent(1)));
-    }
-    else{
-      if (A.extent(0) != auxMat_->extent(0) or
-	  A.extent(1) != auxMat_->extent(1))
+    // if (!auxMat_){
+    //   auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("potrsUppAuxM",
+    // 						       A.extent(0),
+    // 						       A.extent(1)));
+    // }
+    // else{
+      if (A.extent(0) != auxMat_.extent(0) or
+	  A.extent(1) != auxMat_.extent(1))
 	{
-	  Kokkos::resize(*auxMat_->data(), A.extent(0), A.extent(1));
+	  Kokkos::resize(*auxMat_.data(), A.extent(0), A.extent(1));
 	}
-    }
+      //    }
 
-    ::pressio::ops::deep_copy(*auxMat_, A);
-    this->solveAllowMatOverwrite(*auxMat_, b, y);
+    ::pressio::ops::deep_copy(auxMat_, A);
+    this->solveAllowMatOverwrite(auxMat_, b, y);
   }
 
 
@@ -179,7 +179,7 @@ public:
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
   Teuchos::LAPACK<int, scalar_t> lpk_;
-  std::unique_ptr<MatrixT> auxMat_ = nullptr;
+  MatrixT auxMat_ = {};
 #endif
 };
 

@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       checkStr = "FAILED";
   }
 
-  std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
+  // std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
   std::cout << checkStr <<  std::endl;
   return 0;
 }
