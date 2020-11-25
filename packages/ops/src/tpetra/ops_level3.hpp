@@ -67,7 +67,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -106,7 +106,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value,
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value,
   // ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value,
   C_type
   >
@@ -134,7 +134,7 @@ product(::pressio::transpose modeA,
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  // ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
+  // ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
@@ -250,6 +250,38 @@ product(::pressio::transpose modeA,
   C_type C(A.numVectors(), A.numVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;
+}
+
+//-------------------------------------------
+// C = beta * C + alpha*A*B
+// specialize for when A is a diagonal expression
+//-------------------------------------------
+template <typename T, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<C_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value
+  >
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const pressio::containers::expressions::AsDiagonalMatrixExpr<T> & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  assert( C.extent(0) == A.extent(0) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(1) == B.extent(0) );
+
+  auto & Ctp = *C.data();
+  auto & Atp = *(A.pressioObj()->data());
+  auto & Btp = *B.data();
+  Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);
 }
 
 }}//end namespace pressio::ops

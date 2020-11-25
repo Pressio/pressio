@@ -71,12 +71,13 @@ public:
 
   possibly_owning_reference_wrapper() = delete;
   possibly_owning_reference_wrapper(T & valIn) : value_(valIn){}
+  possibly_owning_reference_wrapper(const T & valIn) : value_(valIn){}
 
-  template<
-    typename _T = T,
-    typename std::enable_if<std::is_move_constructible<_T>::value, int>::type = 0
-    >
-  possibly_owning_reference_wrapper(_T && valIn) : value_(valIn){}
+  // template<
+  //   typename _T = T,
+  //   typename std::enable_if<std::is_move_constructible<_T>::value, int>::type = 0
+  //   >
+  possibly_owning_reference_wrapper(T && valIn) : value_(std::move(valIn)){}
 
   T& get() { return value_; }
   T const& get() const { return value_; }

@@ -51,27 +51,31 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<vec_type>::value
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value,
+  typename ::pressio::containers::details::traits<T1>::scalar_t
   >
-dot(const vec_type & a,
-    const vec_type & b,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+dot(const T1 & a, const T2 & b)
 {
-  assert(a.extent(0) == b.extent(0));
-  result = a.data()->dot(*b.data());
-}
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
-dot(const vec_type & a, const vec_type & b)
-{
   assert(a.extent(0) == b.extent(0));
   return a.data()->dot(*b.data());
+}
+
+template <typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value
+  >
+dot(const T1 & a, const T2 & b,
+    typename ::pressio::containers::details::traits<T1>::scalar_t & result)
+{
+  result = dot(a,b);
 }
 
 }}//end namespace pressio::ops

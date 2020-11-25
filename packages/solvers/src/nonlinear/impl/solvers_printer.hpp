@@ -52,13 +52,13 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename step_t, typename sc_t>
-void printNonlinearLeastSquaresDefaultMetrics(step_t iStep,
-					      const sc_t & absCorrectionNorm,
-					      const sc_t & relCorrectionNorm,
-					      const sc_t & absResNorm,
-					      const sc_t & relResNorm,
-					      const sc_t & absGNorm,
-					      const sc_t & relGNorm)
+void printMetrics(step_t iStep,
+		  const sc_t & absCorrectionNorm,
+		  const sc_t & relCorrectionNorm,
+		  const sc_t & absResNorm,
+		  const sc_t & relResNorm,
+		  const sc_t & absGNorm,
+		  const sc_t & relGNorm)
 {
   using namespace ::pressio::utils::io;
   constexpr auto one = static_cast<sc_t>(1);
@@ -93,11 +93,11 @@ void printNonlinearLeastSquaresDefaultMetrics(step_t iStep,
 }
 
 template <typename step_t, typename sc_t>
-void printNonlinearLeastSquaresDefaultMetrics(step_t iStep,
-					      const sc_t & absCorrectionNorm,
-					      const sc_t & relCorrectionNorm,
-					      const sc_t & absResNorm,
-					      const sc_t & relResNorm)
+void printMetrics(step_t iStep,
+		  const sc_t & absCorrectionNorm,
+		  const sc_t & relCorrectionNorm,
+		  const sc_t & absResNorm,
+		  const sc_t & relResNorm)
 {
   using namespace ::pressio::utils::io;
   constexpr auto one = static_cast<sc_t>(1);

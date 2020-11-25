@@ -53,22 +53,24 @@
 concrete classes depend on traits which depend on predicates. */
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_eigen.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_eigen.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_pybind.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_pybind.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_epetra.hpp"
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_tpetra.hpp"
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_teuchos.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_epetra.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_teuchos.hpp"
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_kokkos.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_kokkos.hpp"
 #endif
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper_arbitrary.hpp"
-#include "./wrapper_detection_predicates/containers_is_vector_wrapper.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_arbitrary.hpp"
+#include "./wrapper_predicates/containers_is_sharedmem_vector_wrapper.hpp"
+#include "./wrapper_predicates/containers_is_sharedmem_host_accessible_vector_wrapper.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper.hpp"
 
 // traits
 #include "./containers_vector_traits.hpp"

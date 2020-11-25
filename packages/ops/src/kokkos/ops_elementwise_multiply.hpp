@@ -78,8 +78,9 @@ elementwise_multiply
 
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
-  KokkosBlas::mult(beta, *y.data(),
-		   alpha, *x.data(), *z.data() );
+  using namespace KokkosBlas;
+  mult(beta, *y.data(),
+       alpha, *x.data(), *z.data() );
 }
 
 }}//end namespace pressio::ops

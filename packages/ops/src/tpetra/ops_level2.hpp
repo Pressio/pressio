@@ -134,7 +134,7 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<x_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -213,7 +213,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,

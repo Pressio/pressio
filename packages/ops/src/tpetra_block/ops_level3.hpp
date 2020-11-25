@@ -68,7 +68,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -234,6 +234,44 @@ product(::pressio::transpose modeA,
   C_type C(A.numVectors(), A.numVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;
+}
+
+//-------------------------------------------
+// C = beta * C + alpha*A*B
+// specialize for when A is a diagonal expression
+//-------------------------------------------
+template <typename T, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<C_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const pressio::containers::expressions::AsDiagonalMatrixExpr<T> & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  assert( C.extent(0) == A.extent(0) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(1) == B.extent(0) );
+
+  auto Ctpb = *C.data(); //mv
+  auto Atpb = *(A.pressioObj()->data()); //v
+  auto Btpb = *B.data(); //mv
+
+  auto Ctp = Ctpb.getMultiVectorView();
+  using Atpb_t = mpl::remove_cvref_t<decltype(Atpb)>;
+  auto Atp = const_cast<Atpb_t &>(Atpb).getVectorView();
+  auto Btp = Btpb.getMultiVectorView();
+
+  Ctp.elementWiseMultiply(alpha, Atp, Btp, beta);
 }
 
 }}//end namespace pressio::ops

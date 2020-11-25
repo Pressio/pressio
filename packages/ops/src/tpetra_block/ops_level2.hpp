@@ -115,7 +115,7 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<x_type>::value and
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<y_type>::value
   >
 product(::pressio::nontranspose mode,
@@ -153,7 +153,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   containers::predicates::is_vector_wrapper_tpetra_block<x_type>::value and
   !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
