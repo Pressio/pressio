@@ -69,4 +69,4 @@ abs(T1 & y, const T2 & x)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_POW_HPP_
+#endif  // OPS_EIGEN_OPS_ABS_HPP_

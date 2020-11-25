@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// weighting_irwls.hpp
+// solvers_weighting_irwls.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

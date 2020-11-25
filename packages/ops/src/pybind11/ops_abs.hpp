@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_host_accessible_vector_wrapper.hpp
+// ops_abs.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,29 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
-#define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+#ifndef OPS_PYBIND11_OPS_ABS_HPP_
+#define OPS_PYBIND11_OPS_ABS_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio{ namespace ops{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
-   >
-  > : std::true_type{};
-#endif
+// y= abs(x)
+template <typename T0, typename T1>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_vector_wrapper_pybind<T0>::value and
+  containers::predicates::is_vector_wrapper_pybind<T1>::value
+  >
+abs(T0 & y, const T1 & x)
+{
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
+     "vectors are not scalar compatible");
+  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
-   >
-  > : std::true_type{};
-#endif
+  assert(y.extent(0) == x.extent(0));
+  for (std::size_t i=0; i<y.extent(0); ++i){
+    y(i)=std::abs(x(i));
+  }
+}
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
-    and
-    std::is_same<
-      typename ::pressio::containers::details::traits<T>::memory_space,
-      Kokkos::HostSpace
-      >::value
-   >
-  > : std::true_type{};
-#endif
-
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_ABS_HPP_

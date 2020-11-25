@@ -310,13 +310,13 @@ private:
 
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
       if (T::hasGradientComputation()){
-	impl::printNonlinearLeastSquaresDefaultMetrics
+	impl::printMetrics
 	  (iStep_,
 	   norms_[0], norms_[1], norms_[2],
 	   norms_[3], norms_[4], norms_[5]);
       }
       else{
-	impl::printNonlinearLeastSquaresDefaultMetrics
+	impl::printMetrics
 	  (iStep_,
 	   norms_[0], norms_[1], norms_[2], norms_[3]);
       }
