@@ -104,11 +104,11 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 }
 #endif
 
-#if defined(PRESSIO_ENABLE_TPL_TRILINOS) and defined(PRESSIO_ENABLE_TPL_EIGEN)
+#if defined(PRESSIO_ENABLE_TPL_TRILINOS)
 template<typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
+  ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value and
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<vector_type>::value
 >
 solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {

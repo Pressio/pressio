@@ -53,7 +53,6 @@ namespace pressio{ namespace ops{
 
 /*
  * y = beta * y + alpha*op(A)*x
- *
 */
 
 //-------------------------------
@@ -61,9 +60,9 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  ::pressio::containers::predicates::is_dense_matrix_teuchos<A_type>::value and
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value and
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -72,9 +71,8 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-
-  assert( y.extent(0) == A.numRows() );
-  assert( x.extent(0) == A.numCols() );
+  assert( (std::size_t)y.extent(0) == (std::size_t)A.numRows() );
+  assert( (std::size_t)x.extent(0) == (std::size_t)A.numCols() );
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t i=0;i<A.numRows(); ++i){
@@ -91,8 +89,8 @@ product(::pressio::nontranspose mode,
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<x_type>::value and
-  containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value and
+  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -101,9 +99,8 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-
-  assert( y.extent(0) == A.numCols() );
-  assert( x.extent(0) == A.numRows() );
+  assert( (std::size_t)y.extent(0) == (std::size_t)A.numCols() );
+  assert( (std::size_t)x.extent(0) == (std::size_t)A.numRows() );
 
   using ord_t = typename A_type::ordinalType;
   for (ord_t j=0; j<A.numCols(); ++j){
