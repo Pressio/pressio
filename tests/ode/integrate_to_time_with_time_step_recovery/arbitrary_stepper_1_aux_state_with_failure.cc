@@ -139,6 +139,9 @@ struct MyFakeSolver
 
 int main(int argc, char *argv[])
 {
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::trace});
+
   using app_t		= MyApp;
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;

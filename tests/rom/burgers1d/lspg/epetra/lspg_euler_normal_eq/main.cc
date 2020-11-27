@@ -3,7 +3,11 @@
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::info});
+
   using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;

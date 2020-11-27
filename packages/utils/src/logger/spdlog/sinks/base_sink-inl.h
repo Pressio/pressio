@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_INL_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include <spdlog/sinks/base_sink.h>
@@ -61,3 +62,4 @@ void SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::set_formatter_(std::unique_p
 {
     formatter_ = std::move(sink_formatter);
 }
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_INL_H_

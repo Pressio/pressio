@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_DUP_FILTER_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_DUP_FILTER_SINK_H_
 
 #include "dist_sink.h"
 #include <spdlog/details/null_mutex.h>
@@ -88,3 +89,4 @@ using dup_filter_sink_st = dup_filter_sink<details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_DUP_FILTER_SINK_H_

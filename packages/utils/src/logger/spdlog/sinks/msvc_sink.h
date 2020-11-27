@@ -1,7 +1,8 @@
 // Copyright(c) 2016 Alexander Dalshov.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_MSVC_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_MSVC_SINK_H_
 
 #if defined(_WIN32)
 
@@ -47,3 +48,4 @@ using windebug_sink_st = msvc_sink_st;
 } // namespace spdlog
 
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_MSVC_SINK_H_

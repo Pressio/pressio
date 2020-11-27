@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_ANDROID_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_ANDROID_SINK_H_
 
 #ifdef __ANDROID__
 
@@ -117,3 +118,4 @@ inline std::shared_ptr<logger> android_logger_st(const std::string &logger_name,
 } // namespace spdlog
 
 #endif // __ANDROID__
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_ANDROID_SINK_H_

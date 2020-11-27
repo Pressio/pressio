@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_REGISTRY_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_REGISTRY_H_
 
 // Loggers registry of unique name->logger pointer
 // An attempt to create a logger with an already existing name will result with spdlog_ex exception.
@@ -113,3 +114,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "registry-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_REGISTRY_H_

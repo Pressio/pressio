@@ -51,8 +51,6 @@
 
 #include "pressio_mpl.hpp"
 
-#include "utils/src/utils_ConfigDefs.hpp"
-
 #include "utils/src/utils_crtp_helper.hpp"
 #include "utils/src/utils_static_constants.hpp"
 #include "utils/src/utils_empty.hpp"

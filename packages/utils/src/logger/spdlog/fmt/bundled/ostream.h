@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef FMT_OSTREAM_H_
-#define FMT_OSTREAM_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OSTREAM_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OSTREAM_H_
 
 #include <ostream>
 
@@ -164,4 +164,4 @@ void print(std::basic_ostream<Char>& os, const S& format_str, Args&&... args) {
 }
 FMT_END_NAMESPACE
 
-#endif  // FMT_OSTREAM_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OSTREAM_H_

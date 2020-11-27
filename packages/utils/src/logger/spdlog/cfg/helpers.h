@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
+#define UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
 
 #include <spdlog/common.h>
 #include <unordered_map>
@@ -27,3 +28,4 @@ SPDLOG_API void load_levels(const std::string &txt);
 #ifdef SPDLOG_HEADER_ONLY
 #include "helpers-inl.h"
 #endif // SPDLOG_HEADER_ONLY
+#endif  // UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_

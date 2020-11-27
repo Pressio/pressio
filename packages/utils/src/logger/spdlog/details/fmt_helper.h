@@ -1,6 +1,7 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_FMT_HELPER_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_FMT_HELPER_H_
 
 #include <chrono>
 #include <type_traits>
@@ -114,3 +115,4 @@ inline ToDuration time_fraction(log_clock::time_point tp)
 } // namespace fmt_helper
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_FMT_HELPER_H_

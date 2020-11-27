@@ -49,6 +49,9 @@
 #ifndef UTILS_IO_UTILS_COLORIZE_PRINT_HPP_
 #define UTILS_IO_UTILS_COLORIZE_PRINT_HPP_
 
+#include <iostream>
+#include <unistd.h>
+
 namespace pressio{ namespace utils{ namespace io{
 
 namespace impl{

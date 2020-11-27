@@ -173,6 +173,8 @@ public:
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
+    PRESSIOLOG_DEBUG("rk4 stepper: do step");
+
     auto & auxRhs0 = veloAuxStorage_(0);
     auto & auxRhs1 = veloAuxStorage_(1);
     auto & auxRhs2 = veloAuxStorage_(2);

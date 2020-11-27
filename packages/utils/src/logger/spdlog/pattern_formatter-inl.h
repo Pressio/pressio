@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
+#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./pattern_formatter.h"
@@ -917,6 +918,9 @@ public:
         using std::chrono::milliseconds;
         using std::chrono::seconds;
 
+	//!!!!!!!!!! FRIZZI !!!!!!!!!!!!!!!!
+	//!!! this is where the default formatting is set
+
         // cache the date/time part for the next second.
         auto duration = msg.time.time_since_epoch();
         auto secs = duration_cast<seconds>(duration);
@@ -952,14 +956,14 @@ public:
         dest.push_back(']');
         dest.push_back(' ');
 
-        // append logger name if exists
-        if (msg.logger_name.size() > 0)
-        {
-            dest.push_back('[');
-            fmt_helper::append_string_view(msg.logger_name, dest);
-            dest.push_back(']');
-            dest.push_back(' ');
-        }
+        // // append logger name if exists
+        // if (msg.logger_name.size() > 0)
+        // {
+        //     dest.push_back('[');
+        //     fmt_helper::append_string_view(msg.logger_name, dest);
+        //     dest.push_back(']');
+        //     dest.push_back(' ');
+        // }
 
         dest.push_back('[');
         // wrap the level name with color
@@ -981,6 +985,7 @@ public:
             dest.push_back(']');
             dest.push_back(' ');
         }
+
         // fmt_helper::append_string_view(msg.msg(), dest);
         fmt_helper::append_string_view(msg.payload, dest);
     }
@@ -1371,3 +1376,4 @@ SPDLOG_INLINE void pattern_formatter::compile_pattern_(const std::string &patter
     }
 }
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_

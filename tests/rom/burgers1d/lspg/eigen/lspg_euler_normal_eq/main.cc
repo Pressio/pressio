@@ -5,6 +5,9 @@
 
 int main(int argc, char *argv[])
 {
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::trace});
+
   std::string checkStr {"PASSED"};
 
   using fom_t		= pressio::apps::Burgers1dEigen;

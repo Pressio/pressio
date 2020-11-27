@@ -23,8 +23,8 @@ struct ValidSystem {
     return jacobian_type(2, 2);
   }
 
-  void residual(const state_type& x, 
-                residual_type& res) const 
+  void residual(const state_type& x,
+                residual_type& res) const
   {
     res(0) =  x(0)*x(0)*x(0) + x(1) - 1.0;
     res(1) = -x(0) + x(1)*x(1)*x(1) + 1.0;
@@ -41,6 +41,9 @@ struct ValidSystem {
 
 int main()
 {
+  pressio::log::initialize(pressio::logto::fileAndTerminal, "log.txt");
+  pressio::log::setVerbosity({pressio::log::level::trace, pressio::log::level::trace});
+
   using namespace pressio;
   using namespace pressio::solvers;
 
@@ -63,8 +66,8 @@ int main()
   NonLinSolver.solve(sys, y);
 
   std::string strOut = "PASSED";
-  const auto e1 = std::abs(y(0) - (1.)); 
-  const auto e2 = std::abs(y(1) - (0.)); 
+  const auto e1 = std::abs(y(0) - (1.));
+  const auto e2 = std::abs(y(1) - (0.));
   if (e1>1e-8 or e2>1e-8) strOut = "FAILED";
 
   std::cout <<  strOut << std::endl;

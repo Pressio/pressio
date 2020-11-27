@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef FMT_LOCALE_H_
-#define FMT_LOCALE_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_LOCALE_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_LOCALE_H_
 
 #include <locale>
 
@@ -75,4 +75,4 @@ inline OutputIt format_to(OutputIt out, const std::locale& loc,
 
 FMT_END_NAMESPACE
 
-#endif  // FMT_LOCALE_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_LOCALE_H_

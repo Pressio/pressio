@@ -164,6 +164,8 @@ public:
 	      const types::step_t & step,
 	      solver_type & solver)
   {
+    PRESSIOLOG_DEBUG("arbitrary stepper: do step");
+
     static_assert
       (::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
       solver_type, decltype(*this), ode_state_type>::value,

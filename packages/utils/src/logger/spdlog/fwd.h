@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_FWD_H_
+#define UTILS_LOGGER_SPDLOG_FWD_H_
 
 namespace spdlog {
 class logger;
@@ -12,3 +13,4 @@ class sink;
 }
 
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_FWD_H_

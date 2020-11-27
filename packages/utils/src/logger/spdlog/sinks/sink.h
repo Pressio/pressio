@@ -1,31 +1,34 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_SINK_H_
 
 #include "../details/log_msg.h"
 #include "../formatter.h"
 
-namespace spdlog {
+namespace spdlog { namespace sinks {
 
-namespace sinks {
 class SPDLOG_API sink
 {
-public:
-    virtual ~sink() = default;
-    virtual void log(const details::log_msg &msg) = 0;
-    virtual void flush() = 0;
-    virtual void set_pattern(const std::string &pattern) = 0;
-    virtual void set_formatter(std::unique_ptr<spdlog::formatter> sink_formatter) = 0;
+  public:
+  virtual ~sink() = default;
+  virtual void log(const details::log_msg &msg) = 0;
+  virtual void flush() = 0;
+  virtual void set_pattern(const std::string &pattern) = 0;
+  virtual void set_formatter(std::unique_ptr<spdlog::formatter> sink_formatter) = 0;
 
-    void set_level(level::level_enum log_level);
-    level::level_enum level() const;
-    bool should_log(level::level_enum msg_level) const;
+  void set_level(level::level_enum log_level);
+  level::level_enum level() const;
+  bool should_log(level::level_enum msg_level) const;
+  void setMpiRank(int rank) { mpiRank_ = rank; }
 
 protected:
-    // sink log level - default is all
-    level_t level_{level::trace};
-};
+  int mpiRank_ = 0;
+
+  // sink log level - default is all
+  level_t level_{level::trace};
+  };
 
 } // namespace sinks
 } // namespace spdlog
@@ -33,3 +36,4 @@ protected:
 #ifdef SPDLOG_HEADER_ONLY
 #include "sink-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_SINK_H_

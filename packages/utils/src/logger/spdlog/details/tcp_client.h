@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_H_
 
 #ifdef _WIN32
 #error include tcp_client-windows.h instead
@@ -144,3 +145,4 @@ public:
 };
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_H_

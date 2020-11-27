@@ -74,16 +74,18 @@ void printStepTime(const ::pressio::ode::types::step_t & step,
 		   const time_type & time,
 		   const time_type & dt)
 {
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  using namespace ::pressio::utils::io;
-  auto fmt = blue();
-  print_stdout(fmt,
-	       std::left,
-	       "time step=", step,
-	       ": starts at time=", time,
-	       " dt=", dt,
-	       reset(), "\n");
-#endif
+  PRESSIOLOG_DEBUG("starting timestep={} from time={} with dt={}",
+		   step, time, dt);
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+//   using namespace ::pressio::utils::io;
+//   auto fmt = blue();
+//   print_stdout(fmt,
+// 	       std::left,
+// 	       "time step=", step,
+// 	       ": starts at time=", time,
+// 	       " dt=", dt,
+// 	       reset(), "\n");
+// #endif
 }
 
 }}}//end namespace pressio::ode::impl

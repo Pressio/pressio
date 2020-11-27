@@ -1,7 +1,7 @@
 #include <iostream>
 #include "pressio_solvers.hpp"
 
-struct NonLinearLeastSquareSystem 
+struct NonLinearLeastSquareSystem
 {
   using matrix_n_t  = Eigen::Matrix<double, -1, -1>;
   using matrix_w_t = pressio::containers::DenseMatrix<matrix_n_t>;
@@ -15,7 +15,7 @@ struct NonLinearLeastSquareSystem
   using residual_type = vector_w_t;
   using jacobian_type = matrix_w_t;
 
-  void residual(const state_type& x, residual_type & res) const 
+  void residual(const state_type& x, residual_type & res) const
   {
     res(0) = x(0) - x(1)*(2. - x(1)*(5. - x(1)) ) - 13.;
     res(1) = x(0) - x(1)*(14. - x(1)*(1. + x(1)) ) - 29.;
@@ -39,7 +39,11 @@ struct NonLinearLeastSquareSystem
   }
 };
 
-int main() {
+int main()
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::trace});
+
   std::string checkStr = "PASSED";
   // Namespaces
   using namespace pressio;
@@ -88,7 +92,7 @@ int main() {
 
   // LM with default update, multiple solves
   // if we call solve twice in a row starting from same initial condition
-  // we should get the same answer. if we don't it means the solver does 
+  // we should get the same answer. if we don't it means the solver does
   // not reset its parameters correctly.
   vector_w_t x2a(2);
   vector_w_t x2b(2);

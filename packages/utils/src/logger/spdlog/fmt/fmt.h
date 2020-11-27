@@ -3,7 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_FMT_FMT_H_
+#define UTILS_LOGGER_SPDLOG_FMT_FMT_H_
 
 //
 // Include a bundled header-only copy of fmtlib or an external one.
@@ -25,3 +26,4 @@
 /* #include <fmt/core.h> */
 /* #include <fmt/format.h> */
 /* #endif */
+#endif  // UTILS_LOGGER_SPDLOG_FMT_FMT_H_

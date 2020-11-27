@@ -5,6 +5,9 @@
 
 int main()
 {
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
   std::string sentinel = "PASSED";
 
   using namespace pressio;

@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_H_
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/details/file_helper.h>
@@ -76,3 +77,4 @@ inline std::shared_ptr<logger> rotating_logger_st(
 #ifdef SPDLOG_HEADER_ONLY
 #include "rotating_file_sink-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_H_

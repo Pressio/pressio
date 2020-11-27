@@ -52,6 +52,7 @@
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
+#include <iostream>
 
 namespace pressio{ namespace utils{ namespace io{
 
@@ -87,14 +88,13 @@ void print_stdout(Args &&... args){
     impl::print(std::cout, std::forward<Args>(args)... );
 }
 
-// conditional on PRESSIO_ENABLE_DEBUG_PRINT being on
-template <typename ... Args>
-void print_stdout_if_dp(Args &&... args){
-#if defined PRESSIO_ENABLE_DEBUG_PRINT
-  print_stdout(std::forward<Args>(args)...);
-#endif
-}
-
+// // conditional on PRESSIO_ENABLE_DEBUG_PRINT being on
+// template <typename ... Args>
+// void print_stdout_if_dp(Args &&... args){
+// #if defined PRESSIO_ENABLE_DEBUG_PRINT
+//   print_stdout(std::forward<Args>(args)...);
+// #endif
+// }
 
 // template <typename T, typename ... Args>
 // void print_containers_wrapper(const T & object, Args && ...args)

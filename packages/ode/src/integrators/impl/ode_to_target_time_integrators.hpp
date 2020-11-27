@@ -120,11 +120,12 @@ integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
   collector_dispatch::execute(collector, zero, time, odeStateInOut);
 
   step_t step = 1;
-  printStartOfAdvancing("AdvanceToTargetTimeWithDtCallback");
+  PRESSIOLOG_INFO("advanceToTargetTimeWithDtCallback");
   constexpr auto eps = std::numeric_limits<time_type>::epsilon();
   bool condition = true;
   while (condition)
     {
+      PRESSIOLOG_DEBUG("callback dt manager");
       impl::callDtManager<enableTimeStepRecovery>(dtManager, step, time,
 						  dt, minDt, dtReducFactor);
 
@@ -160,7 +161,8 @@ integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
       {
 	bool needStop = false;
 	while(!needStop){
-	  try{
+	  try
+	  {
 	    stepPolicy::execute(time, dt, step, odeStateInOut,
 				std::forward<Args>(args)...);
 	    needStop=true;
@@ -172,14 +174,14 @@ integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
 	      throw std::runtime_error
 		("Violation of minimum time step while trying to recover time step");
 	    }
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-	    auto fmt = ::pressio::utils::io::red();
-	    auto rst = ::pressio::utils::io::reset();
-	    ::pressio::utils::io::print_stdout
-		(std::setw(1), fmt,
-		 "time step=", step, "failed, retrying with dt=", dt,
-		 rst, "\n");
-#endif
+
+	    PRESSIOLOG_CRITICAL("time step={} failed, retrying with dt={}", step, dt);
+	    // auto fmt = ::pressio::utils::io::red();
+	    // auto rst = ::pressio::utils::io::reset();
+	    // ::pressio::utils::io::print_stdout
+	    // 	(std::setw(1), fmt,
+	    // 	 "time step=", step, "failed, retrying with dt=", dt,
+	    // 	 rst, "\n");
 	  }
 	}
       }

@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef FMT_PRINTF_H_
-#define FMT_PRINTF_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_PRINTF_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_PRINTF_H_
 
 #include <algorithm>  // std::max
 #include <limits>     // std::numeric_limits
@@ -748,4 +748,4 @@ inline int fprintf(std::basic_ostream<Char>& os, const S& format_str,
 }
 FMT_END_NAMESPACE
 
-#endif  // FMT_PRINTF_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_PRINTF_H_

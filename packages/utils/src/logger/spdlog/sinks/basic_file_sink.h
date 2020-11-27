@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_H_
 
 #include "../details/file_helper.h"
 #include "../details/null_mutex.h"
@@ -56,3 +57,4 @@ inline std::shared_ptr<logger> basic_logger_st(const std::string &logger_name, c
 #ifdef SPDLOG_HEADER_ONLY
 #include "basic_file_sink-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_H_

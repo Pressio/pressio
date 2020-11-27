@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_H_
 //
 // base sink templated over a mutex (either dummy or real)
 // concrete implementation should override the sink_it_() and flush_()  methods.
@@ -11,7 +12,7 @@
 
 #include "../common.h"
 #include "../details/log_msg.h"
-#include "../sinks/sink.h"
+#include "./sink.h"
 
 namespace spdlog {
 namespace sinks {
@@ -50,3 +51,4 @@ protected:
 #ifdef SPDLOG_HEADER_ONLY
 #include "base_sink-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_H_

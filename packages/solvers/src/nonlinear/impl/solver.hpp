@@ -262,7 +262,10 @@ private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & system, state_t & state)
   {
+    PRESSIOLOG_INFO("executing nonlinear solver");
+
     if (!updater_){
+      PRESSIOLOG_DEBUG("creating updater");
       updater_ = createUpdater<solvertag>(state, updatingE_);
     }
     // after construction, it should NOT be null
@@ -273,6 +276,7 @@ private:
     sc_t gradientNorm0 = {};
     bool recomputeSystemJacobian = true;
 
+    PRESSIOLOG_DEBUG("starting loop");
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
@@ -281,9 +285,11 @@ private:
 
       // 1.
       try{
+	PRESSIOLOG_DEBUG("compute correction");
 	T::computeCorrection(system, state, recomputeSystemJacobian);
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
+	PRESSIOLOG_CRITICAL("nonlinear solver failure");
 	throw ::pressio::eh::nonlinear_solve_failure();
       }
 
@@ -294,7 +300,6 @@ private:
 	residualNorm0   = residualNorm;
 	correctionNorm0 = correctionNorm;
       }
-
       norms_[0] = std::move(correctionNorm);
       norms_[1] = norms_[0]/correctionNorm0;
       norms_[2] = std::move(residualNorm);
@@ -308,7 +313,6 @@ private:
 	norms_[5] = gradientNorm/gradientNorm0;
       }
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
       if (T::hasGradientComputation()){
 	impl::printMetrics
 	  (iStep_,
@@ -320,12 +324,15 @@ private:
 	  (iStep_,
 	   norms_[0], norms_[1], norms_[2], norms_[3]);
       }
-#endif
 
       // 4.
-      if (stopLoop(iStep_)) break;
+      if (stopLoop(iStep_)){
+	PRESSIOLOG_DEBUG("stopping");
+	break;
+      }
 
       // 5.
+      PRESSIOLOG_DEBUG("apply update");
       applyUpdater(system, state, *this, updatingE_, updater_);
     }
 

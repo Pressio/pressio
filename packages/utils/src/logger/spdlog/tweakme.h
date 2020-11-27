@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_TWEAKME_H_
+#define UTILS_LOGGER_SPDLOG_TWEAKME_H_
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -43,7 +44,7 @@
 // Use only if your code never modifies a logger's log levels concurrently by
 // different threads.
 //
-// #define SPDLOG_NO_ATOMIC_LEVELS
+#define SPDLOG_NO_ATOMIC_LEVELS
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,7 @@
 // Uncomment to disable default logger creation.
 // This might save some (very) small initialization time if no default logger is needed.
 //
-// #define SPDLOG_DISABLE_DEFAULT_LOGGER
+#define SPDLOG_DISABLE_DEFAULT_LOGGER
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,3 +115,4 @@
 //
 // #define SPDLOG_FUNCTION __PRETTY_FUNCTION__
 ///////////////////////////////////////////////////////////////////////////////
+#endif  // UTILS_LOGGER_SPDLOG_TWEAKME_H_

@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_SYNCHRONOUS_FACTORY_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_SYNCHRONOUS_FACTORY_H_
 
 #include "registry.h"
 
@@ -22,3 +23,4 @@ struct synchronous_factory
     }
 };
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_SYNCHRONOUS_FACTORY_H_

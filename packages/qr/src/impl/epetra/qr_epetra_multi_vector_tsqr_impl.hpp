@@ -78,20 +78,7 @@ public:
 				*Qmat_->data(),
 				*localR_.get(),
 				false);
-    //::pressio::utils::io::print_stdout(*localR_.get());
-
-// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-//     int myrank{};
-//     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-//     auto orthoErr = OM_->orthonormError(*Qmat_->data());
-//     if (myrank==0)
-//       std::cout << "orthoErr = " << orthoErr << std::endl;
-// #endif
-
-//     assert(computedRank_ == nVecs);
   }
-
-  // void computeThinInPlace(matrix_t & A) {}
 
   template <typename vector_t>
   void doLinSolve(const vector_t & rhs, vector_t & y)const {

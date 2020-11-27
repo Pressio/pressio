@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_H_
 
 #include "../common.h"
 #include <tuple>
@@ -57,3 +58,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "file_helper-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_FILE_HELPER_H_

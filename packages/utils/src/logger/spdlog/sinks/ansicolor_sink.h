@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_H_
 
 #include "../details/console_globals.h"
 #include "../details/null_mutex.h"
@@ -116,3 +117,4 @@ using ansicolor_stderr_sink_st = ansicolor_stderr_sink<details::console_nullmute
 #ifdef SPDLOG_HEADER_ONLY
 #include "ansicolor_sink-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_H_

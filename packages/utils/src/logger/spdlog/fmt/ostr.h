@@ -3,7 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_FMT_OSTR_H_
+#define UTILS_LOGGER_SPDLOG_FMT_OSTR_H_
 //
 // include bundled or external copy of fmtlib's ostream support
 //
@@ -18,3 +19,4 @@
 #else
 #include <fmt/ostream.h>
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_FMT_OSTR_H_

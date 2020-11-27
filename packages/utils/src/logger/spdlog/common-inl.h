@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_COMMON_INL_H_
+#define UTILS_LOGGER_SPDLOG_COMMON_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include <./common.h>
@@ -74,3 +75,4 @@ SPDLOG_INLINE void throw_spdlog_ex(std::string msg)
 }
 
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_COMMON_INL_H_

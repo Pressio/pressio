@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_INL_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./periodic_worker.h"
@@ -47,3 +48,4 @@ SPDLOG_INLINE periodic_worker::~periodic_worker()
 
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_INL_H_

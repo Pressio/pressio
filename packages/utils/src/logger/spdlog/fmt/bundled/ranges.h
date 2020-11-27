@@ -9,8 +9,8 @@
 // All Rights Reserved
 // {fmt} support for ranges, containers and types tuple interface.
 
-#ifndef FMT_RANGES_H_
-#define FMT_RANGES_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_RANGES_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_RANGES_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -383,4 +383,4 @@ arg_join<const T*, const T*, wchar_t> join(std::initializer_list<T> list,
 
 FMT_END_NAMESPACE
 
-#endif  // FMT_RANGES_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_RANGES_H_

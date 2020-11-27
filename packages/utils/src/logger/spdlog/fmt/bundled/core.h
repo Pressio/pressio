@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef FMT_CORE_H_
-#define FMT_CORE_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_CORE_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_CORE_H_
 
 #include <cstdio>  // std::FILE
 #include <cstring>
@@ -1879,4 +1879,4 @@ inline void print(const S& format_str, Args&&... args) {
 }
 FMT_END_NAMESPACE
 
-#endif  // FMT_CORE_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_CORE_H_

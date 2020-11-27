@@ -137,6 +137,7 @@ public:
 	      const types::step_t & step,
 	      solver_type & solver)
   {
+    PRESSIOLOG_DEBUG("bdf2 stepper: do step");
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
       solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF2 stepper");
@@ -157,6 +158,8 @@ public:
 	      solver_type & solver,
 	      guess_callback_t && guesserCb)
   {
+    PRESSIOLOG_DEBUG("bdf2 stepper: do step with callback to state guesser");
+
     static_assert(::pressio::ode::concepts::legitimate_solver_for_implicit_stepper<
       solver_type, decltype(*this), state_type>::value,
       "Invalid solver for BDF2 stepper");

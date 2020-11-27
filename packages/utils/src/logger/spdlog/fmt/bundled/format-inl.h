@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef FMT_FORMAT_INL_H_
-#define FMT_FORMAT_INL_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_INL_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_INL_H_
 
 #include <cassert>
 #include <cctype>
@@ -1450,4 +1450,4 @@ FMT_END_NAMESPACE
 #  pragma warning(pop)
 #endif
 
-#endif  // FMT_FORMAT_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_INL_H_

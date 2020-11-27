@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_FORMATTER_H_
+#define UTILS_LOGGER_SPDLOG_FORMATTER_H_
 
 #include "./fmt/fmt.h"
 #include "./details/log_msg.h"
@@ -16,3 +17,4 @@ public:
     virtual std::unique_ptr<formatter> clone() const = 0;
 };
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_FORMATTER_H_

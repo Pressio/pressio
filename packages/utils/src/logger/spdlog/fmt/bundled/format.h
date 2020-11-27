@@ -30,8 +30,8 @@
  without including the above copyright and permission notices.
  */
 
-#ifndef FMT_FORMAT_H_
-#define FMT_FORMAT_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_H_
 
 #include <algorithm>
 #include <cerrno>
@@ -3726,4 +3726,4 @@ FMT_END_NAMESPACE
 #  define FMT_FUNC
 #endif
 
-#endif  // FMT_FORMAT_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_FORMAT_H_

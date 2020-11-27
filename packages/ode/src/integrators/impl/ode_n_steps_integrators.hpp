@@ -89,7 +89,7 @@ struct IntegratorNStepsWithConstDt
 				time, odeStateInOut);
 
     step_t step = 1;
-    printStartOfAdvancing("AdvanceNStepsWithConstDt");
+    PRESSIOLOG_INFO("advanceNStepsWithConstDt");
     for( ; step <= numSteps ; ++step)
     {
       printStepTime(step, time, dt);
@@ -151,7 +151,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 
     time_type dt = {};
     step_t step	   = 1;
-    printStartOfAdvancing("AdvanceNStepsWithDtCallback");
+    PRESSIOLOG_INFO("advanceNStepsWithDtCallBack");
     for( ; step <= numSteps ; ++step)
     {
       // call the dt manager to set the dt to use at the beginning

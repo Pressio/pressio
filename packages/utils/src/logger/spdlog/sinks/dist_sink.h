@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_DIST_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_DIST_SINK_H_
 
 #include "base_sink.h"
 #include <spdlog/details/log_msg.h>
@@ -95,3 +96,4 @@ using dist_sink_st = dist_sink<details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_DIST_SINK_H_

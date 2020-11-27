@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_COMMON_H_
+#define UTILS_LOGGER_SPDLOG_COMMON_H_
 
 #include "./tweakme.h"
 #include "./details/null_mutex.h"
@@ -15,23 +16,23 @@
 #include <type_traits>
 #include <functional>
 
-#ifdef SPDLOG_COMPILED_LIB
-#undef SPDLOG_HEADER_ONLY
-#if defined(_WIN32) && defined(SPDLOG_SHARED_LIB)
-#ifdef spdlog_EXPORTS
-#define SPDLOG_API __declspec(dllexport)
-#else
-#define SPDLOG_API __declspec(dllimport)
-#endif
-#else // !defined(_WIN32) || !defined(SPDLOG_SHARED_LIB)
-#define SPDLOG_API
-#endif
-#define SPDLOG_INLINE
-#else // !defined(SPDLOG_COMPILED_LIB)
+// #ifdef SPDLOG_COMPILED_LIB
+// #undef SPDLOG_HEADER_ONLY
+// #if defined(_WIN32) && defined(SPDLOG_SHARED_LIB)
+// #ifdef spdlog_EXPORTS
+// #define SPDLOG_API __declspec(dllexport)
+// #else
+// #define SPDLOG_API __declspec(dllimport)
+// #endif
+// #else // !defined(_WIN32) || !defined(SPDLOG_SHARED_LIB)
+// #define SPDLOG_API
+// #endif
+// #define SPDLOG_INLINE
+// #else // !defined(SPDLOG_COMPILED_LIB)
 #define SPDLOG_API
 #define SPDLOG_HEADER_ONLY
 #define SPDLOG_INLINE inline
-#endif // #ifdef SPDLOG_COMPILED_LIB
+//#endif // #ifdef SPDLOG_COMPILED_LIB
 
 #include "./fmt/fmt.h"
 
@@ -149,18 +150,18 @@ enum level_enum
 };
 
 #if !defined(SPDLOG_LEVEL_NAMES)
-#define SPDLOG_LEVEL_NAMES                                                                                                                 \
-    {                                                                                                                                      \
-        "trace", "debug", "info", "warning", "error", "critical", "off"                                                                    \
-    }
+#define SPDLOG_LEVEL_NAMES						\
+  {									\
+    "trace", "debug", "info", "warning", "error", "critical", "off"	\
+      }
 #endif
 
 #if !defined(SPDLOG_SHORT_LEVEL_NAMES)
 
-#define SPDLOG_SHORT_LEVEL_NAMES                                                                                                           \
-    {                                                                                                                                      \
-        "T", "D", "I", "W", "E", "C", "O"                                                                                                  \
-    }
+#define SPDLOG_SHORT_LEVEL_NAMES		\
+  {						\
+    "T", "D", "I", "W", "E", "C", "O"		\
+      }
 #endif
 
 SPDLOG_API string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT;
@@ -243,3 +244,4 @@ std::unique_ptr<T> make_unique(Args &&...args)
 #ifdef SPDLOG_HEADER_ONLY
 #include "common-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_COMMON_H_

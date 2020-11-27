@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_H_
 
 // periodic worker thread - periodically executes the given callback function.
 //
@@ -38,3 +39,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "periodic_worker-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_PERIODIC_WORKER_H_

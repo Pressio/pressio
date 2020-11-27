@@ -1,11 +1,11 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_OSTREAM_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_OSTREAM_SINK_H_
 
 #include "../details/null_mutex.h"
-#include "../sinks/base_sink.h"
-
+#include "./base_sink.h"
 #include <mutex>
 #include <ostream>
 
@@ -48,3 +48,4 @@ using ostream_sink_st = ostream_sink<details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_OSTREAM_SINK_H_

@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_OS_INL_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_OS_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include ".os.h"
@@ -552,3 +553,4 @@ std::string SPDLOG_INLINE getenv(const char *field)
 } // namespace os
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_OS_INL_H_

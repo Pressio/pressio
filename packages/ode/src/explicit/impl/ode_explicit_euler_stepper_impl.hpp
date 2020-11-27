@@ -167,6 +167,8 @@ public:
 	 const scalar_type & dt,
 	 const types::step_t & step)
   {
+    PRESSIOLOG_DEBUG("euler forward stepper: do step");
+
     auto & auxRhs0 = veloAuxStorage_(0);
     //eval RHS
     static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
@@ -184,6 +186,8 @@ public:
 	 const scalar_type & dt,
 	 const types::step_t & step)
   {
+    PRESSIOLOG_DEBUG("euler forward stepper: do step with custom ops");
+
     auto & auxRhs0 = veloAuxStorage_(0);
     static_cast<const velocity_policy_type&>(policy_).compute(stateInOut,
       auxRhs0, systemObj_.get(), time);

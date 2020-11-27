@@ -49,6 +49,10 @@
 #ifndef UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 #define UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
 
+#include <vector>
+#include <fstream>
+#include <cassert>
+
 namespace pressio{ namespace utils{
 
 // template just to avoid having a cc file

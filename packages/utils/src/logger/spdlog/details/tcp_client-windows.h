@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_WINDOWS_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_WINDOWS_H_
 
 #define WIN32_LEAN_AND_MEAN
 // tcp client helper
@@ -173,3 +174,4 @@ public:
 };
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_WINDOWS_H_

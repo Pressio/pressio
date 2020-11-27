@@ -3,7 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BIN_TO_HEX_H_
+#define UTILS_LOGGER_SPDLOG_FMT_BIN_TO_HEX_H_
 
 #include <cctype>
 
@@ -214,3 +215,4 @@ struct formatter<spdlog::details::dump_info<T>>
     }
 };
 } // namespace fmt
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BIN_TO_HEX_H_

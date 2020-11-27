@@ -52,6 +52,39 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename step_t, typename sc_t>
+void _printMetrics(bool printGradient,
+		   step_t iStep,
+		   const sc_t & absCorrectionNorm,
+		   const sc_t & relCorrectionNorm,
+		   const sc_t & absResNorm,
+		   const sc_t & relResNorm,
+		   const sc_t & absGNorm,
+		   const sc_t & relGNorm)
+{
+  // using namespace ::pressio::utils::io;
+  // // generic format for metrics
+  // const auto fmt = utils::io::cyan();// + utils::io::bold();
+  // constexpr auto one = static_cast<sc_t>(1);
+  //::pressio::log::setPattern("%^[%l]%$ %v");
+  if (printGradient)
+  {
+    // const auto w = (relResNorm <= one) or (relGNorm <= one) ? "" : "!";
+    PRESSIOLOG_DEBUG
+      ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+       iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+  }
+  else
+  {
+    // const auto w = (relResNorm <= one) ? "" : "!";
+    PRESSIOLOG_DEBUG
+      ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+       iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+  }
+  // //reset to default
+  // ::pressio::log::setPattern("%+");
+}
+
+template <typename step_t, typename sc_t>
 void printMetrics(step_t iStep,
 		  const sc_t & absCorrectionNorm,
 		  const sc_t & relCorrectionNorm,
@@ -60,36 +93,10 @@ void printMetrics(step_t iStep,
 		  const sc_t & absGNorm,
 		  const sc_t & relGNorm)
 {
-  using namespace ::pressio::utils::io;
-  constexpr auto one = static_cast<sc_t>(1);
-
-  // generic format for metrics
-  const auto fmt = utils::io::cyan();// + utils::io::bold();
-
-  // use color to highlight if relative residual norm is
-  // decreasing (green) or increasing (yellow)
-  const auto fmtResRelNorm = relResNorm <= one ?
-    (relResNorm < one ? green() : fmt ) : yellow();
-
-  // use color to highlight if relative gradient norm is
-  // decreasing (green) or increasing (yellow)
-  const auto fmtGradRelNorm = relGNorm <= one ?
-    (relGNorm < one ? green() : fmt ) : yellow();
-
-  ::pressio::utils::io::print_stdout
-      (
-       std::scientific,
-       fmt,
-       "NonlinearIter =" , iStep,
-       " ||Residual||_l2 (abs) =", absResNorm,
-       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
-       fmt,
-       "||Gradient||_l2 (abs) = ", absGNorm,
-       " ||Gradient||_l2 (rel) =", fmtGradRelNorm, relGNorm, reset(),
-       fmt,
-       "||Correction||_l2 =", absCorrectionNorm,
-       reset(),
-       "\n");
+  _printMetrics(true,
+		iStep, absCorrectionNorm, relCorrectionNorm,
+		absResNorm, relResNorm,
+		absGNorm, relGNorm);
 }
 
 template <typename step_t, typename sc_t>
@@ -99,25 +106,9 @@ void printMetrics(step_t iStep,
 		  const sc_t & absResNorm,
 		  const sc_t & relResNorm)
 {
-  using namespace ::pressio::utils::io;
-  constexpr auto one = static_cast<sc_t>(1);
-  // generic format for metrics
-  const auto fmt = utils::io::cyan();// + utils::io::bold();
-  // use color to highlight if relative residual norm is
-  // decreasing (green) or increasing (yellow)
-  const auto fmtResRelNorm = relResNorm <= one ?
-    (relResNorm < one ? green() : fmt ) : yellow();
-
-  ::pressio::utils::io::print_stdout
-      (std::scientific,
-       fmt,
-       "NonlinearIter =" , iStep,
-       " ||Residual||_l2 (abs) =", absResNorm,
-       " ||Residual||_l2 (rel) =", fmtResRelNorm, relResNorm, reset(),
-       fmt,
-       "||Correction||_l2 =", absCorrectionNorm,
-       reset(),
-       "\n");
+  _printMetrics(false,
+		iStep, absCorrectionNorm, relCorrectionNorm,
+		absResNorm, relResNorm, sc_t(), sc_t());
 }
 
 }}}}

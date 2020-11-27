@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_CFG_ARGV_H_
+#define UTILS_LOGGER_SPDLOG_CFG_ARGV_H_
 #include <spdlog/cfg/helpers.h>
 #include <spdlog/details/registry.h>
 
@@ -42,3 +43,4 @@ inline void load_argv_levels(int argc, char **argv)
 
 } // namespace cfg
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_CFG_ARGV_H_

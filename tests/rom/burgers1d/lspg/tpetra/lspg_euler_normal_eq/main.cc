@@ -1,9 +1,12 @@
 
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL PRESSIO_LOG_LEVEL_OFF
 #include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_tpetra.hpp"
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
+
   using fom_t		= pressio::apps::Burgers1dTpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
@@ -23,6 +26,9 @@ int main(int argc, char *argv[]){
   // scope guard needed for tpetra
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
+    // pressio::log::initialize(pressio::logto::terminal);
+    // pressio::log::setVerbosity({pressio::log::level::debug});
+
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
 

@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_H_
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/details/null_mutex.h>
@@ -107,3 +108,4 @@ inline std::shared_ptr<logger> syslog_logger_st(const std::string &logger_name, 
     return Factory::template create<sinks::syslog_sink_st>(logger_name, syslog_ident, syslog_option, syslog_facility, enable_formatting);
 }
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_SYSLOG_SINK_H_

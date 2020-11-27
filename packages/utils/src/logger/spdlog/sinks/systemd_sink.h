@@ -1,7 +1,8 @@
 // Copyright(c) 2019 ZVYAGIN.Alexander@gmail.com
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_SYSTEMD_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_SYSTEMD_SINK_H_
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/details/null_mutex.h>
@@ -101,3 +102,4 @@ inline std::shared_ptr<logger> systemd_logger_st(const std::string &logger_name)
     return Factory::template create<sinks::systemd_sink_st>(logger_name);
 }
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_SYSTEMD_SINK_H_

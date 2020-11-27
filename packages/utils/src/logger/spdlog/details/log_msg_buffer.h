@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_H_
 
 #include "./log_msg.h"
 
@@ -31,3 +32,4 @@ public:
 #ifdef SPDLOG_HEADER_ONLY
 #include "log_msg_buffer-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_H_

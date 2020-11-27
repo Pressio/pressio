@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_INL_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "../sinks/basic_file_sink.h"
@@ -41,3 +42,4 @@ SPDLOG_INLINE void basic_file_sink<Mutex>::flush_()
 
 } // namespace sinks
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_BASIC_FILE_SINK_INL_H_

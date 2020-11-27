@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_H_
 
 #include <spdlog/common.h>
 #include <spdlog/details/file_helper.h>
@@ -202,3 +203,4 @@ inline std::shared_ptr<logger> daily_logger_st(
     return Factory::template create<sinks::daily_file_sink_st>(logger_name, filename, hour, minute, truncate, max_files);
 }
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_DAILY_FILE_SINK_H_

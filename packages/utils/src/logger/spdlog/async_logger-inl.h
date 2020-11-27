@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_INL_H_
+#define UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./async_logger.h"
@@ -90,3 +91,4 @@ SPDLOG_INLINE std::shared_ptr<spdlog::logger> spdlog::async_logger::clone(std::s
     cloned->name_ = std::move(new_name);
     return cloned;
 }
+#endif  // UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_INL_H_

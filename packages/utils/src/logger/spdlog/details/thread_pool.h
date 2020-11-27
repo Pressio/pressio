@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_H_
 
 #include "./log_msg_buffer.h"
 #include "./mpmc_blocking_q.h"
@@ -119,3 +120,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "thread_pool-inl.h"
 #endif
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_THREAD_POOL_H_

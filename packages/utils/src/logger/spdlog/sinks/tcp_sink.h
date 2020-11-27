@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_H_
 
 #include <spdlog/common.h>
 #include <spdlog/sinks/base_sink.h>
@@ -16,8 +17,6 @@
 #include <string>
 #include <chrono>
 #include <functional>
-
-#pragma once
 
 // Simple tcp client sink
 // Connects to remote address and send the formatted log.
@@ -79,3 +78,4 @@ using tcp_sink_st = tcp_sink<spdlog::details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_H_

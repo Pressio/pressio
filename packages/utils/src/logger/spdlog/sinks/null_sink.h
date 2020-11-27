@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_NULL_SINK_H_
+#define UTILS_LOGGER_SPDLOG_SINKS_NULL_SINK_H_
 
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/sinks/base_sink.h>
@@ -42,3 +43,4 @@ inline std::shared_ptr<logger> null_logger_st(const std::string &logger_name)
 }
 
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_NULL_SINK_H_

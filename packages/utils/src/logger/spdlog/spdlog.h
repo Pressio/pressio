@@ -4,10 +4,8 @@
 // spdlog main header file.
 // see example.cpp for usage example
 
-#ifndef SPDLOG_H
-#define SPDLOG_H
-
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_SPDLOG_H_
+#define UTILS_LOGGER_SPDLOG_SPDLOG_H_
 
 #include "./common.h"
 #include "./details/registry.h"
@@ -238,7 +236,8 @@ inline void critical(const T &msg)
 // SPDLOG_LEVEL_OFF
 //
 
-#define SPDLOG_LOGGER_CALL(logger, level, ...) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__)
+#define SPDLOG_LOGGER_CALL(logger, level, ...) \
+  (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__)
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_TRACE
 #define SPDLOG_LOGGER_TRACE(logger, ...) SPDLOG_LOGGER_CALL(logger, spdlog::level::trace, __VA_ARGS__)
@@ -292,4 +291,4 @@ inline void critical(const T &msg)
 #include "spdlog-inl.h"
 #endif
 
-#endif // SPDLOG_H
+#endif  // UTILS_LOGGER_SPDLOG_SPDLOG_H_

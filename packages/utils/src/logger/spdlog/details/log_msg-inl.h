@@ -1,7 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#pragma once
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_INL_H_
+#define UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./log_msg.h"
@@ -35,3 +36,4 @@ SPDLOG_INLINE log_msg::log_msg(string_view_t a_logger_name, spdlog::level::level
 
 } // namespace details
 } // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_INL_H_
