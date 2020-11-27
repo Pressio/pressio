@@ -5,7 +5,8 @@
 #define UTILS_LOGGER_SPDLOG_SINKS_SINK_H_
 
 #include "../details/log_msg.h"
-#include "../formatter.h"
+// #include "../formatter.h"
+// #include "../common.h"
 
 namespace spdlog { namespace sinks {
 
@@ -18,9 +19,21 @@ class SPDLOG_API sink
   virtual void set_pattern(const std::string &pattern) = 0;
   virtual void set_formatter(std::unique_ptr<spdlog::formatter> sink_formatter) = 0;
 
-  void set_level(level::level_enum log_level);
-  level::level_enum level() const;
-  bool should_log(level::level_enum msg_level) const;
+  void set_level(level::level_enum log_level)
+  {
+    level_.store(log_level, std::memory_order_relaxed);
+  }
+
+  level::level_enum level() const
+  {
+    return static_cast<spdlog::level::level_enum>(level_.load(std::memory_order_relaxed));
+  }
+
+  bool should_log(level::level_enum msg_level) const
+  {
+    return msg_level >= level_.load(std::memory_order_relaxed);
+  }
+
   void setMpiRank(int rank) { mpiRank_ = rank; }
 
 protected:
@@ -33,7 +46,7 @@ protected:
 } // namespace sinks
 } // namespace spdlog
 
-#ifdef SPDLOG_HEADER_ONLY
-#include "sink-inl.h"
-#endif
+// #ifdef SPDLOG_HEADER_ONLY
+// #include "sink-inl.h"
+// #endif
 #endif  // UTILS_LOGGER_SPDLOG_SINKS_SINK_H_

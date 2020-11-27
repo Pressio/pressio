@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
   // scope guard needed for tpetra
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
   {
-    // pressio::log::initialize(pressio::logto::terminal);
-    // pressio::log::setVerbosity({pressio::log::level::debug});
+    pressio::log::initialize(pressio::logto::terminal);
+    pressio::log::setVerbosity({pressio::log::level::debug});
 
     int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));

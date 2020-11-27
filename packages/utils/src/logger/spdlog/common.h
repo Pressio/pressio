@@ -150,18 +150,18 @@ enum level_enum
 };
 
 #if !defined(SPDLOG_LEVEL_NAMES)
-#define SPDLOG_LEVEL_NAMES						\
-  {									\
-    "trace", "debug", "info", "warning", "error", "critical", "off"	\
-      }
+#define SPDLOG_LEVEL_NAMES                                                                                                                 \
+    {                                                                                                                                      \
+        "trace", "debug", "info", "warning", "error", "critical", "off"                                                                    \
+    }
 #endif
 
 #if !defined(SPDLOG_SHORT_LEVEL_NAMES)
 
-#define SPDLOG_SHORT_LEVEL_NAMES		\
-  {						\
-    "T", "D", "I", "W", "E", "C", "O"		\
-      }
+#define SPDLOG_SHORT_LEVEL_NAMES                                                                                                           \
+    {                                                                                                                                      \
+        "T", "D", "I", "W", "E", "C", "O"                                                                                                  \
+    }
 #endif
 
 SPDLOG_API string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT;
