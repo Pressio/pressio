@@ -10,7 +10,7 @@
 
 namespace spdlog { namespace sinks {
 
-class SPDLOG_API sink
+class sink
 {
   public:
   virtual ~sink() = default;

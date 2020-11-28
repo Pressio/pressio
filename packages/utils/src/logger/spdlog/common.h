@@ -29,7 +29,7 @@
 // #endif
 // #define SPDLOG_INLINE
 // #else // !defined(SPDLOG_COMPILED_LIB)
-#define SPDLOG_API
+//#define SPDLOG_API
 #define SPDLOG_HEADER_ONLY
 #define SPDLOG_INLINE inline
 //#endif // #ifdef SPDLOG_COMPILED_LIB
@@ -66,11 +66,11 @@
 
 #ifdef SPDLOG_NO_EXCEPTIONS
 #define SPDLOG_TRY
-#define SPDLOG_THROW(ex)                                                                                                                   \
-    do                                                                                                                                     \
-    {                                                                                                                                      \
-        printf("spdlog fatal error: %s\n", ex.what());                                                                                     \
-        std::abort();                                                                                                                      \
+#define SPDLOG_THROW(ex)				\
+  do							\
+    {							\
+      printf("spdlog fatal error: %s\n", ex.what());	\
+      std::abort();					\
     } while (0)
 #define SPDLOG_CATCH_ALL()
 #else
@@ -138,7 +138,7 @@ using level_t = std::atomic<int>;
 // Log level enum
 namespace level {
 enum level_enum
-{
+  {
     trace = SPDLOG_LEVEL_TRACE,
     debug = SPDLOG_LEVEL_DEBUG,
     info = SPDLOG_LEVEL_INFO,
@@ -147,82 +147,137 @@ enum level_enum
     critical = SPDLOG_LEVEL_CRITICAL,
     off = SPDLOG_LEVEL_OFF,
     n_levels
-};
+  };
 
 #if !defined(SPDLOG_LEVEL_NAMES)
-#define SPDLOG_LEVEL_NAMES                                                                                                                 \
-    {                                                                                                                                      \
-        "trace", "debug", "info", "warning", "error", "critical", "off"                                                                    \
-    }
+#define SPDLOG_LEVEL_NAMES						\
+  {									\
+    "trace", "debug", "info", "warning", "error", "critical", "off"	\
+      }
 #endif
 
 #if !defined(SPDLOG_SHORT_LEVEL_NAMES)
 
-#define SPDLOG_SHORT_LEVEL_NAMES                                                                                                           \
-    {                                                                                                                                      \
-        "T", "D", "I", "W", "E", "C", "O"                                                                                                  \
-    }
+#define SPDLOG_SHORT_LEVEL_NAMES		\
+  {						\
+    "T", "D", "I", "W", "E", "C", "O"		\
+      }
 #endif
 
-SPDLOG_API string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT;
-SPDLOG_API const char *to_short_c_str(spdlog::level::level_enum l) SPDLOG_NOEXCEPT;
-SPDLOG_API spdlog::level::level_enum from_str(const std::string &name) SPDLOG_NOEXCEPT;
+static string_view_t level_string_views[] SPDLOG_LEVEL_NAMES;
+
+static const char *short_level_names[] SPDLOG_SHORT_LEVEL_NAMES;
+
+string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
+{
+  return level_string_views[l];
+}
+
+const char *to_short_c_str(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
+{
+  return short_level_names[l];
+}
+
+spdlog::level::level_enum from_str(const std::string &name) SPDLOG_NOEXCEPT
+{
+  int level = 0;
+  for (const auto &level_str : level_string_views)
+    {
+      if (level_str == name)
+        {
+	  return static_cast<level::level_enum>(level);
+        }
+      level++;
+    }
+  // check also for "warn" and "err" before giving up..
+  if (name == "warn")
+    {
+      return level::warn;
+    }
+  if (name == "err")
+    {
+      return level::err;
+    }
+  return level::off;
+}
 
 } // namespace level
+
+
 
 //
 // Color mode used by sinks with color support.
 //
 enum class color_mode
-{
+  {
     always,
     automatic,
     never
-};
+  };
 
 //
 // Pattern time - specific time getting to use for pattern_formatter.
 // local time by default
 //
 enum class pattern_time_type
-{
+  {
     local, // log localtime
     utc    // log utc
-};
+  };
+
 
 //
 // Log exception
 //
-class SPDLOG_API spdlog_ex : public std::exception
+class spdlog_ex : public std::exception
 {
 public:
-    explicit spdlog_ex(std::string msg);
-    spdlog_ex(const std::string &msg, int last_errno);
-    const char *what() const SPDLOG_NOEXCEPT override;
+  explicit spdlog_ex(std::string msg)
+    : msg_(std::move(msg)){}
+
+  spdlog_ex(const std::string &msg, int last_errno)
+  {
+    memory_buf_t outbuf;
+    fmt::format_system_error(outbuf, last_errno, msg);
+    msg_ = fmt::to_string(outbuf);
+  }
+
+  const char *what() const SPDLOG_NOEXCEPT override
+  {
+    return msg_.c_str();
+  }
 
 private:
-    std::string msg_;
+  std::string msg_;
 };
 
-SPDLOG_API void throw_spdlog_ex(const std::string &msg, int last_errno);
-SPDLOG_API void throw_spdlog_ex(std::string msg);
+void throw_spdlog_ex(const std::string &msg, int last_errno)
+{
+  SPDLOG_THROW(spdlog_ex(msg, last_errno));
+}
+
+void throw_spdlog_ex(std::string msg)
+{
+  SPDLOG_THROW(spdlog_ex(std::move(msg)));
+}
+
 
 struct source_loc
 {
-    SPDLOG_CONSTEXPR source_loc() = default;
-    SPDLOG_CONSTEXPR source_loc(const char *filename_in, int line_in, const char *funcname_in)
-        : filename{filename_in}
-        , line{line_in}
-        , funcname{funcname_in}
-    {}
+  SPDLOG_CONSTEXPR source_loc() = default;
+  SPDLOG_CONSTEXPR source_loc(const char *filename_in, int line_in, const char *funcname_in)
+    : filename{filename_in}
+    , line{line_in}
+    , funcname{funcname_in}
+  {}
 
-    SPDLOG_CONSTEXPR bool empty() const SPDLOG_NOEXCEPT
-    {
-        return line == 0;
-    }
-    const char *filename{nullptr};
-    int line{0};
-    const char *funcname{nullptr};
+  SPDLOG_CONSTEXPR bool empty() const SPDLOG_NOEXCEPT
+  {
+    return line == 0;
+  }
+  const char *filename{nullptr};
+  int line{0};
+  const char *funcname{nullptr};
 };
 
 namespace details {
@@ -234,14 +289,16 @@ using std::make_unique;
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args &&...args)
 {
-    static_assert(!std::is_array<T>::value, "arrays not supported");
-    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+  static_assert(!std::is_array<T>::value, "arrays not supported");
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 #endif
+
 } // namespace details
 } // namespace spdlog
 
-#ifdef SPDLOG_HEADER_ONLY
-#include "common-inl.h"
-#endif
+
+// #ifdef SPDLOG_HEADER_ONLY
+// #include "common-inl.h"
+// #endif
 #endif  // UTILS_LOGGER_SPDLOG_COMMON_H_

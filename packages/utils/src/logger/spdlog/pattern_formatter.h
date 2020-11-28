@@ -48,7 +48,7 @@ struct padding_info
     bool enabled_ = false;
 };
 
-class SPDLOG_API flag_formatter
+class flag_formatter
 {
 public:
     explicit flag_formatter(padding_info padinfo)
@@ -64,7 +64,7 @@ protected:
 
 } // namespace details
 
-class SPDLOG_API custom_flag_formatter : public details::flag_formatter
+class custom_flag_formatter : public details::flag_formatter
 {
 public:
     virtual std::unique_ptr<custom_flag_formatter> clone() const = 0;
@@ -75,7 +75,7 @@ public:
     }
 };
 
-class SPDLOG_API pattern_formatter final : public formatter
+class pattern_formatter final : public formatter
 {
 public:
     using custom_flags = std::unordered_map<char, std::unique_ptr<custom_flag_formatter>>;

@@ -68,13 +68,6 @@
 
 #include "utils/src/io/utils_colorize_print.hpp"
 #include "utils/src/io/utils_print_helper.hpp"
-
-#ifdef PRESSIO_ENABLE_TPL_MPI
-#include <mpi.h>
-#endif
-#include "utils/src/logger/spdlog/spdlog.h"
-#include "utils/src/logger/spdlog/sinks/stdout_color_sinks.h"
-#include "utils/src/logger/spdlog/sinks/basic_file_sink.h"
 #include "utils/src/logger/utils_logger.hpp"
 
 #endif

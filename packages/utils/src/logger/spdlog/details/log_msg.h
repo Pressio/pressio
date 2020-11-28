@@ -9,7 +9,7 @@
 
 namespace spdlog {
 namespace details {
-struct SPDLOG_API log_msg
+struct log_msg
 {
     log_msg() = default;
 

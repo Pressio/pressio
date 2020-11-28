@@ -50,17 +50,17 @@ inline std::shared_ptr<spdlog::logger> create(std::string logger_name, SinkArgs 
 // set_default_logger() *should not* be used concurrently with the default API.
 // e.g do not call set_default_logger() from one thread while calling spdlog::info() from another.
 
-SPDLOG_API std::shared_ptr<spdlog::logger> default_logger()
+std::shared_ptr<spdlog::logger> default_logger()
 {
   return details::registry::instance().default_logger();
 }
 
-SPDLOG_API spdlog::logger *default_logger_raw()
+spdlog::logger *default_logger_raw()
 {
   return details::registry::instance().get_default_raw();
 }
 
-SPDLOG_API void set_default_logger(std::shared_ptr<spdlog::logger> default_logger)
+void set_default_logger(std::shared_ptr<spdlog::logger> default_logger)
 {
  details::registry::instance().set_default_logger(std::move(default_logger));
 }
@@ -73,7 +73,7 @@ SPDLOG_API void set_default_logger(std::shared_ptr<spdlog::logger> default_logge
 // Example:
 //   auto mylogger = std::make_shared<spdlog::logger>("mylogger", ...);
 //   spdlog::initialize_logger(mylogger);
-SPDLOG_API void initialize_logger(std::shared_ptr<logger> logger)
+void initialize_logger(std::shared_ptr<logger> logger)
 {
   details::registry::instance().initialize_logger(std::move(logger));
 }
@@ -81,81 +81,81 @@ SPDLOG_API void initialize_logger(std::shared_ptr<logger> logger)
 // Return an existing logger or nullptr if a logger with such name doesn't
 // exist.
 // example: spdlog::get("my_logger")->info("hello {}", "world");
-SPDLOG_API std::shared_ptr<logger> get(const std::string &name)
+std::shared_ptr<logger> get(const std::string &name)
 {
   return details::registry::instance().get(name);
 }
 
 // Set global formatter. Each sink in each logger will get a clone of this object
-SPDLOG_API void set_formatter(std::unique_ptr<spdlog::formatter> formatter)
+void set_formatter(std::unique_ptr<spdlog::formatter> formatter)
 {
   details::registry::instance().set_formatter(std::move(formatter));
 }
 
 // Set global format string.
 // example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
-SPDLOG_API void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time_type::local)
+void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time_type::local)
 {
   set_formatter(std::unique_ptr<spdlog::formatter>(new pattern_formatter(std::move(pattern), time_type)));
 }
 
 // enable global backtrace support
-SPDLOG_API void enable_backtrace(size_t n_messages)
+void enable_backtrace(size_t n_messages)
 {
   details::registry::instance().enable_backtrace(n_messages);
 }
 
 // disable global backtrace support
-SPDLOG_API void disable_backtrace()
+void disable_backtrace()
 {
   details::registry::instance().disable_backtrace();
 }
 
 // call dump backtrace on default logger
-SPDLOG_API void dump_backtrace()
+void dump_backtrace()
 {
   default_logger_raw()->dump_backtrace();
 }
 
 // Get global logging level
-SPDLOG_API level::level_enum get_level()
+level::level_enum get_level()
 {
   return default_logger_raw()->level();
 }
 
 // Set global logging level
-SPDLOG_API void set_level(level::level_enum log_level)
+void set_level(level::level_enum log_level)
 {
   details::registry::instance().set_level(log_level);
 }
 
 // Determine whether the default logger should log messages with a certain level
-SPDLOG_API bool should_log(level::level_enum lvl)
+bool should_log(level::level_enum lvl)
 {
   return default_logger_raw()->should_log(lvl);
 }
 
 // Set global flush level
-SPDLOG_API void flush_on(level::level_enum log_level)
+void flush_on(level::level_enum log_level)
 {
   details::registry::instance().flush_on(log_level);
 }
 
 // Start/Restart a periodic flusher thread
 // Warning: Use only if all your loggers are thread safe!
-SPDLOG_API void flush_every(std::chrono::seconds interval)
+void flush_every(std::chrono::seconds interval)
 {
   details::registry::instance().flush_every(interval);
 }
 
 // Set global error handler
-SPDLOG_API void set_error_handler(void (*handler)(const std::string &msg))
+void set_error_handler(void (*handler)(const std::string &msg))
 {
   details::registry::instance().set_error_handler(handler);
 }
 
 // Register the given logger with the given name
-SPDLOG_API void register_logger(std::shared_ptr<logger> logger)
+void register_logger(std::shared_ptr<logger> logger)
 {
   details::registry::instance().register_logger(std::move(logger));
 }
@@ -163,31 +163,31 @@ SPDLOG_API void register_logger(std::shared_ptr<logger> logger)
 // Apply a user defined function on all registered loggers
 // Example:
 // spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->flush();});
-SPDLOG_API void apply_all(const std::function<void(std::shared_ptr<logger>)> &fun)
+void apply_all(const std::function<void(std::shared_ptr<logger>)> &fun)
 {
   details::registry::instance().apply_all(fun);
 }
 
 // Drop the reference to the given logger
-SPDLOG_API void drop(const std::string &name)
+void drop(const std::string &name)
 {
   details::registry::instance().drop(name);
 }
 
 // Drop all references from the registry
-SPDLOG_API void drop_all()
+void drop_all()
 {
   details::registry::instance().drop_all();
 }
 
 // stop any running threads started by spdlog and clean registry loggers
-SPDLOG_API void shutdown()
+void shutdown()
 {
   details::registry::instance().shutdown();
 }
 
 // Automatic registration of loggers when using spdlog::create() or spdlog::create_async
-SPDLOG_API void set_automatic_registration(bool automatic_registration)
+void set_automatic_registration(bool automatic_registration)
 {
   details::registry::instance().set_automatic_registration(automatic_registration);
 }
