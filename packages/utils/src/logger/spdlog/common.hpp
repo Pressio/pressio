@@ -168,17 +168,17 @@ static string_view_t level_string_views[] SPDLOG_LEVEL_NAMES;
 
 static const char *short_level_names[] SPDLOG_SHORT_LEVEL_NAMES;
 
-string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
+inline string_view_t &to_string_view(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
 {
   return level_string_views[l];
 }
 
-const char *to_short_c_str(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
+inline const char *to_short_c_str(spdlog::level::level_enum l) SPDLOG_NOEXCEPT
 {
   return short_level_names[l];
 }
 
-spdlog::level::level_enum from_str(const std::string &name) SPDLOG_NOEXCEPT
+inline spdlog::level::level_enum from_str(const std::string &name) SPDLOG_NOEXCEPT
 {
   int level = 0;
   for (const auto &level_str : level_string_views)
@@ -200,9 +200,7 @@ spdlog::level::level_enum from_str(const std::string &name) SPDLOG_NOEXCEPT
     }
   return level::off;
 }
-
 } // namespace level
-
 
 
 //
