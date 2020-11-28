@@ -7,12 +7,12 @@
 #ifndef UTILS_LOGGER_SPDLOG_SPDLOG_H_
 #define UTILS_LOGGER_SPDLOG_SPDLOG_H_
 
-#include "./common.h"
-#include "./details/registry.h"
-#include "./logger.h"
+#include "common.h"
+#include "details/registry.h"
+#include "logger.h"
 //#include "./version.h"
-#include "./details/synchronous_factory.h"
-#include "./pattern_formatter.h"
+#include "details/synchronous_factory.h"
+#include "pattern_formatter.h"
 
 #include <chrono>
 #include <functional>
