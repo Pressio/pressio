@@ -4,13 +4,12 @@
 #ifndef UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_H_
 #define UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_H_
 
-#ifndef SPDLOG_HEADER_ONLY
-#include <spdlog/cfg/helpers.h>
-#endif
-
-#include <spdlog/spdlog.h>
-#include <spdlog/details/os.h>
-#include <spdlog/details/registry.h>
+// #ifndef SPDLOG_HEADER_ONLY
+// #include "./helpers.h"
+// #endif
+#include "../spdlog.h"
+#include "../details/os.h"
+#include "../details/registry.h"
 
 #include <algorithm>
 #include <string>

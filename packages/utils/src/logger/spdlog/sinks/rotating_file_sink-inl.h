@@ -4,15 +4,14 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_INL_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_INL_H_
 
-#ifndef SPDLOG_HEADER_ONLY
-#include <spdlog/sinks/rotating_file_sink.h>
-#endif
+// #ifndef SPDLOG_HEADER_ONLY
+// #include "./rotating_file_sink.h"
+// #endif
 
-#include <spdlog/common.h>
-
-#include <spdlog/details/file_helper.h>
-#include <spdlog/details/null_mutex.h>
-#include <spdlog/fmt/fmt.h>
+#include "../common.h"
+#include "../details/file_helper.h"
+#include "../details/null_mutex.h"
+#include "../fmt/fmt.h"
 
 #include <cerrno>
 #include <chrono>

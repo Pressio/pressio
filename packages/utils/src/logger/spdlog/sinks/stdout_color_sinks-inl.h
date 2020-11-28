@@ -4,10 +4,9 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_H_
 
-#ifndef SPDLOG_HEADER_ONLY
-#include <spdlog/sinks/stdout_color_sinks.h>
-#endif
-
+// #ifndef SPDLOG_HEADER_ONLY
+// #include "./stdout_color_sinks.h"
+// #endif
 #include "../logger.h"
 #include "../common.h"
 

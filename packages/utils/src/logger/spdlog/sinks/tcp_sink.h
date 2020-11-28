@@ -4,13 +4,13 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_TCP_SINK_H_
 
-#include <spdlog/common.h>
-#include <spdlog/sinks/base_sink.h>
-#include <spdlog/details/null_mutex.h>
+#include "../common.h"
+#include "../base_sink.h"
+#include "../details/null_mutex.h"
 #ifdef _WIN32
-#include <spdlog/details/tcp_client-windows.h>
+#include "../details/tcp_client-windows.h"
 #else
-#include <spdlog/details/tcp_client.h>
+#include "../details/tcp_client.h"
 #endif
 
 #include <mutex>

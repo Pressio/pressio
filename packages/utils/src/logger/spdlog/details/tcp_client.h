@@ -4,13 +4,13 @@
 #ifndef UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_H_
 #define UTILS_LOGGER_SPDLOG_DETAILS_TCP_CLIENT_H_
 
-#ifdef _WIN32
-#error include tcp_client-windows.h instead
-#endif
+// #ifdef _WIN32
+// #error include tcp_client-windows.h instead
+// #endif
 
 // tcp client helper
-#include <spdlog/common.h>
-#include <spdlog/details/os.h>
+#include "../common.h"
+#include "../os.h"
 
 #include <sys/socket.h>
 #include <arpa/inet.h>

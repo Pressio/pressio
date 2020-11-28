@@ -4,9 +4,9 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_INL_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_BASE_SINK_INL_H_
 
-#ifndef SPDLOG_HEADER_ONLY
-#include <spdlog/sinks/base_sink.h>
-#endif
+// #ifndef SPDLOG_HEADER_ONLY
+// #include "./base_sink.h"
+// #endif
 
 #include "../common.h"
 #include "../pattern_formatter.h"

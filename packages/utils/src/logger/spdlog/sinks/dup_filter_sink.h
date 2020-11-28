@@ -5,8 +5,8 @@
 #define UTILS_LOGGER_SPDLOG_SINKS_DUP_FILTER_SINK_H_
 
 #include "dist_sink.h"
-#include <spdlog/details/null_mutex.h>
-#include <spdlog/details/log_msg.h>
+#include "../details/null_mutex.h"
+#include "../details/log_msg.h"
 
 #include <mutex>
 #include <string>

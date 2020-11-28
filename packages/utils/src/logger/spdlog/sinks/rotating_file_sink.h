@@ -4,10 +4,10 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_ROTATING_FILE_SINK_H_
 
-#include <spdlog/sinks/base_sink.h>
-#include <spdlog/details/file_helper.h>
-#include <spdlog/details/null_mutex.h>
-#include <spdlog/details/synchronous_factory.h>
+#include "./base_sink.h"
+#include "../details/file_helper.h"
+#include "../details/null_mutex.h"
+#include "../details/synchronous_factory.h"
 
 #include <chrono>
 #include <mutex>

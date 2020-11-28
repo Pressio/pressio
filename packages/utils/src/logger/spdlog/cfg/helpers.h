@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
 #define UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
 
-#include <spdlog/common.h>
+#include "../common.h"
 #include <unordered_map>
 
 namespace spdlog {

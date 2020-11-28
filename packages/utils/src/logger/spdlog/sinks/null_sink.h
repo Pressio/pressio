@@ -4,9 +4,9 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_NULL_SINK_H_
 #define UTILS_LOGGER_SPDLOG_SINKS_NULL_SINK_H_
 
-#include <spdlog/details/null_mutex.h>
-#include <spdlog/sinks/base_sink.h>
-#include <spdlog/details/synchronous_factory.h>
+#include "../details/null_mutex.h"
+#include "./base_sink.h"
+#include "../details/synchronous_factory.h"
 
 #include <mutex>
 
