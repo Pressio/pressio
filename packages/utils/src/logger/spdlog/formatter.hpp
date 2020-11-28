@@ -4,8 +4,8 @@
 #ifndef UTILS_LOGGER_SPDLOG_FORMATTER_H_
 #define UTILS_LOGGER_SPDLOG_FORMATTER_H_
 
-#include "./fmt/fmt.h"
-#include "./details/log_msg.h"
+#include "./fmt/fmt.hpp"
+#include "./details/log_msg.hpp"
 
 namespace spdlog {
 

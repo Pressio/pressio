@@ -52,9 +52,9 @@
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
-#include "utils/src/logger/spdlog/spdlog.h"
-#include "utils/src/logger/spdlog/sinks/stdout_color_sinks.h"
-#include "utils/src/logger/spdlog/sinks/basic_file_sink.h"
+#include "utils/src/logger/spdlog/spdlog.hpp"
+#include "utils/src/logger/spdlog/sinks/stdout_color_sinks.hpp"
+#include "utils/src/logger/spdlog/sinks/basic_file_sink.hpp"
 
 #define PRESSIO_LOG_LEVEL_TRACE		0
 #define PRESSIO_LOG_LEVEL_DEBUG		1

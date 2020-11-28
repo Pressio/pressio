@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
 #define UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_
 
-#include "../common.h"
+#include "../common.hpp"
 #include <unordered_map>
 
 namespace spdlog {
@@ -26,6 +26,6 @@ void load_levels(const std::string &txt);
 } // namespace spdlog
 
 #ifdef SPDLOG_HEADER_ONLY
-#include "helpers-inl.h"
+#include "helpers-inl.hpp"
 #endif // SPDLOG_HEADER_ONLY
 #endif  // UTILS_LOGGER_SPDLOG_CFG_HELPERS_H_

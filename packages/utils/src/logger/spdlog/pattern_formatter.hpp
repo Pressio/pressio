@@ -4,10 +4,10 @@
 #ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_
 #define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_
 
-#include "./common.h"
-#include "./details/log_msg.h"
-#include "./details/os.h"
-#include "./formatter.h"
+#include "./common.hpp"
+#include "./details/log_msg.hpp"
+#include "./details/os.hpp"
+#include "./formatter.hpp"
 
 #include <chrono>
 #include <ctime>
@@ -123,6 +123,6 @@ private:
 } // namespace spdlog
 
 #ifdef SPDLOG_HEADER_ONLY
-#include "pattern_formatter-inl.h"
+#include "pattern_formatter-inl.hpp"
 #endif
 #endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_

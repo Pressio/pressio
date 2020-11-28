@@ -15,16 +15,16 @@
 // The use of private formatter per sink provides the opportunity to cache some
 // formatted data, and support for different format per sink.
 
-#include "./common.h"
-#include "./details/log_msg.h"
-#include "./details/backtracer.h"
-#include "./sinks/sink.h"
-#include "./pattern_formatter.h"
+#include "./common.hpp"
+#include "./details/log_msg.hpp"
+#include "./details/backtracer.hpp"
+#include "./sinks/sink.hpp"
+#include "./pattern_formatter.hpp"
 #include <cstdio>
 #include <vector>
 
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#include "./details/os.h"
+#include "./details/os.hpp"
 #endif
 
 #ifndef SPDLOG_NO_EXCEPTIONS
@@ -560,6 +560,6 @@ void swap(logger &a, logger &b)
 } // namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
-// #include "logger-inl.h"
+// #include "logger-inl.hpp"
 // #endif
 #endif  // UTILS_LOGGER_SPDLOG_LOGGER_H_

@@ -4,8 +4,8 @@
 #ifndef UTILS_LOGGER_SPDLOG_CFG_ARGV_H_
 #define UTILS_LOGGER_SPDLOG_CFG_ARGV_H_
 
-#include "./helpers.h"
-#include "../details/registry.h"
+#include "./helpers.hpp"
+#include "../details/registry.hpp"
 
 //
 // Init log levels using each argv entry that starts with "SPDLOG_LEVEL="

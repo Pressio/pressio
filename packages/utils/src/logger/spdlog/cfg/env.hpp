@@ -4,9 +4,9 @@
 #ifndef UTILS_LOGGER_SPDLOG_CFG_ENV_H_
 #define UTILS_LOGGER_SPDLOG_CFG_ENV_H_
 
-#include "./helpers.h"
-#include "../details/registry.h"
-#include "../details/os.h"
+#include "./helpers.hpp"
+#include "../details/registry.hpp"
+#include "../details/os.hpp"
 
 //
 // Init levels and patterns from env variables SPDLOG_LEVEL

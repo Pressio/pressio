@@ -5,14 +5,14 @@
 #define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
 
 #ifndef SPDLOG_HEADER_ONLY
-#include "./pattern_formatter.h"
+#include "./pattern_formatter.hpp"
 #endif
 
-#include "./details/fmt_helper.h"
-#include "./details/log_msg.h"
-#include "./details/os.h"
-#include "./fmt/fmt.h"
-#include "./formatter.h"
+#include "./details/fmt_helper.hpp"
+#include "./details/log_msg.hpp"
+#include "./details/os.hpp"
+#include "./fmt/fmt.hpp"
+#include "./formatter.hpp"
 
 #include <array>
 #include <chrono>
@@ -224,7 +224,7 @@ public:
 
 // Full month name
 static const std::array<const char *, 12> full_months{
-    {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}};
+    {"January", "February", "Mar.hpp", "April", "May", "June", "July", "August", "September", "October", "November", "December"}};
 
 template<typename ScopedPadder>
 class B_formatter final : public flag_formatter

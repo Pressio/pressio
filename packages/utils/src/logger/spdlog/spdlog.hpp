@@ -7,12 +7,12 @@
 #ifndef UTILS_LOGGER_SPDLOG_SPDLOG_H_
 #define UTILS_LOGGER_SPDLOG_SPDLOG_H_
 
-#include "common.h"
-#include "details/registry.h"
-#include "logger.h"
-//#include "./version.h"
-#include "details/synchronous_factory.h"
-#include "pattern_formatter.h"
+#include "common.hpp"
+#include "details/registry.hpp"
+#include "logger.hpp"
+//#include "./version.hpp"
+#include "details/synchronous_factory.hpp"
+#include "pattern_formatter.hpp"
 
 #include <chrono>
 #include <functional>
@@ -355,7 +355,7 @@ inline void critical(const T &msg)
 // #endif
 
 // // #ifdef SPDLOG_HEADER_ONLY
-// // #include "spdlog-inl.h"
+// // #include "spdlog-inl.hpp"
 // // #endif
 
 #endif  // UTILS_LOGGER_SPDLOG_SPDLOG_H_

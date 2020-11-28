@@ -15,9 +15,9 @@
 // Upon destruction, logs all remaining messages in the queue before
 // destructing..
 
-#include "./logger.h"
-#include "./sinks/sink.h"
-#include "./details/thread_pool.h"
+#include "./logger.hpp"
+#include "./sinks/sink.hpp"
+#include "./details/thread_pool.hpp"
 
 #include <memory>
 #include <string>
@@ -140,6 +140,6 @@ private:
 } // namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
-// #include "async_logger-inl.h"
+// #include "async_logger-inl.hpp"
 // #endif
 #endif  // UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_H_

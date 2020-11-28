@@ -5,11 +5,11 @@
 #define UTILS_LOGGER_SPDLOG_CFG_HELPERS_INL_H_
 
 // #ifndef SPDLOG_HEADER_ONLY
-// #include "./helpers.h"
+// #include "./helpers.hpp"
 // #endif
-#include "../spdlog.h"
-#include "../details/os.h"
-#include "../details/registry.h"
+#include "../spdlog.hpp"
+#include "../details/os.hpp"
+#include "../details/registry.hpp"
 
 #include <algorithm>
 #include <string>

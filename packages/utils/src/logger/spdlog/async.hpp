@@ -15,9 +15,9 @@
 // This is because each message in the queue holds a shared_ptr to the
 // originating logger.
 
-#include "./async_logger.h"
-#include "./details/registry.h"
-#include "./details/thread_pool.h"
+#include "./async_logger.hpp"
+#include "./details/registry.hpp"
+#include "./details/thread_pool.hpp"
 
 #include <memory>
 #include <mutex>

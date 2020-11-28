@@ -4,8 +4,8 @@
 #ifndef UTILS_LOGGER_SPDLOG_COMMON_H_
 #define UTILS_LOGGER_SPDLOG_COMMON_H_
 
-#include "./tweakme.h"
-#include "./details/null_mutex.h"
+#include "./tweakme.hpp"
+#include "./details/null_mutex.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -34,7 +34,7 @@
 #define SPDLOG_INLINE inline
 //#endif // #ifdef SPDLOG_COMPILED_LIB
 
-#include "./fmt/fmt.h"
+#include "./fmt/fmt.hpp"
 
 // visual studio upto 2013 does not support noexcept nor constexpr
 #if defined(_MSC_VER) && (_MSC_VER < 1900)
@@ -299,6 +299,6 @@ std::unique_ptr<T> make_unique(Args &&...args)
 
 
 // #ifdef SPDLOG_HEADER_ONLY
-// #include "common-inl.h"
+// #include "common-inl.hpp"
 // #endif
 #endif  // UTILS_LOGGER_SPDLOG_COMMON_H_
