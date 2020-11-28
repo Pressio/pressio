@@ -436,7 +436,7 @@ protected:
   spdlog::level_t level_{level::info};
   spdlog::level_t flush_level_{level::off};
   err_handler custom_err_handler_{nullptr};
-  details::backtracer tracer_;
+  details::backtracer<bool> tracer_;
 
 protected:
   // common implementation for after templated public api has been resolved
