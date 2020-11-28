@@ -49,12 +49,6 @@
 #ifndef UTILS_LOGGER_UTILS_LOGGER_HPP_
 #define UTILS_LOGGER_UTILS_LOGGER_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_MPI
-#include <mpi.h>
-#endif
-#include "./spdlog/spdlog.h"
-#include "./spdlog/sinks/stdout_color_sinks.h"
-#include "./spdlog/sinks/basic_file_sink.h"
 
 #define PRESSIO_LOG_LEVEL_TRACE		0
 #define PRESSIO_LOG_LEVEL_DEBUG		1
