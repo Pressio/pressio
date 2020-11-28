@@ -249,12 +249,12 @@ private:
   std::string msg_;
 };
 
-void throw_spdlog_ex(const std::string &msg, int last_errno)
+inline void throw_spdlog_ex(const std::string &msg, int last_errno)
 {
   SPDLOG_THROW(spdlog_ex(msg, last_errno));
 }
 
-void throw_spdlog_ex(std::string msg)
+inline void throw_spdlog_ex(std::string msg)
 {
   SPDLOG_THROW(spdlog_ex(std::move(msg)));
 }
