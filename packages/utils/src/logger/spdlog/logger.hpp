@@ -552,7 +552,7 @@ protected:
   }
 };
 
-void swap(logger &a, logger &b)
+inline void swap(logger &a, logger &b)
 {
   a.swap(b);
 }
