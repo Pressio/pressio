@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_H_
-#define UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_H_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_HPP_
+#define UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_HPP_
 
 #include "spdlog/sinks/base_sink.hpp"
 #include "spdlog/details/circular_q.hpp"
@@ -73,4 +73,4 @@ using ringbuffer_sink_st = ringbuffer_sink<details::null_mutex>;
 } // namespace sinks
 
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_H_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_RINGBUFFER_SINK_HPP_

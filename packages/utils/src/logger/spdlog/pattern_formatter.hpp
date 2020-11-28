@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_
-#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_
+#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_HPP_
+#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_HPP_
 
 #include "./common.hpp"
 #include "./details/log_msg.hpp"
@@ -125,4 +125,4 @@ private:
 #ifdef SPDLOG_HEADER_ONLY
 #include "pattern_formatter-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_H_
+#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_HPP_

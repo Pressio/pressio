@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_COMMON_H_
-#define UTILS_LOGGER_SPDLOG_COMMON_H_
+#ifndef UTILS_LOGGER_SPDLOG_COMMON_HPP_
+#define UTILS_LOGGER_SPDLOG_COMMON_HPP_
 
 #include "./tweakme.hpp"
 #include "./details/null_mutex.hpp"
@@ -301,4 +301,4 @@ std::unique_ptr<T> make_unique(Args &&...args)
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "common-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_COMMON_H_
+#endif  // UTILS_LOGGER_SPDLOG_COMMON_HPP_

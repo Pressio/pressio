@@ -4,8 +4,8 @@
 // spdlog main header file.
 // see example.cpp for usage example
 
-#ifndef UTILS_LOGGER_SPDLOG_SPDLOG_H_
-#define UTILS_LOGGER_SPDLOG_SPDLOG_H_
+#ifndef UTILS_LOGGER_SPDLOG_SPDLOG_HPP_
+#define UTILS_LOGGER_SPDLOG_SPDLOG_HPP_
 
 #include "common.hpp"
 #include "details/registry.hpp"
@@ -358,4 +358,4 @@ inline void critical(const T &msg)
 // // #include "spdlog-inl.hpp"
 // // #endif
 
-#endif  // UTILS_LOGGER_SPDLOG_SPDLOG_H_
+#endif  // UTILS_LOGGER_SPDLOG_SPDLOG_HPP_

@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
-#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
+#ifndef UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
+#define UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
 
 #ifndef SPDLOG_HEADER_ONLY
 #include "./pattern_formatter.hpp"
@@ -1376,4 +1376,4 @@ SPDLOG_INLINE void pattern_formatter::compile_pattern_(const std::string &patter
     }
 }
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_

@@ -3,8 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#ifndef UTILS_LOGGER_SPDLOG_FMT_CHRONO_H_
-#define UTILS_LOGGER_SPDLOG_FMT_CHRONO_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_CHRONO_HPP_
+#define UTILS_LOGGER_SPDLOG_FMT_CHRONO_HPP_
 //
 // include bundled or external copy of fmtlib's chrono support
 //
@@ -20,4 +20,4 @@
 // #include <fmt/chrono.h>
 // #endif
 
-#endif  // UTILS_LOGGER_SPDLOG_FMT_CHRONO_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_CHRONO_HPP_

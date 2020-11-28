@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_H_
-#define UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_H_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_HPP_
 
 #include "../common.hpp"
 #include <string>
@@ -43,4 +43,4 @@ struct log_msg
 #ifdef SPDLOG_HEADER_ONLY
 #include "log_msg-inl.hpp"
 #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_H_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_HPP_

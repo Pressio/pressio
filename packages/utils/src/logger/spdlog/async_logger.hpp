@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_H_
-#define UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_H_
+#ifndef UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_HPP_
+#define UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_HPP_
 
 // Fast asynchronous logger.
 // Uses pre allocated queue.
@@ -142,4 +142,4 @@ private:
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "async_logger-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_H_
+#endif  // UTILS_LOGGER_SPDLOG_ASYNC_LOGGER_HPP_

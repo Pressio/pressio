@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_H_
-#define UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_H_
+#ifndef UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_HPP_
+#define UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_HPP_
 
 // #ifndef SPDLOG_HEADER_ONLY
 // #include "./stdout_color_sinks.hpp"
@@ -36,4 +36,4 @@ SPDLOG_INLINE std::shared_ptr<logger> stderr_color_st(const std::string &logger_
     return Factory::template create<sinks::stderr_color_sink_st>(logger_name, mode);
 }
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_STDOUT_COLOR_SINKS_INL_HPP_

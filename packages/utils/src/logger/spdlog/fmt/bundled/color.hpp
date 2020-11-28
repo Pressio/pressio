@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_H_
-#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_H_
+#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_HPP_
+#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_HPP_
 
 #include "format.hpp"
 
@@ -563,4 +563,4 @@ inline std::basic_string<Char> format(const text_style& ts, const S& format_str,
 
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_H_
+#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COLOR_HPP_

@@ -2,8 +2,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_H_
-#define UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_H_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_
 
 #include "log_msg_buffer.hpp"
 #include "circular_q.hpp"
@@ -93,4 +93,4 @@ public:
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "backtracer-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_H_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_

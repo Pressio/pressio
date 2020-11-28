@@ -1,8 +1,8 @@
 // Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-#ifndef UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_H_
-#define UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_H_
+#ifndef UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_HPP_
+#define UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_HPP_
 
 // multi producer-multi consumer blocking queue.
 // enqueue(..) - will block until room found to put the new message.
@@ -125,4 +125,4 @@ private:
 };
 } // namespace details
 } // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_H_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_MPMC_BLOCKING_Q_HPP_
