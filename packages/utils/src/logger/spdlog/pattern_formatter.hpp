@@ -9,10 +9,15 @@
 #include "./details/os.hpp"
 #include "./formatter.hpp"
 
+#include "./details/fmt_helper.hpp"
+#include "./details/log_msg.hpp"
+#include "./details/os.hpp"
+#include "./fmt/fmt.hpp"
+#include "./formatter.hpp"
+
 #include <chrono>
 #include <ctime>
 #include <memory>
-
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -75,50 +80,104 @@ public:
     }
 };
 
+namespace details{
+class full_formatter;
+}
+
 class pattern_formatter final : public formatter
 {
 public:
-    using custom_flags = std::unordered_map<char, std::unique_ptr<custom_flag_formatter>>;
+  using custom_flags = std::unordered_map<char, std::unique_ptr<custom_flag_formatter>>;
 
-    explicit pattern_formatter(std::string pattern, pattern_time_type time_type = pattern_time_type::local,
-        std::string eol = spdlog::details::os::default_eol, custom_flags custom_user_flags = custom_flags());
+  explicit pattern_formatter(std::string pattern,
+			     pattern_time_type time_type = pattern_time_type::local,
+			     std::string eol = spdlog::details::os::default_eol,
+			     custom_flags custom_user_flags = custom_flags())
+    : pattern_(std::move(pattern))
+    , eol_(std::move(eol))
+    , pattern_time_type_(time_type)
+    , last_log_secs_(0)
+    , custom_handlers_(std::move(custom_user_flags))
+  {
+    std::memset(&cached_tm_, 0, sizeof(cached_tm_));
+    compile_pattern_(pattern_);
+  }
 
-    // use default pattern is not given
-    explicit pattern_formatter(pattern_time_type time_type = pattern_time_type::local, std::string eol = spdlog::details::os::default_eol);
+  // use default pattern is not given
+  explicit pattern_formatter(pattern_time_type time_type = pattern_time_type::local,
+			     std::string eol = spdlog::details::os::default_eol);
+  //   : pattern_("%+")
+  //   , eol_(std::move(eol))
+  //   , pattern_time_type_(time_type)
+  //   , last_log_secs_(0)
+  // {
+  //   std::memset(&cached_tm_, 0, sizeof(cached_tm_));
+  //   formatters_.push_back(details::make_unique<details::full_formatter>(details::padding_info{}));
+  // }
 
-    pattern_formatter(const pattern_formatter &other) = delete;
-    pattern_formatter &operator=(const pattern_formatter &other) = delete;
+  pattern_formatter(const pattern_formatter &other) = delete;
+  pattern_formatter &operator=(const pattern_formatter &other) = delete;
 
-    std::unique_ptr<formatter> clone() const override;
-    void format(const details::log_msg &msg, memory_buf_t &dest) override;
+public:
+  std::unique_ptr<formatter> clone() const override
+  {
+    custom_flags cloned_custom_formatters;
+    for (auto &it : custom_handlers_)
+      {
+        cloned_custom_formatters[it.first] = it.second->clone();
+      }
+    return details::make_unique<pattern_formatter>(pattern_, pattern_time_type_, eol_, std::move(cloned_custom_formatters));
+  }
 
-    template<typename T, typename... Args>
-    pattern_formatter &add_flag(char flag, Args&&...args)
-    {
-        custom_handlers_[flag] = details::make_unique<T>(std::forward<Args>(args)...);
-        return *this;
-    }
-    void set_pattern(std::string pattern);
+  void format(const details::log_msg &msg, memory_buf_t &dest) override
+  {
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(msg.time.time_since_epoch());
+    if (secs != last_log_secs_)
+      {
+        cached_tm_ = get_time_(msg);
+        last_log_secs_ = secs;
+      }
+
+    for (auto &f : formatters_)
+      {
+        f->format(msg, cached_tm_, dest);
+      }
+    details::fmt_helper::append_string_view(eol_, dest);
+  }
+
+  template<typename T, typename... Args>
+  pattern_formatter &add_flag(char flag, Args&&...args)
+  {
+    custom_handlers_[flag] = details::make_unique<T>(std::forward<Args>(args)...);
+    return *this;
+  }
+
+  void set_pattern(std::string pattern)
+  {
+    pattern_ = std::move(pattern);
+    compile_pattern_(pattern_);
+  }
+
 
 private:
-    std::string pattern_;
-    std::string eol_;
-    pattern_time_type pattern_time_type_;
-    std::tm cached_tm_;
-    std::chrono::seconds last_log_secs_;
-    std::vector<std::unique_ptr<details::flag_formatter>> formatters_;
-    custom_flags custom_handlers_;
+  std::string pattern_;
+  std::string eol_;
+  pattern_time_type pattern_time_type_;
+  std::tm cached_tm_;
+  std::chrono::seconds last_log_secs_;
+  std::vector<std::unique_ptr<details::flag_formatter>> formatters_;
+  custom_flags custom_handlers_;
 
-    std::tm get_time_(const details::log_msg &msg);
-    template<typename Padder>
-    void handle_flag_(char flag, details::padding_info padding);
+  std::tm get_time_(const details::log_msg &msg);
+  template<typename Padder>
+  void handle_flag_(char flag, details::padding_info padding);
 
-    // Extract given pad spec (e.g. %8X)
-    // Advance the given it pass the end of the padding spec found (if any)
-    // Return padding.
-    static details::padding_info handle_padspec_(std::string::const_iterator &it, std::string::const_iterator end);
+  // Extract given pad spec (e.g. %8X)
+  // Advance the given it pass the end of the padding spec found (if any)
+  // Return padding.
+  static details::padding_info handle_padspec_(std::string::const_iterator &it, std::string::const_iterator end);
 
-    void compile_pattern_(const std::string &pattern);
+  void compile_pattern_(const std::string &pattern);
 };
 } // namespace spdlog
 

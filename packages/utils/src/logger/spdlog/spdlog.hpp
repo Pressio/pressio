@@ -10,7 +10,6 @@
 #include "common.hpp"
 #include "details/registry.hpp"
 #include "logger.hpp"
-//#include "./version.hpp"
 #include "details/synchronous_factory.hpp"
 #include "pattern_formatter.hpp"
 
@@ -30,7 +29,7 @@ using default_factory = synchronous_factory;
 // Example:
 //   spdlog::create<daily_file_sink_st>("logger_name", "dailylog_filename", 11, 59);
 template<typename Sink, typename... SinkArgs>
-inline std::shared_ptr<spdlog::logger> create(std::string logger_name, SinkArgs &&...sink_args)
+std::shared_ptr<spdlog::logger> create(std::string logger_name, SinkArgs &&...sink_args)
 {
     return default_factory::create<Sink>(std::move(logger_name), std::forward<SinkArgs>(sink_args)...);
 }
@@ -50,17 +49,20 @@ inline std::shared_ptr<spdlog::logger> create(std::string logger_name, SinkArgs 
 // set_default_logger() *should not* be used concurrently with the default API.
 // e.g do not call set_default_logger() from one thread while calling spdlog::info() from another.
 
-inline std::shared_ptr<spdlog::logger> default_logger()
+template<class T = void>
+std::shared_ptr<spdlog::logger> default_logger()
 {
   return details::registry::instance().default_logger();
 }
 
-inline spdlog::logger *default_logger_raw()
+template<class T = void>
+spdlog::logger *default_logger_raw()
 {
   return details::registry::instance().get_default_raw();
 }
 
-inline void set_default_logger(std::shared_ptr<spdlog::logger> default_logger)
+template<class T>
+void set_default_logger(std::shared_ptr<T> default_logger)
 {
  details::registry::instance().set_default_logger(std::move(default_logger));
 }
@@ -73,7 +75,9 @@ inline void set_default_logger(std::shared_ptr<spdlog::logger> default_logger)
 // Example:
 //   auto mylogger = std::make_shared<spdlog::logger>("mylogger", ...);
 //   spdlog::initialize_logger(mylogger);
-inline void initialize_logger(std::shared_ptr<logger> logger)
+
+template<class T>
+void initialize_logger(std::shared_ptr<T> logger)
 {
   details::registry::instance().initialize_logger(std::move(logger));
 }
@@ -81,81 +85,94 @@ inline void initialize_logger(std::shared_ptr<logger> logger)
 // Return an existing logger or nullptr if a logger with such name doesn't
 // exist.
 // example: spdlog::get("my_logger")->info("hello {}", "world");
-inline std::shared_ptr<logger> get(const std::string &name)
+template<class T = void>
+std::shared_ptr<logger> get(const std::string &name)
 {
   return details::registry::instance().get(name);
 }
 
 // Set global formatter. Each sink in each logger will get a clone of this object
-inline void set_formatter(std::unique_ptr<spdlog::formatter> formatter)
+template<class T>
+void set_formatter(std::unique_ptr<T> formatter)
 {
   details::registry::instance().set_formatter(std::move(formatter));
 }
 
 // Set global format string.
 // example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
-inline void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time_type::local)
+template<class T = void>
+void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time_type::local)
 {
   set_formatter(std::unique_ptr<spdlog::formatter>(new pattern_formatter(std::move(pattern), time_type)));
 }
 
 // enable global backtrace support
-inline void enable_backtrace(size_t n_messages)
+template<class T = void>
+void enable_backtrace(size_t n_messages)
 {
   details::registry::instance().enable_backtrace(n_messages);
 }
 
 // disable global backtrace support
-inline void disable_backtrace()
+template<class T = void>
+void disable_backtrace()
 {
   details::registry::instance().disable_backtrace();
 }
 
 // call dump backtrace on default logger
-inline void dump_backtrace()
+template<class T = void>
+void dump_backtrace()
 {
   default_logger_raw()->dump_backtrace();
 }
 
 // Get global logging level
-inline level::level_enum get_level()
+template<class T = void>
+level::level_enum get_level()
 {
   return default_logger_raw()->level();
 }
 
 // Set global logging level
-inline void set_level(level::level_enum log_level)
+template<class T = void>
+void set_level(level::level_enum log_level)
 {
   details::registry::instance().set_level(log_level);
 }
 
 // Determine whether the default logger should log messages with a certain level
-inline bool should_log(level::level_enum lvl)
+template<class T = void>
+bool should_log(level::level_enum lvl)
 {
   return default_logger_raw()->should_log(lvl);
 }
 
 // Set global flush level
-inline void flush_on(level::level_enum log_level)
+template<class T = void>
+void flush_on(level::level_enum log_level)
 {
   details::registry::instance().flush_on(log_level);
 }
 
 // Start/Restart a periodic flusher thread
 // Warning: Use only if all your loggers are thread safe!
-inline void flush_every(std::chrono::seconds interval)
+template<class T = void>
+void flush_every(std::chrono::seconds interval)
 {
   details::registry::instance().flush_every(interval);
 }
 
 // Set global error handler
-inline void set_error_handler(void (*handler)(const std::string &msg))
+template<class T = void>
+void set_error_handler(void (*handler)(const std::string &msg))
 {
   details::registry::instance().set_error_handler(handler);
 }
 
 // Register the given logger with the given name
-inline void register_logger(std::shared_ptr<logger> logger)
+template<class T = void>
+void register_logger(std::shared_ptr<logger> logger)
 {
   details::registry::instance().register_logger(std::move(logger));
 }
@@ -163,128 +180,132 @@ inline void register_logger(std::shared_ptr<logger> logger)
 // Apply a user defined function on all registered loggers
 // Example:
 // spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->flush();});
-inline void apply_all(const std::function<void(std::shared_ptr<logger>)> &fun)
+template<class T>
+void apply_all(const std::function<void(std::shared_ptr<T>)> &fun)
 {
   details::registry::instance().apply_all(fun);
 }
 
 // Drop the reference to the given logger
-inline void drop(const std::string &name)
+template<class T = void>
+void drop(const std::string &name)
 {
   details::registry::instance().drop(name);
 }
 
 // Drop all references from the registry
-inline void drop_all()
+template<class T = void>
+void drop_all()
 {
   details::registry::instance().drop_all();
 }
 
 // stop any running threads started by spdlog and clean registry loggers
-inline void shutdown()
+template<class T = void>
+void shutdown()
 {
   details::registry::instance().shutdown();
 }
 
 // Automatic registration of loggers when using spdlog::create() or spdlog::create_async
-inline void set_automatic_registration(bool automatic_registration)
+template<class T = void>
+void set_automatic_registration(bool automatic_registration)
 {
   details::registry::instance().set_automatic_registration(automatic_registration);
 }
 
-
 template<typename FormatString, typename... Args>
-inline void log(source_loc source, level::level_enum lvl, const FormatString &fmt, Args&&...args)
+void log(source_loc source, level::level_enum lvl, const FormatString &fmt, Args&&...args)
 {
-    default_logger_raw()->log(source, lvl, fmt, std::forward<Args>(args)...);
+  default_logger_raw()->log(source, lvl, fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void log(level::level_enum lvl, const FormatString &fmt, Args&&...args)
+void log(level::level_enum lvl, const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->log(source_loc{}, lvl, fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void trace(const FormatString &fmt, Args&&...args)
+void trace(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->trace(fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void debug(const FormatString &fmt, Args&&...args)
+void debug(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->debug(fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void info(const FormatString &fmt, Args&&...args)
+void info(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->info(fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void warn(const FormatString &fmt, Args&&...args)
+void warn(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->warn(fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void error(const FormatString &fmt, Args&&...args)
+void error(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->error(fmt, std::forward<Args>(args)...);
 }
 
 template<typename FormatString, typename... Args>
-inline void critical(const FormatString &fmt, Args&&...args)
+void critical(const FormatString &fmt, Args&&...args)
 {
     default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
 }
 
 template<typename T>
-inline void log(source_loc source, level::level_enum lvl, const T &msg)
+void log(source_loc source, level::level_enum lvl, const T &msg)
 {
     default_logger_raw()->log(source, lvl, msg);
 }
 
 template<typename T>
-inline void log(level::level_enum lvl, const T &msg)
+void log(level::level_enum lvl, const T &msg)
 {
     default_logger_raw()->log(lvl, msg);
 }
 
 template<typename T>
-inline void trace(const T &msg)
+void trace(const T &msg)
 {
     default_logger_raw()->trace(msg);
 }
 
 template<typename T>
-inline void debug(const T &msg)
+void debug(const T &msg)
 {
     default_logger_raw()->debug(msg);
 }
 
 template<typename T>
-inline void info(const T &msg)
+void info(const T &msg)
 {
     default_logger_raw()->info(msg);
 }
 
 template<typename T>
-inline void warn(const T &msg)
+void warn(const T &msg)
 {
     default_logger_raw()->warn(msg);
 }
 
 template<typename T>
-inline void error(const T &msg)
+void error(const T &msg)
 {
     default_logger_raw()->error(msg);
 }
 
 template<typename T>
-inline void critical(const T &msg)
+void critical(const T &msg)
 {
     default_logger_raw()->critical(msg);
 }

@@ -52,6 +52,7 @@
 #ifdef PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
+#include "utils/src/logger/spdlog/common.hpp"
 #include "utils/src/logger/spdlog/spdlog.hpp"
 #include "utils/src/logger/spdlog/sinks/stdout_color_sinks.hpp"
 #include "utils/src/logger/spdlog/sinks/basic_file_sink.hpp"
@@ -210,7 +211,6 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
 /////////// end IMPL ////////////////
 /////////////////////////////////////
 
-
 template<typename ...Args>
 void initialize(::pressio::logto en, Args && ... args)
 {
@@ -290,52 +290,46 @@ inline void critical(const FormatString &fmt, Args&&...args){
 
 
 #define PRESSIO_LOGGER_CALL(logger, level, ...) \
-  if (logger) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__) \
+  if (logger) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__)
 
 ///// TRACE /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_TRACE
-#define PRESSIOLOG_TRACE(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::trace, __VA_ARGS__)
+#define PRESSIOLOG_TRACE(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::trace, __VA_ARGS__)
 #else
 #define PRESSIOLOG_TRACE(...) (void)0
 #endif
 
 ///// DEBUG /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_DEBUG
-#define PRESSIOLOG_DEBUG(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::debug, __VA_ARGS__)
+#define PRESSIOLOG_DEBUG(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::debug, __VA_ARGS__)
 #else
 #define PRESSIOLOG_DEBUG(...) (void)0
 #endif
 
 ///// INFO /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_INFO
-#define PRESSIOLOG_INFO(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::info, __VA_ARGS__)
+#define PRESSIOLOG_INFO(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::info, __VA_ARGS__)
 #else
 #define PRESSIOLOG_INFO(...) (void)0
 #endif
 
 ///// WARN /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_WARN
-#define PRESSIOLOG_WARN(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::warn, __VA_ARGS__)
+#define PRESSIOLOG_WARN(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::warn, __VA_ARGS__)
 #else
 #define PRESSIOLOG_WARN(...) (void)0
 #endif
 
 ///// ERROR /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_ERROR
-#define PRESSIOLOG_ERROR(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::error, __VA_ARGS__)
+#define PRESSIOLOG_ERROR(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::error, __VA_ARGS__)
 #else
 #define PRESSIOLOG_ERROR(...) (void)0
 #endif
 
 ///// CRITICAL /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_CRITICAL
-#define PRESSIOLOG_CRITICAL(...) \
-  PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::critical, __VA_ARGS__)
+#define PRESSIOLOG_CRITICAL(...) PRESSIO_LOGGER_CALL(spdlog::default_logger(), spdlog::level::critical, __VA_ARGS__)
 #else
 #define PRESSIOLOG_CRITICAL(...) (void)0
 #endif
