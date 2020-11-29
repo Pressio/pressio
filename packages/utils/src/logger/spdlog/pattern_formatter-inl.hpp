@@ -1001,9 +1001,6 @@ private:
 
 
 
-
-
-
 // pattern_formatter::pattern_formatter
 // (
 //  std::string pattern, pattern_time_type time_type, std::string eol, custom_flags custom_user_flags)
@@ -1017,25 +1014,25 @@ private:
 //     compile_pattern_(pattern_);
 // }
 
-// use by default full formatter for if pattern is not given
-pattern_formatter::pattern_formatter(pattern_time_type time_type, std::string eol)
-  : pattern_("%+")
-  , eol_(std::move(eol))
-  , pattern_time_type_(time_type)
-  , last_log_secs_(0)
-{
-  std::memset(&cached_tm_, 0, sizeof(cached_tm_));
-  formatters_.push_back(details::make_unique<details::full_formatter>(details::padding_info{}));
-}
+// // use by default full formatter for if pattern is not given
+// pattern_formatter::pattern_formatter(pattern_time_type time_type, std::string eol)
+//   : pattern_("%+")
+//   , eol_(std::move(eol))
+//   , pattern_time_type_(time_type)
+//   , last_log_secs_(0)
+// {
+//   std::memset(&cached_tm_, 0, sizeof(cached_tm_));
+//   formatters_.push_back(details::make_unique<details::full_formatter>(details::padding_info{}));
+// }
 
-std::tm pattern_formatter::get_time_(const details::log_msg &msg)
-{
-  if (pattern_time_type_ == pattern_time_type::local)
-    {
-      return details::os::localtime(log_clock::to_time_t(msg.time));
-    }
-  return details::os::gmtime(log_clock::to_time_t(msg.time));
-}
+// std::tm pattern_formatter::get_time_(const details::log_msg &msg)
+// {
+//   if (pattern_time_type_ == pattern_time_type::local)
+//     {
+//       return details::os::localtime(log_clock::to_time_t(msg.time));
+//     }
+//   return details::os::gmtime(log_clock::to_time_t(msg.time));
+// }
 
 template<typename Padder>
 void pattern_formatter::handle_flag_(char flag, details::padding_info padding)
@@ -1248,109 +1245,109 @@ void pattern_formatter::handle_flag_(char flag, details::padding_info padding)
   // }
 }
 
-// Extract given pad spec (e.g. %8X, %=8X, %-8!X, %8!X, %=8!X, %-8!X, %+8!X)
-// Advance the given it pass the end of the padding spec found (if any)
-// Return padding.
-details::padding_info pattern_formatter::handle_padspec_(std::string::const_iterator &it,
-							 std::string::const_iterator end)
-{
-  using details::padding_info;
-  using details::scoped_padder;
-  const size_t max_width = 64;
-  if (it == end)
-    {
-      return padding_info{};
-    }
+// // Extract given pad spec (e.g. %8X, %=8X, %-8!X, %8!X, %=8!X, %-8!X, %+8!X)
+// // Advance the given it pass the end of the padding spec found (if any)
+// // Return padding.
+// inline details::padding_info pattern_formatter::handle_padspec_(std::string::const_iterator &it,
+// 							 std::string::const_iterator end)
+// {
+//   using details::padding_info;
+//   using details::scoped_padder;
+//   const size_t max_width = 64;
+//   if (it == end)
+//     {
+//       return padding_info{};
+//     }
 
-  padding_info::pad_side side;
-  switch (*it)
-    {
-    case '-':
-      side = padding_info::pad_side::right;
-      ++it;
-      break;
-    case '=':
-      side = padding_info::pad_side::center;
-      ++it;
-      break;
-    default:
-      side = details::padding_info::pad_side::left;
-      break;
-    }
+//   padding_info::pad_side side;
+//   switch (*it)
+//     {
+//     case '-':
+//       side = padding_info::pad_side::right;
+//       ++it;
+//       break;
+//     case '=':
+//       side = padding_info::pad_side::center;
+//       ++it;
+//       break;
+//     default:
+//       side = details::padding_info::pad_side::left;
+//       break;
+//     }
 
-  if (it == end || !std::isdigit(static_cast<unsigned char>(*it)))
-    {
-      return padding_info{}; // no padding if no digit found here
-    }
+//   if (it == end || !std::isdigit(static_cast<unsigned char>(*it)))
+//     {
+//       return padding_info{}; // no padding if no digit found here
+//     }
 
-  auto width = static_cast<size_t>(*it) - '0';
-  for (++it; it != end && std::isdigit(static_cast<unsigned char>(*it)); ++it)
-    {
-      auto digit = static_cast<size_t>(*it) - '0';
-      width = width * 10 + digit;
-    }
+//   auto width = static_cast<size_t>(*it) - '0';
+//   for (++it; it != end && std::isdigit(static_cast<unsigned char>(*it)); ++it)
+//     {
+//       auto digit = static_cast<size_t>(*it) - '0';
+//       width = width * 10 + digit;
+//     }
 
-  // search for the optional truncate marker '!'
-  bool truncate;
-  if (it != end && *it == '!')
-    {
-      truncate = true;
-      ++it;
-    }
-  else
-    {
-      truncate = false;
-    }
+//   // search for the optional truncate marker '!'
+//   bool truncate;
+//   if (it != end && *it == '!')
+//     {
+//       truncate = true;
+//       ++it;
+//     }
+//   else
+//     {
+//       truncate = false;
+//     }
 
-  return details::padding_info{std::min<size_t>(width, max_width), side, truncate};
-}
+//   return details::padding_info{std::min<size_t>(width, max_width), side, truncate};
+// }
 
-void pattern_formatter::compile_pattern_(const std::string &pattern)
-{
-  auto end = pattern.end();
-  std::unique_ptr<details::aggregate_formatter> user_chars;
-  formatters_.clear();
-  for (auto it = pattern.begin(); it != end; ++it)
-    {
-      if (*it == '%')
-        {
-	  if (user_chars) // append user chars found so far
-            {
-	      formatters_.push_back(std::move(user_chars));
-            }
+// void pattern_formatter::compile_pattern_(const std::string &pattern)
+// {
+//   auto end = pattern.end();
+//   std::unique_ptr<details::aggregate_formatter> user_chars;
+//   formatters_.clear();
+//   for (auto it = pattern.begin(); it != end; ++it)
+//     {
+//       if (*it == '%')
+//         {
+// 	  if (user_chars) // append user chars found so far
+//             {
+// 	      formatters_.push_back(std::move(user_chars));
+//             }
 
-	  auto padding = handle_padspec_(++it, end);
+// 	  auto padding = handle_padspec_(++it, end);
 
-	  if (it != end)
-            {
-	      if (padding.enabled())
-                {
-		  handle_flag_<details::scoped_padder>(*it, padding);
-                }
-	      else
-                {
-		  handle_flag_<details::null_scoped_padder>(*it, padding);
-                }
-            }
-	  else
-            {
-	      break;
-            }
-        }
-      else // chars not following the % sign should be displayed as is
-        {
-	  if (!user_chars)
-            {
-	      user_chars = details::make_unique<details::aggregate_formatter>();
-            }
-	  user_chars->add_ch(*it);
-        }
-    }
-  if (user_chars) // append raw chars found so far
-    {
-      formatters_.push_back(std::move(user_chars));
-    }
-}
+// 	  if (it != end)
+//             {
+// 	      if (padding.enabled())
+//                 {
+// 		  handle_flag_<details::scoped_padder>(*it, padding);
+//                 }
+// 	      else
+//                 {
+// 		  handle_flag_<details::null_scoped_padder>(*it, padding);
+//                 }
+//             }
+// 	  else
+//             {
+// 	      break;
+//             }
+//         }
+//       else // chars not following the % sign should be displayed as is
+//         {
+// 	  if (!user_chars)
+//             {
+// 	      user_chars = details::make_unique<details::aggregate_formatter>();
+//             }
+// 	  user_chars->add_ch(*it);
+//         }
+//     }
+//   if (user_chars) // append raw chars found so far
+//     {
+//       formatters_.push_back(std::move(user_chars));
+//     }
+// }
 
 } // namespace spdlog
 
