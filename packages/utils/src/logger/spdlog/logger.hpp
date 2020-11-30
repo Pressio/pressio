@@ -15,17 +15,17 @@
 // The use of private formatter per sink provides the opportunity to cache some
 // formatted data, and support for different format per sink.
 
-#include "./common.hpp"
-#include "./details/log_msg.hpp"
-#include "./details/backtracer.hpp"
-#include "./sinks/sink.hpp"
-#include "./pattern_formatter.hpp"
-#include <cstdio>
-#include <vector>
+//#include "./common.hpp"
+//#include "./details/log_msg.hpp"
+//#include "./details/backtracer.hpp"
+//#include "./sinks/sink.hpp"
+//#include "./pattern_formatter.hpp"
+//#include <cstdio>
+//#include <vector>
 
-#ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#include "./details/os.hpp"
-#endif
+// #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
+// #include "./details/os.hpp"
+// #endif
 
 #ifndef SPDLOG_NO_EXCEPTIONS
 #define SPDLOG_LOGGER_CATCH()				\

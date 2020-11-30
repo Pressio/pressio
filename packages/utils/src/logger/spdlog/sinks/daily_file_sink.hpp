@@ -7,7 +7,7 @@
 #include "../common.hpp"
 #include "../details/file_helper.hpp"
 #include "../details/null_mutex.hpp"
-#include "../fmt/fmt.hpp"
+// #include "../fmt/fmt.hpp"
 #include "./base_sink.hpp"
 #include "../details/os.hpp"
 #include "../details/circular_q.hpp"

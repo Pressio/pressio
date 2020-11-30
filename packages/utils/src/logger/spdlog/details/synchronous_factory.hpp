@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_DETAILS_SYNCHRONOUS_FACTORY_HPP_
 #define UTILS_LOGGER_SPDLOG_DETAILS_SYNCHRONOUS_FACTORY_HPP_
 
-#include "registry.hpp"
+//#include "registry.hpp"
 
 namespace spdlog {
 

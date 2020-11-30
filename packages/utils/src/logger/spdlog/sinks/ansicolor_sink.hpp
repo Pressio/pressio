@@ -5,12 +5,12 @@
 #define UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_HPP_
 
 #include "../details/console_globals.hpp"
-#include "../details/null_mutex.hpp"
-#include "../sinks/sink.hpp"
-#include <memory>
-#include <mutex>
-#include <string>
-#include <array>
+//#include "../details/null_mutex.hpp"
+//#include "../sinks/sink.hpp"
+//#include <memory>
+//#include <mutex>
+//#include <string>
+//#include <array>
 
 namespace spdlog {
 namespace sinks {

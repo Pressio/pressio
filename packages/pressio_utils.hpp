@@ -68,6 +68,27 @@
 
 #include "utils/src/io/utils_colorize_print.hpp"
 #include "utils/src/io/utils_print_helper.hpp"
+
+/* headers needed for logging */
+
+// fmt is needed
+#include "utils/src/logger/fmt/fmt.hpp"
+
+#define PRESSIO_LOG_LEVEL_TRACE		0
+#define PRESSIO_LOG_LEVEL_DEBUG		1
+#define PRESSIO_LOG_LEVEL_INFO		2
+#define PRESSIO_LOG_LEVEL_WARN		3
+#define PRESSIO_LOG_LEVEL_ERROR		4
+#define PRESSIO_LOG_LEVEL_CRITICAL	5
+#define PRESSIO_LOG_LEVEL_OFF		6
+
+#if defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_TRACE
+#elif !defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
+#endif
+
+#include "utils/src/logger/utils_logger_enums.hpp"
 #include "utils/src/logger/utils_logger.hpp"
 
 #endif

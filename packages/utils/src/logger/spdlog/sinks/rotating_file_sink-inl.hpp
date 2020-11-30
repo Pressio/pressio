@@ -11,7 +11,7 @@
 #include "../common.hpp"
 #include "../details/file_helper.hpp"
 #include "../details/null_mutex.hpp"
-#include "../fmt/fmt.hpp"
+// #include "../fmt/fmt.hpp"
 
 #include <cerrno>
 #include <chrono>

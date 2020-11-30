@@ -99,6 +99,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
+    PRESSIOLOG_DEBUG("QR-based correction");
     T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);

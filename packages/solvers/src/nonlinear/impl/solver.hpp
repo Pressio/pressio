@@ -140,9 +140,9 @@ public:
 	 stop stoppingE,
 	 update updatingE,
 	 Args &&... args)
-    : T(system, state, std::forward<Args>(args)...),
-      updatingE_(updatingE),
-      stoppingE_(stoppingE)
+    : T(system, state, std::forward<Args>(args)...)
+    , updatingE_(updatingE)
+    , stoppingE_(stoppingE)
   {
     tolerances_.fill(defaultTol_);
   }
@@ -262,10 +262,10 @@ private:
   template<typename system_t, typename state_t>
   void solveImpl(const system_t & system, state_t & state)
   {
-    PRESSIOLOG_INFO("executing nonlinear solver");
+    PRESSIOLOG_INFO("nonlinsolver: solve");
 
     if (!updater_){
-      PRESSIOLOG_DEBUG("creating updater");
+      PRESSIOLOG_DEBUG("nonlinsolver: creating updater");
       updater_ = createUpdater<solvertag>(state, updatingE_);
     }
     // after construction, it should NOT be null
@@ -276,7 +276,6 @@ private:
     sc_t gradientNorm0 = {};
     bool recomputeSystemJacobian = true;
 
-    PRESSIOLOG_DEBUG("starting loop");
     iStep_ = 0;
     while (++iStep_ <= iterative_base_t::maxIters_)
     {
@@ -285,11 +284,11 @@ private:
 
       // 1.
       try{
-	PRESSIOLOG_DEBUG("compute correction");
 	T::computeCorrection(system, state, recomputeSystemJacobian);
       }
-      catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
-	PRESSIOLOG_CRITICAL("nonlinear solver failure");
+      catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e)
+      {
+	PRESSIOLOG_CRITICAL("nonlinsolver: failure");
 	throw ::pressio::eh::nonlinear_solve_failure();
       }
 
@@ -327,12 +326,11 @@ private:
 
       // 4.
       if (stopLoop(iStep_)){
-	PRESSIOLOG_DEBUG("stopping");
+	PRESSIOLOG_DEBUG("nonlinsolver: stopping");
 	break;
       }
 
       // 5.
-      PRESSIOLOG_DEBUG("apply update");
       applyUpdater(system, state, *this, updatingE_, updater_);
     }
 

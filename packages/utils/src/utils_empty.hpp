@@ -52,8 +52,11 @@
 namespace pressio{ namespace utils{ namespace impl{
 
 // a dummy type that is used ONLY in impl namespace
-
 struct empty{};
 
-}}} // end of namespace pressio::utils::impl
+}} // end of namespace pressio::utils::impl
+
+using empty = ::pressio::utils::impl::empty;
+
+}// end namespace pressio::utils
 #endif  // UTILS_UTILS_EMPTY_HPP_

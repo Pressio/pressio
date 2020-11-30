@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
 #define UTILS_LOGGER_SPDLOG_DETAILS_OS_HPP_
 
-#include "../common.hpp"
+//#include "../common.hpp"
 #include <ctime> // std::time_t
 
 namespace spdlog {
@@ -23,11 +23,11 @@ std::tm gmtime() SPDLOG_NOEXCEPT;
 
 // eol definition
 #if !defined(SPDLOG_EOL)
-#ifdef _WIN32
-#define SPDLOG_EOL "\r\n"
-#else
+// #ifdef _WIN32
+// #define SPDLOG_EOL "\r\n"
+// #else
 #define SPDLOG_EOL "\n"
-#endif
+//#endif
 #endif
 
 SPDLOG_CONSTEXPR static const char *default_eol = SPDLOG_EOL;

@@ -5,10 +5,9 @@
 #ifndef UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_
 #define UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_
 
-#include "log_msg_buffer.hpp"
-#include "circular_q.hpp"
-
-#include <atomic>
+//#include "log_msg_buffer.hpp"
+//#include "circular_q.hpp"
+//#include <atomic>
 #include <mutex>
 #include <functional>
 

@@ -82,6 +82,8 @@ public:
 		   state_t & state,
 		   solver_mixin_t & solver)
   {
+    PRESSIOLOG_DEBUG("nonlinsolver: armijo update");
+
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
     auto alpha = static_cast<sc_t>(1);
 

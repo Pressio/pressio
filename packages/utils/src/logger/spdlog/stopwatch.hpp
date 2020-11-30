@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_STOPWATCH_HPP_
 #define UTILS_LOGGER_SPDLOG_STOPWATCH_HPP_
 
-#include "./fmt/fmt.hpp"
+// #include "./fmt/fmt.hpp"
 
 // Stopwatch support for spdlog  (using std::chrono::steady_clock).
 // Displays elapsed seconds since construction as double.

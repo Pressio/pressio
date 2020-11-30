@@ -5,8 +5,8 @@
 
 #include <chrono>
 #include <type_traits>
-#include "../fmt/fmt.hpp"
-#include "../common.hpp"
+// #include "../fmt/fmt.hpp"
+//#include "../common.hpp"
 
 // Some fmt helpers to efficiently format and pad ints and strings
 namespace spdlog {
@@ -60,7 +60,7 @@ inline void pad2(int n, memory_buf_t &dest)
 }
 
 template<typename T>
-inline void pad_uint(T n, unsigned int width, memory_buf_t &dest)
+void pad_uint(T n, unsigned int width, memory_buf_t &dest)
 {
     static_assert(std::is_unsigned<T>::value, "pad_uint must get unsigned T");
     for (auto digits = count_digits(n); digits < width; digits++)
@@ -71,7 +71,7 @@ inline void pad_uint(T n, unsigned int width, memory_buf_t &dest)
 }
 
 template<typename T>
-inline void pad3(T n, memory_buf_t &dest)
+void pad3(T n, memory_buf_t &dest)
 {
     static_assert(std::is_unsigned<T>::value, "pad3 must get unsigned T");
     if (n < 1000)
@@ -88,9 +88,9 @@ inline void pad3(T n, memory_buf_t &dest)
 }
 
 template<typename T>
-inline void pad6(T n, memory_buf_t &dest)
+void pad6(T n, memory_buf_t &dest)
 {
-    pad_uint(n, 6, dest);
+  pad_uint(n, 6, dest);
 }
 
 template<typename T>

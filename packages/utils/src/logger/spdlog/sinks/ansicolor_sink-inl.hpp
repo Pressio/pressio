@@ -4,12 +4,12 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_INL_HPP_
 #define UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_INL_HPP_
 
-#ifndef SPDLOG_HEADER_ONLY
-#include "../sinks/ansicolor_sink.hpp"
-#endif
+// #ifndef SPDLOG_HEADER_ONLY
+// #include "../sinks/ansicolor_sink.hpp"
+// #endif
 
-#include "../pattern_formatter.hpp"
-#include "../details/os.hpp"
+// #include "../pattern_formatter.hpp"
+// #include "../details/os.hpp"
 
 namespace spdlog {
 namespace sinks {

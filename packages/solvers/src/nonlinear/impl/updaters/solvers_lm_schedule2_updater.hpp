@@ -89,6 +89,7 @@ public:
 		   state_t & state,
 		   solver_mixin_t & solver)
   {
+    PRESSIOLOG_DEBUG("nonlinsolver: lm2 update");
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     constexpr auto ten  = static_cast<scalar_t>(10);
     constexpr auto seven  = static_cast<scalar_t>(7);

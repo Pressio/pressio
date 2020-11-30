@@ -69,6 +69,7 @@ public:
 		   state_t & state,
 		   solver_mixin_t & solver)
   {
+    PRESSIOLOG_DEBUG("nonlinsolver: default update");
     using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
     // default update: y = y + alpha*correction
     const auto & correction = solver.correctionCRef();

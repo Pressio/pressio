@@ -4,17 +4,15 @@
 #ifndef UTILS_LOGGER_SPDLOG_COMMON_HPP_
 #define UTILS_LOGGER_SPDLOG_COMMON_HPP_
 
-#include "./tweakme.hpp"
-#include "./details/null_mutex.hpp"
 
-#include <atomic>
-#include <chrono>
-#include <initializer_list>
-#include <memory>
-#include <exception>
-#include <string>
-#include <type_traits>
-#include <functional>
+// #include <atomic>
+//#include <chrono>
+//#include <initializer_list>
+//#include <memory>
+//#include <exception>
+//#include <string>
+//#include <type_traits>
+//#include <functional>
 
 // #ifdef SPDLOG_COMPILED_LIB
 // #undef SPDLOG_HEADER_ONLY
@@ -34,16 +32,16 @@
 #define SPDLOG_INLINE inline
 //#endif // #ifdef SPDLOG_COMPILED_LIB
 
-#include "./fmt/fmt.hpp"
+//#include "./fmt/fmt.hpp"
 
-// visual studio upto 2013 does not support noexcept nor constexpr
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-#define SPDLOG_NOEXCEPT _NOEXCEPT
-#define SPDLOG_CONSTEXPR
-#else
+// // visual studio upto 2013 does not support noexcept nor constexpr
+// #if defined(_MSC_VER) && (_MSC_VER < 1900)
+// #define SPDLOG_NOEXCEPT _NOEXCEPT
+// #define SPDLOG_CONSTEXPR
+// #else
 #define SPDLOG_NOEXCEPT noexcept
 #define SPDLOG_CONSTEXPR constexpr
-#endif
+//#endif
 
 #if defined(__GNUC__) || defined(__clang__)
 #define SPDLOG_DEPRECATED __attribute__((deprecated))
@@ -53,12 +51,12 @@
 #define SPDLOG_DEPRECATED
 #endif
 
-// disable thread local on msvc 2013
-#ifndef SPDLOG_NO_TLS
-#if (defined(_MSC_VER) && (_MSC_VER < 1900)) || defined(__cplusplus_winrt)
-#define SPDLOG_NO_TLS 1
-#endif
-#endif
+// // disable thread local on msvc 2013
+// #ifndef SPDLOG_NO_TLS
+// #if (defined(_MSC_VER) && (_MSC_VER < 1900)) || defined(__cplusplus_winrt)
+// #define SPDLOG_NO_TLS 1
+// #endif
+// #endif
 
 #ifndef SPDLOG_FUNCTION
 #define SPDLOG_FUNCTION static_cast<const char *>(__FUNCTION__)
@@ -80,20 +78,19 @@
 #endif
 
 namespace spdlog {
-
 class formatter;
 
 namespace sinks {
 class sink;
 }
 
-#if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
-using filename_t = std::wstring;
-#define SPDLOG_FILENAME_T(s) L##s
-#else
+// #if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
+// using filename_t = std::wstring;
+// #define SPDLOG_FILENAME_T(s) L##s
+// #else
 using filename_t = std::string;
 #define SPDLOG_FILENAME_T(s) s
-#endif
+//#endif
 
 using log_clock = std::chrono::system_clock;
 using sink_ptr = std::shared_ptr<sinks::sink>;
@@ -104,13 +101,13 @@ using wstring_view_t = fmt::basic_string_view<wchar_t>;
 using memory_buf_t = fmt::basic_memory_buffer<char, 250>;
 
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#ifndef _WIN32
-#error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
-#else
+// #ifndef _WIN32
+// #error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
+// #else
 template<typename T>
 struct is_convertible_to_wstring_view : std::is_convertible<T, wstring_view_t>
 {};
-#endif // _WIN32
+//#endif // _WIN32
 #else
 template<typename>
 struct is_convertible_to_wstring_view : std::false_type
@@ -258,7 +255,6 @@ inline void throw_spdlog_ex(std::string msg)
 {
   SPDLOG_THROW(spdlog_ex(std::move(msg)));
 }
-
 
 struct source_loc
 {

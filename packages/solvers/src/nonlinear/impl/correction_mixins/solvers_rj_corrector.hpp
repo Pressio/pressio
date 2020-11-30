@@ -92,6 +92,7 @@ public:
 			 state_t & state,
 			 bool recomputeSystemJacobian = true)
   {
+    PRESSIOLOG_DEBUG("res/jac correction");
     T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);

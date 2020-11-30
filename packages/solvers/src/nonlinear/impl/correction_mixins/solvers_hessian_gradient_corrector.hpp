@@ -105,6 +105,7 @@ public:
 			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {
+    PRESSIOLOG_DEBUG("hessian/gradient correction");
     T::computeOperators(sys, state,
 			residNormCurrCorrStep_,
 			recomputeSystemJacobian);

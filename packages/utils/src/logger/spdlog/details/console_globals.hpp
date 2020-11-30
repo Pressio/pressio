@@ -4,8 +4,8 @@
 #ifndef UTILS_LOGGER_SPDLOG_DETAILS_CONSOLE_GLOBALS_HPP_
 #define UTILS_LOGGER_SPDLOG_DETAILS_CONSOLE_GLOBALS_HPP_
 
-#include "./null_mutex.hpp"
-#include <mutex>
+// #include "./null_mutex.hpp"
+// #include <mutex>
 
 namespace spdlog {
 namespace details {

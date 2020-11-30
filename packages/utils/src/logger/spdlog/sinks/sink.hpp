@@ -4,7 +4,7 @@
 #ifndef UTILS_LOGGER_SPDLOG_SINKS_SINK_HPP_
 #define UTILS_LOGGER_SPDLOG_SINKS_SINK_HPP_
 
-#include "../details/log_msg.hpp"
+//#include "../details/log_msg.hpp"
 // #include "../formatter.hpp"
 // #include "../common.hpp"
 
