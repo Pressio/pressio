@@ -16,20 +16,20 @@ jobs:
               envscript: "",
               requirements: ""
             }
-          # - {
-          #     name: "Ubuntu 20.04 Clang",
-          #     build_type: "Debug", cc: "clang", cxx: "clang++",
-          #     options: "-eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
-          #     envscript: "",
-          #     requirements: ""
-          #   }
-          # - {
-          #     name: "Ubuntu 20.04 MPI - trilinos",
-          #     build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
-          #     options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
-          #     envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
-          #     requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile"
-          #   }
+          - {
+              name: "Ubuntu 20.04 Clang",
+              build_type: "Debug", cc: "clang", cxx: "clang++",
+              options: "-eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
+              envscript: "",
+              requirements: ""
+            }
+          - {
+              name: "Ubuntu 20.04 MPI - trilinos",
+              build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
+              options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
+              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile"
+            }
 
     steps:
     - uses: actions/checkout@v1
