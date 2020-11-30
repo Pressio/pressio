@@ -82,7 +82,7 @@ public:
 		   state_t & state,
 		   solver_mixin_t & solver)
   {
-    PRESSIOLOG_DEBUG("nonlinsolver: armijo update");
+    PRESSIOLOG_DEBUG("armijo update");
 
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
     auto alpha = static_cast<sc_t>(1);
@@ -97,7 +97,7 @@ public:
     //
     // where
     // k = the GN step
-    // l = indexes the armijo backtracking)
+    // l = indexes the armijo backtracking stages
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 
@@ -106,9 +106,7 @@ public:
     const auto fx_k    = solver.residualNormCurrentCorrectionStep();
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-    ::pressio::utils::io::print_stdout(" backtracking: alpha =", alpha, "\n");
-#endif
+    PRESSIOLOG_DEBUG("starting backtracking"); //: alpha = {}", alpha);
     sc_t ftrial = {};
     bool done = false;
     while (not done)
@@ -125,17 +123,20 @@ public:
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;
 
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-      ::pressio::utils::io::print_stdout(" f(x_k+alpha*p_k) =", ftrial, "\n");
-      ::pressio::utils::io::print_stdout(" f(x_k+alpha*p_k)-f(x_k) =", lhs,
-					 "; alpha*beta*g^T p_k =", rhs, "\n");
-#endif
+      //::pressio::utils::io::print_stdout(" f(x_k+alpha*p_k) =", ftrial, "\n");
+      PRESSIOLOG_DEBUG("alpha = {:5f}: (f_trial-f) = {:6e}, rhs = {:6e}", alpha, lhs, rhs);
 
-      if (lhs <= rhs) done = true;
+      if (lhs <= rhs){
+	PRESSIOLOG_DEBUG("condition satisfied: f_trial-f <= rhs, exiting");
+	done = true;
+      }
 
       // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
-      if (std::abs(lhs) <= 1e-14) done = true;
+      if (std::abs(lhs) <= 1e-14){
+	PRESSIOLOG_DEBUG("change of obj. function too small, terminating");
+	done = true;
+      }
 
       /* convectional way to backtrack:alpha_l+1 = 0.5 * alpha_l */
       if (!done) alpha *= 0.5;
