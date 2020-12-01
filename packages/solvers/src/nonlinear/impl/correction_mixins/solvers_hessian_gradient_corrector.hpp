@@ -112,7 +112,7 @@ public:
 
     const auto & H = T::hessianCRef();
     const auto & g = T::gradientCRef();
-    this->doLinearSolve(H, g);
+    solverObj_.get().solve(H, g, correction_);
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g);
@@ -140,13 +140,6 @@ public:
 
   const sc_t & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
-  }
-
-private:
-  template <typename H_t, typename g_t>
-  void doLinearSolve(H_t & H, const g_t & g)
-  {
-    solverObj_.get().solve(H, g, correction_);
   }
 };
 

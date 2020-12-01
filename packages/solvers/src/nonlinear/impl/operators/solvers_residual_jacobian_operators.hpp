@@ -164,7 +164,6 @@ public:
     system.residualAndJacobian(state, auxR_, J_, false);
     residualNorm = ::pressio::ops::norm2(auxR_);
   }
-
 };
 
 }}}}

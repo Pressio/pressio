@@ -49,6 +49,8 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
+#include <typeinfo>
+
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -120,7 +122,6 @@ private:
 
   // updating criterion enum
   update updatingE_ = update::standard;
-  using upd_def_t  = impl::DefaultUpdater;
   std::shared_ptr<impl::BaseUpdater> updater_ = nullptr;
 
   // stopping creterion enum

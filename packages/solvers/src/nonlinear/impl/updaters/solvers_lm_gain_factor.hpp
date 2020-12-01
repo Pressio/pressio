@@ -95,16 +95,15 @@ public:
     const auto & H	    = solverObj.hessianCRefBeforeLMDiagonalScaling();
 
     // denom
-    // for (int i=0; i< H.extent(0); i++){ cDiagH_[i] = correction[i]*H(i,i); }
     const auto diagH = ::pressio::containers::diag(H);
     ::pressio::ops::elementwise_multiply(one, correction, diagH, zero, cDiagH_);
     const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
     const auto den2 = ::pressio::ops::dot(correction, g);
-    auto denom = (one/two)*(mu*den1 + den2);
+    const auto denom = (one/two)*(mu*den1 + den2);
 
     // numerator
     auto norm = solverObj.residualNormCurrentCorrectionStep();
-    auto r2Old = norm*norm;
+    const auto r2Old = norm*norm;
     ::pressio::ops::update(trialState_, state, one, correction, one);
     solverObj.residualNorm(system, trialState_, norm);
 

@@ -103,7 +103,8 @@ public:
 
     const auto & p_k   = solver.correctionCRef();
     const auto & g_k   = solver.gradientCRef();
-    const auto fx_k    = solver.residualNormCurrentCorrectionStep();
+    auto fx_k    = solver.residualNormCurrentCorrectionStep();
+    fx_k = std::pow(fx_k, ::pressio::utils::constants<sc_t>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("starting backtracking"); //: alpha = {}", alpha);
@@ -119,6 +120,7 @@ public:
 
       // eval f(x_k + alpha_l * p_k)
       solver.residualNorm(system, trialState_, ftrial);
+      ftrial = std::pow(ftrial, ::pressio::utils::constants<sc_t>::two());
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;

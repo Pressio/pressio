@@ -51,9 +51,10 @@
 
 #include "./operators/solvers_weighting_irwls.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_hg_api.hpp"
-#include "./operators/solvers_gn_hessian_gradient_operators_no_weighting.hpp"
-#include "./operators/solvers_gn_hessian_gradient_operators_with_weighting.hpp"
-#include "./operators/solvers_lm_hessian_gradient_operators.hpp"
+#include "./operators/solvers_gn_hessian_gradient_operators_rj_api.hpp"
+#include "./operators/solvers_gn_hessian_gradient_operators_weighted_rj_api.hpp"
+#include "./operators/solvers_lm_hessian_gradient_operators_hg_api.hpp"
+#include "./operators/solvers_lm_hessian_gradient_operators_rj_api.hpp"
 #include "./operators/solvers_residual_jacobian_operators.hpp"
 
 #include "./correction_mixins/solvers_hessian_gradient_corrector.hpp"
