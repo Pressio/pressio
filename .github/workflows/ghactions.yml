@@ -23,7 +23,7 @@ jobs:
               options: "-cmake-generator-name=default_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
               envscript: "",
               requirements: "sudo apt install gcov gcovr",
-              ctest_build: /home/runner/work/pressio/pressio/build/tests
+              ctest_build: /home/runner/work/pressio/pressio/build/tests,
               coverage: true
             }
           - {
