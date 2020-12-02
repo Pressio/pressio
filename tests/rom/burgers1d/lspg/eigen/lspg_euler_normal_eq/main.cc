@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters every step
-  solver.setMaxIterations(4);
+  solver.setMaxIterations(2);
 
   // solve
   scalar_t dt = 0.01;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       checkStr = "FAILED";
   }
 
-  // std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
+  std::cout << std::setprecision(14) << *yFomFinal.data() << std::endl;
   std::cout << checkStr <<  std::endl;
   return 0;
 }

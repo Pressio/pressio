@@ -3,7 +3,11 @@
 #include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
   using fom_t		= pressio::apps::Burgers1dEigen;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
@@ -76,7 +80,7 @@ int main(int argc, char *argv[]){
   for (auto i=0; i<yFomFinal.extent(0); i++)
     if (std::abs(yFomFinal(i) - trueY[i]) > 1e-10) checkStr = "FAILED";
 
-  std::cout << *yFomFinal.data() << std::endl;
+  std::cout << std::setprecision(15) << *yFomFinal.data() << std::endl;
   std::cout << checkStr <<  std::endl;
   return 0;
 }
