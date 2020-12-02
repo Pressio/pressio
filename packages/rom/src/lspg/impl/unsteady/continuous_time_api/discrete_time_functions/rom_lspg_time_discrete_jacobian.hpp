@@ -140,9 +140,12 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   for (std::size_t i=0; i<(std::size_t)nRows; ++i)
   {
     const auto rowInd = hypIndices(i);
+    //std::cout << i << " ";
     for (std::size_t j=0; j<(std::size_t)nCols; ++j){
       jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
+      //std::cout << jphi(i,j) << " ";
     }
+    //std::cout << "\n";
   }
 }
 #endif
