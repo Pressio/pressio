@@ -14,7 +14,7 @@ jobs:
               build_type: "Debug", cc: "gcc", cxx: "g++",
               options: "-eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
               envscript: "",
-              requirements: ""
+              requirements: "",
               ctest_build: /home/runner/work/pressio/pressio/build
             }
           - {
@@ -22,7 +22,7 @@ jobs:
               build_type: "Debug", cc: "gcc", cxx: "g++",
               options: "-cmake-generator-name=default_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
               envscript: "",
-              requirements: "sudo apt install gcov gcovr"
+              requirements: "sudo apt install gcov gcovr",
               ctest_build: /home/runner/work/pressio/pressio/build/tests
               coverage: true
             }
@@ -31,7 +31,7 @@ jobs:
               build_type: "Debug", cc: "clang", cxx: "clang++",
               options: "-eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
               envscript: "",
-              requirements: ""
+              requirements: "",
               ctest_build: /home/runner/work/pressio/pressio/build
             }
           - {
@@ -39,7 +39,7 @@ jobs:
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
               envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
-              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile"
+              requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio/build
             }
 
