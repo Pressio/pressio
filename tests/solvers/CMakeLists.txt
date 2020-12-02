@@ -8,4 +8,7 @@ add_subdirectory(irwls_gauss_newton)
 if (PRESSIO_ENABLE_TPL_EIGEN)
 add_serial_exe_and_test(newton_raphson_eigen
   solvers solvers_newton_raphson_eigen.cc "PASSED")
+
+add_serial_exe_and_test(matrix_free_newton_raphson_eigen
+  solvers solvers_matrix_free_newton_raphson_eigen.cc "PASSED")
 endif()

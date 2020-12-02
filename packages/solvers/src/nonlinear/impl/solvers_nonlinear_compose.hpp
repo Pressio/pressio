@@ -56,6 +56,7 @@
 #include "./operators/solvers_lm_hessian_gradient_operators_hg_api.hpp"
 #include "./operators/solvers_lm_hessian_gradient_operators_rj_api.hpp"
 #include "./operators/solvers_residual_jacobian_operators.hpp"
+#include "./operators/solvers_residual.hpp"
 
 #include "./correction_mixins/solvers_hessian_gradient_corrector.hpp"
 #include "./correction_mixins/solvers_qr_corrector.hpp"
@@ -106,6 +107,45 @@ using composeNewtonRaphson = composeNewRaph<system_t, Args...>;
 
 template<typename system_t, typename ... Args>
 using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+//
+// *** jacobian-free NewtonRaphson ***
+//
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+template<typename system_t, typename linear_solver_t>
+struct composeJacobianFreeNewRaph
+{
+  static_assert
+  (::pressio::solvers::concepts::system_residual_apply_jacobian<system_t>::value,
+   "To use the Jacobian-free NewtonRaphson, your system must meet the residual jacobian-free API.");
+
+  using scalar_t = typename system_t::scalar_type;
+  using state_t  = typename system_t::state_type;
+  using r_t = typename system_t::residual_type;
+
+  static_assert
+  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
+   "Newton-Raphson solver: the state type must be a pressio vector wrapper.");
+
+  // check the solver_t passed is valid
+  static_assert
+  (::pressio::solvers::concepts::matrix_free_linear_solver<
+   mpl::remove_cvref_t<linear_solver_t>, system_t, state_t, r_t>::value,
+   "Invalid linear solver type passed to the Jacobian-free NewtonRaphson");
+
+  using operators_t = ResidualOperator<r_t>;
+  using corr_mixin  = RJCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<NewtonRaphson, corr_mixin>;
+};
+
+template<typename system_t, typename ... Args>
+using composeJacobianFreeNewtonRaphson_t =
+  typename composeJacobianFreeNewRaph<system_t, Args...>::type;
 
 
 ////////////////////////////////////////////////////////////

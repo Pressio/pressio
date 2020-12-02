@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_create_newton_raphson.hpp
+// solvers_system_residual_jacobian_free.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,30 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_FREE_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_FREE_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace solvers{ namespace concepts {
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+template<typename T, typename enable = void>
+struct system_residual_apply_jacobian : std::false_type{};
 
-template<typename system_t, typename state_t, typename ...Args>
-auto createNewtonRaphson(const system_t & system,
-			 const state_t & state,
-			 Args && ...args)
-  -> impl::composeNewtonRaphson_t<system_t, Args...>
-{
-  return impl::composeNewtonRaphson_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
-}
+template<typename T>
+struct system_residual_apply_jacobian
+<T,
+ ::pressio::mpl::enable_if_t<
+   ::pressio::solvers::predicates::has_scalar_typedef<T>::value
+   and ::pressio::solvers::predicates::has_state_typedef<T>::value
+   and ::pressio::solvers::predicates::has_residual_typedef<T>::value
+   //
+   and ::pressio::solvers::predicates::has_const_create_residual_method_return_result<
+     T, typename T::residual_type>::value
+   and ::pressio::solvers::predicates::has_const_residual_method_accept_state_result_return_void<
+     T, typename T::state_type, typename T::residual_type>::value
+   and ::pressio::solvers::predicates::has_const_apply_jacobian_method_accept_residual_result_return_void<
+     T, typename T::residual_type>::value
+   >
+ > : std::true_type{};
 
-namespace experimental{
-template<typename system_t, typename state_t, typename ...Args>
-auto createJacobianFreeNewtonRaphson(const system_t & system,
-				   const state_t & state,
-				   Args && ...args)
-  -> impl::composeJacobianFreeNewtonRaphson_t<system_t, Args...>
-{
-  return impl::composeJacobianFreeNewtonRaphson_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
-}
-}//end namespace experimental
-
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+}}} // namespace pressio::solvers::concepts
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_

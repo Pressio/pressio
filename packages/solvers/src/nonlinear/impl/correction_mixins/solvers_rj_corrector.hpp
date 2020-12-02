@@ -88,9 +88,13 @@ public:
 
 public:
   template <typename system_t>
-  void computeCorrection(const system_t & sys,
-			 state_t & state,
-			 bool recomputeSystemJacobian = true)
+  mpl::enable_if_t<
+  ::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+  ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+  >
+  computeCorrection(const system_t & sys,
+		    state_t & state,
+		    bool recomputeSystemJacobian = true)
   {
     PRESSIOLOG_DEBUG("res/jac correction");
     T::computeOperators(sys, state,
@@ -101,6 +105,29 @@ public:
     const auto & J = T::jacobianCRef();
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
+    // scale by -1 for sign convention
+    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
+
+    correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
+  }
+
+  template <typename system_t>
+  mpl::enable_if_t<
+    ::pressio::solvers::concepts::system_residual_apply_jacobian<system_t>::value
+  >
+  computeCorrection(const system_t & sys,
+		    state_t & state,
+		    bool recomputeSystemJacobian = true)
+  {
+    PRESSIOLOG_DEBUG("matrix-free correction");
+    T::computeOperators(sys, state, residNormCurrCorrStep_);
+    //if (recomputeSystemJacobian);
+
+    const auto & r = T::residualCRef();
+    // solve J correction = r with matrix free solver,
+    // so we pass sys since sys knowws how to compute jacobian vector product
+    solverObj_.get().solve(sys, r, correction_);
+
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 

@@ -89,6 +89,7 @@
 #include "solvers/src/nonlinear/impl/updaters/solvers_create_updater.hpp"
 #include "solvers/src/nonlinear/impl/updaters/solvers_apply_updater.hpp"
 
+#include "solvers/src/will_be_concepts/solvers_legitimate_matrix_free_linear_solver.hpp"
 #include "solvers/src/will_be_concepts/solvers_legitimate_linear_solver_for_newton_raphson.hpp"
 #include "solvers/src/predicates/solvers_has_const_residualnorm_method_accept_state_norm_return_void.hpp"
 #include "solvers/src/predicates/solvers_has_const_create_residual_method_return_result.hpp"
@@ -99,6 +100,9 @@
 #include "solvers/src/will_be_concepts/system/solvers_system_fused_residual_jacobian.hpp"
 #include "solvers/src/will_be_concepts/system/solvers_system_residual_jacobian.hpp"
 #include "solvers/src/nonlinear/impl/solvers_printer.hpp"
+
+#include "solvers/src/predicates/solvers_has_const_apply_jacobian_method_accept_result_return_void.hpp"
+#include "solvers/src/will_be_concepts/system/solvers_system_residual_jacobian_free.hpp"
 
 // *** non-linear least-squares *** //
 #include "solvers/src/predicates/solvers_has_const_create_hessian_method_return_result.hpp"

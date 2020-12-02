@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_create_newton_raphson.hpp
+// solvers_legitimate_linear_solver_for_jacobian_free_newton_raphson.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
-#define SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_JACOBIAN_FREE_NEWTON_RAPHSON_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_JACOBIAN_FREE_NEWTON_RAPHSON_HPP_
 
-#include "./impl/solvers_nonlinear_compose.hpp"
+namespace pressio{ namespace solvers{ namespace concepts {
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
-
-template<typename system_t, typename state_t, typename ...Args>
-auto createNewtonRaphson(const system_t & system,
-			 const state_t & state,
-			 Args && ...args)
-  -> impl::composeNewtonRaphson_t<system_t, Args...>
+template <
+  typename T, typename system_type, typename state_type, typename r_t,
+  typename enable = void>
+struct matrix_free_linear_solver : std::false_type
 {
-  return impl::composeNewtonRaphson_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
-}
+  static_assert
+  (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
+};
 
-namespace experimental{
-template<typename system_t, typename state_t, typename ...Args>
-auto createJacobianFreeNewtonRaphson(const system_t & system,
-				   const state_t & state,
-				   Args && ...args)
-  -> impl::composeJacobianFreeNewtonRaphson_t<system_t, Args...>
-{
-  return impl::composeJacobianFreeNewtonRaphson_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
-}
-}//end namespace experimental
+template <typename T, typename system_type, typename state_type, class r_t>
+struct matrix_free_linear_solver<
+  T, system_type, state_type, r_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>().solve
+       (
+        std::declval<system_type const &>(),
+        std::declval<r_t const &>(),
+        std::declval<state_type &>()
+        )
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+}}} // namespace pressio::solvers::concepts
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
