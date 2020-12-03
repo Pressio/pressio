@@ -89,7 +89,7 @@ jobs:
       name: Generate code coverage
       run: |
         cd ${{ matrix.config.ctest_build }}
-        gcovr -x -r ${{ env.WORKSPACE_PARENT_DIR }}/pressio . -o pressio_tests_coverage.xml
+        gcovr -x -r ${{ env.WORKSPACE_PARENT_DIR }}/pressio/packages . -o pressio_tests_coverage.xml
     - if: ${{ matrix.config.coverage }}
       name: Upload code coverage
       uses: codecov/codecov-action@v1
