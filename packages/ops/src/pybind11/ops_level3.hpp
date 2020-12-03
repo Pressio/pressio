@@ -55,10 +55,52 @@ namespace pressio{ namespace ops{
  * C = beta * C + alpha*op(A)*op(B)
 */
 
+template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<B_type>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<C_type>::value
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  // currently not working for expressions because expressions
+  // do not have a .data() method and might have non-contiguous layout
+  // so we cannot just pass them to blas/lapack, we need to handle them separatly
+  static_assert
+    (!containers::predicates::is_expression<A_type>::value and
+     !containers::predicates::is_expression<B_type>::value and
+     !containers::predicates::is_expression<C_type>::value,
+     "Cannot yet handle expressions for ops::product for pybind11");
+
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  // NOTE: need to check if doing this import is expensive,
+  // and assess whether we can use blas directly when we know
+  // that objects involved are dense with not strange layout.
+  pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
+  constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::constants<int>::one();
+  constexpr auto transA = yes;
+  constexpr auto transB = no;
+  constexpr auto ovw    = yes;
+  pyblas.attr("dgemm")(one, *A.data(), *B.data(), beta,
+		       *C.data(), transA, transB, ovw);
+}
+
+
 /***********************************
-* special case A==B and op(A) = transpose
-* i.e.: C = beta * C + alpha*A^T*A
-**********************************/
+ * special case A==B and op(A) = transpose
+ * i.e.: C = beta * C + alpha*A^T*A
+ **********************************/
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
@@ -66,11 +108,11 @@ template <typename A_type, typename scalar_type, typename C_type>
   ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<C_type>::value
   >
 product(::pressio::transpose modeA,
-  ::pressio::nontranspose modeB,
-  const scalar_type alpha,
-  const A_type & A,
-  const scalar_type beta,
-  C_type & C)
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const scalar_type beta,
+	C_type & C)
 {
   // currently not working for expressions because expressions
   // do not have a .data() method and might have non-contiguous layout
@@ -112,9 +154,9 @@ template <typename C_type, typename A_type, typename scalar_type>
   C_type
   >
 product(::pressio::transpose modeA,
-  ::pressio::nontranspose modeB,
-  const scalar_type alpha,
-  const A_type & A)
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A)
 {
   constexpr auto zero  = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.extent(1), A.extent(1));
