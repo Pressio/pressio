@@ -57,6 +57,7 @@ class QRCorrector : public T
 public:
   using state_t = state_type;
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+  using state_wrapped_t = typename ::pressio::containers::details::traits<state_type>::wrapped_t;
 
 private:
   state_t correction_ = {};
@@ -71,21 +72,29 @@ private:
 public:
   QRCorrector() = delete;
 
-  template <typename system_t>
+  template <typename system_t, typename qrs_t>
   QRCorrector(const system_t & system,
 	      const state_t & state,
-	      qr_solver_t & solverObj)
+	      qrs_t && solverObj)
     : T(system, state),
       correction_(state),
       QTResid_(state),
       g_(state),
-      solverObj_(solverObj)
+      solverObj_(std::forward<qrs_t>(solverObj))
   {
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     ::pressio::ops::fill(correction_, zero);
     ::pressio::ops::fill(QTResid_, zero);
     ::pressio::ops::fill(g_, zero);
   }
+
+  template <typename system_t, typename qrs_t>
+  QRCorrector(const system_t & system,
+	      const state_wrapped_t & state,
+	      qrs_t && solverObj)
+    : QRCorrector(system, state_type(state),
+		  std::forward<qrs_t>(solverObj))
+  {}
 
   QRCorrector(QRCorrector const &) = default;
   QRCorrector & operator=(QRCorrector const &) = default;
