@@ -49,6 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
 
+#include "./operators/solvers_jacobian_action_wrapper.hpp"
 #include "./operators/solvers_weighting_irwls.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_hg_api.hpp"
 #include "./operators/solvers_gn_hessian_gradient_operators_rj_api.hpp"
@@ -56,7 +57,7 @@
 #include "./operators/solvers_lm_hessian_gradient_operators_hg_api.hpp"
 #include "./operators/solvers_lm_hessian_gradient_operators_rj_api.hpp"
 #include "./operators/solvers_residual_jacobian_operators.hpp"
-#include "./operators/solvers_residual.hpp"
+#include "./operators/solvers_residual_only.hpp"
 
 #include "./correction_mixins/solvers_hessian_gradient_corrector.hpp"
 #include "./correction_mixins/solvers_qr_corrector.hpp"
@@ -132,10 +133,12 @@ struct composeJacobianFreeNewRaph
   (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
    "Newton-Raphson solver: the state type must be a pressio vector wrapper.");
 
-  // check the solver_t passed is valid
+  // check the solver_t passed is valid for doing jacobian-free solver
+  // jaction_t is the class type that is used to wrap the action of the jacobian
+  using jaction_t = JacobianActionWrapper<state_t, system_t>;
   static_assert
   (::pressio::solvers::concepts::matrix_free_linear_solver<
-   mpl::remove_cvref_t<linear_solver_t>, system_t, state_t, r_t>::value,
+   mpl::remove_cvref_t<linear_solver_t>, jaction_t, state_t, r_t>::value,
    "Invalid linear solver type passed to the Jacobian-free NewtonRaphson");
 
   using operators_t = ResidualOperator<r_t>;
@@ -188,9 +191,9 @@ struct composeGNQR<
   (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
-  // if we get here, all is ok
-  using qr_solver_matrix_t =
-    typename ::pressio::qr::details::traits<mpl::remove_cvref_t<solver_t>>::matrix_t;
+  // // if we get here, all is ok
+  // using qr_solver_matrix_t =
+  //   typename ::pressio::qr::details::traits<mpl::remove_cvref_t<solver_t>>::matrix_t;
 
   using operators_t = ResidualJacobianOperators<r_t, j_t>;
   using corr_mixin  = QRCorrector<operators_t, state_t, solver_t>;

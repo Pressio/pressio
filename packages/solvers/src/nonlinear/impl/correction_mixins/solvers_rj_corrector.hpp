@@ -121,12 +121,13 @@ public:
   {
     PRESSIOLOG_DEBUG("matrix-free correction");
     T::computeOperators(sys, state, residNormCurrCorrStep_);
-    //if (recomputeSystemJacobian);
+
+    JacobianActionWrapper<state_t, system_t> jw(state, sys, recomputeSystemJacobian);
 
     const auto & r = T::residualCRef();
     // solve J correction = r with matrix free solver,
-    // so we pass sys since sys knowws how to compute jacobian vector product
-    solverObj_.get().solve(sys, r, correction_);
+    // so we pass the jw since it knowws how to compute the action of the jacobian
+    solverObj_.get().solve(jw, r, correction_);
 
     // scale by -1 for sign convention
     pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );

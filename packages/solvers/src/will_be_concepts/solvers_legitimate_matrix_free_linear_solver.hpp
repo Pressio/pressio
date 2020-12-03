@@ -46,13 +46,16 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_JACOBIAN_FREE_NEWTON_RAPHSON_HPP_
-#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_JACOBIAN_FREE_NEWTON_RAPHSON_HPP_
+#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_MATRIX_FREE_LINEAR_SOLVER_HPP_
+#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_MATRIX_FREE_LINEAR_SOLVER_HPP_
 
 namespace pressio{ namespace solvers{ namespace concepts {
 
 template <
-  typename T, typename system_type, typename state_type, typename r_t,
+  typename T,
+  typename j_action_t,
+  typename state_type,
+  typename rhs_t,
   typename enable = void>
 struct matrix_free_linear_solver : std::false_type
 {
@@ -60,17 +63,17 @@ struct matrix_free_linear_solver : std::false_type
   (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
 };
 
-template <typename T, typename system_type, typename state_type, class r_t>
+template <typename T, typename j_action_t, typename state_type, class rhs_t>
 struct matrix_free_linear_solver<
-  T, system_type, state_type, r_t,
+  T, j_action_t, state_type, rhs_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T>().solve
        (
-        std::declval<system_type const &>(),
-        std::declval<r_t const &>(),
+        std::declval<j_action_t const &>(),
+        std::declval<rhs_t const &>(),
         std::declval<state_type &>()
         )
        )
@@ -79,4 +82,4 @@ struct matrix_free_linear_solver<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_LEGITIMATE_MATRIX_FREE_LINEAR_SOLVER_HPP_

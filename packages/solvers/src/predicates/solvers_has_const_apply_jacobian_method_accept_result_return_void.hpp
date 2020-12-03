@@ -46,33 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESIDUAL_RESULT_RETURN_VOID_HPP_
-#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESIDUAL_RESULT_RETURN_VOID_HPP_
+#ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESULT_RETURN_VOID_HPP_
+#define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESULT_RETURN_VOID_HPP_
 
 namespace pressio{ namespace solvers{ namespace predicates {
 
 template <
   typename T,
+  typename state_t,
   typename residual_t,
   typename = void
   >
-struct has_const_apply_jacobian_method_accept_residual_result_return_void
+struct has_const_apply_jacobian_method_accept_state_residual_result_return_void
   : std::false_type{};
 
 template <
   typename T,
+  typename state_t,
   typename residual_t
   >
-struct has_const_apply_jacobian_method_accept_residual_result_return_void<
-  T, residual_t,
+struct has_const_apply_jacobian_method_accept_state_residual_result_return_void<
+  T, state_t, residual_t,
   mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>().applyJacobian
        (
+	std::declval<state_t const &>(),
 	std::declval<residual_t const &>(),
-	std::declval<residual_t &>()
+	std::declval<residual_t &>(),
+	std::declval<bool>()
 	)
        )
       >::value
@@ -80,4 +84,4 @@ struct has_const_apply_jacobian_method_accept_residual_result_return_void<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::predicates
-#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESIDUAL_RESULT_RETURN_VOID_HPP_
+#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_APPLY_JACOBIAN_METHOD_ACCEPT_RESULT_RETURN_VOID_HPP_

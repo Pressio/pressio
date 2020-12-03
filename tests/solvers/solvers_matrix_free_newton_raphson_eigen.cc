@@ -21,26 +21,23 @@ public:
   void residual(const state_type & x,
                 residual_type & res) const
   {
-    res(0) =  x(0)*x(0)*x(0) + x(1) - 1.0;
-    res(1) = -x(0) + x(1)*x(1)*x(1) + 1.0;
+    res(0) =  x(0)*2.;
+    res(1) =  x(1)*2.;
   }
 
-  void applyJacobian(const residual_type & in,
-		     residual_type & out) const
+  void applyJacobian(const state_type & x,
+		     const residual_type & in,
+		     residual_type & out,
+		     bool updateJacobianAction) const
   {
+    // in theory here we should compute action without
+    // computing the jacobian, but here we jsut test things
     jacobian_type jac(2,2);
-    //computeJacobian(x, jac);
+    jac.data()->coeffRef(0, 0) = x(0);
+    jac.data()->coeffRef(0, 1) = x(1);
+    jac.data()->coeffRef(1, 0) = x(0)*2.;
+    jac.data()->coeffRef(1, 1) = x(1)*2.;
     *out.data() = (*jac.data()) * (*in.data());
-  }
-
-private:
-  void computeJacobian(const state_type & x,
-		       jacobian_type & jac) const
-  {
-    jac.data()->coeffRef(0, 0) = 3.0*x(0)*x(0);
-    jac.data()->coeffRef(0, 1) =  1.0;
-    jac.data()->coeffRef(1, 0) = -1.0;
-    jac.data()->coeffRef(1, 1) = 3.0*x(1)*x(1);
   }
 };
 
@@ -55,44 +52,61 @@ struct mylinsolver
   mylinsolver(std::string & checkStr)
   : checkStr_(checkStr){}
 
-  // solve Ax = b
-  // where A only evaluates action of the jacobian
-  void solve(const ValidSystem & A,
-             const residual_type & b,
+  // solve Ax = r
+  // where A is an object that evaluates the action of the jacobian
+  // keep in mind that for this test, this linear solve is called
+  // at each newton iteration so x is effectively the correction
+  template<class T>
+  void solve(const T & jAction,
+             const residual_type & r,
              state_type & x)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
     std::cout << *x.data() << std::endl;
-    std::cout << *b.data() << std::endl;
+    // std::cout << *r.data() << std::endl;
 
-    eig_v_t trueB(2);
     eig_v_t trueX(2);
+    eig_v_t trueR(2);
     eig_v_t trueJb(2);
-    // residual_type Jb(2);
-    // F.applyJacobian(x, b, Jb);
-    // std::cout << *Jb.data() << std::endl;
+    eig_v_t trueJr(2);
+    residual_type Jr(2);
+    jAction.applyJacobian(r, Jr);
+    std::cout << *Jr.data() << std::endl;
 
-    if (iterCount_==1){
+    if (iterCount_==1)
+    {
+      // on this call, we know that
+      // - correction should be all zeros
+      // - nonlinear state should be the initial cond, i.e. [2,3]
+
       trueX(0) = 0.;
       trueX(1) = 0.;
-      trueB(0) = 0.001*0.001*0.001 + 0.0001 - 1.;
-      trueB(1) = -0.001 + 0.0001*0.0001*0.0001 + 1.;
-      // trueJb(0) = 3.*0.001*0.001*trueB(0)+1.*trueB(1);
-      // trueJb(1) = -1.*trueB(0)+1.*trueB(1);
-      //if( !x.data()->isApprox(trueX) ) checkStr_="FAILED";
-      // if( !b.data()->isApprox(trueB) ) checkStr_="FAILED";
-      // if( !Jb.data()->isApprox(trueJb) ) checkStr_="FAILED";
+      // this is because of the initial condition on the state
+      trueR(0) = 4.;
+      trueR(1) = 6.;
+      trueJr(0) = 2.*4. + 3.*6.;
+      trueJr(1) = 2.*4.*2. + 3.*6.*2.;
+      if( !x.data()->isApprox(trueX) ) checkStr_="FAILED";
+      if( !r.data()->isApprox(trueR) ) checkStr_="FAILED";
+      if( !Jr.data()->isApprox(trueJr) ) checkStr_="FAILED";
     }
 
-    // if (iterCount_==2){
-    //   trueX(0) = -1.;
-    //   trueX(1) = -1.;
-    //   trueB(0) = 0.;
-    //   trueB(1) = 0.9993;
-    //   // if( !x.data()->isApprox(trueX) ) checkStr_="FAILED";
-    //   // if( !b.data()->isApprox(trueB) ) checkStr_="FAILED";
-    // }
+    if (iterCount_==2)
+    {
+      // on this call, we know that
+      // - correction should be [-1,-1] because of sign convention in pressio
+      // - nonlinear state should be [1,2]
+      trueX(0) = -1.;
+      trueX(1) = -1.;
+      trueR(0) = 2.;
+      trueR(1) = 4.;
+      trueJr(0) = 1.*2. + 2.*4.;
+      trueJr(1) = 1.*2.*2. + 2.*4.*2.;
+      if( !x.data()->isApprox(trueX) ) checkStr_="FAILED";
+      if( !r.data()->isApprox(trueR) ) checkStr_="FAILED";
+      if( !Jr.data()->isApprox(trueJr) ) checkStr_="FAILED";
+    }
 
     x(0) = 1.0;
     x(1) = 1.0;
@@ -110,9 +124,11 @@ int main()
   using problem_t  = ValidSystem;
   using state_t	   = problem_t::state_type;
 
+  // problem object
   problem_t sys;
+
   state_t state(2);
-  state(0) = 0.001; state(1) = 0.0001;
+  state(0) = 2.; state(1) = 3.;
 
   // linear solver
   mylinsolver linearSolverObj(strOut);
@@ -123,9 +139,9 @@ int main()
   NonLinSolver.setStoppingCriterion(pressio::solvers::nonlinear::stop::afterMaxIters);
   NonLinSolver.solve(sys, state);
 
-  // const auto e1 = std::abs(state(0) - (1.));
-  // const auto e2 = std::abs(state(1) - (0.));
-  // if (e1>1e-8 or e2>1e-8) strOut = "FAILED"
+  const auto e1 = std::abs(state(0) - (1.));
+  const auto e2 = std::abs(state(1) - (2.));
+  if (e1>1e-13 or e2>1e-13) strOut = "FAILED";
   std::cout <<  strOut << std::endl;
   std::cout << *state.data() << std::endl;
 }

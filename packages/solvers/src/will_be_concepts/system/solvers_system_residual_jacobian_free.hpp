@@ -66,10 +66,10 @@ struct system_residual_apply_jacobian
      T, typename T::residual_type>::value
    and ::pressio::solvers::predicates::has_const_residual_method_accept_state_result_return_void<
      T, typename T::state_type, typename T::residual_type>::value
-   and ::pressio::solvers::predicates::has_const_apply_jacobian_method_accept_residual_result_return_void<
-     T, typename T::residual_type>::value
+   and ::pressio::solvers::predicates::has_const_apply_jacobian_method_accept_state_residual_result_return_void<
+     T, typename T::state_type, typename T::residual_type>::value
    >
  > : std::true_type{};
 
 }}} // namespace pressio::solvers::concepts
-#endif  // SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_HPP_
+#endif  // SOLVERS_WILL_BE_CONCEPTS_SYSTEM_SOLVERS_SYSTEM_RESIDUAL_JACOBIAN_FREE_HPP_
