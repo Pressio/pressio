@@ -25,7 +25,7 @@ jobs:
               requirements: "sudo apt install gcovr",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
-              coverage_filename:"pressio_tests_coverage.xml"
+              coverage_filename: "pressio_tests_coverage.xml"
             }
           - {
               name: "Ubuntu 20.04 Clang",
@@ -51,7 +51,7 @@ jobs:
               requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
-              coverage_filename:"pressio_tests_mpi_coverage.xml"
+              coverage_filename: "pressio_tests_mpi_coverage.xml"
             }
 
     steps:
