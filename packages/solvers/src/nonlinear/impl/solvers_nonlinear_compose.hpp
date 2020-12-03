@@ -148,10 +148,6 @@ struct composeGNQR<
   (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
-  // if we get here, all is ok
-  using qr_solver_matrix_t =
-    typename ::pressio::qr::details::traits<mpl::remove_cvref_t<solver_t>>::matrix_t;
-
   using operators_t = ResidualJacobianOperators<r_t, j_t>;
   using corr_mixin  = QRCorrector<operators_t, state_t, solver_t>;
   using type        = Solver<GaussNewtonQR, corr_mixin>;
