@@ -87,6 +87,7 @@ struct traits<
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
 
+  using scalar_t		= typename common_types_t::scalar_t;
   using fom_system_t		= typename common_types_t::fom_system_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_native_velocity_t	= typename common_types_t::fom_native_velocity_t;
@@ -149,6 +150,7 @@ struct traits<
     ::pressio::rom::lspg::impl::unsteady::CommonTraitsContinuousTimeApi<
       stepper_tag, fom_system_type, lspg_state_type, decoder_type, ud_ops_type>;
 
+  using scalar_t		= typename common_types_t::scalar_t;
   using fom_system_t		= typename common_types_t::fom_system_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_native_velocity_t	= typename common_types_t::fom_native_velocity_t;
