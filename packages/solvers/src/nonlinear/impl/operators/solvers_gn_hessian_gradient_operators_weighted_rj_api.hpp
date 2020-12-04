@@ -214,6 +214,44 @@ public:
     functorM_(std::forward<_weigh_t>(functorM))
   {}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename system_t,
+    typename state_t,
+    typename _weigh_t = weighting_functor_t,
+    typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
+    mpl::enable_if_t<
+      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
+       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      and std::is_void<_ud_ops_type>::value
+      and std::is_same<_weigh_t,
+		       ::pressio::solvers::nonlinear::impl::IrwWeightingOperator<r_t, j_t>
+		       >::value
+      , int > = 0
+    >
+  WeightedHessianGradientOperatorsRJApi(const system_t & system,
+					const state_t & state,
+					sc_t pValue)
+  : r_(system.createResidual()),
+    Mr_(r_),
+    J_(system.createJacobian()),
+    MJ_(J_),
+    g_(state),
+    H_(::pressio::ops::product<h_t>(pT, pnT,
+				    ::pressio::utils::constants<sc_t>::one(),
+				    J_)),
+    functorM_(std::move(_weigh_t(system)))
+  {
+    this->set_p(pValue);
+    ::pressio::ops::set_zero(r_);
+    ::pressio::ops::set_zero(Mr_);
+    ::pressio::ops::set_zero(J_);
+    ::pressio::ops::set_zero(MJ_);
+    ::pressio::ops::set_zero(g_);
+    ::pressio::ops::set_zero(H_);
+  }
+#endif
+
 public:
   void resetForNewCall() {
     callCount_ = 0;
