@@ -61,6 +61,16 @@ struct is_sharedmem_host_accessible_vector_wrapper<
   > : std::true_type{};
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct is_sharedmem_host_accessible_vector_wrapper<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind11<T>::value
+   >
+  > : std::true_type{};
+#endif
+
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
 struct is_sharedmem_host_accessible_vector_wrapper<

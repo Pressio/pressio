@@ -529,6 +529,8 @@ struct traits<
   using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
 
+  using asdiagonalmatrix_ret_t	 = expressions::AsDiagonalMatrixExpr<Vector<wrapped_type>>;
+  using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Vector<wrapped_type>>;
   // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
   // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
 };
