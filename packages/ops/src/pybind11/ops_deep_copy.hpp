@@ -72,7 +72,7 @@ deep_copy(T & dest, const T & src)
   assert( dest.extent(0) == src.extent(0) );
   assert( dest.extent(1) == src.extent(1) );
   for (std::size_t i=0; i<dest.extent(0); ++i){
-    for (std::size_t j=0; j<dest.extent(0); ++j){
+    for (std::size_t j=0; j<dest.extent(1); ++j){
       dest(i,j) = src(i,j);
     }
   }
