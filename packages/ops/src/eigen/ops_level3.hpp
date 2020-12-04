@@ -170,7 +170,7 @@ product(::pressio::transpose modeA,
 
 //-------------------------------------------
 // C = beta * C + alpha*A*B
-// specialize for when A is a diagonal expression
+// specialize for when A = asDiagonalMatrix expression
 //-------------------------------------------
 template <typename T, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
