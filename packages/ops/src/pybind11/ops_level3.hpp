@@ -164,6 +164,44 @@ product(::pressio::transpose modeA,
   return C;
 }
 
+//-------------------------------------------
+// C = beta * C + alpha*A*B
+// specialize for when A = asDiagonalMatrix expression
+//-------------------------------------------
+template <typename T, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<B_type>::value and
+  ::pressio::containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<C_type>::value
+  >
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const pressio::containers::expressions::AsDiagonalMatrixExpr<T> & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  assert( A.extent(0) == A.extent(1) );
+  assert( C.extent(0) == A.extent(0) );
+  assert( C.extent(1) == B.extent(1) );
+  assert( A.extent(1) == B.extent(0) );
+  // since A = asDiagoanlMatrix, get the underlying pressio::Vector
+  const auto & Av = *A.pressioObj();
+
+  // we need to make this more efficient, but not now
+  for (std::size_t i=0; i<C.extent(0); ++i){
+    const auto Avalue = Av(i);
+    for (std::size_t j=0; j<C.extent(1); ++j)
+    {
+      C(i,j) = beta*C(i,j) + alpha*Avalue*B(i,j);
+    }
+  }
+}
 
 }}//end namespace pressio::ops
 #endif  // OPS_PYBIND11_OPS_LEVEL3_HPP_
