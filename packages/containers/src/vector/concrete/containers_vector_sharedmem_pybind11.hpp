@@ -77,10 +77,12 @@ public:
 
   template <
     typename int_t,
-    mpl::enable_if_t< std::is_integral<int_t>::value, int > = 0
+    mpl::enable_if_t< 
+     std::is_integral<int_t>::value, std::size_t 
+     > = 0
     >
   explicit Vector(int_t insize)
-    : data_({ (std::size_t)insize})
+    : data_(insize)
   {
     auto proxy = data_.mutable_unchecked();
     for (ord_t i=0; i<insize; ++i)
@@ -110,7 +112,7 @@ public:
 
   // copy cnstr
   Vector(Vector const & other)
-    : data_({other.extent(0)})
+    : data_(other.extent(0))
   {
     assert( other.data_.ndim() == 1 );
     // copy data from src to this
@@ -170,22 +172,22 @@ public:
 
   ref_t operator()(ord_t i){
     assert(i < this->extent(0));
-    return data_.mutable_at(i);
+    return data_(i);
   };
 
   const_ref_t operator()(ord_t i) const{
     assert(i < this->extent(0));
-    return data_.at(i);
+    return data_(i);
   };
 
-  [[deprecated("Use operator() instead.")]] 
-  ref_t operator[](ord_t i){ 
-    return (*this)(i); 
-  };
-  [[deprecated("Use operator() instead.")]] 
-  const_ref_t operator[](ord_t i) const{ 
-    return (*this)(i); 
-  };
+  // [[deprecated("Use operator() instead.")]]
+  // ref_t operator[](ord_t i){
+  //   return (*this)(i);
+  // };
+  // [[deprecated("Use operator() instead.")]]
+  // const_ref_t operator[](ord_t i) const{
+  //   return (*this)(i);
+  // };
 
 private:
   wrap_t data_ = {};

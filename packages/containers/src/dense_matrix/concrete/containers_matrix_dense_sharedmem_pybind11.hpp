@@ -167,13 +167,13 @@ public:
   ref_t operator()(ord_t i, ord_t j){
     assert(i < this->extent(0) );
     assert(j < this->extent(1) );
-    return data_.mutable_at(i,j);
+    return data_(i,j);
   };
 
   const_ref_t operator()(ord_t i, ord_t j) const{
     assert(i < this->extent(0) );
     assert(j < this->extent(1) );
-    return data_.at(i,j);
+    return data_(i,j);
   };
 
 private:
