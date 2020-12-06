@@ -63,9 +63,9 @@ using logger = spdlog::logger;
 using logger = ::pressio::utils::empty;
 #endif
 
-
 namespace log{
 
+#if !defined PRESSIO_ENABLE_TPL_PYBIND11
 template<typename ...Args>
 void initialize(::pressio::logto en, Args && ... args)
 {
@@ -82,6 +82,26 @@ void initialize(::pressio::logto en, Args && ... args)
   spdlog::set_default_logger(logger);
 #endif
 }
+
+#else //PRESSIO_ENABLE_TPL_PYBIND11
+
+// need this because for pybind11 cannot use variadic directly
+void initialize(::pressio::logto en, std::string fileName = "log")
+{
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+  auto logger = ::pressio::log::impl::create(en, fileName);
+  // logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] [fnc=%!] : %v");
+
+  // note that the sinks can have different levels. By using trace for the
+  // main logger we make sure it is up to the sinks or the global
+  // define to set the minlevel of output.
+  logger->set_level(spdlog::level::trace);
+
+  // set the singleton
+  spdlog::set_default_logger(logger);
+#endif
+}
+#endif
 
 // Return an existing logger or nullptr if a logger with such name doesn't exist.
 // example: spdlog::get("my_logger")->info("hello {}", "world");
@@ -102,9 +122,11 @@ std::shared_ptr<::pressio::logger> getLogger()
   return get("pressioLogger");
 }
 
-
-template <typename T = void>
-void setVerbosity(std::initializer_list<::pressio::log::level> levels)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename T> void setVerbosity(T levels)
+#else
+template <typename T= void> void setVerbosity(std::initializer_list<::pressio::log::level> levels)
+#endif
 {
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   auto logger = ::pressio::log::get("pressioLogger");

@@ -77,8 +77,8 @@ public:
 
   template <
     typename int_t,
-    mpl::enable_if_t< 
-     std::is_integral<int_t>::value, std::size_t 
+    mpl::enable_if_t<
+     std::is_integral<int_t>::value, std::size_t
      > = 0
     >
   explicit Vector(int_t insize)

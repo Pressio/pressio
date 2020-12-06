@@ -86,9 +86,12 @@ public:
   PyDecoder & operator=(PyDecoder &&) = default;
   ~PyDecoder() = default;
 
-  PyDecoder(const jacobian_native_t & jacobianMatrixIn)
+  PyDecoder(jacobian_native_t jacobianMatrixIn)
     // note that we "view" the native object, we don't deep copy it.
-    // if the mapping jacobian changes on the python side, it reflects here
+    // if the mapping jacobian changes on the python side, it reflects here.
+    // NOTE that for this to work, the layout of the jacobian object
+    // returned by "jacobian" MUST be same as the layout of the matrix_type
+    // otherwise pybind11 does not throw but just makes a copy of the data
     : mappingJacobian_(jacobianMatrixIn, ::pressio::view()),
       kind_(mappingKind::Linear)
   {}
@@ -99,7 +102,10 @@ public:
   // a numpy array is also a python object.
   PyDecoder(pybind11::object customMapper, std::string description)
     // note that we "view" the native object, we don't deep copy it.
-    // if the mapping jacobian changes on the python side, it reflects here
+    // if the mapping jacobian changes on the python side, it reflects here.
+    // NOTE that for this to work, the layout of the jacobian object
+    // returned by "jacobian" MUST be same as the layout of the matrix_type
+    // otherwise pybind11 does not throw but just makes a copy of the data
     : mappingJacobian_(customMapper.attr("jacobian")(), ::pressio::view()),
       kind_(mappingKind::Custom),
       customMapper_(customMapper)
@@ -141,6 +147,10 @@ public:
     }
     else
       throw std::runtime_error("Invalid mapping kind enum");
+  }
+
+  uintptr_t jacobianAddress() const{
+    return reinterpret_cast<uintptr_t>(mappingJacobian_.data()->data());
   }
 
 };
