@@ -47,7 +47,7 @@ jobs:
               name: "Ubuntu 20.04 MPI - trilinos - coverage",
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
-              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              envscript: "--ncpu-for-make=1 -env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
               requirements: "sudo apt install -y gcovr openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
