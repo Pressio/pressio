@@ -61,9 +61,11 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // for pressio4py I cannot use variadic templates,
 // so need to specify the various cases, for now
 // just expose some subcases, not all
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// with collector
 template<
-  typename rom_problem_type, typename state_t, typename timet, typename collector_t
+  class rom_problem_type, class state_t, class timet, class collector_t
   >
 void solveNSteps
 (rom_problem_type & problem, state_t & stateIn,
@@ -73,6 +75,16 @@ void solveNSteps
   collector_t collector(pyCollector);
   ::pressio::ode::advanceNSteps
     (problem.stepperRef(), stateIn, t0, dt, num_steps, collector);
+}
+
+// empty collector
+template<class rom_problem_type, class state_t, class timet>
+void solveNSteps
+(rom_problem_type & problem, state_t & stateIn,
+ timet t0, timet dt, ::pressio::ode::types::step_t num_steps)
+{
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), stateIn, t0, dt, num_steps);
 }
 
 #else

@@ -161,7 +161,41 @@ See requirements in ode_is_legitimate_collector.hpp");
 
   using step_policy = impl::ExplicitDoStepBasic;
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
+  advancer_t::execute<step_policy>(num_steps, start_time,
+				   dt, odeStateView,
+				   collector, stepper);
+}
+
+template<
+  typename stepper_type,
+  typename native_python_state_type,
+  typename time_type
+  >
+mpl::enable_if_t<
+  ::pressio::ode::concepts::explicitly_steppable<
+    stepper_type,
+    ::pressio::containers::Vector<native_python_state_type>, time_type>::value
+  and
+  ::pressio::containers::predicates::is_array_pybind<
+    native_python_state_type>::value
+  >
+advanceNSteps(stepper_type & stepper,
+	      native_python_state_type & odeStateInOut,
+	      const time_type start_time,
+	      const time_type dt,
+	      const ::pressio::ode::types::step_t num_steps)
+{
+  // here we want to view the odeStateInOut since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  // upon exit of this function, the original odeStateInOut is
+  // changed since odeStateView only views it.
+  using wrap_state_type = ::pressio::containers::Vector<native_python_state_type>;
+  wrap_state_type odeStateView(odeStateInOut, ::pressio::view());
+
+  using step_policy = impl::ExplicitDoStepBasic;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, wrap_state_type>;
+  collector_t collector;
   advancer_t::execute<step_policy>(num_steps, start_time,
 				   dt, odeStateView,
 				   collector, stepper);

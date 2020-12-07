@@ -93,6 +93,7 @@ void solveNTimes
 // the number of arguments and this will work. For now leave to just
 // a specific case, we can add more later.
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// with valid collector
 template<
   typename rom_problem_type, typename state_t, typename timet,
   typename collector_t, typename solver_t
@@ -111,6 +112,21 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
        numSteps, collector, solver);
 }
 
+// without collector
+template<
+  typename rom_problem_type, typename state_t, typename timet, typename solver_t
+  >
+void solveNSequentialMinimizations(rom_problem_type & problem,
+				   state_t & stateInOut,
+				   timet t0,
+				   timet dt,
+				   const ::pressio::ode::types::step_t numSteps,
+				   solver_t & solver)
+{
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateInOut, t0, dt,
+       numSteps, solver);
+}
 #else
 
 template<typename rom_problem_type, typename ...Args>
