@@ -25,7 +25,8 @@ jobs:
               requirements: "sudo apt install gcovr",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
-              coverage_filename: "pressio_tests_coverage.xml"
+              coverage_filename: "pressio_tests_coverage.xml",
+              coverage_uploadname: "codecoverage-pressio"
             }
           - {
               name: "Ubuntu 20.04 Clang",
@@ -51,7 +52,8 @@ jobs:
               requirements: "sudo apt install -y gcovr openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
-              coverage_filename: "pressio_tests_mpi_coverage.xml"
+              coverage_filename: "pressio_tests_mpi_coverage.xml",
+              coverage_uploadname: "codecoverage-pressio-trilinos"
             }
 
     steps:
@@ -81,14 +83,10 @@ jobs:
         export TERM=xterm
         docker run -di perrinel/ubuntu-pressio-tpl
         TNAME=$(docker ps --format "{{.Names}}")
-        free -m
-        df
         docker cp $TNAME:/home/pressio_builds ${{ env.WORKSPACE_PARENT_DIR }}
         docker stop $TNAME
         docker rm $TNAME
         docker image rm perrinel/ubuntu-pressio-tpl
-        free -m
-        df
 
     - name: Run main_pressio script
       env:
@@ -115,4 +113,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         file: ${{ matrix.config.ctest_build }}/${{ matrix.config.coverage_filename }}
-        name: codecoverage-pressio
+        name: ${{ matrix.config.coverage_uploadname }}
