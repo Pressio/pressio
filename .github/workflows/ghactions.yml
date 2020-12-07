@@ -47,7 +47,7 @@ jobs:
               name: "Ubuntu 20.04 MPI - trilinos - coverage",
               build_type: "Debug", cc: "mpicc", cxx: "mpicxx",
               options: "-cmake-generator-name=default_mpi_trilinos_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install -trilinos-path=/home/runner/work/pressio/pressio_builds/trilinos/install",
-              envscript: "-env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
+              envscript: "--ncpu-for-make=1 -env-script=/home/runner/work/pressio/pressio_repos/pressio-builder/sample_env_scripts/setenv_mpi_ubuntu_ci.sh",
               requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
@@ -74,17 +74,21 @@ jobs:
         cd ${{ env.PRESSIO_REPOS }}
         git clone git://github.com/Pressio/pressio-builder.git
         cd pressio-builder
-        git checkout develop
+        git checkout master
 
     - name: Get TPLs...
       run: |
         export TERM=xterm
         docker run -di perrinel/ubuntu-pressio-tpl
         TNAME=$(docker ps --format "{{.Names}}")
+        free -m
+        df
         docker cp $TNAME:/home/pressio_builds ${{ env.WORKSPACE_PARENT_DIR }}
         docker stop $TNAME
         docker rm $TNAME
         docker image rm perrinel/ubuntu-pressio-tpl
+        free -m
+        df
 
     - name: Run main_pressio script
       env:
@@ -93,6 +97,8 @@ jobs:
       run: |
         export TERM=xterm
         cd ${{ env.PRESSIO_REPOS }}/pressio-builder
+        free -m
+        df
         ./main_pressio.sh ${{ matrix.config.envscript }} -dryrun=no -pressio-src=${{ env.WORKSPACE_PARENT_DIR }}/pressio -target-dir=${{ env.PRESSIO_BUILDS }} -cmake-generator-name=default_with_tests ${{ matrix.config.options }}
     - name: Run CTest
       run: |
