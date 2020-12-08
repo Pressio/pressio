@@ -26,7 +26,8 @@ jobs:
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
               coverage_filename: "pressio_tests_coverage.xml",
-              coverage_uploadname: "codecoverage-pressio"
+              coverage_uploadname: "codecoverage-pressio",
+              flag: "pressio-packages"
             }
           - {
               name: "Ubuntu 20.04 Clang",
@@ -53,7 +54,8 @@ jobs:
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
               coverage: true,
               coverage_filename: "pressio_tests_mpi_coverage.xml",
-              coverage_uploadname: "codecoverage-pressio-trilinos"
+              coverage_uploadname: "codecoverage-pressio-trilinos",
+              flag: "pressio-trilinos-packages"
             }
 
     steps:
@@ -114,3 +116,5 @@ jobs:
       with:
         file: ${{ matrix.config.ctest_build }}/${{ matrix.config.coverage_filename }}
         name: ${{ matrix.config.coverage_uploadname }}
+        flags: ${{ matrix.config.flag }}
+
