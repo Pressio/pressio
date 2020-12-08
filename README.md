@@ -5,6 +5,8 @@ Pressio is a collection of repositories providing reduced-order models (ROMs) ca
 It is a open-source project aimed at enabling leading-edge projection-based
 reduced order models (pROMs) for dynamical systems in science and engineering.
 
+[![Codecove](https://codecov.io/gh/Pressio/pressio/branch/master/graphs/badge.svg?precision=2)
+
 # Userguide and documentation
 This repository is specific for the C++ library.
 You can find the full user-guide [here](https://pressio.github.io/pressio/html/index.html).
