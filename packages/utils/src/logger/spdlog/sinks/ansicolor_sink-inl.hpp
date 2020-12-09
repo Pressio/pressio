@@ -11,8 +11,7 @@
 // #include "../pattern_formatter.hpp"
 // #include "../details/os.hpp"
 
-namespace spdlog {
-namespace sinks {
+namespace spdlog { namespace sinks {
 
 template<typename ConsoleMutex>
 SPDLOG_INLINE ansicolor_sink<ConsoleMutex>::ansicolor_sink(FILE *target_file, color_mode mode)
@@ -41,7 +40,6 @@ SPDLOG_INLINE void ansicolor_sink<ConsoleMutex>::set_color(level::level_enum col
 template<typename ConsoleMutex>
 SPDLOG_INLINE void ansicolor_sink<ConsoleMutex>::log(const details::log_msg &msg)
 {
-
   if(this->mpiRank_==0)
   {
     // Wrap the originally formatted message in color codes.
@@ -52,20 +50,20 @@ SPDLOG_INLINE void ansicolor_sink<ConsoleMutex>::log(const details::log_msg &msg
     memory_buf_t formatted;
     formatter_->format(msg, formatted);
     if (should_do_colors_ && msg.color_range_end > msg.color_range_start)
-      {
-	// before color range
-	print_range_(formatted, 0, msg.color_range_start);
-	// in color range
-	print_ccode_(colors_[msg.level]);
-	print_range_(formatted, msg.color_range_start, msg.color_range_end);
-	print_ccode_(reset);
-	// after color range
-	print_range_(formatted, msg.color_range_end, formatted.size());
-      }
+    {
+      // before color range
+      print_range_(formatted, 0, msg.color_range_start);
+      // in color range
+      print_ccode_(colors_[msg.level]);
+      print_range_(formatted, msg.color_range_start, msg.color_range_end);
+      print_ccode_(reset);
+      // after color range
+      print_range_(formatted, msg.color_range_end, formatted.size());
+    }
     else // no color
-      {
-	print_range_(formatted, 0, formatted.size());
-      }
+    {
+      print_range_(formatted, 0, formatted.size());
+    }
     fflush(target_file_);
   }
 }
@@ -144,6 +142,5 @@ SPDLOG_INLINE ansicolor_stderr_sink<ConsoleMutex>::ansicolor_stderr_sink(color_m
   : ansicolor_sink<ConsoleMutex>(stderr, mode)
 {}
 
-} // namespace sinks
-} // namespace spdlog
+}} // namespace spdlog::sinks
 #endif  // UTILS_LOGGER_SPDLOG_SINKS_ANSICOLOR_SINK_INL_HPP_
