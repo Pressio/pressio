@@ -194,12 +194,35 @@ inline void critical(const FormatString &fmt, Args&&...args)
 #endif
 }
 
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template<typename... Args>
+// inline void print4py(spdlog::source_loc loc, spdlog::level::level_enum lvl, Args&&...args)
+// {
+//   {
+//   pybind11::scoped_ostream_redirect stream
+//     (
+//      std::cout,                               // std::ostream&
+//      pybind11::module_::import("sys").attr("stdout") // Python output
+//      );
+
+//   spdlog::memory_buf_t buf;
+//   fmt::format_to(buf, std::forward<Args>(args)...);
+//   pybind11::print(buf.data());
+//   fmt::print(buf.data());
+//   pybind11::print("\n");
+//   //fmt::print(std::string(loc.filename) + " " + a + "\n");
+//   }
+// }
+// #endif
+
 }} // namespace pressio::log
 
 
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 #define PRESSIO_LOGGER_CALL(logger, level, ...) \
-  if (logger) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__)
+  if (logger) (logger)->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__);
+
+#define PRESSIO_LOGGER_NOSRCLOC_CALL(logger, level, ...) if (logger) (logger)->log(level, __VA_ARGS__);
 #endif
 
 ///// TRACE /////
@@ -220,7 +243,7 @@ inline void critical(const FormatString &fmt, Args&&...args)
 
 ///// INFO /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_INFO
-#define PRESSIOLOGGER_INFO(logger, ...) PRESSIO_LOGGER_CALL(logger, spdlog::level::info, __VA_ARGS__)
+#define PRESSIOLOGGER_INFO(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::info, __VA_ARGS__)
 #define PRESSIOLOG_INFO(...) PRESSIOLOGGER_INFO(spdlog::default_logger(), __VA_ARGS__)
 #else
 #define PRESSIOLOG_INFO(...) (void)0
@@ -228,7 +251,7 @@ inline void critical(const FormatString &fmt, Args&&...args)
 
 ///// WARN /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_WARN
-#define PRESSIOLOGGER_WARN(logger, ...) PRESSIO_LOGGER_CALL(logger, spdlog::level::warn, __VA_ARGS__)
+#define PRESSIOLOGGER_WARN(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::warn, __VA_ARGS__)
 #define PRESSIOLOG_WARN(...) PRESSIOLOGGER_WARN(spdlog::default_logger(), __VA_ARGS__)
 #else
 #define PRESSIOLOG_WARN(...) (void)0
@@ -236,7 +259,7 @@ inline void critical(const FormatString &fmt, Args&&...args)
 
 ///// ERROR /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_ERROR
-#define PRESSIOLOGGER_ERROR(logger, ...) PRESSIO_LOGGER_CALL(logger, spdlog::level::error, __VA_ARGS__)
+#define PRESSIOLOGGER_ERROR(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::error, __VA_ARGS__)
 #define PRESSIOLOG_ERROR(...) PRESSIOLOGGER_ERROR(spdlog::default_logger(), __VA_ARGS__)
 #else
 #define PRESSIOLOG_ERROR(...) (void)0
@@ -244,7 +267,7 @@ inline void critical(const FormatString &fmt, Args&&...args)
 
 ///// CRITICAL /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_CRITICAL
-#define PRESSIOLOGGER_CRITICAL(logger, ...) PRESSIO_LOGGER_CALL(logger, spdlog::level::critical, __VA_ARGS__)
+#define PRESSIOLOGGER_CRITICAL(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::critical, __VA_ARGS__)
 #define PRESSIOLOG_CRITICAL(...) PRESSIOLOGGER_CRITICAL(spdlog::default_logger(), __VA_ARGS__)
 #else
 #define PRESSIOLOG_CRITICAL(...) (void)0
