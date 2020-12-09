@@ -61,27 +61,18 @@ void _printMetrics(bool printGradient,
 		   const sc_t & absGNorm,
 		   const sc_t & relGNorm)
 {
-  // using namespace ::pressio::utils::io;
-  // // generic format for metrics
-  // const auto fmt = utils::io::cyan();// + utils::io::bold();
-  // constexpr auto one = static_cast<sc_t>(1);
-  //::pressio::log::setPattern("%^[%l]%$ %v");
   if (printGradient)
   {
-    // const auto w = (relResNorm <= one) or (relGNorm <= one) ? "" : "!";
-    PRESSIOLOG_DEBUG
+    PRESSIOLOG_INFO
       ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
        iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
   }
   else
   {
-    // const auto w = (relResNorm <= one) ? "" : "!";
-    PRESSIOLOG_DEBUG
+    PRESSIOLOG_INFO
       ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
        iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
   }
-  // //reset to default
-  // ::pressio::log::setPattern("%+");
 }
 
 template <typename step_t, typename sc_t>
