@@ -190,4 +190,4 @@ std::shared_ptr<spdlog::logger> create(::pressio::logto en,
 
 }}}//end namespace pressio::log::impl
 
-#endif  // UTILS_LOGGER_UTILS_LOGGER_HPP_
+#endif  // UTILS_LOGGER_UTILS_LOGGER_IMPL_HPP_

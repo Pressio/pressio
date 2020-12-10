@@ -65,19 +65,19 @@
 #include "rom_fwd.hpp"
 
 // all predicates
-#include "./predicates/rom_predicates.hpp"
+#include "./predicates/rom_predicates_include.hpp"
 
 // all will_be_concepts (depend on predicates)
-#include "./will_be_concepts/rom_will_be_concepts.hpp"
+#include "./will_be_concepts/rom_will_be_concepts_include.hpp"
 
 // decoder classes (depend on concepts)
-#include "./decoder/rom_decoders.hpp"
+#include "./decoder/rom_decoders_include.hpp"
 
 // fom states management classes (depend on the decoder)
 #include "./fom_states_management/rom_manager_fom_states_static.hpp"
 #include "./fom_states_management/rom_reconstructor_fom_state.hpp"
 
 // decorators
-#include "./decorators/rom_decorators.hpp"
+#include "./decorators/rom_decorators_include.hpp"
 
 #endif  // ROM_PRESSIO_ROM_COMMON_HPP_

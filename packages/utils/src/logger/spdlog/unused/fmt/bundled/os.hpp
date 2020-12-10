@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OS_HPP_
-#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OS_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_OS_HPP_
+#define UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_OS_HPP_
 
 #if defined(__MINGW32__) || defined(__CYGWIN__)
 // Workaround MinGW bug https://sourceforge.net/p/mingw/bugs/2024/.
@@ -447,4 +447,4 @@ using Locale FMT_DEPRECATED_ALIAS = locale;
 #endif  // FMT_LOCALE
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_OS_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FMT_BUNDLED_OS_HPP_

@@ -3,8 +3,8 @@
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 
-#ifndef UTILS_LOGGER_SPDLOG_FMT_OSTR_HPP_
-#define UTILS_LOGGER_SPDLOG_FMT_OSTR_HPP_
+#ifndef UTILS_LOGGER_SPDLOG_UNUSED_FMT_OSTR_HPP_
+#define UTILS_LOGGER_SPDLOG_UNUSED_FMT_OSTR_HPP_
 //
 // include bundled or external copy of fmtlib's ostream support
 //
@@ -19,4 +19,4 @@
 // #else
 // #include <fmt/ostream.h>
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_FMT_OSTR_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FMT_OSTR_HPP_

@@ -5,8 +5,8 @@
 //
 // For the license information refer to format.h.
 
-#ifndef UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COMPILE_HPP_
-#define UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COMPILE_HPP_
+#ifndef UTILS_LOGGER_FMT_BUNDLED_COMPILE_HPP_
+#define UTILS_LOGGER_FMT_BUNDLED_COMPILE_HPP_
 
 #include <vector>
 
@@ -662,4 +662,4 @@ size_t formatted_size(const CompiledFormat& cf, const Args&... args) {
 
 FMT_END_NAMESPACE
 
-#endif  // UTILS_LOGGER_SPDLOG_FMT_BUNDLED_COMPILE_HPP_
+#endif  // UTILS_LOGGER_FMT_BUNDLED_COMPILE_HPP_

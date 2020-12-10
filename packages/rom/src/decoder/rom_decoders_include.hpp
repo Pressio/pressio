@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_DECODERS_HPP_
-#define ROM_DECODER_ROM_DECODERS_HPP_
+#ifndef ROM_DECODER_ROM_DECODERS_INCLUDE_HPP_
+#define ROM_DECODER_ROM_DECODERS_INCLUDE_HPP_
 
 #include "./rom_linear_decoder.hpp"
 
@@ -55,4 +55,4 @@
 #include "./rom_py_decoder.hpp"
 #endif
 
-#endif  // ROM_DECODER_ROM_DECODERS_HPP_
+#endif  // ROM_DECODER_ROM_DECODERS_INCLUDE_HPP_

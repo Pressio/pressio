@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_will_be_concepts.hpp
+// rom_decorators.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
+#ifndef ROM_DECORATORS_ROM_DECORATORS_INCLUDE_HPP_
+#define ROM_DECORATORS_ROM_DECORATORS_INCLUDE_HPP_
 
-// fom and rom states
-#include "./various/rom_fom_state.hpp"
-#include "./various/rom_rom_state.hpp"
+#include "rom_preconditioned_decorator_residual.hpp"
+#include "rom_preconditioned_decorator_jacobian.hpp"
+#include "rom_masked_residual_policy.hpp"
+#include "rom_masked_jacobian_policy.hpp"
 
-// decoder
-#include "./decoder/rom_admissible_decoder.hpp"
-#include "./decoder/rom_decoder_jacobian.hpp"
-
-// custom ops
-#include "./custom_ops/rom_custom_ops_for_linear_decoder.hpp"
-#include "./custom_ops/rom_custom_ops_for_fom_state_reconstructor.hpp"
-#include "./custom_ops/rom_custom_ops_galerkin_continuous_time.hpp"
-#include "./custom_ops/rom_custom_ops_lspg_continuous_time.hpp"
-#include "./custom_ops/rom_custom_ops_lspg_discrete_time.hpp"
-
-// masker and preconditioner
-#include "./various/rom_masker.hpp"
-#include "./various/rom_preconditioner.hpp"
-
-// fom system
-#include "./system/rom_steady_system.hpp"
-#include "./system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
-#include "./system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./system/rom_continuous_time_system.hpp"
-
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_WILL_BE_CONCEPTS_HPP_
+#endif  // ROM_DECORATORS_ROM_DECORATORS_INCLUDE_HPP_
