@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tutorial: Linear Decoder | Pressio|C++</title>
+  <title>Tutorial: Linear Decoder with arbitrary data structures | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -80,9 +80,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          Tutorial: Linear Decoder
+          Tutorial: Linear Decoder with arbitrary data structures
         </h1>
-<aside class="m-block m-info"><h3>Content</h3><p>This tutorial shows how to create a linear decoder for data structures already supported in pressio.</p></aside><section id="autotoc_md37"><h2><a href="#autotoc_md37">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
+<aside class="m-block m-info"><h3>Content</h3><p>This tutorial shows how to create a linear decoder for data structures NOT supported in pressio. This is the scenario where you have an application using some arbitrary data types for which pressio does not know how to operate on.</p></aside><section id="autotoc_md41"><h2><a href="#autotoc_md41">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -229,29 +229,35 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Code</a></h2><p>Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</svg></div></section><section id="autotoc_md42"><h2><a href="#autotoc_md42">Code</a></h2><p>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="c1">// *** define some types ***</span>
   <span class="c1">// here we assume your FOM application uses an Eigen vector for the state</span>
   <span class="c1">// and an Eigen matrix as the type for the Jacobian</span>
-  <span class="k">using</span> <span class="n">native_fom_state_t</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXd</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">native_phi_t</span>       <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXd</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">scalar_t</span>           <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">native_fom_state_t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">native_phi_t</span>       <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+
   <span class="c1">// the wrapped types</span>
-  <span class="k">using</span> <span class="n">fom_state_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">decoder_jac_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="c1">// what happens in pressio: std::vector is treated as unknwon type by pressio</span>
+  <span class="c1">// so effectively pressio::containers::Vector is labeled as an &quot;arbitrary&quot; type</span>
+  <span class="k">using</span> <span class="n">fom_state_t</span>    <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">decoder_jac_t</span>  <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
 
   <span class="c1">// *** fill phi ***</span>
-  <span class="c1">// for simplicity, create a native phi with 10 rows and 3 columns</span>
-  <span class="c1">// and fill with ones</span>
-  <span class="n">native_phi_t</span> <span class="n">phiNative</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-  <span class="n">phiNative</span><span class="p">.</span><span class="n">setConstant</span><span class="p">(</span><span class="mf">1.</span><span class="p">);</span>
+  <span class="c1">// create a native phi with and fill with ones</span>
+  <span class="n">native_phi_t</span> <span class="n">phiNative</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span> <span class="nl">iRow</span> <span class="p">:</span> <span class="n">phiNative</span><span class="p">){</span>
+    <span class="n">iRow</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.</span><span class="p">);</span>
+  <span class="p">}</span>
 
   <span class="c1">// *** construct decoder  ***</span>
-  <span class="k">using</span> <span class="n">decoder_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">LinearDecoder</span><span class="o">&lt;</span><span class="n">decoder_jac_t</span><span class="p">,</span> <span class="n">fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
-  <span class="c1">// here we demonstrate moving phiNative to avoid a deep copy, but one can</span>
-  <span class="c1">// also do `decoderObj(phi)` which implies a copy of the matrix.</span>
-  <span class="c1">// Obviously, if the matrix is large avoiding a copy is useful.</span>
-  <span class="n">decoder_t</span> <span class="n">decoder</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">phiNative</span><span class="p">));</span>
+  <span class="k">using</span> <span class="n">ops_t</span> <span class="o">=</span> <span class="n">MyOps</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">decoder_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">LinearDecoder</span><span class="o">&lt;</span><span class="n">decoder_jac_t</span><span class="p">,</span> <span class="n">fom_state_t</span><span class="p">,</span> <span class="n">ops_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="c1">// Need to pass the native phi (here we assume the native type is copy-constructible)</span>
+  <span class="c1">// and an object that knows how to compute the operations (see next section)</span>
+  <span class="n">ops_t</span> <span class="n">ops</span><span class="p">;</span>
+  <span class="n">decoder_t</span> <span class="n">decoder</span><span class="p">(</span><span class="n">phiNative</span><span class="p">,</span> <span class="n">ops</span><span class="p">);</span>
 
   <span class="c1">// *** construct reduced state  ***</span>
   <span class="c1">// typically, pressio reduced states for ROMs use Eigen or Kokkos (if enabled)</span>
@@ -266,14 +272,46 @@ $\phi$
 
   <span class="c1">// *** check solution ***</span>
   <span class="c1">// yFom should be = [4. 4. .... 4.]</span>
-  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">yFom</span><span class="p">.</span><span class="n">extent</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i= &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span>
           <span class="o">&lt;&lt;</span> <span class="s">&quot;, yFom(i) = &quot;</span>  <span class="o">&lt;&lt;</span> <span class="n">yFom</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
           <span class="o">&lt;&lt;</span> <span class="s">&quot;, expected = &quot;</span> <span class="o">&lt;&lt;</span> <span class="mf">4.</span>
           <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Comments</a></h2><p>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see [this tutorial]().</p></section>
+<span class="p">}</span></pre></section><section id="autotoc_md43"><h2><a href="#autotoc_md43">The ops struct</a></h2><p>In order for pressio to handle the linear mapping, it needs to know how to operate on <svg class="m-math" style="width: 0.722em; height: 1.107em;" viewBox="0 -8.302191 6.928102 10.626798">
+<title>
+$\phi$
+</title>
+<defs>
+<path id='eq9-g0-30' d='M5.140722-8.18929C5.140722-8.296887 5.057036-8.296887 5.021171-8.296887C4.913574-8.296887 4.901619-8.272976 4.853798-8.069738L4.208219-5.499377C4.172354-5.34396 4.160399-5.332005 4.148443-5.32005C4.136488-5.296139 4.052802-5.284184 4.028892-5.284184C2.068244-5.116812 .561893-3.502864 .561893-2.008468C.561893-.71731 1.554172 .071731 2.797509 .143462C2.701868 .514072 2.618182 .896638 2.52254 1.267248C2.355168 1.900872 2.259527 2.295392 2.259527 2.343213C2.259527 2.367123 2.259527 2.438854 2.379078 2.438854C2.414944 2.438854 2.462765 2.438854 2.486675 2.391034C2.510585 2.367123 2.582316 2.080199 2.630137 1.924782L3.072478 .143462C5.116812 .035866 6.670984-1.637858 6.670984-3.144209C6.670984-4.351681 5.762391-5.212453 4.435367-5.296139L5.140722-8.18929ZM4.363636-5.057036C5.152677-5.009215 5.941719-4.566874 5.941719-3.395268C5.941719-2.044334 4.99726-.251059 3.132254-.107597L4.363636-5.057036ZM2.857285-.095641C2.271482-.131507 1.291158-.442341 1.291158-1.75741C1.291158-3.263761 2.379078-4.937484 4.100623-5.045081L2.857285-.095641Z'/>
+</defs>
+<g id='eq9-page1'>
+<use x='0' y='0' xlink:href='#eq9-g0-30'/>
+</g>
+</svg>. To this end, in the code above, you need to pass to the <code>LinearDecoder</code> constructor an object that handle that computation.</p><pre class="m-code"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">scalar_t</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">MyOps</span>
+<span class="p">{</span>
+  <span class="c1">// z = beta*z + alpha * A * x</span>
+  <span class="c1">// where x is something that is subscritable as x(i)</span>
+  <span class="k">template</span><span class="o">&lt;</span> <span class="k">typename</span> <span class="nc">x_t</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">nontranspose</span><span class="p">,</span>
+           <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+           <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+           <span class="k">const</span> <span class="n">x_t</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+           <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
+           <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">z</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// obviously not efficient, just for demonstration</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">A</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">beta</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">j</span><span class="p">){</span>
+       <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre></section>
       </div>
     </div>
   </div>

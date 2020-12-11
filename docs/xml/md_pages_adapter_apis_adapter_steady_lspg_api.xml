@@ -38,20 +38,6 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting> </para>
 </parblock></para>
-<para><linebreak/>
- </para>
-<sect2 id="md_pages_adapter_apis_adapter_steady_lspg_api_1autotoc_md7">
-<title>Preconditioned steady LSPG</title>
-<para>If you want a preconditioned steady LSPG problem, then the above class must be extended to add:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterSteadyLSPG</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>everything<sp/>from<sp/>above</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>residual_type<sp/>&amp;<sp/>r)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>dense_matrix_type<sp/>&amp;<sp/>jac)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting> </para>
-</parblock></para>
-</sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

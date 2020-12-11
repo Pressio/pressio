@@ -31,17 +31,3 @@ The adapter class should look like\+:
 \DoxyCodeLine{\};}
 \end{DoxyCode}
  
-
-~\newline
- \hypertarget{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md7}{}\doxysubsection{Preconditioned steady L\+S\+PG}\label{md_pages_adapter_apis_adapter_steady_lspg_api_autotoc_md7}
-If you want a preconditioned steady L\+S\+PG problem, then the above class must be extended to add\+:  
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }AdapterSteadyLSPG}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{  \textcolor{comment}{// everything from above}}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type \&, residual\_type \& r) \textcolor{keyword}{const};}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type \&, dense\_matrix\_type \& jac) \textcolor{keyword}{const};}
-\DoxyCodeLine{\};}
-\end{DoxyCode}
- 

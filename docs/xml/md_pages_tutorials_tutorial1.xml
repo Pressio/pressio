@@ -2,11 +2,73 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="md_pages_tutorials_tutorial1" kind="page">
     <compoundname>md_pages_tutorials_tutorial1</compoundname>
-    <title>Tutorial 1</title>
+    <title>Tutorial: Linear Decoder</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>todo </para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title>Content</title><para>This tutorial shows how to create a linear decoder for data structures already supported in pressio.</para>
+</simplesect>
+</para>
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md37">
+<title>Context</title>
+<para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="0">$y_{fom}$</formula>, as: <formula id="1">\[ y_{fom} = g(y_{rom}) \]</formula></para>
+<para>where <formula id="2">$y_{rom}$</formula> is the reduced state, also called generalized coordinates, and <formula id="3">$g$</formula> is the mapping between the two. If <formula id="3">$g$</formula> is linear, then we can write: <formula id="4">\[ y_{fom} = \phi y_{rom} \]</formula> where <formula id="5">$\phi$</formula> is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is: <formula id="6">\[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]</formula></para>
+</sect1>
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md38">
+<title>Code</title>
+<para>Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found <ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</ulink>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>define<sp/>some<sp/>types<sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here<sp/>we<sp/>assume<sp/>your<sp/>FOM<sp/>application<sp/>uses<sp/>an<sp/>Eigen<sp/>vector<sp/>for<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>an<sp/>Eigen<sp/>matrix<sp/>as<sp/>the<sp/>type<sp/>for<sp/>the<sp/>Jacobian</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_fom_state_t<sp/>=<sp/>Eigen::VectorXd;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_phi_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>Eigen::MatrixXd;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>wrapped<sp/>types</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/><sp/><sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>fill<sp/>phi<sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>simplicity,<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>with<sp/>10<sp/>rows<sp/>and<sp/>3<sp/>columns</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>fill<sp/>with<sp/>ones</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>native_phi_t<sp/>phiNative(6,<sp/>2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>phiNative.setConstant(1.);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>construct<sp/>decoder<sp/><sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_t<sp/>=<sp/>pressio::rom::LinearDecoder&lt;decoder_jac_t,<sp/>fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here<sp/>we<sp/>demonstrate<sp/>moving<sp/>phiNative<sp/>to<sp/>avoid<sp/>a<sp/>deep<sp/>copy,<sp/>but<sp/>one<sp/>can</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>also<sp/>do<sp/>`decoderObj(phi)`<sp/>which<sp/>implies<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>matrix.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Obviously,<sp/>if<sp/>the<sp/>matrix<sp/>is<sp/>large<sp/>avoiding<sp/>a<sp/>copy<sp/>is<sp/>useful.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>decoder_t<sp/>decoder(std::move(phiNative));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>construct<sp/>reduced<sp/>state<sp/><sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>typically,<sp/>pressio<sp/>reduced<sp/>states<sp/>for<sp/>ROMs<sp/>use<sp/>Eigen<sp/>or<sp/>Kokkos<sp/>(if<sp/>enabled)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>rom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;Eigen::VectorXd&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rom_state_t<sp/>yRom(2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>yRom<sp/>=<sp/>2.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pressio::ops::fill(yRom,<sp/>2.);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>apply<sp/>mapping<sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>fom_state_t<sp/>yFom(6);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>decoder.applyMapping(yRom,<sp/>yFom);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>check<sp/>solution<sp/>***</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>yFom<sp/>should<sp/>be<sp/>=<sp/>[4.<sp/>4.<sp/>....<sp/>4.]</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;yFom.extent(0);<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;i=<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>yFom(i)<sp/>=<sp/>&quot;</highlight><highlight class="normal"><sp/><sp/>&lt;&lt;<sp/>yFom(i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>expected<sp/>=<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>4.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md39">
+<title>Comments</title>
+<para>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see [this tutorial](). </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

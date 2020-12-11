@@ -43,21 +43,21 @@ public:
 @endcode
 @endparblock
 
-<br>
-### Preconditioned steady LSPG
+<!-- <br> -->
+<!-- ### Preconditioned steady LSPG -->
 
-If you want a preconditioned steady LSPG problem, then the above class must be extended to add:
-@m_class{m-code-figure} @parblock
-@code{.cpp}
-class AdapterSteadyLSPG
-{
-  // everything from above
+<!-- If you want a preconditioned steady LSPG problem, then the above class must be extended to add: -->
+<!-- @m_class{m-code-figure} @parblock -->
+<!-- @code{.cpp} -->
+<!-- class AdapterSteadyLSPG -->
+<!-- { -->
+<!--   // everything from above -->
 
-  void applyPreconditioner(const state_type &, residual_type & r) const;
-  void applyPreconditioner(const state_type &, dense_matrix_type & jac) const;
-};
-@endcode
-@endparblock
+<!--   void applyPreconditioner(const state_type &, residual_type & r) const; -->
+<!--   void applyPreconditioner(const state_type &, dense_matrix_type & jac) const; -->
+<!-- }; -->
+<!-- @endcode -->
+<!-- @endparblock -->
 
 <!--   // for preconditioned problem
   // for masked problem

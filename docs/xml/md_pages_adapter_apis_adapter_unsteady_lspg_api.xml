@@ -7,7 +7,7 @@
     </briefdescription>
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> say that for LSPG, the adapater is the one for galerkin plus something</para>
-<sect1 id="md_pages_adapter_apis_adapter_unsteady_lspg_api_1autotoc_md9">
+<sect1 id="md_pages_adapter_apis_adapter_unsteady_lspg_api_1autotoc_md8">
 <title>API for Basic Unsteady LSPG Problem</title>
 <para>For a basic unsteady LSPG with the <emphasis>continuous-time</emphasis> API we have:</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterUnsteadyLSPG{</highlight></codeline>
@@ -27,21 +27,7 @@
 </programlisting> </para>
 </parblock></para>
 </sect1>
-<sect1 id="md_pages_adapter_apis_adapter_unsteady_lspg_api_1autotoc_md10">
-<title>Preconditioned LSPG</title>
-<para>If you want a preconditioned problem, then the above class must be extended to add:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterSteadyLSPG</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>everything<sp/>from<sp/>above</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>preconditioned<sp/>problem</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;t,<sp/>velocity_type<sp/>&amp;<sp/>maskedObj)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyPreconditioner(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;t,<sp/>dense_matrix_type<sp/>&amp;<sp/>discreteTimeJ)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting> </para>
-</parblock></para>
-</sect1>
-<sect1 id="md_pages_adapter_apis_adapter_unsteady_lspg_api_1autotoc_md11">
+<sect1 id="md_pages_adapter_apis_adapter_unsteady_lspg_api_1autotoc_md9">
 <title>Discrete-time API</title>
 <para>The discrete-time API for LSPG is the same as for all methods, and you can see it <ulink url="./md_pages_adapter_apis_adapter_discrete_time_api.html">here</ulink>. </para>
 </sect1>

@@ -1,4 +1,4 @@
-todo say that for L\+S\+PG, the adapater is the one for galerkin plus something\hypertarget{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md9}{}\doxysection{A\+P\+I for Basic Unsteady L\+S\+P\+G Problem}\label{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md9}
+todo say that for L\+S\+PG, the adapater is the one for galerkin plus something\hypertarget{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md8}{}\doxysection{A\+P\+I for Basic Unsteady L\+S\+P\+G Problem}\label{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md8}
 For a basic unsteady L\+S\+PG with the {\itshape continuous-\/time} A\+PI we have\+:
 
  
@@ -18,18 +18,5 @@ For a basic unsteady L\+S\+PG with the {\itshape continuous-\/time} A\+PI we hav
 \DoxyCodeLine{  \textcolor{keywordtype}{void} applyJacobian(state, \textcolor{keyword}{const} dense\_matrix\_type \& B, time, dense\_matrix\_type \& A) \textcolor{keyword}{const}; \textcolor{comment}{// computes: A = Jac B}}
 \DoxyCodeLine{\};}
 \end{DoxyCode}
- \hypertarget{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md10}{}\doxysection{Preconditioned L\+S\+PG}\label{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md10}
-If you want a preconditioned problem, then the above class must be extended to add\+:  
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }AdapterSteadyLSPG}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{  \textcolor{comment}{// everything from above}}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// for preconditioned problem}}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type\&, \textcolor{keyword}{const} scalar\_type \&t, velocity\_type \& maskedObj) \textcolor{keyword}{const};}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} applyPreconditioner(\textcolor{keyword}{const} state\_type\&, \textcolor{keyword}{const} scalar\_type \&t, dense\_matrix\_type \& discreteTimeJ) \textcolor{keyword}{const};}
-\DoxyCodeLine{}
-\DoxyCodeLine{\};}
-\end{DoxyCode}
- \hypertarget{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md11}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md11}
+ \hypertarget{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md9}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_adapter_apis_adapter_unsteady_lspg_api_autotoc_md9}
 The discrete-\/time A\+PI for L\+S\+PG is the same as for all methods, and you can see it \href{./md_pages_adapter_apis_adapter_discrete_time_api.html}{\texttt{ here}}. 

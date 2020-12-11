@@ -1,0 +1,93 @@
+
+
+\begin{DoxyParagraph}{Content}
+This tutorial shows how to create a linear decoder for data structures N\+OT supported in pressio. This is the scenario where you have an application using some arbitrary data types for which pressio does not know how to operate on.
+\end{DoxyParagraph}
+\hypertarget{md_pages_tutorials_tutorial2_autotoc_md41}{}\doxysection{Context}\label{md_pages_tutorials_tutorial2_autotoc_md41}
+A key assumption of projection-\/based R\+O\+Ms is to approximate the full-\/order model (F\+OM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
+
+where $y_{rom}$ is the reduced state, also called generalized coordinates, and $g$ is the mapping between the two. If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial2_autotoc_md42}{}\doxysection{Code}\label{md_pages_tutorials_tutorial2_autotoc_md42}
+Here we demonstate how to create a linear decoder object for a type that is N\+OT know to pressio\+: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found \href{https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc}{\texttt{ here}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} *argv[])}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// *** define some types ***}}
+\DoxyCodeLine{  \textcolor{comment}{// here we assume your FOM application uses an Eigen vector for the state}}
+\DoxyCodeLine{  \textcolor{comment}{// and an Eigen matrix as the type for the Jacobian}}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_t           = double;}
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_fom\_state\_t = std::vector<scalar\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_phi\_t       = std::vector<std::vector<scalar\_t>>;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// the wrapped types}}
+\DoxyCodeLine{  \textcolor{comment}{// what happens in pressio: std::vector is treated as unknwon type by pressio}}
+\DoxyCodeLine{  \textcolor{comment}{// so effectively pressio::containers::Vector is labeled as an "{}arbitrary"{} type}}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t    = pressio::containers::Vector<native\_fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t  = pressio::containers::DenseMatrix<native\_phi\_t>;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** fill phi ***}}
+\DoxyCodeLine{  \textcolor{comment}{// create a native phi with and fill with ones}}
+\DoxyCodeLine{  native\_phi\_t phiNative(6);}
+\DoxyCodeLine{  \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \& iRow : phiNative)\{}
+\DoxyCodeLine{    iRow.resize(2, 1.);}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** construct decoder  ***}}
+\DoxyCodeLine{  \textcolor{keyword}{using} ops\_t = MyOps<scalar\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_t = pressio::rom::LinearDecoder<decoder\_jac\_t, fom\_state\_t, ops\_t>;}
+\DoxyCodeLine{  \textcolor{comment}{// Need to pass the native phi (here we assume the native type is copy-\/constructible)}}
+\DoxyCodeLine{  \textcolor{comment}{// and an object that knows how to compute the operations (see next section)}}
+\DoxyCodeLine{  ops\_t ops;}
+\DoxyCodeLine{  decoder\_t decoder(phiNative, ops);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** construct reduced state  ***}}
+\DoxyCodeLine{  \textcolor{comment}{// typically, pressio reduced states for ROMs use Eigen or Kokkos (if enabled)}}
+\DoxyCodeLine{  \textcolor{keyword}{using} rom\_state\_t = pressio::containers::Vector<Eigen::VectorXd>;}
+\DoxyCodeLine{  rom\_state\_t yRom(2);}
+\DoxyCodeLine{  \textcolor{comment}{// set yRom = 2.}}
+\DoxyCodeLine{  pressio::ops::fill(yRom, 2.);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** apply mapping ***}}
+\DoxyCodeLine{  fom\_state\_t yFom(6);}
+\DoxyCodeLine{  decoder.applyMapping(yRom, yFom);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** check solution ***}}
+\DoxyCodeLine{  \textcolor{comment}{// yFom should be = [4. 4. .... 4.]}}
+\DoxyCodeLine{  \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} i=0; i<6; ++i)}
+\DoxyCodeLine{    std::cout << \textcolor{stringliteral}{"{}i= "{}} << i}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}, yFom(i) = "{}}  << yFom(i)}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}, expected = "{}} << 4.}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_pages_tutorials_tutorial2_autotoc_md43}{}\doxysection{The ops struct}\label{md_pages_tutorials_tutorial2_autotoc_md43}
+In order for pressio to handle the linear mapping, it needs to know how to operate on $\phi$. To this end, in the code above, you need to pass to the {\ttfamily Linear\+Decoder} constructor an object that handle that computation. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} scalar\_t>}
+\DoxyCodeLine{\textcolor{keyword}{struct }MyOps}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// z = beta*z + alpha * A * x}}
+\DoxyCodeLine{  \textcolor{comment}{// where x is something that is subscritable as x(i)}}
+\DoxyCodeLine{  \textcolor{keyword}{template}< \textcolor{keyword}{typename} x\_t>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} product(pressio::nontranspose,}
+\DoxyCodeLine{           scalar\_t alpha,}
+\DoxyCodeLine{           \textcolor{keyword}{const} std::vector<std::vector<scalar\_t>> \& A,}
+\DoxyCodeLine{           \textcolor{keyword}{const} x\_t \& x,}
+\DoxyCodeLine{           scalar\_t beta,}
+\DoxyCodeLine{           std::vector<scalar\_t> \& z)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// obviously not efficient, just for demonstration}}
+\DoxyCodeLine{    \textcolor{keywordflow}{for} (std::size\_t i=0; i<A.size(); ++i)}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{      z[i] += beta*z[i];}
+\DoxyCodeLine{      \textcolor{keywordflow}{for} (std::size\_t j=0; j<A[i].size(); ++j)\{}
+\DoxyCodeLine{       z[i] += alpha*A[i][j]*x(j);}
+\DoxyCodeLine{      \}}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+ 

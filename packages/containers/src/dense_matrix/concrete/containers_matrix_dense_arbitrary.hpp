@@ -104,7 +104,7 @@ public:
   ::pressio::containers::predicates::has_method_size_with_arg<_wrapped_type>::value
   , size_t
   >
-  size_t extent(size_t k) const{
+  extent(size_t k) const{
     return data_.size(k);
   }
 

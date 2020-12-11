@@ -26,29 +26,29 @@ public:
 @endcode
 @endparblock
 
-## Preconditioned LSPG
-If you want a preconditioned problem, then the above class must be extended to add:
-@m_class{m-code-figure} @parblock
-@code{.cpp}
-class AdapterSteadyLSPG
-{
-  // everything from above
+<!-- ## Preconditioned LSPG -->
+<!-- If you want a preconditioned problem, then the above class must be extended to add: -->
+<!-- @m_class{m-code-figure} @parblock -->
+<!-- @code{.cpp} -->
+<!-- class AdapterSteadyLSPG -->
+<!-- { -->
+<!--   // everything from above -->
 
-  // for preconditioned problem
-  void applyPreconditioner(const state_type&, const scalar_type &t, velocity_type & maskedObj) const;
-  void applyPreconditioner(const state_type&, const scalar_type &t, dense_matrix_type & discreteTimeJ) const;
+<!--   // for preconditioned problem -->
+<!--   void applyPreconditioner(const state_type&, const scalar_type &t, velocity_type & maskedObj) const; -->
+<!--   void applyPreconditioner(const state_type&, const scalar_type &t, dense_matrix_type & discreteTimeJ) const; -->
 
-};
-@endcode
-@endparblock
+<!-- }; -->
+<!-- @endcode -->
+<!-- @endparblock -->
 
-<!--   // for preconditioned problem
-  // for masked problem
-  residual_type createApplyMaskResult(const residual_type & unmaskedObj) const;
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & unmaskedObj) const;
-  void applyMask(const unmaskedObj, residual_type & maskedObj) const;
-  void applyMask(const unmaskedObj, dense_matrix_type & maskedObj) const;
- -->
+<!-- <\!--   // for preconditioned problem -->
+<!--   // for masked problem -->
+<!--   residual_type createApplyMaskResult(const residual_type & unmaskedObj) const; -->
+<!--   dense_matrix_type createApplyMaskResult(const dense_matrix_type & unmaskedObj) const; -->
+<!--   void applyMask(const unmaskedObj, residual_type & maskedObj) const; -->
+<!--   void applyMask(const unmaskedObj, dense_matrix_type & maskedObj) const; -->
+<!--  -\-> -->
 
 ## Discrete-time API
 

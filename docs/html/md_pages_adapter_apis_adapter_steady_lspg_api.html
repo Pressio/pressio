@@ -36,7 +36,8 @@
             <li>
               <a href=>Tutorials</a>
               <ol>
-                <li><a href="md_pages_tutorials_tutorial1.html">Tutorial1</a></li>
+                <li><a href="md_pages_tutorials_tutorial1.html">Linear Decoder</a></li>
+                <li><a href="md_pages_tutorials_tutorial2.html">Linear Decoder with arbitrary types</a></li>
               </ol>
             </li>
             <li>
@@ -106,13 +107,7 @@
 
   <span class="c1">// computes the result of applying the jacobian to the argument: A  = Jacobian B</span>
   <span class="kt">void</span> <span class="nf">applyJacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">// computes: A = Jac B</span>
-<span class="p">};</span></pre></div><p><br /></p><section id="autotoc_md7"><h3><a href="#autotoc_md7">Preconditioned steady LSPG</a></h3><p>If you want a preconditioned steady LSPG problem, then the above class must be extended to add:</p><div><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterSteadyLSPG</span>
-<span class="p">{</span>
-  <span class="c1">// everything from above</span>
-
-  <span class="kt">void</span> <span class="nf">applyPreconditioner</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">r</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-  <span class="kt">void</span> <span class="nf">applyPreconditioner</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">dense_matrix_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></div></section></section>
+<span class="p">};</span></pre></div></section>
       </div>
     </div>
   </div>

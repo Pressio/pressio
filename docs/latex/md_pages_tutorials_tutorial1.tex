@@ -1,1 +1,61 @@
-todo 
+
+
+\begin{DoxyParagraph}{Content}
+This tutorial shows how to create a linear decoder for data structures already supported in pressio.
+\end{DoxyParagraph}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md37}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1_autotoc_md37}
+A key assumption of projection-\/based R\+O\+Ms is to approximate the full-\/order model (F\+OM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
+
+where $y_{rom}$ is the reduced state, also called generalized coordinates, and $g$ is the mapping between the two. If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial1_autotoc_md38}{}\doxysection{Code}\label{md_pages_tutorials_tutorial1_autotoc_md38}
+Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found \href{https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc}{\texttt{ here}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} *argv[])}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// *** define some types ***}}
+\DoxyCodeLine{  \textcolor{comment}{// here we assume your FOM application uses an Eigen vector for the state}}
+\DoxyCodeLine{  \textcolor{comment}{// and an Eigen matrix as the type for the Jacobian}}
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_fom\_state\_t = Eigen::VectorXd;}
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_phi\_t       = Eigen::MatrixXd;}
+\DoxyCodeLine{  \textcolor{comment}{// the wrapped types}}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t   = pressio::containers::Vector<native\_fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t = pressio::containers::DenseMatrix<native\_phi\_t>;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** fill phi ***}}
+\DoxyCodeLine{  \textcolor{comment}{// for simplicity, create a native phi with 10 rows and 3 columns}}
+\DoxyCodeLine{  \textcolor{comment}{// and fill with ones}}
+\DoxyCodeLine{  native\_phi\_t phiNative(6, 2);}
+\DoxyCodeLine{  phiNative.setConstant(1.);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** construct decoder  ***}}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_t = pressio::rom::LinearDecoder<decoder\_jac\_t, fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{comment}{// here we demonstrate moving phiNative to avoid a deep copy, but one can}}
+\DoxyCodeLine{  \textcolor{comment}{// also do `decoderObj(phi)` which implies a copy of the matrix.}}
+\DoxyCodeLine{  \textcolor{comment}{// Obviously, if the matrix is large avoiding a copy is useful.}}
+\DoxyCodeLine{  decoder\_t decoder(std::move(phiNative));}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** construct reduced state  ***}}
+\DoxyCodeLine{  \textcolor{comment}{// typically, pressio reduced states for ROMs use Eigen or Kokkos (if enabled)}}
+\DoxyCodeLine{  \textcolor{keyword}{using} rom\_state\_t = pressio::containers::Vector<Eigen::VectorXd>;}
+\DoxyCodeLine{  rom\_state\_t yRom(2);}
+\DoxyCodeLine{  \textcolor{comment}{// set yRom = 2.}}
+\DoxyCodeLine{  pressio::ops::fill(yRom, 2.);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** apply mapping ***}}
+\DoxyCodeLine{  fom\_state\_t yFom(6);}
+\DoxyCodeLine{  decoder.applyMapping(yRom, yFom);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// *** check solution ***}}
+\DoxyCodeLine{  \textcolor{comment}{// yFom should be = [4. 4. .... 4.]}}
+\DoxyCodeLine{  \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} i=0; i<yFom.extent(0); ++i)}
+\DoxyCodeLine{    std::cout << \textcolor{stringliteral}{"{}i= "{}} << i}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}, yFom(i) = "{}}  << yFom(i)}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}, expected = "{}} << 4.}
+\DoxyCodeLine{          << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md39}{}\doxysection{Comments}\label{md_pages_tutorials_tutorial1_autotoc_md39}
+For other types (e.\+g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.\+e. one for which pressio does not know how to operate on), see \mbox{[}this tutorial\mbox{]}(). 
