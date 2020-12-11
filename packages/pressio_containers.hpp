@@ -71,6 +71,9 @@ headers are included (and classes found) in the proper order.
 #include "containers/src/predicates/typedefs/containers_has_local_ordinal_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_ordinal_typedef.hpp"
 #include "containers/src/predicates/typedefs/containers_has_scalar_typedef.hpp"
+#include "containers/src/predicates/containers_has_method_size.hpp"
+#include "containers/src/predicates/containers_has_method_extent.hpp"
+
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
 #endif
