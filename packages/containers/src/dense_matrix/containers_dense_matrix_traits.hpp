@@ -57,8 +57,8 @@ an arbitrary dense matrix
 template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
-    mpl::enable_if_t<
-      containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value
+  mpl::enable_if_t<
+    containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value
     >
   >
   : public containers_shared_traits<
@@ -66,7 +66,8 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Arbitrary,
-  false>
+  false>,
+  public matrix_shared_traits<false>
 {
 
   using wrapped_t = wrapped_type;

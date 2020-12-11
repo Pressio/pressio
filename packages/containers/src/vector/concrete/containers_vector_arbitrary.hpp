@@ -97,9 +97,25 @@ public:
     return &data_;
   }
 
-  size_t extent(size_t k) const{
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value,
+    size_t
+    >
+  extent(size_t k) const
+  {
     assert(k == (size_t) 0);
     return data_.extent(k);
+  }
+
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::has_method_size<_wrapped_type>::value,
+    size_t
+    >
+  extent(size_t k) const
+  {
+    return data_.size();
   }
 
   sc_t & operator()(size_t i){
@@ -111,11 +127,11 @@ public:
     return data_[i];
   };
 
-  [[deprecated("Use operator() instead.")]] 
+  [[deprecated("Use operator() instead.")]]
   sc_t & operator[](size_t i){
     return (*this)(i);
   };
-  [[deprecated("Use operator() instead.")]] 
+  [[deprecated("Use operator() instead.")]]
   sc_t const & operator[](size_t i) const{
     return (*this)(i);
   };

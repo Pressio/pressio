@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_matrix_dense_arbitrary.hpp
+// ops_has_method_extent.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,89 +46,26 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
-#define CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
+#ifndef CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_
+#define CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace predicates {
 
-template <typename wrapped_type>
-class DenseMatrix<
-  wrapped_type,
+template <typename T, typename = void>
+struct has_method_extent : std::false_type{};
+
+template <typename T>
+struct has_method_extent<
+  T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value
+    !std::is_void<
+      decltype
+      (
+       std::declval<T const &>().extent(int())
+       )
+      >::value
     >
-  >
-{
-  using this_t = DenseMatrix<wrapped_type>;
-  using size_t = typename details::traits<this_t>::size_t;
-  using sc_t   = typename details::traits<this_t>::scalar_t;
+  > : std::true_type{};
 
-public:
-
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value, int
-    > = 0
-  >
-  DenseMatrix(){};
-
-  template<
-    typename _wrapped_type = wrapped_type,
-    mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t, size_t>::value, int
-    > = 0
-  >
-  DenseMatrix(size_t nR, size_t nC) : data_(nR, nC){};
-
-  explicit DenseMatrix(const wrapped_type & vecobj)
-    : data_(vecobj){}
-
-  DenseMatrix(DenseMatrix const & other)
-    : data_(*other.data()){}
-
-public:
-  template<typename _wrapped_type = wrapped_type>
-  mpl::enable_if_t<
-  ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value
-  , size_t
-  >
-  extent(size_t k) const
-  {
-    assert( k==0 or k==1);
-    return data_.extent(k);
-  }
-
-  template<typename _wrapped_type = wrapped_type>
-  mpl::enable_if_t<
-  ::pressio::containers::predicates::has_method_size_with_arg<_wrapped_type>::value
-  , size_t
-  >
-  size_t extent(size_t k) const{
-    return data_.size(k);
-  }
-
-  sc_t & operator()(size_t i, size_t j){
-    return data_(i, j);
-  };
-
-  sc_t const & operator()(size_t i, size_t j) const{
-    return data_(i, j);
-  };
-
-  wrapped_type const * data() const{
-    return &data_;
-  }
-
-  wrapped_type * data(){
-    return &data_;
-  }
-
-private:
-  wrapped_type data_ = {};
-
-};//end class
-
-}}//end namespace pressio::containers
-
-#endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_ARBITRARY_HPP_
+}}} //pressio::containers::predicates
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_EXTENT_HPP_

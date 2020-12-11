@@ -125,8 +125,22 @@ public:
   }
 
 public:
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+  ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value
+  , size_t
+  >
   size_t extent(size_t k) const{
     return data_.extent(k);
+  }
+
+  template<typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+  ::pressio::containers::predicates::has_method_size_with_arg<_wrapped_type>::value
+  , size_t
+  >
+  size_t extent(size_t k) const{
+    return data_.size(k);
   }
 
   sc_t & operator()(size_t i, size_t j){
