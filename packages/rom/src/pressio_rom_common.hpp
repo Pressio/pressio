@@ -71,7 +71,7 @@
 #include "./will_be_concepts/rom_will_be_concepts_include.hpp"
 
 // decoder classes (depend on concepts)
-#include "./decoder/rom_decoders_include.hpp"
+#include "./decoder/rom_linear_decoder.hpp"
 
 // fom states management classes (depend on the decoder)
 #include "./fom_states_management/rom_manager_fom_states_static.hpp"

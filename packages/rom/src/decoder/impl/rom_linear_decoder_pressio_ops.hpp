@@ -54,11 +54,8 @@ namespace pressio{ namespace rom{ namespace impl{
 template <typename jacobian_matrix_type, typename fom_state_type>
 struct LinearDecoderWithPressioOps
 {
+  // this alias must be here because ROM classes detect it
   using jacobian_type  = jacobian_matrix_type;
-  using scalar_t =
-    typename ::pressio::containers::details::traits<fom_state_type>::scalar_t;
-  using jacobian_native_t =
-    typename ::pressio::containers::details::traits<jacobian_type>::wrapped_t;
 
 private:
   const jacobian_type jacobianOfDecoder_ = {};
@@ -71,24 +68,32 @@ public:
   LinearDecoderWithPressioOps & operator=(LinearDecoderWithPressioOps &&) = default;
   ~LinearDecoderWithPressioOps() = default;
 
-  // /* note that here we make the constructor templated
-  //    such that we can pass either
-  //    the pressio wrapper type 'jacobian_matrix_type' or
-  //    the native type wrapped by it 'jacobian_native_t'.
-  //    Also, by templating this constructor we enable
-  //    universal reference so that it is forwarded accordingly.
-  //  */
+  /* the constructor is templated such that we can pass either
+     the pressio wrapper type 'jacobian_matrix_type' or
+     the native type wrapped by it 'jacobian_native_t'.
+     By templating this constructor we enable universal references
+     so that it is forwarded accordingly.
+   */
   template<typename T>
   LinearDecoderWithPressioOps(T && matIn)
     : jacobianOfDecoder_(std::forward<T>(matIn)){}
 
 public:
-  // applyMapping is templated because the type of the generalized coordinates
-  // is something that behaves like a vector but not strictly a vector:
-  // for LSPG it is a "concrete" pressio::Vector but for WLS is an expression
-  template <typename gen_coords_t, typename fom_state_t = fom_state_type>
-  void applyMapping(const gen_coords_t & operand, fom_state_t & result) const
+  // applyMapping must be templated because the type of the
+  // generalized coordinates is not necessarily know.
+  // In fact, its type is something that behaves like a vector
+  // but not strictly a vector type.
+  // For example, for WLS the operand here is a pressio expression, e.g. span.
+  template <typename gen_coords_t>
+  void applyMapping(const gen_coords_t & operand,
+		    fom_state_type & result) const
   {
+    static_assert
+      (::pressio::containers::predicates::are_scalar_compatible<
+       gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
+    using scalar_t = typename ::pressio::containers::details::traits<
+      fom_state_type>::scalar_t;
+
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::nontranspose(), one,
@@ -102,7 +107,7 @@ public:
   template<typename gen_coords_t>
   void updateJacobian(const gen_coords_t & genCoordinates) const
   {
-    //no op
+    //no op: the Jacobian is constant
   }
 };
 
