@@ -50,8 +50,6 @@
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
 
 #include "../../shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
-#include "../../shared/rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp"
-#include "../../shared/rom_lspg_unsteady_fom_state_reconstructor_helper.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
@@ -116,12 +114,11 @@ struct CommonTraitsContinuousTimeApi
 
   // fom state reconstructor type
   using fom_state_reconstr_t =
-    typename FomStateReconHelper<ud_ops_type>::template type<scalar_t,
-							     fom_state_t,
-							     decoder_t>;
+    typename ::pressio::rom::impl::FomStateReconHelper<
+    ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step)
-  static constexpr auto numStates = fomStatesStorageCapacityHelper<stepper_tag>::value;
+  static constexpr auto numStates = ::pressio::ode::requiredNumberOfStates<stepper_tag>::value;
 
   // type of class holding the fom states
   using fom_states_manager_t =
