@@ -77,7 +77,11 @@
 // tags types
 #include "ode/src/explicit/ode_explicit_stepper_tags.hpp"
 #include "ode/src/implicit/ode_implicit_stepper_tags.hpp"
+#include "ode/src/predicates/ode_is_explicit_stepper_tag.hpp"
+#include "ode/src/predicates/ode_is_implicit_stepper_tag.hpp"
 #include "ode/src/predicates/ode_is_stepper_tag.hpp"
+// required # of states for target stepper tag
+#include "ode/src/ode_required_number_of_states.hpp"
 
 // --------------
 // explicit

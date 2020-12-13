@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_stepper_tag.hpp
+// ode_is_implicit_stepper_tag.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,22 @@
 //@HEADER
 */
 
-#ifndef ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
-#define ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+#ifndef ODE_PREDICATES_ODE_IS_IMPLICIT_STEPPER_TAG_HPP_
+#define ODE_PREDICATES_ODE_IS_IMPLICIT_STEPPER_TAG_HPP_
 
 namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T>
-struct is_stepper_tag
-{
-  static constexpr auto value = is_explicit_stepper_tag<T>::value
-    or is_implicit_stepper_tag<T>::value;
-};
+struct is_implicit_stepper_tag : std::false_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::BDF1> : std::true_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::BDF2> : std::true_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
 
 }}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+#endif  // ODE_PREDICATES_ODE_IS_IMPLICIT_STEPPER_TAG_HPP_

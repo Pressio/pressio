@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_stepper_tag.hpp
+// rom_lspg_unsteady_fom_states_storage_capacity_helper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,33 @@
 //@HEADER
 */
 
-#ifndef ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
-#define ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+#ifndef ODE_STORAGE_CAPACITY_HELPER_HPP_
+#define ODE_STORAGE_CAPACITY_HELPER_HPP_
 
-namespace pressio{ namespace ode{ namespace predicates {
+namespace pressio{ namespace ode{
 
-template <typename T>
-struct is_stepper_tag
+// base case
+template <typename stepper_tag>
+struct requiredNumberOfStates
 {
-  static constexpr auto value = is_explicit_stepper_tag<T>::value
-    or is_implicit_stepper_tag<T>::value;
+  static constexpr std::size_t value = 1;
 };
 
-}}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_
+template <>
+struct requiredNumberOfStates<::pressio::ode::implicitmethods::Euler>
+{
+  // for euler, I need to store the state at the current step
+  // plus the state at the previous step, so 2 total
+  static constexpr std::size_t value = 2;
+};
+
+template <>
+struct requiredNumberOfStates<::pressio::ode::implicitmethods::BDF2>
+{
+  // for BDF2, I need to store the state at the current step
+  // plus the state at the previous two steps, so 3 total
+  static constexpr std::size_t value = 3;
+};
+
+}} //end namespace pressio::ode
+#endif  // ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
