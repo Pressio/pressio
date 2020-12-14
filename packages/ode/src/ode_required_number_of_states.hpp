@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_STORAGE_CAPACITY_HELPER_HPP_
-#define ODE_STORAGE_CAPACITY_HELPER_HPP_
+#ifndef ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
+#define ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
 
 namespace pressio{ namespace ode{
 
@@ -75,4 +75,4 @@ struct requiredNumberOfStates<::pressio::ode::implicitmethods::BDF2>
 };
 
 }} //end namespace pressio::ode
-#endif  // ROM_LSPG_IMPL_UNSTEADY_SHARED_ROM_LSPG_UNSTEADY_FOM_STATES_STORAGE_CAPACITY_HELPER_HPP_
+#endif  // ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
