@@ -61,8 +61,7 @@ class JacobianPolicyContinuousTimeApi
 {
 
 public:
-  using apply_jac_return_t = apply_jac_return_type;
-  using ud_ops_t = ud_ops_type;
+  using data_type = apply_jac_return_type;
 
 public:
   JacobianPolicyContinuousTimeApi() = delete;
@@ -105,10 +104,10 @@ public:
 
 public:
   template <typename fom_system_t>
-  apply_jac_return_t create(const fom_system_t & fomSystemObj) const
+  apply_jac_return_type create(const fom_system_t & fomSystemObj) const
   {
-    return apply_jac_return_t( fomSystemObj.createApplyJacobianResult
-			       ( *decoderJacobian_.get().data() ));
+    return apply_jac_return_type( fomSystemObj.createApplyJacobianResult
+				  ( *decoderJacobian_.get().data() ));
   }
 
   template <

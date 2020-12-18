@@ -55,7 +55,8 @@ template <typename residual_type, typename fom_states_manager_t>
 class ResidualPolicy
 {
 public:
-  using residual_t = residual_type;
+  // typedef needed for decorators
+  using data_type = residual_type;
 
 public:
   ResidualPolicy() = delete;
@@ -70,9 +71,9 @@ public:
 
 public:
   template <typename fom_system_t>
-  residual_t create(const fom_system_t & fomSystemObj) const
+  residual_type create(const fom_system_t & fomSystemObj) const
   {
-    return residual_t(fomSystemObj.createResidual());
+    return residual_type(fomSystemObj.createResidual());
   }
 
   template <typename lspg_state_t, typename fom_system_t>

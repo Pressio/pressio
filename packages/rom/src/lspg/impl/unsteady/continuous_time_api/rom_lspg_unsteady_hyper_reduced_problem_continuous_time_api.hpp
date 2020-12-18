@@ -77,12 +77,12 @@ public:
   using sample_to_stencil_native_t = typename traits::sample_to_stencil_native_t;
 
 private:
-  using At    = FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt    = FomStatesMngrMixin<At, void, fom_state_t,
+  using At    = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt    = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
 				   fom_state_reconstr_t, fom_states_manager_t>;
   using Ct    = HypRedPoliciesMixin<Bt, void, residual_policy_t,
 				    jacobian_policy_t, sample_to_stencil_t>;
-  using mem_t = StepperMixin<Ct, aux_stepper_t, stepper_t>;
+  using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
 public:

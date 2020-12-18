@@ -60,7 +60,7 @@ class HypRedResidualPolicyContinuousTimeApi
 {
 
 public:
-  using residual_t = residual_type;
+  using data_type = residual_type;
 
 public:
   HypRedResidualPolicyContinuousTimeApi() = delete;
@@ -78,9 +78,9 @@ public:
 
 public:
   template <typename fom_system_t>
-  residual_t create(const fom_system_t & fomObj) const
+  residual_type create(const fom_system_t & fomObj) const
   {
-    return residual_t( fomObj.createVelocity() );
+    return residual_type( fomObj.createVelocity() );
   }
 
   template <
@@ -96,7 +96,7 @@ public:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & timeStep,
-	       residual_t & romR) const
+	       residual_type & romR) const
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
     // is of the same extent as the romR
@@ -115,7 +115,7 @@ private:
     typename scalar_t
   >
   void compute_impl(const lspg_state_t & romState,
-		    residual_t & romR,
+		    residual_type & romR,
 		    const prev_states_t & romPrevStates,
 		    const fom_system_t  & fomSystemObj,
 		    const scalar_t & time,

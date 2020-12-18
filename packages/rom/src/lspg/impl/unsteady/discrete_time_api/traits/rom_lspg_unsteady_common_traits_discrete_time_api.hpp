@@ -49,8 +49,6 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_DISCRETE_TIME_API_HPP_
 
-#include "../../shared/rom_lspg_unsteady_aux_stepper_type_helper.hpp"
-
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template <
@@ -62,10 +60,12 @@ template <
   >
 struct CommonTraitsDiscreteTimeApi
 {
-  // the scalar type
-  using scalar_t = typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  static_assert
+  (::pressio::rom::concepts::rom_state<lspg_state_type>::value,
+   "The lspg_state_type is not a valid rom state");
 
   using fom_system_t	      = fom_system_type;
+  using scalar_t              = typename fom_system_t::scalar_type;
   using fom_native_state_t    = typename fom_system_t::state_type;
   using fom_native_residual_t = typename fom_system_t::discrete_time_residual_type;
 
@@ -76,12 +76,7 @@ struct CommonTraitsDiscreteTimeApi
   // rom state type (passed in)
   using lspg_state_t		= lspg_state_type;
 
-  // // verify that args contains a valid decoder type
-  // using ic0 = ::pressio::mpl::variadic::find_if_ternary_pred_t<
-  //   lspg_state_t, fom_state_t, ::pressio::rom::concepts::decoder, Args...>;
-  // using decoder_t = ::pressio::mpl::variadic::at_or_t<void, ic0::value, Args...>;
-  // static_assert(!std::is_void<decoder_t>::value and ic0::value < sizeof... (Args),
-  // 		"A valid decoder type must be passed to define a LSPG problem");
+  // check for valid decoder
   static_assert
   (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
    "A valid decoder type must be passed to define a LSPG problem");
@@ -89,22 +84,21 @@ struct CommonTraitsDiscreteTimeApi
   using decoder_jac_t = typename decoder_t::jacobian_type;
 
 
-  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
-   * * J is the jacobian of the fom rhs
-   * * decoder_jac_t is the type of the decoder jacobian
-   * In more complex cases, we might have (something)*J*decoder_jac_t,
-   * where (something) is product of few matrices.
+  /* lspg_matrix_t is type to represent dR/dx_rom where R is the residual 
+   * dR/dx_rom = I ... + df/dxFom * dxFom/dxRom
+   *  so df/dxFom = J  and dxFom/dxRom = decoder_jacobian
+   * 
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = containers::MV<>
    * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
-   * not bad assumption since all matrices are left-applied to decoder_jac_t
+   * not a bad assumption since all matrices are left-applied to decoder_jac_t
    */
   using lspg_matrix_t		= decoder_jac_t;
 
   // if we have an admissible user-defined ops
   using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     decoder_jac_t, lspg_state_t, fom_state_t,
-    ::pressio::rom::concepts::custom_ops_lspg_discrete_time, Args...>;
+    ::pressio::rom::lspg::concepts::custom_ops_discrete_time, Args...>;
   using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void, icUdOps::value, Args...>;
 
   // fom state reconstructor type

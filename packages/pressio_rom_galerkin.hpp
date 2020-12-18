@@ -52,10 +52,9 @@
 /*
    this header includes everything needed for GALERKIN.
    NOTE that the order below matters!
-   Includes are ordered in a logical way and this
-   allows us to avoid ending up with a tangled system.
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
 */
-
 
 // need all of the dependent packages
 #include "pressio_mpl.hpp"
@@ -71,9 +70,40 @@
 // common classes for rom
 #include "rom/src/pressio_rom_common.hpp"
 
+// concepts
+#include "rom/src/galerkin/will_be_concepts/rom_fom_velocity.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_jacobian.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_rhs.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_custom_ops_continuous_time.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_masker_explicit.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_masker_implicit.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_projector_explicit.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_projector_implicit.hpp"
+
+// projectors
+#include "rom/src/galerkin/impl/projectors/galerkin_arbitrary_projector.hpp"
+#include "rom/src/galerkin/impl/projectors/galerkin_default_projector_ortho_decoder_jacobian.hpp"
+
 // galerkin classes
-#include "rom/src/galerkin/rom_compose_and_create_galerkin.hpp"
-#include "rom/src/galerkin/rom_galerkin_create_solver_functions.hpp"
-#include "rom/src/galerkin/rom_galerkin_problem_solve_functions.hpp"
+#include "rom/src/impl/rom_auxiliary_stepper_type_helper.hpp"
+#include "rom/src/impl/rom_problem_members_mixins.hpp"
+#include "rom/src/galerkin/impl/rom_problem_members.hpp"
+
+#include "rom/src/galerkin/impl/decorators/rom_masked.hpp"
+#include "rom/src/galerkin/impl/decorators/rom_projected.hpp"
+#include "rom/src/galerkin/impl/policies/rom_galerkin_residual_policy.hpp"
+#include "rom/src/galerkin/impl/policies/rom_galerkin_jacobian_policy.hpp"
+
+#include "rom/src/galerkin/impl/continuous_time_api/rom_compose_impl.hpp"
+#include "rom/src/galerkin/impl/discrete_time_api/rom_compose_impl.hpp"
+
+#include "rom/src/galerkin/rom_create_default_galerkin_problem.hpp"
+#include "rom/src/galerkin/rom_create_masked_galerkin_problem.hpp"
+#include "rom/src/galerkin/rom_create_hyperreduced_galerkin_problem.hpp"
+
+#include "rom/src/galerkin/rom_create_solver_functions.hpp"
+#include "rom/src/galerkin/rom_solve_problem_functions.hpp"
+#include "rom/src/galerkin/rom_create_collocation_projector.hpp"
+#include "rom/src/galerkin/rom_create_arbitrary_projector.hpp"
 
 #endif

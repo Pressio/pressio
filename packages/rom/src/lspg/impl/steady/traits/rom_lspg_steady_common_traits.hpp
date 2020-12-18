@@ -58,11 +58,12 @@ template <
   >
 struct CommonTraits
 {
-  // the scalar type
-  using scalar_t =
-    typename ::pressio::containers::details::traits<lspg_state_type>::scalar_t;
+  static_assert
+  (::pressio::rom::concepts::rom_state<lspg_state_type>::value,
+   "The lspg_state_type is not a valid rom state");
 
   using fom_system_t	      = fom_system_type;
+  using scalar_t              = typename fom_system_t::scalar_type;
   using fom_native_state_t    = typename fom_system_t::state_type;
   using fom_native_residual_t = typename fom_system_t::residual_type;
 
@@ -72,24 +73,20 @@ struct CommonTraits
 
   // rom state type (passed in)
   using lspg_state_t	    = lspg_state_type;
-  using lspg_native_state_t =
-    typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
-
-  // for LSPG, the rom residual type = containers::wrapper of application rhs
+  using lspg_native_state_t = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
   using lspg_residual_t		= fom_residual_t;
 
-  // decoder types (passed in)
+  // check for valid decoder
   static_assert
   (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t, fom_state_t>::value,
    "A valid decoder type must be passed to define a LSPG problem");
   using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
-  /* lspg_matrix_t is type of J*decoder_jac_t (in the most basic case) where
-   * * J is the jacobian of the fom rhs
-   * * decoder_jac_t is the type of the decoder jacobian
-   * In more complex cases, we might have (something)*J*decoder_jac_t,
-   * where (something) is product of few matrices.
+  /* lspg_matrix_t is type to represent dR/dx_rom where R is the residual 
+   * dR/dx_rom = I ... + df/dxFom * dxFom/dxRom
+   *  so df/dxFom = J  and dxFom/dxRom = decoder_jacobian
+   * 
    * For now, set lspg_matrix_t to be of same type as decoder_jac_t
    * if phi is MV<>, then lspg_matrix_t = containers::MV<>
    * if phi is DenseMatrix<>, then we have containers::DenseMatrix<>
@@ -104,9 +101,9 @@ struct CommonTraits
   using fom_state_reconstr_t =
     FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
-  // class type holding fom states data: we only need to store one FOM state
+  // for steady lspg, we only need to store one FOM state
   using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, void>;
+    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, ud_ops_t>;
 
   // sentinel to tell if we are doing bindings for p4py:
   // always false if pybind is disabled, otherwise detect from rom state

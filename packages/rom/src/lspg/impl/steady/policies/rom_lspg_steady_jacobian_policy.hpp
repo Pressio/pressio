@@ -59,7 +59,8 @@ template<
 class JacobianPolicy
 {
 public:
-  using apply_jac_return_t = apply_jac_return_type;
+  // typedef needed for decorators
+  using data_type = apply_jac_return_type;
 
 public:
   JacobianPolicy() = delete;
@@ -75,11 +76,10 @@ public:
 
 public:
   template <typename fom_system_t>
-  apply_jac_return_t create(const fom_system_t & fomSystemObj) const
+  apply_jac_return_type create(const fom_system_t & fomSystemObj) const
   {
     const auto & basis = decoderObj_.get().jacobianCRef();
-    return apply_jac_return_t
-      (fomSystemObj.createApplyJacobianResult(*basis.data()));
+    return apply_jac_return_type(fomSystemObj.createApplyJacobianResult(*basis.data()));
   }
 
   template <typename lspg_state_t, typename lspg_jac_t, typename fom_system_t>

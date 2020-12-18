@@ -2,7 +2,7 @@
 #ifndef PRESSIO_TESTS_BURG1D_CUSTOM_MAPPING_HPP_
 #define PRESSIO_TESTS_BURG1D_CUSTOM_MAPPING_HPP_
 
-#include "pressio_rom.hpp"
+// #include "pressio_rom.hpp"
 #include "utils_eigen.hpp"
 #include <torch/script.h>
 

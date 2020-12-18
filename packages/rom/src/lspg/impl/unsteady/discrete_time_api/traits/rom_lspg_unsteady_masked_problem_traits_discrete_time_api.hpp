@@ -99,7 +99,7 @@ struct traits<
   using masker_t = masker_type;
   static_assert
   (
-    ::pressio::rom::concepts::unsteady_masker<
+    ::pressio::rom::lspg::concepts::unsteady_masker<
       masker_t,
       scalar_t,
       typename ::pressio::containers::details::traits<lspg_residual_t>::wrapped_t,
@@ -109,7 +109,7 @@ struct traits<
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::MaskedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyDiscreteTimeApi<
       lspg_residual_t, fom_states_manager_t
@@ -118,7 +118,7 @@ struct traits<
 
   // policy defining how to compute the LSPG time-discrete jacobian
   using jacobian_policy_t  =
-    ::pressio::rom::decorator::MaskedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyDiscreteTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t

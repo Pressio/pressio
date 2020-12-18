@@ -97,24 +97,24 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::concepts::steady_preconditioner<
+    ::pressio::rom::lspg::concepts::steady_preconditioner<
       preconditioner_t,
-      fom_native_state_t,
-      typename ::pressio::containers::details::traits<lspg_residual_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
+      fom_state_t,
+      lspg_residual_t,
+      lspg_matrix_t
       >::value,
       "Invalid preconditioner type passed to steady LSPG"
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::PreconditionedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::steady::ResidualPolicy<
       lspg_residual_t, fom_states_manager_t>
     >;
 
   using jacobian_policy_t	=
-    ::pressio::rom::decorator::PreconditionedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::steady::JacobianPolicy<
       fom_states_manager_t, lspg_matrix_t, decoder_t>

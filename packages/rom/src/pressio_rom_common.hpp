@@ -51,33 +51,49 @@
 
 /*
    NOTE that the order below matters!
-   The clean/logical order allows us to avoid ending up with a tangled system.
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
+
    NOTE also that this header by itself means nothing and if you use
    it as such, you need to know what you are doing.
-   This header is placed here to help the "public" includes
-   named "pressio_rom_bla.hpp" at the top level.
-   Users of pressio should NOT rely on this, that is why this is
-   placed here. Users should rely only on the top-level
-   "pressio_rom_{lspg,galerkin,wls}.hpp".
+   This header is here to help the "public" includes named
+   "pressio_rom_bla.hpp" inside the pressio/packages directory.
+   Users of pressio should NOT rely on this file, but only
+   on the top-level "pressio_rom_{lspg,galerkin,wls}.hpp".
 */
 
+//----------------------------------------------
 // need forward declarations
 #include "rom_fwd.hpp"
 
-// all predicates
+//----------------------------------------------
+// common predicates
 #include "./predicates/rom_predicates_include.hpp"
 
-// all will_be_concepts (depend on predicates)
-#include "./will_be_concepts/rom_will_be_concepts_include.hpp"
+//----------------------------------------------
+// common concepts (depend on predicates)
+#include "./will_be_concepts/rom_fom_state.hpp"
+#include "./will_be_concepts/rom_fom_velocity.hpp"
+#include "./will_be_concepts/rom_rom_state.hpp"
+#include "./will_be_concepts/rom_decoder_jacobian.hpp"
+#include "./will_be_concepts/rom_decoder.hpp"
+#include "./will_be_concepts/rom_custom_ops_for_linear_decoder.hpp"
+#include "./will_be_concepts/rom_custom_ops_for_fom_state_reconstructor.hpp"
 
+#include "./will_be_concepts/system/rom_steady_system.hpp"
+#include "./will_be_concepts/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./will_be_concepts/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
+#include "./will_be_concepts/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./will_be_concepts/system/rom_continuous_time_system.hpp"
+
+//----------------------------------------------
 // decoder classes (depend on concepts)
 #include "./decoder/rom_linear_decoder.hpp"
 
+//----------------------------------------------
 // fom states management classes (depend on the decoder)
 #include "./fom_states_management/rom_manager_fom_states_static.hpp"
 #include "./fom_states_management/rom_reconstructor_fom_state.hpp"
-
-// decorators
-#include "./decorators/rom_decorators_include.hpp"
+#include "./fom_states_management/impl/rom_fom_state_reconstructor_helper.hpp"
 
 #endif  // ROM_PRESSIO_ROM_COMMON_HPP_

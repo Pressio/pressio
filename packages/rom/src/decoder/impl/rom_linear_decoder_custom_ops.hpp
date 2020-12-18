@@ -59,7 +59,6 @@ struct LinearDecoderWithCustomOps
 
 private:
   const jacobian_type jacobianOfDecoder_ = {};
-
   // we need ref_wrapper because we want this class to be copyable
   std::reference_wrapper<const ops_t> udOps_;
 
@@ -98,8 +97,6 @@ public:
        gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
     using scalar_t = typename ::pressio::containers::details::traits<
       fom_state_type>::scalar_t;
-
-    std::cout << "am\n";
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();

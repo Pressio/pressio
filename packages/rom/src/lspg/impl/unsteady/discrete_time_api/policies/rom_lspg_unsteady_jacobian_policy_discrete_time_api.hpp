@@ -61,8 +61,7 @@ class JacobianPolicyDiscreteTimeApi
 {
 
 public:
-  using apply_jac_return_t = apply_jac_return_type;
-  using ud_ops_t = ud_ops_type;
+  using data_type = apply_jac_return_type;
 
 public:
   JacobianPolicyDiscreteTimeApi() = delete;
@@ -95,11 +94,11 @@ public:
 
 public:
   template <typename fom_system_t>
-  apply_jac_return_t create(const fom_system_t & fomSystemObj) const
+  apply_jac_return_type create(const fom_system_t & fomSystemObj) const
   {
     // // this is only called once
     const auto & phi = decoderObj_.get().jacobianCRef();
-    apply_jac_return_t romJac
+    apply_jac_return_type romJac
       (fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
   }

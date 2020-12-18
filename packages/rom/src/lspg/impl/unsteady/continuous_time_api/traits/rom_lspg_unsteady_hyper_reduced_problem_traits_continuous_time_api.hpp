@@ -116,7 +116,7 @@ struct traits<
     fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t>;
 
   using aux_stepper_t =
-    typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+    typename ::pressio::rom::impl::auxiliaryStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     residual_policy_t, jacobian_policy_t>::type;
 
@@ -185,7 +185,7 @@ struct traits<
 
   // auxiliary stepper
   using aux_stepper_t =
-    typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+    typename ::pressio::rom::impl::auxiliaryStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     residual_policy_t, jacobian_policy_t>::type;
 
