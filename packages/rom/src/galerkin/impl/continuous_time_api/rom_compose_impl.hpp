@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_CONTINUOUS_TIME_API_IMPL_HPP_
-#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_CONTINUOUS_TIME_API_IMPL_HPP_
+#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
 
 #include "../rom_problem_tags.hpp"
 #include "../rom_galerkin_types_selector.hpp"
@@ -440,4 +440,4 @@ using composeMaskedVelocityProblemContTime_t =
   typename composeMaskedVelocityProblemContTime<Args...>::type;
 
 }}}} // end namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_CONTINUOUS_TIME_API_IMPL_HPP_
+#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
