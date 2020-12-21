@@ -97,7 +97,7 @@ struct traits<
   using masker_t = masker_type;
   static_assert
   (
-    ::pressio::rom::concepts::steady_masker<
+    ::pressio::rom::lspg::concepts::steady_masker<
       masker_t,
       typename ::pressio::containers::details::traits<fom_residual_t>::wrapped_t,
       typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
@@ -106,14 +106,14 @@ struct traits<
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::MaskedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::steady::ResidualPolicy<
       lspg_residual_t, fom_states_manager_t>
     >;
 
   using jacobian_policy_t	=
-    ::pressio::rom::decorator::MaskedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::steady::JacobianPolicy<
       fom_states_manager_t, lspg_matrix_t, decoder_t>

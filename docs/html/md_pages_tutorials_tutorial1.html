@@ -229,7 +229,9 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Code</a></h2><p>Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</svg></div></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Code</a></h2><p>Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</a>.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio_rom.hpp&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="c1">// *** define some types ***</span>
   <span class="c1">// here we assume your FOM application uses an Eigen vector for the state</span>
@@ -273,7 +275,7 @@ $\phi$
           <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Comments</a></h2><p>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see [this tutorial]().</p></section>
+<span class="p">}</span></pre></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Comments</a></h2><p>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see <a href="https://pressio.github.io/pressio/html/md_pages_tutorials_tutorial2.html">this tutorial</a>.</p></section>
       </div>
     </div>
   </div>

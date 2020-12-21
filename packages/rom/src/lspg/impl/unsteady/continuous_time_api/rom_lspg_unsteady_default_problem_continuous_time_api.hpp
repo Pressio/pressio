@@ -51,11 +51,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template<bool forPy, typename T> struct _systemMemberType;
-template<typename T> struct _systemMemberType<true, T> { using type = T; };
-template<typename T> struct _systemMemberType<false, T>{
-  using type = ::pressio::utils::impl::empty;};
-
 template <typename ...Args>
 class DefaultProblemContinuousTimeApi
 {
@@ -79,10 +74,10 @@ public:
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At = FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = FomStatesMngrMixin<At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = DefaultPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
-  using mem_t = StepperMixin<Ct, aux_stepper_t, stepper_t>;
+  using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
 public:

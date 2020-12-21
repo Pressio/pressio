@@ -71,4 +71,6 @@
 #include "./apply_discrete_time_jacobian_methods/rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
 #include "./apply_discrete_time_jacobian_methods/rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
 
+#include "./galerkin_projector/rom_has_const_apply_method_accept_operand_result_return_void.hpp"
+
 #endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_

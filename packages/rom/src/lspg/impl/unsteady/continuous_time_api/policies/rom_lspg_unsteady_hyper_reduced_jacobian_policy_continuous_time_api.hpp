@@ -61,7 +61,7 @@ class HypRedJacobianPolicyContinuousTimeApi
 {
 
 public:
-  using apply_jac_return_t = apply_jac_return_type;
+  using data_type = apply_jac_return_type;
 
 public:
   HypRedJacobianPolicyContinuousTimeApi() = delete;
@@ -82,10 +82,10 @@ public:
 
 public:
   template <typename fom_system_t>
-  apply_jac_return_t create(const fom_system_t & fomObj) const
+  apply_jac_return_type create(const fom_system_t & fomObj) const
   {
     const auto & decJac = decoderJacobian_.get();
-    return apply_jac_return_t( fomObj.createApplyJacobianResult(*decJac.data()) );
+    return apply_jac_return_type(fomObj.createApplyJacobianResult(*decJac.data()));
   }
 
   template <

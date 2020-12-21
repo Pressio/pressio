@@ -60,8 +60,7 @@ class ResidualPolicyContinuousTimeApi
 {
 
 public:
-  using residual_t = residual_type;
-  using ud_ops_t = ud_ops_type;
+  using data_type = residual_type;
 
 public:
   ResidualPolicyContinuousTimeApi() = delete;
@@ -78,7 +77,7 @@ public:
 
   // 1. void ops
   template <
-    typename _ud_ops_t = ud_ops_t,
+    typename _ud_ops_t = ud_ops_type,
     ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr)
@@ -87,7 +86,7 @@ public:
 
   // 2. non-void ops
   template <
-    typename _ud_ops_t = ud_ops_t,
+    typename _ud_ops_t = ud_ops_type,
     ::pressio::mpl::enable_if_t<
       !std::is_void<_ud_ops_t>::value, int > = 0
     >
@@ -98,9 +97,9 @@ public:
 
 public:
   template <typename fom_system_t>
-  residual_t create(const fom_system_t & fomObj) const
+  residual_type create(const fom_system_t & fomObj) const
   {
-    return residual_t(fomObj.createVelocity());
+    return residual_type(fomObj.createVelocity());
   }
 
   template <
@@ -116,7 +115,7 @@ public:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & timeStep,
-	       residual_t & romR) const
+	       residual_type & romR) const
   {
     this->compute_impl<stepper_tag>(romState, romR, romPrevStates, fomSystemObj,
 				    time, dt, timeStep);
@@ -127,11 +126,11 @@ private:
   typename stepper_tag,
   typename fom_state_cont_type,
   typename scalar_t,
-  typename _ud_ops_t = ud_ops_t
+  typename _ud_ops_t = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
-			   residual_t & romR,
+			   residual_type & romR,
 			   const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
@@ -142,11 +141,11 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops_t = ud_ops_t
+    typename _ud_ops_t = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
   time_discrete_dispatcher(const fom_state_cont_type & fomStates,
-			   residual_t & romR,
+			   residual_type & romR,
 			   const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
@@ -161,7 +160,7 @@ private:
     typename scalar_t
   >
   void compute_impl(const lspg_state_t & romState,
-		    residual_t & romR,
+		    residual_type & romR,
 		    const prev_states_t & romPrevStates,
 		    const fom_system_t  & fomSystemObj,
 		    const scalar_t & time,
@@ -222,11 +221,11 @@ protected:
   // ud_ops_t= pybind11::object it only works if we copy the object.
   // Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
-    ::pressio::mpl::is_same<ud_ops_t, pybind11::object>::value, ud_ops_t,
-    const ud_ops_t *
+    ::pressio::mpl::is_same<ud_ops_type, pybind11::object>::value,
+    ud_ops_type, const ud_ops_type *
     >::type udOps_ = {};
 #else
-  const ud_ops_t * udOps_ = {};
+  const ud_ops_type * udOps_ = {};
 #endif
 
 };//end class

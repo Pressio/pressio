@@ -76,11 +76,11 @@ public:
   using stepper_t		= typename traits::stepper_t;
 
 private:
-  using At = FomObjMixin<fom_system_t>;
-  using Bt = FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
 				fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = MaskedPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
-  using mem_t = StepperMixin<Ct, void, stepper_t>;
+  using Ct = MaskedPoliciesMixin<Bt, masker_t, ud_ops_t, residual_policy_t, jacobian_policy_t>;
+  using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, void, stepper_t>;
   mem_t members_;
 
 public:

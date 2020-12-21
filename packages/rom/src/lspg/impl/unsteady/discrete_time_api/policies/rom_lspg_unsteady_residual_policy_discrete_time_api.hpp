@@ -60,8 +60,7 @@ class ResidualPolicyDiscreteTimeApi
 {
 
 public:
-  using residual_t = residual_type;
-  using ud_ops_t = ud_ops_type;
+  using data_type = residual_type;
 
 public:
   ResidualPolicyDiscreteTimeApi() = delete;
@@ -73,7 +72,7 @@ public:
 
   // 1. void ops
   template <
-    typename _ud_ops_t = ud_ops_t,
+    typename _ud_ops_t = ud_ops_type,
     ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)
@@ -81,7 +80,7 @@ public:
 
   // 2. nonvoid ops
   template <
-    typename _ud_ops_t = ud_ops_t,
+    typename _ud_ops_t = ud_ops_type,
     ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
@@ -91,9 +90,9 @@ public:
 
 public:
   template <typename fom_system_t>
-  residual_t create(const fom_system_t & system) const
+  residual_type create(const fom_system_t & system) const
   {
-    residual_t R(system.createDiscreteTimeResidual());
+    residual_type R(system.createDiscreteTimeResidual());
     return R;
   }
 
@@ -110,7 +109,7 @@ public:
 	       const scalar_t		& time,
 	       const scalar_t		& dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR) const
+	       residual_type & romR) const
   {
     this->compute_impl(romState, romPrevStates, fomSystemObj,
 		       time, dt, step, romR);
@@ -148,7 +147,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR) const
+	       residual_type & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
     const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
@@ -174,7 +173,7 @@ private:
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
-	       residual_t & romR) const
+	       residual_type & romR) const
   {
     doFomStatesReconstruction(romState, romPrevStates, step);
 
@@ -203,7 +202,7 @@ protected:
   mutable ::pressio::ode::types::step_t storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
-  const ud_ops_t * udOps_ = {};
+  const ud_ops_type * udOps_ = {};
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

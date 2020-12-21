@@ -215,6 +215,7 @@ protected:
   void setup(){
     // distribute cells
     dataMap_ = std::make_shared<Epetra_Map>(Ncell_,0,*comm_);
+    dataMap_->Print(std::cout);
 
     NumMyElem_ = dataMap_->NumMyElements();
     myGel_.resize(NumMyElem_);

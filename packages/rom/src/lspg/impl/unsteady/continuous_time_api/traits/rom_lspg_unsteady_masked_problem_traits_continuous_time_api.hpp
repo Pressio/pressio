@@ -98,17 +98,17 @@ struct traits<
   using masker_t = masker_type;
   static_assert
   (
-    ::pressio::rom::concepts::unsteady_masker<
-      masker_t,
-      scalar_t,
-      typename ::pressio::containers::details::traits<fom_velocity_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
-      >::value,
-      "Invalid masker type passed to unsteady LSPG"
+   ::pressio::rom::lspg::concepts::unsteady_masker<
+   masker_t,
+   scalar_t,
+   typename ::pressio::containers::details::traits<fom_velocity_t>::wrapped_t,
+   typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
+   >::value,
+   "Invalid masker type passed to unsteady LSPG"
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::MaskedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
       lspg_residual_t, fom_states_manager_t, ud_ops_t
@@ -116,7 +116,7 @@ struct traits<
     >;
 
   using jacobian_policy_t	=
-    ::pressio::rom::decorator::MaskedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_t
@@ -124,7 +124,7 @@ struct traits<
     >;
 
   // auxiliary stepper
-  using aux_stepper_t = typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+  using aux_stepper_t = typename ::pressio::rom::impl::auxiliaryStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     residual_policy_t, jacobian_policy_t>::type;
 

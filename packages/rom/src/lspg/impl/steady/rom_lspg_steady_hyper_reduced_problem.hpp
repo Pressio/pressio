@@ -73,8 +73,8 @@ public:
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At = FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = FomStatesMngrMixin<At, void, fom_state_t,
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
 				fom_state_reconstr_t, fom_states_manager_t>;
   using Ct = HypRedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
   using mem_t = SystemMixin<Ct, system_t>;

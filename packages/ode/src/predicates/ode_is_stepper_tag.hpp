@@ -52,23 +52,11 @@
 namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T>
-struct is_stepper_tag : std::false_type{};
-
-template <>
-struct is_stepper_tag<explicitmethods::Euler> : std::true_type{};
-
-template <>
-struct is_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
-
-template <>
-struct is_stepper_tag<implicitmethods::BDF1> : std::true_type{};
-
-template <>
-struct is_stepper_tag<implicitmethods::BDF2> : std::true_type{};
-
-template <>
-struct is_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
-
+struct is_stepper_tag
+{
+  static constexpr auto value = is_explicit_stepper_tag<T>::value
+    or is_implicit_stepper_tag<T>::value;
+};
 
 }}} // namespace pressio::ode::predicates
 #endif  // ODE_PREDICATES_ODE_IS_STEPPER_TAG_HPP_

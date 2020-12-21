@@ -1,0 +1,7 @@
+
+add_subdirectory(create_collocation_projector_arbitrary_type)
+
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  add_subdirectory(create_collocation_projector_eigen)
+  add_subdirectory(create_arbitrary_projector_eigen)
+endif()

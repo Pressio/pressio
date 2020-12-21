@@ -18,7 +18,9 @@
 <sect1 id="md_pages_tutorials_tutorial2_1autotoc_md42">
 <title>Code</title>
 <para>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</ulink>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio_rom.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>define<sp/>some<sp/>types<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here<sp/>we<sp/>assume<sp/>your<sp/>FOM<sp/>application<sp/>uses<sp/>an<sp/>Eigen<sp/>vector<sp/>for<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>

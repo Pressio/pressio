@@ -104,7 +104,7 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::concepts::unsteady_preconditioner<
+    ::pressio::rom::lspg::concepts::unsteady_preconditioner<
       preconditioner_t,
       fom_native_state_t,
       scalar_t,
@@ -115,7 +115,7 @@ struct traits<
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::PreconditionedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::unsteady::ResidualPolicyContinuousTimeApi<
       lspg_residual_t, fom_states_manager_t, ud_ops_type
@@ -123,14 +123,14 @@ struct traits<
     >;
 
   using jacobian_policy_t  =
-    ::pressio::rom::decorator::PreconditionedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyContinuousTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t, ud_ops_type
       >
     >;
 
-  using aux_stepper_t = typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+  using aux_stepper_t = typename ::pressio::rom::impl::auxiliaryStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     residual_policy_t, jacobian_policy_t>::type;
 
@@ -193,18 +193,14 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::concepts::unsteady_preconditioner<
-      preconditioner_t,
-      fom_native_state_t,
-      scalar_t,
-      typename ::pressio::containers::details::traits<lspg_residual_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
+    ::pressio::rom::lspg::concepts::unsteady_preconditioner<
+      preconditioner_t, fom_state_t, scalar_t, lspg_residual_t, lspg_matrix_t
       >::value,
       "Invalid preconditioner type passed to unsteady LSPG"
   );
 
   using residual_policy_t =
-    ::pressio::rom::decorator::PreconditionedResidualPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::unsteady::HypRedResidualPolicyContinuousTimeApi<
       lspg_residual_t, fom_states_manager_t, sample_to_stencil_t
@@ -212,14 +208,14 @@ struct traits<
     >;
 
   using jacobian_policy_t  =
-    ::pressio::rom::decorator::PreconditionedJacobianPolicy<
+    ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::unsteady::HypRedJacobianPolicyContinuousTimeApi<
       fom_states_manager_t, lspg_matrix_t, decoder_t, sample_to_stencil_t
       >
     >;
 
-  using aux_stepper_t = typename ::pressio::rom::lspg::impl::unsteady::auxStepperHelper<
+  using aux_stepper_t = typename ::pressio::rom::impl::auxiliaryStepperHelper<
     stepper_tag, lspg_state_type, lspg_residual_t, lspg_matrix_t, fom_system_type,
     residual_policy_t, jacobian_policy_t>::type;
 

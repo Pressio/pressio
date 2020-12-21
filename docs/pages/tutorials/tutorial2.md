@@ -38,6 +38,8 @@ operations on this type, so the user is responsible to pass the ops.
 The full tutorial can be found [here](https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc).
 
 ```cpp
+#include "pressio_rom.hpp"
+
 int main(int argc, char *argv[])
 {
   // *** define some types ***

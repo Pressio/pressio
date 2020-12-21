@@ -155,7 +155,7 @@ struct composeSteady<
     fom_system_type, lspg_state_type, decoder_type>;
 };
 
-// preconditioned hyper reduced
+// preconditioned hyper-reduced
 template<
   typename fom_system_type,
   typename decoder_type,
