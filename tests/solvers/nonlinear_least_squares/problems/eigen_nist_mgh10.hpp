@@ -1,4 +1,5 @@
-
+// Note: This problem is mgh10 from 
+// https://www.itl.nist.gov/div898/strd/nls/nls_main.shtml
 #ifndef SOLVERS_TESTS_EIGEN_NIST_MGH10_HPP_
 #define SOLVERS_TESTS_EIGEN_NIST_MGH10_HPP_
 
@@ -6,7 +7,7 @@
 
 namespace pressio{ namespace solvers{ namespace test{
 
-struct EigenExpDataFitN2 
+struct EigenNISTmgh10 
 {
   using scalar_type	= double;
   using state_type	= pressio::containers::Vector<Eigen::VectorXd>;

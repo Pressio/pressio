@@ -1,4 +1,5 @@
-
+// Note: This problem is mgh10 from 
+// https://www.itl.nist.gov/div898/strd/nls/nls_main.shtml
 #include "pressio_solvers.hpp"
 #include "./problems/eigen_nist_mgh10.hpp"
 
@@ -42,7 +43,7 @@ int main()
   
   using namespace pressio;
 
-  using problem_t   = solvers::test::EigenExpDataFitN2;
+  using problem_t   = solvers::test::EigenNISTmgh10;
   using state_w_t = typename problem_t::state_type;
   using mat_type  = typename problem_t::jacobian_type;
   problem_t problem;
