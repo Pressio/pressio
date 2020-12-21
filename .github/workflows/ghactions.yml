@@ -71,6 +71,7 @@ jobs:
         #echo ::set-env name=WORKSPACE_PARENT_DIR::$PARENT_DIR
         #echo ::set-env name=PRESSIO_REPOS::$PARENT_DIR/pressio_repos
         #echo ::set-env name=PRESSIO_BUILDS::$PARENT_DIR/pressio_builds
+        sudo apt-get update
         ${{ matrix.config.requirements }}
 
     - name: Cloning Pressio Builder...
