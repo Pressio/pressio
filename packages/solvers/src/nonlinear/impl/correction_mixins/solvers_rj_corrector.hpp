@@ -57,6 +57,7 @@ class RJCorrector : public T
 public:
   using state_t = state_type;
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+  using state_wrapped_t = typename ::pressio::containers::details::traits<state_type>::wrapped_t;
 
 private:
   state_t correction_ = {};
@@ -68,17 +69,29 @@ private:
 public:
   RJCorrector() = delete;
 
-  template <typename system_t>
+  template <typename system_t, typename lsT, typename ...Args>
   RJCorrector(const system_t & system,
-        const state_t & state,
-        lin_solver_t & solverObj)
-    : T(system, state),
+	      const state_type & state,
+	      lsT && solverIn,
+	      Args && ... args)
+    : T(system, state, std::forward<Args>(args)...),
       correction_(state),
-      solverObj_(solverObj)
+      solverObj_(std::forward<lsT>(solverIn))
   {
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     ::pressio::ops::fill(correction_, zero);
   }
+
+  template <typename system_t, typename lsT, typename ...Args>
+  RJCorrector(const system_t & system,
+	      const state_wrapped_t & state,
+	      lsT && solverIn,
+	      Args && ... args)
+    : RJCorrector(system,
+		  state_type(state) /*needs a wrapped object*/,
+		  std::forward<lsT>(solverIn),
+		  std::forward<Args>(args)...)
+  {}
 
   RJCorrector(RJCorrector const &) = default;
   RJCorrector & operator=(RJCorrector const &) = default;
