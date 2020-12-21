@@ -56,7 +56,7 @@ class Masked : public maskable_t
 {
 public:
   using maskable_data_type = typename maskable_t::data_type;
-  using maskable_t::data_type;
+  using typename maskable_t::data_type;
 
 private:
   std::reference_wrapper<const masker_t> masker_;
