@@ -53,14 +53,34 @@ namespace pressio{ namespace ode{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename jacobian_type, typename scalar_type>
-void discrete_time_jacobian(jacobian_type & jac,
-			    const scalar_type & dt,
-			    ::pressio::ode::implicitmethods::Euler)
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_dense_matrix_wrapper_pybind<jacobian_type>::value
+>
+discrete_time_jacobian(jacobian_type & jac,
+		       const scalar_type & dt,
+		       ::pressio::ode::implicitmethods::Euler)
 {
-  /* this is here for compilation purposes only when only pybind11 is enabled
-     otherwise it would not compile.
-     This should never be called. if it is, it means something is wrong*/
-  assert(1==0);
+  assert(jac.extent(0) == jac.extent(1));
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  ::pressio::ops::scale(jac, cf);
+  for (auto i=0; i<jac.extent(0); ++i) jac(i,i) += cn;
+}
+
+template <typename jacobian_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_dense_matrix_wrapper_pybind<jacobian_type>::value
+>
+discrete_time_jacobian(jacobian_type & jac,
+		       const scalar_type & dt,
+		       ::pressio::ode::implicitmethods::BDF2)
+{
+  assert(jac.extent(0) == jac.extent(1));
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  ::pressio::ops::scale(jac, cf);
+  for (auto i=0; i<jac.extent(0); ++i) jac(i,i) += cn;
+
 }
 #endif
 
