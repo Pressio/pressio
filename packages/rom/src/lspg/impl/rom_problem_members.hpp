@@ -59,7 +59,7 @@ template <
 struct PoliciesMixin;
 
 // specialize for default
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
   T, true, false, false, false, ops_t, r_pol_t, j_pol_t
   > : T
@@ -75,7 +75,7 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -88,7 +88,7 @@ struct PoliciesMixin<
   {}
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class _ops_t = ops_t,
     mpl::enable_if_t<!std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -103,11 +103,21 @@ struct PoliciesMixin<
 };
 
 // specialize for masked
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+template <class T, class masker_t, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, false, true, false, false, ops_t, r_pol_t, j_pol_t
+  T, false, true, false, false, masker_t, ops_t, r_pol_t, j_pol_t
   > : T
 {
+/* here we need to consider also the case where the masker is a pybind11:object
+   that is passed in directly from python: in that scenario, masker_t is
+   a C++ wrapper class wrapping the actualy pure python class,
+   so we need to create an object of this masker_t and pass that to the policies
+   because the policies do NOT accept pybind11::objects
+*/
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const masker_t masker_;
+#endif
+
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
@@ -119,8 +129,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename T5,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class T5,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -129,13 +139,25 @@ struct PoliciesMixin<
 		const T4 & fomNominalStateNative,
 		const T5 & masker)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      masker_(masker),
+      residualPolicy_(masker_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
+#else
       residualPolicy_(masker, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(masker, T::fomCRef(), T::fomStatesMngr_, decoder)
-  {}
+#endif
+  {
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    static_assert
+      (std::is_same<T5, pybind11::object>::value,
+       "Maked policies mixin: masker object must be a pybind11::object");
+#endif
+  }
 };
 
 // specialize for precond default
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
   T, false, false, true, false, ops_t, r_pol_t, j_pol_t
   > : T
@@ -151,8 +173,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename T5,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class T5,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -167,7 +189,7 @@ struct PoliciesMixin<
 };
 
 // specialize for hyp-red with void stencil-to-sample mapping
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
   T, false, false, false, true, ops_t, r_pol_t, j_pol_t, void
   > : T
@@ -183,8 +205,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -198,7 +220,7 @@ struct PoliciesMixin<
 };
 
 // specialize for hyp-red with nonvoid stencil-to-sample mapping
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t, class sTos_t>
 struct PoliciesMixin<
   T, false, false, false, true, ops_t, r_pol_t, j_pol_t, sTos_t
   > : T
@@ -215,8 +237,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename T5,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class T5,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -232,7 +254,7 @@ struct PoliciesMixin<
 };
 
 // specialize for preconditioned hyp-red with void stencil-to-sample mapping
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
   T, false, false, true, true, ops_t, r_pol_t, j_pol_t, void
   > : T
@@ -248,8 +270,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename T5,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class T5,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -264,7 +286,7 @@ struct PoliciesMixin<
 };
 
 // specialize for preconditioned hyp-red with nonvoid stencil-to-sample mapping
-template <typename T, typename ops_t, typename r_pol_t, typename j_pol_t, typename sTos_t>
+template <class T, class ops_t, class r_pol_t, class j_pol_t, class sTos_t>
 struct PoliciesMixin<
   T, false, false, true, true, ops_t, r_pol_t, j_pol_t, sTos_t
   > : T
@@ -281,8 +303,8 @@ struct PoliciesMixin<
   ~PoliciesMixin() = default;
 
   template<
-    typename T1, typename T2, typename T3, typename T4, typename T5, typename T6,
-    typename _ops_t = ops_t,
+    class T1, class T2, class T3, class T4, class T5, class T6,
+    class _ops_t = ops_t,
     mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
     >
   PoliciesMixin(const T1 & romStateIn,
@@ -299,25 +321,25 @@ struct PoliciesMixin<
 };
 
 // aliases to make things easier
-template <typename T, typename ...Args>
+template <class T, typename ...Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;
 
-template <typename T, typename ...Args>
+template <class T, typename ...Args>
 using MaskedPoliciesMixin = PoliciesMixin<T, false, true, false, false, Args...>;
 
-template <typename T, typename ...Args>
+template <class T, typename ...Args>
 using PrecondPoliciesMixin = PoliciesMixin<T, false, false, true, false, Args...>;
 
-template <typename T, typename ...Args>
+template <class T, typename ...Args>
 using HypRedPoliciesMixin = PoliciesMixin<T, false, false, false, true, Args...>;
 
-template <typename T, typename ...Args>
+template <class T, typename ...Args>
 using PrecHypRedPoliciesMixin = PoliciesMixin<T, false, false, true, true, Args...>;
 
 //---------------------------------------------------
 // system mixin (used for steady LSPG)
 //---------------------------------------------------
-template <typename T, typename system_t>
+template <class T, class system_t>
 struct SystemMixin : T
 {
   system_t systemObj_;

@@ -63,28 +63,61 @@ namespace pressio{ namespace rom{ namespace galerkin{
 // just expose some subcases, not all
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// with collector
-template<
-  class rom_problem_type, class state_t, class timet, class collector_t
-  >
-void solveNSteps
-(rom_problem_type & problem, state_t & stateIn,
- timet t0, timet dt, ::pressio::ode::types::step_t num_steps,
- pybind11::object pyCollector)
+// explicit with collector
+template<class rom_problem_type, class state_t, class time_t, class collector_t>
+mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
+solveNSteps(rom_problem_type & problem,
+	    state_t & stateIn,
+	    time_t t0, time_t dt,
+	    ::pressio::ode::types::step_t num_steps,
+	    pybind11::object pyCollector)
 {
   collector_t collector(pyCollector);
   ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), stateIn, t0, dt, num_steps, collector);
+      (problem.stepperRef(), stateIn, t0, dt, num_steps, collector);
 }
 
-// empty collector
-template<class rom_problem_type, class state_t, class timet>
-void solveNSteps
-(rom_problem_type & problem, state_t & stateIn,
- timet t0, timet dt, ::pressio::ode::types::step_t num_steps)
+// explicit wihtout collector
+template<class rom_problem_type, class state_t, class time_t>
+mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
+solveNSteps(rom_problem_type & problem,
+	    state_t & stateIn,
+	    time_t t0, time_t dt,
+	    ::pressio::ode::types::step_t num_steps)
 {
   ::pressio::ode::advanceNSteps
     (problem.stepperRef(), stateIn, t0, dt, num_steps);
+}
+
+// implicit with collector
+template<
+  class rom_problem_type, class state_t, class time_t,
+  class collector_t, class solver_t
+  >
+mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
+solveNSteps(rom_problem_type & problem,
+	    state_t & stateIn,
+	    time_t t0, time_t dt,
+	    ::pressio::ode::types::step_t num_steps,
+	    pybind11::object pyCollector,
+	    solver_t & solver)
+{
+  collector_t collector(pyCollector);
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateIn, t0, dt, num_steps, collector, solver);
+}
+
+// implicit without collector
+template<class rom_problem_type, class state_t, class time_t, class solver_t>
+mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
+solveNSteps(rom_problem_type & problem,
+	    state_t & stateIn,
+	    time_t t0, time_t dt,
+	    ::pressio::ode::types::step_t num_steps,
+	    solver_t & solver)
+{
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateIn, t0, dt, num_steps, solver);
 }
 
 #else

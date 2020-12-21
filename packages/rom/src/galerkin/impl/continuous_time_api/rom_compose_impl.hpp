@@ -227,7 +227,6 @@ struct compose<
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value and
     ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
-
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {

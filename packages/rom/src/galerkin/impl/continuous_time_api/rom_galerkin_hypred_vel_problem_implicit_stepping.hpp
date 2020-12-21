@@ -131,6 +131,22 @@ public:
 						const _ud_ops_t & udOps)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative, projector, udOps){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  HypRedVeloProblemImplicitStepContinuousTimeApi(pybind11::object fomObjPython,
+						 const decoder_t & decoder,
+						 const galerkin_native_state_t & romStateIn,
+						 const fom_native_state_t fomNominalStateIn,
+						 const projector_t & projector)
+    : members_(galerkin_state_t(romStateIn), fomObjPython, decoder,
+	       fomNominalStateIn, projector)
+  {}
+#endif
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

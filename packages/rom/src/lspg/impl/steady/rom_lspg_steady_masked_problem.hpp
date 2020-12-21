@@ -71,12 +71,13 @@ public:
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using system_t		= typename traits::system_t;
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
 				fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = MaskedPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
+  using Ct = MaskedPoliciesMixin<Bt, masker_t, void, residual_policy_t, jacobian_policy_t>;
   using mem_t = SystemMixin<Ct, system_t>;
   mem_t members_;
 
@@ -107,6 +108,21 @@ public:
     : members_(romStateIn, fomObj, decoder,
 	       fomNominalStateNative, maskerObj)
   {}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    ::pressio::mpl::enable_if_t<_binding_sentinel, int> = 0
+    >
+  MaskedProblemSteady(pybind11::object fomObjPython,
+		      const decoder_t & decoder,
+		      const lspg_native_state_t & romStateIn,
+		      const fom_native_state_t fomNominalStateNative,
+		      pybind11::object maskerPy)
+  : members_(lspg_state_t(romStateIn), fomObjPython, decoder,
+	     fomNominalStateNative, maskerPy)
+  {}
+#endif
 };
 
 }}}}}

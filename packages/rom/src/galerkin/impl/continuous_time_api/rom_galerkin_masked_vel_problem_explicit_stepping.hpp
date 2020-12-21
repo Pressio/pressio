@@ -67,6 +67,7 @@ public:
   using galerkin_state_t	= typename traits::galerkin_state_t;
   using galerkin_native_state_t	= typename traits::galerkin_native_state_t;
   using decoder_t		= typename traits::decoder_t;
+  using decoder_native_jac_t	= typename traits::decoder_native_jac_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using ud_ops_t		= typename traits::ud_ops_t;
@@ -81,7 +82,7 @@ private:
   using Bt  = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
 						       fom_state_reconstr_t,
 						       fom_states_manager_t>;
-  using Ct  = MaskedVeloExplicitPoliciesMixin<Bt, velocity_policy_t>;
+  using Ct  = MaskedVeloExplicitPoliciesMixin<Bt, masker_t, velocity_policy_t>;
   using m_t = ::pressio::rom::impl::ExplicitStepperMixin<Ct, stepper_t>;
   m_t members_;
 
@@ -117,6 +118,23 @@ public:
 						 const projector_t & projector)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative, masker, projector){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  MaskedVeloProblemExplicitStepContinuousTimeApi(pybind11::object fomObjPython,
+						 const decoder_t & decoder,
+						 const galerkin_native_state_t & romStateIn,
+						 const fom_native_state_t fomNominalStateIn,
+						 pybind11::object masker,
+						 const projector_t & projector)
+    : members_(galerkin_state_t(romStateIn), fomObjPython, decoder,
+	       fomNominalStateIn, masker, projector)
+  {}
+#endif
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

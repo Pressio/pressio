@@ -79,6 +79,7 @@ struct CommonTraitsContinuousTimeApi
    "A valid decoder type must be passed to define a Galerkin problem");
   using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
+  using decoder_native_jac_t = typename ::pressio::containers::details::traits<decoder_jac_t>::wrapped_t;
 
   // fom state reconstructor type
   using fom_state_reconstr_t =

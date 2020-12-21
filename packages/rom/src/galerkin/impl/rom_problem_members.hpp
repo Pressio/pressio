@@ -116,8 +116,8 @@ struct ImplicitPoliciesMixin<T, true, false, false, r_pol_t, j_pol_t> : T
 			const T4 & fomNominalStateNative,
 			Args && ... args)
     : T(romStateIn, fomObj, decoder, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(romStateIn.extent(0), T::projector_, fomObj, T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), T::projector_, fomObj, T::fomStatesMngr_, decoder)
+      residualPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_, decoder)
   {}
 };
 
@@ -143,15 +143,24 @@ struct ImplicitPoliciesMixin<T, false, true, false, r_pol_t, j_pol_t> : T
 			const T5 & projector,
 			Args && ... args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(romStateIn.extent(0), projector, fomObj, T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), projector, fomObj, T::fomStatesMngr_, decoder)
+      residualPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_, decoder)
   {}
 };
 
 // specialize for masked velo
-template <class T, class r_pol_t, class j_pol_t>
-struct ImplicitPoliciesMixin<T, false, false, true, r_pol_t, j_pol_t> : T
+template <class T, class masker_t, class r_pol_t, class j_pol_t>
+struct ImplicitPoliciesMixin<T, false, false, true, masker_t, r_pol_t, j_pol_t> : T
 {
+/* here we need to consider also the case where the masker is a pybind11:object
+   that is passed in directly from python: in that scenario, masker_t is
+   a C++ wrapper class wrapping the actualy pure python class,
+   so we need to create an object of this masker_t and pass that to the policies
+   because the policies do NOT accept pybind11::objects
+*/
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const masker_t masker_;
+#endif
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
@@ -171,8 +180,14 @@ struct ImplicitPoliciesMixin<T, false, false, true, r_pol_t, j_pol_t> : T
 			const T6 & projector,
 			Args && ... args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(romStateIn.extent(0), projector, masker, fomObj, T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), projector, masker, fomObj, T::fomStatesMngr_, decoder)
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      masker_(masker),
+      residualPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
+#else
+      residualPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_, decoder)
+#endif
   {}
 };
 
@@ -182,15 +197,13 @@ using DefaultImplicitPoliciesMixin = ImplicitPoliciesMixin<T, true, false, false
 
 template <class T, typename ...Args>
 using HypRedVeloImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true, false, Args...>;
+template <class T, typename ...Args>
+using HypRedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true, false, Args...>;
 
 template <class T, typename ...Args>
 using MaskedVeloImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, false, true, Args...>;
-
 template <class T, typename ...Args>
 using MaskedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, false, true, Args...>;
-
-template <class T, typename ...Args>
-using HypRedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true, false, Args...>;
 
 
 //---------------------------------------------------
@@ -201,6 +214,7 @@ using HypRedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true
 template <class T, bool, bool, bool, typename ... Args>
 struct ExplicitPoliciesMixin;
 
+// default
 template <class T, class rhs_pol_t>
 struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
 {
@@ -220,10 +234,11 @@ struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
 			const T4 & fomNominalStateNative,
 			Args && ...args)
     : T(romStateIn, fomObj, decoder, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), T::projector_, fomObj, T::fomStatesMngr_)
+      rhsPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
 
+// hypere-reduced
 template <class T, class rhs_pol_t>
 struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
 {
@@ -244,13 +259,23 @@ struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
 			const T5 & projector,
 			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), projector, fomObj, T::fomStatesMngr_)
+      rhsPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
 
-template <class T, class rhs_pol_t>
-struct ExplicitPoliciesMixin<T, false, false, true, rhs_pol_t> : T
+// masked
+template <class T, class masker_t, class rhs_pol_t>
+struct ExplicitPoliciesMixin<T, false, false, true, masker_t, rhs_pol_t> : T
 {
+/* here we need to consider also the case where the masker is a pybind11:object
+   that is passed in directly from python: in that scenario, masker_t is
+   a C++ wrapper class wrapping the actualy pure python class,
+   so we need to create an object of this masker_t and pass that to the policies
+   because the policies do NOT accept pybind11::objects
+*/
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const masker_t masker_;
+#endif
   rhs_pol_t rhsPolicy_;
 
   ExplicitPoliciesMixin() = delete;
@@ -269,8 +294,19 @@ struct ExplicitPoliciesMixin<T, false, false, true, rhs_pol_t> : T
 			const T6 & projector,
 			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), projector, masker, fomObj, T::fomStatesMngr_)
-  {}
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+      masker_(masker),
+      rhsPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
+#else
+      rhsPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
+#endif
+  {
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    static_assert
+      (std::is_same<T5, pybind11::object>::value,
+       "Maked policies mixin: masker object must be a pybind11::object");
+#endif
+  }
 };
 
 // aliases to make things easier

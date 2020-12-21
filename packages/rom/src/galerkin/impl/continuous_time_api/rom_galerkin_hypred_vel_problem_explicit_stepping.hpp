@@ -115,19 +115,35 @@ public:
 						 const projector_t & projector)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative, projector){}
 
-  // /* ud_ops_t != void */
-  // template <
-  //   typename _ud_ops_t = ud_ops_t,
-  //   ::pressio::mpl::enable_if_t<mpl::not_void<_ud_ops_t>::value, int> = 0
-  //   >
-  // HypRedVeloProblemExplicitStepContinuousTimeApi(const fom_system_t     & fomObj,
-  // 						 const decoder_t	       & decoder,
-  // 						 const galerkin_state_t   & romStateIn,
-  // 						 const fom_native_state_t & fomNominalStateNative,
-  // 						 const projector_t & projector,
-  // 						 const _ud_ops_t & udOps)
-  //   : members_(romStateIn, fomObj, decoder, fomNominalStateNative, projector, udOps){}
+  /* ud_ops_t != void */
+  template <
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<mpl::not_void<_ud_ops_t>::value, int> = 0
+    >
+  HypRedVeloProblemExplicitStepContinuousTimeApi(const fom_system_t     & fomObj,
+						 const decoder_t	       & decoder,
+						 const galerkin_state_t   & romStateIn,
+						 const fom_native_state_t & fomNominalStateNative,
+						 const projector_t & projector,
+						 const _ud_ops_t & udOps)
+    : members_(romStateIn, fomObj, decoder, fomNominalStateNative, projector, udOps){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  HypRedVeloProblemExplicitStepContinuousTimeApi(pybind11::object fomObjPython,
+						 const decoder_t & decoder,
+						 const galerkin_native_state_t & romStateIn,
+						 const fom_native_state_t fomNominalStateIn,
+						 const projector_t & projector)
+    : members_(galerkin_state_t(romStateIn), fomObjPython, decoder,
+	       fomNominalStateIn, projector)
+  {}
+#endif
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

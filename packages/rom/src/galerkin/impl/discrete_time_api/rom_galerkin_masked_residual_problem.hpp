@@ -83,7 +83,7 @@ private:
   using Bt  = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
 						       fom_state_reconstr_t,
 						       fom_states_manager_t>;
-  using Ct  = MaskedResidualImplicitPoliciesMixin<Bt, residual_policy_t, jacobian_policy_t>;
+  using Ct  = MaskedResidualImplicitPoliciesMixin<Bt, masker_t, residual_policy_t, jacobian_policy_t>;
   using m_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, void, stepper_t>;
   m_t members_;
 

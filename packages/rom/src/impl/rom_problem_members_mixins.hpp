@@ -66,7 +66,8 @@ struct FomObjMixin<fom_system_t, false>
   FomObjMixin & operator=(FomObjMixin &&) = delete;
   ~FomObjMixin() = default;
 
-  FomObjMixin(const fom_system_t & fomObjIn) : fomObj_(fomObjIn){}
+  explicit FomObjMixin(const fom_system_t & fomObjIn)
+    : fomObj_(fomObjIn){}
 
   const fom_system_t & fomCRef() const{ return fomObj_.get(); }
 };
@@ -90,7 +91,8 @@ struct FomObjMixin<fom_system_t, true>
   FomObjMixin & operator=(FomObjMixin &&) = delete;
   ~FomObjMixin() = default;
 
-  FomObjMixin(pybind11::object pyFomObj) : fomObj_(pyFomObj){}
+  explicit FomObjMixin(pybind11::object pyFomObj)
+    : fomObj_(pyFomObj){}
 
   const fom_system_t & fomCRef() const{ return fomObj_; }
 };

@@ -126,37 +126,20 @@ public:
 					      const _ud_ops_t & udOps)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative, udOps){}
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//   /* ud_ops_t == void and state_type is wrapper of pybind11::array
-
-//      Note that in this case, the constructor receives a pybind11::object
-//      as the FOM object, and we use that to construct the C++ wrapper object.
-//   */
-//   template <
-//     bool _binding_sentinel=binding_sentinel,
-//     typename _ud_ops_t = ud_ops_t,
-//     ::pressio::mpl::enable_if_t<
-//       std::is_void<_ud_ops_t>::value and
-//       _binding_sentinel, int> = 0
-//     >
-//   DefaultProblemExplicitStepContinuousTimeApi(pybind11::object fomObjPython,
-// 					      const decoder_t & decoder,
-// 					      const galerkin_native_state_t & romStateIn,
-// 					      const fom_native_state_t & fomNominalStateNative)
-//     : fomObj_(fomObjPython),
-//       fomNominalState_(fomNominalStateNative),
-//       fomStateReconstructor_(fomNominalState_, decoder),
-//       fomStatesMngr_(fomStateReconstructor_, fomNominalState_),
-//       projector_(decoder),
-//       velocityPolicy_(romStateIn.extent(0), fomObj, fomStatesMngr_, projector_),
-//       stepperObj_(galerkin_state_t(romStateIn), fomObj_, velocityPolicy_)
-//   {
-//     // reconstruct current fom state so that we have something
-//     // consisten with the current romState
-//     auto romStateView = galerkin_state_t(romStateIn, ::pressio::view());
-//     fomStatesMngr_.reconstructCurrentFomState(romStateView);
-//   }
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  DefaultProblemExplicitStepContinuousTimeApi(pybind11::object fomObjPython,
+					      const decoder_t & decoder,
+					      const galerkin_native_state_t & romStateIn,
+					      const fom_native_state_t fomNominalStateIn)
+    : members_(galerkin_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)
+  {}
+#endif
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
