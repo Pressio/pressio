@@ -27,6 +27,12 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   set(fn gn_qr_exp_data_fit_n2_eigen)
   add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_qr_rosenbrock_scaled_eigen)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_qr_nist_mgh10)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
