@@ -76,7 +76,13 @@ public:
    */
   template<typename T>
   LinearDecoderWithPressioOps(T && matIn)
-    : jacobianOfDecoder_(std::forward<T>(matIn)){}
+    : jacobianOfDecoder_(std::forward<T>(matIn))
+  {
+    PRESSIOLOG_DEBUG
+      ("cnstr: possibly allocating matrix with size = ({},{}), addr = {}",
+       &jacobianOfDecoder_,
+       jacobianOfDecoder_.extent(0), jacobianOfDecoder_.extent(1));
+  }
 
 public:
   // applyMapping must be templated because the type of the

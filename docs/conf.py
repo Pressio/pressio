@@ -20,11 +20,11 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_tutorials_tutorial2.html\">Linear Decoder with arbitrary types</a>", )
    ]),
 
-  # examples
-  ("<a href=>Full Examples</a>", #("<a href=\"md_pages_examples.html\">Full Examples</a>",
-   [
-     ("<a href=\"md_pages_examples_example1.html\">Example1</a>", )
-   ]),
+  # # demos
+  # ("<a href=>Demos</a>", #("<a href=\"md_pages_examples.html\">Full Examples</a>",
+  #  [
+  #    ("<a href=\"md_pages_examples_example1.html\">Example1</a>", )
+  #  ]),
 
   # hyper-reduction
   ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",

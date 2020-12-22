@@ -84,6 +84,9 @@ public:
     : fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)
   {
+    PRESSIOLOG_DEBUG("cnstr: allocating n = {} fomStates with extent = {}",
+		     n, fomState.extent(0));
+
     this->resetContainersToZero();
   }
 
@@ -98,6 +101,9 @@ public:
       fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)
   {
+    PRESSIOLOG_DEBUG("cnstr: allocating n = {} fomStates with extent = {}",
+		     n, fomState.extent(0));
+
     this->resetContainersToZero();
   }
 

@@ -72,7 +72,10 @@ struct FomStateReconstructorPressioOps
 				  const decoder_type & decoder)
     : fomNominalState_(fomNominalState),
       decoderObj_(decoder)
-  {}
+  {
+    PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}",
+		     fomNominalState.extent(0));
+  }
 
   template <typename rom_state_t>
   void operator()(const rom_state_t & romState,

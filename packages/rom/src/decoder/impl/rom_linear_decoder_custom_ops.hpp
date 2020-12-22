@@ -80,7 +80,13 @@ public:
   LinearDecoderWithCustomOps(T && matIn,
 			     const ops_t & udOps)
     : jacobianOfDecoder_(std::forward<T>(matIn)),
-      udOps_{udOps}{}
+      udOps_{udOps}
+  {
+    PRESSIOLOG_DEBUG
+      ("cnstr: possibly allocating matrix with size = ({},{}), addr = {}",
+       &jacobianOfDecoder_,
+       jacobianOfDecoder_.extent(0), jacobianOfDecoder_.extent(1));
+  }
 
 public:
   // applyMapping must be templated because the type of the
