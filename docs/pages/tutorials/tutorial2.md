@@ -39,7 +39,7 @@ The full tutorial can be found [here](https://github.com/Pressio/pressio-tutoria
 
 ```cpp
 @codesnippet
-https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc
+../../../../pressio-tutorials/tutorials/tutorial5.cc
 75:154
 ```
 
@@ -50,6 +50,6 @@ you need to pass to the `LinearDecoder` constructor an object that
 handle that computation.
 ```cpp
 @codesnippet
-https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc
+../../../../pressio-tutorials/tutorials/tutorial5.cc
 51:73
 ```

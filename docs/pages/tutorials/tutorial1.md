@@ -36,7 +36,7 @@ The full tutorial can be found [here](https://github.com/Pressio/pressio-tutoria
 
 ```cpp
 @codesnippet
-https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc
+../../../../pressio-tutorials/tutorials/tutorial4.cc
 51:122
 ```
 
