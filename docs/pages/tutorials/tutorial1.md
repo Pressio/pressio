@@ -35,53 +35,9 @@ object using Eigen types.
 The full tutorial can be found [here](https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc).
 
 ```cpp
-#include "pressio_rom.hpp"
-
-int main(int argc, char *argv[])
-{
-  // *** define some types ***
-  // here we assume your FOM application uses an Eigen vector for the state
-  // and an Eigen matrix as the type for the Jacobian
-  using native_fom_state_t = Eigen::VectorXd;
-  using native_phi_t	   = Eigen::MatrixXd;
-  // the wrapped types
-  using fom_state_t	  = pressio::containers::Vector<native_fom_state_t>;
-  using decoder_jac_t = pressio::containers::DenseMatrix<native_phi_t>;
-
-  // *** fill phi ***
-  // for simplicity, create a native phi with 10 rows and 3 columns
-  // and fill with ones
-  native_phi_t phiNative(6, 2);
-  phiNative.setConstant(1.);
-
-  // *** construct decoder  ***
-  using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
-  // here we demonstrate moving phiNative to avoid a deep copy, but one can
-  // also do `decoderObj(phi)` which implies a copy of the matrix.
-  // Obviously, if the matrix is large avoiding a copy is useful.
-  decoder_t decoder(std::move(phiNative));
-
-  // *** construct reduced state  ***
-  // typically, pressio reduced states for ROMs use Eigen or Kokkos (if enabled)
-  using rom_state_t = pressio::containers::Vector<Eigen::VectorXd>;
-  rom_state_t yRom(2);
-  // set yRom = 2.
-  pressio::ops::fill(yRom, 2.);
-
-  // *** apply mapping ***
-  fom_state_t yFom(6);
-  decoder.applyMapping(yRom, yFom);
-
-  // *** check solution ***
-  // yFom should be = [4. 4. .... 4.]
-  for (auto i=0; i<yFom.extent(0); ++i)
-	std::cout << "i= " << i
-		  << ", yFom(i) = "  << yFom(i)
-		  << ", expected = " << 4.
-		  << "\n";
-
-  return 0;
-}
+@codesnippet
+https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc
+51:122
 ```
 
 ## Comments
