@@ -11,18 +11,43 @@ Here we demonstate how to create a linear decoder object using Eigen types. The 
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio\_rom.hpp"{}}}
-\DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} *argv[])}
 \DoxyCodeLine{\{}
+\DoxyCodeLine{  std::cout << \textcolor{stringliteral}{"{}Running tutorial 4\(\backslash\)n"{}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/*}}
+\DoxyCodeLine{\textcolor{comment}{   creating a linear decoder (or mapping)}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{   -\/-\/why and what-\/-\/:}}
+\DoxyCodeLine{\textcolor{comment}{   one of the main assumptions of projection-\/based ROMs}}
+\DoxyCodeLine{\textcolor{comment}{   is to approximate a FOM state, yFom, as:}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{     yFom = g(yRom)}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{   where yRom is the reduced state, also called generalized coordinates,}}
+\DoxyCodeLine{\textcolor{comment}{   and g() is a mapping between the two.}}
+\DoxyCodeLine{\textcolor{comment}{   If g() is linear, then we can write:}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{     yFom = phi * yRom}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{   where phi is a matrix (for the time being, assume it constant).}}
+\DoxyCodeLine{\textcolor{comment}{   A linear decoder in pressio represents exactly this linear mapping.}}
+\DoxyCodeLine{\textcolor{comment}{   The Jacobian of the mapping is: d(yFom)/d(yRom) = phi.}}
+\DoxyCodeLine{\textcolor{comment}{}}
+\DoxyCodeLine{\textcolor{comment}{   -\/-\/details-\/-\/:}}
+\DoxyCodeLine{\textcolor{comment}{   Here we demonstate how to create a linear decoder object using Eigen types.}}
+\DoxyCodeLine{\textcolor{comment}{   For other types already known to pressio (e.g. Trilinos), it would work similarly.}}
+\DoxyCodeLine{\textcolor{comment}{   If you work with an arbitrary type currrently unknown to pressio, see tutorial5.cc}}
+\DoxyCodeLine{\textcolor{comment}{  */}}
+\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// *** define some types ***}}
 \DoxyCodeLine{  \textcolor{comment}{// here we assume your FOM application uses an Eigen vector for the state}}
 \DoxyCodeLine{  \textcolor{comment}{// and an Eigen matrix as the type for the Jacobian}}
 \DoxyCodeLine{  \textcolor{keyword}{using} native\_fom\_state\_t = Eigen::VectorXd;}
 \DoxyCodeLine{  \textcolor{keyword}{using} native\_phi\_t       = Eigen::MatrixXd;}
 \DoxyCodeLine{  \textcolor{comment}{// the wrapped types}}
-\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t   = pressio::containers::Vector<native\_fom\_state\_t>;}
-\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t = pressio::containers::DenseMatrix<native\_phi\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t = pressio::containers::Vector<native\_fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t   = pressio::containers::DenseMatrix<native\_phi\_t>;}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// *** fill phi ***}}
 \DoxyCodeLine{  \textcolor{comment}{// for simplicity, create a native phi with 10 rows and 3 columns}}

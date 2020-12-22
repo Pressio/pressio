@@ -41,12 +41,6 @@
               </ol>
             </li>
             <li>
-              <a href=>Full Examples</a>
-              <ol>
-                <li><a href="md_pages_examples_example1.html">Example1</a></li>
-              </ol>
-            </li>
-            <li>
               <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
               <ol>
                 <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
@@ -63,7 +57,7 @@
               </ol>
             </li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="6">
+          <ol class="m-col-t-6 m-col-m-none" start="5">
             <li><a href="annotated.html">Classes</a></li>
             <li><a href="namespaces.html">Namespaces</a></li>
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
@@ -229,25 +223,52 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div></section><section id="autotoc_md42"><h2><a href="#autotoc_md42">Code</a></h2><p>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</a>.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio_rom.hpp&quot;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</svg></div></section><section id="autotoc_md42"><h2><a href="#autotoc_md42">Code</a></h2><p>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Running tutorial 5</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+  <span class="cm">/*</span>
+<span class="cm">   creating a linear decoder (or mapping) for arbitrary type.</span>
+
+<span class="cm">   --why and what--:</span>
+<span class="cm">   one of the main assumptions of projection-based ROMs</span>
+<span class="cm">   is to approximate a FOM state, yFom, as:</span>
+
+<span class="cm">     yFom = g(yRom)</span>
+
+<span class="cm">   where yRom is the reduced state, also called generalized coordinates,</span>
+<span class="cm">   and g() is a mapping between the two.</span>
+<span class="cm">   If g() is linear, then we can write:</span>
+
+<span class="cm">     yFom = phi * yRom</span>
+
+<span class="cm">   where phi is a matrix (for the time being, assume it constant).</span>
+<span class="cm">   A linear decoder in pressio represents exactly this linear mapping.</span>
+<span class="cm">   The Jacobian of the mapping is: d(yFom)/d(yRom) = phi.</span>
+
+<span class="cm">   --details--:</span>
+<span class="cm">   Here we demonstate how to create a linear decoder object for a type that</span>
+<span class="cm">   is NOT know to pressio: this means pressio does not know how to compute</span>
+<span class="cm">   operations on this type, so the user is responsible to pass the ops.</span>
+<span class="cm">   This tutorial has some similarities to tutorial3.cc since that one</span>
+<span class="cm">   also deals with how to use pressio::ode for an arbitrary type.</span>
+<span class="cm">  */</span>
+
   <span class="c1">// *** define some types ***</span>
   <span class="c1">// here we assume your FOM application uses an Eigen vector for the state</span>
   <span class="c1">// and an Eigen matrix as the type for the Jacobian</span>
-  <span class="k">using</span> <span class="n">scalar_t</span>           <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">scalar_t</span>       <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">native_fom_state_t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">native_phi_t</span>       <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
 
   <span class="c1">// the wrapped types</span>
   <span class="c1">// what happens in pressio: std::vector is treated as unknwon type by pressio</span>
   <span class="c1">// so effectively pressio::containers::Vector is labeled as an &quot;arbitrary&quot; type</span>
-  <span class="k">using</span> <span class="n">fom_state_t</span>    <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">decoder_jac_t</span>  <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">fom_state_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">decoder_jac_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
 
   <span class="c1">// *** fill phi ***</span>
-  <span class="c1">// create a native phi with and fill with ones</span>
+  <span class="c1">// create a native phi and fill with ones</span>
   <span class="n">native_phi_t</span> <span class="n">phiNative</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
   <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span> <span class="nl">iRow</span> <span class="p">:</span> <span class="n">phiNative</span><span class="p">){</span>
     <span class="n">iRow</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.</span><span class="p">);</span>
@@ -257,7 +278,7 @@ $\phi$
   <span class="k">using</span> <span class="n">ops_t</span> <span class="o">=</span> <span class="n">MyOps</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">decoder_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">LinearDecoder</span><span class="o">&lt;</span><span class="n">decoder_jac_t</span><span class="p">,</span> <span class="n">fom_state_t</span><span class="p">,</span> <span class="n">ops_t</span><span class="o">&gt;</span><span class="p">;</span>
   <span class="c1">// Need to pass the native phi (here we assume the native type is copy-constructible)</span>
-  <span class="c1">// and an object that knows how to compute the operations (see next section)</span>
+  <span class="c1">// and an object that knows how to compute the operations (see MyOps at top)</span>
   <span class="n">ops_t</span> <span class="n">ops</span><span class="p">;</span>
   <span class="n">decoder_t</span> <span class="n">decoder</span><span class="p">(</span><span class="n">phiNative</span><span class="p">,</span> <span class="n">ops</span><span class="p">);</span>
 
@@ -309,7 +330,7 @@ $\phi$
     <span class="p">{</span>
       <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">beta</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
       <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">j</span><span class="p">){</span>
-       <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
+    <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>

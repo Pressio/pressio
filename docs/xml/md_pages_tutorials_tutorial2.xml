@@ -18,25 +18,52 @@
 <sect1 id="md_pages_tutorials_tutorial2_1autotoc_md42">
 <title>Code</title>
 <para>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</ulink>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio_rom.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Running<sp/>tutorial<sp/>5\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>creating<sp/>a<sp/>linear<sp/>decoder<sp/>(or<sp/>mapping)<sp/>for<sp/>arbitrary<sp/>type.</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>--why<sp/>and<sp/>what--:</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>one<sp/>of<sp/>the<sp/>main<sp/>assumptions<sp/>of<sp/>projection-based<sp/>ROMs</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>is<sp/>to<sp/>approximate<sp/>a<sp/>FOM<sp/>state,<sp/>yFom,<sp/>as:</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>yFom<sp/>=<sp/>g(yRom)</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>where<sp/>yRom<sp/>is<sp/>the<sp/>reduced<sp/>state,<sp/>also<sp/>called<sp/>generalized<sp/>coordinates,</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>and<sp/>g()<sp/>is<sp/>a<sp/>mapping<sp/>between<sp/>the<sp/>two.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>If<sp/>g()<sp/>is<sp/>linear,<sp/>then<sp/>we<sp/>can<sp/>write:</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>yFom<sp/>=<sp/>phi<sp/>*<sp/>yRom</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>where<sp/>phi<sp/>is<sp/>a<sp/>matrix<sp/>(for<sp/>the<sp/>time<sp/>being,<sp/>assume<sp/>it<sp/>constant).</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>A<sp/>linear<sp/>decoder<sp/>in<sp/>pressio<sp/>represents<sp/>exactly<sp/>this<sp/>linear<sp/>mapping.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>The<sp/>Jacobian<sp/>of<sp/>the<sp/>mapping<sp/>is:<sp/>d(yFom)/d(yRom)<sp/>=<sp/>phi.</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>--details--:</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>Here<sp/>we<sp/>demonstate<sp/>how<sp/>to<sp/>create<sp/>a<sp/>linear<sp/>decoder<sp/>object<sp/>for<sp/>a<sp/>type<sp/>that</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>is<sp/>NOT<sp/>know<sp/>to<sp/>pressio:<sp/>this<sp/>means<sp/>pressio<sp/>does<sp/>not<sp/>know<sp/>how<sp/>to<sp/>compute</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>operations<sp/>on<sp/>this<sp/>type,<sp/>so<sp/>the<sp/>user<sp/>is<sp/>responsible<sp/>to<sp/>pass<sp/>the<sp/>ops.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>This<sp/>tutorial<sp/>has<sp/>some<sp/>similarities<sp/>to<sp/>tutorial3.cc<sp/>since<sp/>that<sp/>one</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>also<sp/>deals<sp/>with<sp/>how<sp/>to<sp/>use<sp/>pressio::ode<sp/>for<sp/>an<sp/>arbitrary<sp/>type.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>define<sp/>some<sp/>types<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here<sp/>we<sp/>assume<sp/>your<sp/>FOM<sp/>application<sp/>uses<sp/>an<sp/>Eigen<sp/>vector<sp/>for<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>an<sp/>Eigen<sp/>matrix<sp/>as<sp/>the<sp/>type<sp/>for<sp/>the<sp/>Jacobian</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_fom_state_t<sp/>=<sp/>std::vector&lt;scalar_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_phi_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>std::vector&lt;std::vector&lt;scalar_t&gt;&gt;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>wrapped<sp/>types</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>what<sp/>happens<sp/>in<sp/>pressio:<sp/>std::vector<sp/>is<sp/>treated<sp/>as<sp/>unknwon<sp/>type<sp/>by<sp/>pressio</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>so<sp/>effectively<sp/>pressio::containers::Vector<sp/>is<sp/>labeled<sp/>as<sp/>an<sp/>&quot;arbitrary&quot;<sp/>type</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/><sp/><sp/><sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/><sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>fill<sp/>phi<sp/>***</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>with<sp/>and<sp/>fill<sp/>with<sp/>ones</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>and<sp/>fill<sp/>with<sp/>ones</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>native_phi_t<sp/>phiNative(6);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>iRow<sp/>:<sp/>phiNative){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>iRow.resize(2,<sp/>1.);</highlight></codeline>
@@ -46,7 +73,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ops_t<sp/>=<sp/>MyOps&lt;scalar_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_t<sp/>=<sp/>pressio::rom::LinearDecoder&lt;decoder_jac_t,<sp/>fom_state_t,<sp/>ops_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Need<sp/>to<sp/>pass<sp/>the<sp/>native<sp/>phi<sp/>(here<sp/>we<sp/>assume<sp/>the<sp/>native<sp/>type<sp/>is<sp/>copy-constructible)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>an<sp/>object<sp/>that<sp/>knows<sp/>how<sp/>to<sp/>compute<sp/>the<sp/>operations<sp/>(see<sp/>next<sp/>section)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>an<sp/>object<sp/>that<sp/>knows<sp/>how<sp/>to<sp/>compute<sp/>the<sp/>operations<sp/>(see<sp/>MyOps<sp/>at<sp/>top)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>ops_t<sp/>ops;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>decoder_t<sp/>decoder(phiNative,<sp/>ops);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -93,7 +120,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>beta*z[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(std::size_t<sp/>j=0;<sp/>j&lt;A[i].size();<sp/>++j){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>alpha*A[i][j]*x(j);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>alpha*A[i][j]*x(j);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>

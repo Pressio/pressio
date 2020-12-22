@@ -18,18 +18,43 @@
 <sect1 id="md_pages_tutorials_tutorial1_1autotoc_md38">
 <title>Code</title>
 <para>Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found <ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</ulink>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio_rom.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Running<sp/>tutorial<sp/>4\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>creating<sp/>a<sp/>linear<sp/>decoder<sp/>(or<sp/>mapping)</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>--why<sp/>and<sp/>what--:</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>one<sp/>of<sp/>the<sp/>main<sp/>assumptions<sp/>of<sp/>projection-based<sp/>ROMs</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>is<sp/>to<sp/>approximate<sp/>a<sp/>FOM<sp/>state,<sp/>yFom,<sp/>as:</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>yFom<sp/>=<sp/>g(yRom)</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>where<sp/>yRom<sp/>is<sp/>the<sp/>reduced<sp/>state,<sp/>also<sp/>called<sp/>generalized<sp/>coordinates,</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>and<sp/>g()<sp/>is<sp/>a<sp/>mapping<sp/>between<sp/>the<sp/>two.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>If<sp/>g()<sp/>is<sp/>linear,<sp/>then<sp/>we<sp/>can<sp/>write:</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>yFom<sp/>=<sp/>phi<sp/>*<sp/>yRom</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>where<sp/>phi<sp/>is<sp/>a<sp/>matrix<sp/>(for<sp/>the<sp/>time<sp/>being,<sp/>assume<sp/>it<sp/>constant).</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>A<sp/>linear<sp/>decoder<sp/>in<sp/>pressio<sp/>represents<sp/>exactly<sp/>this<sp/>linear<sp/>mapping.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>The<sp/>Jacobian<sp/>of<sp/>the<sp/>mapping<sp/>is:<sp/>d(yFom)/d(yRom)<sp/>=<sp/>phi.</highlight></codeline>
+<codeline><highlight class="comment"></highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>--details--:</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>Here<sp/>we<sp/>demonstate<sp/>how<sp/>to<sp/>create<sp/>a<sp/>linear<sp/>decoder<sp/>object<sp/>using<sp/>Eigen<sp/>types.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>For<sp/>other<sp/>types<sp/>already<sp/>known<sp/>to<sp/>pressio<sp/>(e.g.<sp/>Trilinos),<sp/>it<sp/>would<sp/>work<sp/>similarly.</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/>If<sp/>you<sp/>work<sp/>with<sp/>an<sp/>arbitrary<sp/>type<sp/>currrently<sp/>unknown<sp/>to<sp/>pressio,<sp/>see<sp/>tutorial5.cc</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>define<sp/>some<sp/>types<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here<sp/>we<sp/>assume<sp/>your<sp/>FOM<sp/>application<sp/>uses<sp/>an<sp/>Eigen<sp/>vector<sp/>for<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>an<sp/>Eigen<sp/>matrix<sp/>as<sp/>the<sp/>type<sp/>for<sp/>the<sp/>Jacobian</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_fom_state_t<sp/>=<sp/>Eigen::VectorXd;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_phi_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>Eigen::MatrixXd;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>wrapped<sp/>types</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/><sp/><sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/><sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>fill<sp/>phi<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>simplicity,<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>with<sp/>10<sp/>rows<sp/>and<sp/>3<sp/>columns</highlight><highlight class="normal"></highlight></codeline>
