@@ -66,7 +66,7 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Arbitrary,
-  false, 1>,
+  false, 2>,
   public matrix_shared_traits<false>
 {
 
@@ -102,7 +102,7 @@ struct traits<
   : public containers_shared_traits<
   DenseMatrix<wrapped_type>,
   wrapped_type, false, true, false,
-  WrappedPackageIdentifier::Eigen, true, 1>,
+  WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<false>
 {
 
@@ -145,7 +145,7 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Trilinos,
-  true, 1>,
+  true, 2>,
     public matrix_shared_traits<false>
 {
 
@@ -184,7 +184,7 @@ struct traits<
   DenseMatrix<wrapped_type>,
   wrapped_type, false, true, false,
   WrappedPackageIdentifier::Trilinos,
-  false, 1>,
+  false, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
@@ -222,7 +222,7 @@ struct traits<
   false, true, false,
   WrappedPackageIdentifier::Kokkos,
   true, //true because kokkos is for shared mem
-  1
+  2
   >,
   public matrix_shared_traits<false>
 {
@@ -283,7 +283,7 @@ struct traits<
   wrapped_type,
   false, true, false,
   WrappedPackageIdentifier::Pybind,
-  true, 1>,
+  true, 2>,
     public matrix_shared_traits<false>
 {
 
