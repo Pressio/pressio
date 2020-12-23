@@ -66,7 +66,7 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Arbitrary,
-  false
+  false, 1
   >
 {
 
@@ -104,7 +104,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Eigen,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -139,7 +140,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Eigen,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -176,7 +178,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Eigen,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -214,7 +217,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Eigen,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -256,7 +260,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Trilinos,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -293,7 +298,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Trilinos,
-  false>
+  false, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -333,7 +339,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Trilinos,
-  false>
+  false, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -392,7 +399,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Trilinos,
-  false>
+  false, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier
@@ -448,7 +456,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Kokkos,
-  true //true because kokkos is for shared mem
+  true, //true because kokkos is for shared mem
+  1
   >
 {
 
@@ -509,7 +518,8 @@ struct traits<
   wrapped_type,
   true, false, false,
   WrappedPackageIdentifier::Pybind,
-  true>
+  true, 1
+  >
 {
 
   static constexpr WrappedVectorIdentifier

@@ -64,7 +64,7 @@ struct traits<
   >
   : public containers_shared_traits<SparseMatrix<wrapped_type>,
 				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen, true>,
+				    WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier

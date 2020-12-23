@@ -62,11 +62,12 @@ struct traits<
     ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<MultiVector<wrapped_type>,
-				    wrapped_type,
-				    false, false, true,
-				    WrappedPackageIdentifier::Arbitrary,
-				    false>
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type,
+  false, false, true,
+  WrappedPackageIdentifier::Arbitrary,
+  false, 2>
 {
 
   using wrapped_t = wrapped_type;
@@ -105,7 +106,7 @@ struct traits<
   : public containers_shared_traits<
   MultiVector<wrapped_type>,
   wrapped_type, false, false, true,
-  WrappedPackageIdentifier::Eigen, true
+  WrappedPackageIdentifier::Eigen, true, 2
   >
 {
   static constexpr WrappedMultiVectorIdentifier
@@ -138,11 +139,12 @@ struct traits<
     ::pressio::containers::predicates::is_multi_vector_epetra<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<MultiVector<wrapped_type>,
-				    wrapped_type,
-				    false, false, true,
-				    WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type,
+  false, false, true,
+  WrappedPackageIdentifier::Trilinos,
+  false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
@@ -174,11 +176,12 @@ struct traits<
     ::pressio::containers::predicates::is_multi_vector_tpetra<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<MultiVector<wrapped_type>,
-				    wrapped_type,
-				    false, false, true,
-				    WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type,
+  false, false, true,
+  WrappedPackageIdentifier::Trilinos,
+  false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
@@ -228,11 +231,12 @@ struct traits<
     ::pressio::containers::predicates::is_multi_vector_tpetra_block<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<MultiVector<wrapped_type>,
-				    wrapped_type,
-				    false, false, true,
-				    WrappedPackageIdentifier::Trilinos,
-				    false>
+  : public containers_shared_traits<
+  MultiVector<wrapped_type>,
+  wrapped_type,
+  false, false, true,
+  WrappedPackageIdentifier::Trilinos,
+  false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::TpetraBlock;
@@ -287,7 +291,8 @@ struct traits<
   wrapped_type,
   false, false, true,
   WrappedPackageIdentifier::Kokkos,
-  true //true because kokkos is for shared mem
+  true, //true because kokkos is for shared mem
+  2
   >
 {
 

@@ -64,7 +64,7 @@ struct traits<
   typename details::traits<v_type>::wrapped_t,
   true, false, false,
   WrappedPackageIdentifier::Eigen,
-  true
+  true, 1
   >
 {
   static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::EigenColStatic;
@@ -125,7 +125,8 @@ struct traits<
   typename details::traits<v_type>::wrapped_t,
   true, false, false,
   WrappedPackageIdentifier::Kokkos,
-  true //true because kokkos is for shared mem
+  true, //true because kokkos is for shared mem
+  1
   >
 {
   static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::Kokkos;

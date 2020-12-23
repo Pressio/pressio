@@ -63,7 +63,7 @@ struct traits<
   ::pressio::containers::expressions::DiagExpr<matrix_type>,
   typename details::traits<matrix_type>::wrapped_t,
   true, false, false,
-  WrappedPackageIdentifier::Eigen, true>
+  WrappedPackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::EigenColStatic;
@@ -113,7 +113,8 @@ struct traits<
   typename details::traits<matrix_type>::wrapped_t,
   true, false, false,
   WrappedPackageIdentifier::Kokkos,
-  true //true because kokkos is shared mem
+  true, //true because kokkos is shared mem
+  1
   >
 {
 
@@ -159,7 +160,8 @@ struct traits<
   typename details::traits<matrix_type>::wrapped_t,
   true, false, false,
   WrappedPackageIdentifier::Pybind,
-  true
+  true,
+  1
   >
 {
 

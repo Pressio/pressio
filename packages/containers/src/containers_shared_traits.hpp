@@ -58,20 +58,21 @@ template<
   bool is_matrix_b,
   bool is_multi_vector_b,
   WrappedPackageIdentifier wpid,
-  bool is_shared_mem_b
+  bool is_shared_mem_b,
+  int rankIn
   >
-struct containers_shared_traits{
-
+struct containers_shared_traits
+{
   using wrapped_t = wrapped_type;
   using derived_t = container_type;
 
   static constexpr WrappedPackageIdentifier wrapped_package_identifier = wpid;
-
   static constexpr bool is_vector	= is_vector_b;
   static constexpr bool is_matrix	= is_matrix_b;
   static constexpr bool is_multi_vector = is_multi_vector_b;
   static constexpr bool is_shared_mem	= is_shared_mem_b;
   static constexpr bool is_distributed	= !is_shared_mem;
+  static constexpr int rank = rankIn;
 };
 
 /// common traits of matrices

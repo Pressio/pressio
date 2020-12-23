@@ -63,7 +63,7 @@ struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   typename details::traits<matrix_type>::wrapped_t,
   false, true, false,
-  WrappedPackageIdentifier::Eigen, true>,
+  WrappedPackageIdentifier::Eigen, true, 2>,
   public matrix_shared_traits<details::traits<matrix_type>::is_sparse>
 {
 
@@ -124,7 +124,8 @@ struct traits<
   typename details::traits<matrix_type>::wrapped_t,
   false, true, false,
   WrappedPackageIdentifier::Kokkos,
-  true //true because kokkos is for shared mem
+  true, //true because kokkos is for shared mem
+  2
   >,
   public matrix_shared_traits<false>
 {

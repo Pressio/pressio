@@ -65,7 +65,7 @@ struct traits<
   //isVector=false, isMatrix=true, isMv=false
   false, true, false,
   WrappedPackageIdentifier::Eigen,
-  true
+  true, 2
   >,
     public matrix_shared_traits<false>
 {
@@ -102,7 +102,7 @@ struct traits<
   //isVector=false, isMatrix=true, isMv=false
   false, true, false,
   WrappedPackageIdentifier::Pybind,
-  true
+  true, 2
   >,
     public matrix_shared_traits<false>
 {
@@ -135,7 +135,7 @@ struct traits<
   //isVector=false, isMatrix=true, isMv=false
   false, true, false,
   WrappedPackageIdentifier::Trilinos,
-  true
+  true, 2
   >,
     public matrix_shared_traits<false>
 {
@@ -163,7 +163,7 @@ struct traits<
   //isVector=false, isMatrix=true, isMv=false
   false, true, false,
   WrappedPackageIdentifier::Trilinos,
-  true
+  true, 2
   >,
     public matrix_shared_traits<false>
 {
@@ -191,7 +191,7 @@ struct traits<
   //isVector=false, isMatrix=true, isMv=false
   false, true, false,
   WrappedPackageIdentifier::Trilinos,
-  true
+  true, 2
   >,
     public matrix_shared_traits<false>
 {
