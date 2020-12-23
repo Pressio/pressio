@@ -51,9 +51,16 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace concepts {
 
-// for now use same concept as in namespace rom
-template<typename T>
-using fom_velocity = ::pressio::rom::concepts::fom_velocity<T>;
+template<typename T, typename enable = void>
+struct fom_velocity : std::false_type{};
 
-}}}} // namespace pressio::ode::concepts
+template<typename T>
+struct fom_velocity<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::galerkin::concepts::fom_state<T>::value
+   >
+  > : std::true_type{};
+
+}}}}
 #endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_

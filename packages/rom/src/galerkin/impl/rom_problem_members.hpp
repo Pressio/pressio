@@ -234,7 +234,7 @@ struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
 			const T4 & fomNominalStateNative,
 			Args && ...args)
     : T(romStateIn, fomObj, decoder, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(romStateIn, T::projector_, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
 
@@ -259,7 +259,7 @@ struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
 			const T5 & projector,
 			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(romStateIn, projector, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
 
@@ -296,9 +296,9 @@ struct ExplicitPoliciesMixin<T, false, false, true, masker_t, rhs_pol_t> : T
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      rhsPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(romStateIn, projector, masker_, T::fomCRef(), T::fomStatesMngr_)
 #else
-      rhsPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(romStateIn, projector, masker, T::fomCRef(), T::fomStatesMngr_)
 #endif
   {
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

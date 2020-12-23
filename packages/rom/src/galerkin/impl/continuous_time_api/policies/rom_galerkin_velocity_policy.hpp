@@ -66,11 +66,11 @@ public:
   VelocityPolicy & operator=(VelocityPolicy &&) = delete;
   ~VelocityPolicy() = default;
 
-  template<typename ...Args>
-  VelocityPolicy(std::size_t romSize,
+  template<typename rom_state_t, typename ...Args>
+  VelocityPolicy(const rom_state_t & galerkinStateIn,
 		 Args && ...args)
     : projection_policy_t(std::forward<Args>(args)...),
-      romSize_(romSize){}
+      romSize_(galerkinStateIn.extent(0)){}
 
 public:
   template <typename fom_system_t>

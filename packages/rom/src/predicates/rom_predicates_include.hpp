@@ -50,6 +50,7 @@
 #define ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
 
 #include "./typedefs/rom_has_dense_matrix_typedef.hpp"
+#include "./typedefs/rom_has_fom_state_typedef.hpp"
 
 #include "./decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
 #include "./decoder/rom_has_const_get_reference_to_jacobian.hpp"

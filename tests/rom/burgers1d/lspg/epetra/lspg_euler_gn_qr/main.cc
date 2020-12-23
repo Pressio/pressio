@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
     (appobj, decoderObj, yROM, yRef);
 
   // GaussNewton solver
-  using rom_jac_t = typename decltype(lspgProblem)::traits::lspg_matrix_t;
+  using rom_jac_t = typename decltype(lspgProblem)::traits::lspg_jacobian_t;
   using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
   qr_solver_type qrSolver;
 

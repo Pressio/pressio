@@ -60,7 +60,7 @@ struct projector_explicit_stepping<
   mpl::enable_if_t<
     ::pressio::rom::galerkin::concepts::fom_velocity<fom_velocity_t>::value 
     and
-    ::pressio::rom::galerkin::concepts::rhs<result_t>::value 
+    ::pressio::rom::galerkin::concepts::velocity<result_t>::value 
     and
     ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
       T, fom_velocity_t, result_t>::value

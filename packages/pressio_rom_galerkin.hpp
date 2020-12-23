@@ -71,9 +71,15 @@
 #include "rom/src/pressio_rom_common.hpp"
 
 // concepts
+#include "rom/src/galerkin/will_be_concepts/rom_fom_state.hpp"
 #include "rom/src/galerkin/will_be_concepts/rom_fom_velocity.hpp"
+
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_explicit_state.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_implicit_state.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_velocity.hpp"
+#include "rom/src/galerkin/will_be_concepts/rom_galerkin_residual.hpp"
 #include "rom/src/galerkin/will_be_concepts/rom_galerkin_jacobian.hpp"
-#include "rom/src/galerkin/will_be_concepts/rom_galerkin_rhs.hpp"
+
 #include "rom/src/galerkin/will_be_concepts/rom_custom_ops_continuous_time.hpp"
 #include "rom/src/galerkin/will_be_concepts/rom_masker_explicit.hpp"
 #include "rom/src/galerkin/will_be_concepts/rom_masker_implicit.hpp"

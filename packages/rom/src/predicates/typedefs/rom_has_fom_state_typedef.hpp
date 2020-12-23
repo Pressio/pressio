@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_has_fom_state_typedef.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,21 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+#ifndef ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_
+#define ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace concepts {
+namespace pressio{ namespace rom{ namespace predicates {
 
-// a type T is a valid lspg jacobian if it is a valid decoder jacobian
-template<typename T>
-using jacobian = ::pressio::rom::concepts::decoder_jacobian<T>;
+template <typename T, typename enable = void>
+struct has_fom_state_typedef : std::false_type{};
 
-template<typename T>
-using lspg_jacobian = jacobian<T>;
+template <typename T>
+struct has_fom_state_typedef<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<typename T::fom_state_type>::value
+    >
+  > : std::true_type{};
 
-}}}}
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+}}}//end namespace pressio::rom::predicates
+#endif  // ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_rom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,43 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
+#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_IMPLICIT_STATE_HPP_
+#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_IMPLICIT_STATE_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace concepts {
 
 template<typename T, typename enable = void>
-struct fom_velocity : std::false_type{};
+struct implicit_state : std::false_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename T>
-struct fom_velocity<
+struct implicit_state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper<T>::value
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+    >
+  > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template<typename T>
+struct implicit_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
    >
   > : std::true_type{};
+#endif
 
-}}}// namespace pressio::ode::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct implicit_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+   >
+  > : std::true_type{};
+#endif
+
+}}}}
+#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_STATE_HPP_

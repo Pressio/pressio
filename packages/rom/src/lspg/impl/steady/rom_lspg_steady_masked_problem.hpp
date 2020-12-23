@@ -67,7 +67,6 @@ public:
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using masker_t		= typename traits::masker_t;
-  using lspg_matrix_t		= typename traits::lspg_matrix_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using system_t		= typename traits::system_t;
@@ -75,8 +74,8 @@ public:
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
-				fom_state_reconstr_t, fom_states_manager_t>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin
+    <At, void, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
   using Ct = MaskedPoliciesMixin<Bt, masker_t, void, residual_policy_t, jacobian_policy_t>;
   using mem_t = SystemMixin<Ct, system_t>;
   mem_t members_;

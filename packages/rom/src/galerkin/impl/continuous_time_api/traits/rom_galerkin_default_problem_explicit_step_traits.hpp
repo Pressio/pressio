@@ -78,8 +78,8 @@ struct traits<
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
-  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
+  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_velocity_t		= typename common_types_t::fom_velocity_t;
   using galerkin_state_t	= typename common_types_t::galerkin_state_t;
   using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;

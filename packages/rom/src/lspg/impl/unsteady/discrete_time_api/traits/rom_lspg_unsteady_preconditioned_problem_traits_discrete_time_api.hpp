@@ -84,23 +84,21 @@ struct traits<
   using scalar_t		= typename common_types_t::scalar_t;
   using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_native_residual_t	= typename common_types_t::fom_native_residual_t;
-
   using fom_state_t		= typename common_types_t::fom_state_t;
   using lspg_state_t		= typename common_types_t::lspg_state_t;
   using lspg_residual_t		= typename common_types_t::lspg_residual_t;
-
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
-  using lspg_matrix_t		= typename common_types_t::lspg_matrix_t;
+  using lspg_jacobian_t		= typename common_types_t::lspg_jacobian_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-
   using ud_ops_t		= typename common_types_t::ud_ops_t;
   using preconditioner_t = preconditioner_type;
+
   static_assert
   (
     ::pressio::rom::lspg::concepts::unsteady_preconditioner<
-      preconditioner_t, fom_state_t, scalar_t, lspg_residual_t, lspg_matrix_t
+      preconditioner_t, fom_state_t, scalar_t, lspg_residual_t, lspg_jacobian_t
       >::value,
       "Invalid preconditioner type passed to unsteady LSPG"
   );
@@ -117,7 +115,7 @@ struct traits<
     ::pressio::rom::lspg::decorator::Preconditioned<
     preconditioner_t,
     ::pressio::rom::lspg::impl::unsteady::JacobianPolicyDiscreteTimeApi<
-      fom_states_manager_t, lspg_matrix_t, decoder_t
+      fom_states_manager_t, lspg_jacobian_t, decoder_t
       >
     >;
 
@@ -126,8 +124,8 @@ struct traits<
 
   // declare type of stepper object
   using stepper_t		= ::pressio::ode::ImplicitStepper<
-    stepper_tag, lspg_state_t, lspg_residual_t, lspg_matrix_t, fom_system_type,
-    stepper_order_t, tot_n_setter_t,
+    stepper_tag, lspg_state_t, lspg_residual_t, lspg_jacobian_t,
+    fom_system_type, stepper_order_t, tot_n_setter_t,
     residual_policy_t, jacobian_policy_t>;
 };
 

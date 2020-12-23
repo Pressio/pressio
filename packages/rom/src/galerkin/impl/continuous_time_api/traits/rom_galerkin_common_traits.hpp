@@ -59,39 +59,57 @@ template <
   >
 struct CommonTraitsContinuousTimeApi
 {
-  using scalar_t	= typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
   using fom_system_t	= fom_system_type;
-  using fom_native_state_t    = typename fom_system_type::state_type;
-  using fom_native_velocity_t = typename fom_system_type::velocity_type;
+  using scalar_t	= typename fom_system_t::scalar_type;
 
-  // fom wrapper types
-  using fom_state_t		= ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_velocity_t		= ::pressio::containers::Vector<fom_native_velocity_t>;
-
-  // rom state type and native type
+  // rom state and native type
   using galerkin_state_t	= rom_state_type;
   using galerkin_native_state_t	=
     typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
+  // ---------------------
   // verify decoder
   static_assert
-  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t, fom_state_t>::value,
+  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t>::value,
    "A valid decoder type must be passed to define a Galerkin problem");
   using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
   using decoder_native_jac_t = typename ::pressio::containers::details::traits<decoder_jac_t>::wrapped_t;
 
+  // ---------------------
+  // detect fom state type (supposed to be wrapper) from decoder
+  // ensure it is consistent with the (native) fom_state_type from the app
+  using fom_state_t = typename decoder_type::fom_state_type;
+  using fom_native_state_t = typename fom_system_type::state_type;
+  static_assert
+  (std::is_same<
+   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+   fom_native_state_t>::value,
+   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+
+  // ---------------------
+  // for now we don't allow state and velocity to have different types
+  // but need to make sure this assumption is consistent with fom class
+  using fom_velocity_t = fom_state_t;
+  using fom_native_velocity_t = typename fom_system_type::velocity_type;
+  static_assert
+  (std::is_same<fom_native_state_t, fom_native_velocity_t>::value,
+   "Currently, the fom velocity type must be the same as the state type.");
+
+  // ---------------------
   // fom state reconstructor type
   using fom_state_reconstr_t =
     typename ::pressio::rom::impl::FomStateReconHelper<
     ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
+  // ---------------------
   // for continuous time API, total number of fom states needed is always 1
   // because the time integration is done on the ROM states.
   using fom_states_manager_t =
     ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t,
 					   fom_state_reconstr_t, ud_ops_type>;
 
+  // ---------------------
   // sentinel to tell if we are doing bindings for p4py:
   // always false if pybind is disabled, otherwise detect from galerkin state
   static constexpr bool binding_sentinel =

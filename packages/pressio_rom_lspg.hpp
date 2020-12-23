@@ -71,8 +71,11 @@
 #include "rom/src/pressio_rom_common.hpp"
 
 // concepts
+#include "rom/src/lspg/will_be_concepts/rom_fom_state.hpp"
+#include "rom/src/lspg/will_be_concepts/rom_fom_velocity.hpp"
 #include "rom/src/lspg/will_be_concepts/rom_lspg_jacobian.hpp"
 #include "rom/src/lspg/will_be_concepts/rom_lspg_residual.hpp"
+#include "rom/src/lspg/will_be_concepts/rom_lspg_state.hpp"
 #include "rom/src/lspg/will_be_concepts/rom_steady_preconditioner.hpp"
 #include "rom/src/lspg/will_be_concepts/rom_unsteady_preconditioner.hpp"
 #include "rom/src/lspg/will_be_concepts/rom_steady_masker.hpp"

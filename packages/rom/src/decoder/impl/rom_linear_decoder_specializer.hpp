@@ -69,9 +69,8 @@ struct LinearDecoderSpecializer<
 is not a valid decoder's Jacobian type.");
 
   static_assert
-  (::pressio::rom::concepts::fom_state<fom_state_type>::value,
-   "The fom state type template arg passed to the LinearDecoder class \
-is not a valid fom state type.");
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The fom state type template arg passed to the LinearDecoder class must be a wrapper");
 
   using type = LinearDecoderWithPressioOps<matrix_type, fom_state_type>;
 };
@@ -88,9 +87,8 @@ struct LinearDecoderSpecializer<
 is not a valid decoder's Jacobian type.");
 
   static_assert
-  (::pressio::rom::concepts::fom_state<fom_state_type>::value,
-   "The fom state type template arg passed to the LinearDecoder class \
- is not a valid fom state type.");
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The fom state type template arg passed to the LinearDecoder class must be a wrapper");
 
   using type = LinearDecoderWithCustomOps<matrix_type, fom_state_type,ud_ops_t>;
 };

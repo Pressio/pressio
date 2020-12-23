@@ -66,7 +66,7 @@ struct projector_implicit_stepping<
     and
     ::pressio::rom::concepts::decoder_jacobian<dmat_t>::value
     and
-    ::pressio::rom::galerkin::concepts::galerkin_rhs<result1_t>::value
+    ::pressio::rom::galerkin::concepts::galerkin_residual<result1_t>::value
     and
     ::pressio::rom::galerkin::concepts::galerkin_jacobian<result2_t>::value
     and

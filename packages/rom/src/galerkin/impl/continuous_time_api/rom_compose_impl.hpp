@@ -128,6 +128,11 @@ struct compose
   using type = void;
 };
 
+
+//*********************************************************
+// EXPLICIT TIME STEPPING
+//*********************************************************
+
 /****
      Galerkin default, pressio ops, explicit stepping
 ***/
@@ -180,6 +185,65 @@ struct compose<
     stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>;
 };
 
+/****
+     hyperReducedVelocity Galerkin, pressio ops, explicit stepping
+***/
+template<
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename galerkin_state_type,
+  typename projector_type
+  >
+struct compose<
+  ::pressio::rom::galerkin::impl::HyperReducedVelocity,
+  mpl::enable_if_t<
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
+    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    >,
+  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
+{
+  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+
+  using type =
+    ::pressio::rom::galerkin::impl::HypRedVeloProblemExplicitStepContinuousTimeApi<
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, projector_type, void>;
+};
+
+/****
+     maskedVelocity Galerkin, pressio ops, explicit stepping
+***/
+template<
+  typename stepper_tag,
+  typename fom_system_type,
+  typename decoder_type,
+  typename galerkin_state_type,
+  typename masker_type,
+  typename projector_type
+  >
+struct compose<
+  ::pressio::rom::galerkin::impl::MaskedVelocity,
+  mpl::enable_if_t<
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
+    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    >,
+  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
+{
+  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+
+  using type =
+    ::pressio::rom::galerkin::impl::MaskedVeloProblemExplicitStepContinuousTimeApi<
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type,
+    masker_type, projector_type, void>;
+};
+
+
+
+//*********************************************************
+// IMPLICIT TIME STEPPING
+//*********************************************************
 
 /****
      Galerkin default, pressio ops, implicit stepping
@@ -246,33 +310,6 @@ struct compose<
     decoder_type, ud_ops_type>;
 };
 
-
-/****
-     hyperReducedVelocity Galerkin, pressio ops, explicit stepping
-***/
-template<
-  typename stepper_tag,
-  typename fom_system_type,
-  typename decoder_type,
-  typename galerkin_state_type,
-  typename projector_type
-  >
-struct compose<
-  ::pressio::rom::galerkin::impl::HyperReducedVelocity,
-  mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
-    >,
-  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
-{
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
-
-  using type =
-    ::pressio::rom::galerkin::impl::HypRedVeloProblemExplicitStepContinuousTimeApi<
-    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, projector_type, void>;
-};
-
 /****
      hyperReducedVelocity Galerkin, pressio ops, implicit stepping
 ***/
@@ -336,34 +373,6 @@ struct compose<
     ::pressio::rom::galerkin::impl::HypRedVeloProblemImplicitStepContinuousTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
     galerkin_jacobian_t, decoder_type, projector_type, ud_ops_type>;
-};
-
-/****
-     maskedVelocity Galerkin, pressio ops, explicit stepping
-***/
-template<
-  typename stepper_tag,
-  typename fom_system_type,
-  typename decoder_type,
-  typename galerkin_state_type,
-  typename masker_type,
-  typename projector_type
-  >
-struct compose<
-  ::pressio::rom::galerkin::impl::MaskedVelocity,
-  mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
-    >,
-  stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
-{
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
-
-  using type =
-    ::pressio::rom::galerkin::impl::MaskedVeloProblemExplicitStepContinuousTimeApi<
-    stepper_tag, fom_system_type, galerkin_state_type, decoder_type,
-    masker_type, projector_type, void>;
 };
 
 /****

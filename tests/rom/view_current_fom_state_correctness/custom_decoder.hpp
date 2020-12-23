@@ -5,7 +5,8 @@
 struct MyCustomDecoder
 {
   // this is mandatory because pressio detects it
-  using jacobian_type  = pressio::containers::MultiVector<Eigen::MatrixXd>;
+  using jacobian_type = pressio::containers::MultiVector<Eigen::MatrixXd>;
+  using fom_state_type = ::pressio::containers::Vector<Eigen::VectorXd>;
 
 private:
   const int romSize_ = {};
@@ -26,7 +27,7 @@ public:
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,
-		    ::pressio::containers::Vector<Eigen::VectorXd> & result) const
+		  fom_state_type & result) const
   {
     ++applyMappingCount_;
 

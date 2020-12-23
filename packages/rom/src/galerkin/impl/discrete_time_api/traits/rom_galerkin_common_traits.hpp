@@ -59,27 +59,43 @@ template <
   >
 struct CommonTraitsDiscreteTimeApi
 {
-  using scalar_t = typename ::pressio::containers::details::traits<rom_state_type>::scalar_t;
   using fom_system_t		= fom_system_type;
-  using fom_native_state_t	= typename fom_system_t::state_type;
-  using fom_native_residual_t	= typename fom_system_t::discrete_time_residual_type;
-
-  // fom wrapper types
-  using fom_state_t    = ::pressio::containers::Vector<fom_native_state_t>;
-  using fom_residual_t = ::pressio::containers::Vector<fom_native_residual_t>;
+  using scalar_t		= typename fom_system_t::scalar_type;
 
   // rom types
   using galerkin_state_t	= rom_state_type;
   using galerkin_native_state_t	=
     typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
+  // ---------------------
   // verify decoder
   static_assert
-  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t, fom_state_t>::value,
+  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t>::value,
    "A valid decoder type must be passed to define a Galerkin problem");
-  using decoder_t = decoder_type;
+  using decoder_t     = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
+  // ---------------------
+  // detect fom state type (supposed to be wrapper) from decoder
+  // ensure it is consistent with the (native) fom_state_type from the app
+  using fom_state_t = typename decoder_type::fom_state_type;
+  using fom_native_state_t = typename fom_system_type::state_type;
+  static_assert
+  (std::is_same<
+   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+   fom_native_state_t>::value,
+   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+
+  // ---------------------
+  // for now we don't allow state and residual to have different types
+  // but need to make sure this assumption is consistent with fom class
+  using fom_residual_t		= fom_state_t;
+  using fom_native_residual_t = typename fom_system_type::discrete_time_residual_type;
+  static_assert
+  (std::is_same<fom_native_state_t, fom_native_residual_t>::value,
+   "Currently, the fom discrete time residual type must be the same as the state type.");
+
+  // ---------------------
   /* fom_apply_jacobian_t is type of J*decoder_jac_t where
    * * J is the jacobian of the fom rhs
    * * decoder_jac_t is the type of the decoder jacobian
@@ -91,6 +107,7 @@ struct CommonTraitsDiscreteTimeApi
   // if we have an admissible user-defined ops
   using ud_ops_t = void;
 
+  // ---------------------
   // fom state reconstructor type
   using fom_state_reconstr_t = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 

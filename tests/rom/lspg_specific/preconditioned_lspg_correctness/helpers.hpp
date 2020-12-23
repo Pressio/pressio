@@ -5,6 +5,7 @@
 struct MyCustomDecoder
 {
   using jacobian_type  = pressio::containers::MultiVector<Eigen::MatrixXd>;
+  using fom_state_type = ::pressio::containers::Vector<Eigen::VectorXd>;
 
 private:
   mutable jacobian_type jac_;
@@ -27,7 +28,7 @@ public:
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,
-		    ::pressio::containers::Vector<Eigen::VectorXd> & result) const
+		  fom_state_type & result) const
   {
     result.data()->setConstant(1.);
   }

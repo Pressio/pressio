@@ -61,9 +61,8 @@ public:
 
   using fom_system_t		= typename traits::fom_system_t;
   using scalar_t		= typename traits::scalar_t;
-  using fom_native_state_t	= typename traits::fom_native_state_t;
   using fom_state_t		= typename traits::fom_state_t;
-  using fom_velocity_t		= typename traits::fom_velocity_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
   using galerkin_state_t	= typename traits::galerkin_state_t;
   using galerkin_native_state_t	= typename traits::galerkin_native_state_t;
   using decoder_t		= typename traits::decoder_t;
@@ -78,7 +77,8 @@ public:
 private:
   using At  = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt  = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
-						       fom_state_reconstr_t, fom_states_manager_t>;
+						       fom_state_reconstr_t,
+						       fom_states_manager_t>;
   using Ct  = ProjectorMixin<Bt, ud_ops_t, projector_t>;
   using Dt  = DefaultExplicitPoliciesMixin<Ct, velocity_policy_t>;
   using m_t = ::pressio::rom::impl::ExplicitStepperMixin<Dt, stepper_t>;

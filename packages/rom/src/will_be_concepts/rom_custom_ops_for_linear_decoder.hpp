@@ -68,10 +68,6 @@ struct custom_ops_for_linear_decoder<
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::concepts::decoder_jacobian<mat_type>::value 
     and
-    ::pressio::rom::concepts::rom_state<rom_state_type>::value 
-    and
-    ::pressio::rom::concepts::fom_state<fom_state_type>::value 
-    and
     // check that ops support phi * romState
     ::pressio::ops::predicates::has_void_method_product_mat_vec<
       T,

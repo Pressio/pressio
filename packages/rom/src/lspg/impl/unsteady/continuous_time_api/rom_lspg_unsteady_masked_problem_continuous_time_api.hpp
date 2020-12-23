@@ -70,7 +70,6 @@ public:
   using fom_state_mngr_t	= typename traits::fom_states_manager_t;
   using masker_t		= typename traits::masker_t;
   using ud_ops_t		= typename traits::ud_ops_t;
-  using lspg_matrix_t		= typename traits::lspg_matrix_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using aux_stepper_t		= typename traits::aux_stepper_t;

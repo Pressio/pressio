@@ -86,8 +86,8 @@ To use the arbitrary stepper, you need to use the discrete-time API.");
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
-  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
+  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
   using fom_velocity_t		= typename common_types_t::fom_velocity_t;
   using galerkin_state_t	= typename common_types_t::galerkin_state_t;
   using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;
@@ -96,10 +96,9 @@ To use the arbitrary stepper, you need to use the discrete-time API.");
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= ud_ops_type;
+  using galerkin_residual_t	= rom_residual_type;
+  using galerkin_jacobian_t	= rom_jacobian_type;
   static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-
-  using galerkin_residual_t = rom_residual_type;
-  using galerkin_jacobian_t = rom_jacobian_type;
 
   // for default galerkin, projector is just decoderJac^T
   using projector_t = galerkin::impl::DefaultProjector<decoder_t, ud_ops_t>;

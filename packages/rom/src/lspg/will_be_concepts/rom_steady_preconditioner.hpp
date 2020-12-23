@@ -69,7 +69,7 @@ template<
 struct steady_preconditioner<
   T, state_t, operand1_t, operand2_t,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::fom_state<state_t>::value
+    ::pressio::rom::lspg::concepts::fom_state<state_t>::value
     and
     ::pressio::rom::lspg::concepts::lspg_residual<operand1_t>::value
     and

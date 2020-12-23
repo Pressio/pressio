@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_rom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,16 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_RESIDUAL_HPP_
+#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_RESIDUAL_HPP_
 
-namespace pressio{ namespace rom{ namespace concepts {
-
-template<typename T, typename enable = void>
-struct fom_state : std::false_type{};
+namespace pressio{ namespace rom{ namespace galerkin{ namespace concepts {
 
 template<typename T>
-struct fom_state<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper<T>::value
-   >
-  > : std::true_type{};
+struct residual : ::pressio::rom::galerkin::concepts::implicit_state<T>{};
 
-}}} // namespace pressio::ode::concepts
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+template<typename T>
+using galerkin_residual = residual<T>;
+
+}}}}
+#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_RHS_HPP_

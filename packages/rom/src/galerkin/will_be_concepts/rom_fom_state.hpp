@@ -46,17 +46,22 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace concepts {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace concepts {
 
-// a type T is a valid lspg jacobian if it is a valid decoder jacobian
+template<typename T, typename enable = void>
+struct fom_state : std::false_type{};
+
 template<typename T>
-using jacobian = ::pressio::rom::concepts::decoder_jacobian<T>;
-
-template<typename T>
-using lspg_jacobian = jacobian<T>;
+struct fom_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper<T>::value or
+    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value
+   >
+  > : std::true_type{};
 
 }}}}
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_

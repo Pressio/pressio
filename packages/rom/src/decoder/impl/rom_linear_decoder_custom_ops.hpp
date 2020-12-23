@@ -51,11 +51,17 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <typename matrix_type, typename fom_state_type, typename ops_t>
+template <typename jacobian_matrix_type, typename fom_state_t, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
-  // this alias must be here because ROM classes detect it
-  using jacobian_type  = matrix_type;
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<jacobian_matrix_type>::value
+   and ::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
+   "Decoder template arguments must be valid pressio wrappers");
+
+  // these aliases must be here because ROM classes detect them
+  using jacobian_type  = jacobian_matrix_type;
+  using fom_state_type = fom_state_t;
 
 private:
   const jacobian_type jacobianOfDecoder_ = {};
@@ -82,10 +88,10 @@ public:
     : jacobianOfDecoder_(std::forward<T>(matIn)),
       udOps_{udOps}
   {
-    PRESSIOLOG_DEBUG
-      ("cnstr: possibly allocating matrix with size = ({},{}), addr = {}",
-       &jacobianOfDecoder_,
-       jacobianOfDecoder_.extent(0), jacobianOfDecoder_.extent(1));
+    // PRESSIOLOG_DEBUG
+    //   ("cnstr: possibly allocating matrix with size = ({},{}), addr = {}",
+    //    &jacobianOfDecoder_,
+    //    jacobianOfDecoder_.extent(0), jacobianOfDecoder_.extent(1));
   }
 
 public:

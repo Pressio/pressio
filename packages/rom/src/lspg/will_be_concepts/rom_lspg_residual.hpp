@@ -53,7 +53,10 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace concepts {
 
 // a type T is a valid lspg residual if it is a valid fom state
 template<typename T>
-using lspg_residual = ::pressio::rom::concepts::fom_state<T>;
+using residual = ::pressio::rom::lspg::concepts::fom_state<T>;
 
-}}}} // namespace pressio::ode::concepts
+template<typename T>
+using lspg_residual = residual<T>;
+
+}}}}
 #endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_RESIDUAL_HPP_

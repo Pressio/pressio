@@ -60,13 +60,12 @@ template <
 class ManagerFomStatesStatic
 {
   static_assert
-  ( ::pressio::rom::concepts::fom_state<fom_state_type>::value,
-	"ManagerFomStatesStatic: the fom_state_type is not a valid fom_state.");
+  ( ::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+    "ManagerFomStatesStatic: the fom_state_type must be a pressio wrapper.");
 
   static_assert
   (n>=1,
-	"You are trying to instantiate a ManagerFomStatesStatic object with zero size.\
-   Something is not right, because this object would then be unusable.");
+   "You cannot instantiate a ManagerFomStatesStatic object with zero items in it.");
 
 public:
   using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type, n>;

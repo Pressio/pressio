@@ -66,7 +66,7 @@ template <
 struct custom_ops_for_fom_state_reconstructor<
   T, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::concepts::fom_state<fom_state_type>::value
+    ::pressio::containers::predicates::is_wrapper<fom_state_type>::value
     and
     ::pressio::ops::predicates::has_method_deep_copy<
       T,

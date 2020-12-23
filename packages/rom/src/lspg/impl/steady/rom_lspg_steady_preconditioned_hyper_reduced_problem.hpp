@@ -67,7 +67,6 @@ public:
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using preconditioner_t	= typename traits::preconditioner_t;
-  using lspg_matrix_t		= typename traits::lspg_matrix_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using system_t		= typename traits::system_t;

@@ -72,9 +72,6 @@
 
 //----------------------------------------------
 // common concepts (depend on predicates)
-#include "./will_be_concepts/rom_fom_state.hpp"
-#include "./will_be_concepts/rom_fom_velocity.hpp"
-#include "./will_be_concepts/rom_rom_state.hpp"
 #include "./will_be_concepts/rom_decoder_jacobian.hpp"
 #include "./will_be_concepts/rom_decoder.hpp"
 #include "./will_be_concepts/rom_custom_ops_for_linear_decoder.hpp"

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_rom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,46 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
+#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace concepts {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace concepts {
 
-// a type T is a valid lspg jacobian if it is a valid decoder jacobian
+template<typename T, typename enable = void>
+struct explicit_state : std::false_type{};
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
 template<typename T>
-using jacobian = ::pressio::rom::concepts::decoder_jacobian<T>;
+struct explicit_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value or
+    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+    >
+  > : std::true_type{};
+#endif
 
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename T>
-using lspg_jacobian = jacobian<T>;
+struct explicit_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
+    ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value
+   >
+  > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct explicit_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value or
+    ::pressio::containers::predicates::is_multi_vector_wrapper_pybind<T>::value
+   >
+  > : std::true_type{};
+#endif
 
 }}}}
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_JACOBIAN_HPP_
+#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_STATE_HPP_

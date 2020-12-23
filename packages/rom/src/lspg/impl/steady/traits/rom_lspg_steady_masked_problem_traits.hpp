@@ -88,7 +88,7 @@ struct traits<
   using lspg_residual_t		= typename common_traits::lspg_residual_t;
   using decoder_t		= typename common_traits::decoder_t;
   using decoder_jac_t		= typename common_traits::decoder_jac_t;
-  using lspg_matrix_t		= typename common_traits::lspg_matrix_t;
+  using lspg_jacobian_t		= typename common_traits::lspg_jacobian_t;
   using fom_state_reconstr_t	= typename common_traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_traits::fom_states_manager_t;
   using ud_ops_t		= typename common_traits::ud_ops_t;
@@ -100,7 +100,7 @@ struct traits<
     ::pressio::rom::lspg::concepts::steady_masker<
       masker_t,
       typename ::pressio::containers::details::traits<fom_residual_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<lspg_matrix_t>::wrapped_t
+      typename ::pressio::containers::details::traits<lspg_jacobian_t>::wrapped_t
       >::value,
       "Invalid masker type passed to steady LSPG"
   );
@@ -116,12 +116,12 @@ struct traits<
     ::pressio::rom::lspg::decorator::Masked<
     masker_t,
     ::pressio::rom::lspg::impl::steady::JacobianPolicy<
-      fom_states_manager_t, lspg_matrix_t, decoder_t>
+      fom_states_manager_t, lspg_jacobian_t, decoder_t>
     >;
 
   using system_t = ::pressio::rom::lspg::impl::steady::System<
     scalar_t, fom_system_t, lspg_state_type,
-    lspg_residual_t, lspg_matrix_t,
+    lspg_residual_t, lspg_jacobian_t,
     residual_policy_t, jacobian_policy_t>;
 };
 

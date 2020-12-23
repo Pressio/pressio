@@ -69,16 +69,15 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 /*
    user-defined ops
 */
-template <typename matrix_type, typename ud_ops_type>
+template <typename data_type, typename ud_ops_type>
 struct ArbitraryProjector
 {
   static_assert
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<matrix_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper<matrix_type>::value,
-   "For arbitrary projector the matrix type must be a wrapper");
+  (::pressio::containers::predicates::is_wrapper<data_type>::value,
+   "For arbitrary projector the data type must be a wrapper");
 
-  using matrixtraits = ::pressio::containers::details::traits<matrix_type>;
-  using matrix_native_type = typename matrixtraits::wrapped_t;
+  using traits = ::pressio::containers::details::traits<data_type>;
+  using matrix_native_type = typename traits::wrapped_t;
 
   ArbitraryProjector() = delete;
   ArbitraryProjector(const ArbitraryProjector &) = default;
@@ -87,47 +86,49 @@ struct ArbitraryProjector
   ArbitraryProjector & operator=(ArbitraryProjector &&) = delete;
   ~ArbitraryProjector() = default;
 
-  ArbitraryProjector(const matrix_type & matIn, const ud_ops_type & udOps)
-    : matrix_{matIn}, udOps_(&udOps){}
+  ArbitraryProjector(const data_type & dataIn, const ud_ops_type & udOps)
+    : data_{dataIn}, udOps_(&udOps){}
 
-  ArbitraryProjector(matrix_type && matIn, const ud_ops_type & udOps)
-    : matrix_(std::move(matIn)), udOps_(udOps){}
+  ArbitraryProjector(data_type && dataIn, const ud_ops_type & udOps)
+    : data_(std::move(dataIn)), udOps_(udOps){}
 
-  ArbitraryProjector(matrix_native_type && matIn, const ud_ops_type & udOps)
-    : matrix_(std::move(matIn)), udOps_(udOps){}
+  ArbitraryProjector(matrix_native_type && dataIn, const ud_ops_type & udOps)
+    : data_(std::move(dataIn)), udOps_(udOps){}
 
-  ArbitraryProjector(const matrix_native_type & matIn, const ud_ops_type & udOps)
-    : matrix_(matIn), udOps_(udOps){}
+  ArbitraryProjector(const matrix_native_type & dataIn, const ud_ops_type & udOps)
+    : data_(dataIn), udOps_(udOps){}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_rhs<result_t>::value>
-  apply(const ::pressio::containers::Vector<operand_t> & operand,
-	result_t & result) const
+  mpl::enable_if_t<
+    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
+     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
+    >
+  apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
     using cnst = ::pressio::utils::constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), cnst::one(),
-			 *matrix_.data(), *operand.data(),
+			 *data_.data(), *operand.data(),
 			 cnst::zero(), result);
   }
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value and
-    (::pressio::containers::predicates::is_dense_matrix_wrapper<operand_t>::value or
-     ::pressio::containers::predicates::is_multi_vector_wrapper<operand_t>::value)
+    ::pressio::containers::details::traits<operand_t>::rank ==2 and
+    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
     >
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
     using cnst = ::pressio::utils::constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), ::pressio::nontranspose(),
-			 cnst::one(), *matrix_.data(), *operand.data(),
+			 cnst::one(), *data_.data(), *operand.data(),
 			 cnst::zero(), result);
   }
 
 private:
-  const matrix_type matrix_;
+  const data_type data_;
   std::reference_wrapper<const ud_ops_type> udOps_;
 };
 
@@ -135,17 +136,16 @@ private:
 /*
    void ops, use pressio ops
 */
-template <typename matrix_type>
-struct ArbitraryProjector<matrix_type, void>
+template <typename data_type>
+struct ArbitraryProjector<data_type, void>
 {
   static_assert
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<matrix_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper<matrix_type>::value,
-   "For arbitrary projector the matrix type must be a wrapper");
+  (::pressio::containers::predicates::is_wrapper<data_type>::value,
+   "For arbitrary projector the data type must be a wrapper");
 
-  using matrixtraits = ::pressio::containers::details::traits<matrix_type>;
-  using matrix_native_type = typename matrixtraits::wrapped_t;
-  using scalar_t = typename matrixtraits::scalar_t;
+  using traits = ::pressio::containers::details::traits<data_type>;
+  using native_type = typename traits::wrapped_t;
+  using scalar_t = typename traits::scalar_t;
   using cnst = ::pressio::utils::constants<scalar_t>;
 
   ArbitraryProjector() = delete;
@@ -155,48 +155,43 @@ struct ArbitraryProjector<matrix_type, void>
   ArbitraryProjector & operator=(ArbitraryProjector &&) = delete;
   ~ArbitraryProjector() = default;
 
-  explicit ArbitraryProjector(const matrix_type & matIn)
-    : matrix_{matIn}{}
+  explicit ArbitraryProjector(const data_type & dataIn)
+    : data_{dataIn}{}
 
-  explicit ArbitraryProjector(matrix_type && matIn)
-    : matrix_(std::move(matIn)){}
+  explicit ArbitraryProjector(data_type && dataIn)
+    : data_(std::move(dataIn)){}
 
-  explicit ArbitraryProjector(matrix_native_type && matIn)
-    : matrix_(std::move(matIn)){}
+  explicit ArbitraryProjector(native_type && dataIn)
+    : data_(std::move(dataIn)){}
 
-  explicit ArbitraryProjector(const matrix_native_type & matIn)
-    : matrix_(matIn){}
+  explicit ArbitraryProjector(const native_type & dataIn)
+    : data_(dataIn){}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_rhs<result_t>::value>
-  apply(const ::pressio::containers::Vector<operand_t> & operand,
-	result_t & result) const
+  mpl::enable_if_t<
+    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
+     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
+    >
+  apply(const operand_t & operand, result_t & result) const
   {
-    assert(matrix_.extent(0) == operand.extent(0));
-    assert(matrix_.extent(1) == result.extent(0));
-
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
-			    matrix_, operand, cnst::zero(), result);
+			    data_, operand, cnst::zero(), result);
   }
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value and
-    (::pressio::containers::predicates::is_dense_matrix_wrapper<operand_t>::value or
-     ::pressio::containers::predicates::is_multi_vector_wrapper<operand_t>::value)
+    ::pressio::containers::details::traits<operand_t>::rank ==2 and
+    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
     >
   apply(const operand_t & operand, result_t & result) const
   {
-    assert(matrix_.extent(0) == operand.extent(0));
-    assert(matrix_.extent(1) == result.extent(0));
-    assert(operand.extent(1) == result.extent(1));
-
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-     			    cnst::one(), matrix_, operand, cnst::zero(), result);
+     			    cnst::one(), data_, operand, cnst::zero(), result);
   }
 
 private:
-  const matrix_type matrix_;
+  const data_type data_;
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

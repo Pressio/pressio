@@ -72,8 +72,8 @@ struct MyCollocator
     for (auto & it : result) it.resize(nCols);
 
     const auto numCols = operand.cbegin()->size();
-    for (auto i=0; i<rows_.size(); ++i)
-      for (auto j=0; j<numCols; ++j)
+    for (auto i=0; i<(int)rows_.size(); ++i)
+      for (auto j=0; j<(int)numCols; ++j)
 	result[i][j] = operand[rows_[i]][j];
     return result;
   }
@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
 	    9 9 9]
   */
   m_t phi0(10); for (auto & it : phi0) it.resize(3);
-  for (auto i=0; i<phi0.size(); ++i)
-    for (auto j=0; j<phi0[i].size(); ++j)
+  for (auto i=0; i<(int)phi0.size(); ++i)
+    for (auto j=0; j<(int)phi0[i].size(); ++j)
       phi0[i][j] = (scalar_t) i;
 
   decoder_jacobian_t phi(phi0);

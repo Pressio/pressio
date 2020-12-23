@@ -88,9 +88,12 @@ struct DefaultProjector
     : decoderJacobian_(decoder.jacobianCRef()), udOps_{udOps}{}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_rhs<result_t>::value>
-  apply(const ::pressio::containers::Vector<operand_t> & operand,
-	result_t & result) const
+  mpl::enable_if_t<
+    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
+     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
+    >
+  apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
     using cnst = ::pressio::utils::constants<scalar_t>;
@@ -136,13 +139,13 @@ struct DefaultProjector<decoder_type, void>
     : decoderJacobian_(decoder.jacobianCRef()){}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_rhs<result_t>::value>
-  apply(const ::pressio::containers::Vector<operand_t> & operand,
-	result_t & result) const
+  mpl::enable_if_t<
+    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
+     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
+    >
+  apply(const operand_t & operand, result_t & result) const
   {
-    assert(decoderJacobian_.get().extent(0) == operand.extent(0));
-    assert(decoderJacobian_.get().extent(1) == result.extent(0));
-
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
 			    decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
@@ -152,10 +155,6 @@ struct DefaultProjector<decoder_type, void>
   mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
   apply(const dec_jac_t & operand, result_t & result) const
   {
-    assert(decoderJacobian_.get().extent(0) == operand.extent(0));
-    assert(decoderJacobian_.get().extent(1) == result.extent(0));
-    assert(operand.extent(1) == result.extent(1));
-
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
      			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);

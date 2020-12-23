@@ -6,12 +6,13 @@
 
 template <
   typename native_dense_mat_type, // this is type of native dense matrix
-  typename fom_state_type  // this is a pressio::containers::Vector<>
+  typename fom_state_t  // this is a pressio::containers::Vector<>
   >
 struct MyCustomDecoder
 {
   // this is mandatory because pressio detects it
   using jacobian_type  = pressio::containers::MultiVector<native_dense_mat_type>;
+  using fom_state_type = fom_state_t;
 
 private:
   const int romSize_ = {};

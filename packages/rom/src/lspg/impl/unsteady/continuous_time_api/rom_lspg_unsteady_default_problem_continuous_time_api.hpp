@@ -75,7 +75,8 @@ public:
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin
+    <At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = DefaultPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;

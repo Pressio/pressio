@@ -16,7 +16,7 @@ struct MyCollocator
   eigen_m_t sampleRows(const eigen_m_t & operand)
   {
     eigen_m_t result(rows_.size(), operand.cols());
-    for (auto i=0; i<rows_.size(); ++i){
+    for (auto i=0; i<(int)rows_.size(); ++i){
       for (auto j=0; j<result.cols(); ++j){
 	result(i,j) = operand(rows_[i], j);
       }
