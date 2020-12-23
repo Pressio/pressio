@@ -9,7 +9,6 @@ using native_state_t	= typename fom_t::state_type;
 using native_velo_t	= typename fom_t::velocity_type;
 using native_dmat_t	= typename fom_t::dense_matrix_type;
 using fom_state_t	= pressio::containers::Vector<native_state_t>;
-using fom_velo_t	= pressio::containers::Vector<native_velo_t>;
 using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
 using decoder_t		= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
