@@ -213,9 +213,9 @@ private:
   template<typename rhs_t, typename _ops_t = ops_t>
   mpl::enable_if_t<std::is_void<_ops_t>::value>
   stage_update_impl(state_type & yIn,
-			 const state_type & stateIn,
-			 const rhs_t & rhsIn,
-			 scalar_type dtValue)
+		    const state_type & stateIn,
+		    const rhs_t & rhsIn,
+		    scalar_type dtValue)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::update(yIn, stateIn, one, rhsIn, dtValue);
@@ -224,13 +224,16 @@ private:
   template<typename rhs_t, typename _ops_t = ops_t>
   mpl::enable_if_t< std::is_void<_ops_t>::value >
   stage_update_impl(state_type & stateIn,
-			 const rhs_t & rhsIn0, const rhs_t & rhsIn1,
-			 const rhs_t & rhsIn2, const rhs_t & rhsIn3,
-			 scalar_type dt6, scalar_type dt3)
+		    const rhs_t & rhsIn0, const rhs_t & rhsIn1,
+		    const rhs_t & rhsIn2, const rhs_t & rhsIn3,
+		    scalar_type dt6, scalar_type dt3)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::update(stateIn, one, rhsIn0, dt6, rhsIn1,
-			      dt3, rhsIn2, dt3, rhsIn3, dt6);
+    ::pressio::ops::update(stateIn, one,
+			   rhsIn0, dt6,
+			   rhsIn1, dt3,
+			   rhsIn2, dt3,
+			   rhsIn3, dt6);
   }
   // -------------------------------------------------------
 
@@ -238,9 +241,9 @@ private:
   template<typename rhs_t, typename _ops_t = ops_t>
   mpl::enable_if_t< !std::is_void<_ops_t>::value >
   stage_update_impl(state_type & yIn,
-			 const state_type & stateIn,
-			 const rhs_t & rhsIn,
-			 scalar_type dtValue)
+		    const state_type & stateIn,
+		    const rhs_t & rhsIn,
+		    scalar_type dtValue)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
@@ -249,16 +252,16 @@ private:
   template<typename rhs_t, typename _ops_t = ops_t>
   mpl::enable_if_t< !std::is_void<_ops_t>::value >
   stage_update_impl(state_type & stateIn,
-			 const rhs_t & rhsIn0, const rhs_t & rhsIn1,
-			 const rhs_t & rhsIn2, const rhs_t & rhsIn3,
-			 scalar_type dt6, scalar_type dt3)
+		    const rhs_t & rhsIn0, const rhs_t & rhsIn1,
+		    const rhs_t & rhsIn2, const rhs_t & rhsIn3,
+		    scalar_type dt6, scalar_type dt3)
   {
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->update(*stateIn.data(), one, *rhsIn0.data(),
-		     dt6, *rhsIn1.data(), dt3, *rhsIn2.data(),
-		     dt3, *rhsIn3.data(), dt6);
+		   dt6, *rhsIn1.data(), dt3, *rhsIn2.data(),
+		   dt3, *rhsIn3.data(), dt6);
   }
-}; //end class
+};
 
 }}}}//end namespace pressio::ode::explicitmethods::impl
 #endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
