@@ -85,6 +85,34 @@ product(::pressio::nontranspose mode,
   yE = beta * yE + alpha * AE * xE;
 }
 
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<x_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  const auto & xE = *x.data();
+  auto & yE = *y.data();
+  for (auto i=0; i<A.size(); ++i)
+  {
+    const auto & currMatrixEigen = *(A(i).data());
+    assert( y.extent(0) == currMatrixEigen.rows() );
+    assert( x.extent(0) == currMatrixEigen.cols() );
+    yE.col(i) = beta * yE.col(i) + alpha * currMatrixEigen * xE.col(i);
+  }
+}
+
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
@@ -102,8 +130,9 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
 
   assert( y.extent(0) == A.extent(1) );
   assert( x.extent(0) == A.extent(0) );
@@ -112,6 +141,35 @@ product(::pressio::transpose mode,
   const auto & xE = *x.data();
   const auto & AE = *A.data();
   yE = beta * yE + alpha * AE.transpose() * xE;
+}
+
+
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<x_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::transpose,
+	const scalar_type alpha,
+	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  const auto & xE = *x.data();
+  auto & yE = *y.data();
+  for (auto i=0; i<A.size(); ++i)
+  {
+    const auto currMatrixEigen = *(A(i).data());
+    assert( y.extent(0) == currMatrixEigen.cols() );
+    assert( x.extent(0) == currMatrixEigen.rows() );
+    yE.col(i) = beta * yE.col(i) + alpha * currMatrixEigen.transpose() * xE.col(i);
+  }
 }
 
 }}//end namespace pressio::ops
