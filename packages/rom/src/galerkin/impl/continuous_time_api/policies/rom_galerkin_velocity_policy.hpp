@@ -58,6 +58,16 @@ class VelocityPolicy : private projection_policy_t
   (::pressio::rom::galerkin::concepts::galerkin_velocity<galerkin_velocity_t>::value,
    "The galerkin_velocity_t is not a valid galerkin velocity type");
 
+  using velocity_traits = ::pressio::containers::details::traits<galerkin_velocity_t>;
+  using size_type = typename velocity_traits::size_t;
+
+  // galerkin explicit we can have a rank-1 or rank-2 velocity
+  // so when we initialize the velocity here we need to know the rank
+  static constexpr int rank_ = velocity_traits::rank;
+
+  // the extents type tshould be changed to something else maybe?
+  const std::array<size_type, rank_> extents_ = {};
+
 public:
   VelocityPolicy() = delete;
   VelocityPolicy(const VelocityPolicy &) = default;
@@ -66,17 +76,39 @@ public:
   VelocityPolicy & operator=(VelocityPolicy &&) = delete;
   ~VelocityPolicy() = default;
 
-  template<typename rom_state_t, typename ...Args>
-  VelocityPolicy(const rom_state_t & galerkinStateIn,
-		 Args && ...args)
+  template<
+    typename ...Args, int _rank = rank_,
+    mpl::enable_if_t<_rank==1,int> = 0
+    >
+  VelocityPolicy(size_type extent0, Args && ...args)
     : projection_policy_t(std::forward<Args>(args)...),
-      romSize_(galerkinStateIn.extent(0)){}
+      extents_{extent0}
+  {}
+
+  template<
+    typename ...Args, int _rank = rank_,
+    mpl::enable_if_t<_rank==2,int> = 0
+    >
+  VelocityPolicy(size_type extent0, size_type extent1, Args && ...args)
+    : projection_policy_t(std::forward<Args>(args)...),
+      extents_{extent0, extent1}
+  {}
 
 public:
-  template <typename fom_system_t>
-  galerkin_velocity_t create(const fom_system_t & fomSystemObj) const
+  template <typename fom_system_t, int _rank = rank_>
+  mpl::enable_if_t<_rank==1, galerkin_velocity_t>
+  create(const fom_system_t & fomSystemObj) const
   {
-    galerkin_velocity_t result(romSize_);
+    galerkin_velocity_t result(extents_[0]);
+    ::pressio::ops::set_zero(result);
+    return result;
+  }
+
+  template <typename fom_system_t, int _rank = rank_>
+  mpl::enable_if_t<_rank==2, galerkin_velocity_t>
+  create(const fom_system_t & fomSystemObj) const
+  {
+    galerkin_velocity_t result(extents_[0],extents_[1]);
     ::pressio::ops::set_zero(result);
     return result;
   }
@@ -88,10 +120,8 @@ public:
 	       const scalar_t & time) const
   {
     projection_policy_t::compute(galerkinRhs, galerkinState, fomSystemObj, time);
+    std::cout << galerkinRhs.data()->col(0) << std::endl;
   }
-
-protected:
-  const std::size_t romSize_ = {};
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

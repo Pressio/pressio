@@ -89,7 +89,7 @@ struct DefaultProjector
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >
@@ -125,8 +125,6 @@ template <typename decoder_type>
 struct DefaultProjector<decoder_type, void>
 {
   using dec_jac_t = typename decoder_type::jacobian_type;
-  using scalar_t = typename ::pressio::containers::details::traits<dec_jac_t>::scalar_t;
-  using cnst = ::pressio::utils::constants<scalar_t>;
 
   DefaultProjector() = delete;
   DefaultProjector(const DefaultProjector &) = default;
@@ -140,12 +138,14 @@ struct DefaultProjector<decoder_type, void>
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >
   apply(const operand_t & operand, result_t & result) const
   {
+    using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
+    using cnst = ::pressio::utils::constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
 			    decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
@@ -155,6 +155,8 @@ struct DefaultProjector<decoder_type, void>
   mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
   apply(const dec_jac_t & operand, result_t & result) const
   {
+    using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
+    using cnst = ::pressio::utils::constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
      			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);

@@ -100,7 +100,7 @@ struct ArbitraryProjector
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >
@@ -169,7 +169,7 @@ struct ArbitraryProjector<data_type, void>
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank ==1 and
+    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >

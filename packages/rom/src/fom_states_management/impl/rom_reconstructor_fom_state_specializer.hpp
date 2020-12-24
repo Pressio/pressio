@@ -73,9 +73,8 @@ struct FomStateReconstructorSpecializer<
 
   // check for a valid FOM state type
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
-   "The second template arg to FomStateReconstructor \
-represents the FOM state and must be a pressio vector wrapper.");
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The second template arg to FomStateReconstructor must be a pressio wrapper.");
 
   using type = FomStateReconstructorPressioOps<scalar_type, fom_state_type, decoder_type>;
 };
@@ -98,9 +97,8 @@ struct FomStateReconstructorSpecializer<
 
   // check for a valid FOM state type
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<fom_state_type>::value,
-   "The second template arg to FomStateReconstructor \
-represents the FOM state and must be (for now) a pressio vector wrapper.");
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The second template arg to FomStateReconstructor must be a pressio wrapper.");
 
   // check for valid ops
   static_assert

@@ -87,7 +87,6 @@ struct traits<
   using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
-  using decoder_native_jac_t	= typename common_types_t::decoder_native_jac_t;
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= ud_ops_type;

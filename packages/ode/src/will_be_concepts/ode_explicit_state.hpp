@@ -57,7 +57,8 @@ struct explicit_state : std::false_type{};
 template<typename T>
 struct explicit_state<T,
  typename std::enable_if<
-   containers::predicates::is_vector_wrapper<T>::value
+   ::pressio::containers::predicates::is_vector_wrapper<T>::value or
+   ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value
    >::type
   > : std::true_type{};
 

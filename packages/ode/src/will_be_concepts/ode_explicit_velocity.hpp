@@ -51,15 +51,8 @@
 
 namespace pressio{ namespace ode{ namespace concepts {
 
-template<typename T, typename enable = void>
-struct explicit_velocity : std::false_type{};
-
 template<typename T>
-struct explicit_velocity<T,
- typename std::enable_if<
-   containers::predicates::is_vector_wrapper<T>::value
-   >::type
-  > : std::true_type{};
+struct explicit_velocity : explicit_state<T>{};
 
 }}} // namespace pressio::ode::concepts
 #endif  // ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_VELOCITY_HPP_

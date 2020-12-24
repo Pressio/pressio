@@ -62,5 +62,10 @@ struct decoder_jacobian<T,
    >::type
   > : std::true_type{};
 
+template<typename T>
+struct decoder_jacobian<
+  ::pressio::containers::experimental::MultiVectorSet<T>, void
+  > : std::true_type{};
+
 }}} // namespace pressio::ode::concepts
 #endif  // ROM_WILL_BE_CONCEPTS_ROM_DECODER_JACOBIAN_HPP_

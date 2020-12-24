@@ -67,7 +67,6 @@ public:
   using galerkin_state_t	= typename traits::galerkin_state_t;
   using galerkin_native_state_t	= typename traits::galerkin_native_state_t;
   using decoder_t		= typename traits::decoder_t;
-  using decoder_native_jac_t	= typename traits::decoder_native_jac_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using ud_ops_t		= typename traits::ud_ops_t;

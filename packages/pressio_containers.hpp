@@ -146,6 +146,11 @@ headers are included (and classes found) in the proper order.
 #include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
 //-------------------------------------------
+// experimental
+//-------------------------------------------
+#include "containers/src/experimental/containers_multivector_set.hpp"
+
+//-------------------------------------------
 // others
 //-------------------------------------------
 #include "containers/src/predicates/containers_is_wrapper.hpp"
@@ -155,5 +160,6 @@ headers are included (and classes found) in the proper order.
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 #include "containers/src/predicates/containers_have_matching_exe_space.hpp"
 #endif
+
 
 #endif
