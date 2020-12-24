@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_wrapper.hpp
+// containers_static_collection_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,38 +46,66 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
-#define CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
+#ifndef CONTAINERS_COLLECTION_CONTAINERS_MULTIVECTOR_SET_HPP_
+#define CONTAINERS_COLLECTION_CONTAINERS_MULTIVECTOR_SET_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio{ namespace containers{
 
-template <typename T, typename enable = void>
-struct is_wrapper : std::false_type {};
+namespace experimental{
+template<typename T>
+class MultiVectorSet
+{
+public:
+  using mv_type	= ::pressio::containers::MultiVector<T>;
+  using multivector_type = mv_type;
+  using data_type = std::vector<mv_type>;
 
-template <typename T>
-struct is_wrapper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
-    ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value or
-    ::pressio::containers::predicates::is_sparse_matrix_wrapper<T>::value
-    >
-  > : std::true_type{};
+private:
+  data_type data_;
 
-template <typename T>
-struct is_wrapper<
+public:
+  std::size_t size() const{ return data_.size(); }
+
+  mv_type & operator()(std::size_t i){
+    return data_[i];
+  }
+
+  mv_type const & operator()(std::size_t i) const{
+    return data_[i];
+  }
+
+public:
+  template <
+  typename _mv_type = mv_type,
+  mpl::enable_if_t<std::is_default_constructible<_mv_type>::value, int> = 0
+  >
+  MultiVectorSet(){};
+
+  template<typename ...Args>
+  MultiVectorSet(std::size_t n, Args && ...args)
+    : data_(n, mv_type(std::forward<Args>(args)...))
+  {}
+
+  MultiVectorSet(MultiVectorSet const & other) = default;
+  MultiVectorSet & operator=(MultiVectorSet const & other) = default;
+  MultiVectorSet(MultiVectorSet && other) = default;
+  MultiVectorSet & operator=(MultiVectorSet && other) = default;
+  ~MultiVectorSet() = default;
+};
+
+}// end namespace experimental
+
+namespace details{
+
+template<typename T>
+struct traits<
   ::pressio::containers::experimental::MultiVectorSet<T>
-  > : std::true_type{};
+>
+{
+  using mv_t = typename ::pressio::containers::experimental::MultiVectorSet<T>::mv_type;
+  using scalar_t = typename traits<mv_t>::scalar_t;
+};
+}// end namespace details
 
-
-template <typename T, typename enable = void>
-struct not_wrapper : std::false_type {};
-
-template <typename T>
-struct not_wrapper<
-  T, mpl::enable_if_t< is_wrapper<T>::value == false >
-  > : std::true_type{};
-
-}}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
