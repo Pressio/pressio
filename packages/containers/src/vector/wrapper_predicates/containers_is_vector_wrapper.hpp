@@ -56,10 +56,12 @@ struct is_vector_wrapper : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper<
-  T,
-  mpl::enable_if_t<
-    containers::details::traits<T>::is_vector
-    >
+  ::pressio::containers::Vector<T>
+  > : std::true_type{};
+
+template <typename T>
+struct is_vector_wrapper<
+  const ::pressio::containers::Vector<T>
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates

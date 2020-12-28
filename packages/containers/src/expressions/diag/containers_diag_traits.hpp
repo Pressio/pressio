@@ -60,13 +60,10 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  ::pressio::containers::expressions::DiagExpr<matrix_type>,
   typename details::traits<matrix_type>::wrapped_t,
-  true, false, false,
   WrappedPackageIdentifier::Eigen, true, 1>
 {
 
-  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::EigenColStatic;
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
@@ -109,21 +106,16 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  ::pressio::containers::expressions::DiagExpr<matrix_type>,
-  typename details::traits<matrix_type>::wrapped_t,
-  true, false, false,
-  WrappedPackageIdentifier::Kokkos,
+  typename details::traits<matrix_type>::wrapped_t,WrappedPackageIdentifier::Kokkos,
   true, //true because kokkos is shared mem
   1
   >
 {
 
-  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::Kokkos;
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
-
+  using wrapped_t = typename traits<matrix_type>::wrapped_t;
   using scalar_t	= typename traits<matrix_type>::scalar_t;
-  using wrapped_t	= typename traits<matrix_type>::wrapped_t;
   using execution_space = typename traits<matrix_type>::execution_space;
   using memory_space	= typename traits<matrix_type>::memory_space;
   using device_t	= typename traits<matrix_type>::device_t;
@@ -146,29 +138,23 @@ struct traits<
 };
 #endif
 
-
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::DiagExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<matrix_type>::value
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_type>::value
     >
   >
   : public containers_shared_traits<
-  ::pressio::containers::expressions::DiagExpr<matrix_type>,
   typename details::traits<matrix_type>::wrapped_t,
-  true, false, false,
   WrappedPackageIdentifier::Pybind,
-  true,
+  true, //true because kokkos is shared mem
   1
   >
 {
-
-  static constexpr auto wrapped_vector_identifier=WrappedVectorIdentifier::Pybind;
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
-
   using wrapped_t = typename traits<matrix_type>::wrapped_t;
   using scalar_t  = typename traits<matrix_type>::scalar_t;
   using ordinal_t = typename traits<matrix_type>::ordinal_t;

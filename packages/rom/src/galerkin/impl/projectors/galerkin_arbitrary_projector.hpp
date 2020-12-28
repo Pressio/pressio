@@ -100,7 +100,8 @@ struct ArbitraryProjector
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
+    ::pressio::containers::details::traits<operand_t>::rank == 1 and
+    ::pressio::containers::details::traits<result_t>::rank == 1 and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >
@@ -116,6 +117,7 @@ struct ArbitraryProjector
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
     ::pressio::containers::details::traits<operand_t>::rank ==2 and
+    ::pressio::containers::details::traits<result_t>::rank == 1 and
     ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
     >
   apply(const operand_t & operand, result_t & result) const
@@ -168,11 +170,7 @@ struct ArbitraryProjector<data_type, void>
     : data_(dataIn){}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
-    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
-     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
-    >
+  mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank == 1>
   apply(const operand_t & operand, result_t & result) const
   {
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
@@ -180,15 +178,24 @@ struct ArbitraryProjector<data_type, void>
   }
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank ==2 and
-    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
-    >
+  mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank >= 2>
   apply(const operand_t & operand, result_t & result) const
   {
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-     			    cnst::one(), data_, operand, cnst::zero(), result);
+			    cnst::one(), data_, operand,
+			    cnst::zero(), result);
   }
+
+  // template<typename operand_t, typename result_t>
+  // mpl::enable_if_t<
+  //   ::pressio::containers::details::traits<operand_t>::rank ==2 and
+  //   ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
+  //   >
+  // apply(const operand_t & operand, result_t & result) const
+  // {
+  //   // ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+  //   //  			    cnst::one(), data_, operand, cnst::zero(), result);
+  // }
 
 private:
   const data_type data_;

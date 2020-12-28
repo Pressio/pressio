@@ -51,20 +51,29 @@
 
 namespace pressio{ namespace containers{ namespace expressions{
 
+#if defined PRESSIO_ENABLE_TPL_EIGEN or defined PRESSIO_ENABLE_TPL_PYBIND11
 template <typename T>
 struct AsDiagonalMatrixExpr<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_sharedmem_vector_wrapper<T>::value
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<T>::value
+#endif
+#if defined PRESSIO_ENABLE_TPL_EIGEN and defined PRESSIO_ENABLE_TPL_PYBIND11
+    or
+#endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+#endif
     >
   >
 {
   using this_t = AsDiagonalMatrixExpr<T>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
 
 private:
   std::reference_wrapper<T> vecObj_;
@@ -96,28 +105,19 @@ public:
     return &vecObj_.get();
   }
 
-  template<class _T = T>
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<_T>::value, ref_t
-    >
-  operator()(size_t i, size_t j)
+  ref_t operator()(size_t i, size_t j)
   {
-    assert(i==j);
-    assert(j < extent_);
+    assert(i==j and j < extent_);
     return vecObj_(i);
   }
 
-  template<class _T = T>
-  mpl::enable_if_t<
-    ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<_T>::value, const_ref_t
-    >
-  operator()(size_t i, size_t j) const
+  const_ref_t operator()(size_t i, size_t j) const
   {
-    assert(i==j);
-    assert(j < extent_);
+    assert(i==j and j < extent_);
     return vecObj_(i);
   }
 };
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename T>
@@ -131,10 +131,10 @@ struct AsDiagonalMatrixExpr<
   >
 {
   using this_t = AsDiagonalMatrixExpr<T>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using lo_t = typename mytraits::local_ordinal_t;
-  using go_t = typename mytraits::global_ordinal_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using lo_t = typename traits::local_ordinal_t;
+  using go_t = typename traits::global_ordinal_t;
 
 private:
   std::reference_wrapper<T> vecObj_;

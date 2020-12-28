@@ -59,12 +59,12 @@ class DenseMatrix<
     >
   >
 {
-
+public:
   using this_t = DenseMatrix<wrapped_type>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename  mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
+  using traits = details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename  traits::ordinal_t;
+  using wrap_t = typename traits::wrapped_t;
 
   // Views have "view semantics." copy constructor and
   // operator= only do shallow copies.
@@ -119,7 +119,7 @@ public:
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator () (ord_t i, ord_t j){
     assert(i < this->extent(0) );
@@ -131,7 +131,7 @@ public:
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator () (ord_t i, ord_t j) const{
     assert(i < this->extent(0) );

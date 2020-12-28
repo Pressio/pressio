@@ -49,22 +49,25 @@
 #ifndef CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_
 #define CONTAINERS_EXPRESSIONS_PRESSIO_CONTAINERS_EXPRESSIONS_INCLUDE_HPP_
 
-#include "./span/containers_vector_span_expression.hpp"
-#include "./span/containers_expressions_traits.hpp"
-#include "./span/containers_span.hpp"
+#include "./span/containers_span_classes.hpp"
+#include "./span/containers_span_traits.hpp"
+#include "./span/containers_span_function.hpp"
+#include "./span/containers_is_expression_span.hpp"
 
-#include "./subspan/containers_matrix_subspan_expression.hpp"
-#include "./subspan/containers_expressions_traits.hpp"
-#include "./subspan/containers_subspan.hpp"
+#include "./subspan/containers_subspan_classes.hpp"
+#include "./subspan/containers_subspan_traits.hpp"
+#include "./subspan/containers_subspan_function.hpp"
+#include "./subspan/containers_is_expression_subspan.hpp"
 
-#include "./diag/containers_matrix_diag_expression.hpp"
-#include "./diag/containers_expressions_traits.hpp"
-#include "./diag/containers_diag.hpp"
+#include "./diag/containers_diag_classes.hpp"
+#include "./diag/containers_diag_traits.hpp"
+#include "./diag/containers_diag_function.hpp"
+#include "./diag/containers_is_expression_diag.hpp"
 
-#include "./asdiagonalmatrix/containers_vector_asdiagonalmatrix_expression.hpp"
+#include "./asdiagonalmatrix/containers_asdiagonalmatrix_classes.hpp"
 #include "./asdiagonalmatrix/containers_asdiagonalmatrix_traits.hpp"
+#include "./asdiagonalmatrix/containers_asdiagonalmatrix_function.hpp"
 #include "./asdiagonalmatrix/containers_is_expression_asdiagonalmatrix.hpp"
-#include "./asdiagonalmatrix/containers_asdiagonalmatrix_create.hpp"
 
 #include "containers_is_expression.hpp"
 

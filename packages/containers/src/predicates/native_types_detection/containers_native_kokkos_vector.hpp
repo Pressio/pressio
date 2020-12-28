@@ -53,6 +53,40 @@
 
 namespace pressio{ namespace containers{ namespace predicates {
 
+// T is a static kokkos view if T:
+// - is a view with rank==1
+// - the number of runtime determined dimensions == 0
+template <typename T, typename enable = void>
+struct is_static_vector_kokkos : std::false_type {};
+
+template <typename T>
+struct is_static_vector_kokkos<
+  T,
+  ::pressio::mpl::enable_if_t<
+    Kokkos::is_view<T>::value &&
+    T::traits::rank==1 &&
+    T::traits::rank_dynamic==0
+    >
+  > : std::true_type{};
+
+// -------------------------------------------------
+// T is a dynamic kokkos view if T:
+// - is a view with rank==1
+// - the number of runtime determined dimensions != 0
+template <typename T, typename enable = void>
+struct is_dynamic_vector_kokkos : std::false_type {};
+
+template <typename T>
+struct is_dynamic_vector_kokkos<
+  T,
+  ::pressio::mpl::enable_if_t<
+    Kokkos::is_view<T>::value &&
+    T::traits::rank==1 &&
+    T::traits::rank_dynamic!=0
+    >
+  > : std::true_type{};
+
+// -------------------------------------------------
 template <typename T, typename enable = void>
 struct is_vector_kokkos : std::false_type {};
 
@@ -60,9 +94,9 @@ template <typename T>
 struct is_vector_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
-    // kokkos vector is it is a view and has rank=1
-    Kokkos::is_view<T>::value &&
-    T::traits::rank==1>
+    is_static_vector_kokkos<T>::value or
+    is_dynamic_vector_kokkos<T>::value
+    >
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates

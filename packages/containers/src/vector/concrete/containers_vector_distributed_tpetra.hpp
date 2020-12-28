@@ -62,8 +62,9 @@ class Vector<
     >
   >
 {
-
+public:
   using this_t = Vector<wrapped_type>;
+  using traits = details::traits<this_t>;
   using sc_t = typename details::traits<this_t>::scalar_t;
   using LO_t = typename details::traits<this_t>::local_ordinal_t;
   using GO_t = typename details::traits<this_t>::global_ordinal_t;

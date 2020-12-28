@@ -56,16 +56,15 @@ struct is_dense_matrix_wrapper_arbitrary : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_arbitrary<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_matrix 
-       &&
-       containers::details::traits<T>::wrapped_package_identifier ==
-		containers::details::WrappedPackageIdentifier::Arbitrary 
-		&&
-       containers::details::traits<T>::wrapped_matrix_identifier ==
-		containers::details::WrappedMatrixIdentifier::DenseArbitrary
-       >
+  DenseMatrix<T>,
+  mpl::enable_if_t<
+  ::pressio::containers::predicates::is_admissible_as_dense_matrix_arbitrary<T>::value
+  >
   > : std::true_type{};
+
+template <typename T>
+struct is_dense_matrix_wrapper_arbitrary<const DenseMatrix<T>>
+  : is_dense_matrix_wrapper_arbitrary<::pressio::containers::DenseMatrix<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_ARBITRARY_HPP_

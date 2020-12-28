@@ -55,12 +55,11 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
+  ::pressio::ops::concepts::container_kokkos_with_native_data_access<T>::value
   >
 set_zero(T & v)
 {
+
   /* make sure we don't pass const objects to be modified.
      In kokkos it is legal to modify const views, not for pressio wrappers. */
   static_assert

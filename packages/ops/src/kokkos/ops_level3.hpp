@@ -65,13 +65,9 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
-  and
-  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<B_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<B_type>::value)
-  and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -104,10 +100,8 @@ product(::pressio::transpose modeA,
 ------------------------------------------*/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
-  and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -121,10 +115,8 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value)
-  and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value,
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,

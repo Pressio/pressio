@@ -56,13 +56,16 @@ struct is_multi_vector_wrapper_kokkos : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_kokkos<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_multi_vector &&
-       containers::details::traits<T>::wrapped_multi_vector_identifier==
-       containers::details::WrappedMultiVectorIdentifier::Kokkos
-       >
+  MultiVector<T>,
+  mpl::enable_if_t<
+    containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
+    >
   >
   : std::true_type{};
+
+template <typename T>
+struct is_multi_vector_wrapper_kokkos<const MultiVector<T>>
+  : is_multi_vector_wrapper_kokkos<MultiVector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_KOKKOS_HPP_

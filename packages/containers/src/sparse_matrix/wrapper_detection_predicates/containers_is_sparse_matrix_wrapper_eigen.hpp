@@ -56,11 +56,8 @@ struct is_sparse_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_sparse_matrix_wrapper_eigen<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_matrix &&
-       (containers::details::traits<T>::wrapped_matrix_identifier==
-       containers::details::WrappedMatrixIdentifier::SparseEigen)
-       >
+	SparseMatrix<T>,
+   mpl::enable_if_t<is_sparse_matrix_eigen<T>::value>
   >
   : std::true_type{};
 

@@ -81,8 +81,8 @@ struct _doUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 update(T1 & v,	 const scalar_t & a,
 	  const T2 & v1, const scalar_t & b)
@@ -93,8 +93,8 @@ update(T1 & v,	 const scalar_t & a,
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 update(T1 & v, const T2 & v1, const scalar_t & b)
 {
@@ -108,9 +108,9 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value
   >
 update(T1 & v,	 const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
@@ -126,9 +126,9 @@ update(T1 & v,	 const scalar_t &a,
 
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value
   >
 update(T1 & v,
 	  const T2 & v1, const scalar_t &b,
@@ -151,10 +151,10 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T4>::value
   >
 update(T1 & v,	 const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
@@ -174,10 +174,10 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T4>::value
   >
 update(T1 & v,
 	  const T2 & v1, const scalar_t &b,
@@ -196,16 +196,15 @@ update(T1 & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-
 template<
   typename T1, typename T2, typename T3, typename T4, typename T5,
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T4>::value
   >
 update(T1 & v,	const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
@@ -221,16 +220,15 @@ update(T1 & v,	const scalar_t &a,
   Kokkos::parallel_for(v.extent(0), F);
 }
 
-
 template<
   typename T1, typename T2, typename T3, typename T4, typename T5,
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T4>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T4>::value
   >
 update(T1 & v,
 	  const T2 & v1, const scalar_t &b,

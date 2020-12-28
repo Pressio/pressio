@@ -62,16 +62,10 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type,
-  false, true, false,
-  WrappedPackageIdentifier::Arbitrary,
-  false, 2>,
+  wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>,
   public matrix_shared_traits<false>
 {
 
-  using wrapped_t = wrapped_type;
-  using derived_t = DenseMatrix<wrapped_t>;
   using scalar_t  = typename wrapped_type::value_type;
   using value_t   = typename wrapped_type::value_type;
   using size_t   = typename wrapped_type::size_type;
@@ -81,10 +75,6 @@ struct traits<
 
   static constexpr WrappedMatrixIdentifier
   wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseArbitrary;
-
-  static constexpr bool is_vector = false;
-  static constexpr bool is_matrix = true;
-  static constexpr bool is_multi_vector = false;
 };
 
 
@@ -100,9 +90,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type, false, true, false,
-  WrappedPackageIdentifier::Eigen, true, 2>,
+  wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<false>
 {
 
@@ -119,15 +107,14 @@ struct traits<
   using scalar_t  = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
   using size_t    = ordinal_t;
+
   using subspan_ret_t = expressions::SubspanExpr<DenseMatrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const DenseMatrix<wrapped_type>>;
-
   using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
   using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
-
 
 //**********************************
 // for teuchos serial dense matrix
@@ -141,16 +128,13 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type,
-  false, true, false,
-  WrappedPackageIdentifier::Trilinos,
-  true, 2>,
+  wrapped_type, WrappedPackageIdentifier::Trilinos, true, 2
+  >,
     public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::TeuchosSerialDense;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseTeuchosSerial;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -168,7 +152,6 @@ struct traits<
 };
 #endif
 
-
 //***********************************
 // epetra dense distributed matrix
 //***********************************
@@ -181,10 +164,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type, false, true, false,
-  WrappedPackageIdentifier::Trilinos,
-  false, 2>,
+  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
@@ -217,10 +197,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type,
-  false, true, false,
-  WrappedPackageIdentifier::Kokkos,
+  wrapped_type, WrappedPackageIdentifier::Kokkos,
   true, //true because kokkos is for shared mem
   2
   >,
@@ -250,7 +227,6 @@ struct traits<
 
   using subspan_ret_t = expressions::SubspanExpr<DenseMatrix<wrapped_type>>;
   using subspan_const_ret_t = expressions::SubspanExpr< const DenseMatrix<wrapped_type>>;
-
   using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
   using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
@@ -266,50 +242,48 @@ struct traits<
 };
 #endif
 
+// //*******************************
+// // Pybind array
+// //*******************************
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template <typename wrapped_type>
+// struct traits<
+//   DenseMatrix<wrapped_type>,
+//     mpl::enable_if_t<
+//       containers::predicates::is_array_pybind<wrapped_type>::value
+//     >
+//   >
+//   : public containers_shared_traits<
+//   wrapped_type,
+//   false, true, false,
+//   WrappedPackageIdentifier::Pybind,
+//   true, 2>,
+//     public matrix_shared_traits<false>
+// {
 
-//*******************************
-// Pybind array
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename wrapped_type>
-struct traits<
-  DenseMatrix<wrapped_type>,
-    mpl::enable_if_t<
-      containers::predicates::is_array_pybind<wrapped_type>::value
-    >
-  >
-  : public containers_shared_traits<
-  DenseMatrix<wrapped_type>,
-  wrapped_type,
-  false, true, false,
-  WrappedPackageIdentifier::Pybind,
-  true, 2>,
-    public matrix_shared_traits<false>
-{
+//   static constexpr WrappedMatrixIdentifier
+//   wrapped_matrix_identifier = WrappedMatrixIdentifier::DensePybind;
+//   static constexpr bool is_static = false;
+//   static constexpr bool is_dynamic  = !is_static;
 
-  static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::DensePybind;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+//   using scalar_t	 = typename wrapped_type::value_type;
+//   using ordinal_t	 = std::size_t;
+//   using size_t		 = ordinal_t;
 
-  using scalar_t	 = typename wrapped_type::value_type;
-  using ordinal_t	 = std::size_t;
-  using size_t		 = ordinal_t;
+//   using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
+//   using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
 
-  using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
-  using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
+//   using const_data_return_t = wrapped_type const *;
+//   using data_return_t	    = wrapped_type *;
+//   using reference_t	    = scalar_t &;
+//   using const_reference_t   = scalar_t const &;
+//   using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
+//   using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
-  using const_data_return_t = wrapped_type const *;
-  using data_return_t	    = wrapped_type *;
-  using reference_t	    = scalar_t &;
-  using const_reference_t   = scalar_t const &;
-  using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
-  using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
-
-  // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
-  // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
-};
-#endif
+//   // using span_ret_t	 = expressions::SpanExpr<Vector<wrapped_type>>;
+//   // using span_const_ret_t = expressions::SpanExpr< const Vector<wrapped_type>>;
+// };
+// #endif
 
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_

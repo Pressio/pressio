@@ -61,26 +61,28 @@ template <typename T, typename enable = void>
 struct is_dense_matrix_teuchos : std::false_type {};
 
 template <typename T>
-struct is_dense_matrix_teuchos<T,
-    typename std::enable_if<
-	std::is_same<T,
-	  Teuchos::SerialDenseMatrix<typename T::ordinalType,
-				     typename T::scalarType>
-	  >::value
-	>::type
-      > : std::true_type{};
+struct is_dense_matrix_teuchos<
+  T,
+  typename std::enable_if<
+    std::is_same<
+      T,
+      Teuchos::SerialDenseMatrix<typename T::ordinalType, typename T::scalarType>
+      >::value
+    >::type
+  > : std::true_type{};
 //-------------------------------------------------
 
 template <typename T, typename enable = void>
 struct is_dense_matrix_teuchos_rcp : std::false_type {};
 
 template <typename T>
-struct is_dense_matrix_teuchos_rcp<T,
-    typename std::enable_if<
-      is_teuchos_rcp<T>::value and
-      is_dense_matrix_teuchos<typename T::element_type>::value
-	>::type
-      > : std::true_type{};
+struct is_dense_matrix_teuchos_rcp<
+  T,
+  typename std::enable_if<
+    is_teuchos_rcp<T>::value and
+    is_dense_matrix_teuchos<typename T::element_type>::value
+    >::type
+  > : std::true_type{};
 
 
 }}}//end namespace pressio::containers::predicates

@@ -66,7 +66,6 @@ struct is_sparse_matrix_eigen<
   T,
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
-    /*!is_dense_matrix_eigen<T>::value &&*/
     std::is_same<
       T,
       Eigen::SparseMatrix<

@@ -55,9 +55,9 @@ namespace pressio{ namespace ops{
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
   >
 elementwise_multiply
 (typename ::pressio::containers::details::traits<T>::scalar_t alpha,

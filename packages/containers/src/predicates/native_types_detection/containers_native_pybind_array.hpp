@@ -51,10 +51,9 @@
 
 namespace pressio{ namespace containers{ namespace predicates {
 
-/*
- * this metafunction is here because a pybind11::array_t
- * can have arbitrary size since it maps to numpy.
- */
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+#include <pybind11/functional.h>
 
 template <typename T, typename enable = void>
 struct is_cstyle_array_pybind11 : std::false_type {};
@@ -92,7 +91,6 @@ struct is_fstyle_array_pybind11<
   > : std::true_type{};
 //----------------------------------------------
 
-
 template <typename T, typename enable = void>
 struct is_array_pybind11 : std::false_type {};
 
@@ -104,7 +102,7 @@ struct is_array_pybind11<
     is_fstyle_array_pybind11<T>::value
     >
   > : std::true_type{};
-
+//----------------------------------------------
 
 template <typename T>
 using is_array_pybind = is_array_pybind11<T>;

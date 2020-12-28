@@ -55,18 +55,19 @@ template <typename wrapped_type>
 class DenseMatrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value>
+    ::pressio::containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value
+    >
   >
 {
-
+public:
   using this_t = DenseMatrix<wrapped_type>;
-  using traits_t = details::traits<this_t>;
-  using sc_t = typename traits_t::scalar_t;
-  using LO_t = typename traits_t::local_ordinal_t;
-  using GO_t = typename traits_t::global_ordinal_t;
-  using comm_t =  typename traits_t::communicator_t;
-  using wrap_t = typename traits_t::wrapped_t;
-  using row_map_t = typename traits_t::row_map_t;
+  using traits = details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using LO_t = typename traits::local_ordinal_t;
+  using GO_t = typename traits::global_ordinal_t;
+  using comm_t =  typename traits::communicator_t;
+  using wrap_t = typename traits::wrapped_t;
+  using row_map_t = typename traits::row_map_t;
 
 public:
 
@@ -81,7 +82,7 @@ public:
   // copy cnstr
   DenseMatrix(DenseMatrix const & other) = default;
 
-  // delete copy assign to force usage of ops::deep_copy 
+  // delete copy assign to force usage of ops::deep_copy
   DenseMatrix & operator=(DenseMatrix const & other) = delete;
 
   // move cnstr

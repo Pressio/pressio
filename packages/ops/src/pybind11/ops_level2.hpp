@@ -57,12 +57,13 @@ namespace pressio{ namespace ops{
 
 //-------------------------------
 // specialize for op(A) = A
+// and types are pressio wrappers
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
-  containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
-  containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
+  containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value and
+  containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -71,15 +72,6 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  // currently not working for expressions because expressions
-  // do not have a .data() method and might have non-contiguous layout
-  // so we cannot just pass them to blas/lapack, we need to handle them separatly
-  static_assert
-    (!containers::predicates::is_expression<A_type>::value and
-     !containers::predicates::is_expression<x_type>::value and
-     !containers::predicates::is_expression<y_type>::value,
-     "Cannot yet handle expressions for ops::product for pybind11");
-
   static_assert
     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
@@ -109,9 +101,9 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
-  containers::predicates::is_fstyle_vector_wrapper_pybind<x_type>::value and
-  containers::predicates::is_fstyle_vector_wrapper_pybind<y_type>::value
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
+  containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value and
+  containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -120,15 +112,6 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  // currently not working for expressions because expressions
-  // do not have a .data() method and might have non-contiguous layout
-  // so we cannot just pass them to blas/lapack, we need to handle them separatly
-  static_assert
-    (!containers::predicates::is_expression<A_type>::value and
-     !containers::predicates::is_expression<x_type>::value and
-     !containers::predicates::is_expression<y_type>::value,
-     "Cannot yet handle expressions for ops::product for pybind11");
-
   static_assert
     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
@@ -136,7 +119,6 @@ product(::pressio::transpose mode,
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
-
   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 
   assert( y.extent(0) == A.extent(1) );
@@ -155,11 +137,12 @@ product(::pressio::transpose mode,
 
 //-------------------------------
 // specialize for op(A) = A
+// where A is a dense matrix wrapper
 // and x,y are native pybind arrays
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_dense_matrix_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
   containers::predicates::is_fstyle_array_pybind<x_type>::value and
   containers::predicates::is_fstyle_array_pybind<y_type>::value
   >
@@ -170,31 +153,31 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  // currently not working for expressions because expressions
-  // do not have a .data() method and might have non-contiguous layout
-  // so we cannot just pass them to blas/lapack, we need to handle them separatly
-  static_assert
-    (!containers::predicates::is_expression<A_type>::value and
-     !containers::predicates::is_expression<x_type>::value and
-     !containers::predicates::is_expression<y_type>::value,
-     "Cannot yet handle expressions for ops::product for pybind11");
+  using wrapper_t = ::pressio::containers::Vector<x_type>;
+  wrapper_t xWrapped(x, ::pressio::view());
+  wrapper_t yWrapped(y, ::pressio::view());
+  ::pressio::ops::product(mode, alpha, A, xWrapped, beta, yWrapped);
+}
 
-  // NOTE: need to check if doing this import is expensive,
-  // and assess whether we can use blas directly when we know
-  // that objects involved are dense with not strange layout.
-
-  pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
-  assert( x.ndim()==1 and y.ndim()==1 );
-  assert( y.size() == A.extent(0) );
-  assert( x.size() == A.extent(1) );
-  const auto & AE = *A.data();
-
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
-  constexpr auto transA     = izero;
-  constexpr auto overWritey = ione;
-  pyblas_.attr("dgemv")(alpha, AE, x, beta, y,
-			izero, ione, izero, ione, transA, overWritey);
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
+  containers::predicates::is_fstyle_array_pybind<x_type>::value and
+  containers::predicates::is_cstyle_array_pybind<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  throw std::runtime_error
+    ("To enable direct referencing of python numpy arrays, we currently \
+only support column-major layout:\n \
+one possible reason for this error message is that you \
+are trying to call from python: applyDecoder(..., fomState) \n \
+where fomState is a C-style numpy array for the fomState ");
 }
 
 }}//end namespace pressio::ops

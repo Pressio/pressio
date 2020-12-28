@@ -54,10 +54,11 @@ namespace pressio{ namespace ops{
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<vec_type>::value, int
+    ::pressio::ops::concepts::container_eigen_with_native_data_access<vec_type>::value,
+    int
     > = 0
   >
-auto max(const vec_type & a) -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+typename vec_type::traits::scalar_t max(const vec_type & a)
 {
   return a.data()->maxCoeff();
 }
@@ -65,10 +66,11 @@ auto max(const vec_type & a) -> typename ::pressio::containers::details::traits<
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<vec_type>::value, int
+    ::pressio::ops::concepts::container_eigen_with_native_data_access<vec_type>::value,
+    int
     > = 0
   >
-auto min(const vec_type & a) -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
+typename vec_type::traits::scalar_t min(const vec_type & a)
 {
   return a.data()->minCoeff();
 }

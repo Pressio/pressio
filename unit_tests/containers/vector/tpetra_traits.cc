@@ -46,13 +46,11 @@ TEST(containers_vector_distributed_tpetra, Traits){
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::mag_t, double>();  
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::derived_t, myvec_t>();
-  ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t,
 				Teuchos::RCP<const Teuchos::Comm<int>>
 				>();
   
-  ASSERT_TRUE(vecTrait::is_vector == true);
+  ASSERT_TRUE(vecTrait::rank == 1);
   ASSERT_TRUE(vecTrait::is_shared_mem == false);
   ASSERT_TRUE(vecTrait::is_dynamic == true);
 

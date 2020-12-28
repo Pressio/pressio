@@ -52,24 +52,24 @@
 namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
-class SparseMatrix<wrapped_type,
-	     ::pressio::mpl::enable_if_t<
-	       containers::predicates::is_sparse_matrix_eigen<
-		 wrapped_type >::value>
-	     >
+class SparseMatrix<
+  wrapped_type,
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_sparse_matrix_eigen<
+      wrapped_type >::value>
+  >
 {
-
-  using derived_t = SparseMatrix<wrapped_type>;
-  using mytraits = details::traits<derived_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
-  using der_t = typename mytraits::derived_t;
+public:
+  using this_t = SparseMatrix<wrapped_type>;
+  using traits = details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using wrap_t = typename traits::wrapped_t;
 
 public:
   SparseMatrix() = delete;
 
-  explicit SparseMatrix(ord_t nrows, ord_t ncols) 
+  explicit SparseMatrix(ord_t nrows, ord_t ncols)
   {
     data_.resize(nrows, ncols);
     data_.makeCompressed();
@@ -79,10 +79,10 @@ public:
   template <
     typename U = ord_t,
     mpl::enable_if_t<
-     !std::is_void<U>::value and 
-     mytraits::is_row_major==1, int> = 0
+     !std::is_void<U>::value and
+     traits::is_row_major==1, int> = 0
     >
-  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerRow) 
+  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerRow)
   {
     data_.resize(nrows, ncols);
     if( nonZerosPerRow > ncols )
@@ -97,9 +97,9 @@ public:
     typename U = ord_t,
     mpl::enable_if_t<
      !std::is_void<U>::value and
-      mytraits::is_row_major==0, int> = 0
+      traits::is_row_major==0, int> = 0
     >
-  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerCol) 
+  explicit SparseMatrix(U nrows, U ncols, U nonZerosPerCol)
   {
     data_.resize(nrows, ncols);
     if( nonZerosPerCol > nrows )
@@ -135,13 +135,13 @@ public:
     return data_.coeff(row,col);
   }
 
-  derived_t & operator+=(const derived_t & other) {
+  this_t & operator+=(const this_t & other) {
     assert(haveCompatibleDimensions(*this, other) );
     this->data_ += *other.data();
     return *this;
   }
 
-  derived_t & operator-=(const derived_t & other) {
+  this_t & operator-=(const this_t & other) {
     assert(haveCompatibleDimensions(*this, other) );
     this->data_ -= *other.data();
     return *this;

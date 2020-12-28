@@ -61,13 +61,14 @@ class Vector<
     >
   >
 {
-
-  using this_t		= Vector<wrapped_type>;
-  using sc_t		= typename details::traits<this_t>::scalar_t;
-  using LO_t		= typename details::traits<this_t>::local_ordinal_t;
-  using GO_t		= typename details::traits<this_t>::global_ordinal_t;
-  using device_t	= typename details::traits<this_t>::device_t;
-  using map_t		= typename details::traits<this_t>::data_map_t;
+public:
+  using this_t	= Vector<wrapped_type>;
+  using traits	= details::traits<this_t>;
+  using sc_t	= typename details::traits<this_t>::scalar_t;
+  using LO_t	= typename details::traits<this_t>::local_ordinal_t;
+  using GO_t	= typename details::traits<this_t>::global_ordinal_t;
+  using device_t= typename details::traits<this_t>::device_t;
+  using map_t	= typename details::traits<this_t>::data_map_t;
 
 public:
   Vector() = delete;

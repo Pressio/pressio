@@ -55,42 +55,34 @@ template <typename T, typename enable = void>
 struct is_dynamic_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_dynamic_vector_wrapper_eigen
-<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector
-    &&
-    (containers::details::traits<T>::wrapped_vector_identifier==
-     containers::details::WrappedVectorIdentifier::EigenColDynamic
-     or
-     containers::details::traits<T>::wrapped_vector_identifier==
-     containers::details::WrappedVectorIdentifier::EigenRowDynamic
-     )
-    >
+struct is_dynamic_vector_wrapper_eigen<
+  Vector<T>,
+  mpl::enable_if_t<
+  is_dynamic_row_vector_eigen<T>::value or
+  is_dynamic_column_vector_eigen<T>::value>
   > : std::true_type{};
 
+template <typename T>
+struct is_dynamic_vector_wrapper_eigen<const Vector<T>>
+  : is_dynamic_vector_wrapper_eigen<Vector<T>>{};
 
+//--------------------------------------------------
 template <typename T, typename enable = void>
 struct is_static_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
-struct is_static_vector_wrapper_eigen
-<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector
-    &&
-    (containers::details::traits<T>::wrapped_vector_identifier==
-     containers::details::WrappedVectorIdentifier::EigenColStatic
-     or
-     containers::details::traits<T>::wrapped_vector_identifier==
-     containers::details::WrappedVectorIdentifier::EigenRowStatic
-     )
-    >
+struct is_static_vector_wrapper_eigen<
+  Vector<T>,
+  mpl::enable_if_t<
+  is_static_row_vector_eigen<T>::value or
+  is_static_column_vector_eigen<T>::value>
   > : std::true_type{};
 
+template <typename T>
+struct is_static_vector_wrapper_eigen<const Vector<T>>
+  : is_static_vector_wrapper_eigen<Vector<T>>{};
 
+//--------------------------------------------------
 template <typename T, typename enable = void>
 struct is_vector_wrapper_eigen : std::false_type {};
 
@@ -102,7 +94,6 @@ struct is_vector_wrapper_eigen<
     is_dynamic_vector_wrapper_eigen<T>::value
     >
   > : std::true_type{};
-
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EIGEN_HPP_

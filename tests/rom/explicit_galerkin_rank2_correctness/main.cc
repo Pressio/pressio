@@ -48,9 +48,6 @@ int main(int argc, char *argv[])
   using fom_state_t = pressio::containers::MultiVector<native_state_t>;
   using basis_t	= pressio::containers::experimental::MultiVectorSet<native_dmat_t>;
   using decoder_t = pressio::rom::LinearDecoder<basis_t, fom_state_t>;
-  static_assert
-    (::pressio::containers::predicates::is_wrapper<basis_t>::value,"");
-
   using rom_state_t = pressio::containers::MultiVector<Eigen::MatrixXd>;
 
   const int gridSize  = 8;

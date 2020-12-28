@@ -61,8 +61,8 @@ namespace pressio{ namespace ops{
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<x_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -89,8 +89,8 @@ product(::pressio::nontranspose mode,
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_dense_matrix_teuchos<A_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<x_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,

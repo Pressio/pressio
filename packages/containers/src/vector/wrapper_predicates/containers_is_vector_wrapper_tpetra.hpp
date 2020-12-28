@@ -56,13 +56,13 @@ struct is_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_tpetra<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector &&
-    containers::details::traits<T>::wrapped_vector_identifier==
-    containers::details::WrappedVectorIdentifier::Tpetra
-    >
+  Vector<T>,
+  ::pressio::mpl::enable_if_t<is_vector_tpetra<T>::value>
   > : std::true_type{};
+
+template <typename T>
+struct is_vector_wrapper_tpetra<const Vector<T>>
+  : is_vector_wrapper_tpetra<Vector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_TPETRA_HPP_

@@ -113,7 +113,8 @@ struct CommonTraitsContinuousTimeApi
   // always false if pybind is disabled, otherwise detect from galerkin state
   static constexpr bool binding_sentinel =
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value;
+    ::pressio::containers::predicates::is_vector_wrapper_pybind<galerkin_state_t>::value or
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<galerkin_state_t>::value;
 #else
   false;
 #endif

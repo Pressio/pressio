@@ -57,7 +57,7 @@ namespace pressio{ namespace ops{
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<vec_type>::value, int
+    ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<vec_type>::value, int
     > = 0
   >
 auto norm1(const vec_type & a)
@@ -69,7 +69,7 @@ auto norm1(const vec_type & a)
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<vec_type>::value, int
+    ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<vec_type>::value, int
     > = 0
   >
 auto norm2(const vec_type & a)

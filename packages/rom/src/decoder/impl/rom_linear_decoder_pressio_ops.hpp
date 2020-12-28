@@ -55,9 +55,11 @@ template <typename jacobian_matrix_type, typename fom_state_t>
 struct LinearDecoderWithPressioOps
 {
   static_assert
-  (::pressio::containers::predicates::is_wrapper<jacobian_matrix_type>::value
-   and ::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
-   "Decoder template arguments must be valid pressio wrappers");
+  (::pressio::rom::concepts::decoder_jacobian<jacobian_matrix_type>::value,
+   "Invalid decoder's jacobian type");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
+   "Invalid fom_state type passed to decoder");
 
   // these aliases must be here because ROM classes detect them
   using jacobian_type  = jacobian_matrix_type;
@@ -97,8 +99,8 @@ public:
   // but not strictly a vector type.
   // For example, for WLS the operand here is a pressio expression, e.g. span.
   template <typename gen_coords_t>
-  void applyMapping(const gen_coords_t & operand,
-		    fom_state_type & result) const
+  mpl::enable_if_t<::pressio::containers::details::traits<gen_coords_t>::rank == 1>
+  applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
     static_assert
       (::pressio::containers::predicates::are_scalar_compatible<
@@ -110,6 +112,22 @@ public:
     constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
     ::pressio::ops::product(::pressio::nontranspose(), one,
 			    jacobianOfDecoder_, operand, zero, result);
+  }
+
+  template <typename gen_coords_t>
+  mpl::enable_if_t<::pressio::containers::details::traits<gen_coords_t>::rank >= 2>
+  applyMapping(const gen_coords_t & operand, fom_state_type & result) const
+  {
+    static_assert
+      (::pressio::containers::predicates::are_scalar_compatible<
+       gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
+    using scalar_t = typename ::pressio::containers::details::traits<
+      fom_state_type>::scalar_t;
+
+    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    ::pressio::ops::product(::pressio::nontranspose(), ::pressio::nontranspose(),
+			    one, jacobianOfDecoder_, operand, zero, result);
   }
 
   const jacobian_type & jacobianCRef() const{

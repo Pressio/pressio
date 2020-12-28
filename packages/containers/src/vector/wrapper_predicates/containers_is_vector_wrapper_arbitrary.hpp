@@ -56,17 +56,13 @@ struct is_vector_wrapper_arbitrary : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_arbitrary<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector
-    &&
-    containers::details::traits<T>::wrapped_package_identifier ==
-    containers::details::WrappedPackageIdentifier::Arbitrary
-    &&
-    containers::details::traits<T>::wrapped_vector_identifier ==
-    containers::details::WrappedVectorIdentifier::Arbitrary
-    >
+  Vector<T>,
+    mpl::enable_if_t<is_admissible_as_vector_arbitrary<T>::value>
   > : std::true_type{};
+
+template <typename T>
+struct is_vector_wrapper_arbitrary<const Vector<T>>
+  : is_vector_wrapper_arbitrary<Vector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_ARBITRARY_HPP_

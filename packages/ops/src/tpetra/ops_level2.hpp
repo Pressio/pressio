@@ -60,7 +60,6 @@ namespace pressio{ namespace ops{
  * multi_vector prod vector
  *
  * y = beta * y + alpha*op(A)*x
- *
 */
 
 // begin namespace pressio::ops::impl
@@ -68,8 +67,8 @@ namespace impl{
 
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<y_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value
   >
 _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 				 const A_type & A,
@@ -93,24 +92,24 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
   ::KokkosBlas::gemv(&ctA, alpha, ALocalView_h, xview, beta, yLocalView_drank1);
 }
 
-
 // when the operand is a kokkos wrapper we use kokkos functionalities directly
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<y_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value
   >
 _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
-					     const A_type & A,
-					     const x_type & x,
-					     const scalar_type beta,
-					     y_type & y)
+					const A_type & A,
+					const x_type & x,
+					const scalar_type beta,
+					y_type & y)
 {
   // make sure the tpetra mv has same exe space of the kokkos vector wrapper
   using tpetra_mv_dev_t = typename ::pressio::containers::details::traits<A_type>::device_t;
   using kokkos_v_dev_t  = typename ::pressio::containers::details::traits<x_type>::device_type;
-  static_assert( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
-		 "product: tpetra MV and kokkos wrapper need to have same device type" );
+  static_assert
+    ( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
+      "product: tpetra MV and kokkos wrapper need to have same device type" );
 
   assert( (std::size_t)A.numVectors() == x.data()->extent(0) );
   const char ctA = 'N';
@@ -123,18 +122,22 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
   const auto yLocalView_drank1 = Kokkos::subview(yLocalView_drank2, Kokkos::ALL(), 0);
   ::KokkosBlas::gemv(&ctA, alpha, ALocalView_d, *x.data(), beta, yLocalView_drank1);
 }
+//---------------------------------
 }//end namespace pressio::ops::impl
-
+//---------------------------------
 
 /* -------------------------------------------------------------------
  * x is a sharedmem vector wrapper
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
+  (x_type::traits::wrapped_package_identifier !=
+   ::pressio::containers::details::WrappedPackageIdentifier::Kokkos) and
+  (::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value or
+   ::pressio::containers::predicates::is_vector_wrapper_teuchos<x_type>::value or
+   ::pressio::containers::predicates::span_expression<x_type>::value)
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -143,26 +146,28 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-    "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
 
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
-  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<x_type>::value
   >
-product(::pressio::nontranspose mode,
+product(::pressio::nontranspose,
 	const scalar_type alpha,
 	const A_type & A,
 	const x_type & x,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
     "Types are not scalar compatible");
 
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
@@ -171,13 +176,12 @@ product(::pressio::nontranspose mode,
 /* -------------------------------------------------------------------
  * x is a distributed Tpetra vector wrapper
  *-------------------------------------------------------------------*/
-
 // y = wrapper of Kokkos vector
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
-  containers::predicates::is_vector_wrapper_kokkos<y_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -186,18 +190,21 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Tpetra MV dot V: operands do not have matching scalar type");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Tpetra MV dot V: operands do not have matching scalar type");
 
-  static_assert(std::is_same<
-		typename containers::details::traits<A_type>::device_t,
-		typename containers::details::traits<x_type>::device_t>::value,
-		"Tpetra MV dot V: operands do not have the same device type");
+  static_assert
+    (std::is_same<
+     typename ::pressio::containers::details::traits<A_type>::device_t,
+     typename ::pressio::containers::details::traits<x_type>::device_t>::value,
+     "Tpetra MV dot V: operands do not have the same device type");
 
-  static_assert(std::is_same<
-		typename containers::details::traits<x_type>::device_t,
-		typename containers::details::traits<y_type>::device_t>::value,
-		"Tpetra MV dot V: V and result do not have the same device type");
+  static_assert
+    (std::is_same<
+     typename ::pressio::containers::details::traits<x_type>::device_t,
+     typename ::pressio::containers::details::traits<y_type>::device_t>::value,
+     "Tpetra MV dot V: V and result do not have the same device type");
 
   using kokkos_v_t = typename ::pressio::containers::details::traits<y_type>::wrapped_t;
   using v_t = ::pressio::containers::Vector<kokkos_v_t>;
@@ -210,10 +217,16 @@ product(::pressio::transpose mode,
 // y = sharedmem vec not kokkos
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
-  !containers::predicates::is_vector_wrapper_kokkos<y_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value
+  and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<x_type>::value
+  and
+  (y_type::traits::wrapped_package_identifier !=
+   ::pressio::containers::details::WrappedPackageIdentifier::Kokkos) and
+    ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
+  // (::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value or
+  //  ::pressio::containers::predicates::is_vector_wrapper_teuchos<y_type>::value or
+  //  ::pressio::containers::predicates::span_expression<y_type>::value)
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -229,8 +242,9 @@ product(::pressio::transpose mode,
      So we have to extract each column vector
      from A and do dot product one a time*/
 
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
 
   const auto numVecs = A.extent(1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++){

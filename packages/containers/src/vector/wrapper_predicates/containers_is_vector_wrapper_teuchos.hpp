@@ -56,13 +56,13 @@ struct is_vector_wrapper_teuchos : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_teuchos<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector &&
-    containers::details::traits<T>::wrapped_vector_identifier==
-    containers::details::WrappedVectorIdentifier::TeuchosSerialDense
-    >
+  Vector<T>,
+  ::pressio::mpl::enable_if_t<is_dense_vector_teuchos<T>::value>
   > : std::true_type{};
+
+template <typename T>
+struct is_vector_wrapper_teuchos<const Vector<T>>
+  : is_vector_wrapper_teuchos<Vector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_TEUCHOS_HPP_

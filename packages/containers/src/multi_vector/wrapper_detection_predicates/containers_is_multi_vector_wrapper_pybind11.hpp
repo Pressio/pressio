@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_ConfigDefs.hpp
+// containers_is_multi_vector_wrapper_pybind11.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,16 +46,44 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_
-#define CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_
+#ifndef CONTAINERS_MULTI_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_
+#define CONTAINERS_MULTI_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_
 
-#include <chrono>
-#include <array>
+namespace pressio{ namespace containers{ namespace predicates {
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-#include <pybind11/functional.h>
-#endif
+template <typename T, typename enable = void>
+struct is_fstyle_multi_vector_wrapper_pybind : std::false_type {};
 
-#endif  // CONTAINERS_CONTAINERS_CONFIGDEFS_HPP_
+template <typename T>
+struct is_fstyle_multi_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    details::traits<T>::is_matrix
+    &&
+    details::traits<T>::wrapped_matrix_identifier
+    == details::WrappedMatrixIdentifier::DensePybind
+    and
+    is_fstyle_array_pybind11<
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
+// -------------------------------------------------------
+
+template <typename T, typename enable = void>
+struct is_multi_vector_wrapper_pybind : std::false_type {};
+
+template <typename T>
+struct is_multi_vector_wrapper_pybind<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_fstyle_multi_vector_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
+
+
+template<typename T>
+using is_multi_vector_wrapper_pybind11 = is_multi_vector_wrapper_pybind<T>;
+
+}}}//end namespace pressio::containers::predicates
+#endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_

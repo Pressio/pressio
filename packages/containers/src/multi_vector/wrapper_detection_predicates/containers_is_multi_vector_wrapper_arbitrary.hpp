@@ -56,14 +56,15 @@ struct is_multi_vector_wrapper_arbitrary : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_arbitrary<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_multi_vector &&
-       containers::details::traits<T>::wrapped_package_identifier ==
-		containers::details::WrappedPackageIdentifier::Arbitrary &&
-       containers::details::traits<T>::wrapped_multi_vector_identifier ==
-		containers::details::WrappedMultiVectorIdentifier::Arbitrary
-       >
+  MultiVector<T>,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<T>::value
+    >
   > : std::true_type{};
+
+template <typename T>
+struct is_multi_vector_wrapper_arbitrary<const MultiVector<T>>
+  : is_multi_vector_wrapper_arbitrary<MultiVector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_ARBITRARY_HPP_

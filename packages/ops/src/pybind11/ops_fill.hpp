@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
   >
 fill(T & v,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
@@ -64,7 +64,21 @@ fill(T & v,
 
 template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  >
+fill(T & M,
+     typename ::pressio::containers::details::traits<T>::scalar_t value)
+{
+  for (std::size_t j=0; j<M.extent(1); ++j){
+    for (std::size_t i=0; i<M.extent(0); ++i){
+      M(i,j) = value;
+    }
+  }
+}
+
+template < typename T >
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
   >
 fill(T & M,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
@@ -72,6 +86,22 @@ fill(T & M,
   for (std::size_t i=0; i<M.extent(0); ++i)
     for (std::size_t j=0; j<M.extent(1); ++j)
       M(i,j) = value;
+}
+
+template < typename T >
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  >
+fill(T & M,
+     typename ::pressio::containers::details::traits<T>::scalar_t value)
+{
+  for (std::size_t k=0; k<M.extent(2); ++k){
+    for (std::size_t j=0; j<M.extent(1); ++j){
+      for (std::size_t i=0; i<M.extent(0); ++i){
+	M(i,j) = value;
+      }
+    }
+  }
 }
 
 }}//end namespace pressio::ops

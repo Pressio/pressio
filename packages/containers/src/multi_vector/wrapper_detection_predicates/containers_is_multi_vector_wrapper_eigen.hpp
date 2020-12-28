@@ -52,15 +52,28 @@
 namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
+struct is_dynamic_multi_vector_wrapper_eigen : std::false_type {};
+
+template <typename T>
+struct is_dynamic_multi_vector_wrapper_eigen<
+  MultiVector<T>,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value
+    >
+  > : std::true_type{};
+
+template <typename T>
+struct is_dynamic_multi_vector_wrapper_eigen<const MultiVector<T>>
+  : is_dynamic_multi_vector_wrapper_eigen<MultiVector<T>>{};
+
+//-----------------------------------------------------------
+template <typename T, typename enable = void>
 struct is_multi_vector_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_eigen<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_multi_vector &&
-       containers::details::traits<T>::wrapped_multi_vector_identifier==
-       containers::details::WrappedMultiVectorIdentifier::Eigen
-       >
+  T,
+  mpl::enable_if_t< is_dynamic_multi_vector_wrapper_eigen<T>::value >
   >
   : std::true_type{};
 

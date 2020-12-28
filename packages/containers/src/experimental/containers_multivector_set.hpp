@@ -56,6 +56,7 @@ template<typename T>
 class MultiVectorSet
 {
 public:
+  using traits = ::pressio::containers::details::traits<MultiVectorSet<T>>;
   using mv_type	= ::pressio::containers::MultiVector<T>;
   using multivector_type = mv_type;
   using data_type = std::vector<mv_type>;

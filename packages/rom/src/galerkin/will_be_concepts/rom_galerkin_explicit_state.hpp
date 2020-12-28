@@ -70,8 +70,7 @@ template<typename T>
 struct explicit_state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
    >
   > : std::true_type{};
 #endif
@@ -82,7 +81,7 @@ struct explicit_state<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper_pybind<T>::value
+    ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
    >
   > : std::true_type{};
 #endif

@@ -89,7 +89,8 @@ struct DefaultProjector
 
   template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
+    ::pressio::containers::details::traits<operand_t>::rank == 1 and
+    ::pressio::containers::details::traits<result_t>::rank == 1 and
     (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
      ::pressio::rom::galerkin::concepts::residual<result_t>::value)
     >
@@ -103,14 +104,17 @@ struct DefaultProjector
   }
 
   template<typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
+  mpl::enable_if_t<
+    ::pressio::containers::details::traits<result_t>::rank == 1 and
+    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
+    >
   apply(const dec_jac_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
     using cnst = ::pressio::utils::constants<scalar_t>;
-    udOps_.get().product(::pressio::transpose(), ::pressio::nontranspose(), cnst::one(),
-			 *decoderJacobian_.get().data(), *operand.data(),
-			 cnst::zero(), result);
+    udOps_.get().product(::pressio::transpose(), ::pressio::nontranspose(),
+			 cnst::one(), *decoderJacobian_.get().data(),
+			 *operand.data(), cnst::zero(), result);
   }
 
 private:
@@ -137,11 +141,7 @@ struct DefaultProjector<decoder_type, void>
     : decoderJacobian_(decoder.jacobianCRef()){}
 
   template<typename operand_t, typename result_t>
-  mpl::enable_if_t<
-    ::pressio::rom::galerkin::concepts::fom_velocity<operand_t>::value and
-    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
-     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
-    >
+  mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank == 1>
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
@@ -151,21 +151,31 @@ struct DefaultProjector<decoder_type, void>
 			    cnst::zero(), result);
   }
 
-  template<typename result_t>
-  mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
-  apply(const dec_jac_t & operand, result_t & result) const
+  template<typename operand_t, typename result_t>
+  mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank >= 2>
+  apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
     using cnst = ::pressio::utils::constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-     			    cnst::one(), decoderJacobian_.get(), operand,
+			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
   }
+
+  // template<typename result_t>
+  // mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
+  // apply(const dec_jac_t & operand, result_t & result) const
+  // {
+  //   // using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
+  //   // using cnst = ::pressio::utils::constants<scalar_t>;
+  //   // ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
+  //   //  			    cnst::one(), decoderJacobian_.get(), operand,
+  //   // 			    cnst::zero(), result);
+  // }
 
 private:
   std::reference_wrapper<const typename decoder_type::jacobian_type> decoderJacobian_;
 };
-
 
 }}}}//end  namespace pressio::rom::galerkin::impl
 #endif  // ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_

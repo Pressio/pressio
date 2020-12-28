@@ -83,14 +83,13 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 }
 }//end namespace pressio::ops::impl
 
-
 /* -------------------------------------------------------------------
  * x is a sharedmem vector wrapper
  *-------------------------------------------------------------------*/
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<x_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -99,23 +98,24 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	::pressio::containers::Vector<Epetra_Vector> & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type>::value,
-		"Types are not scalar compatible");
-  static_assert(mpl::is_same<
-		scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
-		"Scalar compatibility broken");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
 
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
-
 
 /* -------------------------------------------------------------------
  * x is a distributed Epetra vector wrapper
  *-------------------------------------------------------------------*/
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_vector_wrapper<y_type>::value
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -124,8 +124,9 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, y_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
+     "Types are not scalar compatible");
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   const auto numVecs = A.numVectorsGlobal();

@@ -58,16 +58,15 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
   >
-elementwise_multiply
-(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::containers::details::traits<T>::scalar_t beta,
- T2 & y)
+elementwise_multiply(typename T::traits::scalar_t alpha,
+		     const T & x,
+		     const T1 & z,
+		     typename T::traits::scalar_t beta,
+		     T2 & y)
 {
   static_assert
     (containers::predicates::are_scalar_compatible<T, T1, T2>::value,
@@ -79,8 +78,7 @@ elementwise_multiply
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
   using namespace KokkosBlas;
-  mult(beta, *y.data(),
-       alpha, *x.data(), *z.data() );
+  mult(beta, *y.data(), alpha, *x.data(), *z.data() );
 }
 
 }}//end namespace pressio::ops

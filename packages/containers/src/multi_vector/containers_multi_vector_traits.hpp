@@ -63,34 +63,19 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type,
-  false, false, true,
-  WrappedPackageIdentifier::Arbitrary,
-  false, 2>
+  wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>
 {
 
-  using wrapped_t = wrapped_type;
-  using derived_t = MultiVector<wrapped_t>;
   using scalar_t  = typename wrapped_type::value_type;
   using value_t   = typename wrapped_type::value_type;
   using size_t   = typename wrapped_type::size_type;
-
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
-
-  static constexpr WrappedPackageIdentifier
-  wrapped_package_identifier = WrappedPackageIdentifier::Arbitrary;
-
-  static constexpr bool is_vector = false;
-  static constexpr bool is_matrix = false;
-  static constexpr bool is_multi_vector = true;
 };
-
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 //*******************************
@@ -104,9 +89,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type, false, false, true,
-  WrappedPackageIdentifier::Eigen, true, 2
+  wrapped_type, WrappedPackageIdentifier::Eigen, true, 2
   >
 {
   static constexpr WrappedMultiVectorIdentifier
@@ -122,11 +105,8 @@ struct traits<
   using scalar_t  = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
   using size_t    = ordinal_t;
-
-  static constexpr bool is_admissible_for_expression_templates = true;
 };
 #endif
-
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 //*******************************
@@ -140,11 +120,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type,
-  false, false, true,
-  WrappedPackageIdentifier::Trilinos,
-  false, 2>
+  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
@@ -165,7 +141,6 @@ struct traits<
   using communicator_t = Epetra_Comm;
 };
 
-
 //*******************************
 // for tpetra multivector
 //*******************************
@@ -177,11 +152,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type,
-  false, false, true,
-  WrappedPackageIdentifier::Trilinos,
-  false, 2>
+  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
@@ -220,7 +191,6 @@ struct traits<
   using communicator_t = decltype(std::declval<data_map_t>().getComm());
 };
 
-
 //*******************************
 // for block tpetra multivector
 //*******************************
@@ -232,11 +202,7 @@ struct traits<
     >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type,
-  false, false, true,
-  WrappedPackageIdentifier::Trilinos,
-  false, 2>
+  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
   wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::TpetraBlock;
@@ -274,7 +240,6 @@ struct traits<
 };
 #endif
 
-
 //*******************************
 // Kokkos multi vector
 //*******************************
@@ -284,13 +249,10 @@ struct traits<
   MultiVector<wrapped_type>,
     ::pressio::mpl::enable_if_t<
       containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
-    >
+      >
   >
   : public containers_shared_traits<
-  MultiVector<wrapped_type>,
-  wrapped_type,
-  false, false, true,
-  WrappedPackageIdentifier::Kokkos,
+  wrapped_type, WrappedPackageIdentifier::Kokkos,
   true, //true because kokkos is for shared mem
   2
   >

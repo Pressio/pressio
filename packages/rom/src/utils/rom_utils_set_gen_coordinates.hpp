@@ -73,7 +73,7 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 
   //compute hessian for phi^T phi
   hessian_t H(romSize,romSize);
-  ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one, phi, phi, zero, H);
+  ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one, phi, zero, H);
 
   //create a vector to store fomState - fomNominalState
   fom_state_t b(fomState);

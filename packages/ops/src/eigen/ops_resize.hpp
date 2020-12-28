@@ -59,7 +59,7 @@ resize(T & o, typename ::pressio::containers::details::traits<T>::size_t newSz)
 {
   static_assert(
   	::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<T>::value,
-  	"You cannot resize a static vector wrapper Eigen.");
+  	"You cannot resize a static wrapper Eigen.");
 
   o.data()->resize(newSz);
 }
@@ -74,7 +74,7 @@ resize(T & o,
 {
   static_assert(
   	::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<T>::value,
-  	"You cannot resize a static dense matrix wrapper Eigen.");
+  	"You cannot resize a static wrapper Eigen.");
   o.data()->resize(nR, nC);
 }
 

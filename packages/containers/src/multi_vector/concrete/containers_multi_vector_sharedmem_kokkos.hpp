@@ -59,8 +59,9 @@ class MultiVector<
     >
   >
 {
-
+public:
   using this_t = MultiVector<wrapped_type>;
+  using traits = details::traits<this_t>;
   using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
   using ord_t = typename  mytraits::ordinal_t;

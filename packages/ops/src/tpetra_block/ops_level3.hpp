@@ -68,7 +68,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -78,10 +78,9 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-  		"Types are not scalar compatible");
-
-  // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   // get a tpetra multivector that views the data
   const auto Amvv = A.data()->getMultiVectorView();
@@ -110,8 +109,8 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value),
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+  !::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -120,8 +119,9 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
 
   const auto numVecsA = A.numVectors();
@@ -131,15 +131,14 @@ product(::pressio::transpose modeA,
   return C;
 }
 
-
-
 // /***********************************
 //  * special case A==B
 // **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+  !::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -176,11 +175,10 @@ product(::pressio::transpose modeA,
   }
 }
 
-
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -212,14 +210,15 @@ product(::pressio::transpose modeA,
   tpetra_mv_t Cmv(replMap, *C.data());
 
   // do the operation C = A^T A
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, mvView, mvView, beta);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS,
+	       alpha, mvView, mvView, beta);
 }
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  (::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value),
+  (::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value or
+   ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value),
   C_type
   >
 product(::pressio::transpose modeA,
@@ -227,8 +226,9 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());

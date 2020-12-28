@@ -8,10 +8,7 @@ TEST(containers_expressions, spanIsStaticKokkos)
   using v_t = Kokkos::View<double*>;
   using my_t = Vector<v_t>;
   using span_t= expressions::SpanExpr<my_t>;
-  static_assert
-    (predicates::is_static_vector_wrapper_kokkos<span_t>::value, "");
-  static_assert
-    (!predicates::is_dynamic_vector_wrapper_kokkos<span_t>::value, "");
+  static_assert(span_t::traits::is_static,"");
 }
 
 TEST(containers_expressions, spanIsStaticKokkos2)
@@ -20,10 +17,7 @@ TEST(containers_expressions, spanIsStaticKokkos2)
   using v_t = Kokkos::View<double[4]>;
   using my_t = Vector<v_t>;
   using span_t= expressions::SpanExpr<my_t>;
-  static_assert
-    (predicates::is_static_vector_wrapper_kokkos<span_t>::value, "");
-  static_assert
-    (!predicates::is_dynamic_vector_wrapper_kokkos<span_t>::value, "");
+  static_assert(span_t::traits::is_static,"");
 }
 
 TEST(containers_expressions, subspanIsStaticKokkos)
@@ -32,10 +26,7 @@ TEST(containers_expressions, subspanIsStaticKokkos)
   using m_t = Kokkos::View<double**>;
   using my_t = DenseMatrix<m_t>;
   using subspan_t= expressions::SubspanExpr<my_t>;
-  static_assert
-    (predicates::is_static_dense_matrix_wrapper_kokkos<subspan_t>::value, "");
-  static_assert
-    (!predicates::is_dynamic_dense_matrix_wrapper_kokkos<subspan_t>::value, "");
+  static_assert(subspan_t::traits::is_static,"");
 }
 
 TEST(containers_expressions, subspanIsStaticKokkos2)
@@ -44,8 +35,5 @@ TEST(containers_expressions, subspanIsStaticKokkos2)
   using m_t = Kokkos::View<double*[4]>;
   using my_t = DenseMatrix<m_t>;
   using subspan_t= expressions::SubspanExpr<my_t>;
-  static_assert
-    (predicates::is_static_dense_matrix_wrapper_kokkos<subspan_t>::value, "");
-  static_assert
-    (!predicates::is_dynamic_dense_matrix_wrapper_kokkos<subspan_t>::value, "");
+  static_assert(subspan_t::traits::is_static,"");
 }

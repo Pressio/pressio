@@ -56,8 +56,8 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value
   >
 update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
 {
@@ -69,8 +69,8 @@ update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
 
 template<typename T, typename T1, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value
   >
 update(T & v, const T1 & v1, const scalar_t  b)
 {
@@ -85,9 +85,9 @@ update(T & v, const T1 & v1, const scalar_t  b)
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value
   >
 update(T & v, const scalar_t &a,
        const T1 & v1, const scalar_t &b,
@@ -101,9 +101,9 @@ update(T & v, const scalar_t &a,
 
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value
   >
 update(T & v,
        const T1 & v1, const scalar_t &b,
@@ -126,10 +126,10 @@ template<typename T,
          typename T3,
          typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T3>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T3>::value
   >
 update(T  & v, const scalar_t &a,
        const T1 & v1, const scalar_t &b,
@@ -148,10 +148,10 @@ template<typename T,
          typename T3,
          typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T3>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T3>::value
   >
 update(T & v,
        const T1 & v1, const scalar_t &b,
@@ -175,11 +175,11 @@ template< typename T,
           typename T4,
           typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T4>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T4>::value
   >
 update(T & v, const scalar_t &a,
        const T1 & v1, const scalar_t &b,
@@ -201,11 +201,11 @@ template<typename T,
          typename T4,
          typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T3>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T4>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T3>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T4>::value
   >
 update(T & v,
        const T1 & v1, const scalar_t &b,

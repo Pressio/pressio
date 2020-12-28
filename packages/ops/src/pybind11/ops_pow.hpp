@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 // x^exponent
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
   >
 pow(T & x,
     const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
@@ -67,8 +67,8 @@ pow(T & x,
 // y= x^exponent
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
   >
 pow(T1 & y,
     const T2 & x,
@@ -87,8 +87,8 @@ pow(T1 & y,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -112,8 +112,8 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,

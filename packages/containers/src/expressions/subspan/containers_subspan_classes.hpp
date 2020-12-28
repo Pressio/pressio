@@ -62,15 +62,15 @@ struct SubspanExpr<
 {
 
   using this_t = SubspanExpr<matrix_t>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename mytraits::ordinal_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using native_expr_t = typename traits::native_expr_t;
+  using data_return_t = typename traits::data_return_t;
+  using const_data_return_t = typename traits::const_data_return_t;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -155,16 +155,16 @@ struct SubspanExpr<
 {
 
   using this_t = SubspanExpr<matrix_t>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename mytraits::ordinal_t;
-  using size_t = typename mytraits::size_t;
-  using pair_t = typename mytraits::pair_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using size_t = typename traits::size_t;
+  using pair_t = typename traits::pair_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using native_expr_t = typename traits::native_expr_t;
+  using data_return_t = typename traits::data_return_t;
+  using const_data_return_t = typename traits::const_data_return_t;
 
 private:
   std::reference_wrapper<matrix_t> matObj_;
@@ -240,7 +240,7 @@ public:
   template<typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(const size_t & i, const size_t & j)
@@ -252,7 +252,7 @@ public:
 
   template<typename _matrix_t = matrix_t>
   mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     const_ref_t
     >
   operator()(const size_t & i, const size_t & j) const

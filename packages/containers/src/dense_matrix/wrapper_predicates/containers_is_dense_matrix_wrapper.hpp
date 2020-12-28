@@ -55,13 +55,14 @@ template <typename T, typename enable = void>
 struct is_dense_matrix_wrapper : std::false_type {};
 
 template <typename T>
-struct is_dense_matrix_wrapper< 
-	T,
-	mpl::enable_if_t<
-		containers::details::traits<T>::is_matrix and
-		containers::details::traits<T>::is_dense
-	>
-	> : std::true_type{};
+struct is_dense_matrix_wrapper<
+  ::pressio::containers::DenseMatrix<T>
+  > : std::true_type{};
+
+template <typename T>
+struct is_dense_matrix_wrapper<
+  const ::pressio::containers::DenseMatrix<T>
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_

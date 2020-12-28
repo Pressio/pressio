@@ -59,7 +59,9 @@ class DenseMatrix<
     >
   >
 {
+public:
   using this_t = DenseMatrix<wrapped_type>;
+  using traits = details::traits<this_t>;
   using size_t = typename details::traits<this_t>::size_t;
   using sc_t   = typename details::traits<this_t>::scalar_t;
 

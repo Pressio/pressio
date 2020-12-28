@@ -25,17 +25,13 @@ TEST(containers_multivector_distributed_epetra,
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::wrapped_t, natV_t>();
   ::testing::StaticAssertTypeEq<typename
-		   vecTrait::derived_t, myvec_t>();
-  ::testing::StaticAssertTypeEq<typename
 		   vecTrait::data_map_t,
 		   Epetra_BlockMap>();
   ::testing::StaticAssertTypeEq<typename
 		   vecTrait::communicator_t,
 		   Epetra_Comm>();
   
-  ASSERT_TRUE(vecTrait::is_vector == false);
-  ASSERT_TRUE(vecTrait::is_matrix == false);
-  ASSERT_TRUE(vecTrait::is_multi_vector == true);
+  ASSERT_TRUE(vecTrait::rank == 2);
   ASSERT_TRUE(vecTrait::is_shared_mem == false);
   ASSERT_TRUE(vecTrait::wrapped_package_identifier ==
 	    containers::details::WrappedPackageIdentifier::Trilinos);

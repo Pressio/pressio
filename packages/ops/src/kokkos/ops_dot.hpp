@@ -55,8 +55,8 @@ namespace pressio{ namespace ops{
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value,
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value,
   typename ::pressio::containers::details::traits<T1>::scalar_t
   >
 dot(const T1 & a,
@@ -75,8 +75,8 @@ dot(const T1 & a,
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T2>::value
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 dot(const T1 & a,
     const T2 & b,

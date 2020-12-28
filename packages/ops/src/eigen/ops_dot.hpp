@@ -51,35 +51,36 @@
 
 namespace pressio{ namespace ops{
 
-// void specializiation
+// return void
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_eigen<T0>::value and
-  containers::predicates::is_vector_wrapper_eigen<T1>::value
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T0>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value
   >
 dot(const T0 & vecA,
     const T1 & vecB,
-    typename ::pressio::containers::details::traits<T0>::scalar_t & result)
+    typename T0::traits::scalar_t & result)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-  "vector types T0 and T1 in ops/src/eigen/ops_vec_dot_vec.hpp are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
+     "types are not scalar compatible");
   assert(vecA.extent(0) == vecB.extent(0));
   result = vecA.data()->dot(*vecB.data());
 }
 
-
-// non-void specialize
+// return result
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_eigen<T0>::value and
-  containers::predicates::is_vector_wrapper_eigen<T1>::value,
-  typename ::pressio::containers::details::traits<T0>::scalar_t
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T0>::value and
+  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value,
+  typename T0::traits::scalar_t
   >
 dot(const T0 & vecA, const T1 & vecB)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-  "vector types T0 and T1 in ops/src/eigen/ops_vec_dot_vec.hpp are not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
+     "types are not scalar compatible");
+  using sc_t = typename T0::traits::scalar_t;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;

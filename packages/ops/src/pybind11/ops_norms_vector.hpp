@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
   typename ::pressio::containers::details::traits<T>::scalar_t
   >
 norm1(const T & a)
@@ -68,7 +68,7 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value,
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
   typename ::pressio::containers::details::traits<T>::scalar_t
   >
 norm2(const T & a)

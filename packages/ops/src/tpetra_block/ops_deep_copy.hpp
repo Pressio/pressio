@@ -51,9 +51,6 @@
 
 namespace pressio{ namespace ops{
 
-//--------------------------------------------------------------------------
-// for wrappers, we overload the = operator
-//--------------------------------------------------------------------------
 template<typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value

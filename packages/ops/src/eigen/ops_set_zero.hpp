@@ -53,10 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value or
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value or
-  ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+  ::pressio::ops::concepts::container_eigen_with_native_data_access<T>::value
   >
 set_zero(T & v)
 {

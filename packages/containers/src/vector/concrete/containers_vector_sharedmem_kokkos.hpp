@@ -59,13 +59,13 @@ class Vector<
     >
   >
 {
-
+public:
   using this_t = Vector<wrapped_type>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename  mytraits::ordinal_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
+  using traits = details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename  traits::ordinal_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
 
 public:
   // default cnstr
@@ -136,7 +136,7 @@ public:
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator[](ord_t i)
   {
@@ -149,7 +149,7 @@ public:
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator[](ord_t i) const
   {
@@ -161,7 +161,7 @@ public:
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
   operator()(ord_t i)
   {
@@ -173,7 +173,7 @@ public:
     mpl::enable_if_t<
       // todo: this is not entirely correct because this would work also
       // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator()(ord_t i) const
   {

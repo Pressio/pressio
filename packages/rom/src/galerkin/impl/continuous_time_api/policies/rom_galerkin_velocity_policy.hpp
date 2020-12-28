@@ -120,7 +120,6 @@ public:
 	       const scalar_t & time) const
   {
     projection_policy_t::compute(galerkinRhs, galerkinState, fomSystemObj, time);
-    std::cout << galerkinRhs.data()->col(0) << std::endl;
   }
 };
 

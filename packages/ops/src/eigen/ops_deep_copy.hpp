@@ -51,23 +51,13 @@
 
 namespace pressio{ namespace ops{
 
-//--------------------------------------------------------------------------
-// for wrappers, because we overload the = operator
-// and for now we do NOT have view semantics
-//--------------------------------------------------------------------------
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_vector_wrapper_eigen<T1>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T1>::value or
-   ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T1>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value)
-  and
-  (::pressio::containers::predicates::is_vector_wrapper_eigen<T2>::value or
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T2>::value or
-   ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T1>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value)
+  ::pressio::ops::concepts::container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::concepts::container_eigen_with_native_data_access<T2>::value
   >
-deep_copy(T2 & dest, const T1 & src){
+deep_copy(T2 & dest, const T1 & src)
+{
   *dest.data() = *src.data();
 }
 

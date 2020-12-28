@@ -56,12 +56,13 @@ struct is_dense_matrix_wrapper_teuchos : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_teuchos<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_matrix &&
-       containers::details::traits<T>::wrapped_matrix_identifier==
-       containers::details::WrappedMatrixIdentifier::TeuchosSerialDense
-       >
+  DenseMatrix<T>,
+    mpl::enable_if_t<containers::predicates::is_dense_matrix_teuchos<T>::value>
   > : std::true_type{};
+
+template <typename T>
+struct is_dense_matrix_wrapper_teuchos<const DenseMatrix<T>>
+  : is_dense_matrix_wrapper_teuchos<DenseMatrix<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_TEUCHOS_HPP_

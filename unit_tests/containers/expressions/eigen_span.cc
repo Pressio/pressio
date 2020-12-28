@@ -52,7 +52,8 @@ namespace{
   }
 
   template <typename T>
-  void testConst(const T & a){
+  void testConst(const T & a)
+  {
     auto sp = pressio::containers::span(a, 2, 3);
     EXPECT_EQ( sp.extent(0), 3 );
     EXPECT_DOUBLE_EQ( sp(0), 44. );

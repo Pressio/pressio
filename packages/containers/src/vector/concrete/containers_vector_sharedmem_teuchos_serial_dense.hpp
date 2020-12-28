@@ -59,14 +59,14 @@ class Vector<
     >
   >
 {
-
+public:
   using this_t = Vector<wrapped_type>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename  mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
+  using traits = details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename  traits::ordinal_t;
+  using wrap_t = typename traits::wrapped_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
 
 public:
   Vector() = default;
@@ -102,11 +102,11 @@ public:
     return data_(i);
   };
 
-  [[deprecated("Use operator() instead.")]] 
+  [[deprecated("Use operator() instead.")]]
   ref_t operator[](ord_t i){
     return (*this)(i);
   };
-  [[deprecated("Use operator() instead.")]] 
+  [[deprecated("Use operator() instead.")]]
   const_ref_t operator[](ord_t i) const{
     return (*this)(i);
   };

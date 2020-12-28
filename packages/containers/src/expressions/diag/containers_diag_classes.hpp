@@ -61,14 +61,14 @@ struct DiagExpr<
   >
 {
   using this_t = DiagExpr<matrix_t>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using native_expr_t = typename traits::native_expr_t;
+  using data_return_t = typename traits::data_return_t;
+  using const_data_return_t = typename traits::const_data_return_t;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -126,20 +126,6 @@ public:
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
-
-  // [[deprecated("Use operator() instead.")]]
-  // ref_t operator[](size_t i)
-  // {
-  //   assert(i < (size_t)extent_);
-  //   return nativeExprObj_(i);
-  // }
-
-  // [[deprecated("Use operator() instead.")]]
-  // const_ref_t operator[](size_t i) const
-  // {
-  //   assert(i < (size_t)extent_);
-  //   return nativeExprObj_(i);
-  // }
 };
 #endif
 
@@ -153,14 +139,14 @@ struct DiagExpr<
   >
 {
   using this_t		= DiagExpr<matrix_t>;
-  using mytraits	= typename details::traits<this_t>;
-  using sc_t		= typename mytraits::scalar_t;
-  using size_t		= typename mytraits::size_t;
-  using ref_t		= typename mytraits::reference_t;
-  using const_ref_t	= typename mytraits::const_reference_t;
-  using native_expr_t	= typename mytraits::native_expr_t;
-  using data_return_t	= typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using traits	= typename details::traits<this_t>;
+  using sc_t		= typename traits::scalar_t;
+  using size_t		= typename traits::size_t;
+  using ref_t		= typename traits::reference_t;
+  using const_ref_t	= typename traits::const_reference_t;
+  using native_expr_t	= typename traits::native_expr_t;
+  using data_return_t	= typename traits::data_return_t;
+  using const_data_return_t = typename traits::const_data_return_t;
 
 private:
   std::reference_wrapper<matrix_t> matObj_;
@@ -219,7 +205,7 @@ public:
   template<typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i)
@@ -231,7 +217,7 @@ public:
   // const subscripting
   template<typename _matrix_t = matrix_t>
   mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     const_ref_t
     >
   operator()(size_t i) const
@@ -239,29 +225,6 @@ public:
     assert(i < (size_t)extent_);
     return nativeExprObj_(i);
   }
-
-  // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]]
-  // mpl::enable_if_t<
-  //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-  //   ref_t
-  //   >
-  // operator[](size_t i)
-  // {
-  //   return (*this)(i);
-  // }
-
-  // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]]
-  // mpl::enable_if_t<
-  //   std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-  //   const_ref_t
-  //   >
-  // operator[](size_t i) const
-  // {
-  //   return (*this)(i);
-  // }
 };
 #endif
 
@@ -271,19 +234,19 @@ template <typename matrix_t>
 struct DiagExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<matrix_t>::value
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value
     >
   >
 {
   using this_t = DiagExpr<matrix_t>;
-  using mytraits = typename details::traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using native_expr_t = typename traits::native_expr_t;
+  using data_return_t = typename traits::data_return_t;
+  using const_data_return_t = typename traits::const_data_return_t;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
@@ -353,23 +316,6 @@ public:
     assert(i < (size_t)extent_);
     return matObj_.get()(i,i);
   }
-
-  // template<typename _matrix_t = matrix_t>
-  // [[deprecated("Use operator() instead.")]]
-  // mpl::enable_if_t<
-  //   !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
-  //   ref_t
-  //   >
-  // operator()(size_t i)
-  // {
-  //   return (*this)(i);
-  // }
-
-  // [[deprecated("Use operator() instead.")]]
-  // const_ref_t operator()(size_t i) const
-  // {
-  //   return (*this)(i);
-  // }
 };
 #endif
 

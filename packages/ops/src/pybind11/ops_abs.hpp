@@ -54,8 +54,8 @@ namespace pressio{ namespace ops{
 // y= abs(x)
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_pybind<T0>::value and
-  containers::predicates::is_vector_wrapper_pybind<T1>::value
+  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
+  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
   >
 abs(T0 & y, const T1 & x)
 {

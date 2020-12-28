@@ -57,14 +57,15 @@ template <typename T, typename enable = void>
 struct is_dense_vector_teuchos : std::false_type {};
 
 template <typename T>
-struct is_dense_vector_teuchos<T,
-      ::pressio::mpl::enable_if_t<
-	std::is_same<T,
-	  Teuchos::SerialDenseVector<typename T::ordinalType,
-				     typename T::scalarType>
-	  >::value
-	>
-      > : std::true_type{};
+struct is_dense_vector_teuchos<
+  T,
+  ::pressio::mpl::enable_if_t<
+    std::is_same<
+      T,
+      Teuchos::SerialDenseVector<typename T::ordinalType, typename T::scalarType>
+      >::value
+    >
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_VECTOR_HPP_

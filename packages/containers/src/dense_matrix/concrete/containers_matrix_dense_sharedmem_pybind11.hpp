@@ -59,16 +59,16 @@ class DenseMatrix<
     >
   >
 {
-
+public:
   using this_t	    = DenseMatrix<wrapped_type>;
-  using mytraits    = typename details::traits<this_t>;
-  using sc_t	    = typename mytraits::scalar_t;
-  using ord_t	    = typename mytraits::ordinal_t;
-  using wrap_t	    = typename mytraits::wrapped_t;
-  using ref_t	    = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using mut_proxy_t = typename mytraits::mut_proxy_t;
-  using proxy_t	    = typename mytraits::proxy_t;
+  using traits      = details::traits<this_t>;
+  using sc_t	    = typename traits::scalar_t;
+  using ord_t	    = typename traits::ordinal_t;
+  using wrap_t	    = typename traits::wrapped_t;
+  using ref_t	    = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using mut_proxy_t = typename traits::mut_proxy_t;
+  using proxy_t	    = typename traits::proxy_t;
 
 public:
   DenseMatrix() = delete;

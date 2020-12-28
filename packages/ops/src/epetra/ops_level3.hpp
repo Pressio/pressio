@@ -65,7 +65,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<B_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -125,17 +125,15 @@ product(::pressio::transpose modeA,
 }
 
 
-
 /***********************************
  * special case A==B
 **********************************/
-
 template <
   typename A_type, typename scalar_type, typename C_type
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -182,7 +180,7 @@ template <
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value,
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,

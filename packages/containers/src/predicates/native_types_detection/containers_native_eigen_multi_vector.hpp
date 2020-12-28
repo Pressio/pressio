@@ -59,7 +59,7 @@ struct is_admissible_as_dynamic_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_dense_dynamic_matrix_eigen<T>::value and
-    // multivectors make sense only for col-major matrices
+    // multivectors must be col-major matrices
     int(T::IsRowMajor) == 0
     >
   > : std::true_type{};
@@ -73,7 +73,7 @@ struct is_admissible_as_static_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_dense_static_matrix_eigen<T>::value and
-    // multivectors make sense only for col-major matrices
+    // multivectors must be col-major matrices
     int(T::IsRowMajor) == 0
     >
   > : std::true_type{};

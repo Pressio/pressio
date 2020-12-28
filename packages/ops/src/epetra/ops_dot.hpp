@@ -57,7 +57,7 @@ template <typename vec_type>
   >
 dot(const vec_type & a,
     const vec_type & b,
-    typename ::pressio::containers::details::traits<vec_type>::scalar_t & result)
+    typename vec_type::traits::scalar_t & result)
 {
   assert(a.extent(0) == b.extent(0));
   a.data()->Dot(*b.data(), &result);
@@ -66,11 +66,11 @@ dot(const vec_type & a,
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
+  typename vec_type::traits::scalar_t
   >
 dot(const vec_type & a, const vec_type & b)
 {
-  using sc_t = typename ::pressio::containers::details::traits<vec_type>::scalar_t;
+  using sc_t = typename vec_type::traits::scalar_t;
   sc_t result = {};
   dot(a, b, result);
   return result;

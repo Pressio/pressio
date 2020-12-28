@@ -49,40 +49,23 @@
 #ifndef CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 #define CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
 
-/* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */
+/* WARNING: the inclusion order below matters */
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "./wrapper_predicates/containers_is_vector_wrapper_eigen.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./wrapper_predicates/containers_is_vector_wrapper_pybind.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "./wrapper_predicates/containers_is_vector_wrapper_epetra.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper_teuchos.hpp"
-#endif
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "./wrapper_predicates/containers_is_vector_wrapper_kokkos.hpp"
-#endif
-#include "./wrapper_predicates/containers_is_vector_wrapper_arbitrary.hpp"
-#include "./wrapper_predicates/containers_is_sharedmem_vector_wrapper.hpp"
-#include "./wrapper_predicates/containers_is_sharedmem_host_accessible_vector_wrapper.hpp"
-#include "./wrapper_predicates/containers_is_vector_wrapper.hpp"
-
+//--------
 // traits
+//--------
 #include "./containers_vector_traits.hpp"
 
+//---------------
 // concrete types
+//---------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./concrete/containers_vector_sharedmem_eigen_dynamic.hpp"
 #include "./concrete/containers_vector_sharedmem_eigen_static.hpp"
 #endif
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "./concrete/containers_vector_sharedmem_pybind11.hpp"
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// #include "./concrete/containers_vector_sharedmem_pybind11.hpp"
+// #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./concrete/containers_vector_distributed_epetra.hpp"
 #include "./concrete/containers_vector_distributed_tpetra_block.hpp"
@@ -94,5 +77,26 @@ concrete classes depend on traits which depend on predicates. */
 #endif
 #include "./concrete/containers_vector_arbitrary.hpp"
 
+//----------------------
+// wrapper predicates
+//----------------------
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+#include "./wrapper_predicates/containers_is_vector_wrapper_eigen.hpp"
+#endif
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// #include "./wrapper_predicates/containers_is_vector_wrapper_pybind.hpp"
+// #endif
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "./wrapper_predicates/containers_is_vector_wrapper_epetra.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra_block.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_tpetra.hpp"
+#include "./wrapper_predicates/containers_is_vector_wrapper_teuchos.hpp"
+#endif
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "./wrapper_predicates/containers_is_vector_wrapper_kokkos.hpp"
+#endif
+#include "./wrapper_predicates/containers_is_vector_wrapper_arbitrary.hpp"
+
+#include "./wrapper_predicates/containers_is_vector_wrapper.hpp"
 
 #endif  // CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_

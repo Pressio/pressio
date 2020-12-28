@@ -59,13 +59,12 @@ class DenseMatrix<
       wrapped_type>::value>
   >
 {
-
+public:
   using derived_t = DenseMatrix<wrapped_type>;
-  using mytraits = typename details::traits<derived_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename mytraits::ordinal_t;
-  using wrap_t = typename mytraits::wrapped_t;
-  using der_t = typename mytraits::derived_t;
+  using traits = details::traits<derived_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using wrap_t = typename traits::wrapped_t;
 
 public:
   DenseMatrix() = default;

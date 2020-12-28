@@ -61,11 +61,9 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<B_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -75,8 +73,9 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   assert( C.extent(0) == A.extent(1) );
   assert( C.extent(1) == B.extent(1) );
@@ -88,17 +87,43 @@ product(::pressio::transpose modeA,
   CE = beta * CE + alpha * AE.transpose() * BE;
 }
 
+template < typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
+product(::pressio::transpose,
+	::pressio::nontranspose,
+	const scalar_type alpha,
+	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
+  for (auto i=0; i<A.size(); ++i)
+  {
+    const auto currMatrixEigen = *(A(i).data());
+    assert( C.extent(0) == currMatrixEigen.cols() );
+    assert( B.extent(0) == currMatrixEigen.rows() );
+    CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen.transpose() * BE.col(i);
+  }
+}
+
 //-------------------------------------------
 // specialize for op(A) = A and op(B) = B
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<B_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value) and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
@@ -108,8 +133,9 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   assert( C.extent(0) == A.extent(0) );
   assert( C.extent(1) == B.extent(1) );
@@ -122,15 +148,42 @@ product(::pressio::nontranspose modeA,
   CE = beta * CE + alpha * AE * BE;
 }
 
+template < typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
+product(::pressio::nontranspose,
+	::pressio::nontranspose,
+	const scalar_type alpha,
+	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
+	const B_type & B,
+	const scalar_type beta,
+	C_type & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  const auto & BE = *B.data();
+  auto & CE = *C.data();
+  for (auto i=0; i<A.size(); ++i)
+  {
+    const auto & currMatrixEigen = *(A(i).data());
+    assert( C.extent(0) == currMatrixEigen.rows() );
+    assert( B.extent(0) == currMatrixEigen.cols() );
+    CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen * BE.col(i);
+  }
+}
+
 /***********************************
 * special case A==B and op(A) = transpose
 **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -139,8 +192,9 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
   const auto & AE = *A.data();
   auto & CE = *C.data();
@@ -149,9 +203,8 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<A_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value) and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value,
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -159,8 +212,9 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.extent(1), A.extent(1));
@@ -175,11 +229,8 @@ product(::pressio::transpose modeA,
 template <typename T, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<B_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<B_type>::value)
-  and
-  (::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value or
-   ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<C_type>::value)
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,

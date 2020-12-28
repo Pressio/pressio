@@ -54,12 +54,9 @@ namespace pressio{ namespace containers{ namespace predicates {
 /*
   T is admissible to be wrapped as an arbitrary matrix iff it is:
   - not one the supported matrix types
-  AND
-  - not an eigen vector or mv
-  - not a kokkos vector or mv
-  - not an epetra vector or mv
-  - not a tpetra block vector
-  - not a tpetra vector or mv
+  - not one of the supported vectors
+  - not one of the supported multivectors
+  - not already a wrapper
 
   NOTE that these checks are necessary to guard against cases like this:
     using T = Eigen::VectorXd;
@@ -73,6 +70,9 @@ namespace pressio{ namespace containers{ namespace predicates {
 template <typename T, typename enable = void>
 struct is_admissible_as_dense_matrix_arbitrary : std::false_type
 {
+  static_assert
+  (!containers::predicates::is_wrapper<T>::value,
+   "You cannot wrap a pressio container as a pressio::containers::DenseMatrix<>.");
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   static_assert
@@ -110,6 +110,8 @@ struct is_admissible_as_dense_matrix_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
     !std::is_void<T>::value
+    and !containers::predicates::is_wrapper<T>::value
+    //
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
     and !containers::predicates::is_dense_matrix_eigen<T>::value
     and !containers::predicates::is_sparse_matrix_eigen<T>::value

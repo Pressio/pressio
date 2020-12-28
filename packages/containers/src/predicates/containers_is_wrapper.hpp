@@ -51,9 +51,6 @@
 
 namespace pressio{ namespace containers{ namespace predicates {
 
-template <typename T, typename enable = void>
-struct is_wrapper : std::false_type {};
-
 template <typename T>
 struct is_wrapper<
   T,
@@ -65,19 +62,43 @@ struct is_wrapper<
     >
   > : std::true_type{};
 
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template <int rank, typename T>
+// struct is_wrapper<
+//   ::pressio::containers::experimental::Tensor<rank, T>
+//   > : std::true_type{};
+// #endif
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T, typename = void>
+struct is_wrapper_eigen : std::false_type{};
+
 template <typename T>
-struct is_wrapper<
-  ::pressio::containers::experimental::MultiVectorSet<T>
-  > : std::true_type{};
+struct is_wrapper_eigen<
+  T,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+    or ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+    or ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
+    or ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T>::value
+    >
+  >: std::true_type{};
+#endif
 
-
-template <typename T, typename enable = void>
-struct not_wrapper : std::false_type {};
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T, typename = void>
+struct is_wrapper_kokkos : std::false_type{};
 
 template <typename T>
-struct not_wrapper<
-  T, mpl::enable_if_t< is_wrapper<T>::value == false >
-  > : std::true_type{};
+struct is_wrapper_kokkos<
+  T,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
+    or ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value
+    or ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
+    >
+  >: std::true_type{};
+#endif
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_

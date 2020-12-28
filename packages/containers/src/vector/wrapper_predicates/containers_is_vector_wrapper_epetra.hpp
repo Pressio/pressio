@@ -56,14 +56,12 @@ struct is_vector_wrapper_epetra : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_epetra<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_vector
-    &&
-    containers::details::traits<T>::wrapped_vector_identifier==
-    containers::details::WrappedVectorIdentifier::Epetra
-    >
+  Vector<T>, mpl::enable_if_t<is_vector_epetra<T>::value>
   > : std::true_type{};
+
+template <typename T>
+struct is_vector_wrapper_epetra<const Vector<T>>
+  : is_vector_wrapper_epetra<Vector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EPETRA_HPP_

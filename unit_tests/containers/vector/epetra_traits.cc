@@ -30,15 +30,12 @@ TEST(containers_vector_distributed_epetra, EpetraVectorTraits)
   				vecTrait::wrapped_t, natV_t>();
 
   ::testing::StaticAssertTypeEq<typename
-  				vecTrait::derived_t, myvec_t>();
-
-  ::testing::StaticAssertTypeEq<typename
   				vecTrait::data_map_t, Epetra_BlockMap>();
 
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::communicator_t, Epetra_Comm>();
   
-  ASSERT_TRUE(vecTrait::is_vector == true);
+  ASSERT_TRUE(vecTrait::rank == 1);
   ASSERT_TRUE(vecTrait::is_shared_mem == false);
 
 }//end TEST

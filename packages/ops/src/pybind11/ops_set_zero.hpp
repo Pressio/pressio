@@ -53,8 +53,7 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value or
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_tensor_wrapper_pybind<T>::value
   >
 set_zero(T & v)
 {

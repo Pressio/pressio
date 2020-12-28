@@ -57,23 +57,12 @@ struct are_scalar_compatible;
 template <typename T1>
 struct are_scalar_compatible<T1>
 {
-  static_assert( pressio::containers::predicates::is_wrapper<T1>::value or
-		 pressio::containers::predicates::is_expression<T1>::value,
-		 "args for scalar compatibility check must be pressio wrappers or expressions");
-
   static constexpr auto value = true;
 };
 
 template <typename T1, typename T2>
 struct are_scalar_compatible<T1, T2>
 {
-  static_assert( (pressio::containers::predicates::is_wrapper<T1>::value or
-		  pressio::containers::predicates::is_expression<T1>::value )
-		 and
-		 (pressio::containers::predicates::is_wrapper<T2>::value or
-		  pressio::containers::predicates::is_expression<T2>::value ),
-		 "args for scalar compatibility check must be pressio wrappers or expressions");
-
   static constexpr auto value = std::is_same<
     typename containers::details::traits<T1>::scalar_t,
     typename containers::details::traits<T2>::scalar_t

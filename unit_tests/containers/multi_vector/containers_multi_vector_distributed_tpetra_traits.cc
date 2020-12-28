@@ -46,15 +46,11 @@ TEST(containers_multi_vector_distributed_tpetra, Traits){
   				mvecTrait::mag_t, double>();
 
   ::testing::StaticAssertTypeEq<typename
-  				mvecTrait::derived_t, mymvec_t>();
-
-  ::testing::StaticAssertTypeEq<typename
   				mvecTrait::communicator_t,
   				Teuchos::RCP<const Teuchos::Comm<int>>
   				>();
 
-  ASSERT_TRUE(mvecTrait::is_vector == false);
-  ASSERT_TRUE(mvecTrait::is_multi_vector == true);
+  ASSERT_TRUE(mvecTrait::rank == 2);
   ASSERT_TRUE(mvecTrait::is_shared_mem == false);
 
   ASSERT_TRUE(mvecTrait::wrapped_multi_vector_identifier

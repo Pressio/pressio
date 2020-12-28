@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_host_accessible_vector_wrapper.hpp
+// containers_is_sharedmem_vector_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,55 +46,34 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
-#define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+#ifndef OPS_CONCEPTS_RANK1_CONTAINER_EIGEN_HPP_
+#define OPS_CONCEPTS_RANK1_CONTAINER_EIGEN_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio{ namespace ops{ namespace concepts{
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
+template <typename T, typename = void>
+struct rank1_container_eigen_with_native_data_access : std::false_type{};
+
+template <typename T>
+struct rank1_container_eigen_with_native_data_access<
   T,
-  ::pressio::mpl::enable_if_t<
+  mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
-   >
+    >
   > : std::true_type{};
-#endif
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
+template <typename T>
+struct rank1_container_eigen_with_native_data_access<
   T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind11<T>::value
-   >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
-   >
-  > : std::true_type{};
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
-struct is_sharedmem_host_accessible_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
+  mpl::enable_if_t<
+    (::pressio::containers::predicates::diag_expression<T>::value or
+     ::pressio::containers::predicates::span_expression<T>::value or
+     ::pressio::containers::predicates::subspan_expression<T>::value)
     and
-    std::is_same<
-      typename ::pressio::containers::details::traits<T>::memory_space,
-      Kokkos::HostSpace
-      >::value
-   >
+    T::traits::wrapped_package_identifier ==
+    ::pressio::containers::details::WrappedPackageIdentifier::Eigen
+    >
   > : std::true_type{};
-#endif
 
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+}}}
+#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_VECTOR_WRAPPER_HPP_

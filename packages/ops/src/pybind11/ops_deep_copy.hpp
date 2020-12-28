@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
   >
 deep_copy(T & dest, const T & src)
 {
@@ -65,7 +65,22 @@ deep_copy(T & dest, const T & src)
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  >
+deep_copy(T & dest, const T & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  assert( dest.extent(1) == src.extent(1) );
+  for (std::size_t j=0; j<dest.extent(1); ++j){
+    for (std::size_t i=0; i<dest.extent(0); ++i){
+      dest(i,j) = src(i,j);
+    }
+  }
+}
+
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
   >
 deep_copy(T & dest, const T & src)
 {
@@ -73,6 +88,22 @@ deep_copy(T & dest, const T & src)
   assert( dest.extent(1) == src.extent(1) );
   for (std::size_t i=0; i<dest.extent(0); ++i){
     for (std::size_t j=0; j<dest.extent(1); ++j){
+      dest(i,j) = src(i,j);
+    }
+  }
+}
+
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
+  >
+deep_copy(T & dest, const T & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  assert( dest.extent(1) == src.extent(1) );
+  assert( dest.extent(2) == src.extent(2) );
+  for (std::size_t j=0; j<dest.extent(1); ++j){
+    for (std::size_t i=0; i<dest.extent(0); ++i){
       dest(i,j) = src(i,j);
     }
   }

@@ -55,17 +55,12 @@ template <typename T, typename enable = void>
 struct is_multi_vector_wrapper : std::false_type {};
 
 template <typename T>
-struct is_multi_vector_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    containers::details::traits<T>::is_multi_vector
-    >
-  > : std::true_type{};
-//------------------------------------------------------------
+struct is_multi_vector_wrapper< MultiVector<T> >
+  : std::true_type{};
 
-#define STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(TYPE) \
-  static_assert(containers::predicates::is_multi_vector_wrapper<TYPE>::value,\
-		"THIS_IS_NOT_A_CONTAINERS_MULTI_VECTOR_WRAPPER")
+template <typename T>
+struct is_multi_vector_wrapper< const MultiVector<T> >
+  : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_HPP_

@@ -46,125 +46,118 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
-#define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename matrix_type>
+template <typename v_type>
 struct traits<
-  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
+  ::pressio::containers::expressions::SpanExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<v_type>::value
     >
   >
   : public containers_shared_traits<
-  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
-  typename details::traits<matrix_type>::wrapped_t,
-  false, true, false,
-  WrappedPackageIdentifier::Eigen, true, 2>,
-  public matrix_shared_traits<details::traits<matrix_type>::is_sparse>
+  typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Eigen, true, 1
+  >
 {
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = !is_static;
 
-  using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
-  using ordinal_t = typename traits<matrix_type>::ordinal_t;
+  using wrapped_t = typename traits<v_type>::wrapped_t;
+  using scalar_t  = typename traits<v_type>::scalar_t;
+  using ordinal_t = typename traits<v_type>::ordinal_t;
   using size_t    = ordinal_t;
 
   // the reference type is conditionnal because the native expression
   // returns by value when object is const
   using reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t &
+    std::is_const<v_type>::value, scalar_t, scalar_t &
   >::type;
 
   using const_reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t const &
-  >::type;
+    std::is_const<v_type>::value, scalar_t, scalar_t const &
+    >::type;
 
   // type of the native expression
-  using _native_expr_t = decltype(
-    std::declval<wrapped_t>().block( std::declval<size_t>(),
-				     std::declval<size_t>(),
-                                     std::declval<size_t>(),
-				     std::declval<size_t>() )
-    );
-  using _const_native_expr_t = decltype(
-    std::declval<const wrapped_t>().block( std::declval<size_t>(),
-					   std::declval<size_t>(),
-                                           std::declval<size_t>(),
-					   std::declval<size_t>() )
-    );
+  using _native_expr_t =
+    decltype
+    (
+     std::declval<wrapped_t>().segment( std::declval<size_t>(),
+					std::declval<size_t>() )
+     );
+
+  using _const_native_expr_t =
+    decltype
+    (
+     std::declval<const wrapped_t>().segment( std::declval<size_t>(),
+					      std::declval<size_t>() )
+     );
+
   using native_expr_t = typename std::conditional<
-    std::is_const<matrix_type>::value,
+    std::is_const<v_type>::value,
     _const_native_expr_t,
     _native_expr_t
-  >::type;
+    >::type;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;
-
-  static constexpr auto wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEigen;
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
 };
 #endif
 
-
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename matrix_type>
+template <typename v_type>
 struct traits<
-  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
+  ::pressio::containers::expressions::SpanExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_type>::value
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<v_type>::value
     >
   >
   : public containers_shared_traits<
-  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
-  typename details::traits<matrix_type>::wrapped_t,
-  false, true, false,
-  WrappedPackageIdentifier::Kokkos,
+  typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Kokkos,
   true, //true because kokkos is for shared mem
-  2
-  >,
-  public matrix_shared_traits<false>
+  1
+  >
 {
-  static constexpr auto wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
   static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
-  using scalar_t	= typename traits<matrix_type>::scalar_t;
-  using wrapped_t	= typename traits<matrix_type>::wrapped_t;
-  using execution_space = typename traits<matrix_type>::execution_space;
-  using memory_space	= typename traits<matrix_type>::memory_space;
-  using ordinal_t	= typename traits<matrix_type>::ordinal_t;
+  using wrapped_t = typename traits<v_type>::wrapped_t;
+  using scalar_t	= typename traits<v_type>::scalar_t;
+  using execution_space = typename traits<v_type>::execution_space;
+  using memory_space	= typename traits<v_type>::memory_space;
+  using device_t	= typename traits<v_type>::device_t;
+  using device_type	= typename traits<v_type>::device_t;
+  using ordinal_t	= typename traits<v_type>::ordinal_t;
   using size_t		= ordinal_t;
   using pair_t		= std::pair<size_t, size_t>;
   using reference_t	  = scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  using _native_expr_t = decltype
+  using _native_expr_t =
+    decltype
     (
-     Kokkos::subview(std::declval<wrapped_t>(),
-		     std::declval<pair_t>(),
-		     std::declval<pair_t>())
-    );
-  using _const_native_expr_t = decltype
-    (
-     Kokkos::subview(std::declval<const wrapped_t>(),
-		     std::declval<pair_t>(),
-		     std::declval<pair_t>())
+     Kokkos::subview(std::declval<wrapped_t>(), std::declval<pair_t>())
      );
+
+  using _const_native_expr_t =
+    decltype
+    (
+     Kokkos::subview(std::declval<const wrapped_t>(), std::declval<pair_t>())
+     );
+
   using native_expr_t = typename std::conditional<
-    std::is_const<matrix_type>::value,
+    std::is_const<v_type>::value,
     _const_native_expr_t,
     _native_expr_t
-  >::type;
+    >::type;
 
   using const_data_return_t = native_expr_t const *;
-  using data_return_t	    = native_expr_t *;
+  using data_return_t = native_expr_t *;
 };
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_

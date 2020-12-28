@@ -54,39 +54,34 @@ namespace pressio{ namespace containers{ namespace predicates {
 template <typename T, typename enable = void>
 struct is_expression : std::false_type{};
 
+// --------------------------------------------
 template <typename T>
 struct is_expression<
-  ::pressio::containers::expressions::SubspanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::SpanExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::DiagExpr<T>
-  > : std::true_type{};
-
-template <typename T>
-struct is_expression<
-  ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
+  T,
+  mpl::enable_if_t<
+    span_expression<T>::value or
+    diag_expression<T>::value or
+    subspan_expression<T>::value or
+    asdiagonalmatrix_expression<T>::value
+    >
   > : std::true_type{};
 
 
-// template <typename T, typename enable = void>
-// struct is_diag_expression : std::false_type{};
+// --------------------------------------------
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template <typename T, typename enable = void>
+struct is_expression_eigen : std::false_type{};
 
-// template <typename T>
-// struct is_diag_expression<
-//   ::pressio::containers::expressions::DiagExpr<T>
-//   > : std::true_type{};
-
-// template <typename T>
-// struct is_diag_expression<
-//   const ::pressio::containers::expressions::DiagExpr<T>
-//   > : is_diag_expression<T>{};
+template <typename T>
+struct is_expression_eigen<
+  T,
+  mpl::enable_if_t<
+    (is_expression<T>::value and
+     T::traits::wrapped_package_identifier ==
+     ::pressio::containers::details::WrappedPackageIdentifier::Eigen)
+    >
+  > : std::true_type{};
+#endif
 
 }}} // namespace pressio::containers::predicates
 #endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

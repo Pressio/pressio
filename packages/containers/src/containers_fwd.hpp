@@ -67,22 +67,28 @@ template <class wrapped_type, class Enable = void> class Vector;
 template <class wrapped_type, class Enable = void> class MultiVector;
 template <class wrapped_type, class Enable = void> class DenseMatrix;
 template <class wrapped_type, class Enable = void> class SparseMatrix;
+template <int rank, class wrapped_type, class Enable = void> class Tensor;
 
 namespace predicates{
+template <typename T, typename enable = void>
+struct is_wrapper : std::false_type {};
+
 template<class T, class enable = void>
-struct is_sharedmem_vector_wrapper : std::false_type{};
+struct sharedmem_vector_wrapper : std::false_type{};
+
 template<class T, class enable = void>
-struct is_sharedmem_host_accessible_vector_wrapper : std::false_type{};
+struct sharedmem_host_accessible_vector_wrapper : std::false_type{};
+
 template<typename T, typename enable = void>
-struct is_sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
+struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
 }//end namespace pressio::containers::predicates
 
 namespace expressions{
 template <class derived_type> class BaseExpr{};
-template <class mat_t, class enable = void> struct SubspanExpr;
-template <class vec_t, class enable = void> struct SpanExpr;
-template <class mat_t, class enable = void> struct DiagExpr;
-template <class vec_t, class enable = void> struct AsDiagonalMatrixExpr;
+template <class T, class enable = void> struct SubspanExpr;
+template <class T, class enable = void> struct SpanExpr;
+template <class T, class enable = void> struct DiagExpr;
+template <class T, class enable = void> struct AsDiagonalMatrixExpr;
 }//end namespace pressio::containers::expresssions
 
 }} // end namespace pressio::containers

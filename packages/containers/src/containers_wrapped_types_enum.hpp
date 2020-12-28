@@ -52,13 +52,13 @@
 namespace pressio{ namespace containers{ namespace details {
 
 /*--------------------------------------------
-Wrapped library name for containers
+Wrapped library name
 --------------------------------------------*/
 enum class WrappedPackageIdentifier{
    Undefined,
    Eigen,
-   Trilinos,
    Kokkos,
+   Trilinos,
    Pybind,
    Arbitrary
 };
@@ -72,16 +72,16 @@ Same can be true for other packages.
 --------------------------------------------*/
 enum class WrappedVectorIdentifier{
    Undefined,
-   Epetra,
-   Tpetra,
-   TpetraBlock,
    EigenRowStatic,
    EigenColStatic,
    EigenRowDynamic,
    EigenColDynamic,
+   KokkosDynamic,
+   KokkosStatic,
+   Epetra,
+   Tpetra,
+   TpetraBlock,
    TeuchosSerialDense,
-   Kokkos,
-   Pybind,
    Arbitrary
 };
 
@@ -90,15 +90,11 @@ Identifier for wrapped matrix
 --------------------------------------------*/
 enum class WrappedMatrixIdentifier{
    Undefined,
-   DenseEpetra,
-   DenseKokkos,
-   TeuchosSerialDense,
-   DenseEigen, // maybe more specific, like static or dynamic
+   DenseEigen,
    SparseEigen,
-   DensePybind,
-   Tpetra,
-   TpetraBlock,
-   Epetra,
+   DenseKokkos,
+   DenseEpetra,
+   DenseTeuchosSerial,
    DenseArbitrary
 };
 
@@ -107,11 +103,20 @@ Identifier for wrapped multivector
 --------------------------------------------*/
 enum class WrappedMultiVectorIdentifier{
    Undefined,
+   Eigen,
+   Kokkos,
    Epetra,
    Tpetra,
    TpetraBlock,
-   Kokkos,
-   Eigen,
+   Arbitrary
+};
+
+/*--------------------------------------------
+Identifier for wrapped tensor
+--------------------------------------------*/
+enum class WrappedTensorIdentifier{
+   Undefined,
+   Pybind,
    Arbitrary
 };
 

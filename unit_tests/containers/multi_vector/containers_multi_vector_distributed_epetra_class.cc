@@ -9,7 +9,6 @@ TEST_F(epetraMultiVectorR9C4VecS9Fixture,
 
   using nat_t = Epetra_MultiVector;
   using mymvec_t = containers::MultiVector<nat_t>;
-  STATIC_ASSERT_IS_CONTAINERS_MULTI_VECTOR_WRAPPER(mymvec_t);
 
   mymvec_t a( *dataMap_, numVectors_ );
   // ASSERT_FALSE( a.empty() );

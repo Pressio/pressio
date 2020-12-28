@@ -55,9 +55,11 @@ template <typename jacobian_matrix_type, typename fom_state_t, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
   static_assert
-  (::pressio::containers::predicates::is_wrapper<jacobian_matrix_type>::value
-   and ::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
-   "Decoder template arguments must be valid pressio wrappers");
+  (::pressio::rom::concepts::decoder_jacobian<jacobian_matrix_type>::value,
+   "Invalid decoder's jacobian type");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
+   "Invalid fom_state type passed to decoder");
 
   // these aliases must be here because ROM classes detect them
   using jacobian_type  = jacobian_matrix_type;

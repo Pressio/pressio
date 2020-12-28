@@ -62,5 +62,12 @@ struct explicit_state<T,
    >::type
   > : std::true_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct explicit_state<
+  pressio::containers::experimental::Tensor<3, T>, void
+  > : std::true_type{};
+#endif
+
 }}} // namespace pressio::ode::concepts
 #endif  // ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_STATE_HPP_

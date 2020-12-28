@@ -55,9 +55,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value or
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
+  ::pressio::ops::concepts::container_kokkos_with_native_data_access<T>::value
   >
 scale(T & o,
       typename ::pressio::containers::details::traits<T>::scalar_t value)

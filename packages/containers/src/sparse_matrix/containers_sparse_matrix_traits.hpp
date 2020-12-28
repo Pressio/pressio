@@ -62,9 +62,7 @@ struct traits<
     containers::predicates::is_sparse_matrix_eigen<wrapped_type>::value
     >
   >
-  : public containers_shared_traits<SparseMatrix<wrapped_type>,
-				    wrapped_type, false, true, false,
-				    WrappedPackageIdentifier::Eigen, true, 2>,
+  : public containers_shared_traits<wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier

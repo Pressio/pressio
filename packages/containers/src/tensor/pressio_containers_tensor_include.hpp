@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_host_accessible_dense_matrix_wrapper.hpp
+// pressio_containers_tensor_include.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,22 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
-#define CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
+#ifndef CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_
+#define CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+/* WARNING: the inclusion order below matters:
+concrete classes depend on traits which depend on predicates. */
 
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
-struct is_sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
-   >
-  > : std::true_type{};
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "./wrapper_predicates/containers_is_tensor_wrapper_pybind.hpp"
 #endif
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct is_sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value
-   >
-  > : std::true_type{};
-#endif
+// traits
+#include "./containers_tensor_traits.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
-struct is_sharedmem_host_accessible_dense_matrix_wrapper<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
-    and
-    std::is_same<
-      typename ::pressio::containers::details::traits<T>::memory_space,
-      Kokkos::HostSpace
-      >::value
-   >
-  > : std::true_type{};
-#endif
+// concrete types
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// #include "./concrete/containers_tensor_sharedmem_pybind11.hpp"
+// #endif
 
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_DENSE_MATRIX_WRAPPER_HPP_
+#endif  // CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_

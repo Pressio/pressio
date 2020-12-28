@@ -67,7 +67,7 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -77,8 +77,9 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
@@ -106,8 +107,8 @@ template <
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<B_type>::value and
-  ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value,
-  // ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value,
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+  !::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -116,8 +117,9 @@ product(::pressio::transpose modeA,
 	const A_type & A,
 	const B_type & B)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
 
   const auto numVecsA = A.numVectors();
@@ -127,15 +129,14 @@ product(::pressio::transpose modeA,
   return C;
 }
 
-
 // /***********************************
 //  * special case A==B
 // **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  // ::pressio::containers::predicates::is_sharedmem_host_accessible_dense_matrix_wrapper<C_type>::value
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<C_type>::value
+  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+  !::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -171,11 +172,10 @@ product(::pressio::transpose modeA,
   }
 }
 
-
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -184,14 +184,16 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
-  static_assert(std::is_same<
-		typename containers::details::traits<A_type>::device_t,
-		typename containers::details::traits<C_type>::device_t
-		>::value,
-		"Non-matching device types");
+  static_assert
+    (std::is_same<
+     typename containers::details::traits<A_type>::device_t,
+     typename containers::details::traits<C_type>::device_t
+     >::value,
+     "Non-matching device types");
 
   using map_t	    = typename ::pressio::containers::details::traits<A_type>::data_map_t;
   using tpetra_mv_t = typename ::pressio::containers::details::traits<A_type>::wrapped_t;
@@ -206,9 +208,9 @@ product(::pressio::transpose modeA,
   tpetra_mv_t Cmv(replMap, *C.data());
 
   // do the operation
-  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS, alpha, *A.data(), *A.data(), beta);
+  Cmv.multiply(Teuchos::ETransp::TRANS, Teuchos::ETransp::NO_TRANS,
+	       alpha, *A.data(), *A.data(), beta);
 }
-
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename C_type, typename A_type, typename scalar_type>
@@ -235,13 +237,13 @@ product(::pressio::transpose modeA,
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
-   ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value,
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
-  ::pressio::nontranspose modeB,
-  const scalar_type alpha,
-  const A_type & A)
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
     "Types are not scalar compatible");

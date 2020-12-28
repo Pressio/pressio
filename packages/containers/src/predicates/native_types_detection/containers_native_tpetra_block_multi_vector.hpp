@@ -60,17 +60,17 @@ template <typename T>
 struct is_multi_vector_tpetra_block<
   T,
   ::pressio::mpl::enable_if_t<
-    std::is_same<T,
-		 Tpetra::BlockMultiVector<
-		   typename T::impl_scalar_type,
-		   typename T::local_ordinal_type,
-		   typename T::global_ordinal_type,
-		   typename T::node_type
-		   >
-		 >::value
+    std::is_same<
+      T,
+      Tpetra::BlockMultiVector<
+	typename T::impl_scalar_type,
+	typename T::local_ordinal_type,
+	typename T::global_ordinal_type,
+	typename T::node_type
+	>
+      >::value
     >
   > : std::true_type{};
-
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_BLOCK_MULTI_VECTOR_HPP_

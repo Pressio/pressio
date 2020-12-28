@@ -65,9 +65,8 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  (containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
-   containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value ) and
-  containers::predicates::is_vector_wrapper_kokkos<x_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -100,10 +99,9 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  (containers::predicates::is_multi_vector_wrapper_kokkos<A_type>::value or
-   containers::predicates::is_dense_matrix_wrapper_kokkos<A_type>::value) and
-  containers::predicates::is_vector_wrapper_kokkos<x_type>::value and
-  containers::predicates::is_vector_wrapper_kokkos<y_type>::value
+  ::pressio::ops::concepts::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<x_type>::value and
+  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,

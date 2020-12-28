@@ -56,13 +56,13 @@ struct is_multi_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_tpetra<
-  T, ::pressio::mpl::enable_if_t<
-       containers::details::traits<T>::is_multi_vector &&
-       containers::details::traits<T>::wrapped_multi_vector_identifier==
-       containers::details::WrappedMultiVectorIdentifier::Tpetra
-       >
-  >
-  : std::true_type{};
+  MultiVector<T>,
+  mpl::enable_if_t<is_multi_vector_tpetra<T>::value>
+  > : std::true_type{};
+
+template <typename T>
+struct is_multi_vector_wrapper_tpetra<const MultiVector<T>>
+  : is_multi_vector_wrapper_tpetra<MultiVector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
 #endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_vector_wrapper.hpp
+// containers_is_expression_span.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,19 +46,33 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_VECTOR_WRAPPER_HPP_
-#define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_VECTOR_WRAPPER_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
 
 namespace pressio{ namespace containers{ namespace predicates {
 
+template <typename T, typename enable = void>
+struct span_expression : std::false_type{};
+
 template <typename T>
-struct is_sharedmem_vector_wrapper<
-  T,
-  mpl::enable_if_t<
-    ::pressio::containers::details::traits<T>::is_vector and
-    ::pressio::containers::details::traits<T>::is_shared_mem
-    >
+struct span_expression<
+  ::pressio::containers::expressions::SpanExpr<T>
   > : std::true_type{};
 
-}}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_VECTOR_WRAPPER_HPP_
+template <typename T>
+struct span_expression<
+  const ::pressio::containers::expressions::SpanExpr<T>
+  > : span_expression<T>{};
+
+template <typename T>
+struct span_expression<
+  ::pressio::containers::expressions::SpanExpr<const T>
+  > : std::true_type{};
+
+template <typename T>
+struct span_expression<
+  const ::pressio::containers::expressions::SpanExpr<const T>
+  > : std::true_type{};
+
+}}} // namespace pressio::containers::predicates
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
