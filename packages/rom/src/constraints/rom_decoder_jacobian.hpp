@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_DECODER_JACOBIAN_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_DECODER_JACOBIAN_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_
+#define ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_
 
 namespace pressio{ namespace rom{ namespace constraints {
 
@@ -75,4 +75,4 @@ struct decoder_jacobian<
 // #endif
 
 }}} // namespace pressio::ode::constraints
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_DECODER_JACOBIAN_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_

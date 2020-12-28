@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_masked_residual_policy.hpp
+// rom_masked.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

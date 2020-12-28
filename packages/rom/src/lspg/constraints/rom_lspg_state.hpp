@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_rom_state.hpp
+// rom_lspg_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
@@ -91,4 +91,4 @@ template<typename T>
 using rom_state = state<T>;
 
 }}}}
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_ROM_STATE_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_

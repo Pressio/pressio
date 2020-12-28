@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_
+#ifndef ODE_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_HPP_
+#define ODE_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -64,4 +64,4 @@ struct implicit_jacobian<T,
        > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_IMPLICIT_JACOBIAN_HPP_
+#endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_HPP_

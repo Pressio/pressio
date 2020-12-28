@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_rom_state.hpp
+// rom_galerkin_explicit_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
-#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
+#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
+#define ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
@@ -87,4 +87,4 @@ struct explicit_state<
 #endif
 
 }}}}
-#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_GALERKIN_STATE_HPP_
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_EXPLICIT_STATE_HPP_

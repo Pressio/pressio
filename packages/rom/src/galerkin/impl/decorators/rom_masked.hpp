@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_preconditioned_decorator_residual.hpp
+// rom_masked.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

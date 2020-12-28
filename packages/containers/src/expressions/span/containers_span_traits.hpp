@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_expressions_traits.hpp
+// containers_span_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
-#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_TRAITS_HPP_
+#define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_TRAITS_HPP_
 
 namespace pressio{ namespace containers{ namespace details{
 
@@ -160,4 +160,4 @@ struct traits<
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_EXPRESSIONS_TRAITS_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_TRAITS_HPP_

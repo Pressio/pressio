@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_admissible_decoder.hpp
+// rom_decoder.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_DECODER_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_DECODER_HPP_
+#ifndef ROM_CONSTRAINTS_ROM_DECODER_HPP_
+#define ROM_CONSTRAINTS_ROM_DECODER_HPP_
 
 namespace pressio{ namespace rom{ namespace constraints {
 
@@ -113,4 +113,4 @@ struct decoder<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::constraints
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_DECODER_HPP_
+#endif  // ROM_CONSTRAINTS_ROM_DECODER_HPP_

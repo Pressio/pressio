@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_fom_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
-#define ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
@@ -63,4 +63,4 @@ struct fom_velocity<
   > : std::true_type{};
 
 }}}}
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_VELOCITY_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_

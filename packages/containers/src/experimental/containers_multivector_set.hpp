@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_static_collection_impl.hpp
+// containers_multivector_set.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_COLLECTION_CONTAINERS_MULTIVECTOR_SET_HPP_
-#define CONTAINERS_COLLECTION_CONTAINERS_MULTIVECTOR_SET_HPP_
+#ifndef CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_
+#define CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -109,4 +109,4 @@ struct traits<
 }// end namespace details
 
 }} //end namespace pressio::containers
-#endif  // CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_IMPL_HPP_
+#endif  // CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_

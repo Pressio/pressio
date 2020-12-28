@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_host_accessible_vector_wrapper.hpp
+// ops_sharedmem_host_subscriptable_rank2_container.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_WRAPPER_OR_EXPRESSION_HPP_
-#define OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_WRAPPER_OR_EXPRESSION_HPP_
+#ifndef OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_
+#define OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_
 
 namespace pressio{ namespace ops{ namespace constraints{
 
@@ -103,4 +103,4 @@ struct sharedmem_host_subscriptable_rank2_container<
 #endif
 
 }}}
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_HOST_ACCESSIBLE_VECTOR_WRAPPER_HPP_
+#endif  // OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_

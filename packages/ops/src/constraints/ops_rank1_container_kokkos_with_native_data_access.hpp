@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_is_sharedmem_vector_wrapper.hpp
+// ops_rank1_container_kokkos_with_native_data_access.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONCEPTS_RANK1_CONTAINER_KOKKOS_HPP_
-#define OPS_CONCEPTS_RANK1_CONTAINER_KOKKOS_HPP_
+#ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_KOKKOS_WITH_NATIVE_DATA_ACCESS_HPP_
+#define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_KOKKOS_WITH_NATIVE_DATA_ACCESS_HPP_
 
 namespace pressio{ namespace ops{ namespace constraints{
 
@@ -76,4 +76,4 @@ struct rank1_container_kokkos_with_native_data_access<
   > : std::true_type{};
 
 }}}
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_SHAREDMEM_VECTOR_WRAPPER_HPP_
+#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_KOKKOS_WITH_NATIVE_DATA_ACCESS_HPP_

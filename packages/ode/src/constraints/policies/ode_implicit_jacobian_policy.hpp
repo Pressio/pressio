@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
-#define ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
+#ifndef ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
+#define ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -114,4 +114,4 @@ using implicit_bdf2_jacobian_policy =
 //------------------------------------------------------------------
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
+#endif  // ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+#ifndef ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+#define ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -92,4 +92,4 @@ struct time_step_size_manager<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+#endif  // ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_

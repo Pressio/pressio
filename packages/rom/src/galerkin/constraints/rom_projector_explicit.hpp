@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_projector_explicit_galerkin.hpp
+// rom_projector_explicit.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_PROJECTOR_EXPLICIT_HPP_
-#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_PROJECTOR_EXPLICIT_HPP_
+#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_
+#define ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
@@ -68,4 +68,4 @@ struct projector_explicit_stepping<
   > : std::true_type{};
 
 }}}} // namespace pressio::rom
-#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_PROJECTOR_EXPLICIT_HPP_
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_subspan.hpp
+// containers_subspan_function.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
-#define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
+#define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -76,4 +76,4 @@ subspan(T & obj, Args&& ... args)
 }
 
 }} //end namespace pressio::containers
-#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_

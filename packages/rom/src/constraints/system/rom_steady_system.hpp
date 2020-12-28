@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
-#define ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+#define ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace constraints {
 
@@ -130,4 +130,4 @@ struct find_discrepancies_with_steady_system_api
 };
 
 }} // namespace pressio::rom
-#endif  // ROM_WILL_BE_CONCEPTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_HPP_

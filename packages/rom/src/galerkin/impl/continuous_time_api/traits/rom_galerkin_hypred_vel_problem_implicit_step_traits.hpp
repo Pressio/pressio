@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_galerkin_hypred_vel_problem_traits_continuous_time_api.hpp
+// rom_galerkin_hypred_vel_problem_implicit_step_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

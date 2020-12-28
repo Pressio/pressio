@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
-#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
@@ -64,4 +64,4 @@ struct fom_state<
   > : std::true_type{};
 
 }}}}
-#endif  // ROM_WILL_BE_CONCEPTS_ROM_FOM_STATE_HPP_
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_

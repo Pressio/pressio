@@ -60,4 +60,4 @@ struct not_wrapper<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_IS_WRAPPER_HPP_
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_NOT_WRAPPER_HPP_

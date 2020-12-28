@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_dense_matrix_update.hpp
+// ops_rank2_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_DENSE_MATRIX_UPDATE_HPP_
-#define OPS_PYBIND11_OPS_DENSE_MATRIX_UPDATE_HPP_
+#ifndef OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
+#define OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -187,4 +187,4 @@ update(T & M, const scalar_t &a,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DENSE_MATRIX_UPDATE_HPP_
+#endif  // OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_

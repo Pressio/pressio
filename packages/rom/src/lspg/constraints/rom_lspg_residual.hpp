@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_lspg_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_RESIDUAL_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_RESIDUAL_HPP_
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
@@ -59,4 +59,4 @@ template<typename T>
 using lspg_residual = residual<T>;
 
 }}}}
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_LSPG_RESIDUAL_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_

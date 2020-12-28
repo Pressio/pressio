@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_gn_hessian_gradient_operators_with_weighting.hpp
+// solvers_gn_hessian_gradient_operators_weighted_rj_api.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

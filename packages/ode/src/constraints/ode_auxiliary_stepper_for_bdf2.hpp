@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
+#ifndef ODE_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
+#define ODE_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -67,4 +67,4 @@ struct auxiliary_stepper_for_bdf2<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
+#endif  // ODE_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_

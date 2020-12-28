@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_STATE_HPP_
-#define ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_STATE_HPP_
+#ifndef ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
+#define ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -70,4 +70,4 @@ struct explicit_state<
 #endif
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_ODE_EXPLICIT_STATE_HPP_
+#endif  // ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_

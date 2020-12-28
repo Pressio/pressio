@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
-#define ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#define ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -120,4 +120,4 @@ using implicit_bdf2_residual_policy =
   T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_WILL_BE_CONCEPTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#endif  // ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

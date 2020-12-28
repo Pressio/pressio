@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_custom_ops_lspg_discrete_time.hpp
+// rom_custom_ops_discrete_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
@@ -75,4 +75,4 @@ struct custom_ops_discrete_time<
   > : std::true_type{};
 
 }}}} // namespace pressio::rom::constraints
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_

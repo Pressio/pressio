@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_diag.hpp
+// containers_diag_function.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
-#define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_
+#define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_
 
 namespace pressio{ namespace containers{
 
@@ -74,4 +74,4 @@ diag(T & obj)
 }
 
 }} //end namespace pressio::containers
-#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_

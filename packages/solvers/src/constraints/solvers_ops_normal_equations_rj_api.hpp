@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
-#define SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
+#ifndef SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
+#define SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
 
 namespace pressio{ namespace solvers{ namespace constraints {
 
@@ -142,4 +142,4 @@ struct ops_normal_equations_rj_api<
   > : std::true_type{};
 
 }}} // namespace pressio::solvers::constraints
-#endif  // SOLVERS_WILL_BE_CONCEPTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
+#endif  // SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_

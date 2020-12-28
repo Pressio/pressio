@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_preconditioner.hpp
+// rom_unsteady_preconditioner.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_WILL_BE_CONCEPTS_ROM_UNSTEADY_PRECONDITIONER_HPP_
-#define ROM_LSPG_WILL_BE_CONCEPTS_ROM_UNSTEADY_PRECONDITIONER_HPP_
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_PRECONDITIONER_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_PRECONDITIONER_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
@@ -86,4 +86,4 @@ struct unsteady_preconditioner<
   > : std::true_type{};
 
 }}}}
-#endif  // ROM_LSPG_WILL_BE_CONCEPTS_ROM_UNSTEADY_PRECONDITIONER_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_PRECONDITIONER_HPP_

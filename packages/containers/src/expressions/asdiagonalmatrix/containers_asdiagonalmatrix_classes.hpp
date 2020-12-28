@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_vector_asdiagonalmatrix_expression.hpp
+// containers_asdiagonalmatrix_classes.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_VECTOR_ASDIAGONALMATRIX_EXPRESSION_HPP_
-#define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_VECTOR_ASDIAGONALMATRIX_EXPRESSION_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_
+#define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_
 
 namespace pressio{ namespace containers{ namespace expressions{
 
@@ -176,4 +176,4 @@ public:
 #endif
 
 }}} //end namespace pressio::containers::expressions
-#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_VECTOR_ASDIAGONALMATRIX_EXPRESSION_HPP_
+#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_

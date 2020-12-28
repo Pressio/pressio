@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_custom_ops_galerkin_continuous_time.hpp
+// rom_custom_ops_continuous_time.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
-#define ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
+#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
+#define ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
@@ -75,4 +75,4 @@ struct custom_ops_continuous_time<
   > : std::true_type{};
 
 }}}} // namespace pressio::rom::constraints
-#endif  // ROM_GALERKIN_WILL_BE_CONCEPTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
