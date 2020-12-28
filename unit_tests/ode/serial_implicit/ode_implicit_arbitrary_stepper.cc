@@ -56,11 +56,11 @@ TEST(ode_implicit, validArbitraryStepperPolicies)
   using jac_t = containers::SparseMatrix<njac_t>;
 
   using residual_policy_t = ResidualPolicy<state_t, res_t>;
-  static_assert(ode::concepts::implicit_euler_residual_policy<
+  static_assert(ode::constraints::implicit_euler_residual_policy<
      residual_policy_t, state_t, res_t, app_t, double>::value, "");
 
   using jacobian_policy_t = JacobianPolicy<state_t, jac_t>;
-  static_assert(ode::concepts::implicit_euler_jacobian_policy<
+  static_assert(ode::constraints::implicit_euler_jacobian_policy<
      jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
 }
 

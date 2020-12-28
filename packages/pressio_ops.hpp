@@ -75,14 +75,14 @@
 // even when pybind is disabled, in which case it will always be false
 #include "ops/src/predicates/ops_is_object_pybind.hpp"
 
-#include "ops/src/will_be_concepts/ops_sharedmem_host_subscriptable_rank1_container.hpp"
-#include "ops/src/will_be_concepts/ops_sharedmem_host_subscriptable_rank2_container.hpp"
+#include "ops/src/constraints/ops_sharedmem_host_subscriptable_rank1_container.hpp"
+#include "ops/src/constraints/ops_sharedmem_host_subscriptable_rank2_container.hpp"
 
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "ops/src/will_be_concepts/ops_container_eigen_with_native_data_access.hpp"
-#include "ops/src/will_be_concepts/ops_rank1_container_eigen_with_native_data_access.hpp"
-#include "ops/src/will_be_concepts/ops_rank2_container_eigen_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_container_eigen_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_rank1_container_eigen_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_rank2_container_eigen_with_native_data_access.hpp"
 #include "ops/src/eigen/ops_abs.hpp"
 #include "ops/src/eigen/ops_set_zero.hpp"
 #include "ops/src/eigen/ops_scale.hpp"
@@ -103,9 +103,9 @@
 
 // Kokkos
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "ops/src/will_be_concepts/ops_container_kokkos_with_native_data_access.hpp"
-#include "ops/src/will_be_concepts/ops_rank1_container_kokkos_with_native_data_access.hpp"
-#include "ops/src/will_be_concepts/ops_rank2_container_kokkos_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_container_kokkos_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_rank1_container_kokkos_with_native_data_access.hpp"
+#include "ops/src/constraints/ops_rank2_container_kokkos_with_native_data_access.hpp"
 #include "ops/src/kokkos/ops_abs.hpp"
 #include "ops/src/kokkos/ops_set_zero.hpp"
 #include "ops/src/kokkos/ops_scale.hpp"

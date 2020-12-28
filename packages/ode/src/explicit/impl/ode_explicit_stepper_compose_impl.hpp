@@ -68,7 +68,7 @@ struct UserDefinedOpsFilter<
   // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::pressio::ode::concepts::user_defined_ops_for_explicit_euler, Args...>;
+    ::pressio::ode::constraints::user_defined_ops_for_explicit_euler, Args...>;
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
 
@@ -80,7 +80,7 @@ struct UserDefinedOpsFilter<
   // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
-    ::pressio::ode::concepts::user_defined_ops_for_explicit_rk4, Args...>;
+    ::pressio::ode::constraints::user_defined_ops_for_explicit_rk4, Args...>;
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
 
@@ -122,7 +122,7 @@ template<
 struct compose
 {
   static_assert
-  (::pressio::ode::concepts::continuous_time_system_without_user_provided_jacobian<system_t>::value,
+  (::pressio::ode::constraints::continuous_time_system_without_user_provided_jacobian<system_t>::value,
    "The system passed to the ExplicitStepper does not meet the required API");
 
   using state_t	= state_type;
@@ -139,7 +139,7 @@ struct compose
 
   // // check args for a valid velocity type
   // using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   ::pressio::ode::concepts::explicit_velocity, Args...>;
+  //   ::pressio::ode::constraints::explicit_velocity, Args...>;
   // // if a velocity type is NOT found, then set it equal to the state
   // using velocity_t = ::pressio::mpl::variadic::at_or_t<state_t, ic2::value, Args...>;
   // // static_assert(std::is_void<velocity_t>::value == false,
@@ -155,7 +155,7 @@ struct compose
   // check Args if a user-defined velocity policy is passed
   using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
     scalar_t, state_type, velocity_t, system_t,
-    ::pressio::ode::concepts::explicit_velocity_policy, Args...>;
+    ::pressio::ode::constraints::explicit_velocity_policy, Args...>;
   using velocity_policy_t =
     ::pressio::mpl::variadic::at_or_t<standard_velocity_policy_t, ic3::value, Args...>;
 

@@ -56,9 +56,9 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T2>::value
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
   >
 elementwise_multiply
 (typename ::pressio::containers::details::traits<T>::scalar_t alpha,

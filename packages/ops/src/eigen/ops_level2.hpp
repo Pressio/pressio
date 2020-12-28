@@ -61,9 +61,9 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<x_type>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<y_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<x_type>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -90,9 +90,9 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<x_type>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<y_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<x_type>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,

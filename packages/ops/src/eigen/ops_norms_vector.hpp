@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<vec_type>::value,
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
   typename vec_type::traits::scalar_t
   >
 norm1(const vec_type & a)
@@ -69,7 +69,7 @@ norm1(const vec_type & a)
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<vec_type>::value,
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
   typename vec_type::traits::scalar_t
   >
 norm2(const vec_type & a)

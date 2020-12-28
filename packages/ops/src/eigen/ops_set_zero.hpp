@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::container_eigen_with_native_data_access<T>::value
+  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value
   >
 set_zero(T & v)
 {

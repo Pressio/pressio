@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T>::value
   >
 pow(T & x,
     const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
@@ -70,8 +70,8 @@ pow(T & x,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -101,8 +101,8 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 abs_pow(T1 & y,
 	const T2 & x,

@@ -99,12 +99,12 @@ struct traits<
   using projector_t = projector_type;
 
   static_assert
-  (::pressio::rom::galerkin::concepts::projector_explicit_stepping
+  (::pressio::rom::galerkin::constraints::projector_explicit_stepping
    <projector_type, fom_velocity_t, galerkin_velocity_t>::value,
    "Invalid projector passed to masked Galerkin with explicit time stepping");
 
   static_assert
-  (::pressio::rom::galerkin::concepts::masker_explicit_stepping
+  (::pressio::rom::galerkin::constraints::masker_explicit_stepping
    <masker_t, scalar_t, fom_velocity_t>::value,
    "Invalid masker passed to masked Galerkin with explicit time stepping");
 

@@ -55,7 +55,7 @@ template <typename galerkin_velocity_t, typename projection_policy_t>
 class VelocityPolicy : private projection_policy_t
 {
   static_assert
-  (::pressio::rom::galerkin::concepts::galerkin_velocity<galerkin_velocity_t>::value,
+  (::pressio::rom::galerkin::constraints::galerkin_velocity<galerkin_velocity_t>::value,
    "The galerkin_velocity_t is not a valid galerkin velocity type");
 
   using velocity_traits = ::pressio::containers::details::traits<galerkin_velocity_t>;

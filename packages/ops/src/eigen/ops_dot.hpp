@@ -54,8 +54,8 @@ namespace pressio{ namespace ops{
 // return void
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value
   >
 dot(const T0 & vecA,
     const T1 & vecB,
@@ -71,8 +71,8 @@ dot(const T0 & vecA,
 // return result
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::concepts::rank1_container_eigen_with_native_data_access<T1>::value,
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value,
   typename T0::traits::scalar_t
   >
 dot(const T0 & vecA, const T1 & vecB)

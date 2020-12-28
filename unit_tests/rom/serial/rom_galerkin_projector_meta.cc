@@ -16,13 +16,13 @@ struct Projector
 TEST(rom_galerkin_meta, validProjectorExplicitStepping)
 {
   static_assert
-    (pressio::rom::galerkin::concepts::projector_explicit_stepping
+    (pressio::rom::galerkin::constraints::projector_explicit_stepping
      <Projector, fom_velo_t, rom_state_t>::value,"");
 }
 
 TEST(rom_galerkin_meta, validProjectorImplicitStepping)
 {
   static_assert
-    (pressio::rom::galerkin::concepts::projector_implicit_stepping
+    (pressio::rom::galerkin::constraints::projector_implicit_stepping
      <Projector, fom_velo_t, dmat_t, rom_state_t, rom_jac_t>::value,"");
 }

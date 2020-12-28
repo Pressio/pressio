@@ -100,7 +100,7 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::lspg::concepts::unsteady_preconditioner<
+    ::pressio::rom::lspg::constraints::unsteady_preconditioner<
       preconditioner_t, fom_state_t, scalar_t, lspg_residual_t, lspg_jacobian_t
       >::value,
       "Invalid preconditioner type passed to unsteady LSPG"

@@ -88,8 +88,8 @@ public:
     typename state_t,
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      (pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+       pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_t>::value,
       int
       > = 0
@@ -107,8 +107,8 @@ public:
     typename state_t,
     typename ...ArgsIn,
     mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      (pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+       pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
       > = 0

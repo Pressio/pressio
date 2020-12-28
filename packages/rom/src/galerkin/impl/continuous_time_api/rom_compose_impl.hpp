@@ -146,8 +146,8 @@ struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    (::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
@@ -172,8 +172,8 @@ struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    (::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
@@ -199,8 +199,8 @@ struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    (::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
@@ -226,8 +226,8 @@ struct compose<
   ::pressio::rom::galerkin::impl::MaskedVelocity,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value and
-    (::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
-     ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
+    (::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value or
+     ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value)
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {
@@ -257,7 +257,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value and
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value and
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
@@ -290,7 +290,7 @@ struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value and
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
@@ -324,7 +324,7 @@ struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value and
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
@@ -356,7 +356,7 @@ struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value and
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type, ud_ops_type>
 {
@@ -390,7 +390,7 @@ struct compose<
   ::pressio::rom::galerkin::impl::MaskedVelocity,
   mpl::enable_if_t<
     ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value and
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {

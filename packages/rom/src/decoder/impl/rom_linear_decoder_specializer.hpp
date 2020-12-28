@@ -64,7 +64,7 @@ struct LinearDecoderSpecializer<
   >
 {
   static_assert
-  (::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
+  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
    "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
 
   static_assert
@@ -81,7 +81,7 @@ struct LinearDecoderSpecializer<
   >
 {
   static_assert
-  (::pressio::rom::concepts::decoder_jacobian<matrix_type>::value,
+  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
    "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
 
   static_assert

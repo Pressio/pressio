@@ -244,7 +244,7 @@ struct Bdf1Solver
 struct CustomBdf1Solver
 {
   using app_t		= MyAppDiscreteTimeAPI;
-  static_assert(::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<app_t>::value, "");
+  static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<app_t>::value, "");
 
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
@@ -326,7 +326,7 @@ struct CustomBdf1Solver
   template <typename observer_t>
   void integrateToTimeWithStepSizeManagerLambdaAndCollector(sc_t finalTime, observer_t & observer)
   {
-    static_assert( pressio::ode::concepts::collector_callable_with_step_time_native_container_return_void<
+    static_assert( pressio::ode::constraints::collector_callable_with_step_time_native_container_return_void<
       observer_t, double, state_t
       >::value, "");
 

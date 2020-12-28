@@ -54,8 +54,8 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
 {
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
-  static_assert( !rom::concepts::continuous_time_system<app_t>::value,"");
+  static_assert( rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
+  static_assert( !rom::constraints::continuous_time_system<app_t>::value,"");
 
   using scalar_t	= typename app_t::scalar_type;
   using native_state_t  = typename app_t::state_type;
@@ -72,7 +72,7 @@ TEST(rom_lspg, defaultLSPGProblemResidualAPI)
   typename app_t::state_type yRef(appobj.numDof_);
   lspg_state_t yROM(3);
 
-  static_assert(::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value, "");
+  static_assert(::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value, "");
 
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<1,2>(appobj, decoderObj, yROM, yRef);
 

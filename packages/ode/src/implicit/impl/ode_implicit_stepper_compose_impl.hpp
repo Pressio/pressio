@@ -80,10 +80,10 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_with_user_provided_jacobian<system_type>::value
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
@@ -116,15 +116,15 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value 
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value 
     and
-    ::pressio::ode::concepts::implicit_euler_residual_policy<
+    ::pressio::ode::constraints::implicit_euler_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value 
     and
-    ::pressio::ode::concepts::implicit_euler_jacobian_policy<
+    ::pressio::ode::constraints::implicit_euler_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
   >,
@@ -152,15 +152,15 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::Euler,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value 
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value 
     and
-    ::pressio::ode::concepts::implicit_euler_residual_policy<
+    ::pressio::ode::constraints::implicit_euler_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value 
     and
-    ::pressio::ode::concepts::implicit_euler_jacobian_policy<
+    ::pressio::ode::constraints::implicit_euler_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
   >,
@@ -187,11 +187,11 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::continuous_time_system_with_user_provided_jacobian<system_type>::value and
-    ::pressio::ode::concepts::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value and
+    ::pressio::ode::constraints::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
   >,
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
 {
@@ -220,16 +220,16 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::auxiliary_stepper_for_bdf2<aux_stepper_t>::value 
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::auxiliary_stepper_for_bdf2<aux_stepper_t>::value 
     and
-    ::pressio::ode::concepts::implicit_bdf2_residual_policy<
+    ::pressio::ode::constraints::implicit_bdf2_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value 
     and
-    ::pressio::ode::concepts::implicit_bdf2_jacobian_policy<
+    ::pressio::ode::constraints::implicit_bdf2_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
   >,
@@ -261,10 +261,10 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
-    ::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<system_type>::value and
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value and
     ::pressio::ode::predicates::IsStepperOrderSetter<order_setter_t>::value and
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
   >,
@@ -298,18 +298,18 @@ template<
 struct compose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value and
-    ::pressio::ode::concepts::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
     ::pressio::ode::predicates::IsStepperOrderSetter<order_setter_t>::value and
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
     and
-    ::pressio::ode::concepts::implicit_residual_policy<
+    ::pressio::ode::constraints::implicit_residual_policy<
       residual_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1, 
       state_type, residual_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value 
     and
-    ::pressio::ode::concepts::implicit_jacobian_policy<
+    ::pressio::ode::constraints::implicit_jacobian_policy<
       jacobian_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1, 
       state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value

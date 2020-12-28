@@ -60,7 +60,7 @@ template<
   typename time_type
   >
 mpl::enable_if_t<
-  ::pressio::ode::concepts::explicitly_steppable<stepper_type, state_type, time_type>::value
+  ::pressio::ode::constraints::explicitly_steppable<stepper_type, state_type, time_type>::value
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   and !::pressio::containers::predicates::is_array_pybind<state_type>::value
 // #endif
@@ -73,7 +73,7 @@ advanceNSteps(stepper_type & stepper,
 {
 
   static_assert
-    (::pressio::ode::concepts::explicit_state<state_type>::value,
+    (::pressio::ode::constraints::explicit_state<state_type>::value,
      "You are trying to call advanceNSteps with an explicit stepper \
 but the state type you are using is not admissible for explicit time-stepping.");
 
@@ -92,7 +92,7 @@ template<
   typename collector_type
   >
 mpl::enable_if_t<
-  ::pressio::ode::concepts::explicitly_steppable<
+  ::pressio::ode::constraints::explicitly_steppable<
     stepper_type, state_type, time_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -104,12 +104,12 @@ advanceNSteps(stepper_type & stepper,
 {
 
   static_assert
-    (::pressio::ode::concepts::explicit_state<state_type>::value,
+    (::pressio::ode::constraints::explicit_state<state_type>::value,
      "You are trying to call advanceNSteps with an explicit stepper \
 but the state type you are using is not admissible for explicit time-stepping.");
 
   static_assert
-    (::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value,
+    (::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value,
      "You are trying to call advanceNSteps with an explicit stepper \
 and a collector, but the collector type you are using is not admissible. \
 It does not meet the API of a valid collector. \

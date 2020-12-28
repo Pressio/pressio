@@ -22,10 +22,10 @@ TEST(solvers_meta, admissible_qr_solver)
   using state_type = pressio::containers::Vector<Eigen::VectorXd>;
 
   using solver_t = ValidSolver<A_t, r_t, state_type>;
-  static_assert(pressio::solvers::concepts::qr_solver_for_gn_qr<
+  static_assert(pressio::solvers::constraints::qr_solver_for_gn_qr<
     solver_t, state_type, A_t, r_t>::value, "");
 
   using qr_solver_type = pressio::qr::QRSolver<A_t, pressio::qr::Householder>;
-  static_assert(pressio::solvers::concepts::qr_solver_for_gn_qr<
+  static_assert(pressio::solvers::constraints::qr_solver_for_gn_qr<
     qr_solver_type, state_type, A_t, r_t>::value, "");
 }

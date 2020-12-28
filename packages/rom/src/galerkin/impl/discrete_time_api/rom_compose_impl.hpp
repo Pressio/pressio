@@ -91,7 +91,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type, Args...>
 {
@@ -120,7 +120,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::MaskedResidual,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type,
   masker_type, projector_type, Args...>
@@ -149,7 +149,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedResidual,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
+    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type,
   projector_type, Args...>

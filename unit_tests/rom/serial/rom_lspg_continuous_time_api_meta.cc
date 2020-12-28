@@ -34,6 +34,6 @@ TEST(rom_lspg_meta, validVeloAPI)
 {
   using app_t    = ValidApp;
   using namespace pressio;
-  static_assert( rom::concepts::continuous_time_system<app_t>::value,"");
-  static_assert( !rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
+  static_assert( rom::constraints::continuous_time_system<app_t>::value,"");
+  static_assert( !rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
 }

@@ -102,7 +102,7 @@ struct FomStateReconstructorSpecializer<
 
   // check for valid ops
   static_assert
-  (::pressio::rom::concepts::custom_ops_for_fom_state_reconstructor<
+  (::pressio::rom::constraints::custom_ops_for_fom_state_reconstructor<
    ops_t, fom_state_type >::value,
    "You are tring to create a FomStateReconstructor with custom ops. \
 The template arg passed representing the custom ops \

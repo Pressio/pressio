@@ -70,7 +70,7 @@ struct CommonTraitsContinuousTimeApi
   // ---------------------
   // verify decoder
   static_assert
-  (::pressio::rom::concepts::decoder<decoder_type, galerkin_state_t>::value,
+  (::pressio::rom::constraints::decoder<decoder_type, galerkin_state_t>::value,
    "A valid decoder type must be passed to define a Galerkin problem");
   using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;

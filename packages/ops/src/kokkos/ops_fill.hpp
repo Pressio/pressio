@@ -55,7 +55,7 @@ namespace pressio{ namespace ops{
 
 template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::container_kokkos_with_native_data_access<T>::value
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T>::value
   >
 fill(T & o,  typename T::traits::scalar_t value)
 {

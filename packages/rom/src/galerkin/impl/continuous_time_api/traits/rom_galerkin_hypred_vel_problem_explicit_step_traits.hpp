@@ -95,7 +95,7 @@ struct traits<
 
   using projector_t = projector_type;
   static_assert
-  (::pressio::rom::galerkin::concepts::projector_explicit_stepping
+  (::pressio::rom::galerkin::constraints::projector_explicit_stepping
    <projector_type, fom_velocity_t, galerkin_velocity_t>::value,
    "Invalid projector passed to Galerkin");
 

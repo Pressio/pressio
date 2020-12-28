@@ -61,21 +61,21 @@ struct ValidSystemB {
 TEST(solvers_meta, system_admissible_res_jac_api){
   using namespace pressio;
   using system_t   = ValidSystemA;
-  static_assert(solvers::concepts::system_residual_jacobian<system_t>::value, "");
-  static_assert(!solvers::concepts::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(solvers::constraints::system_residual_jacobian<system_t>::value, "");
+  static_assert(!solvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
 }
 
 TEST(solvers_meta, system_non_admissible_res_jac_api){
   using namespace pressio;
   using system_t   = NonValidSystemA1;
-  static_assert(!solvers::concepts::system_residual_jacobian<system_t>::value, "");
-  static_assert(!solvers::concepts::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(!solvers::constraints::system_residual_jacobian<system_t>::value, "");
+  static_assert(!solvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
 }
 
 TEST(solvers_meta, system_admissible_fused_res_jac_api){
   using namespace pressio;
   using system_t   = ValidSystemB;
-  static_assert(!solvers::concepts::system_residual_jacobian<system_t>::value, "");
-  static_assert(solvers::concepts::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(!solvers::constraints::system_residual_jacobian<system_t>::value, "");
+  static_assert(solvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
 }
 

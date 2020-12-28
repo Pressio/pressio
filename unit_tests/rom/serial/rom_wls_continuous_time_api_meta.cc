@@ -31,7 +31,7 @@ public:
 TEST(rom_wls_meta, validVeloAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  static_assert( rom::concepts::continuous_time_system<app_t>::value,"");
+  static_assert( rom::constraints::continuous_time_system<app_t>::value,"");
 }
 
 

@@ -97,7 +97,7 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::lspg::concepts::steady_preconditioner<
+    ::pressio::rom::lspg::constraints::steady_preconditioner<
       preconditioner_t,
       fom_state_t,
       lspg_residual_t,

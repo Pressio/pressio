@@ -84,7 +84,7 @@ public:
     typename scalar_t
     >
   mpl::enable_if_t<
-    ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_t>::value
+    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_t>::value
     >
   compute(const galerkin_state_t & galerkinState,
 	  const prev_states_t & galerkinPrevStates,
@@ -107,7 +107,7 @@ public:
     typename scalar_t
     >
   mpl::enable_if_t<
-    ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_t>::value
+    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_t>::value
   >
   compute(const galerkin_state_t & galerkinState,
 	  const prev_states_t & galerkinPrevStates,

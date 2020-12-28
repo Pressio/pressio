@@ -53,7 +53,7 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
-  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
+  ::pressio::solvers::constraints::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
   >
 _applyWeightingHelper(const T & functorM,
 		      const operand_t & operand,
@@ -71,7 +71,7 @@ _applyWeightingHelper(const T & functorM,
 
 template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
-  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
+  ::pressio::solvers::constraints::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
   >
 _applyWeightingHelper(const T & functorM,
 		      const operand_t & operand,
@@ -89,7 +89,7 @@ _applyWeightingHelper(const T & functorM,
 
 template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
-  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
+  ::pressio::solvers::constraints::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
   >
 _applyWeightingHelper(const T & functorM,
 		      const operand_t & operand,
@@ -100,7 +100,7 @@ _applyWeightingHelper(const T & functorM,
 
 template <class r_t, class j_t, class T, class operand_t, class result_t>
 mpl::enable_if_t<
-  ::pressio::solvers::concepts::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
+  ::pressio::solvers::constraints::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
   >
 _applyWeightingHelper(const T & functorM,
 		      const operand_t & operand,
@@ -159,8 +159,8 @@ public:
     typename _weigh_t,
     typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      (pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+       pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_type>::value,
       int
       > = 0
@@ -192,8 +192,8 @@ public:
     typename _weigh_t,
     typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      (pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+       pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
       and !std::is_void<_ud_ops_type>::value,
       int
       > = 0
@@ -221,8 +221,8 @@ public:
     typename _weigh_t = weighting_functor_t,
     typename _ud_ops_type = mpl::remove_cvref_t<ud_ops_type>,
     mpl::enable_if_t<
-      (pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-       pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+      (pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+       pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
       and std::is_void<_ud_ops_type>::value
       and std::is_same<_weigh_t,
 		       ::pressio::solvers::nonlinear::impl::IrwWeightingOperator<r_t, j_t>
@@ -282,7 +282,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & system,
 		   const state_t & state,
@@ -309,7 +309,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & system,
 		   const state_t & state,
@@ -332,7 +332,7 @@ public:
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & system,
 	       const state_t & state,
@@ -345,7 +345,7 @@ public:
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & system,
 	       const state_t & state,

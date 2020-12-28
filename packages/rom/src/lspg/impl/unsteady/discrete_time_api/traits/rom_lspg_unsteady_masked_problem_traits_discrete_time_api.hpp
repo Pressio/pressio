@@ -97,7 +97,7 @@ struct traits<
 
   static_assert
   (
-    ::pressio::rom::lspg::concepts::unsteady_masker<
+    ::pressio::rom::lspg::constraints::unsteady_masker<
       masker_t,
       scalar_t,
       typename ::pressio::containers::details::traits<lspg_residual_t>::wrapped_t,

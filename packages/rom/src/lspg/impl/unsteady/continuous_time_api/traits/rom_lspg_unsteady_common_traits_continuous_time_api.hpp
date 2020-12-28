@@ -61,7 +61,7 @@ template <
 struct CommonTraitsContinuousTimeApi
 {
   static_assert
-  (::pressio::rom::lspg::concepts::rom_state<lspg_state_type>::value,
+  (::pressio::rom::lspg::constraints::rom_state<lspg_state_type>::value,
    "The lspg_state_type is not a valid rom state");
 
   using fom_system_t	      = fom_system_type;
@@ -74,7 +74,7 @@ struct CommonTraitsContinuousTimeApi
   // ---------------------
   // verify decoder type
   static_assert
-  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t>::value,
+  (::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
    "A valid decoder type must be passed to define a LSPG problem");
   using decoder_t     = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
@@ -118,7 +118,7 @@ struct CommonTraitsContinuousTimeApi
   // // if we have an admissible user-defined ops
   // using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
   //   decoder_jac_t, lspg_state_t, fom_state_t,
-  //   ::pressio::rom::concepts::lspg::custom_ops_lspg_continuous_time, Args...>;
+  //   ::pressio::rom::constraints::lspg::custom_ops_lspg_continuous_time, Args...>;
   // using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void,icUdOps::value,Args...>;
 
   // ---------------------

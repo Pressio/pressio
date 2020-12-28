@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){
   // my time step setter
   using setter_t = MyTimeStepSetter<native_state_t, scalar_t>;
   static_assert
-    (pressio::ode::concepts::time_step_size_manager<
+    (pressio::ode::constraints::time_step_size_manager<
      setter_t, pressio::ode::types::step_t, scalar_t>::value,"");
   setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 

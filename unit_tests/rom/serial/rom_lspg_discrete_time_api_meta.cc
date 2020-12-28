@@ -50,6 +50,6 @@ public:
 TEST(rom_lspg_meta, validResidualAPI){
   using namespace pressio;
   using app_t    = ValidApp;
-  // static_assert( !rom::concepts::system_velocity_api_unsteady_lspg<app_t>::value,"");
-  static_assert( rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
+  // static_assert( !rom::constraints::system_velocity_api_unsteady_lspg<app_t>::value,"");
+  static_assert( rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<app_t>::value,"");
 }

@@ -59,7 +59,7 @@ template <
 struct CommonTraits
 {
   static_assert
-  (::pressio::rom::lspg::concepts::state<lspg_state_type>::value,
+  (::pressio::rom::lspg::constraints::state<lspg_state_type>::value,
    "The lspg_state_type is not a valid rom state");
 
   using fom_system_t	      = fom_system_type;
@@ -72,7 +72,7 @@ struct CommonTraits
   // ---------------------
   // check for valid decoder
   static_assert
-  (::pressio::rom::concepts::decoder<decoder_type, lspg_state_t>::value,
+  (::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
    "A valid decoder type must be passed to define a LSPG problem");
   using decoder_t     = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;

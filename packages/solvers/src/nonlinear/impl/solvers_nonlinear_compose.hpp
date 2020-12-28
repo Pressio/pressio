@@ -77,8 +77,8 @@ struct composeNewRaph
 {
   // Newton-Raphson requires r/j API
   static_assert
-  (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-   ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
+  (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+   ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
    "To use NewtonRaphson, your system must meet the residual/jacobian API.");
 
   using scalar_t = typename system_t::scalar_type;
@@ -92,7 +92,7 @@ struct composeNewRaph
 
   // check the solver_t passed is valid
   static_assert
-  (::pressio::solvers::concepts::linear_solver_for_newton_raphson<
+  (::pressio::solvers::constraints::linear_solver_for_newton_raphson<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
    "Invalid linear solver type passed to NewtonRaphson");
 
@@ -120,16 +120,16 @@ template<typename enable, typename system_t, typename ...Args>
 struct composeGNQR
 {
   static_assert
-  (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-   ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
+  (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+   ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
    "QR-based GaussNewton requires the system with the residual/jacobian API.");
 };
 
 template<typename system_t, typename solver_t>
 struct composeGNQR<
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >, system_t, solver_t
   >
 {
@@ -140,7 +140,7 @@ struct composeGNQR<
   using r_t = typename system_t::residual_type;
   using j_t = typename system_t::jacobian_type;
   static_assert
-  (::pressio::solvers::concepts::qr_solver_for_gn_qr<
+  (::pressio::solvers::constraints::qr_solver_for_gn_qr<
    mpl::remove_cvref_t<solver_t>, state_t, j_t, r_t>::value,
    "The solver type passed to compose a QR-based GN solver is not valid");
 
@@ -185,8 +185,8 @@ template<
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
-    (pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
-     pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value) and
+    (pressio::solvers::constraints::system_hessian_gradient<system_t>::value or
+     pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value) and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
     >,
   linear_solver_t
@@ -201,7 +201,7 @@ struct compose<
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
   static_assert
-  (::pressio::solvers::concepts::linear_solver_for_nonlinear_least_squares<
+  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
    "A valid linear solver type must be passed to GN or LM with normal equations");
 
@@ -231,8 +231,8 @@ template<
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
-    (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-     ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value)
+    (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+     ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
     and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
     >,
@@ -251,7 +251,7 @@ struct compose<
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
   static_assert
-  (::pressio::solvers::concepts::linear_solver_for_nonlinear_least_squares<
+  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
    "A valid linear solver type must be passed to GN or LM with normal equations");
 
@@ -318,8 +318,8 @@ template<
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
-    (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-     ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
+    (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+     ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value) and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
     >,
   linear_solver_t, extra_t
@@ -337,7 +337,7 @@ struct compose<
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
   static_assert
-  (::pressio::solvers::concepts::linear_solver_for_nonlinear_least_squares<
+  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
    "A valid linear solver type must be passed to GN or LM with normal equations");
 
@@ -354,13 +354,13 @@ struct compose<
 
   using ud_ops_t  =
     typename std::conditional<
-    ::pressio::solvers::concepts::ops_normal_equations_rj_api<
+    ::pressio::solvers::constraints::ops_normal_equations_rj_api<
       extra_nocvref_t, scalar_t, hess_t, grad_t, j_t, r_t>::value,
     extra_t, void >::type;
 
   using weighting_functor_t =
     typename std::conditional<
-    (::pressio::solvers::concepts::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
+    (::pressio::solvers::constraints::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
     extra_t, void >::type;
 
   // the extra_t should be one of the two, cannot be both
@@ -387,8 +387,8 @@ template<
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
-    (::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-     ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value) and
+    (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+     ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value) and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
     !std::is_void<ud_ops_t>::value and
     !std::is_void<weighting_functor_t>::value
@@ -409,7 +409,7 @@ struct compose<
    "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
 
   static_assert
-  (::pressio::solvers::concepts::linear_solver_for_nonlinear_least_squares<
+  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
    "A valid linear solver type must be passed to GN or LM with normal equations");
 
@@ -420,12 +420,12 @@ struct compose<
   // - system meets r/j api
   // - we need to compose GN or LM with normal equations
   static_assert
-  (::pressio::solvers::concepts::ops_normal_equations_rj_api<
+  (::pressio::solvers::constraints::ops_normal_equations_rj_api<
    mpl::remove_cvref_t<ud_ops_t>, scalar_t, hess_t, grad_t, j_t, r_t>::value,
    "The ops type is not admissible for normal equations.");
 
   static_assert
-  (::pressio::solvers::concepts::least_squares_weighting_operator<
+  (::pressio::solvers::constraints::least_squares_weighting_operator<
    mpl::remove_cvref_t<weighting_functor_t>, r_t, j_t>::value,
    "The weighting_functor is not admissible");
 
@@ -448,8 +448,8 @@ template<
 struct compose<
   system_t, IrwGaussNewton,
   mpl::enable_if_t<
-    ::pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-    ::pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    ::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+    ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >,
   linear_solver_t
   >

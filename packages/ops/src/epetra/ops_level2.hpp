@@ -89,7 +89,7 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<x_type>::value
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -115,7 +115,7 @@ product(::pressio::nontranspose mode,
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,

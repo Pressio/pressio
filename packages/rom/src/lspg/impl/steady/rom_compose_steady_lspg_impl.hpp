@@ -93,7 +93,7 @@ template<
 struct composeSteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    ::pressio::rom::constraints::steady_system<fom_system_type>::value
     >,
   fom_system_type, decoder_type, lspg_state_type>
 {
@@ -111,7 +111,7 @@ template<
 struct composeSteady<
   ::pressio::rom::lspg::impl::Preconditioned,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    ::pressio::rom::constraints::steady_system<fom_system_type>::value
     >,
   fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
@@ -129,7 +129,7 @@ template<
 struct composeSteady<
   ::pressio::rom::lspg::impl::Masked,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    ::pressio::rom::constraints::steady_system<fom_system_type>::value
     >,
   fom_system_type, decoder_type, lspg_state_type, masker_type>
 {
@@ -146,7 +146,7 @@ template<
 struct composeSteady<
   ::pressio::rom::lspg::impl::HyperReduced,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    ::pressio::rom::constraints::steady_system<fom_system_type>::value
     >,
   fom_system_type, decoder_type, lspg_state_type
   >
@@ -165,7 +165,7 @@ template<
 struct composeSteady<
   ::pressio::rom::lspg::impl::PreconditionedHyperReduced,
   mpl::enable_if_t<
-    ::pressio::rom::concepts::steady_system<fom_system_type>::value
+    ::pressio::rom::constraints::steady_system<fom_system_type>::value
     >,
   fom_system_type, decoder_type, lspg_state_type, precond_type>
 {

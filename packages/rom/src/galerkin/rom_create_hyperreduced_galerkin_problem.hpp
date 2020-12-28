@@ -61,8 +61,8 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value or
-  ::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value or
+  ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
   impl::composeHyperReducedVelocityProblemContTime_t<
     stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
   >
@@ -98,7 +98,7 @@ template<
   typename projector_type
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
   impl::composeHyperReducedResidualProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, projector_type,

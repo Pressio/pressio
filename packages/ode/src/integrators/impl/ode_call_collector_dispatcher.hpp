@@ -65,7 +65,7 @@ struct CallCollectorDispatch<
   collector_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_wrapper<state_type>::value and
-    ::pressio::ode::concepts::collector_callable_with_step_time_native_container_return_void<
+    ::pressio::ode::constraints::collector_callable_with_step_time_native_container_return_void<
       collector_type, time_type, state_type
       >::value
     >
@@ -88,7 +88,7 @@ struct CallCollectorDispatch<
   collector_type, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_wrapper<state_type>::value and
-    ::pressio::ode::concepts::collector_callable_with_step_time_pressio_container_return_void<
+    ::pressio::ode::constraints::collector_callable_with_step_time_pressio_container_return_void<
       collector_type, time_type, state_type
       >::value
     >

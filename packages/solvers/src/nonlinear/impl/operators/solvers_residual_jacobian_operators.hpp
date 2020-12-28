@@ -78,8 +78,8 @@ public:
   template <
     typename system_t, typename state_t,
     mpl::enable_if_t<
-      pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-      pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
+      pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+      pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
       int
      > = 0
   >
@@ -112,7 +112,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
   >
   computeOperators(const system_t & sys,
 		   const state_t & state,
@@ -130,7 +130,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
@@ -143,7 +143,7 @@ public:
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & system,
          const state_t & state,
@@ -155,7 +155,7 @@ public:
 
   template< typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
     >
   residualNorm(const system_t & system,
          const state_t & state,

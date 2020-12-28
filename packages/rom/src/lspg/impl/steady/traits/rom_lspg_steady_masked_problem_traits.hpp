@@ -97,7 +97,7 @@ struct traits<
   using masker_t = masker_type;
   static_assert
   (
-    ::pressio::rom::lspg::concepts::steady_masker<
+    ::pressio::rom::lspg::constraints::steady_masker<
       masker_t,
       typename ::pressio::containers::details::traits<fom_residual_t>::wrapped_t,
       typename ::pressio::containers::details::traits<lspg_jacobian_t>::wrapped_t

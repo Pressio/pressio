@@ -91,8 +91,8 @@ struct DefaultProjector
   mpl::enable_if_t<
     ::pressio::containers::details::traits<operand_t>::rank == 1 and
     ::pressio::containers::details::traits<result_t>::rank == 1 and
-    (::pressio::rom::galerkin::concepts::velocity<result_t>::value or
-     ::pressio::rom::galerkin::concepts::residual<result_t>::value)
+    (::pressio::rom::galerkin::constraints::velocity<result_t>::value or
+     ::pressio::rom::galerkin::constraints::residual<result_t>::value)
     >
   apply(const operand_t & operand, result_t & result) const
   {
@@ -106,7 +106,7 @@ struct DefaultProjector
   template<typename result_t>
   mpl::enable_if_t<
     ::pressio::containers::details::traits<result_t>::rank == 1 and
-    ::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value
+    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value
     >
   apply(const dec_jac_t & operand, result_t & result) const
   {
@@ -163,7 +163,7 @@ struct DefaultProjector<decoder_type, void>
   }
 
   // template<typename result_t>
-  // mpl::enable_if_t<::pressio::rom::galerkin::concepts::galerkin_jacobian<result_t>::value>
+  // mpl::enable_if_t<::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value>
   // apply(const dec_jac_t & operand, result_t & result) const
   // {
   //   // using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;

@@ -75,8 +75,8 @@ public:
   template <
    typename system_t, typename state_t,
     mpl::enable_if_t<
-      pressio::solvers::concepts::system_hessian_gradient<system_t>::value or
-      pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value,
+      pressio::solvers::constraints::system_hessian_gradient<system_t>::value or
+      pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value,
       int
      > = 0
   >
@@ -115,7 +115,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_hessian_gradient<system_t>::value
+    pressio::solvers::constraints::system_hessian_gradient<system_t>::value
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
@@ -131,7 +131,7 @@ public:
 
   template<typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::concepts::system_fused_hessian_gradient<system_t>::value
+    pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,

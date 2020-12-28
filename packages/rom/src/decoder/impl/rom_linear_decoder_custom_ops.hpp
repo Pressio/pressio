@@ -55,7 +55,7 @@ template <typename jacobian_matrix_type, typename fom_state_t, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
   static_assert
-  (::pressio::rom::concepts::decoder_jacobian<jacobian_matrix_type>::value,
+  (::pressio::rom::constraints::decoder_jacobian<jacobian_matrix_type>::value,
    "Invalid decoder's jacobian type");
   static_assert
   (::pressio::containers::predicates::is_wrapper<fom_state_t>::value,

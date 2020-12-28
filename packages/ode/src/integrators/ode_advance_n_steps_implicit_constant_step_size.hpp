@@ -65,7 +65,7 @@ template<
   typename solver_type
   >
 mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   and !::pressio::containers::predicates::is_array_pybind<state_type>::value
@@ -80,7 +80,7 @@ advanceNSteps(stepper_type & stepper,
 {
 
   static_assert
-    (::pressio::ode::concepts::implicit_state<state_type>::value,
+    (::pressio::ode::constraints::implicit_state<state_type>::value,
      "You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -106,7 +106,7 @@ template<
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type,
     ::pressio::containers::Vector<native_python_state_type>,
     time_type, solver_type
@@ -122,7 +122,7 @@ advanceNSteps(stepper_type & stepper,
 	      solver_type & solver)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<native_python_state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<native_python_state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -150,7 +150,7 @@ template<
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type,
     ::pressio::containers::Vector<native_python_state_type>,
     time_type, solver_type
@@ -165,7 +165,7 @@ advanceNSteps(stepper_type & stepper,
 	      solver_type & solver)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<native_python_state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<native_python_state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -197,9 +197,9 @@ template<
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::collector<
+  ::pressio::ode::constraints::collector<
     collector_type, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -211,7 +211,7 @@ advanceNSteps(stepper_type & stepper,
 	      solver_type & solver)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -233,9 +233,9 @@ template<
   typename solver_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::concepts::collector<
+  ::pressio::ode::constraints::collector<
     collector_type, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -261,9 +261,9 @@ template<
   typename guess_callback_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable_with_guesser<
+  ::pressio::ode::constraints::implicitly_steppable_with_guesser<
     stepper_type, state_type, time_type, solver_type, guess_callback_t>::value and
-  ::pressio::ode::concepts::is_legitimate_guesser<
+  ::pressio::ode::constraints::is_legitimate_guesser<
     guess_callback_t, types::step_t, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -275,7 +275,7 @@ advanceNSteps(stepper_type & stepper,
 	      guess_callback_t && guessCb)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -301,12 +301,12 @@ template<
   typename guess_callback_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable_with_guesser<
+  ::pressio::ode::constraints::implicitly_steppable_with_guesser<
     stepper_type, state_type, time_type, solver_type, guess_callback_t>::value
   and
-  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value
+  ::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value
   and
-  ::pressio::ode::concepts::is_legitimate_guesser<
+  ::pressio::ode::constraints::is_legitimate_guesser<
     guess_callback_t, types::step_t, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -319,7 +319,7 @@ advanceNSteps(stepper_type & stepper,
 	      guess_callback_t && guessCb)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -342,12 +342,12 @@ template<
   typename guess_callback_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable_with_guesser<
+  ::pressio::ode::constraints::implicitly_steppable_with_guesser<
     stepper_type, state_type, time_type, solver_type, guess_callback_t>::value
   and
-  ::pressio::ode::concepts::collector<collector_type, time_type, state_type>::value
+  ::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value
   and
-  ::pressio::ode::concepts::is_legitimate_guesser<
+  ::pressio::ode::constraints::is_legitimate_guesser<
     guess_callback_t, types::step_t, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -360,7 +360,7 @@ advanceNSteps(stepper_type & stepper,
 	      guess_callback_t && guessCb)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 

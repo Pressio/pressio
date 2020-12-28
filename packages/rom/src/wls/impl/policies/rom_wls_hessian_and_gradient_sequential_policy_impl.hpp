@@ -90,7 +90,7 @@ public:
 				  const fom_state_t & fomState,
 				  window_size_t timeStencilSize,
 				  const window_size_t jacobianUpdateFrequency = 1,
-				  typename std::enable_if<::pressio::rom::concepts::continuous_time_system_with_user_provided_apply_jacobian<U>::value>::type* = 0)
+				  typename std::enable_if<::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<U>::value>::type* = 0)
     : romSize_(romSize),
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),
@@ -123,7 +123,7 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
 				  const fom_state_t & fomState,
 				  window_size_t timeStencilSize,
 				  const window_size_t jacobianUpdateFrequency = 1,
-				  typename std::enable_if<::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<U>::value>::type* = 0)
+				  typename std::enable_if<::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<U>::value>::type* = 0)
     : romSize_(romSize),
       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow)),
       jacobianUpdateFrequency_(jacobianUpdateFrequency),

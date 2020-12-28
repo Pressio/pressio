@@ -54,7 +54,7 @@ namespace pressio{ namespace ops{
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::concepts::container_eigen_with_native_data_access<vec_type>::value,
+    ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
     int
     > = 0
   >
@@ -66,7 +66,7 @@ typename vec_type::traits::scalar_t max(const vec_type & a)
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::concepts::container_eigen_with_native_data_access<vec_type>::value,
+    ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
     int
     > = 0
   >

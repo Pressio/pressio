@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template< typename T1, typename T2 >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::concepts::container_kokkos_with_native_data_access<T2>::value
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T2>::value
   >
 deep_copy(T1 & dest, const T2 & src)
 {

@@ -61,9 +61,9 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -89,8 +89,8 @@ product(::pressio::transpose modeA,
 
 template < typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose,
 	::pressio::nontranspose,
@@ -121,9 +121,9 @@ product(::pressio::transpose,
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
@@ -150,8 +150,8 @@ product(::pressio::nontranspose modeA,
 
 template < typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::nontranspose,
 	::pressio::nontranspose,
@@ -182,8 +182,8 @@ product(::pressio::nontranspose,
 **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
@@ -203,8 +203,8 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value,
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,
@@ -229,8 +229,8 @@ product(::pressio::transpose modeA,
 template <typename T, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<B_type>::value and
-  ::pressio::ops::concepts::rank2_container_eigen_with_native_data_access<C_type>::value
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,

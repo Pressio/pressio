@@ -56,8 +56,8 @@ namespace pressio{ namespace ops{
 // y = abs(x)
 template <class T2, class T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<T2>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
   >
 abs(T1 & y, const T2 & x)
 {

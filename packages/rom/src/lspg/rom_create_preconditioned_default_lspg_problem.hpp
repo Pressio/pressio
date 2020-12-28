@@ -60,7 +60,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::steady_system<fom_system_type>::value,
+  ::pressio::rom::constraints::steady_system<fom_system_type>::value,
   impl::composePreconditionedDefaultProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...
     >
@@ -93,7 +93,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::continuous_time_system<fom_system_type>::value,
+  ::pressio::rom::constraints::continuous_time_system<fom_system_type>::value,
   impl::composePreconditionedDefaultProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >
@@ -128,7 +128,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::concepts::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
   impl::composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,

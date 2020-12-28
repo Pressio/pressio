@@ -19,14 +19,14 @@ TEST(solvers_meta, admissible_linear_solver_newtonraphon)
 {
   using state_type    = Eigen::VectorXd;
   using namespace pressio;
-  static_assert(solvers::concepts::linear_solver_for_newton_raphson<ValidSolver, state_type>::value, "");
-  static_assert(!solvers::concepts::linear_solver_for_newton_raphson<InvalidSolver, state_type>::value, "");
+  static_assert(solvers::constraints::linear_solver_for_newton_raphson<ValidSolver, state_type>::value, "");
+  static_assert(!solvers::constraints::linear_solver_for_newton_raphson<InvalidSolver, state_type>::value, "");
 }
 
 TEST(solvers_meta, admissible_linear_solver_nonlinear_ls)
 {
   using state_type    = Eigen::VectorXd;
   using namespace pressio;
-  static_assert(solvers::concepts::linear_solver_for_nonlinear_least_squares<ValidSolver, state_type>::value, "");
-  static_assert(!solvers::concepts::linear_solver_for_nonlinear_least_squares<InvalidSolver, state_type>::value, "");
+  static_assert(solvers::constraints::linear_solver_for_nonlinear_least_squares<ValidSolver, state_type>::value, "");
+  static_assert(!solvers::constraints::linear_solver_for_nonlinear_least_squares<InvalidSolver, state_type>::value, "");
 }

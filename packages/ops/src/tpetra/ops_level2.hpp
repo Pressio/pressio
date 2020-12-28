@@ -157,7 +157,7 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value and
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<x_type>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<x_type>::value
   >
 product(::pressio::nontranspose,
 	const scalar_type alpha,
@@ -181,7 +181,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<A_type>::value and
   ::pressio::containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
-  ::pressio::ops::concepts::rank1_container_kokkos_with_native_data_access<y_type>::value
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -223,7 +223,7 @@ template <typename A_type, typename x_type, typename y_type, typename scalar_typ
   and
   (y_type::traits::wrapped_package_identifier !=
    ::pressio::containers::details::WrappedPackageIdentifier::Kokkos) and
-    ::pressio::ops::concepts::sharedmem_host_subscriptable_rank1_container<y_type>::value
+    ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value
   // (::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value or
   //  ::pressio::containers::predicates::is_vector_wrapper_teuchos<y_type>::value or
   //  ::pressio::containers::predicates::span_expression<y_type>::value)

@@ -70,18 +70,18 @@
 // common classes for rom
 #include "rom/src/pressio_rom_common.hpp"
 
-// concepts
-#include "rom/src/lspg/will_be_concepts/rom_fom_state.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_fom_velocity.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_lspg_jacobian.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_lspg_residual.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_lspg_state.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_steady_preconditioner.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_unsteady_preconditioner.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_steady_masker.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_unsteady_masker.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_custom_ops_continuous_time.hpp"
-#include "rom/src/lspg/will_be_concepts/rom_custom_ops_discrete_time.hpp"
+// constraints
+#include "rom/src/lspg/constraints/rom_fom_state.hpp"
+#include "rom/src/lspg/constraints/rom_fom_velocity.hpp"
+#include "rom/src/lspg/constraints/rom_lspg_jacobian.hpp"
+#include "rom/src/lspg/constraints/rom_lspg_residual.hpp"
+#include "rom/src/lspg/constraints/rom_lspg_state.hpp"
+#include "rom/src/lspg/constraints/rom_steady_preconditioner.hpp"
+#include "rom/src/lspg/constraints/rom_unsteady_preconditioner.hpp"
+#include "rom/src/lspg/constraints/rom_steady_masker.hpp"
+#include "rom/src/lspg/constraints/rom_unsteady_masker.hpp"
+#include "rom/src/lspg/constraints/rom_custom_ops_continuous_time.hpp"
+#include "rom/src/lspg/constraints/rom_custom_ops_discrete_time.hpp"
 
 // decorators
 #include "rom/src/lspg/decorators/rom_preconditioned.hpp"

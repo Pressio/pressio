@@ -71,20 +71,20 @@
 #include "./predicates/rom_predicates_include.hpp"
 
 //----------------------------------------------
-// common concepts (depend on predicates)
-#include "./will_be_concepts/rom_decoder_jacobian.hpp"
-#include "./will_be_concepts/rom_decoder.hpp"
-#include "./will_be_concepts/rom_custom_ops_for_linear_decoder.hpp"
-#include "./will_be_concepts/rom_custom_ops_for_fom_state_reconstructor.hpp"
+// common constraints (depend on predicates)
+#include "./constraints/rom_decoder_jacobian.hpp"
+#include "./constraints/rom_decoder.hpp"
+#include "./constraints/rom_custom_ops_for_linear_decoder.hpp"
+#include "./constraints/rom_custom_ops_for_fom_state_reconstructor.hpp"
 
-#include "./will_be_concepts/system/rom_steady_system.hpp"
-#include "./will_be_concepts/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./will_be_concepts/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
-#include "./will_be_concepts/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./will_be_concepts/system/rom_continuous_time_system.hpp"
+#include "./constraints/system/rom_steady_system.hpp"
+#include "./constraints/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./constraints/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
+#include "./constraints/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./constraints/system/rom_continuous_time_system.hpp"
 
 //----------------------------------------------
-// decoder classes (depend on concepts)
+// decoder classes (depend on constraints)
 #include "./decoder/rom_linear_decoder.hpp"
 
 //----------------------------------------------

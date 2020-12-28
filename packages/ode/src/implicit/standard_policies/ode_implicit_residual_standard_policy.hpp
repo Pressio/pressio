@@ -58,8 +58,8 @@ template<typename state_type, typename residual_type>
 class ResidualStandardPolicy<
   state_type, residual_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ode::concepts::implicit_state<state_type>::value and
-    ::pressio::ode::concepts::implicit_residual<residual_type>::value
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value
     >
   >
 {
@@ -75,7 +75,7 @@ public:
 public:
   template <typename system_type>
   mpl::enable_if_t<
-  ::pressio::ode::concepts::continuous_time_system_with_user_provided_jacobian<system_type>::value,
+  ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
   residual_type
   >
   create(const system_type & system) const
@@ -86,7 +86,7 @@ public:
 
   template <typename system_type>
   mpl::enable_if_t<
-    ::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
     residual_type
     >
   create(const system_type & system) const
@@ -100,7 +100,7 @@ public:
     typename system_type, typename scalar_type
     >
   mpl::enable_if_t<
-    ::pressio::ode::concepts::continuous_time_system_with_user_provided_jacobian<system_type>::value
+    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value
     >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
@@ -129,7 +129,7 @@ public:
     >
   mpl::enable_if_t<
     prev_states_mgr_type::size()==1 and
-    ::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<system_type>::value
+    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
     >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
@@ -160,7 +160,7 @@ public:
     >
   mpl::enable_if_t<
     prev_states_mgr_type::size()==2 and
-    ::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<system_type>::value
+    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
     >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,
@@ -192,7 +192,7 @@ public:
     >
   mpl::enable_if_t<
     prev_states_mgr_type::size()==3 and
-    ::pressio::ode::concepts::discrete_time_system_with_user_provided_jacobian<system_type>::value
+    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
     >
   compute(const state_type & odeCurrentState,
 	  const prev_states_mgr_type & prevStatesMgr,

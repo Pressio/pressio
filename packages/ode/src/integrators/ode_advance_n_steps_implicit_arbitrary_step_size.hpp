@@ -63,10 +63,10 @@ template<
   typename step_size_cb_t
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type
     >::value and
-  ::pressio::ode::concepts::time_step_size_manager<
+  ::pressio::ode::constraints::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -77,7 +77,7 @@ advanceNSteps(stepper_type & stepper,
 	      step_size_cb_t && dtManager)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping. ");
 
@@ -101,12 +101,12 @@ template<
   typename collector_type
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::concepts::implicitly_steppable<
+  ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type
     >::value and
-  ::pressio::ode::concepts::time_step_size_manager<
+  ::pressio::ode::constraints::time_step_size_manager<
     step_size_cb_type, types::step_t, time_type>::value and
-  ::pressio::ode::concepts::collector<
+  ::pressio::ode::constraints::collector<
     collector_type, time_type, state_type>::value
   >
 advanceNSteps(stepper_type & stepper,
@@ -118,7 +118,7 @@ advanceNSteps(stepper_type & stepper,
 	      collector_type & collector)
 {
 
-  static_assert(::pressio::ode::concepts::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping. ");
 

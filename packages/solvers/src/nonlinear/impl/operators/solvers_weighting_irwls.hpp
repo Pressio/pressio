@@ -70,8 +70,8 @@ public:
   template <
     typename system_t,
     mpl::enable_if_t<
-    pressio::solvers::concepts::system_residual_jacobian<system_t>::value or
-    pressio::solvers::concepts::system_fused_residual_jacobian<system_t>::value,
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
     int > = 0
     >
   IrwWeightingOperator(const system_t & system)

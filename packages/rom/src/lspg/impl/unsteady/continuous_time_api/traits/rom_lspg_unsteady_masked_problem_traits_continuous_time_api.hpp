@@ -98,7 +98,7 @@ struct traits<
   using masker_t = masker_type;
   static_assert
   (
-   ::pressio::rom::lspg::concepts::unsteady_masker<
+   ::pressio::rom::lspg::constraints::unsteady_masker<
    masker_t,
    scalar_t,
    typename ::pressio::containers::details::traits<fom_velocity_t>::wrapped_t,
