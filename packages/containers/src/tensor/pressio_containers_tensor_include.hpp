@@ -49,19 +49,12 @@
 #ifndef CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_
 #define CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_
 
-/* WARNING: the inclusion order below matters:
-concrete classes depend on traits which depend on predicates. */
+/* WARNING: the inclusion order below matters*/
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "./containers_tensor_traits.hpp"
+#include "./concrete/containers_tensor_sharedmem_pybind.hpp"
 #include "./wrapper_predicates/containers_is_tensor_wrapper_pybind.hpp"
 #endif
-
-// traits
-#include "./containers_tensor_traits.hpp"
-
-// concrete types
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// #include "./concrete/containers_tensor_sharedmem_pybind11.hpp"
-// #endif
 
 #endif  // CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_

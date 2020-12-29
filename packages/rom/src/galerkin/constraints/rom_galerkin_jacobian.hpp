@@ -79,7 +79,7 @@ template<typename T>
 struct jacobian<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<T>::value
+    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
    >
   > : std::true_type{};
 #endif

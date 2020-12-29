@@ -254,7 +254,7 @@ public:
     // here we want to view the state since we want to modify its data,
     // which is numpy array owned by the user inside their Python code.
     // upon exit of this function, the original state is changed.
-    ::pressio::containers::Vector<_state_t> stateView(state, ::pressio::view());
+    ::pressio::containers::Tensor<1, _state_t> stateView(state, ::pressio::view());
     this->solveImpl(system, stateView);
   }
 #endif

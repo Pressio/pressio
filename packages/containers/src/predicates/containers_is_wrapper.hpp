@@ -62,12 +62,12 @@ struct is_wrapper<
     >
   > : std::true_type{};
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <int rank, typename T>
-// struct is_wrapper<
-//   ::pressio::containers::experimental::Tensor<rank, T>
-//   > : std::true_type{};
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <int rank, typename T>
+struct is_wrapper<
+  ::pressio::containers::Tensor<rank, T>
+  > : std::true_type{};
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T, typename = void>

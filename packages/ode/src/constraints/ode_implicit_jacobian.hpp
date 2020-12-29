@@ -63,5 +63,10 @@ struct implicit_jacobian<T,
 	 >::type
        > : std::true_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct implicit_jacobian<::pressio::containers::Tensor<2, T>> : std::true_type{};
+#endif
+
 }}} // namespace pressio::ode::constraints
 #endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_HPP_

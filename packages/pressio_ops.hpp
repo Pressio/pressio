@@ -176,12 +176,13 @@
 
 // pybind11
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "ops/src/constraints/ops_rank1_container_pybind.hpp"
 #include "ops/src/pybind11/ops_abs.hpp"
 #include "ops/src/pybind11/ops_fill.hpp"
 #include "ops/src/pybind11/ops_set_zero.hpp"
 #include "ops/src/pybind11/ops_deep_copy.hpp"
-#include "ops/src/pybind11/ops_vector_update.hpp"
-#include "ops/src/pybind11/ops_dense_matrix_update.hpp"
+#include "ops/src/pybind11/ops_rank1_update.hpp"
+#include "ops/src/pybind11/ops_rank2_update.hpp"
 #include "ops/src/pybind11/ops_level2.hpp"
 #include "ops/src/pybind11/ops_level3.hpp"
 #include "ops/src/pybind11/ops_scale.hpp"

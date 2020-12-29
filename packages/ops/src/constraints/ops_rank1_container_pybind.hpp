@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_residual.hpp
+// ops_rank1_container_eigen_with_native_data_access.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,31 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
-#define ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
+#define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio{ namespace ops{ namespace constraints{
 
-template<typename T, typename enable = void>
-struct implicit_residual : std::false_type{};
+template <typename T, typename = void>
+struct rank1_container_pybind : std::false_type{};
 
-template<typename T>
-struct implicit_residual<T,
- typename std::enable_if<
-   containers::predicates::is_vector_wrapper<T>::value
-   >::type
+template <typename T>
+struct rank1_container_pybind<
+  T,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+    >
   > : std::true_type{};
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct implicit_residual<::pressio::containers::Tensor<1, T>> : std::true_type{};
-#endif
+template <typename T>
+struct rank1_container_pybind<
+  T,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::diag_expression<T>::value and
+    T::traits::wrapped_package_identifier ==
+    ::pressio::containers::details::WrappedPackageIdentifier::Pybind
+    >
+  > : std::true_type{};
 
-}}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+}}}
+#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_WITH_NATIVE_DATA_ACCESS_HPP_

@@ -51,11 +51,12 @@
 
 namespace pressio{ namespace ops{
 
-template<typename T>
+template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
   >
-deep_copy(T & dest, const T & src)
+deep_copy(T1 & dest, const T2 & src)
 {
   assert( dest.extent(0) == src.extent(0) );
   for (std::size_t i=0; i<dest.extent(0); ++i){
@@ -63,11 +64,12 @@ deep_copy(T & dest, const T & src)
   }
 }
 
-template<typename T>
+template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
   >
-deep_copy(T & dest, const T & src)
+deep_copy(T1 & dest, const T2 & src)
 {
   assert( dest.extent(0) == src.extent(0) );
   assert( dest.extent(1) == src.extent(1) );
@@ -78,11 +80,13 @@ deep_copy(T & dest, const T & src)
   }
 }
 
-template<typename T>
+
+template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T2>::value
   >
-deep_copy(T & dest, const T & src)
+deep_copy(T1 & dest, const T2 & src)
 {
   assert( dest.extent(0) == src.extent(0) );
   assert( dest.extent(1) == src.extent(1) );
@@ -93,11 +97,12 @@ deep_copy(T & dest, const T & src)
   }
 }
 
-template<typename T>
+template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
   >
-deep_copy(T & dest, const T & src)
+deep_copy(T1 & dest, const T2 & src)
 {
   assert( dest.extent(0) == src.extent(0) );
   assert( dest.extent(1) == src.extent(1) );

@@ -87,8 +87,8 @@ struct composeNewRaph
   using j_t = typename system_t::jacobian_type;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Newton-Raphson solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "Newton-Raphson solver: invalid state type");
 
   // check the solver_t passed is valid
   static_assert
@@ -145,8 +145,8 @@ struct composeGNQR<
    "The solver type passed to compose a QR-based GN solver is not valid");
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "invalid state type");
 
   using operators_t = ResidualJacobianOperators<r_t, j_t>;
   using corr_mixin  = QRCorrector<operators_t, state_t, solver_t>;
@@ -197,8 +197,8 @@ struct compose<
   using grad_t = state_t;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "invalid state type");
 
   static_assert
   (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
@@ -247,8 +247,8 @@ struct compose<
   using grad_t = state_t;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "invalid state type");
 
   static_assert
   (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
@@ -333,8 +333,8 @@ struct compose<
   using grad_t = state_t;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "invalid state type");
 
   static_assert
   (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
@@ -405,8 +405,8 @@ struct compose<
   using grad_t = state_t;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<state_t>::value,
-   "Nonlinear least-squares solver: the state type must be a pressio vector wrapper.");
+  (::pressio::solvers::constraints::implicit_state<state_t>::value,
+   "invalid state type");
 
   static_assert
   (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<

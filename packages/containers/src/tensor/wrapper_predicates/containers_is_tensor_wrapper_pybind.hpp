@@ -54,36 +54,24 @@ namespace pressio{ namespace containers{ namespace predicates {
 //*******************
 // rank-1
 //*******************
-// fstyle
-template <typename T, typename enable = void>
-struct is_fstyle_rank1_tensor_wrapper_pybind : std::false_type {};
-
-template <typename wrapped_t>
-struct is_fstyle_rank1_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<1, wrapped_t>,
-  ::pressio::mpl::enable_if_t<is_fstyle_array_pybind11<wrapped_t>::value>
-  > : std::true_type{};
-
-// cstyle
-template <typename T, typename enable = void>
-struct is_cstyle_rank1_tensor_wrapper_pybind : std::false_type {};
-
-template <typename wrapped_t>
-struct is_cstyle_rank1_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<1, wrapped_t>,
-  ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
-  > : std::true_type{};
-
-//is rank1 tensor
 template <typename T, typename enable = void>
 struct is_rank1_tensor_wrapper_pybind : std::false_type {};
 
-template <typename T>
+template <typename wrapped_t>
 struct is_rank1_tensor_wrapper_pybind<
-  T,
+  ::pressio::containers::Tensor<1, wrapped_t>,
   ::pressio::mpl::enable_if_t<
-    is_fstyle_rank1_tensor_wrapper_pybind<T>::value or
-    is_cstyle_rank1_tensor_wrapper_pybind<T>::value
+    is_fstyle_array_pybind11<wrapped_t>::value or
+    is_cstyle_array_pybind11<wrapped_t>::value
+    >
+  > : std::true_type{};
+
+template <typename wrapped_t>
+struct is_rank1_tensor_wrapper_pybind<
+  const ::pressio::containers::Tensor<1, wrapped_t>,
+  ::pressio::mpl::enable_if_t<
+    is_fstyle_array_pybind11<wrapped_t>::value or
+    is_cstyle_array_pybind11<wrapped_t>::value
     >
   > : std::true_type{};
 
@@ -97,8 +85,14 @@ struct is_fstyle_rank2_tensor_wrapper_pybind : std::false_type {};
 
 template <typename wrapped_t>
 struct is_fstyle_rank2_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<2, wrapped_t>,
-  ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
+  ::pressio::containers::Tensor<2, wrapped_t>,
+  ::pressio::mpl::enable_if_t<is_fstyle_array_pybind11<wrapped_t>::value>
+  > : std::true_type{};
+
+template <typename wrapped_t>
+struct is_fstyle_rank2_tensor_wrapper_pybind<
+  const ::pressio::containers::Tensor<2, wrapped_t>,
+  ::pressio::mpl::enable_if_t<is_fstyle_array_pybind11<wrapped_t>::value>
   > : std::true_type{};
 
 // cstyle
@@ -107,7 +101,13 @@ struct is_cstyle_rank2_tensor_wrapper_pybind : std::false_type {};
 
 template <typename wrapped_t>
 struct is_cstyle_rank2_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<2, wrapped_t>,
+  ::pressio::containers::Tensor<2, wrapped_t>,
+  ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
+  > : std::true_type{};
+
+template <typename wrapped_t>
+struct is_cstyle_rank2_tensor_wrapper_pybind<
+  const ::pressio::containers::Tensor<2, wrapped_t>,
   ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
   > : std::true_type{};
 
@@ -134,7 +134,13 @@ struct is_fstyle_rank3_tensor_wrapper_pybind : std::false_type {};
 
 template <typename wrapped_t>
 struct is_fstyle_rank3_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<3, wrapped_t>,
+  ::pressio::containers::Tensor<3, wrapped_t>,
+  ::pressio::mpl::enable_if_t<is_fstyle_array_pybind11<wrapped_t>::value>
+  > : std::true_type{};
+
+template <typename wrapped_t>
+struct is_fstyle_rank3_tensor_wrapper_pybind<
+  const ::pressio::containers::Tensor<3, wrapped_t>,
   ::pressio::mpl::enable_if_t<is_fstyle_array_pybind11<wrapped_t>::value>
   > : std::true_type{};
 
@@ -144,7 +150,13 @@ struct is_cstyle_rank3_tensor_wrapper_pybind : std::false_type {};
 
 template <typename wrapped_t>
 struct is_cstyle_rank3_tensor_wrapper_pybind<
-  ::pressio::containers::experimental::Tensor<3, wrapped_t>,
+  ::pressio::containers::Tensor<3, wrapped_t>,
+  ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
+  > : std::true_type{};
+
+template <typename wrapped_t>
+struct is_cstyle_rank3_tensor_wrapper_pybind<
+  const ::pressio::containers::Tensor<3, wrapped_t>,
   ::pressio::mpl::enable_if_t<is_cstyle_array_pybind11<wrapped_t>::value>
   > : std::true_type{};
 
@@ -171,7 +183,7 @@ template <typename T>
 struct is_fstyle_tensor_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    is_fstyle_rank1_tensor_wrapper_pybind<T>::value or
+    is_rank1_tensor_wrapper_pybind<T>::value or
     is_fstyle_rank2_tensor_wrapper_pybind<T>::value or
     is_fstyle_rank3_tensor_wrapper_pybind<T>::value
     >
@@ -187,7 +199,7 @@ template <typename T>
 struct is_cstyle_tensor_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    is_cstyle_rank1_tensor_wrapper_pybind<T>::value or
+    is_rank1_tensor_wrapper_pybind<T>::value or
     is_cstyle_rank2_tensor_wrapper_pybind<T>::value or
     is_cstyle_rank3_tensor_wrapper_pybind<T>::value
     >

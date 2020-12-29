@@ -57,12 +57,15 @@ struct implicit_state : std::false_type{};
 template<typename T>
 struct implicit_state<
   T,
-  typename std::enable_if<
+  mpl::enable_if_t<
     containers::predicates::is_vector_wrapper<T>::value
+    >
+  > : std::true_type{};
+
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    or containers::predicates::is_array_pybind11<T>::value
+template<typename T>
+struct implicit_state<::pressio::containers::Tensor<1, T>> : std::true_type{};
 #endif
-    >::type > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
 #endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_STATE_HPP_

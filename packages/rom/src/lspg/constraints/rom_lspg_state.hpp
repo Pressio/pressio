@@ -79,7 +79,7 @@ template<typename T>
 struct state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
    >
   > : std::true_type{};
 #endif

@@ -55,16 +55,15 @@ namespace pressio{ namespace ops{
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
   >
-elementwise_multiply
-(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::containers::details::traits<T>::scalar_t beta,
- T2 & y)
+elementwise_multiply(typename T::traits::scalar_t alpha,
+		     const T & x,
+		     const T1 & z,
+		     typename T::traits::scalar_t beta,
+		     T2 & y)
 {
   assert( y.extent(0)  == x.extent(0) );
   assert( x.extent(0) == z.extent(0) );

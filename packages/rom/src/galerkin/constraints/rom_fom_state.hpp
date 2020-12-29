@@ -63,5 +63,15 @@ struct fom_state<
    >
   > : std::true_type{};
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<typename T>
+struct fom_state<
+  T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+   >
+  > : std::true_type{};
+#endif
+
 }}}}
 #endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_

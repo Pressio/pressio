@@ -56,8 +56,8 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
   >
 update(T1 & v, scalar_t a,
        const T2 & v1, scalar_t b)
@@ -70,8 +70,8 @@ update(T1 & v, scalar_t a,
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
   >
 update(T1 & v, const T2 & v1, const scalar_t b)
 {
@@ -87,9 +87,9 @@ update(T1 & v, const T2 & v1, const scalar_t b)
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
   >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
@@ -108,9 +108,9 @@ update(T & v, scalar_t a,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
   >
 update(T & v,
        const T1 & v1, const scalar_t &b,
@@ -129,10 +129,10 @@ update(T & v,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T3>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T3>::value
   >
 update(T & v, const scalar_t &a,
        const T1 & v1, const scalar_t &b,
@@ -153,11 +153,11 @@ update(T & v, const scalar_t &a,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T3>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T4>::value
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T3>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T4>::value
   >
 update(T & v, const scalar_t &a,
        const T1 & v1, const scalar_t &b,

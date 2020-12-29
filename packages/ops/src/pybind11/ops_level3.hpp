@@ -52,9 +52,8 @@
 namespace pressio{ namespace ops{
 
 /*
- * C = beta * C + alpha*op(A)*op(B)
+ * C = beta * C + alpha*A^T*B
 */
-
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
@@ -96,116 +95,116 @@ product(::pressio::transpose modeA,
 		       *C.data(), transA, transB, ovw);
 }
 
-// C = beta * C + alpha*op(A)*op(B)
-// where A,B,C are tensors
-template <
-  typename A_type, typename B_type, typename scalar_type, typename C_type
-  >
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_array_pybind<A_type>::value and
-  containers::predicates::is_fstyle_array_pybind<B_type>::value and
-  containers::predicates::is_fstyle_array_pybind<C_type>::value
-  >
-product(::pressio::nontranspose,
-	::pressio::nontranspose,
-	const scalar_type alpha,
-	const ::pressio::containers::experimental::Tensor<3, A_type> & A,
-	const ::pressio::containers::experimental::Tensor<3, B_type> & B,
-	const scalar_type beta,
-	::pressio::containers::experimental::Tensor<3, C_type> & C)
-{
-  // using rank2_t = typename ::pressio::containers::details::traits<x_type>::wrapped_t;
-  // using tensor_t = ::pressio::containers::experimental::Tensor<3, A_type>;
-  // static_assert
-  //   (!containers::predicates::is_expression<tensor_t>::value and
-  //    !containers::predicates::is_expression<x_type>::value and
-  //    !containers::predicates::is_expression<y_type>::value,
-  //    "Cannot yet handle expressions for ops::product for pybind11");
+// // C = beta * C + alpha*op(A)*op(B)
+// // where A,B,C are tensors
+// template <
+//   typename A_type, typename B_type, typename scalar_type, typename C_type
+//   >
+// ::pressio::mpl::enable_if_t<
+//   containers::predicates::is_fstyle_array_pybind<A_type>::value and
+//   containers::predicates::is_fstyle_array_pybind<B_type>::value and
+//   containers::predicates::is_fstyle_array_pybind<C_type>::value
+//   >
+// product(::pressio::nontranspose,
+// 	::pressio::nontranspose,
+// 	const scalar_type alpha,
+// 	const ::pressio::containers::Tensor<3, A_type> & A,
+// 	const ::pressio::containers::Tensor<3, B_type> & B,
+// 	const scalar_type beta,
+// 	::pressio::containers::Tensor<3, C_type> & C)
+// {
+//   // using rank2_t = typename ::pressio::containers::details::traits<x_type>::wrapped_t;
+//   // using tensor_t = ::pressio::containers::experimental::Tensor<3, A_type>;
+//   // static_assert
+//   //   (!containers::predicates::is_expression<tensor_t>::value and
+//   //    !containers::predicates::is_expression<x_type>::value and
+//   //    !containers::predicates::is_expression<y_type>::value,
+//   //    "Cannot yet handle expressions for ops::product for pybind11");
 
-  // static_assert
-  //   (containers::predicates::are_scalar_compatible<tensor_t, x_type, y_type>::value,
-  //    "Types are not scalar compatible");
+//   // static_assert
+//   //   (containers::predicates::are_scalar_compatible<tensor_t, x_type, y_type>::value,
+//   //    "Types are not scalar compatible");
 
-  // pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
+//   // pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 
-  // const auto & nativeA = *A.data();
-  // const auto & nativeX = *x.data();
-  // auto & nativeY = *y.data();
+//   // const auto & nativeA = *A.data();
+//   // const auto & nativeX = *x.data();
+//   // auto & nativeY = *y.data();
 
-  // constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  // constexpr auto ione	    = ::pressio::utils::constants<int>::one();
-  // constexpr auto transA	    = izero;
-  // constexpr auto overWritey = ione;
-  // for (int k=0; k<A.extent(2); ++k)
-  // {
-  //   // slice A
-  //   const auto tp = pybind11::make_tuple(pybind11::slice(0, A.extent(0), 1),
-  // 					 pybind11::slice(0, A.extent(1), 1),
-  // 					 k);
-  //   pybind11::array Aslice = nativeA[tp];
+//   // constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
+//   // constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+//   // constexpr auto transA	    = izero;
+//   // constexpr auto overWritey = ione;
+//   // for (int k=0; k<A.extent(2); ++k)
+//   // {
+//   //   // slice A
+//   //   const auto tp = pybind11::make_tuple(pybind11::slice(0, A.extent(0), 1),
+//   // 					 pybind11::slice(0, A.extent(1), 1),
+//   // 					 k);
+//   //   pybind11::array Aslice = nativeA[tp];
 
-  //   // slice y, x
-  //   const auto tp2 = pybind11::make_tuple(pybind11::slice(0, y.extent(0), 1), k);
-  //   pybind11::array ySlice = nativeY[tp2];
-  //   pybind11::array xSlice = nativeX[tp2];
+//   //   // slice y, x
+//   //   const auto tp2 = pybind11::make_tuple(pybind11::slice(0, y.extent(0), 1), k);
+//   //   pybind11::array ySlice = nativeY[tp2];
+//   //   pybind11::array xSlice = nativeX[tp2];
 
-  //   pyblas_.attr("dgemv")(alpha, Aslice, xSlice, beta, ySlice,
-  // 			  izero, ione, izero, ione, transA, overWritey);
-  // }
-}
+//   //   pyblas_.attr("dgemv")(alpha, Aslice, xSlice, beta, ySlice,
+//   // 			  izero, ione, izero, ione, transA, overWritey);
+//   // }
+// }
 
-//-------------------------------
-// specialize for op(A) = A
-// where A is tensor wrapper
-// and B,C are native pybind arrays
-//-------------------------------
-template <class A_type, class B_type, class scalar_type, class C_type>
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_array_pybind<B_type>::value and
-  containers::predicates::is_fstyle_array_pybind<C_type>::value
-  >
-product(::pressio::nontranspose mode1,
-	::pressio::nontranspose mode2,
-	const scalar_type alpha,
-	const ::pressio::containers::experimental::Tensor<3, A_type> & A,
-	const B_type & B,
-	const scalar_type beta,
-	C_type & C)
-{
-  if (B.ndim()!=3 and C.ndim()!=3)
-    throw std::runtime_error("product supported for rank-3 tensors only");
+// //-------------------------------
+// // specialize for op(A) = A
+// // where A is tensor wrapper
+// // and B,C are native pybind arrays
+// //-------------------------------
+// template <class A_type, class B_type, class scalar_type, class C_type>
+// ::pressio::mpl::enable_if_t<
+//   containers::predicates::is_fstyle_array_pybind<B_type>::value and
+//   containers::predicates::is_fstyle_array_pybind<C_type>::value
+//   >
+// product(::pressio::nontranspose mode1,
+// 	::pressio::nontranspose mode2,
+// 	const scalar_type alpha,
+// 	const ::pressio::containers::Tensor<3, A_type> & A,
+// 	const B_type & B,
+// 	const scalar_type beta,
+// 	C_type & C)
+// {
+//   if (B.ndim()!=3 and C.ndim()!=3)
+//     throw std::runtime_error("product supported for rank-3 tensors only");
 
-  using B_w_t = ::pressio::containers::experimental::Tensor<3, B_type>;
-  using C_w_t = ::pressio::containers::experimental::Tensor<3, C_type>;
-  B_w_t BWrapped(B, ::pressio::view());
-  B_w_t CWrapped(C, ::pressio::view());
-  ::pressio::ops::product(mode1, mode2, alpha, A, BWrapped, beta, CWrapped);
-}
+//   using B_w_t = ::pressio::containers::Tensor<3, B_type>;
+//   using C_w_t = ::pressio::containers::Tensor<3, C_type>;
+//   B_w_t BWrapped(B, ::pressio::view());
+//   B_w_t CWrapped(C, ::pressio::view());
+//   ::pressio::ops::product(mode1, mode2, alpha, A, BWrapped, beta, CWrapped);
+// }
 
-template <class A_type, class B_type, class scalar_type, class C_type>
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_fstyle_array_pybind<B_type>::value and
-  containers::predicates::is_cstyle_array_pybind<C_type>::value
-  >
-product(::pressio::nontranspose,
-	::pressio::nontranspose,
-	const scalar_type alpha,
-	const ::pressio::containers::experimental::Tensor<3, A_type> & A,
-	const B_type & B,
-	const scalar_type beta,
-	C_type & C)
-{
-  throw std::runtime_error
-    ("To enable direct referencing of python numpy arrays, we currently \
-only support column-major layout:\n \
-one possible reason for this error message is that you \
-are trying to call from python: applyDecoder(..., fomState) \n \
-where fomState is a C-style numpy array for the fomState ");
-}
+// template <class A_type, class B_type, class scalar_type, class C_type>
+// ::pressio::mpl::enable_if_t<
+//   containers::predicates::is_fstyle_array_pybind<B_type>::value and
+//   containers::predicates::is_cstyle_array_pybind<C_type>::value
+//   >
+// product(::pressio::nontranspose,
+// 	::pressio::nontranspose,
+// 	const scalar_type alpha,
+// 	const ::pressio::containers::Tensor<3, A_type> & A,
+// 	const B_type & B,
+// 	const scalar_type beta,
+// 	C_type & C)
+// {
+//   throw std::runtime_error
+//     ("To enable direct referencing of python numpy arrays, we currently \
+// only support column-major layout:\n \
+// one possible reason for this error message is that you \
+// are trying to call from python: applyDecoder(..., fomState) \n \
+// where fomState is a C-style numpy array for the fomState ");
+// }
 
 /***********************************
  * special case A==B and op(A) = transpose
- * i.e.: C = beta * C + alpha*A^T*A
+ * C = beta * C + alpha*A^T*A
  **********************************/
 template <class A_type, class scalar_type, class C_type>
 ::pressio::mpl::enable_if_t<
@@ -275,7 +274,7 @@ product(::pressio::transpose modeA,
 //-------------------------------------------
 template <class T, class B_type, class scalar_type, class C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value and
   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<B_type>::value and
   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<C_type>::value
   >

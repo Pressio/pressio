@@ -58,8 +58,7 @@ template <
   >
 struct FomStateReconstructorPressioOps
 {
-  using native_fom_state_t =
-    typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t;
+  using native_fom_state_t = typename fom_state_type::traits::wrapped_t;
 
   FomStateReconstructorPressioOps() = delete;
   FomStateReconstructorPressioOps(const FomStateReconstructorPressioOps &) = default;
@@ -73,10 +72,53 @@ struct FomStateReconstructorPressioOps
     : fomNominalState_(fomNominalState),
       decoderObj_(decoder)
   {
-    PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}",
-		     fomNominalState.extent(0));
+    PRESSIOLOG_DEBUG
+      ("cnstr: fomNominalState extent = {}", fomNominalState.extent(0));
   }
 
+  FomStateReconstructorPressioOps(const native_fom_state_t & fomNominalState,
+				  const decoder_type & decoder)
+    : fomNominalState_(fomNominalState),
+      decoderObj_(decoder)
+  {
+    PRESSIOLOG_DEBUG
+      ("cnstr: fomNominalState extent = {}", fomNominalState_.extent(0));
+  }
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <typename rom_state_t>
+  void operator()(const rom_state_t & romState,
+		  fom_state_type    & fomState) const
+  {
+    // map current romState to FOM state
+    decoderObj_.get().applyMapping(romState, fomState);
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    // fomState = fomState + fomNominalState_;
+    ops::update(fomState, one, fomNominalState_, one);
+  }
+
+  // evaluate is added because I cannot figure out how to overload ()
+  /* evaluate is used to pass an array from python and construct
+     the fom result here which we pass back to pyhon.
+     So the rom state is a native python array.
+
+     Note that we template this on the rom_state_t but we pass the native array.
+     By doing this, the template allows us to know the rank of the rom state
+     since this should work for rank1 and rank2 rom states.
+     If we only passed the native array wihtout the template, we would not know
+     the propper rank of the fom state.
+  */
+  template<typename rom_state_t>
+  native_fom_state_t evaluate(const typename rom_state_t::traits::wrapped_t & romStateIn) const
+  {
+    rom_state_t romView(romStateIn, ::pressio::view());
+    fom_state_type fomState(fomNominalState_);
+    ::pressio::ops::set_zero(fomState);
+    (*this)(romView, fomState);
+    return *fomState.data();
+  }
+
+#else
   template <typename rom_state_t>
   void operator()(const rom_state_t & romState,
 		  fom_state_type    & fomState) const
@@ -96,43 +138,16 @@ struct FomStateReconstructorPressioOps
     this->operator()(romState,fomState);
     return fomState;
   }
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  // evaluate is added because I cannot figure out how to overload ()
-  // takes in a native vector, which is a numpy array so we need to view it
-  // with a wrapper so that we can use the pressio ops,
-  // and need to differentiate rank-1 and rank-2 types
-  template<typename rom_state_t>
-  typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-  evaluate(const typename ::pressio::containers::details::traits<rom_state_t>::wrapped_t & romStateIn) const
-  {
-    rom_state_t romView(romStateIn, ::pressio::view());
-    fom_state_type fomState(fomNominalState_.get());
-    ::pressio::ops::set_zero(fomState);
-    this->operator()(romView, fomState);
-    return *fomState.data();
-  }
-
-  // template<typename rom_state_t, typename _fom_state_type = fom_state_type>
-  // mpl::enable_if_t<
-  //   ::pressio::containers::predicates::is_array_pybind<rom_state_t>::value and
-  //   ::pressio::containers::details::traits<_fom_state_type>::rank==2,
-  //   typename ::pressio::containers::details::traits<_fom_state_type>::wrapped_t
-  //   >
-  // evaluate(const rom_state_t & romState) const
-  // {
-  //   ::pressio::containers::DenseMatrix<rom_state_t> romView(romState, ::pressio::view());
-  //   fom_state_type fomState(fomNominalState_.get());
-  //   ::pressio::ops::set_zero(fomState);
-  //   this->operator()(romView, fomState);
-  //   return *fomState.data();
-  // }
 #endif
 
 private:
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  const fom_state_type fomNominalState_	= {};
+#else
   std::reference_wrapper<const fom_state_type> fomNominalState_	= {};
-  std::reference_wrapper<const decoder_type>    decoderObj_	= {};
+#endif
 
+  std::reference_wrapper<const decoder_type> decoderObj_ = {};
 };
 
 }}}//end namespace pressio::rom::impl

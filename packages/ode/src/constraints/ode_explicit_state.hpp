@@ -64,9 +64,11 @@ struct explicit_state<T,
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename T>
-struct explicit_state<
-  pressio::containers::experimental::Tensor<3, T>, void
-  > : std::true_type{};
+struct explicit_state<::pressio::containers::Tensor<1, T>> : std::true_type{};
+template<typename T>
+struct explicit_state<::pressio::containers::Tensor<2, T>> : std::true_type{};
+template<typename T>
+struct explicit_state<::pressio::containers::Tensor<3, T>> : std::true_type{};
 #endif
 
 }}} // namespace pressio::ode::constraints

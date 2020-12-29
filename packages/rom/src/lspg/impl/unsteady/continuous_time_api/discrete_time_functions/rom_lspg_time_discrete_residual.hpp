@@ -64,7 +64,7 @@ template<
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and !::pressio::containers::predicates::is_vector_wrapper_pybind<state_type>::value
+  and !::pressio::containers::predicates::is_tensor_wrapper_pybind<state_type>::value
   and mpl::not_same< ud_ops, pybind11::object>::value
 #endif
   >
@@ -92,7 +92,7 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
@@ -117,7 +117,7 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
@@ -146,12 +146,12 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-   ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
-           residual_type & R,
-           const scalar_type & dt,
-           const hyp_ind_t & hypIndices)
+		       residual_type & R,
+		       const scalar_type & dt,
+		       const hyp_ind_t & hypIndices)
 {
   const auto & fomStateAt_n   = fomStatesMngr.currentFomStateCRef();
   const auto & fomStateAt_nm1 = fomStatesMngr.fomStatePrevStepCRef();
@@ -182,7 +182,7 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_pybind<residual_type>::value
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,

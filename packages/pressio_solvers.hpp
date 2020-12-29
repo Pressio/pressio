@@ -83,6 +83,7 @@
 //************************************
 #include "solvers/src/nonlinear/solvers_nonlinear_tags.hpp"
 #include "solvers/src/nonlinear/solvers_nonlinear_enums.hpp"
+#include "solvers/src/constraints/solvers_implicit_state.hpp"
 #include "solvers/src/constraints/solvers_ops_normal_equations_rj_api.hpp"
 #include "solvers/src/constraints/solvers_least_squares_weighting_operator.hpp"
 

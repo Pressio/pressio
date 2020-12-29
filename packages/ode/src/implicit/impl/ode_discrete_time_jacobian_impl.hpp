@@ -52,11 +52,11 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename jacobian_type, typename scalar_type>
+template <typename T, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_wrapper_pybind<jacobian_type>::value
+  ::pressio::containers::predicates::is_array_pybind<T>::value
 >
-discrete_time_jacobian(jacobian_type & jac,
+discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::Euler)
 {
@@ -67,11 +67,11 @@ discrete_time_jacobian(jacobian_type & jac,
   for (auto i=0; i<jac.extent(0); ++i) jac(i,i) += cn;
 }
 
-template <typename jacobian_type, typename scalar_type>
+template <typename T, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_wrapper_pybind<jacobian_type>::value
+  ::pressio::containers::predicates::is_array_pybind<T>::value
 >
-discrete_time_jacobian(jacobian_type & jac,
+discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::BDF2)
 {

@@ -74,14 +74,12 @@ void solveSteady(rom_problem_t & problem,
   solver.solve(problem.systemRef(), romState);
 }
 
-
 /************************************
 	      UNSTEADY
 ***********************************/
 /*--------------------------------------------
   solve for fixed number of steps
   --------------------------------------------*/
-
 template<typename rom_problem_type, typename ...Args>
 void solveNTimes
 (rom_problem_type & problem, Args && ...args)
@@ -95,37 +93,46 @@ void solveNTimes
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // with valid collector
 template<
-  typename rom_problem_type, typename state_t, typename timet,
-  typename collector_t, typename solver_t
+  class rom_problem_type,
+  class rom_state_t,
+  class timet,
+  class collector_t,
+  class solver_t
   >
 void solveNSequentialMinimizations(rom_problem_type & problem,
-				   state_t & stateInOut,
+				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
 				   timet dt,
 				   const ::pressio::ode::types::step_t numSteps,
 				   pybind11::object pyCollector,
 				   solver_t & solver)
 {
+  // here we want to view the state since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  rom_state_t stateView(stateInOut, ::pressio::view());
+
   collector_t collector(pyCollector);
   ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateInOut, t0, dt,
-       numSteps, collector, solver);
+      (problem.stepperRef(), stateView, t0, dt, numSteps, collector, solver);
 }
 
 // without collector
 template<
-  typename rom_problem_type, typename state_t, typename timet, typename solver_t
+  class rom_problem_type, class rom_state_t, class timet, class solver_t
   >
 void solveNSequentialMinimizations(rom_problem_type & problem,
-				   state_t & stateInOut,
+				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
 				   timet dt,
 				   const ::pressio::ode::types::step_t numSteps,
 				   solver_t & solver)
 {
+  // here we want to view the state since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  rom_state_t stateView(stateInOut, ::pressio::view());
+
   ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateInOut, t0, dt,
-       numSteps, solver);
+      (problem.stepperRef(), stateView, t0, dt, numSteps, solver);
 }
 #else
 

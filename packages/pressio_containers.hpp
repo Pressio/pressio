@@ -59,6 +59,11 @@ headers are included (and classes found) in the proper order.
 #include "pressio_utils.hpp"
 
 // generic
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+#include <pybind11/functional.h>
+#endif
 #include "containers/src/containers_fwd.hpp"
 #include "containers/src/containers_wrapped_types_enum.hpp"
 #include "containers/src/containers_shared_traits.hpp"
@@ -84,16 +89,13 @@ headers are included (and classes found) in the proper order.
 #include "containers/src/dense_matrix/pressio_containers_dense_matrix_include.hpp"
 #include "containers/src/sparse_matrix/pressio_containers_sparse_matrix_include.hpp"
 #include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
-//#include "containers/src/tensor/pressio_containers_tensor_include.hpp"
+#include "containers/src/tensor/pressio_containers_tensor_include.hpp"
 
 // expressions
 #include "containers/src/expressions/pressio_containers_expressions_include.hpp"
 
 // experimental
 #include "containers/src/experimental/containers_multivector_set.hpp"
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "containers/src/experimental/containers_tensor.hpp"
-#endif
 
 // others
 #include "containers/src/predicates/containers_is_wrapper.hpp"

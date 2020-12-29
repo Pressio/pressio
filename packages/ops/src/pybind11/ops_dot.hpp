@@ -58,7 +58,7 @@ template <typename T0, typename T1>
   >
 dot(const T0 & a,
     const T1 & b,
-    typename ::pressio::containers::details::traits<T0>::scalar_t & result)
+    typename T0::traits::scalar_t & result)
 {
   static_assert
     (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,

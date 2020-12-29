@@ -79,7 +79,6 @@ struct FomStateReconstructorSpecializer<
   using type = FomStateReconstructorPressioOps<scalar_type, fom_state_type, decoder_type>;
 };
 
-
 template <
   typename scalar_type,
   typename fom_state_type,

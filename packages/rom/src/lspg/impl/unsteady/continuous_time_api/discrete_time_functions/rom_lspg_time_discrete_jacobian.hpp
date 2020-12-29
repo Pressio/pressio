@@ -73,7 +73,7 @@ template <
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   , mpl::enable_if_t<
-     !::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value and
+     !::pressio::containers::predicates::is_tensor_wrapper_pybind<lspg_matrix_type>::value and
      mpl::not_same< ud_ops, pybind11::object>::value, int > = 0
 #endif
   >
@@ -89,7 +89,6 @@ void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-
 template <
   typename stepper_tag,
   typename lspg_matrix_type,
@@ -97,7 +96,7 @@ template <
   typename decoder_jac_type
   >
 mpl::enable_if_t<
- ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
+ ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type	& dt,
@@ -107,8 +106,8 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = jphi.extent(0);
   const auto nCols = jphi.extent(1);
-  for (std::size_t i=0; i<(std::size_t)nRows; ++i){
-    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+  for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+    for (std::size_t i=0; i<(std::size_t)nRows; ++i){
       jphi(i,j) = phi(i,j) + prefactor*jphi(i,j);
     }
   }
@@ -122,7 +121,7 @@ template <
   typename hyp_ind_t
   >
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_pybind<lspg_matrix_type>::value
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type	& dt,
@@ -137,15 +136,13 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = jphi.extent(0);
   const auto nCols = jphi.extent(1);
-  for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+  for (std::size_t j=0; j<(std::size_t)nCols; ++j)
   {
-    const auto rowInd = hypIndices(i);
-    //std::cout << i << " ";
-    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+    for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+    {
+      const auto rowInd = hypIndices(i);
       jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
-      //std::cout << jphi(i,j) << " ";
     }
-    //std::cout << "\n";
   }
 }
 #endif

@@ -81,17 +81,16 @@ template<typename T>
 struct select_galerkin_types<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_pybind11<T>::value
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
     >
   >
 {
   using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   // for now use residual_type = state_type
   using residual_type = T;
-  // the galerkin jacobian is a pybind11 dense matrix wrapper
-  // for now make it column-major
+  // the galerkin jacobian is a pybind11 tensor column-major
   using native_j_t = pybind11::array_t<scalar_t, pybind11::array::f_style>;
-  using jacobian_type = ::pressio::containers::DenseMatrix<native_j_t>;
+  using jacobian_type = ::pressio::containers::Tensor<2, native_j_t>;
 };
 #endif
 

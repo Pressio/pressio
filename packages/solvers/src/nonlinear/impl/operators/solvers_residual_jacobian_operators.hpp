@@ -54,7 +54,7 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 template <typename r_t, typename j_t>
 class ResidualJacobianOperators
 {
-  using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
+  using sc_t = typename r_t::traits::scalar_t;
 
   r_t r_;
 

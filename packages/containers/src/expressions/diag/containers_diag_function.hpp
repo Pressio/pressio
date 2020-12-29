@@ -53,7 +53,7 @@ namespace pressio{ namespace containers{
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value,
+  T::traits::rank==2,
   typename details::traits<T>::diag_const_ret_t
   >
 diag(const T & obj)
@@ -64,7 +64,7 @@ diag(const T & obj)
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value,
+  T::traits::rank==2,
   typename details::traits<T>::diag_ret_t
   >
 diag(T & obj)

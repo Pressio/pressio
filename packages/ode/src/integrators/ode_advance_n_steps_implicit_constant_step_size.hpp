@@ -67,9 +67,6 @@ template<
 mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  and !::pressio::containers::predicates::is_array_pybind<state_type>::value
-#endif
   >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
@@ -91,100 +88,6 @@ but the state type you are using is not admissible for implicit time-stepping.")
   advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateInOut,
 				   collector, stepper, solver);
 }
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-/*
-  Overload for pressio4py accepting:
-  stepper, state, startTime, dt, # steps, collector, solver
-*/
-template<
-  typename stepper_type,
-  typename native_python_state_type,
-  typename time_type,
-  typename collector_type,
-  typename solver_type
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::constraints::implicitly_steppable<
-    stepper_type,
-    ::pressio::containers::Vector<native_python_state_type>,
-    time_type, solver_type
-    >::value and
-  ::pressio::containers::predicates::is_array_pybind<native_python_state_type>::value
-  >
-advanceNSteps(stepper_type & stepper,
-	      native_python_state_type & odeStateInOut,
-	      const time_type	 startTime,
-	      const time_type	 dt,
-	      const types::step_t numSteps,
-	      collector_type & collector,
-	      solver_type & solver)
-{
-
-  static_assert(::pressio::ode::constraints::implicit_state<native_python_state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping.");
-
-  // here we want to view the odeStateInOut since we want to modify its data,
-  // which is numpy array owned by the user inside their Python code.
-  // upon exit of this function, the original odeStateInOut is
-  // changed since odeStateView only views it.
-  using vec_wrapper_t = ::pressio::containers::Vector<native_python_state_type>;
-  vec_wrapper_t odeStateView(odeStateInOut, ::pressio::view());
-
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateView,
-				   collector, stepper, solver);
-}
-
-/*
-  Overload for pressio4py accepting:
-  stepper, state, startTime, dt, # steps, solver
-*/
-template<
-  typename stepper_type,
-  typename native_python_state_type,
-  typename time_type,
-  typename solver_type
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::constraints::implicitly_steppable<
-    stepper_type,
-    ::pressio::containers::Vector<native_python_state_type>,
-    time_type, solver_type
-    >::value and
-  ::pressio::containers::predicates::is_array_pybind<native_python_state_type>::value
-  >
-advanceNSteps(stepper_type & stepper,
-	      native_python_state_type & odeStateInOut,
-	      const time_type	 startTime,
-	      const time_type	 dt,
-	      const types::step_t numSteps,
-	      solver_type & solver)
-{
-
-  static_assert(::pressio::ode::constraints::implicit_state<native_python_state_type>::value,
-		"You are trying to call advanceNSteps with an implicit stepper \
-but the state type you are using is not admissible for implicit time-stepping.");
-
-  // here we want to view the odeStateInOut since we want to modify its data,
-  // which is numpy array owned by the user inside their Python code.
-  // upon exit of this function, the original odeStateInOut is
-  // changed since odeStateView only views it.
-  using vec_wrapper_t = ::pressio::containers::Vector<native_python_state_type>;
-  vec_wrapper_t odeStateView(odeStateInOut, ::pressio::view());
-
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::DummyCollector<time_type, vec_wrapper_t>;
-  collector_t collector;
-  advancer_t::execute<step_policy>(numSteps, startTime, dt, odeStateView,
-				   collector, stepper, solver);
-}
-#endif
-
 
 /*
   stepper, state, startTime, dt, # steps, collector, solver

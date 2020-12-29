@@ -168,7 +168,11 @@ struct traits<
   using ud_ops_t = ud_ops_type;
 
   static_assert
-  (::pressio::containers::predicates::is_vector_wrapper<sample_to_stencil_type>::value,
+  (::pressio::containers::predicates::is_vector_wrapper<sample_to_stencil_type>::value
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+   or ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<sample_to_stencil_type>::value
+#endif
+   ,
    "The indices set for hyper-reduction must be in pressio vector wrapper.");
 
   using sample_to_stencil_t = sample_to_stencil_type;

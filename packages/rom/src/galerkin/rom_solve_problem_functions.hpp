@@ -67,7 +67,7 @@ namespace pressio{ namespace rom{ namespace galerkin{
 template<class rom_problem_type, class state_t, class time_t, class collector_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
-	    typename ::pressio::containers::details::traits<state_t>::wrapped_t & stateInOut,
+	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
 	    ::pressio::ode::types::step_t num_steps,
 	    pybind11::object pyCollector)
@@ -84,12 +84,15 @@ solveNSteps(rom_problem_type & problem,
 template<class rom_problem_type, class state_t, class time_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
-	    typename ::pressio::containers::details::traits<state_t>::wrapped_t & stateIn,
+	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
 	    ::pressio::ode::types::step_t num_steps)
 {
-  // ::pressio::ode::advanceNSteps
-  //   (problem.stepperRef(), stateIn, t0, dt, num_steps);
+  // here we want to view the state since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  state_t stateView(stateInOut, ::pressio::view());
+  ::pressio::ode::advanceNSteps
+    (problem.stepperRef(), stateView, t0, dt, num_steps);
 }
 
 // implicit with collector
@@ -99,28 +102,34 @@ template<
   >
 mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
-	    state_t & stateIn,
+	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
 	    ::pressio::ode::types::step_t num_steps,
 	    pybind11::object pyCollector,
 	    solver_t & solver)
 {
+  // here we want to view the state since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  state_t stateView(stateInOut, ::pressio::view());
   collector_t collector(pyCollector);
   ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateIn, t0, dt, num_steps, collector, solver);
+      (problem.stepperRef(), stateView, t0, dt, num_steps, collector, solver);
 }
 
 // implicit without collector
 template<class rom_problem_type, class state_t, class time_t, class solver_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
-	    state_t & stateIn,
+	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
 	    ::pressio::ode::types::step_t num_steps,
 	    solver_t & solver)
 {
+  // here we want to view the state since we want to modify its data,
+  // which is numpy array owned by the user inside their Python code.
+  state_t stateView(stateInOut, ::pressio::view());
   ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateIn, t0, dt, num_steps, solver);
+      (problem.stepperRef(), stateView, t0, dt, num_steps, solver);
 }
 
 #else

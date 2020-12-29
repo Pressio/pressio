@@ -90,7 +90,7 @@ fill(T & M,
 
 template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
   >
 fill(T & M,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
@@ -98,7 +98,7 @@ fill(T & M,
   for (std::size_t k=0; k<M.extent(2); ++k){
     for (std::size_t j=0; j<M.extent(1); ++j){
       for (std::size_t i=0; i<M.extent(0); ++i){
-	M(i,j) = value;
+	M(i,j,k) = value;
       }
     }
   }

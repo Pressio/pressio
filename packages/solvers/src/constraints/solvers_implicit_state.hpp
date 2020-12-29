@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_residual.hpp
+// solvers_implicit_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,25 +46,26 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
-#define ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#ifndef SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_
+#define SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio{ namespace solvers{ namespace constraints {
 
 template<typename T, typename enable = void>
-struct implicit_residual : std::false_type{};
+struct implicit_state : std::false_type{};
 
 template<typename T>
-struct implicit_residual<T,
- typename std::enable_if<
-   containers::predicates::is_vector_wrapper<T>::value
-   >::type
+struct implicit_state<
+  T,
+  mpl::enable_if_t<
+    containers::predicates::is_vector_wrapper<T>::value
+    >
   > : std::true_type{};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template<typename T>
-struct implicit_residual<::pressio::containers::Tensor<1, T>> : std::true_type{};
+struct implicit_state<::pressio::containers::Tensor<1, T>> : std::true_type{};
 #endif
 
-}}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+}}} // namespace pressio::solvers::constraints
+#endif  // SOLVERS_CONSTRAINTS_SOLVERS_IMPLICIT_STATE_HPP_

@@ -62,8 +62,8 @@ abs(T0 & y, const T1 & x)
   static_assert
     (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
      "vectors are not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
 
+  using sc_t = typename T0::traits::scalar_t;
   assert(y.extent(0) == x.extent(0));
   for (std::size_t i=0; i<y.extent(0); ++i){
     y(i)=std::abs(x(i));

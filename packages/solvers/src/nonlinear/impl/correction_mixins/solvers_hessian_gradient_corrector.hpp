@@ -56,8 +56,8 @@ class HessianGradientCorrector : public T
 {
 public:
   using state_t = state_type;
-  using sc_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  using state_wrapped_t = typename ::pressio::containers::details::traits<state_type>::wrapped_t;
+  using sc_t = typename state_type::traits::scalar_t;
+  using state_wrapped_t = typename state_type::traits::wrapped_t;
 
 private:
   state_type correction_ = {};

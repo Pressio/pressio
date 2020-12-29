@@ -54,7 +54,7 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 template <class r_t, class J_t>
 class IrwWeightingOperator
 {
-  using sc_t = typename ::pressio::containers::details::traits<r_t>::scalar_t;
+  using sc_t = typename r_t::traits::scalar_t;
   mutable r_t w_;
   sc_t p_ = ::pressio::utils::constants<sc_t>::one();
   sc_t exponent_ = {};

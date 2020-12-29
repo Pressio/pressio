@@ -53,7 +53,7 @@ namespace pressio{ namespace containers{
 
 template <typename T>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper<T>::value,
+  T::traits::rank==1,
   typename details::traits<T>::asdiagonalmatrix_const_ret_t
   >
 asDiagonalMatrix(const T & vecObj)
@@ -64,7 +64,7 @@ asDiagonalMatrix(const T & vecObj)
 
 template <typename T>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper<T>::value,
+  T::traits::rank==1,
   typename details::traits<T>::asdiagonalmatrix_ret_t
   >
 asDiagonalMatrix(T & vecObj)
