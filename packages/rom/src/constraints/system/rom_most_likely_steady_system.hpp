@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_steady_time_system.hpp
+// rom_most_likely_steady_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_TIME_SYSTEM_HPP_
-#define ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_TIME_SYSTEM_HPP_
+#ifndef ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_
+#define ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_
 
 namespace pressio{ namespace rom{ namespace constraints {
 
@@ -74,4 +74,4 @@ struct most_likely_steady_system<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::constraints
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_TIME_SYSTEM_HPP_
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_

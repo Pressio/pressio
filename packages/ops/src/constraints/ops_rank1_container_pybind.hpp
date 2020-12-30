@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_rank1_container_eigen_with_native_data_access.hpp
+// ops_rank1_container_pybind.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
-#define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
+#ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_
+#define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_
 
 namespace pressio{ namespace ops{ namespace constraints{
 
@@ -73,4 +73,4 @@ struct rank1_container_pybind<
   > : std::true_type{};
 
 }}}
-#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_WITH_NATIVE_DATA_ACCESS_HPP_
+#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_

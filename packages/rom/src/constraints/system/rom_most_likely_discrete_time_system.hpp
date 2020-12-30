@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_continuous_time_system.hpp
+// rom_most_likely_discrete_time_system.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -68,4 +68,4 @@ struct most_likely_discrete_time_system<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::constraints
-#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_HPP_
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_DISCRETE_TIME_SYSTEM_HPP_

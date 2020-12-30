@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_rank2_update.hpp
+// ops_matching_extents_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_MATCHING_EXTENTS_PYBIND_IMPL_HPP_
-#define OPS_MATCHING_EXTENTS_PYBIND_IMPL_HPP_
+#ifndef OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
+#define OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -89,4 +89,4 @@ bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d)
 }//end impl namespace
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
+#endif  // OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
