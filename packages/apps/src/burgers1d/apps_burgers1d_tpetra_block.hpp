@@ -80,7 +80,6 @@ public:
   using scalar_type	= double;
   using state_type	= nativeBlockVec;
   using velocity_type	= state_type;
-  using dense_matrix_type	= Tpetra::BlockMultiVector<>;
   using jacobian_type = Tpetra::BlockCrsMatrix<>;
   using crs_graph_type = Tpetra::CrsGraph<>;
 
@@ -146,9 +145,9 @@ public:
 
   // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
-         const dense_matrix_type & B,
+         const Tpetra::BlockMultiVector<> & B,
          scalar_type t,
-         dense_matrix_type & A) const
+         Tpetra::BlockMultiVector<> & A) const
   {
     computeJacobianUpdate(y, *Jac_, t);
     const auto B_vv = B.getMultiVectorView();
@@ -164,9 +163,10 @@ public:
   }
 
   // computes: A = Jac B where B is dense
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  Tpetra::BlockMultiVector<>
+  createApplyJacobianResult(const Tpetra::BlockMultiVector<> & B) const
   {
-    dense_matrix_type A( *dataMap_, blockSize, B.getNumVectors() );
+    Tpetra::BlockMultiVector<> A( *dataMap_, blockSize, B.getNumVectors() );
     return A;
   }
 

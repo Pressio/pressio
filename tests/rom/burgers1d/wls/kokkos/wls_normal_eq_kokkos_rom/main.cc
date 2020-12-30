@@ -9,12 +9,15 @@ int main(int argc, char *argv[])
   using ode_tag_euler      = ::pressio::ode::implicitmethods::Euler;
   using ode_tag_BDF2       = ::pressio::ode::implicitmethods::BDF2;
   using lowTri		= pressio::matrixLowerTriangular;
+  using phi_native_mat_t = typename fom_t::mv_d;
 
   Kokkos::initialize (argc, argv);
   {
     std::string checkStr = "PASSED";
-    const std::string checkStr1 = pressio::testing::wls::doRun< fom_t, rom_data_t, lowTri, ode_tag_euler>();
-    const std::string checkStr2 = pressio::testing::wls::doRun< fom_t, rom_data_t, lowTri, ode_tag_BDF2>();
+    const std::string checkStr1 = pressio::testing::wls::doRun
+      < fom_t, rom_data_t, lowTri, phi_native_mat_t, ode_tag_euler>();
+    const std::string checkStr2 = pressio::testing::wls::doRun
+      < fom_t, rom_data_t, lowTri, phi_native_mat_t, ode_tag_BDF2>();
 
    if (checkStr1 == "FAILED"){
       std::cout << "WLS failed on implicit Euler" << std::endl;

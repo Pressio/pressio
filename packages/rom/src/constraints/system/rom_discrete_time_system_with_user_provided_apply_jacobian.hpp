@@ -51,78 +51,74 @@
 
 namespace pressio{ namespace rom{ namespace constraints {
 
-template<typename T, typename enable = void>
+template<typename T, typename apply_jac_operand_t, typename enable = void>
 struct discrete_time_system_with_user_provided_apply_jacobian : std::false_type{};
 
-template<typename T>
+template<typename T, typename apply_jac_operand_t>
 struct discrete_time_system_with_user_provided_apply_jacobian<
-  T,
+  T, apply_jac_operand_t,
   mpl::enable_if_t<
+    !::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value and
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and
     ::pressio::ode::predicates::has_state_typedef<T>::value and
     ::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value and
-    ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value
-    and
-    ///////////////////////////
-    // time-discrete residual
-    ::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
-        T, typename T::discrete_time_residual_type>::value
-    and
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-        T, 2, ::pressio::ode::types::step_t,
-        typename T::scalar_type,
-        typename T::state_type,
-        typename T::discrete_time_residual_type>::value
-    and
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-        T, 3, ::pressio::ode::types::step_t,
-        typename T::scalar_type,
-        typename T::state_type,
-        typename T::discrete_time_residual_type>::value
-    and
     //
-    ///////////////////////////
-    // apply time-discrete jacobian
+    ::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
+      T, typename T::discrete_time_residual_type
+      >::value and
+    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
+      T, 2,
+      ::pressio::ode::types::step_t,
+      typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type
+      >::value and
+    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
+      T, 3, ::pressio::ode::types::step_t, typename T::scalar_type,
+      typename T::state_type, typename T::discrete_time_residual_type
+      >::value and
+    //
     ::pressio::rom::predicates::has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
-        T,  typename T::dense_matrix_type, typename T::dense_matrix_type>::value
-    and
+      T, apply_jac_operand_t
+      >::value and
     ::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-        T, 2,
-        ::pressio::ode::types::step_t,
-        typename T::scalar_type,
-        typename T::state_type,
-        typename T::dense_matrix_type,
-        typename T::dense_matrix_type>::value
-    and
-    ::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-        T, 3,
-        ::pressio::ode::types::step_t,
-        typename T::scalar_type,
-        typename T::state_type,
-        typename T::dense_matrix_type,
-        typename T::dense_matrix_type>::value
+     T, 2, ::pressio::ode::types::step_t, typename T::scalar_type,
+     typename T::state_type, apply_jac_operand_t, apply_jac_operand_t
+     >::value and
+  ::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
+    T, 3, ::pressio::ode::types::step_t,
+    typename T::scalar_type, typename T::state_type, apply_jac_operand_t, apply_jac_operand_t
+    >::value
+  >
+  > : std::true_type{};
+
+
+template<typename T, typename apply_jac_operand_t>
+struct discrete_time_system_with_user_provided_apply_jacobian<
+  T, apply_jac_operand_t,
+  mpl::enable_if_t<
+    ::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value and
+    discrete_time_system_with_user_provided_apply_jacobian<
+      T, typename apply_jac_operand_t::traits::wrapped_t
+      >::value
     >
   > : std::true_type{};
 
 } // namespace pressio::rom::constraints
 
-
-template <typename T>
-struct find_discrepancies_with_discrete_time_system_api
+template <typename T, typename apply_jac_operand_t>
+struct why_not_discrete_time_system_with_user_provided_apply_jacobian
 {
 
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
      "Your discrete-time adapter class is without (or has a wrong) scalar typedef");
+
   static_assert
     (::pressio::ode::predicates::has_state_typedef<T>::value,
      "Your discrete-time adapter class is without (or has a wrong) state typedef");
+
   static_assert
     (::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value,
      "Your discrete-time adapter class is without (or has a wrong) discrete time residual typedef");
-  static_assert
-    (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
-     "Your discrete-time adapter class is without (or has a wrong) dense matrix typedef");
 
   static_assert
     (::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
@@ -131,7 +127,7 @@ struct find_discrepancies_with_discrete_time_system_api
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
-     T,  typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
+     T,  apply_jac_operand_t, apply_jac_operand_t>::value,
      "Your discrete-time adapter class is without (or has a wrong) create apply discrete time jacobian result method");
 
   static_assert
@@ -149,13 +145,17 @@ struct find_discrepancies_with_discrete_time_system_api
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 2, ::pressio::ode::types::step_t, typename T::scalar_type,
-     typename T::state_type,  typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
+     typename T::state_type,  typename apply_jac_operand_t::traits::wrapped_t,
+     typename apply_jac_operand_t::traits::wrapped_t
+     >::value,
      "Your discrete-time adapter class is without (or has a wrong) apply discrete time jacobian method accepting 2 states");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 3, ::pressio::ode::types::step_t, typename T::scalar_type,
-     typename T::state_type, typename T::dense_matrix_type, typename T::dense_matrix_type>::value,
+     typename T::state_type, typename apply_jac_operand_t::traits::wrapped_t,
+     typename apply_jac_operand_t::traits::wrapped_t
+     >::value,
      "Your discrete-time adapter class is without (or has a wrong) apply discrete time jacobian result method accepting 3 states");
 
   static constexpr bool value = true;

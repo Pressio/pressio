@@ -7,10 +7,9 @@ using fom_t		= pressio::apps::Burgers1dEigen;
 using scalar_t		= typename fom_t::scalar_type;
 using native_state_t	= typename fom_t::state_type;
 using native_velo_t	= typename fom_t::velocity_type;
-using native_dmat_t	= typename fom_t::dense_matrix_type;
 using fom_state_t	= pressio::containers::Vector<native_state_t>;
 using fom_velo_t	= pressio::containers::Vector<native_velo_t>;
-using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
+using decoder_jac_t	= pressio::containers::MultiVector<Eigen::MatrixXd>;
 using decoder_t		= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
 using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
@@ -20,9 +19,9 @@ struct MyCollocator
   std::vector<int> rows_;
   MyCollocator(std::initializer_list<int> l) : rows_(l){}
 
-  native_dmat_t sampleRows(const native_dmat_t & operand)
+  Eigen::MatrixXd sampleRows(const Eigen::MatrixXd & operand)
   {
-    native_dmat_t result(rows_.size(), operand.cols());
+    Eigen::MatrixXd result(rows_.size(), operand.cols());
     for (std::size_t i=0; i< (std::size_t)rows_.size(); ++i){
       for (std::size_t j=0; j<(std::size_t)result.cols(); ++j){
 	result(i,j) = operand(rows_[i], j);

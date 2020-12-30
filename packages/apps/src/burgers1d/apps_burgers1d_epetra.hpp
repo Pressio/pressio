@@ -69,7 +69,6 @@ public:
   using scalar_type	= double;
   using state_type	= Epetra_Vector;
   using velocity_type	= state_type;
-  using dense_matrix_type = Epetra_MultiVector;
   using jacobian_type	= Epetra_CrsMatrix;
 
 public:
@@ -97,8 +96,8 @@ public:
   }
 
   // computes: A = Jac B where B is a multivector
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
-    dense_matrix_type C( Jac_->RangeMap(), B.NumVectors() );
+  Epetra_MultiVector createApplyJacobianResult(const Epetra_MultiVector & B) const{
+    Epetra_MultiVector C( Jac_->RangeMap(), B.NumVectors() );
     return C;
   }
 
@@ -139,9 +138,9 @@ public:
 
   // computes: A = Jac B where B is a multivector
   void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
+		     const Epetra_MultiVector & B,
 		     scalar_type t,
-		     dense_matrix_type & A) const{
+		     Epetra_MultiVector & A) const{
     assert( Jac_->NumGlobalCols() == B.GlobalLength() );
     assert( A.GlobalLength() == Jac_->NumGlobalRows() );
     assert( A.NumVectors() == B.NumVectors() );

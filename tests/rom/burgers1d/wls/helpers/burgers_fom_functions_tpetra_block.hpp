@@ -17,7 +17,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj,
 						      Comm, appObj.getDataMap());
 
   // construct a tpetra_block mv from a tpetra mv
-  using tpb_mv = typename pressio::apps::Burgers1dTpetraBlock::dense_matrix_type;
+  using tpb_mv = Tpetra::BlockMultiVector<>;
   tpb_mv tpb_phi(*tp_phi.data(), *appObj.getDataMap(), 1 /*1 is block size*/ );
   typename decoder_d_t::jacobian_type phi(tpb_phi);
 
@@ -36,7 +36,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dTpetraBlock & appObj,
 						      fomSize, Comm, appObj.getDataMap());
 
   // construct a tpetra_block mv from a tpetra mv
-  using tpb_mv = typename pressio::apps::Burgers1dTpetraBlock::dense_matrix_type;
+  using tpb_mv = Tpetra::BlockMultiVector<>; 
   tpb_mv tpb_phi(*tp_phi.data(), *appObj.getDataMap(), 1  /*1 is block size*/);
   typename decoder_d_t::jacobian_type phi(tpb_phi);
 

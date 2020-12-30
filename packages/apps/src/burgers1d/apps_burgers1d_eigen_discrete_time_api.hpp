@@ -66,7 +66,6 @@ public:
   using velocity_type	= eigVec;
   using discrete_time_residual_type	= eigVec;
   using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
-  using dense_matrix_type = Eigen::MatrixXd;
 
   typedef Eigen::Triplet<scalar_type> Tr;
 
@@ -93,10 +92,10 @@ public:
     return R;
   }
 
-  dense_matrix_type createApplyDiscreteTimeJacobianResult(const dense_matrix_type & B) const
+  Eigen::MatrixXd createApplyDiscreteTimeJacobianResult(const Eigen::MatrixXd & B) const
   {
     std::cout << "calling createApplyTimeDiscreteJacobianObject" << std::endl;
-    dense_matrix_type A(Ncell_, B.cols());
+    Eigen::MatrixXd A(Ncell_, B.cols());
     A.setConstant(0);
     return A;
   }
@@ -108,7 +107,7 @@ public:
   			    discrete_time_residual_type & R,
   			    Args && ... states) const
   {
-    this->discreteTimeResidualImpl(step, time, dt, 
+    this->discreteTimeResidualImpl(step, time, dt,
       R,std::forward<Args>(states)... );
   }
 
@@ -116,11 +115,11 @@ public:
   void applyDiscreteTimeJacobian(const step_t & step,
   				 const scalar_type & time,
   				 const scalar_type & dt,
-  				 const dense_matrix_type & B,
-  				 dense_matrix_type & A,
+  				 const Eigen::MatrixXd & B,
+  				 Eigen::MatrixXd & A,
   				 Args && ... states) const
   {
-    this->applyDiscreteTimeJacobianImpl(step, time, dt, 
+    this->applyDiscreteTimeJacobianImpl(step, time, dt,
       B, A, std::forward<Args>(states)...);
   }
 
@@ -158,8 +157,8 @@ private:
   void applyDiscreteTimeJacobianImpl(const step_t & step,
 				     const scalar_type & time,
 				     const scalar_type & dt,
-				     const dense_matrix_type & B,
-				     dense_matrix_type & A,
+				     const Eigen::MatrixXd & B,
+				     Eigen::MatrixXd & A,
 				     const state_t & yn,
 				     const state_t & ynm1) const
   {
@@ -181,8 +180,8 @@ private:
   void applyDiscreteTimeJacobianImpl(const step_t & step,
 				     const scalar_type & time,
 				     const scalar_type & dt,
-				     const dense_matrix_type & B,
-				     dense_matrix_type & A,
+				     const Eigen::MatrixXd & B,
+				     Eigen::MatrixXd & A,
 				     const state_t & yn,
 				     const state_t & ynm1,
 				     const state_t & ynm2) const

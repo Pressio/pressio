@@ -168,7 +168,7 @@ product(::pressio::nontranspose,
 
   const auto & BE = *B.data();
   auto & CE = *C.data();
-  for (auto i=0; i<A.size(); ++i)
+  for (std::size_t i=0; i<A.size(); ++i)
   {
     const auto & currMatrixEigen = *(A(i).data());
     assert( C.extent(0) == currMatrixEigen.rows() );

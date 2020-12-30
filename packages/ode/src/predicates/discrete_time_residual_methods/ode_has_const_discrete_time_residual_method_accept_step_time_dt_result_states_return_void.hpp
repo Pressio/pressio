@@ -63,15 +63,17 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
   T, 1, step_t, sc_t, state_t, result_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
-      decltype(
-	       std::declval<T const>().discreteTimeResidual(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>()
-							    )
-	       )
+      decltype
+      (
+       std::declval<T const>().discreteTimeResidual
+       (
+	std::declval<step_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<result_t &>(),
+	std::declval<state_t const&>()
+	)
+       )
       >::value
     >
   > : std::true_type{};
@@ -82,16 +84,18 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
   T, 2, step_t, sc_t, state_t, result_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
-      decltype(
-	       std::declval<T const>().discreteTimeResidual(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>()
-							    )
-	       )
+      decltype
+      (
+       std::declval<T const>().discreteTimeResidual
+       (
+	std::declval<step_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<result_t &>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>()
+	)
+       )
       >::value
     >
   > : std::true_type{};
@@ -102,20 +106,22 @@ struct has_const_discrete_time_residual_method_accept_step_time_dt_result_n_stat
   T, 3, step_t, sc_t, state_t, result_t,
   ::pressio::mpl::enable_if_t<
     std::is_void<
-      decltype(
-	       std::declval<T const>().discreteTimeResidual(
-							    std::declval<step_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<sc_t const &>(),
-							    std::declval<result_t &>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>(),
-							    std::declval<state_t const&>()
-							    )
-	       )
+      decltype
+      (
+       std::declval<T const>().discreteTimeResidual
+       (
+	std::declval<step_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<sc_t const &>(),
+	std::declval<result_t &>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>(),
+	std::declval<state_t const&>()
+	)
+       )
       >::value
     >
   > : std::true_type{};
 
-}}} 
+}}}
 #endif  // ODE_PREDICATES_DISCRETE_TIME_RESIDUAL_METHODS_ODE_HAS_CONST_DISCRETE_TIME_RESIDUAL_METHOD_ACCEPT_STEP_TIME_DT_RESULT_STATES_RETURN_VOID_HPP_

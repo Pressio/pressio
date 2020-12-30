@@ -30,7 +30,6 @@ using fom_t		= pressio::apps::Burgers1dEpetra;
 using scalar_t		= typename fom_t::scalar_type;
 using native_state_t	= typename fom_t::state_type;
 using native_velo_t	= typename fom_t::velocity_type;
-using native_dmat_t	= typename fom_t::dense_matrix_type;
 using fom_state_t	= pressio::containers::Vector<native_state_t>;
 using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
 using decoder_t		= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
@@ -41,9 +40,9 @@ struct MyCollocator
   const Epetra_Import & importer_;
   MyCollocator(const Epetra_Import & importer) : importer_(importer){}
 
-  native_dmat_t sampleRows(const native_dmat_t & operand)
+  Epetra_MultiVector sampleRows(const Epetra_MultiVector & operand)
   {
-    native_dmat_t result(importer_.TargetMap(), operand.NumVectors());
+    Epetra_MultiVector result(importer_.TargetMap(), operand.NumVectors());
     result.Import(operand, importer_, Epetra_CombineMode::Insert);
     return result;
   }

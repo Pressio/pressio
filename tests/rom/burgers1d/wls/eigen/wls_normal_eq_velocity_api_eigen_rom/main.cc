@@ -12,10 +12,14 @@ int main(int argc, char *argv[])
   using ode_tag_BDF2    = ::pressio::ode::implicitmethods::BDF2;
   using lowTri		= pressio::matrixLowerTriangular;
 
-  const std::string checkStr1 = pressio::testing::wls::doRun< fom_t,rom_data_t, lowTri, ode_tag_euler>();
-  const std::string checkStr2 = pressio::testing::wls::doRun< fom_t,rom_data_t, lowTri, ode_tag_BDF2>();
-  const std::string checkStr3 = pressio::testing::wls::doRun< fom_residual_api_t,rom_data_t, lowTri, ode_tag_euler>();
-  const std::string checkStr4 = pressio::testing::wls::doRun< fom_residual_api_t,rom_data_t, lowTri, ode_tag_BDF2>();
+  const std::string checkStr1 = pressio::testing::wls::doRun
+    <fom_t,rom_data_t, lowTri, Eigen::MatrixXd, ode_tag_euler>();
+  const std::string checkStr2 = pressio::testing::wls::doRun
+    <fom_t,rom_data_t, lowTri, Eigen::MatrixXd, ode_tag_BDF2>();
+  const std::string checkStr3 = pressio::testing::wls::doRun
+    <fom_residual_api_t,rom_data_t, lowTri, Eigen::MatrixXd, ode_tag_euler>();
+  const std::string checkStr4 = pressio::testing::wls::doRun
+    <fom_residual_api_t,rom_data_t, lowTri, Eigen::MatrixXd, ode_tag_BDF2>();
 
   if (checkStr1 == "FAILED"){
      std::cout << "WLS failed on implicit Euler" << std::endl;

@@ -51,32 +51,33 @@
 
 namespace pressio{ namespace rom{ namespace constraints {
 
-template<typename T, typename enable = void>
+template<typename T, typename apply_jac_operand_t, typename enable = void>
 struct continuous_time_system_without_user_provided_apply_jacobian : std::false_type{};
 
-template<typename T>
+template<typename T, typename apply_jac_operand_t>
 struct continuous_time_system_without_user_provided_apply_jacobian<
-  T,
+  T, apply_jac_operand_t,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
-    ::pressio::ode::predicates::has_state_typedef<T>::value and
-    ::pressio::ode::predicates::has_velocity_typedef<T>::value and
-    ::pressio::rom::predicates::has_dense_matrix_typedef<T>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value
+    and ::pressio::ode::predicates::has_state_typedef<T>::value
+    and ::pressio::ode::predicates::has_velocity_typedef<T>::value
+    //
     /// velocity
-    ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
-      T, typename T::velocity_type>::value and
-    ::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
+    and ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
+      T, typename T::velocity_type>::value
+    and ::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
       T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
+      >::value
+    //
+    /// apply jacobian non existing
+    and !::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+      T, apply_jac_operand_t
+      >::value
+    and !::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_time_result_return_void<
+      T, typename T::state_type, apply_jac_operand_t, typename T::scalar_type, apply_jac_operand_t
       >::value
     >
   > : std::true_type{};
-
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<>
-struct continuous_time_system_without_user_provided_apply_jacobian<pybind11::object, void> : std::true_type{};
-#endif
-
 } // namespace pressio::rom::constraints
 
 template <typename T>
@@ -91,9 +92,6 @@ struct find_discrepancies_with_continuous_time_system_without_user_provided_appl
   static_assert
     (::pressio::ode::predicates::has_velocity_typedef<T>::value,
      "Your continuous-time adapter class is without (or has a wrong) velocity typedef");
-  static_assert
-    (::pressio::rom::predicates::has_dense_matrix_typedef<T>::value,
-     "Your continuous-time adapter class is without (or has a wrong) dense matrix typedef");
 
   static_assert
     (::pressio::ode::predicates::has_const_create_velocity_method_return_result<

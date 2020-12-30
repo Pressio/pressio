@@ -80,7 +80,6 @@ public:
   using state_type	= nativeVec;
   using velocity_type	= state_type;
   using jacobian_type	= Tpetra::CrsMatrix<>;
-  using dense_matrix_type = Tpetra::MultiVector<>;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
@@ -108,9 +107,9 @@ public:
   }
 
   // computes: A = Jac B where B is dense
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & B) const
   {
-    dense_matrix_type C( dataMap_, B.getNumVectors() );
+    Tpetra::MultiVector<> C( dataMap_, B.getNumVectors() );
     return C;
   }
 
@@ -155,9 +154,9 @@ public:
 
   // computes: A = Jac B where B is dense
   void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
+		     const Tpetra::MultiVector<> & B,
 		     scalar_type t,
-		     dense_matrix_type & A) const
+		     Tpetra::MultiVector<> & A) const
   {
     computeJacobianReplace(y, *Jac_, t);
     Jac_->apply(B, A);

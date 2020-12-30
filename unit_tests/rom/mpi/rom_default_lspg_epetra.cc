@@ -15,7 +15,8 @@ TEST(lspg, epetra_types_euler)
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
-  static_assert(::pressio::rom::constraints::continuous_time_system<fom_t>::value , "");
+  static_assert(::pressio::rom::constraints::continuous_time_system_with_at_least_velocity
+      <fom_t>::value , "");
 
   using ode_name_t = pressio::ode::implicitmethods::Euler;
   using lspg_problem = pressio::rom::lspg::impl::composeDefaultProblem<
@@ -37,7 +38,8 @@ TEST(lspg, epetra_types_bdf2)
   using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
-  static_assert(::pressio::rom::constraints::continuous_time_system<fom_t>::value , "");
+  static_assert(::pressio::rom::constraints::continuous_time_system_with_at_least_velocity
+      <fom_t>::value , "");
 
   using ode_name_t = pressio::ode::implicitmethods::BDF2;
   using lspg_problem = pressio::rom::lspg::impl::composeDefaultProblem<

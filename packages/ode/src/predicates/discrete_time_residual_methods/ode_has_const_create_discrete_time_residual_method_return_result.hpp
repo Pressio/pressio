@@ -55,7 +55,6 @@ template <typename T, typename result_t, typename = void>
 struct has_const_create_discrete_time_residual_method_return_result
   : std::false_type{};
 
-
 template <typename T, typename result_t>
 struct has_const_create_discrete_time_residual_method_return_result<
   T, result_t,
@@ -63,9 +62,10 @@ struct has_const_create_discrete_time_residual_method_return_result<
     !std::is_void<result_t>::value and
     mpl::is_same<
       result_t,
-      decltype(
-	       std::declval<T const>().createDiscreteTimeResidual()
-	       )
+      decltype
+      (
+       std::declval<T const>().createDiscreteTimeResidual()
+       )
       >::value
     >
   > : std::true_type{};

@@ -198,11 +198,6 @@ add_serial_test_to_check_build_failure(
   adapter_error_default_lspg_discrete_time_api_case4
   ${dt_src} ${MISS_APP_DT_J_C} ${LSPG_ust} NO_APP_J_C DEFAULT DO_LSPG)
 
-add_serial_test_to_check_build_failure(
-  adapter_error_default_lspg_discrete_time_api_case5
-  ${dt_src} "is without (or has a wrong) dense matrix typedef" ${LSPG_ust} NO_MAT_ALIAS DEFAULT DO_LSPG)
-
-
 # ##################################
 # ### PRECOND LSPG CONT TIME API ###
 # ##################################

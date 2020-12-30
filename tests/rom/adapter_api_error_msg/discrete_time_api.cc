@@ -7,12 +7,7 @@ struct ValidAppDiscreteTimeApi{
   using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using discrete_time_residual_type = state_type;
-
-#if defined NO_MAT_ALIAS
-  using dense_matrix_t = Eigen::MatrixXd;
-#else
   using dense_matrix_type = Eigen::MatrixXd;
-#endif
 
 public:
 #if defined NO_RES

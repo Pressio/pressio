@@ -77,11 +77,15 @@
 #include "./constraints/rom_custom_ops_for_linear_decoder.hpp"
 #include "./constraints/rom_custom_ops_for_fom_state_reconstructor.hpp"
 
-#include "./constraints/system/rom_steady_system.hpp"
+#include "./constraints/system/rom_steady_system_with_user_provided_apply_jacobian.hpp"
 #include "./constraints/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
 #include "./constraints/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
 #include "./constraints/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
+#include "./constraints/system/rom_continuous_time_system_with_at_least_velocity.hpp"
 #include "./constraints/system/rom_continuous_time_system.hpp"
+#include "./constraints/system/rom_most_likely_continuous_time_system.hpp"
+#include "./constraints/system/rom_most_likely_discrete_time_system.hpp"
+#include "./constraints/system/rom_most_likely_steady_system.hpp"
 
 //----------------------------------------------
 // decoder classes (depend on constraints)

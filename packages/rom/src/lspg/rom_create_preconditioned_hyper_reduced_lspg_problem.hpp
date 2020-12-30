@@ -60,7 +60,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::steady_system<fom_system_type>::value,
+  ::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
   impl::composePreconditionedHyperReducedProblem_t<
     fom_system_type, decoder_type, rom_state_type, Args...
     >
@@ -93,7 +93,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::continuous_time_system<fom_system_type>::value,
+  ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
   impl::composePreconditionedHyperReducedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...
     >

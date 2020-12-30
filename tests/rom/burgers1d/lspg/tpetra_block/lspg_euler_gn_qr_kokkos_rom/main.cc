@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
   using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
 
   // get the native dense matrix
-  using native_dmat_t   = typename fom_t::dense_matrix_type;
+  using native_dmat_t   = Tpetra::BlockMultiVector<>;
 
   // get the native state type
   using native_state_t  = typename fom_t::state_type;

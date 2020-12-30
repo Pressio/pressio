@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
   // -------------------------------------------------------
   // read basis
   // -------------------------------------------------------
-  using native_dense_matrix_t = typename fom_t::dense_matrix_type;
-  using decoder_jac_t	= pressio::containers::MultiVector<native_dense_matrix_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<Eigen::MatrixXd>;
   constexpr int romSize = 11;
   decoder_jac_t phi = pressio::rom::test::eigen::readBasis("basis.txt", romSize, numCell);
   const int numBasis = phi.numVectors();

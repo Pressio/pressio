@@ -106,7 +106,6 @@ struct Burgers1dKokkos{
   using scalar_type	= sc_t;
   using state_type	= state_type_d;
   using velocity_type	= state_type_d;
-  using dense_matrix_type	= mv_d;
   using jacobian_type   = crs_mat;
 
 public:
@@ -129,9 +128,9 @@ public:
     return U_d_;
   };
 
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  mv_d createApplyJacobianResult(const mv_d & B) const
   {
-    dense_matrix_type A("AA", Ncell_, B.extent(1) );
+    mv_d A("AA", Ncell_, B.extent(1) );
     return A;
   }
 
@@ -219,9 +218,9 @@ public:
   }
 
   void applyJacobian(const state_type & y,
-         const dense_matrix_type & B,
+         const mv_d & B,
          scalar_type t,
-         dense_matrix_type & A) const
+         mv_d & A) const
   {
     auto JJ = createJacobian();
     jacobian(y,t,JJ);

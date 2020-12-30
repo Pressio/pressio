@@ -60,8 +60,7 @@ template<
   typename ...Args
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<fom_system_type>::value or
-  ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
   impl::composeDefaultProblemContTime_t<stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
@@ -76,7 +75,7 @@ createDefaultProblem(const fom_system_type & fomSysObj,
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
-compatible with the FOM state type detected from adapter class");
+// compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn,
 		  fomRef, std::forward<Args>(args)...);
@@ -93,7 +92,7 @@ template<
   typename fom_native_state
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
@@ -134,7 +133,7 @@ template<
   typename fom_native_state
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
+  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void,

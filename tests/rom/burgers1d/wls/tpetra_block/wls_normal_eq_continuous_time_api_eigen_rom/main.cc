@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
   using rom_data_t_eigen = romDataTypeEigen<scalar_t>;
   using ode_tag_euler    = ::pressio::ode::implicitmethods::Euler;
   using lowTri		 = pressio::matrixLowerTriangular;
+  using phi_native_t = Tpetra::BlockMultiVector<>;
 
   // scope guard needed for tpetra
   Tpetra::ScopeGuard tpetraScope (&argc, &argv);
@@ -20,7 +21,8 @@ int main(int argc, char *argv[])
     rcpcomm_t Comm = Teuchos::rcp (new tcomm_t(MPI_COMM_WORLD));
     std::string checkStr = "PASSED";
 
-    const auto checkStr1 = pressio::testing::wls::doRun<fom_t, rom_data_t_eigen, tcomm_t, lowTri, ode_tag_euler>(Comm, rank);
+    const auto checkStr1 = pressio::testing::wls::doRun
+      <fom_t, rom_data_t_eigen, tcomm_t, lowTri, phi_native_t, ode_tag_euler>(Comm, rank);
     //    const auto checkStr2 = pressio::testing::wls::doRun<fom_t, rom_data_t_eigen, tcomm_t, lowTri, ode_tag_BDF2>(Comm, rank);
 
    if (checkStr1 == "FAILED"){

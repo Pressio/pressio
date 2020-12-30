@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp
+// rom_continuous_time_system_without_user_provided_apply_jacobian.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
-#define ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
+#ifndef ROM_CONTINUOUS_TIME_SYSTEM_WITH_AT_LEAST_VELOCITY_METHODS_HPP_
+#define ROM_CONTINUOUS_TIME_SYSTEM_WITH_AT_LEAST_VELOCITY_METHODS_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio{ namespace rom{ namespace constraints {
 
-template <
-  typename T,
-  typename operand_t,
-  typename = void
-  >
-struct has_const_create_apply_jacobian_result_method_accept_operand_return_result
-  : std::false_type{};
+template<typename T, typename enable = void>
+struct continuous_time_system_with_at_least_velocity : std::false_type{};
 
-template <typename T, typename operand_t>
-struct has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-  T, operand_t,
+template<typename T>
+struct continuous_time_system_with_at_least_velocity<
+  T,
   mpl::enable_if_t<
-    !std::is_void<
-      decltype
-      (
-       std::declval<T const>().createApplyJacobianResult
-       (
-	std::declval<operand_t const &>()
-	)
-       )
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value
+    and ::pressio::ode::predicates::has_state_typedef<T>::value
+    and ::pressio::ode::predicates::has_velocity_typedef<T>::value
+    //
+    /// velocity
+    and ::pressio::ode::predicates::has_const_create_velocity_method_return_result<
+      T, typename T::velocity_type
+      >::value
+    and ::pressio::ode::predicates::has_const_velocity_method_accept_state_time_result_return_void<
+      T, typename T::state_type, typename T::scalar_type, typename T::velocity_type
       >::value
     >
   > : std::true_type{};
 
 }}}
-#endif  // ROM_PREDICATES_APPLY_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_WITHOUT_USER_PROVIDED_APPLY_JACOBIAN_HPP_

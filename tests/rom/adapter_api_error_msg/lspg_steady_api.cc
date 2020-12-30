@@ -16,7 +16,6 @@ struct ValidApp{
   using scalar_type	= double;
   using state_type	= Eigen::VectorXd;
   using residual_type	= state_type;
-  using dense_matrix_type = Eigen::MatrixXd;
 
 public:
 #if defined NO_RES
@@ -27,8 +26,8 @@ public:
 #if defined NO_APP_J
 #else
   void applyJacobian(const state_type &,
-		     const dense_matrix_type &,
-		     dense_matrix_type &) const;
+		     const Eigen::MatrixXd &,
+		     Eigen::MatrixXd &) const;
 #endif
 
 #if defined NO_RES_C
@@ -38,7 +37,7 @@ public:
 
 #if defined NO_APP_J_C
 #else
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type &) const;
+  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd &) const;
 #endif
 };
 
@@ -48,12 +47,11 @@ int main(int argc, char *argv[])
   using app_t	      = ValidApp;
   using scalar_t      = typename app_t::scalar_type;
   using native_state_t= typename app_t::state_type;
-  using native_dense_mat = typename app_t::dense_matrix_type;
   using fom_state_t   = pressio::containers::Vector<native_state_t>;
 
   // these are just randomly set, just for testing
   using lspg_state_t  = pressio::containers::Vector<Eigen::VectorXd>;
-  using decoder_jac_t = pressio::containers::MultiVector<native_dense_mat>;
+  using decoder_jac_t = pressio::containers::MultiVector<Eigen::MatrixXd>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   using lspg_problem =

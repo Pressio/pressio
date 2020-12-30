@@ -59,7 +59,6 @@ class Burgers1dEpetraIdentityMask //: public Burgers1dEpetra
 public:
   using importer_t = Epetra_Import;
   // using base_t = Burgers1dEpetra;
-  using dense_matrix_type = typename ::pressio::apps::Burgers1dEpetra::dense_matrix_type;
   using velocity_type = typename ::pressio::apps::Burgers1dEpetra::velocity_type;
   using state_type = typename ::pressio::apps::Burgers1dEpetra::state_type;
   using scalar_type = typename ::pressio::apps::Burgers1dEpetra::scalar_type;
@@ -82,8 +81,8 @@ public:
     return dest;
   }
 
-  dense_matrix_type createApplyMaskResult(const dense_matrix_type & src) const{
-    dense_matrix_type dest(*maskMap_, src.NumVectors());
+  Epetra_MultiVector createApplyMaskResult(const Epetra_MultiVector & src) const{
+    Epetra_MultiVector dest(*maskMap_, src.NumVectors());
     dest.Import(src, *importer_, Insert);
     return dest;
   }

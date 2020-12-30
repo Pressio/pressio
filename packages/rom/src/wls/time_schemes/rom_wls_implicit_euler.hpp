@@ -114,7 +114,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_eigen<fom_state_type>::value == true
     >
   time_discrete_residual(const fom_type & fomSystemObj,
@@ -139,7 +139,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_eigen<fom_state_type>::value == true
     >
   time_discrete_jacobian(const fom_type & fomSystemObj,
@@ -177,7 +177,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_kokkos<fom_state_type>::value == true
     >
   time_discrete_residual(const fom_type & fomSystemObj,
@@ -202,7 +202,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_kokkos<fom_state_type>::value == true
     >
   time_discrete_jacobian(const fom_type & fomSystemObj,
@@ -240,7 +240,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value==true
     >
   time_discrete_residual(const fom_type & fomSystemObj,
@@ -266,7 +266,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true
     >
   time_discrete_residual(const fom_type & fomSystemObj,
@@ -295,7 +295,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<fom_state_type>::value == true
     >
   time_discrete_jacobian(const fom_type & fomSystemObj,
@@ -328,7 +328,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
     ::pressio::containers::predicates::is_vector_wrapper_tpetra<fom_state_type>::value == true
     >
   time_discrete_jacobian(const fom_type & fomSystemObj,
@@ -361,7 +361,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_type>::value
+    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_type>::value
     >
   time_discrete_residual(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -387,7 +387,7 @@ public:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_type>::value
+    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_type>::value
     >
   time_discrete_jacobian(const fom_type & fomSystemObj,
 			 const fom_state_type & fomState,
@@ -463,7 +463,7 @@ private:
     typename scalar_type
     >
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<fom_type>::value
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value
     >
   _time_discrete_jacobian_from_views(const fom_type & fomSystemObj,
 				     const fom_state_type & fomState,

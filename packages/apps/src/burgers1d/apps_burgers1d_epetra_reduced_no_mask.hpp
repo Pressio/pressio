@@ -77,10 +77,11 @@ public:
   }
 
   // return Jac * B
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
-    // dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
+  Epetra_MultiVector 
+  createApplyJacobianResult(const Epetra_MultiVector & B) const{
+    // Epetra_MultiVector Cfull( Jac_->RangeMap(), B.NumVectors() );
     // base_t::applyJacobian(y, B, t, Cfull);
-    dense_matrix_type C(*maskMap_, B.NumVectors());
+    Epetra_MultiVector C(*maskMap_, B.NumVectors());
     // C.Import(Cfull, *importer_, Insert);
     return C;
   }
@@ -96,10 +97,10 @@ public:
 
   // A = Jac * B
   void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
+		     const Epetra_MultiVector & B,
 		     scalar_type t,
-		     dense_matrix_type & A) const{
-    dense_matrix_type Cfull( Jac_->RangeMap(), B.NumVectors() );
+		     Epetra_MultiVector & A) const{
+    Epetra_MultiVector Cfull( Jac_->RangeMap(), B.NumVectors() );
     base_t::applyJacobian(y, B, t, Cfull);
     A.Import(Cfull, *importer_, Insert);
   }

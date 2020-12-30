@@ -42,7 +42,6 @@ int main(int argc, char *argv[])
   using fom_t	= MyFakeApp;
   using scalar_t = typename fom_t::scalar_type;
   using native_state_t	= typename fom_t::state_type;
-  using native_velo_t	= typename fom_t::velocity_type;
   using native_dmat_t	= typename fom_t::dense_matrix_type;
 
   using fom_state_t = pressio::containers::MultiVector<native_state_t>;

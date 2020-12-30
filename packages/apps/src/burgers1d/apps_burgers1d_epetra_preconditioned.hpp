@@ -58,7 +58,6 @@ class EpetraIdentityPreconditioner
   using scalar_type = typename Burgers1dEpetra::scalar_type;
   using state_type  = typename Burgers1dEpetra::state_type;
   using velocity_type = typename Burgers1dEpetra::velocity_type;
-  using dense_matrix_type = typename Burgers1dEpetra::dense_matrix_type;
 
 public:
   void applyPreconditioner(const state_type & yState,
@@ -71,7 +70,7 @@ public:
 
   void applyPreconditioner(const state_type & yState,
             const scalar_type & time,
-            dense_matrix_type & C) const 
+            Epetra_MultiVector & C) const 
   {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;

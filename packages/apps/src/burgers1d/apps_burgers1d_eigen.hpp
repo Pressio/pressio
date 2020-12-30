@@ -64,7 +64,6 @@ public:
   using scalar_type	= double;
   using state_type	= eigVec;
   using velocity_type	= eigVec;
-  using dense_matrix_type = Eigen::MatrixXd;
 
   using eig_sp_mat = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using jacobian_type	= eig_sp_mat;
@@ -97,8 +96,8 @@ public:
   }
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
-    dense_matrix_type A( Ncell_, B.cols() );
+  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{
+    Eigen::MatrixXd A( Ncell_, B.cols() );
     return A;
   }
 
@@ -117,9 +116,9 @@ public:
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
   void applyJacobian(const state_type & y,
-		     const dense_matrix_type & B,
+		     const Eigen::MatrixXd & B,
 		     scalar_type t,
-		     dense_matrix_type & A) const
+		     Eigen::MatrixXd & A) const
   {
     auto JJ = createJacobian();
     this->jacobian(y, t, JJ);

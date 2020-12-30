@@ -8,7 +8,6 @@ struct GalerkinBDF1WithResidualApi
   using fom_t		= pressio::apps::Burgers1dEigenDiscreteTimeApi;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
-  using native_dmat_t   = typename fom_t::dense_matrix_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
@@ -16,7 +15,7 @@ struct GalerkinBDF1WithResidualApi
   using rom_state_t	= pressio::containers::Vector<eig_dyn_vec>;
   using rom_jacobian_t = pressio::containers::DenseMatrix<eig_dyn_mat>;
 
-  using decoder_jac_t	= pressio::containers::MultiVector<native_dmat_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<Eigen::MatrixXd>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   native_state_t fomSol_ = {};
@@ -31,6 +30,9 @@ struct GalerkinBDF1WithResidualApi
     Eigen::Vector3d mu(5.0, 0.02, 0.02);
     fom_t appobj( mu, numCell);
     scalar_t dt = 0.01;
+
+    static_assert(::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<
+      fom_t, decoder_jac_t>::value, "");
 
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;

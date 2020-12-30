@@ -38,6 +38,7 @@ template <
   typename rom_data_t,
   typename tcomm_t,
   typename hessian_matrix_structure_tag,
+  typename basis_matrix_native_type,
   typename ode_tag,
   typename rcpcomm_t
   >
@@ -45,9 +46,8 @@ std::string doRun(rcpcomm_t & Comm, int rank)
 {
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
-  using fom_dmat_t      = typename fom_t::dense_matrix_type;
   using fom_state_t	= pressio::containers::Vector<native_state_t>;
-  using decoder_jac_t	= pressio::containers::MultiVector<fom_dmat_t>;
+  using decoder_jac_t	= pressio::containers::MultiVector<basis_matrix_native_type>;
   using wls_state_t	= typename rom_data_t::wls_state_t;
   using wls_hessian_t	= typename rom_data_t::wls_hessian_t;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;

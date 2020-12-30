@@ -8,7 +8,7 @@ int main(int argc, char *argv[]){
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
-  using native_dmat_t = typename fom_t::dense_matrix_type;
+  using native_dmat_t = Tpetra::BlockMultiVector<>;
 
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
   using lspg_state_t	= pressio::containers::Vector<eig_dyn_vec>;
