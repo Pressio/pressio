@@ -62,8 +62,10 @@ template<typename T1, typename T2, typename scalar_t>
 update(T1 & v, scalar_t a,
        const T2 & v1, scalar_t b)
 {
-  assert( v.extent(0) == v1.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = a*v(i) + b*v1(i);
   }
 }
@@ -75,8 +77,10 @@ template<typename T1, typename T2, typename scalar_t>
   >
 update(T1 & v, const T2 & v1, const scalar_t b)
 {
-  assert( v.extent(0) == v1.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = b*v1(i);
   }
 }
@@ -95,9 +99,10 @@ update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
        const T2 & v2, scalar_t c)
 {
-  assert( v.extent(0)  == v1.extent(0) );
-  assert( v1.extent(0) == v2.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1,v2) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i);
   }
 }
@@ -116,9 +121,10 @@ update(T & v,
        const T1 & v1, const scalar_t &b,
        const T2 & v2, const scalar_t &c)
 {
-  assert( v.extent(0)  == v1.extent(0) );
-  assert( v1.extent(0) == v2.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1,v2) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = b*v1(i) + c*v2(i);
   }
 }
@@ -139,10 +145,10 @@ update(T & v, const scalar_t &a,
        const T2 & v2, const scalar_t &c,
        const T3 & v3, const scalar_t &d)
 {
-  assert( v.extent(0)  == v1.extent(0) );
-  assert( v1.extent(0) == v2.extent(0) );
-  assert( v2.extent(0) == v3.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1,v2,v3) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
   }
 }
@@ -165,11 +171,10 @@ update(T & v, const scalar_t &a,
        const T3 & v3, const scalar_t &d,
        const T4 & v4, const scalar_t &e)
 {
-  assert( v.extent(0)  == v1.extent(0) );
-  assert( v1.extent(0) == v2.extent(0) );
-  assert( v2.extent(0) == v3.extent(0) );
-  assert( v3.extent(0) == v4.extent(0) );
-  for (std::size_t i=0; i<v.extent(0); ++i){
+  using size_type = typename T1::traits::size_t;
+  assert( impl::_matching_extents(v,v1,v2,v3,v4) );
+
+  for (size_type i=0; i<v.extent(0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
   }
 }

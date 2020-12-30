@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_rank2_update.hpp
+// ops_rank3_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
-#define OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
+#ifndef OPS_PYBIND11_OPS_RANK3_UPDATE_HPP_
+#define OPS_PYBIND11_OPS_RANK3_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
@@ -56,8 +56,8 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
   >
 update(T1 & M, scalar_t a,
        const T2 & M1, scalar_t b)
@@ -65,26 +65,30 @@ update(T1 & M, scalar_t a,
   using size_type = typename T1::traits::size_t;
   assert( impl::_matching_extents(M,M1) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = a*M(i,j) + b*M1(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = a*M(i,j,k) + b*M1(i,j,k);
+      }
     }
   }
 }
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
   >
 update(T1 & M, const T2 & M1, const scalar_t b)
 {
   using size_type = typename T1::traits::size_t;
   assert( impl::_matching_extents(M,M1) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = b*M1(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = b*M1(i,j,k);
+      }
     }
   }
 }
@@ -95,9 +99,9 @@ update(T1 & M, const T2 & M1, const scalar_t b)
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
   >
 update(T & M, scalar_t a,
        const T1 & M1, scalar_t b,
@@ -106,9 +110,11 @@ update(T & M, scalar_t a,
   using size_type = typename T1::traits::size_t;
   assert( impl::_matching_extents(M,M1,M2) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = a*M(i,j) + b*M1(i,j) + c*M2(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = a*M(i,j,k) + b*M1(i,j,k) + c*M2(i,j,k);
+      }
     }
   }
 }
@@ -119,9 +125,9 @@ update(T & M, scalar_t a,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
   >
 update(T & M,
        const T1 & M1, const scalar_t &b,
@@ -130,9 +136,11 @@ update(T & M,
   using size_type = typename T1::traits::size_t;
   assert( impl::_matching_extents(M,M1,M2) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = b*M1(i,j) + c*M2(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = b*M1(i,j,k) + c*M2(i,j,k);
+      }
     }
   }
 }
@@ -143,10 +151,10 @@ update(T & M,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T3>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T3>::value
   >
 update(T & M, const scalar_t &a,
        const T1 & M1, const scalar_t &b,
@@ -156,9 +164,11 @@ update(T & M, const scalar_t &a,
   using size_type = typename T1::traits::size_t;
   assert( impl::_matching_extents(M,M1,M2,M3) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = a*M(i,j) + b*M1(i,j) + c*M2(i,j) + d*M3(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = a*M(i,j,k) + b*M1(i,j,k) + c*M2(i,j,k) + d*M3(i,j,k);
+      }
     }
   }
 }
@@ -169,11 +179,11 @@ update(T & M, const scalar_t &a,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T3>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T4>::value
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T3>::value and
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T4>::value
   >
 update(T & M, const scalar_t &a,
        const T1 & M1, const scalar_t &b,
@@ -182,14 +192,16 @@ update(T & M, const scalar_t &a,
        const T4 & M4, const scalar_t &e)
 {
   using size_type = typename T1::traits::size_t;
-  assert( impl::_matching_extents(M,M1,M2,M3,M4) );
+  assert( impl::_matching_extents(M,M1,M2,M3) );
 
-  for (size_type j=0; j<M.extent(1); ++j){
-    for (size_type i=0; i<M.extent(0); ++i){
-      M(i,j) = a*M(i,j) + b*M1(i,j) + c*M2(i,j) + d*M3(i,j) + e*M4(i,j);
+  for (size_type k=0; k<M.extent(2); ++k){
+    for (size_type j=0; j<M.extent(1); ++j){
+      for (size_type i=0; i<M.extent(0); ++i){
+	M(i,j,k) = a*M(i,j,k) + b*M1(i,j,k) + c*M2(i,j,k) + d*M3(i,j,k) + e*M4(i,j,k);
+      }
     }
   }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
+#endif  // OPS_PYBIND11_OPS_RANK3_UPDATE_HPP_

@@ -78,6 +78,8 @@
 #include "ops/src/constraints/ops_sharedmem_host_subscriptable_rank1_container.hpp"
 #include "ops/src/constraints/ops_sharedmem_host_subscriptable_rank2_container.hpp"
 
+#include "ops/src/ops_matching_extents_impl.hpp"
+
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "ops/src/constraints/ops_container_eigen_with_native_data_access.hpp"
@@ -183,6 +185,7 @@
 #include "ops/src/pybind11/ops_deep_copy.hpp"
 #include "ops/src/pybind11/ops_rank1_update.hpp"
 #include "ops/src/pybind11/ops_rank2_update.hpp"
+#include "ops/src/pybind11/ops_rank3_update.hpp"
 #include "ops/src/pybind11/ops_level2.hpp"
 #include "ops/src/pybind11/ops_level3.hpp"
 #include "ops/src/pybind11/ops_scale.hpp"

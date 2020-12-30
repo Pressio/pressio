@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// ops_rank2_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,33 +46,47 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
-#define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#ifndef OPS_MATCHING_EXTENTS_PYBIND_IMPL_HPP_
+#define OPS_MATCHING_EXTENTS_PYBIND_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio{ namespace ops{
 
-template<typename T, typename enable = void>
-struct fom_state : std::false_type{};
+namespace impl{
+template<class T1, class T2>
+bool _matching_extents(const T1 & a, const T2 & b)
+{
+  using size_type = typename T1::traits::size_t;
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i) != a.extent(i)) return false;
+  }
+  return true;
+}
 
-template<typename T>
-struct fom_state<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value
-   >
-  > : std::true_type{};
+template<class T1, class T2, class T3>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c)
+{
+  using size_type = typename T1::traits::size_t;
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=a.extent(i) or
+       a.extent(i)!=c.extent(i)) return false;
+  }
+  return true;
+}
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct fom_state<
-  T,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value or
-    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
-   >
-  > : std::true_type{};
-#endif
+template<class T1, class T2, class T3, class T4>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d)
+{
+  using size_type = typename T1::traits::size_t;
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=a.extent(i) or
+       a.extent(i)!=c.extent(i) or
+       a.extent(i)!=c.extent(i)){
+      return false;
+    }
+  }
+  return true;
+}
+}//end impl namespace
 
-}}}}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_RANK2_UPDATE_HPP_
