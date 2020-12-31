@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_continuous_time_system_without_user_provided_jacobian.hpp
+// ode_continuous_time_system_with_at_least_velocity.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)

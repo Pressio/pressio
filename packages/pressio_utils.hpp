@@ -54,13 +54,9 @@
 #include "utils/src/utils_crtp_helper.hpp"
 #include "utils/src/utils_static_constants.hpp"
 #include "utils/src/utils_empty.hpp"
-#include "utils/src/utils_possibly_owning_ref_wrapper.hpp"
+#include "utils/src/utils_instance_or_reference_wrapper.hpp"
 #include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
 #include "utils/src/utils_set_stream_precision.hpp"
-
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "utils/src/utils_p4py_tag.hpp"
-#endif
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
 #include "utils/src/utils_teuchos_performance_monitor.hpp"

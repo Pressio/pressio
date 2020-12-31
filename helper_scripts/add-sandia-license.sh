@@ -31,16 +31,20 @@ for file in $allfiles
 do
   filename=$(basename $file)
   filedir=$(dirname $file)
+  #echo $filename
+  #echo $filedir
 
-  if ! grep -q 'Ennio' "$file";
+  if ! grep -q 'Ennio' "$file"
   then
-      echo $filename
-      echo $filedir
-      licensetmp=$(mktemp)
-      filetmp=$(mktemp)
-      echo "${fggreen}Running on file=$file, targetdir=$filedir, license=$licensefile, tmp=${filetmp} ${fgrst}"
-      sed 's/\<file-name.hpp\>/'$filename'/g' $licensefile > $licensetmp
-      cat $licensetmp $file > $filetmp
-      mv $filetmp $file
+      if [[ "${filedir}" != *"logger"* ]]
+      then
+	  echo "Admissible file $filename in $filedir"
+	  licensetmp=$(mktemp)
+	  filetmp=$(mktemp)
+	  echo "${fggreen}Running on file=$file, targetdir=$filedir, license=$licensefile, tmp=${filetmp} ${fgrst}"
+	  sed 's/\<file-name.hpp\>/'$filename'/g' $licensefile > $licensetmp
+	  cat $licensetmp $file > $filetmp
+	  mv $filetmp $file
+      fi
   fi
 done

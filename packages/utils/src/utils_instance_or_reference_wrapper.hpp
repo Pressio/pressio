@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// utils_possibly_owning_ref_wrapper.hpp
+// utils_instance_or_reference_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef UTILS_UTILS_POSSIBLY_OWNING_REF_WRAPPER_HPP_
-#define UTILS_UTILS_POSSIBLY_OWNING_REF_WRAPPER_HPP_
+#ifndef UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
+#define UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 
 namespace pressio{ namespace utils{
 
