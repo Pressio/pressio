@@ -98,6 +98,10 @@ template <typename T, typename apply_jac_operand_t>
 struct why_not_continuous_time_system_with_user_provided_apply_jacobian
 {
   static_assert
+    (::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value,
+     "the why not checks need apply_jac_operand_t to be a wrapper type");
+
+  static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
      "Your continuous-time adapter class is without (or has a wrong) scalar typedef");
 

@@ -75,7 +75,6 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  velocity_storage_t veloAuxStorage_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
@@ -83,6 +82,7 @@ private:
     std::reference_wrapper<const velocity_policy_type>
   >::type policy_;
 
+  velocity_storage_t veloAuxStorage_;
   state_type tmpState_;
   const ops_t * udOps_ = nullptr;
 
@@ -103,8 +103,8 @@ public:
 			     const system_type & systemObj,
 			     const velocity_policy_type & policy)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
+      veloAuxStorage_(policy.create(systemObj)),
       tmpState_{state}
   {}
 
@@ -118,8 +118,8 @@ public:
 			     const velocity_policy_type & policy,
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
+      veloAuxStorage_(policy.create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}
@@ -137,8 +137,8 @@ public:
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy_.create(systemObj)),
       policy_(), // default construct policy
+      veloAuxStorage_(policy_.create(systemObj)),
       tmpState_{state}
   {}
 
@@ -156,8 +156,8 @@ public:
 			     const system_type & systemObj,
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy_.create(systemObj)),
       policy_(), // default construct policy
+      veloAuxStorage_(policy_.create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}

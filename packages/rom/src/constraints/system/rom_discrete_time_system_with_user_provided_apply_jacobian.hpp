@@ -107,6 +107,9 @@ struct discrete_time_system_with_user_provided_apply_jacobian<
 template <typename T, typename apply_jac_operand_t>
 struct why_not_discrete_time_system_with_user_provided_apply_jacobian
 {
+  static_assert
+    (::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value,
+     "the why not checks need apply_jac_operand_t to be a wrapper type");
 
   static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
@@ -127,7 +130,7 @@ struct why_not_discrete_time_system_with_user_provided_apply_jacobian
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
-     T,  apply_jac_operand_t, apply_jac_operand_t>::value,
+     T,  typename apply_jac_operand_t::traits::wrapped_t>::value,
      "Your discrete-time adapter class is without (or has a wrong) create apply discrete time jacobian result method");
 
   static_assert
@@ -144,16 +147,22 @@ struct why_not_discrete_time_system_with_user_provided_apply_jacobian
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-     T, 2, ::pressio::ode::types::step_t, typename T::scalar_type,
-     typename T::state_type,  typename apply_jac_operand_t::traits::wrapped_t,
+     T, 2,
+     ::pressio::ode::types::step_t,
+     typename T::scalar_type,
+     typename T::state_type,
+     typename apply_jac_operand_t::traits::wrapped_t,
      typename apply_jac_operand_t::traits::wrapped_t
      >::value,
      "Your discrete-time adapter class is without (or has a wrong) apply discrete time jacobian method accepting 2 states");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-     T, 3, ::pressio::ode::types::step_t, typename T::scalar_type,
-     typename T::state_type, typename apply_jac_operand_t::traits::wrapped_t,
+     T, 3,
+     ::pressio::ode::types::step_t,
+     typename T::scalar_type,
+     typename T::state_type,
+     typename apply_jac_operand_t::traits::wrapped_t,
      typename apply_jac_operand_t::traits::wrapped_t
      >::value,
      "Your discrete-time adapter class is without (or has a wrong) apply discrete time jacobian result method accepting 3 states");

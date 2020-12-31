@@ -67,7 +67,9 @@ public:
   using wrap_t = typename traits::wrapped_t;
 
 public:
-  DenseMatrix() = default;
+  DenseMatrix(){
+    data_.setConstant(0);
+  }
 
   // explicit DenseMatrix(const wrap_t & other)
   //   : data_(other){}

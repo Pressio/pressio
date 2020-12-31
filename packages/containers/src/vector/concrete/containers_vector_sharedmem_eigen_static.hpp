@@ -69,7 +69,9 @@ public:
   using const_ref_t = typename traits::const_reference_t;
 
 public:
-  Vector() = default;
+  Vector(){
+    data_.setConstant(0);
+  }
 
   explicit Vector(const wrap_t & src) : data_(src){}
 

@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "pressio_ops.hpp"
 
-
 TEST(ops_multi_vector_serial_eigen_dynamic_class,
      dot_WithEigenVector_dynamic){
 
@@ -33,8 +32,6 @@ TEST(ops_multi_vector_serial_eigen_dynamic_class,
   EXPECT_DOUBLE_EQ( c(2), 6.);
 }
 
-
-
 TEST(ops_multi_vector_serial_eigen_dynamic_class,
      dot_WithEigenVector_static){
 
@@ -56,8 +53,8 @@ TEST(ops_multi_vector_serial_eigen_dynamic_class,
   b(3) = 1.; b(4) = 2.; b(5) = 1.;
 
   using eig_v_st = Eigen::Matrix<double, 3, 1>;
-  eig_v_st a;
-  pressio::containers::Vector<eig_v_st> c(a);
+  pressio::containers::Vector<eig_v_st> c;
+  c.data()->setConstant(0);
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();
   constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::transpose(), alpha, A, b, beta, c);

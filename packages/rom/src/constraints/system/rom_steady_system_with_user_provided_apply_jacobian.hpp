@@ -89,6 +89,10 @@ template <typename T, typename apply_jac_operand_t>
 struct why_not_steady_system_with_user_provided_apply_jacobian
 {
   static_assert
+    (::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value,
+     "the why not checks need apply_jac_operand_t to be a wrapper type");
+
+  static_assert
     (::pressio::containers::predicates::has_scalar_typedef<T>::value,
      "Your steady adapter class is without (or has a wrong) scalar typedef");
 
@@ -113,13 +117,14 @@ struct why_not_steady_system_with_user_provided_apply_jacobian
 
   static_assert
     (::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-     T, apply_jac_operand_t
+     T, typename apply_jac_operand_t::traits::wrapped_t
      >::value,
      "Your steady adapter class is without (or has a wrong) create apply jacobian result method");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-     T,  typename T::state_type,  apply_jac_operand_t, apply_jac_operand_t
+     T,  typename T::state_type,  typename apply_jac_operand_t::traits::wrapped_t,
+     typename apply_jac_operand_t::traits::wrapped_t
      >::value,
      "Your steady adapter class is without (or has a wrong) apply jacobian method");
 

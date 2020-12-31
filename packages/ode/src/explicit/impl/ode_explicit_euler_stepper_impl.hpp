@@ -71,7 +71,6 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  velocity_storage_t veloAuxStorage_;
 
   typename std::conditional<
     std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
@@ -79,6 +78,7 @@ private:
     std::reference_wrapper<const velocity_policy_type>
     >::type policy_;
 
+  velocity_storage_t veloAuxStorage_;
   const ops_t * udOps_ = nullptr;
 
 public:
@@ -98,8 +98,8 @@ public:
 		       const system_type & systemObj,
 		       const velocity_policy_type & policy)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy.create(systemObj)),
-      policy_(policy)
+      policy_(policy),
+      veloAuxStorage_(policy.create(systemObj))
   {}
 
   // cnstr enabled if we are using user-defined ops
@@ -112,8 +112,8 @@ public:
 		       const velocity_policy_type & policy,
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy.create(systemObj)),
       policy_(policy),
+      veloAuxStorage_(policy.create(systemObj)),
       udOps_(&udOps)
   {}
 
@@ -130,8 +130,8 @@ public:
   ExplicitEulerStepper(const state_type & state,
 		       const system_type & systemObj)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy_.create(systemObj)),
-      policy_() // default construct policy
+      policy_(), // default construct policy
+      veloAuxStorage_(policy_.create(systemObj))
   {}
 
   // cnstr only enabled if
@@ -148,8 +148,8 @@ public:
 		       const system_type & systemObj,
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
-      veloAuxStorage_(policy_.create(systemObj)),
       policy_(), // default construct policy
+      veloAuxStorage_(policy_.create(systemObj)),
       udOps_(&udOps)
   {}
 
