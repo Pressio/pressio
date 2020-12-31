@@ -136,8 +136,8 @@ private:
   j_t MJ_;
   g_t g_;
   h_t H_;
-  ::pressio::utils::possibly_owning_reference_wrapper<ud_ops_type> udOps_;
-  ::pressio::utils::possibly_owning_reference_wrapper<weighting_functor_t> functorM_;
+  ::pressio::utils::instance_or_reference_wrapper<ud_ops_type> udOps_;
+  ::pressio::utils::instance_or_reference_wrapper<weighting_functor_t> functorM_;
 
   static constexpr auto is_irwls =
     std::is_same<

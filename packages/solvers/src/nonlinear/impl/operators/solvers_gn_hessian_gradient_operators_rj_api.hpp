@@ -71,7 +71,7 @@ private:
   mutable j_t J_;
   g_t g_;
   h_t H_;
-  ::pressio::utils::possibly_owning_reference_wrapper<ud_ops_type> udOps_;
+  ::pressio::utils::instance_or_reference_wrapper<ud_ops_type> udOps_;
 
 public:
   HessianGradientOperatorsRJApiNoWeighting() = delete;

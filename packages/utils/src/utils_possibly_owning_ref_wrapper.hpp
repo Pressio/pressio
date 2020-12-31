@@ -52,69 +52,69 @@
 namespace pressio{ namespace utils{
 
 template <class T>
-class possibly_owning_reference_wrapper;
+class instance_or_reference_wrapper;
 
 template <>
-class possibly_owning_reference_wrapper<void>
+class instance_or_reference_wrapper<void>
 {};
 
 template <class T>
-class possibly_owning_reference_wrapper
+class instance_or_reference_wrapper
 {
   T value_;
 public:
-  possibly_owning_reference_wrapper(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper & operator=(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper(possibly_owning_reference_wrapper &&) = default;
-  possibly_owning_reference_wrapper & operator=(possibly_owning_reference_wrapper &&) = default;
-  ~possibly_owning_reference_wrapper() = default;
+  instance_or_reference_wrapper(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper & operator=(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper(instance_or_reference_wrapper &&) = default;
+  instance_or_reference_wrapper & operator=(instance_or_reference_wrapper &&) = default;
+  ~instance_or_reference_wrapper() = default;
 
-  possibly_owning_reference_wrapper() = delete;
+  instance_or_reference_wrapper() = delete;
 
-  possibly_owning_reference_wrapper(T & valIn) : value_(valIn){}
-  possibly_owning_reference_wrapper(const T & valIn) : value_(valIn){}
+  instance_or_reference_wrapper(T & valIn) : value_(valIn){}
+  instance_or_reference_wrapper(const T & valIn) : value_(valIn){}
 
   // template<
   //   typename _T = T,
   //   typename std::enable_if<std::is_move_constructible<_T>::value, int>::type = 0
   //   >
-  possibly_owning_reference_wrapper(T && valIn) : value_(std::move(valIn)){}
+  instance_or_reference_wrapper(T && valIn) : value_(std::move(valIn)){}
 
   T& get() { return value_; }
   T const& get() const { return value_; }
 };
 
 template <class T>
-class possibly_owning_reference_wrapper<T&>
+class instance_or_reference_wrapper<T&>
 {
   std::reference_wrapper<T> refObj_;
 public:
-  possibly_owning_reference_wrapper(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper & operator=(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper(possibly_owning_reference_wrapper &&) = default;
-  possibly_owning_reference_wrapper & operator=(possibly_owning_reference_wrapper &&) = default;
-  ~possibly_owning_reference_wrapper() = default;
+  instance_or_reference_wrapper(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper & operator=(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper(instance_or_reference_wrapper &&) = default;
+  instance_or_reference_wrapper & operator=(instance_or_reference_wrapper &&) = default;
+  ~instance_or_reference_wrapper() = default;
 
-  possibly_owning_reference_wrapper() = delete;
-  possibly_owning_reference_wrapper(T & valIn) : refObj_(valIn){}
+  instance_or_reference_wrapper() = delete;
+  instance_or_reference_wrapper(T & valIn) : refObj_(valIn){}
 
   T& get() { return refObj_.get(); }
   T const& get() const { return refObj_.get(); }
 };
 
 template <class T>
-class possibly_owning_reference_wrapper<T const &>
+class instance_or_reference_wrapper<T const &>
 {
   std::reference_wrapper<const T> refObj_;
 public:
-  possibly_owning_reference_wrapper(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper & operator=(const possibly_owning_reference_wrapper &) = default;
-  possibly_owning_reference_wrapper(possibly_owning_reference_wrapper &&) = default;
-  possibly_owning_reference_wrapper & operator=(possibly_owning_reference_wrapper &&) = default;
-  ~possibly_owning_reference_wrapper() = default;
+  instance_or_reference_wrapper(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper & operator=(const instance_or_reference_wrapper &) = default;
+  instance_or_reference_wrapper(instance_or_reference_wrapper &&) = default;
+  instance_or_reference_wrapper & operator=(instance_or_reference_wrapper &&) = default;
+  ~instance_or_reference_wrapper() = default;
 
-  possibly_owning_reference_wrapper() = delete;
-  possibly_owning_reference_wrapper(const T & valIn) : refObj_(valIn){}
+  instance_or_reference_wrapper() = delete;
+  instance_or_reference_wrapper(const T & valIn) : refObj_(valIn){}
 
   T const& get() { return refObj_.get(); }
   T const& get() const { return refObj_.get(); }

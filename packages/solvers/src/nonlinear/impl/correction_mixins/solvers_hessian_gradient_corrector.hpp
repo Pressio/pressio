@@ -61,7 +61,7 @@ public:
 
 private:
   state_type correction_ = {};
-  ::pressio::utils::possibly_owning_reference_wrapper<lin_solver_t> solverObj_;
+  ::pressio::utils::instance_or_reference_wrapper<lin_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};

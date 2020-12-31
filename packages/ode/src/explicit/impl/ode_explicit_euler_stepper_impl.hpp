@@ -70,7 +70,7 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  ::pressio::utils::possibly_owning_reference_wrapper<velocity_policy_type> policy_;
+  ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
   velocity_storage_t veloAuxStorage_;
   const ops_t * udOps_ = nullptr;
 

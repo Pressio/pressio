@@ -64,7 +64,7 @@ private:
   state_t QTResid_ = {};
   state_t g_ = {};
 
-  ::pressio::utils::possibly_owning_reference_wrapper<qr_solver_t> solverObj_;
+  ::pressio::utils::instance_or_reference_wrapper<qr_solver_t> solverObj_;
   sc_t residNormCurrCorrStep_ = {};
   sc_t gradientNormCurrCorrStep_ = {};
   sc_t correctionNormCurrCorrStep_ = {};
