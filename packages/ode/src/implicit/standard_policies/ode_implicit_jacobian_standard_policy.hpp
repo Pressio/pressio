@@ -51,18 +51,17 @@
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
-template<typename state_type, typename jacobian_type,typename = void>
-class JacobianStandardPolicy;
-
 template<typename state_type, typename jacobian_type>
-class JacobianStandardPolicy<
-  state_type, jacobian_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::constraints::implicit_state<state_type>::value and
-    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value
-    >
-  >
+class JacobianStandardPolicy
 {
+  static_assert
+  (::pressio::ode::constraints::implicit_state<state_type>::value,
+   "Invalid state type for standard jacobian policy");
+
+  static_assert
+  (::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value,
+   "Invalid jacobian type for standard jacobian policy");
+
 public:
   JacobianStandardPolicy() = default;
   JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
@@ -72,7 +71,6 @@ public:
   ~JacobianStandardPolicy() = default;
 
 public:
-
   template <typename system_type>
   mpl::enable_if_t<
   ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,

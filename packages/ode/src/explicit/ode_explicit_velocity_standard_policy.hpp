@@ -67,7 +67,7 @@ public:
   ~VelocityStandardPolicy() = default;
 
   template <typename system_type>
-  state_type create(const system_type & system)
+  state_type create(const system_type & system) const
   {
     return state_type(system.createVelocity());
   }
@@ -76,7 +76,7 @@ public:
   void compute(const state_type & state,
 	       state_type & f,
 	       const system_type & system,
-	       const scalar_type & time)
+	       const scalar_type & time) const
   {
     system.velocity(*state.data(), time, *f.data());
   }

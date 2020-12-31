@@ -51,18 +51,16 @@
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
-template<typename state_type, typename residual_type, typename=void>
-class ResidualStandardPolicy;
-
 template<typename state_type, typename residual_type>
-class ResidualStandardPolicy<
-  state_type, residual_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::constraints::implicit_state<state_type>::value and
-    ::pressio::ode::constraints::implicit_residual<residual_type>::value
-    >
-  >
+class ResidualStandardPolicy
 {
+  static_assert
+  (::pressio::ode::constraints::implicit_state<state_type>::value,
+   "Invalid state type for standard residual policy");
+
+  static_assert
+  (::pressio::ode::constraints::implicit_residual<residual_type>::value,
+   "Invalid residual type for standard residual policy");
 
 public:
   ResidualStandardPolicy() = default;

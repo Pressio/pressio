@@ -67,6 +67,12 @@ public:
   static constexpr types::stepper_order_t order_value = 4;
   using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
 
+  static constexpr bool using_standard_policy =
+    std::is_same<
+    velocity_policy_type,
+    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_type>
+    >::value;
+
 private:
   std::reference_wrapper<const system_type> systemObj_;
   ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
@@ -83,13 +89,14 @@ public:
   ~ExplicitRungeKutta4Stepper() = default;
 
   // the following cnstr is enabled if we are using pressio ops
+  // cnstr enabled if we are using pressio ops
   template <
     typename _ops_t = ops_t,
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
-			     const velocity_policy_type & policy)
+			     const mpl::remove_cvref_t<velocity_policy_type> & policy)
     : systemObj_(systemObj),
       policy_(policy),
       veloAuxStorage_(policy_.get().create(systemObj)),
@@ -103,7 +110,7 @@ public:
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
-			     const velocity_policy_type & policy,
+			     const mpl::remove_cvref_t<velocity_policy_type> & policy,
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(policy),
@@ -112,39 +119,35 @@ public:
       udOps_(&udOps)
   {}
 
-  // the following cnstr is only enabled if
-  // policy is default constructible and we are using pressio ops
+  // only enabled if policy standard and using pressio ops
   template <
-    typename _vel_pol_t = velocity_policy_type,
+    bool _using_standard_policy = using_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      std::is_void<_ops_t>::value and
-      std::is_default_constructible<_vel_pol_t>::value,
+      _using_standard_policy and std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
     : systemObj_(systemObj),
-      policy_(_vel_pol_t()),
+      policy_(),
       veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state}
   {}
 
-  // the following cnstr is only enabled if
-  // policy is default constructible and we are using user-defined ops
+  // only enabled if policy standard and user-defined ops
   template <
-    typename _vel_pol_t = velocity_policy_type,
+    bool _using_standard_policy = using_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      !std::is_void<_ops_t>::value and
-      std::is_default_constructible<_vel_pol_t>::value,
+      _using_standard_policy and !std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
-      policy_(_vel_pol_t()),
+      policy_(),
       veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)

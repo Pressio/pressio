@@ -96,15 +96,17 @@ public:
   StepperArbitrary & operator=(StepperArbitrary && other) = delete;
   ~StepperArbitrary() = default;
 
+  // note that here residual_policy_t can be a reference already
+  // so we don't need to specify & in argument to constructor
   StepperArbitrary(const ode_state_type & state,
 		   const system_type & systemObj,
-		   const residual_policy_t & resPolicyObj,
-		   const jacobian_policy_t & jacPolicyObj)
+		   residual_policy_t resPolicyObj,
+		   jacobian_policy_t jacPolicyObj)
     : systemObj_{systemObj},
       auxStates_{state},
       recoveryState_{state},
-      residual_obj_{resPolicyObj},
-      jacobian_obj_{jacPolicyObj}
+      resPolicy_{resPolicyObj},
+      jacPolicy_{jacPolicyObj}
     {}
 
   // cstr for standard residual and jacob policies
@@ -120,7 +122,9 @@ public:
                    const system_type & systemObj)
     : systemObj_{systemObj},
       auxStates_{state},
-      recoveryState_{state}
+      recoveryState_{state},
+      resPolicy_{T1()},
+      jacPolicy_{T2()}
   {}
 
 public:
@@ -131,30 +135,28 @@ public:
 
   residual_type createResidual() const
   {
-    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
-    return resPol.create(systemObj_.get());
+    return resPolicy_.get().create(systemObj_.get());
   }
 
   jacobian_type createJacobian() const
   {
-    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
-    return jacPol.create(systemObj_.get());
+    return jacPolicy_.get().create(systemObj_.get());
   }
 
   void residual(const state_type & odeState, residual_type & R) const
   {
-    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
-    resPol.template compute<tag_name>
-      (odeState, this->auxStates_, this->systemObj_.get(),
-       this->t_, this->dt_, this->step_, R);
+    resPolicy_.get().template compute
+      <tag_name>(odeState, this->auxStates_,
+		 this->systemObj_.get(),
+		 this->t_, this->dt_, this->step_, R);
   }
 
   void jacobian(const state_type & odeState, jacobian_type & J) const
   {
-    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
-    jacPol.template compute<tag_name>(
-      odeState, this->auxStates_, this->systemObj_.get(),
-      this->t_, this->dt_, this->step_, J);
+    jacPolicy_.get().template compute
+      <tag_name>(odeState, this->auxStates_,
+		 this->systemObj_.get(),
+		 this->t_, this->dt_, this->step_, J);
   }
 
   template<typename solver_type>
@@ -298,21 +300,9 @@ private:
   // state object to ensure the strong guarantee for handling excpetions
   ode_state_type recoveryState_;
 
-  // if we have a standard policy, then it default constr
-  // if we have a user-defined policy, we take a const & to it
-  typename std::conditional<
-    mpl::is_same<standard_res_policy_t, residual_policy_t>::value,
-    const residual_policy_t,
-    std::reference_wrapper<const residual_policy_t>
-    >::type residual_obj_;
-
-  typename std::conditional<
-    mpl::is_same<standard_jac_policy_t, jacobian_policy_t>::value,
-    const jacobian_policy_t,
-    std::reference_wrapper<const jacobian_policy_t>
-    >::type jacobian_obj_;
-
-};//end class
+  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
+  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
+};
 
 }}}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_IMPL_HPP_

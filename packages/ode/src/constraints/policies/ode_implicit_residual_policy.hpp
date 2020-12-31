@@ -63,7 +63,6 @@ template<
   >
 struct implicit_residual_policy : std::false_type{};
 
-
 template<
   typename T,
   typename tag,
@@ -76,7 +75,6 @@ template<
 struct implicit_residual_policy<
   T, tag, numPrevStates, state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
-    // is callable with two args
     std::is_same<
       residual_t,
       decltype
@@ -85,8 +83,6 @@ struct implicit_residual_policy<
        )
       >::value
     and
-
-    // is callable with six
     std::is_void<
       decltype
       (
@@ -99,15 +95,12 @@ struct implicit_residual_policy<
 	     std::declval<scalar_t const &>(),
 	     std::declval<::pressio::ode::types::step_t>(),
 	     std::declval<residual_t &>()
-	     // ::pressio::Norm::Undefined,
-	     // std::declval<scalar_t &>()
 	     )
        )
       >::value
     >
   > : std::true_type{};
 //------------------------------------------------------------------
-
 
 template<typename T, typename ... args>
 using implicit_euler_residual_policy =

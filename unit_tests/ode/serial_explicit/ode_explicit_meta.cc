@@ -11,13 +11,13 @@ class MyPolicyOk
 {
 public:
   template <typename system_type>
-  state_type create(const system_type & system);
+  state_type create(const system_type & system) const;
 
   template <typename system_type, typename scalar_type>
   void compute(const state_type & state,
 	       state_type & f,
 	       const system_type & system,
-	       const scalar_type & time);
+	       const scalar_type & time) const;
 };
 
 template<typename state_type>

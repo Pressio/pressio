@@ -153,7 +153,7 @@ struct compose
     typename ImplSelector<tag>::template type<
       scalar_t, state_t, system_t, velocity_t, velocity_policy_t, ops_t>,
     typename ImplSelector<tag>::template type<
-      scalar_t, state_t, system_t, velocity_t, velocity_policy_t &, ops_t>
+      scalar_t, state_t, system_t, velocity_t, const velocity_policy_t &, ops_t>
     >;
 };
 

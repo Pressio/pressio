@@ -85,6 +85,23 @@ public:
     ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
     state_type, jacobian_type>;
 
+private:
+  // auxiliary stepper
+  aux_stepper_t & auxStepper_;
+
+  scalar_t t_  = {};
+  scalar_t dt_ = {};
+  types::step_t step_  = {};
+  std::reference_wrapper<const system_type> systemObj_;
+  aux_states_t auxStates_;
+
+  // state object to ensure the strong guarantee for handling excpetions
+  state_type recoveryState_;
+
+  // policies
+  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
+  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
+
 public:
   StepperBDF2() = delete;
   StepperBDF2(const StepperBDF2 & other)  = default;
@@ -93,17 +110,19 @@ public:
   StepperBDF2 & operator=(StepperBDF2 && other) = delete;
   ~StepperBDF2() = default;
 
+  // note that here residual_policy_t can be a reference already
+  // so we don't need to specify & in argument to constructor
   StepperBDF2(const state_type & state,
 	      const system_type & systemObj,
-	      const residual_policy_t & resPolicyObj,
-	      const jacobian_policy_t & jacPolicyObj,
+	      const mpl::remove_cvref_t<residual_policy_t> & resPolicyObj,
+	      const mpl::remove_cvref_t<jacobian_policy_t> & jacPolicyObj,
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
       auxStates_{state},
       recoveryState_{state},
-      residual_obj_{resPolicyObj},
-      jacobian_obj_{jacPolicyObj}
+      resPolicy_{resPolicyObj},
+      jacPolicy_{jacPolicyObj}
   {}
 
   // cstr for standard residual and jacob policies
@@ -121,7 +140,9 @@ public:
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
       auxStates_{state},
-      recoveryState_{state}
+      recoveryState_{state},
+      resPolicy_{},
+      jacPolicy_{}
   {}
 
 public:
@@ -214,57 +235,29 @@ public:
 
   residual_t createResidual() const
   {
-    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
-    return resPol.create(systemObj_.get());
+    return resPolicy_.get().create(systemObj_.get());
   }
 
   jacobian_t createJacobian() const
   {
-    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
-    return jacPol.create(systemObj_.get());
+    return jacPolicy_.get().create(systemObj_.get());
   }
 
   void residual(const state_t & odeState, residual_t & R) const
   {
-    const auto & resPol = static_cast<const residual_policy_t&>(residual_obj_);
-    resPol.template compute<tag_name>(
-      odeState,  this->auxStates_, this->systemObj_.get(),
-      this->t_, this->dt_, this->step_, R);
+    resPolicy_.get().template compute
+      <tag_name>(odeState,  this->auxStates_,
+		 this->systemObj_.get(),
+		 this->t_, this->dt_, this->step_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    const auto & jacPol = static_cast<const jacobian_policy_t&>(jacobian_obj_);
-    jacPol.template compute<
-      tag_name>(odeState, this->auxStates_, this->systemObj_.get(),
+    jacPolicy_.get().template compute<
+      tag_name>(odeState, this->auxStates_,
+		this->systemObj_.get(),
                 this->t_, this->dt_, this->step_, J);
   }
-
-private:
-  aux_stepper_t & auxStepper_;
-
-  scalar_t t_  = {};
-  scalar_t dt_ = {};
-  types::step_t step_  = {};
-  std::reference_wrapper<const system_type> systemObj_;
-  aux_states_t auxStates_;
-
-  // state object to ensure the strong guarantee for handling excpetions
-  state_type recoveryState_;
-
-  // if we have a standard policy, then default constr
-  // if we have a user-defined policy, we take a const & to it
-  typename std::conditional<
-    mpl::is_same<standard_res_policy_t, residual_policy_t>::value,
-    const residual_policy_t,
-    std::reference_wrapper<const residual_policy_t>
-    >::type residual_obj_;
-
-  typename std::conditional<
-    mpl::is_same<standard_jac_policy_t, jacobian_policy_t>::value,
-    const jacobian_policy_t,
-    std::reference_wrapper<const jacobian_policy_t>
-    >::type jacobian_obj_;
 };
 
 }}} // end namespace pressio::ode::implicitmethods

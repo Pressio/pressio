@@ -69,7 +69,11 @@ public:
   instance_or_reference_wrapper & operator=(instance_or_reference_wrapper &&) = default;
   ~instance_or_reference_wrapper() = default;
 
-  instance_or_reference_wrapper() = delete;
+  template<
+    class _T = T,
+    mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0
+    >
+  instance_or_reference_wrapper(){}
 
   instance_or_reference_wrapper(T & valIn) : value_(valIn){}
   instance_or_reference_wrapper(const T & valIn) : value_(valIn){}
