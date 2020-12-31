@@ -164,7 +164,6 @@ public:
 
 private:
   data_type data_;
-
 };
 
 }}}//end namespace pressio::containers::impl
