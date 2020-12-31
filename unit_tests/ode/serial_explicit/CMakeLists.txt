@@ -1,6 +1,6 @@
 
 add_serial_utest(ode_serial_explicit_meta
-  ${CMAKE_CURRENT_SOURCE_DIR}/ode_user_defined_model_admissibility.cc)
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_meta.cc)
 
 set(SRC2
   ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_euler_user_defined_ops.cc

@@ -69,7 +69,7 @@ struct explicit_velocity_policy<
     std::is_same<
       decltype
       (
-       std::declval<T const>().create(std::declval<system_t const &>())
+       std::declval<T>().create(std::declval<system_t const &>())
        ),
       velocity_t
       >::value
@@ -77,7 +77,7 @@ struct explicit_velocity_policy<
     std::is_void<
       decltype
       (
-       std::declval<T const>().template compute
+       std::declval<T>().template compute
        (
       	std::declval<state_t const &>(),
       	std::declval<velocity_t &>(),
@@ -88,7 +88,6 @@ struct explicit_velocity_policy<
       >::value
     >
   > : std::true_type{};
-
 
 }}}//end namespace pressio::containers::constraints
 #endif  // ODE_CONSTRAINTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_

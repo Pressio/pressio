@@ -207,9 +207,7 @@ using MaskedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, fals
 
 
 //---------------------------------------------------
-//---------------------------------------------------
 // explicit policies
-//---------------------------------------------------
 //---------------------------------------------------
 template <class T, bool, bool, bool, typename ... Args>
 struct ExplicitPoliciesMixin;

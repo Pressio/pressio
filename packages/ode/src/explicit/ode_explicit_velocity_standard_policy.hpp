@@ -51,36 +51,23 @@
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace policy{
 
-template<
-  typename state_type,
-  typename velocity_type = state_type,
-  typename enable = void>
-class VelocityStandardPolicy;
-
-/*
- * state_type = velocity_type
- * both are wrappers from containers
- */
 template<typename state_type>
-class VelocityStandardPolicy<
-  state_type, state_type,
-  mpl::enable_if_t<
-    containers::predicates::is_vector_wrapper<state_type>::value
-    >
-  >
+class VelocityStandardPolicy
 {
+  static_assert
+  (::pressio::ode::constraints::explicit_state<state_type>::value,
+   "Invalid state type for standard velocity policy");
+
 public:
   VelocityStandardPolicy() = default;
-
   VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
   VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
   VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
   VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-
   ~VelocityStandardPolicy() = default;
 
   template <typename system_type>
-  state_type create(const system_type & system) const
+  state_type create(const system_type & system)
   {
     return state_type(system.createVelocity());
   }
@@ -89,12 +76,11 @@ public:
   void compute(const state_type & state,
 	       state_type & f,
 	       const system_type & system,
-	       const scalar_type & time) const
+	       const scalar_type & time)
   {
     system.velocity(*state.data(), time, *f.data());
   }
-
-};//end class
+};
 
 }}}}//end namespace pressio::ode::explicitmethods::policy
 #endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_

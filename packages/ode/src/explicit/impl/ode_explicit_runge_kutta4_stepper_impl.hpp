@@ -57,31 +57,19 @@ template<
   typename system_type,
   typename velocity_type,
   typename velocity_policy_type,
-  typename standard_velocity_policy_type,
   typename ops_t
   >
 class ExplicitRungeKutta4Stepper
 {
-
-  using this_t = ExplicitRungeKutta4Stepper<scalar_type, state_type, system_type,
-    velocity_type, velocity_policy_type, standard_velocity_policy_type, ops_t>;
-
 public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
-
   static constexpr types::stepper_order_t order_value = 4;
   using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-
-  typename std::conditional<
-    std::is_same<velocity_policy_type, standard_velocity_policy_type>::value,
-    const standard_velocity_policy_type,
-    std::reference_wrapper<const velocity_policy_type>
-  >::type policy_;
-
+  ::pressio::utils::possibly_owning_reference_wrapper<velocity_policy_type> policy_;
   velocity_storage_t veloAuxStorage_;
   state_type tmpState_;
   const ops_t * udOps_ = nullptr;
@@ -104,7 +92,7 @@ public:
 			     const velocity_policy_type & policy)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy.create(systemObj)),
+      veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state}
   {}
 
@@ -119,7 +107,7 @@ public:
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy.create(systemObj)),
+      veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}
@@ -137,8 +125,8 @@ public:
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj)),
+      policy_(_vel_pol_t()),
+      veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state}
   {}
 
@@ -156,8 +144,8 @@ public:
 			     const system_type & systemObj,
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
-      policy_(), // default construct policy
-      veloAuxStorage_(policy_.create(systemObj)),
+      policy_(_vel_pol_t()),
+      veloAuxStorage_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}
@@ -189,22 +177,20 @@ public:
     const scalar_type dt6 = dt / six;
     const scalar_type dt3 = dt / three;
 
-    const auto & policyObj = static_cast<const velocity_policy_type&>(policy_);
-
     // stage 1: ytmp = y + auxRhs0*dt_half;
-    policyObj.compute(stateInOut, auxRhs0, systemObj_.get(), t);
+    policy_.get().compute(stateInOut, auxRhs0, systemObj_.get(), t);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs0, dt_half);
 
     // stage 2: ytmp = y + auxRhs1*dt_half;
-    policyObj.compute(tmpState_, auxRhs1, systemObj_.get(), t_phalf);
+    policy_.get().compute(tmpState_, auxRhs1, systemObj_.get(), t_phalf);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs1, dt_half);
 
     // stage 3: ytmp = y + auxRhs2*dt;
-    policyObj.compute(tmpState_, auxRhs2, systemObj_.get(), t_phalf);
+    policy_.get().compute(tmpState_, auxRhs2, systemObj_.get(), t_phalf);
     this->stage_update_impl(tmpState_, stateInOut, auxRhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policyObj.compute(tmpState_, auxRhs3, systemObj_.get(), t + dt);
+    policy_.get().compute(tmpState_, auxRhs3, systemObj_.get(), t + dt);
     this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
   }//end doStep
 

@@ -70,6 +70,7 @@ public:
   ~possibly_owning_reference_wrapper() = default;
 
   possibly_owning_reference_wrapper() = delete;
+
   possibly_owning_reference_wrapper(T & valIn) : value_(valIn){}
   possibly_owning_reference_wrapper(const T & valIn) : value_(valIn){}
 

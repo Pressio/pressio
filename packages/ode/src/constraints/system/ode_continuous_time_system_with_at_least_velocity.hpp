@@ -52,11 +52,10 @@
 namespace pressio{ namespace ode{ namespace constraints {
 
 template<typename T, typename enable = void>
-struct continuous_time_system_without_user_provided_jacobian : std::false_type{};
-
+struct continuous_time_system_with_at_least_velocity : std::false_type{};
 
 template<typename T>
-struct continuous_time_system_without_user_provided_jacobian<
+struct continuous_time_system_with_at_least_velocity<
   T,
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_scalar_typedef<T>::value and

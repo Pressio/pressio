@@ -92,7 +92,7 @@
 #include "ode/src/predicates/velocity_methods/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "ode/src/constraints/user_defined_ops/ode_user_defined_ops_for_explicit_euler.hpp"
 #include "ode/src/constraints/user_defined_ops/ode_user_defined_ops_for_explicit_rk4.hpp"
-#include "ode/src/constraints/system/ode_continuous_time_system_without_user_provided_jacobian.hpp"
+#include "ode/src/constraints/system/ode_continuous_time_system_with_at_least_velocity.hpp"
 #include "ode/src/constraints/policies/ode_explicit_velocity_policy.hpp"
 #include "ode/src/constraints/steppable/ode_explicitly_steppable.hpp"
 #include "ode/src/explicit/ode_explicit_velocity_standard_policy.hpp"

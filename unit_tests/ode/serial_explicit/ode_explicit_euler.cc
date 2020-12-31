@@ -3,17 +3,6 @@
 #include "pressio_ode.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-
-// TEST(ode_explicit_euler, traits){
-//   using namespace pressio;
-//   using app_t = ode::testing::fakeAppForTraitsForExp;
-//   using nstate_t = typename app_t::state_type;
-//   using nveloc_t = typename app_t::velocity_type;
-//   using state_t = containers::Vector<nstate_t>;
-//   using res_t = containers::Vector<nveloc_t>;
-// }
-
-
 TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
   using namespace pressio;
   using app_t = ode::testing::refAppEigen;
@@ -43,8 +32,6 @@ TEST(ode_explicit_euler, numericsStdResidualPolDefaultCreated){
   EXPECT_DOUBLE_EQ( y(1), 2.42);
   EXPECT_DOUBLE_EQ( y(2), 3.63);
 }
-
-
 
 TEST(ode_explicit_euler, numericsStdResidualPolPassedByUser){
   using namespace pressio;

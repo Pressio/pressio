@@ -84,11 +84,10 @@ struct UserDefinedOpsFilter<
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
 
-
 template<typename tag>
 struct ImplSelector
 {
-	template<typename ...Args> using type = void;
+  template<typename ...Args> using type = void;
 };
 
 template<>
@@ -107,12 +106,10 @@ struct ImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
     ::pressio::ode::explicitmethods::impl::ExplicitRungeKutta4Stepper<Args...>;
 };
 
-
 // tag, state_type, system_t
 // tag, state_type, system_t, ud_ops_t
 // tag, state_type, system_t, policy
 // tag, state_type, system_t, policy, ud_ops_t
-
 template<
   typename tag,
   typename state_type,
@@ -122,33 +119,19 @@ template<
 struct compose
 {
   static_assert
-  (::pressio::ode::constraints::continuous_time_system_without_user_provided_jacobian<system_t>::value,
+  (::pressio::ode::constraints::continuous_time_system_with_at_least_velocity<system_t>::value,
    "The system passed to the ExplicitStepper does not meet the required API");
 
+  static_assert
+  (::pressio::ode::constraints::explicit_state<state_type>::value,
+   "Invalid state type for explicit time stepping");
+
+  using scalar_t = typename state_type::traits::scalar_t;
   using state_t	= state_type;
-
-  // // check if scalar is provided in Args
-  // using ic0 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   std::is_floating_point, Args...>;
-  // using scalar_t = ::pressio::mpl::variadic::at_or_t<
-  //   void, ic0::value, Args...>;
-  // static_assert(std::is_void<scalar_t>::value == false,
-	//  "You need a scalar_type in the ExplicitStepper templates");
-  using scalar_t =
-    typename ::pressio::containers::details::traits<state_type>::scalar_t;
-
-  // // check args for a valid velocity type
-  // using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
-  //   ::pressio::ode::constraints::explicit_velocity, Args...>;
-  // // if a velocity type is NOT found, then set it equal to the state
-  // using velocity_t = ::pressio::mpl::variadic::at_or_t<state_t, ic2::value, Args...>;
-  // // static_assert(std::is_void<velocity_t>::value == false,
-  // // 		 "The velicity type cannot be void");
-  // for now, the velocity type is same as state
   using velocity_t = state_type;
 
-  // this is the standard velocity policy (just typedef, it is only used
-  // if the user does not pass a user-defined policy)
+  // typedef for standard velocity policy
+  // (just typedef, only used if the user does not pass a user-defined policy)
   using standard_velocity_policy_t =
     ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
 
@@ -165,9 +148,13 @@ struct compose
 
   // implementation class type
   using type =
+    mpl::conditional_t<
+    std::is_same<standard_velocity_policy_t, velocity_policy_t>::value,
     typename ImplSelector<tag>::template type<
-    scalar_t, state_t, system_t, velocity_t,
-    velocity_policy_t, standard_velocity_policy_t, ops_t>;
+      scalar_t, state_t, system_t, velocity_t, velocity_policy_t, ops_t>,
+    typename ImplSelector<tag>::template type<
+      scalar_t, state_t, system_t, velocity_t, velocity_policy_t &, ops_t>
+    >;
 };
 
 }}}} // end namespace pressio::ode::explicitmethods::impl

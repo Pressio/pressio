@@ -97,7 +97,7 @@ public:
 public:
   template <typename fom_system_t, int _rank = rank_>
   mpl::enable_if_t<_rank==1, galerkin_velocity_t>
-  create(const fom_system_t & fomSystemObj) const
+  create(const fom_system_t & fomSystemObj)
   {
     galerkin_velocity_t result(extents_[0]);
     ::pressio::ops::set_zero(result);
@@ -106,7 +106,7 @@ public:
 
   template <typename fom_system_t, int _rank = rank_>
   mpl::enable_if_t<_rank==2, galerkin_velocity_t>
-  create(const fom_system_t & fomSystemObj) const
+  create(const fom_system_t & fomSystemObj)
   {
     galerkin_velocity_t result(extents_[0],extents_[1]);
     ::pressio::ops::set_zero(result);
@@ -117,7 +117,7 @@ public:
   void compute(const galerkin_state_t & galerkinState,
 	       galerkin_velocity_t & galerkinRhs,
 	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & time) const
+	       const scalar_t & time)
   {
     projection_policy_t::compute(galerkinRhs, galerkinState, fomSystemObj, time);
   }
