@@ -154,7 +154,7 @@ private:
      * state at the previous step (i.e. t-dt) which is stored in galerkinPrevStates[0]
      */
     if (storedStep_ != step){
-      fomStatesMngr_.get() << galerkinPrevStates.stateAt(ode::nMinusOne());
+      fomStatesMngr_.get() << galerkinPrevStates(ode::nMinusOne());
       storedStep_ = step;
     }
   }

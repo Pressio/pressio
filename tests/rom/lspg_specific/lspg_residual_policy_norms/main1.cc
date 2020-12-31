@@ -162,7 +162,7 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
   romState(3) = 4.;
 
   // set romY_n-1 = {4,1,2,1}
-  auto &  romYnm1 = romAuxStates.stateAt(pressio::ode::nMinusOne());
+  auto &  romYnm1 = romAuxStates(pressio::ode::nMinusOne());
   romYnm1(0) = 4.;
   romYnm1(1) = 1.;
   romYnm1(2) = 2.;

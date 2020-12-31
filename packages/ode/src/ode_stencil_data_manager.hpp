@@ -49,21 +49,18 @@
 #ifndef ODE_ODE_AUX_STATES_MANAGER_HPP_
 #define ODE_ODE_AUX_STATES_MANAGER_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename T, std::size_t n>
-class AuxStatesManager;
-
-template<typename T, std::size_t n>
-class AuxStatesManager
+class AuxStencilDataManager
 {
   static_assert
   (::pressio::containers::predicates::is_wrapper<T>::value,
-   "AuxStatesManager only supports pressio containers.");
+   "AuxStencilDataManager only supports pressio containers.");
 
   static_assert
   (!::pressio::containers::predicates::is_expression<T>::value,
-   "AuxStatesManager does NOT support pressio expressions.");
+   "AuxStencilDataManager does NOT support pressio expressions.");
 
 public:
   using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
@@ -74,25 +71,20 @@ public:
       std::is_default_constructible<_T>::value, int
       > = 0
   >
-  AuxStatesManager(){};
+  AuxStencilDataManager(){};
 
   template <
     typename ... Args,
     mpl::enable_if_t<sizeof...(Args) >= 1, int > = 0
     >
-  AuxStatesManager(Args && ... args)
+  AuxStencilDataManager(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  // copy cnstr
-  AuxStatesManager(AuxStatesManager const & other) = default;
-  // copy assignment
-  AuxStatesManager & operator=(AuxStatesManager const & other) = default;
-  // move cnstr
-  AuxStatesManager(AuxStatesManager && other) = default;
-  // move assignment
-  AuxStatesManager & operator=(AuxStatesManager && other) = default;
-
-  ~AuxStatesManager() = default;
+  AuxStencilDataManager(AuxStencilDataManager const & other) = default;
+  AuxStencilDataManager & operator=(AuxStencilDataManager const & other) = default;
+  AuxStencilDataManager(AuxStencilDataManager && other) = default;
+  AuxStencilDataManager & operator=(AuxStencilDataManager && other) = default;
+  ~AuxStencilDataManager() = default;
 
 public:
   static constexpr std::size_t size() {
@@ -100,32 +92,39 @@ public:
   }
 
   // n-1
-  T & refStateAt(ode::nMinusOne tag){ return data_(0); }
-  T const & cRefStateAt(ode::nMinusOne tag) const{ return data_(0); }
-  T & stateAt(ode::nMinusOne tag){ return data_(0); }
-  T const & stateAt(ode::nMinusOne tag) const{ return data_(0); }
+  T & operator()(ode::nMinusOne tag){ return data_(0); }
+  T const & operator()(ode::nMinusOne tag) const{ return data_(0); }
+  // T & stateAt(ode::nMinusOne tag){ return data_(0); }
+  // T const & stateAt(ode::nMinusOne tag) const{ return data_(0); }
 
   // n-2
-  T & refStateAt(ode::nMinusTwo tag){ return data_(1); }
-  T const & cRefStateAt(ode::nMinusTwo tag) const{ return data_(1); }
-  T & stateAt(ode::nMinusTwo tag){ return data_(1); }
-  T const & stateAt(ode::nMinusTwo tag) const{ return data_(1); }
+  T & operator()(ode::nMinusTwo tag){ return data_(1); }
+  T const & operator()(ode::nMinusTwo tag) const{ return data_(1); }
+  // T & stateAt(ode::nMinusTwo tag){ return data_(1); }
+  // T const & stateAt(ode::nMinusTwo tag) const{ return data_(1); }
 
   // n-3
-  T & refStateAt(ode::nMinusThree tag){ return data_(2); }
-  T const & cRefStateAt(ode::nMinusThree tag) const{ return data_(2); }
-  T & stateAt(ode::nMinusThree tag){ return data_(2); }
-  T const & stateAt(ode::nMinusThree tag) const{ return data_(2); }
+  T & operator()(ode::nMinusThree tag){ return data_(2); }
+  T const & operator()(ode::nMinusThree tag) const{ return data_(2); }
+  // T & stateAt(ode::nMinusThree tag){ return data_(2); }
+  // T const & stateAt(ode::nMinusThree tag) const{ return data_(2); }
 
   // n-4
-  T & refStateAt(ode::nMinusFour tag){ return data_(3); }
-  T const & cRefStateAt(ode::nMinusFour tag) const{ return data_(3); }
-  T & stateAt(ode::nMinusFour tag){ return data_(3); }
-  T const & stateAt(ode::nMinusFour tag) const{ return data_(3); }
+  T & operator()(ode::nMinusFour tag){ return data_(3); }
+  T const & operator()(ode::nMinusFour tag) const{ return data_(3); }
+  // T & stateAt(ode::nMinusFour tag){ return data_(3); }
+  // T const & stateAt(ode::nMinusFour tag) const{ return data_(3); }
 
 private:
   data_type data_;
 };
+}// end namespace impl
+
+template<typename T, std::size_t n>
+using AuxStatesManager = impl::AuxStencilDataManager<T, n>;
+
+template<typename T, std::size_t n>
+using AuxRhsManager = impl::AuxStencilDataManager<T, n>;
 
 }}//end namespace pressio::ode
 #endif  // ODE_ODE_AUX_STATES_MANAGER_HPP_

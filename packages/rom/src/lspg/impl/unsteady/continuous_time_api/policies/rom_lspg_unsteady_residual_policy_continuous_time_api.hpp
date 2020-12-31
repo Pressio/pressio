@@ -184,7 +184,7 @@ private:
      * the state at the previous step (i.e. t-dt)
      */
     if (storedStep_ != timeStep){
-      fomStatesMngr_.get() << romPrevStates.stateAt(ode::nMinusOne());
+      fomStatesMngr_.get() << romPrevStates(ode::nMinusOne());
       storedStep_ = timeStep;
     }
 

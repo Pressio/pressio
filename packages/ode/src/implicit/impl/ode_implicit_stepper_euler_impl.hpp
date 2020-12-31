@@ -150,7 +150,7 @@ public:
       "Invalid solver for BDF1 stepper");
 
     using nm1 = ode::nMinusOne;
-    auto & odeState_nm1 = this->auxStates_.stateAt(nm1());
+    auto & odeState_nm1 = this->auxStates_(nm1());
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -163,7 +163,7 @@ public:
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeState to that
-      auto & rollBackState = this->auxStates_.stateAt(ode::nMinusOne());
+      auto & rollBackState = this->auxStates_(ode::nMinusOne());
       ::pressio::ops::deep_copy(odeState, rollBackState);
 
       // now throw
@@ -186,7 +186,7 @@ public:
       "Invalid solver for BDF1 stepper");
 
     using nm1 = ode::nMinusOne;
-    auto & odeState_nm1 = this->auxStates_.stateAt(nm1());
+    auto & odeState_nm1 = this->auxStates_(nm1());
     this->dt_ = dt;
     this->t_ = time;
     this->step_ = step;
@@ -200,7 +200,7 @@ public:
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeState to that
-      auto & rollBackState = this->auxStates_.stateAt(ode::nMinusOne());
+      auto & rollBackState = this->auxStates_(ode::nMinusOne());
       ::pressio::ops::deep_copy(odeState, rollBackState);
 
       // now throw
