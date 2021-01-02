@@ -57,20 +57,19 @@ using step_t = int32_t;
 //! Default type for the order of a stepper
 using stepper_order_t = int32_t;
 
-// this is used to set implicit stepper order when
-// the user chooses the arbitrary one
+// this is used to set implicit stepper order
+// when the user chooses the arbitrary one
 template <types::stepper_order_t valueIn>
 struct StepperOrder{
   static constexpr types::stepper_order_t value = valueIn;
 };
 
-// this is used to set the total number of states needed
-// for the stepper
+// this is used to set the TOTAL number of states
+// when the user chooses the arbitrary one
 template <std::size_t valueIn>
 struct StepperTotalNumberOfStates{
   static constexpr std::size_t value = valueIn;
 };
-
 
 }}} // end of namespace pressio::ode::types
 #endif  // ODE_ODE_TYPES_HPP_

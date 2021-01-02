@@ -59,6 +59,14 @@ struct constants
   static constexpr scalar_t one()   { return static_cast<scalar_t>(1);  }
   static constexpr scalar_t two()   { return static_cast<scalar_t>(2);  }
   static constexpr scalar_t three() { return static_cast<scalar_t>(3);  }
+  static constexpr scalar_t four()  { return static_cast<scalar_t>(4);  }
+  static constexpr scalar_t oneHalf() { return one()/two(); }
+  static constexpr scalar_t negOneHalf() { return negOne()/two(); }
+
+  static constexpr scalar_t oneOvThree() { return one()/three(); }
+  static constexpr scalar_t twoOvThree() { return two()/three(); }
+  static constexpr scalar_t fourOvThree() { return four()/three(); }
+
 };
 
 }} // end of namespace pressio::utils

@@ -54,6 +54,7 @@ namespace pressio{ namespace ode{ namespace implicitmethods{
 struct Undefined{};
 struct BDF1{};
 struct BDF2{};
+struct CrankNicolson{};
 
 using Euler = BDF1;
 
@@ -62,5 +63,5 @@ using Euler = BDF1;
 // anything since the user assembles the time-discrete operators
 struct Arbitrary{};
 
-}}} 
+}}}
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_

@@ -5,6 +5,7 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
   add_subdirectory(eigen_implicit_euler_observer)
   add_subdirectory(eigen_implicit_bdf2)
   add_subdirectory(eigen_implicit_bdf2_observer)
+  add_subdirectory(eigen_implicit_crank_nicolson)
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)

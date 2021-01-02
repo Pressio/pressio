@@ -57,7 +57,8 @@ template<
   typename system_type,
   typename velocity_type,
   typename velocity_policy_type,
-  typename ops_t
+  typename ops_t,
+  bool is_standard_policy
   >
 class ExplicitRungeKutta4Stepper
 {
@@ -67,16 +68,10 @@ public:
   static constexpr types::stepper_order_t order_value = 4;
   using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
 
-  static constexpr bool using_standard_policy =
-    std::is_same<
-    velocity_policy_type,
-    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_type>
-    >::value;
-
 private:
   std::reference_wrapper<const system_type> systemObj_;
   ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
-  velocity_storage_t veloAuxStorage_;
+  velocity_storage_t velocities_;
   state_type tmpState_;
   const ops_t * udOps_ = nullptr;
 
@@ -88,8 +83,6 @@ public:
   ExplicitRungeKutta4Stepper & operator=(ExplicitRungeKutta4Stepper && other)  = delete;
   ~ExplicitRungeKutta4Stepper() = default;
 
-  // the following cnstr is enabled if we are using pressio ops
-  // cnstr enabled if we are using pressio ops
   template <
     typename _ops_t = ops_t,
     mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
@@ -99,11 +92,10 @@ public:
 			     const mpl::remove_cvref_t<velocity_policy_type> & policy)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       tmpState_{state}
   {}
 
-  // the following cnstr is enabled if we are using user-defined ops
   template <
     typename _ops_t = ops_t,
     mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
@@ -114,33 +106,33 @@ public:
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}
 
   // only enabled if policy standard and using pressio ops
   template <
-    bool _using_standard_policy = using_standard_policy,
+    bool _is_standard_policy = is_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      _using_standard_policy and std::is_void<_ops_t>::value,
+      _is_standard_policy and std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
     : systemObj_(systemObj),
       policy_(),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       tmpState_{state}
   {}
 
   // only enabled if policy standard and user-defined ops
   template <
-    bool _using_standard_policy = using_standard_policy,
+    bool _is_standard_policy = is_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      _using_standard_policy and !std::is_void<_ops_t>::value,
+      _is_standard_policy and !std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitRungeKutta4Stepper(const state_type & state,
@@ -148,7 +140,7 @@ public:
 			     const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
   {}
@@ -159,17 +151,17 @@ public:
     return order_value;
   }
 
-  void doStep(state_type & stateInOut,
+  void doStep(state_type & odeSolution,
   	      const scalar_type & t,
   	      const scalar_type & dt,
   	      const types::step_t & step)
   {
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
 
-    auto & auxRhs0 = veloAuxStorage_(0);
-    auto & auxRhs1 = veloAuxStorage_(1);
-    auto & auxRhs2 = veloAuxStorage_(2);
-    auto & auxRhs3 = veloAuxStorage_(3);
+    auto & rhs0 = velocities_(0);
+    auto & rhs1 = velocities_(1);
+    auto & rhs2 = velocities_(2);
+    auto & rhs3 = velocities_(3);
 
     constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
     constexpr auto three  = ::pressio::utils::constants<scalar_type>::three();
@@ -180,22 +172,22 @@ public:
     const scalar_type dt6 = dt / six;
     const scalar_type dt3 = dt / three;
 
-    // stage 1: ytmp = y + auxRhs0*dt_half;
-    policy_.get().compute(stateInOut, auxRhs0, systemObj_.get(), t);
-    this->stage_update_impl(tmpState_, stateInOut, auxRhs0, dt_half);
+    // stage 1: ytmp = y + rhs0*dt_half;
+    policy_.get().compute(odeSolution, rhs0, systemObj_.get(), t);
+    this->stage_update_impl(tmpState_, odeSolution, rhs0, dt_half);
 
-    // stage 2: ytmp = y + auxRhs1*dt_half;
-    policy_.get().compute(tmpState_, auxRhs1, systemObj_.get(), t_phalf);
-    this->stage_update_impl(tmpState_, stateInOut, auxRhs1, dt_half);
+    // stage 2: ytmp = y + rhs1*dt_half;
+    policy_.get().compute(tmpState_, rhs1, systemObj_.get(), t_phalf);
+    this->stage_update_impl(tmpState_, odeSolution, rhs1, dt_half);
 
-    // stage 3: ytmp = y + auxRhs2*dt;
-    policy_.get().compute(tmpState_, auxRhs2, systemObj_.get(), t_phalf);
-    this->stage_update_impl(tmpState_, stateInOut, auxRhs2, dt);
+    // stage 3: ytmp = y + rhs2*dt;
+    policy_.get().compute(tmpState_, rhs2, systemObj_.get(), t_phalf);
+    this->stage_update_impl(tmpState_, odeSolution, rhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_.get().compute(tmpState_, auxRhs3, systemObj_.get(), t + dt);
-    this->stage_update_impl(stateInOut, auxRhs0, auxRhs1, auxRhs2, auxRhs3, dt6, dt3);
-  }//end doStep
+    policy_.get().compute(tmpState_, rhs3, systemObj_.get(), t + dt);
+    this->stage_update_impl(odeSolution, rhs0, rhs1, rhs2, rhs3, dt6, dt3);
+  }
 
 private:
   /* use pressio ops  */

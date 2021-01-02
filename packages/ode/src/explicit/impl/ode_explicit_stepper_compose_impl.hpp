@@ -87,23 +87,23 @@ struct UserDefinedOpsFilter<
 template<typename tag>
 struct ImplSelector
 {
-  template<typename ...Args> using type = void;
+  template<bool, typename ...Args> using type = void;
 };
 
 template<>
 struct ImplSelector<::pressio::ode::explicitmethods::Euler>
 {
-  template<typename ...Args>
-  using type =
-    ::pressio::ode::explicitmethods::impl::ExplicitEulerStepper<Args...>;
+  template<bool is_standard_policy, typename ...Args>
+  using type = ::pressio::ode::explicitmethods::impl::ExplicitEulerStepper
+    <Args..., is_standard_policy>;
 };
 
 template<>
 struct ImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
 {
-  template<typename ...Args>
-  using type =
-    ::pressio::ode::explicitmethods::impl::ExplicitRungeKutta4Stepper<Args...>;
+  template<bool is_standard_policy, typename ...Args>
+  using type = ::pressio::ode::explicitmethods::impl::ExplicitRungeKutta4Stepper
+    <Args..., is_standard_policy>;
 };
 
 // tag, state_type, system_t
@@ -141,6 +141,8 @@ struct compose
     ::pressio::ode::constraints::explicit_velocity_policy, Args...>;
   using velocity_policy_t =
     ::pressio::mpl::variadic::at_or_t<standard_velocity_policy_t, ic3::value, Args...>;
+  static constexpr bool is_standard_policy = std::is_same
+    <standard_velocity_policy_t, velocity_policy_t>::value;
 
   // check for user-defined ops
   using ops_t =
@@ -151,9 +153,13 @@ struct compose
     mpl::conditional_t<
     std::is_same<standard_velocity_policy_t, velocity_policy_t>::value,
     typename ImplSelector<tag>::template type<
-      scalar_t, state_t, system_t, velocity_t, velocity_policy_t, ops_t>,
+      is_standard_policy, scalar_t, state_t, system_t,
+      velocity_t, velocity_policy_t, ops_t
+      >,
     typename ImplSelector<tag>::template type<
-      scalar_t, state_t, system_t, velocity_t, const velocity_policy_t &, ops_t>
+      is_standard_policy, scalar_t, state_t, system_t,
+      velocity_t, const velocity_policy_t &, ops_t
+      >
     >;
 };
 

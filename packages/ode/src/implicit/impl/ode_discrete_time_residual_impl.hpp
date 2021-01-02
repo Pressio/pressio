@@ -51,58 +51,93 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-// in all functions below:
-// - on input R contains the application RHS, i.e. if the system is
-// expressed as dudt = f(x,u,...), then on input R contains f(t_n, y_n, ...)
-// - on output, R contains the time-discrete residual
+/*
+  compute the BDF1 residual:
+  R(y_n+1) = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
 
+  - on input R contains the application RHS, i.e. on input R = f(t_n+1, y_n+1, ...)
+  - on output, R contains the time-discrete residual
+*/
 template <
   typename state_type,
   typename residual_type,
-  typename pre_states_type,
+  typename aux_states_type,
   typename scalar_type
   >
-void discrete_time_residual(const state_type	& odeCurrentState,
+void discrete_time_residual(const state_type & y_np1,
 			    residual_type & R,
-			    const pre_states_type & prevStates,
+			    const aux_states_type & auxStates,
 			    const scalar_type & dt,
 			    ::pressio::ode::implicitmethods::Euler)
 {
-  using nm1 = ode::nMinusOne;
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  constexpr auto cnm1 = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_;
-  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-  // R = y_n - y_n-1 - dt*f()
-  ::pressio::ops::update(R, cf, odeCurrentState, cn, prevStates.stateAt(nm1()), cnm1);
+  const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  ::pressio::ops::update(R, cf, y_np1, cnp1, auxStates(::pressio::ode::n()), cn);
 }
 
+/*
+  compute the BDF1 residual:
+  R(y_n+1) = y_n+1 - (4/3)*y_n + (1/3)*y_n-1 - (2/3)*dt*f(t_n+1, y_n+1)
+
+  - on input R contains the application RHS, i.e. on input R = f(t_n+1, y_n+1, ...)
+  - on output, R contains the time-discrete residual
+*/
 template <
   typename state_type,
   typename residual_type,
-  typename pre_states_type,
+  typename aux_states_type,
   typename scalar_type
   >
-void discrete_time_residual(const state_type	& odeCurrentState,
+void discrete_time_residual(const state_type	& y_np1,
 			    residual_type & R,
-			    const pre_states_type & prevStates,
+			    const aux_states_type & auxStates,
 			    const scalar_type & dt,
 			    ::pressio::ode::implicitmethods::BDF2)
 {
   using nm1 = ode::nMinusOne;
-  using nm2 = ode::nMinusTwo;
-
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
-  constexpr auto cnm2 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_;
-  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  const auto cf	      = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
-  // compute: R = y_n - 4/3 * y_n-1 + 1/3 * y_n-2 - 2/3 * dt * f(y_n, t_n)
-  // R contains already f(y_n,t_n) so we can just update R by doing
-  // R = -dt*2/3*R + y_n -4/3*y_n-1 + 1/3*y_n-2
-  ::pressio::ops::update(R, cf,
-			 odeCurrentState, cn,
-			 prevStates.stateAt(nm1()), cnm1,
-			 prevStates.stateAt(nm2()), cnm2);
+  ::pressio::ops::update(R, cf, y_np1, cnp1,
+			 auxStates(::pressio::ode::n()), cn,
+			 auxStates(nm1()), cnm1);
+}
+
+/*
+  compute the CrankNicolson residual:
+  R(y_n+1) = y_n+1 - y_n - 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
+
+  - on input R contains f(t_n+1, y_n+1)
+  - on output, R contains the time-discrete residual
+*/
+template <
+  typename state_type,
+  typename residual_type,
+  typename aux_states_type,
+  typename rhs_t,
+  typename scalar_type
+  >
+void discrete_time_residual(const state_type & y_np1,
+			    residual_type & R,
+			    const aux_states_type & auxStates,
+			    const rhs_t & f_n,
+			    const scalar_type & dt,
+			    ::pressio::ode::implicitmethods::CrankNicolson)
+{
+  using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
+  constexpr auto cnp1  = cnst::c_np1_;
+  constexpr auto cn    = cnst::c_n_;
+  constexpr auto cfn   = cnst::c_fn_;
+  const auto cfnDt   = cfn*dt;
+  const auto cfnp1Dt = cfn*dt;
+
+  ::pressio::ops::update(R, cfnp1Dt,
+			 y_np1, cnp1,
+			 auxStates(::pressio::ode::n()), cn,
+			 f_n, cfnDt);
 }
 
 }}}//end namespace pressio::ode::impl

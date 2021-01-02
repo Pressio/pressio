@@ -46,13 +46,13 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
-#define ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_DISCTIME_POLICY_HPP_
+#define ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_DISCTIME_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename jacobian_type>
-class JacobianStandardPolicy
+class JacobianStandardDiscreteTimePolicy
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,140 +63,110 @@ class JacobianStandardPolicy
    "Invalid jacobian type for standard jacobian policy");
 
 public:
-  JacobianStandardPolicy() = default;
-  JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
-  JacobianStandardPolicy & operator=(const JacobianStandardPolicy &) = default;
-  JacobianStandardPolicy(JacobianStandardPolicy &&) = default;
-  JacobianStandardPolicy & operator=(JacobianStandardPolicy &&) = default;
-  ~JacobianStandardPolicy() = default;
+  JacobianStandardDiscreteTimePolicy() = default;
+  JacobianStandardDiscreteTimePolicy(const JacobianStandardDiscreteTimePolicy &) = default;
+  JacobianStandardDiscreteTimePolicy & operator=(const JacobianStandardDiscreteTimePolicy &) = default;
+  JacobianStandardDiscreteTimePolicy(JacobianStandardDiscreteTimePolicy &&) = default;
+  JacobianStandardDiscreteTimePolicy & operator=(JacobianStandardDiscreteTimePolicy &&) = default;
+  ~JacobianStandardDiscreteTimePolicy() = default;
 
 public:
   template <typename system_type>
-  mpl::enable_if_t<
-  ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-  jacobian_type
-  >
-  create(const system_type & system) const
+  jacobian_type create(const system_type & system) const
   {
-    jacobian_type JJ(system.createJacobian());
-    return JJ;
-  }
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+       system_type>::value, "system type must meet the discrete time api");
 
-  template <typename system_type>
-  mpl::enable_if_t<
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-    jacobian_type
-    >
-  create(const system_type & system) const
-  {
     jacobian_type JJ(system.createDiscreteTimeJacobian());
     return JJ;
   }
 
+  //-------------------------------
+  // specialize for n == 1 aux states
+  //-------------------------------
   template <
     typename ode_tag, typename prev_states_mgr_type,
     typename system_type, typename scalar_type
     >
-  mpl::enable_if_t<
-    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value
-    >
+  mpl::enable_if_t<prev_states_mgr_type::size()==1>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+	  const prev_states_mgr_type & auxStates,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t &  step,
 	  jacobian_type & J) const
   {
-    system.jacobian( *odeCurrentState.data(), t, *J.data());
-    ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
-  }
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+       system_type>::value, "system type must meet the discrete time api");
 
-  //-------------------------------
-  // specialize for n == 1
-  //-------------------------------
-  template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==1 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
-  compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
-	  const system_type & system,
-	  const scalar_type & t,
-	  const scalar_type & dt,
-	  const types::step_t &  step,
-	  jacobian_type & J) const
-  {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & yn = auxStates(ode::n());
 
     system.template discreteTimeJacobian(step, t, dt,
 					 *J.data(),
 					 *odeCurrentState.data(),
-					 *ynm1.data() );
+					 *yn.data() );
   }
 
   //-------------------------------
-  // specialize for n == 2
+  // specialize for n == 2 aux states
   //-------------------------------
   template <
     typename ode_tag, typename prev_states_mgr_type,
     typename system_type, typename scalar_type
     >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==2 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
+  mpl::enable_if_t<prev_states_mgr_type::size()==2>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+	  const prev_states_mgr_type & auxStates,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+       system_type>::value, "system type must meet the discrete time api");
 
-    system.template discreteTimeJacobian(step, t, dt,
-					 *J.data(),
-					 *odeCurrentState.data(),
-					 (*ynm1.data() ),
-					 (*ynm2.data()) );
+    const auto & yn = auxStates(ode::n());
+    const auto & ynm1 = auxStates(ode::nMinusOne());
+
+    system.template discreteTimeJacobian(step, t, dt, *J.data(), *odeCurrentState.data(),
+					 (*yn.data() ), (*ynm1.data()) );
   }
 
   //-------------------------------
-  // specialize for n == 3
+  // specialize for n == 3 aux states
   //-------------------------------
   template <
     typename ode_tag, typename prev_states_mgr_type,
     typename system_type, typename scalar_type
     >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==3 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
+  mpl::enable_if_t<prev_states_mgr_type::size()==3>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+	  const prev_states_mgr_type & auxStates,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
-    const auto & ynm3 = prevStatesMgr.stateAt(ode::nMinusThree());
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+       system_type>::value, "system type must meet the discrete time api");
+
+    const auto & yn = auxStates(ode::n());
+    const auto & ynm1 = auxStates(ode::nMinusOne());
+    const auto & ynm2 = auxStates(ode::nMinusTwo());
 
     system.template discreteTimeJacobian(step, t, dt,
 					 *J.data(),
 					 *odeCurrentState.data(),
+					 (*yn.data()),
 					 (*ynm1.data()),
-					 (*ynm2.data()),
-					 (*ynm3.data()) );
+					 (*ynm2.data()) );
   }
 };
 

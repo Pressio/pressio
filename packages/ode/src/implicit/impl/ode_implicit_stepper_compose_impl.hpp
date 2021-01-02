@@ -51,12 +51,54 @@
 
 #include "ode_implicit_stepper_euler_impl.hpp"
 #include "ode_implicit_stepper_bdf2_impl.hpp"
+#include "ode_implicit_stepper_cranknicolson_impl.hpp"
 #include "ode_implicit_stepper_arbitrary_impl.hpp"
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
 
 template<typename tag, typename ...Args>
 struct compose;
+
+////////////////////////////////////////
+/// CRANK-NICOLSON stepper
+////////////////////////////////////////
+// 1. compose<bdf1, state_t, res_t, jac_t, system_t>;
+template<
+  typename state_type,
+  typename residual_type,
+  typename jacobian_type,
+  typename system_type
+  >
+struct compose<
+  ::pressio::ode::implicitmethods::CrankNicolson,
+  mpl::enable_if_t<
+    ::pressio::ode::constraints::implicit_state<state_type>::value and
+    ::pressio::ode::constraints::implicit_residual<residual_type>::value and
+    ::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value and
+    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value
+  >,
+  state_type, residual_type, jacobian_type, system_type>
+{
+  using scalar_t = typename state_type::traits::scalar_t;
+
+  static_assert
+  (::pressio::containers::predicates::are_scalar_compatible<
+   state_type, residual_type, jacobian_type>::value,
+   "state, residual and jacobian are not scalar compatible ");
+
+  using residual_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardCrankNicolsonPolicy<
+    state_type, residual_type>;
+  using jacobian_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardCrankNicolsonPolicy<
+    state_type, jacobian_type>;
+
+  using type = StepperCrankNicolson<
+    scalar_t, state_type, residual_type, jacobian_type,
+    system_type, residual_policy_t, jacobian_policy_t,
+    true // policies are standard
+    >;
+};
 
 ////////////////////////////////////////
 /// BDF1 stepper
@@ -87,26 +129,33 @@ struct compose<
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
-    residual_type, jacobian_type>::value,
-    "state, residual and jacobian are not scalar compatible ");
+  using scalar_t = typename state_type::traits::scalar_t;
+  static_assert
+  (::pressio::containers::predicates::are_scalar_compatible<
+   state_type, residual_type, jacobian_type>::value,
+   "state, residual and jacobian are not scalar compatible ");
 
-  using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+  using residual_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardBdfPolicy<
     state_type, residual_type>;
-  using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+  using jacobian_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardBdfPolicy<
     state_type, jacobian_type>;
 
   using type = StepperBDF1<
     scalar_t, state_type, residual_type, jacobian_type,
-    system_type, residual_policy_t, jacobian_policy_t>;
+    system_type, residual_policy_t, jacobian_policy_t,
+    true // policies are standard
+    >;
 };
 
 // 2.
 // when we have custom policies, we do not check the system, because in general,
-// one could not use it since the stepper only knows about the policies, and these can themselves
-// contain the system object. Pressio in this case, does not need to checck if system has certain requirements.
-// it is user's responsibility to make sure the policies are doing the right thing.
+// one could not use it since the stepper only knows about the policies,
+// and these can themselves contain the system object.
+// in this case, we dont need to checck if system has certain requirements.
+// it is user's responsibility to make sure the policies
+// are doing the right thing.
 template<
   typename state_type,
   typename residual_type,
@@ -130,17 +179,21 @@ struct compose<
       jacobian_policy_type, state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
   >,
-  state_type, residual_type, jacobian_type, system_type, residual_policy_type, jacobian_policy_type>
+  state_type, residual_type, jacobian_type,
+  system_type, residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  using scalar_t = typename state_type::traits::scalar_t;
 
   static_assert
-  (::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  (::pressio::containers::predicates::are_scalar_compatible
+   <state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
 
   using type = StepperBDF1<
     scalar_t, state_type, residual_type, jacobian_type,
-    system_type, const residual_policy_type &, const jacobian_policy_type& >;
+    system_type, const residual_policy_type &, const jacobian_policy_type&,
+    false // policies are custom
+    >;
 };
 
 // 3. when we pass a void before policies in place of aux stepper
@@ -160,23 +213,29 @@ struct compose<
     and
     ::pressio::ode::constraints::implicit_euler_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
-      typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
+      typename ::pressio::containers::details::traits<state_type>::scalar_t
+      >::value
     and
     ::pressio::ode::constraints::implicit_euler_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
-      typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
+      typename ::pressio::containers::details::traits<state_type>::scalar_t
+      >::value
   >,
-  state_type, residual_type, jacobian_type, system_type, void, residual_policy_type, jacobian_policy_type>
+  state_type, residual_type, jacobian_type,
+  system_type, void, residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  using scalar_t = typename state_type::traits::scalar_t;
 
   static_assert
-  (::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  (::pressio::containers::predicates::are_scalar_compatible
+   <state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
 
   using type = StepperBDF1<
     scalar_t, state_type, residual_type, jacobian_type,
-    system_type, const residual_policy_type &, const jacobian_policy_type &>;
+    system_type, const residual_policy_type &, const jacobian_policy_type &,
+    false // policies are custom
+    >;
 };
 
 
@@ -204,20 +263,25 @@ struct compose<
   >,
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
-    residual_type, jacobian_type>::value,
-    "state, residual and jacobian are not scalar compatible ");
+  using scalar_t = typename state_type::traits::scalar_t;
+  static_assert
+  (::pressio::containers::predicates::are_scalar_compatible<
+   state_type, residual_type, jacobian_type>::value,
+   "state, residual and jacobian are not scalar compatible ");
 
-  using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+  using residual_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardBdfPolicy<
     state_type, residual_type>;
-  using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+  using jacobian_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardBdfPolicy<
     state_type, jacobian_type>;
 
   using type = StepperBDF2<
     scalar_t, state_type, residual_type, jacobian_type,
     system_type, aux_stepper_t,
-    residual_policy_t, jacobian_policy_t>;
+    residual_policy_t, jacobian_policy_t,
+    true // policies are standard
+    >;
 };
 
 template<
@@ -249,15 +313,18 @@ struct compose<
   system_type, aux_stepper_t,
   residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  using scalar_t = typename state_type::traits::scalar_t;
   static_assert
-  (::pressio::containers::predicates::are_scalar_compatible<state_type, residual_type, jacobian_type>::value,
+  (::pressio::containers::predicates::are_scalar_compatible
+   <state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
 
   using type = StepperBDF2<
     scalar_t, state_type, residual_type, jacobian_type,
     system_type, aux_stepper_t,
-    const residual_policy_type &, const jacobian_policy_type &>;
+    const residual_policy_type &, const jacobian_policy_type &,
+    false // policies are custom
+    >;
 };
 
 
@@ -266,6 +333,7 @@ struct compose<
 ////////////////////////////////////////
 
 // compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
+// if we are here, it means we only need auxiliary states and not auxiliary rhs
 template<
   typename state_type,
   typename residual_type,
@@ -286,23 +354,29 @@ struct compose<
   >,
   state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<state_type,
-    residual_type, jacobian_type>::value,
-    "state, residual and jacobian are not scalar compatible ");
+  using scalar_t = typename state_type::traits::scalar_t;
+  static_assert
+  (::pressio::containers::predicates::are_scalar_compatible<
+   state_type, residual_type, jacobian_type>::value,
+   "state, residual and jacobian are not scalar compatible ");
 
-  using residual_policy_t = ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
+  using residual_policy_t =
+    ::pressio::ode::implicitmethods::policy::ResidualStandardDiscreteTimePolicy<
     state_type, residual_type>;
-  using jacobian_policy_t = ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
+  using jacobian_policy_t =
+    ::pressio::ode::implicitmethods::policy::JacobianStandardDiscreteTimePolicy<
     state_type, jacobian_type>;
 
   using type = StepperArbitrary<
     scalar_t, state_type, residual_type, jacobian_type,
     system_type, order_setter_t, tot_n_setter_t,
-    residual_policy_t, jacobian_policy_t>;
+    residual_policy_t, jacobian_policy_t,
+    true // policies are standard
+    >;
 };
 
 // compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
+// if we are here, it means we only need auxiliary states and not auxiliary rhs
 template<
   typename state_type,
   typename residual_type,
@@ -323,30 +397,35 @@ struct compose<
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
     and
     ::pressio::ode::constraints::implicit_residual_policy<
-      residual_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1,
+      residual_policy_type, ::pressio::ode::implicitmethods::Arbitrary,
+      tot_n_setter_t::value - 1, // number of wanted auxiliary states
+      0, // number of wanted auxiliary rhs (this is because of the template specialization)
       state_type, residual_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
     and
     ::pressio::ode::constraints::implicit_jacobian_policy<
-      jacobian_policy_type, ::pressio::ode::implicitmethods::Arbitrary, tot_n_setter_t::value - 1,
+      jacobian_policy_type, ::pressio::ode::implicitmethods::Arbitrary,
+      tot_n_setter_t::value - 1, // number of wanted auxiliary states
+      0, // number of wanted auxiliary rhs (this is because of the template specialization)
       state_type, jacobian_type, system_type,
       typename ::pressio::containers::details::traits<state_type>::scalar_t>::value
   >,
   state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t,
   residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename ::pressio::containers::details::traits<state_type>::scalar_t;
+  using scalar_t = typename state_type::traits::scalar_t;
   static_assert
-  (::pressio::containers::predicates::are_scalar_compatible<state_type,
-   residual_type, jacobian_type>::value,
+  (::pressio::containers::predicates::are_scalar_compatible<
+   state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
 
   using type = StepperArbitrary<
     scalar_t, state_type, residual_type, jacobian_type,
     system_type, order_setter_t, tot_n_setter_t,
-    const residual_policy_type &, const jacobian_policy_type &>;
+    const residual_policy_type &, const jacobian_policy_type &,
+    false // policies are custom
+    >;
 };
-
 
 }}}} // end namespace pressio::ode::explicitmethods::impl
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_

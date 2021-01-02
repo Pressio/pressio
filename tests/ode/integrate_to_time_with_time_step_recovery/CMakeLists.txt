@@ -11,5 +11,5 @@ add_serial_exe_and_test(arbitrary_stepper_3_aux_state_with_failure
 
 add_serial_exe_and_test(bdf1_stepper_with_failure
   ode bdf1_stepper_with_failure.cc "PASSED")
-add_serial_exe_and_test(bdf2_stepper_with_failure
-  ode bdf2_stepper_with_failure.cc "PASSED")
+# add_serial_exe_and_test(bdf2_stepper_with_failure
+#   ode bdf2_stepper_with_failure.cc "PASSED")

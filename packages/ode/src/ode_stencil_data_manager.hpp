@@ -51,19 +51,19 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<typename T, std::size_t n>
-class AuxStencilDataManager
+template<typename T, std::size_t _size>
+class StencilDataManager
 {
   static_assert
   (::pressio::containers::predicates::is_wrapper<T>::value,
-   "AuxStencilDataManager only supports pressio containers.");
+   "StencilDataManager only supports pressio containers.");
 
   static_assert
   (!::pressio::containers::predicates::is_expression<T>::value,
-   "AuxStencilDataManager does NOT support pressio expressions.");
+   "StencilDataManager does NOT support pressio expressions.");
 
 public:
-  using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
+  using data_type = ::pressio::containers::IndexableStaticCollection<T, _size>;
 
   template <
     typename _T = T,
@@ -71,49 +71,45 @@ public:
       std::is_default_constructible<_T>::value, int
       > = 0
   >
-  AuxStencilDataManager(){};
+  StencilDataManager(){};
 
   template <
     typename ... Args,
     mpl::enable_if_t<sizeof...(Args) >= 1, int > = 0
     >
-  AuxStencilDataManager(Args && ... args)
+  StencilDataManager(Args && ... args)
     : data_( std::forward<Args>(args)... ){}
 
-  AuxStencilDataManager(AuxStencilDataManager const & other) = default;
-  AuxStencilDataManager & operator=(AuxStencilDataManager const & other) = default;
-  AuxStencilDataManager(AuxStencilDataManager && other) = default;
-  AuxStencilDataManager & operator=(AuxStencilDataManager && other) = default;
-  ~AuxStencilDataManager() = default;
+  StencilDataManager(StencilDataManager const & other) = default;
+  StencilDataManager & operator=(StencilDataManager const & other) = default;
+  StencilDataManager(StencilDataManager && other) = default;
+  StencilDataManager & operator=(StencilDataManager && other) = default;
+  ~StencilDataManager() = default;
 
 public:
   static constexpr std::size_t size() {
-    return data_type::size();
+    return _size;
   }
 
+  // n
+  T & operator()(ode::n){ return data_(0); }
+  T const & operator()(ode::n) const{ return data_(0); }
+
   // n-1
-  T & operator()(ode::nMinusOne tag){ return data_(0); }
-  T const & operator()(ode::nMinusOne tag) const{ return data_(0); }
-  // T & stateAt(ode::nMinusOne tag){ return data_(0); }
-  // T const & stateAt(ode::nMinusOne tag) const{ return data_(0); }
+  T & operator()(ode::nMinusOne){ return data_(1); }
+  T const & operator()(ode::nMinusOne) const{ return data_(1); }
 
   // n-2
-  T & operator()(ode::nMinusTwo tag){ return data_(1); }
-  T const & operator()(ode::nMinusTwo tag) const{ return data_(1); }
-  // T & stateAt(ode::nMinusTwo tag){ return data_(1); }
-  // T const & stateAt(ode::nMinusTwo tag) const{ return data_(1); }
+  T & operator()(ode::nMinusTwo){ return data_(2); }
+  T const & operator()(ode::nMinusTwo) const{ return data_(2); }
 
   // n-3
-  T & operator()(ode::nMinusThree tag){ return data_(2); }
-  T const & operator()(ode::nMinusThree tag) const{ return data_(2); }
-  // T & stateAt(ode::nMinusThree tag){ return data_(2); }
-  // T const & stateAt(ode::nMinusThree tag) const{ return data_(2); }
+  T & operator()(ode::nMinusThree){ return data_(3); }
+  T const & operator()(ode::nMinusThree ) const{ return data_(3); }
 
   // n-4
-  T & operator()(ode::nMinusFour tag){ return data_(3); }
-  T const & operator()(ode::nMinusFour tag) const{ return data_(3); }
-  // T & stateAt(ode::nMinusFour tag){ return data_(3); }
-  // T const & stateAt(ode::nMinusFour tag) const{ return data_(3); }
+  T & operator()(ode::nMinusFour){ return data_(4); }
+  T const & operator()(ode::nMinusFour) const{ return data_(4); }
 
 private:
   data_type data_;
@@ -121,10 +117,7 @@ private:
 }// end namespace impl
 
 template<typename T, std::size_t n>
-using AuxStatesManager = impl::AuxStencilDataManager<T, n>;
-
-template<typename T, std::size_t n>
-using AuxRhsManager = impl::AuxStencilDataManager<T, n>;
+using AuxStatesManager = impl::StencilDataManager<T, n>;
 
 }}//end namespace pressio::ode
 #endif  // ODE_ODE_AUX_STATES_MANAGER_HPP_

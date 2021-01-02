@@ -123,8 +123,12 @@
 #include "ode/src/implicit/ode_implicit_constants.hpp"
 #include "ode/src/implicit/impl/ode_discrete_time_residual_impl.hpp"
 #include "ode/src/implicit/impl/ode_discrete_time_jacobian_impl.hpp"
-#include "ode/src/implicit/standard_policies/ode_implicit_residual_standard_policy.hpp"
-#include "ode/src/implicit/standard_policies/ode_implicit_jacobian_standard_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_residual_bdf_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_jacobian_bdf_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_residual_crank_nicolson_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_jacobian_crank_nicolson_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_discrete_time_residual_policy.hpp"
+#include "ode/src/implicit/impl/standard_policies/ode_implicit_discrete_time_jacobian_policy.hpp"
 #include "ode/src/implicit/ode_implicit_stepper.hpp"
 
 // --------------

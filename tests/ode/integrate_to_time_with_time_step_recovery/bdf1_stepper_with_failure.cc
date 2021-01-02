@@ -8,8 +8,6 @@ struct MyApp
   using velocity_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 
-  mutable int counts = 0;
-
 public:
   velocity_type createVelocity() const{
     velocity_type f(3);
@@ -27,11 +25,9 @@ public:
   {
     std::cout << "f: t=" << time << "\n";
 
-    if (std::abs(time-0.1) < 1e-13)
+    if (std::abs(time-0.2) < 1e-13)
     {
-      ++counts;
-      if (counts<=2)
-	throw pressio::eh::velocity_failure_unrecoverable();
+      throw pressio::eh::velocity_failure_unrecoverable();
     }
 
     f[0] = 1.;
@@ -51,14 +47,11 @@ struct MyFakeSolver
 
   MyFakeSolver(std::string & strin) : checkStr_(strin){}
 
-
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
   {
-    // this does not have any meaning, but it mimics the
-    // steps happening inside the real pressio nonlin solver
-
     ++count_;
+    std::cout << "SOLVE count = "  << count_ << std::endl;
 
     state_t R(3);
     for (int i=0; i<2; ++i)
@@ -86,34 +79,48 @@ struct MyFakeSolver
       }
     }
 
-    // for count=4, if we get here it means that we have successfully
-    // completed the second time step with failure, because it fails twice,
-    // so the end of time step ==2 corresponds to count=4
-    if (count_==4)
+    if (count_==1)
     {
-      if( std::abs(state(0)-1.4) > 1e-13 or
-    	  std::abs(state(1)-1.8) > 1e-13 or
-    	  std::abs(state(2)-2.2) > 1e-13){
-    	checkStr_ = "FAILED";
+      if( std::abs(state(0)-1.2) > 1e-13 or
+	  std::abs(state(1)-1.4) > 1e-13 or
+	  std::abs(state(2)-1.6) > 1e-13){
+	checkStr_ = "FAILED";
       }
-      if( std::abs(R(0)-0.075) > 1e-13 or
-    	  std::abs(R(1)-0.175) > 1e-13 or
-    	  std::abs(R(2)-0.25) > 1e-13){
-    	checkStr_ = "FAILED";
+      if( std::abs(R(0)-0.0) > 1e-13 or
+	  std::abs(R(1)-0.1) > 1e-13 or
+	  std::abs(R(2)-0.1) > 1e-13){
+	checkStr_ = "FAILED";
       }
     }
 
-    if (count_==5)
+    // at count==2 we have exception thrown
+
+    if (count_==3)
+    {
+      if( std::abs(state(0)-1.4) > 1e-13 or
+	  std::abs(state(1)-1.8) > 1e-13 or
+	  std::abs(state(2)-2.2) > 1e-13){
+	checkStr_ = "FAILED";
+      }
+      if( std::abs(R(0)-(1.3-1.2-0.05*1.)) > 1e-13 or
+	  std::abs(R(1)-(1.6-1.4-0.05*1.)) > 1e-13 or
+	  std::abs(R(2)-(1.9-1.6-0.05*2.)) > 1e-13)
+      {
+	checkStr_ = "FAILED";
+      }
+    }
+
+    if (count_==4)
     {
       if( std::abs(state(0)-1.6) > 1e-13 or
-    	  std::abs(state(1)-2.2) > 1e-13 or
-    	  std::abs(state(2)-2.8) > 1e-13){
-    	checkStr_ = "FAILED";
+	  std::abs(state(1)-2.2) > 1e-13 or
+	  std::abs(state(2)-2.8) > 1e-13){
+	checkStr_ = "FAILED";
       }
       if( std::abs(R(0)-0.0) > 1e-13 or
-    	  std::abs(R(1)-0.1) > 1e-13 or
-    	  std::abs(R(2)-0.1) > 1e-13){
-    	checkStr_ = "FAILED";
+	  std::abs(R(1)-0.1) > 1e-13 or
+	  std::abs(R(2)-0.1) > 1e-13){
+	checkStr_ = "FAILED";
       }
     }
   }
@@ -121,6 +128,10 @@ struct MyFakeSolver
 
 int main(int argc, char *argv[])
 {
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+
   using app_t		= MyApp;
   using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
@@ -145,8 +156,8 @@ int main(int argc, char *argv[])
 
   auto collector =
     [](const ::pressio::ode::types::step_t & step,
-		const sc_t & time,
-		const state_t & y)
+       const sc_t & time,
+       const state_t & y)
     {};
 
   std::string checkStr= "PASSED";

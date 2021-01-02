@@ -55,6 +55,7 @@ template<
   typename T,
   typename tag,
   std::size_t numPrevStates,
+  std::size_t numPrevRhs,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -73,7 +74,8 @@ template<
   typename scalar_t
   >
 struct implicit_residual_policy<
-  T, tag, numPrevStates, state_t, residual_t, system_t, scalar_t,
+  T, tag, numPrevStates, 0,
+  state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
       residual_t,
@@ -83,6 +85,7 @@ struct implicit_residual_policy<
        )
       >::value
     and
+    //
     std::is_void<
       decltype
       (
@@ -105,12 +108,12 @@ struct implicit_residual_policy<
 template<typename T, typename ... args>
 using implicit_euler_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::Euler, 1, args...>;
+  T, ::pressio::ode::implicitmethods::Euler, 1, 0, args...>;
 
 template<typename T, typename ... args>
 using implicit_bdf2_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
+  T, ::pressio::ode::implicitmethods::BDF2, 2, 0, args...>;
 
 }}} // namespace pressio::ode::constraints
 #endif  // ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

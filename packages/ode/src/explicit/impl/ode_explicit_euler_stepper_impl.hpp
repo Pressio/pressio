@@ -57,7 +57,8 @@ template<
   typename system_type,
   typename velocity_type,
   typename velocity_policy_type,
-  typename ops_t
+  typename ops_t,
+  bool is_standard_policy
   >
 class ExplicitEulerStepper
 {
@@ -66,18 +67,12 @@ public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
   static constexpr types::stepper_order_t order_value = 1;
-  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
-
-  static constexpr bool using_standard_policy =
-    std::is_same<
-    velocity_policy_type,
-    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_type>
-    >::value;
+  using vel_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 1>;
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
   ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
-  velocity_storage_t veloAuxStorage_;
+  vel_storage_t velocities_;
   const ops_t * udOps_ = nullptr;
 
 public:
@@ -98,7 +93,7 @@ public:
 		       const mpl::remove_cvref_t<velocity_policy_type> & policy)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.get().create(systemObj))
+      velocities_(policy_.get().create(systemObj))
   {}
 
   // cnstr enabled if we are using user-defined ops
@@ -112,31 +107,31 @@ public:
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(policy),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       udOps_(&udOps)
   {}
 
   // only enabled if policy standard and using pressio ops
   template <
-    bool _using_standard_policy = using_standard_policy,
+    bool _is_standard_policy = is_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      _using_standard_policy and std::is_void<_ops_t>::value,
+      _is_standard_policy and std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitEulerStepper(const state_type & state,
 		       const system_type & systemObj)
     : systemObj_(systemObj),
       policy_(),
-      veloAuxStorage_(policy_.get().create(systemObj))
+      velocities_(policy_.get().create(systemObj))
   {}
 
   // only enabled if policy standard and user-defined ops
   template <
-    bool _using_standard_policy = using_standard_policy,
+    bool _is_standard_policy = is_standard_policy,
     typename _ops_t = ops_t,
     mpl::enable_if_t<
-      _using_standard_policy and !std::is_void<_ops_t>::value,
+      _is_standard_policy and !std::is_void<_ops_t>::value,
       int > = 0
     >
   ExplicitEulerStepper(const state_type & state,
@@ -144,7 +139,7 @@ public:
 		       const _ops_t & udOps)
     : systemObj_(systemObj),
       policy_(),
-      veloAuxStorage_(policy_.get().create(systemObj)),
+      velocities_(policy_.get().create(systemObj)),
       udOps_(&udOps)
   {}
 
@@ -157,36 +152,36 @@ public:
   /* user does NOT provide custom ops, so we use ops */
   template<typename _ops_t = ops_t>
   mpl::enable_if_t< std::is_void<_ops_t>::value >
-  doStep(state_type & stateInOut,
+  doStep(state_type & odeSolution,
 	 const scalar_type & time,
 	 const scalar_type & dt,
 	 const types::step_t & step)
   {
     PRESSIOLOG_DEBUG("euler forward stepper: do step");
 
-    auto & auxRhs0 = veloAuxStorage_(0);
+    auto & rhs = velocities_(0);
     //eval RHS
-    policy_.get().compute(stateInOut, auxRhs0, systemObj_.get(), time);
+    policy_.get().compute(odeSolution, rhs, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::update(stateInOut, one, auxRhs0, dt);
+    ::pressio::ops::update(odeSolution, one, rhs, dt);
   }
 
   /* user provides custom ops */
   template<typename _ops_t = ops_t>
   mpl::enable_if_t<!std::is_void<_ops_t>::value>
-  doStep(state_type & stateInOut,
+  doStep(state_type & odeSolution,
 	 const scalar_type & time,
 	 const scalar_type & dt,
 	 const types::step_t & step)
   {
     PRESSIOLOG_DEBUG("euler forward stepper: do step with custom ops");
 
-    auto & auxRhs0 = veloAuxStorage_(0);
-    policy_.get().compute(stateInOut, auxRhs0, systemObj_.get(), time);
+    auto & rhs = velocities_(0);
+    policy_.get().compute(odeSolution, rhs, systemObj_.get(), time);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    udOps_->update(*stateInOut.data(), one, *auxRhs0.data(), dt);
+    udOps_->update(*odeSolution.data(), one, *rhs.data(), dt);
   }
 };
 

@@ -56,38 +56,39 @@ int main(int argc, char *argv[])
 		  dtRedFactor=2.;
 		};
 
-  auto collector = [&checkStr](const ::pressio::ode::types::step_t & step,
-		      const double & time,
-		      const ode_state_t & y)
-		   {
-		     if (step==1){
-		       if( std::abs(y(0)-1.1) > 1e-10 or
-			   std::abs(y(1)-2.1) > 1e-10 or
-			   std::abs(y(2)-3.1) > 1e-10)
-			 checkStr = "FAILED";
+  auto collector =
+    [&checkStr](const ::pressio::ode::types::step_t & step,
+		const double & time,
+		const ode_state_t & y)
+    {
+      if (step==1){
+	if( std::abs(y(0)-1.1) > 1e-10 or
+	    std::abs(y(1)-2.1) > 1e-10 or
+	    std::abs(y(2)-3.1) > 1e-10)
+	  checkStr = "FAILED";
 
-		       if (std::abs(time-0.1) > 1e-10) checkStr="FAILED";
-		     }
-		     if (step==3){
-		       if( std::abs(y(0)-1.25) > 1e-10 or
-			   std::abs(y(1)-2.25) > 1e-10 or
-			   std::abs(y(2)-3.25) > 1e-10)
-			 checkStr = "FAILED";
+	if (std::abs(time-0.1) > 1e-10) checkStr="FAILED";
+      }
+      if (step==3){
+	if( std::abs(y(0)-1.25) > 1e-10 or
+	    std::abs(y(1)-2.25) > 1e-10 or
+	    std::abs(y(2)-3.25) > 1e-10)
+	  checkStr = "FAILED";
 
-		       if (std::abs(time-0.25) > 1e-10) checkStr="FAILED";
-		     }
-		     if (step==5){
-		       if( std::abs(y(0)-1.375) > 1e-10 or
-			   std::abs(y(1)-2.375) > 1e-10 or
-			   std::abs(y(2)-3.375) > 1e-10)
-			 checkStr = "FAILED";
+	if (std::abs(time-0.25) > 1e-10) checkStr="FAILED";
+      }
+      if (step==5){
+	if( std::abs(y(0)-1.375) > 1e-10 or
+	    std::abs(y(1)-2.375) > 1e-10 or
+	    std::abs(y(2)-3.375) > 1e-10)
+	  checkStr = "FAILED";
 
-		       if (std::abs(time-0.375) > 1e-10) checkStr="FAILED";
-		     }
-		     // std::cout << step << " "
-		     // 	       << y(0) << " "
-		     // 	       << y(1) << std::endl;
-		   };
+	if (std::abs(time-0.375) > 1e-10) checkStr="FAILED";
+      }
+      // std::cout << step << " "
+      // 	       << y(0) << " "
+      // 	       << y(1) << std::endl;
+    };
 
   pressio::ode::advanceToTargetTimeWithTimeStepRecovery
     (stepper, y, 0., 0.5, solver, dtManager, collector);

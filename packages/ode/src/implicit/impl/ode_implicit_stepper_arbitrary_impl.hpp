@@ -60,7 +60,8 @@ template<
   typename order_setter_t,
   typename tot_n_setter_t,
   typename residual_policy_t,
-  typename jacobian_policy_t
+  typename jacobian_policy_t,
+  bool policies_are_standard
   >
 class StepperArbitrary
 {
@@ -71,22 +72,25 @@ public:
   using residual_type	= ode_residual_type;
   using jacobian_type	= ode_jacobian_type;
 
-
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
   static constexpr std::size_t numAuxStates = tot_n_setter_t::value - 1;
   using tag_name = ::pressio::ode::implicitmethods::Arbitrary;
+  using aux_states_t = ::pressio::ode::AuxStatesManager<ode_state_type, numAuxStates>;
 
-  using aux_states_t =
-    ::pressio::ode::AuxStatesManager<ode_state_type, numAuxStates>;
+private:
+  scalar_t rhsEvaluationTime_  = {};
+  scalar_t dt_ = {};
+  types::step_t stepNumber_  = {};
+  std::reference_wrapper<const system_type> systemObj_;
+  aux_states_t auxStates_;
 
-  using standard_res_policy_t =
-    ::pressio::ode::implicitmethods::policy::ResidualStandardPolicy<
-    ode_state_type, ode_residual_type>;
-  using standard_jac_policy_t =
-    ::pressio::ode::implicitmethods::policy::JacobianStandardPolicy<
-    ode_state_type, ode_jacobian_type>;
+  // state object to ensure the strong guarantee for handling excpetions
+  ode_state_type recoveryState_;
+  // policies
+  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
+  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
 
 public:
   StepperArbitrary() = delete;
@@ -111,20 +115,16 @@ public:
 
   // cstr for standard residual and jacob policies
   template <
-    typename T1 = residual_policy_t,
-    typename T2 = jacobian_policy_t,
-    ::pressio::mpl::enable_if_t<
-      std::is_default_constructible<T1>::value and
-      std::is_default_constructible<T2>::value,
-      int > = 0
+    bool _policies_are_standard = policies_are_standard,
+    ::pressio::mpl::enable_if_t<_policies_are_standard, int > = 0
     >
   StepperArbitrary(const ode_state_type & state,
                    const system_type & systemObj)
     : systemObj_{systemObj},
       auxStates_{state},
       recoveryState_{state},
-      resPolicy_{T1()},
-      jacPolicy_{T2()}
+      resPolicy_{},
+      jacPolicy_{}
   {}
 
 public:
@@ -146,22 +146,22 @@ public:
   void residual(const state_type & odeState, residual_type & R) const
   {
     resPolicy_.get().template compute
-      <tag_name>(odeState, this->auxStates_,
-		 this->systemObj_.get(),
-		 this->t_, this->dt_, this->step_, R);
+      <tag_name>(odeState, auxStates_,
+		 systemObj_.get(),
+		 rhsEvaluationTime_, dt_, stepNumber_, R);
   }
 
   void jacobian(const state_type & odeState, jacobian_type & J) const
   {
     jacPolicy_.get().template compute
-      <tag_name>(odeState, this->auxStates_,
-		 this->systemObj_.get(),
-		 this->t_, this->dt_, this->step_, J);
+      <tag_name>(odeState, auxStates_,
+		 systemObj_.get(),
+		 rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
   template<typename solver_type>
   void doStep(ode_state_type & odeState,
-	      const scalar_t & t,
+	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & step,
 	      solver_type & solver)
@@ -173,135 +173,86 @@ public:
       solver_type, decltype(*this), ode_state_type>::value,
       "Invalid solver for Arbitrary stepper");
 
-    this->dt_ = dt;
-    this->t_ = t;
-    this->step_ = step;
+    dt_ = dt;
+    rhsEvaluationTime_ = currentTime;
+    stepNumber_ = step;
 
-    constexpr auto nAux = decltype(this->auxStates_)::size();
-    this->storeRecoveryState<nAux>();
-    this->updateAuxiliaryStorage<nAux>(odeState);
+    constexpr auto nAux = decltype(auxStates_)::size();
+    updateAuxiliaryStorage<nAux>(odeState);
 
     try{
       solver.solve(*this, odeState);
     }
     catch (::pressio::eh::nonlinear_solve_failure const & e)
     {
-      // the state before attempting solution was stored in y_n-1,
-      // so revert odeState to that
-      auto & rollBackState = this->auxStates_(ode::nMinusOne());
-      ::pressio::ops::deep_copy(odeState, rollBackState);
-
-      // we also need to revert back all the auxiliary states
-      this->rollBackAuxiliaryStorage<nAux>();
-
-      // now throw
+      rollBackStates<nAux>(odeState);
       throw ::pressio::eh::time_step_failure();
     }
   }
 
 private:
-  //-------------------
   // one aux states
-  //-------------------
-  template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
-  void storeRecoveryState()
-  {
-    auto & src = this->auxStates_(ode::nMinusOne());
-    ::pressio::ops::deep_copy(recoveryState_, src);
-  }
-
   template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    // copy y_n into y_n-1
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
-    ::pressio::ops::deep_copy(y_nm1, odeState);
+    auto & y_n = auxStates_(ode::n());
+    ::pressio::ops::deep_copy(recoveryState_, y_n);
+    ::pressio::ops::deep_copy(y_n, odeState);
   }
 
   template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
-  void rollBackAuxiliaryStorage()
+  void rollBackStates(ode_state_type & odeState)
   {
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
+    auto & y_n = auxStates_(ode::n());
+    ::pressio::ops::deep_copy(odeState, y_n);
+    ::pressio::ops::deep_copy(y_n, recoveryState_);
+  }
+
+  // two aux states
+  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
+  void updateAuxiliaryStorage(const ode_state_type & odeState)
+  {
+    auto & y_n = auxStates_(ode::n());
+    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    ::pressio::ops::deep_copy(recoveryState_, y_nm1);
+    ::pressio::ops::deep_copy(y_nm1, y_n);
+    ::pressio::ops::deep_copy(y_n, odeState);
+  }
+
+  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
+  void rollBackStates(ode_state_type & odeState)
+  {
+    auto & y_n = auxStates_(ode::n());
+    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    ::pressio::ops::deep_copy(odeState, y_n);
+    ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, recoveryState_);
   }
 
-  //-------------------
-  // two aux states
-  //-------------------
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int > = 0>
-  void storeRecoveryState()
-  {
-    auto & src = this->auxStates_(ode::nMinusTwo());
-    ::pressio::ops::deep_copy(recoveryState_, src);
-  }
-
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
+  // three aux states
+  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
   void updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    // copy y_n-1 into y_n-2
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_(ode::nMinusTwo());
+    auto & y_n = auxStates_(ode::n());
+    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    auto & y_nm2 = auxStates_(ode::nMinusTwo());
+    ::pressio::ops::deep_copy(recoveryState_, y_nm2);
     ::pressio::ops::deep_copy(y_nm2, y_nm1);
-    // copy y_n into y_n-1
-    ::pressio::ops::deep_copy(y_nm1, odeState);
+    ::pressio::ops::deep_copy(y_nm1, y_n);
+    ::pressio::ops::deep_copy(y_n, odeState);
   }
 
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
-  void rollBackAuxiliaryStorage()
+  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
+  void rollBackStates(ode_state_type & odeState)
   {
-    // copy y_n-2 into y_n-1
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_(ode::nMinusTwo());
+    auto & y_n = auxStates_(ode::n());
+    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    auto & y_nm2 = auxStates_(ode::nMinusTwo());
+    ::pressio::ops::deep_copy(odeState, y_n);
+    ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_nm2);
-    //copy safestate to y_n-2
     ::pressio::ops::deep_copy(y_nm2, recoveryState_);
   }
-
-  //-------------------
-  // three aux states
-  //-------------------
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int > = 0>
-  void storeRecoveryState()
-  {
-    auto & src = this->auxStates_(ode::nMinusThree());
-    ::pressio::ops::deep_copy(recoveryState_, src);
-  }
-
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
-  void updateAuxiliaryStorage(const ode_state_type & odeState)
-  {
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_(ode::nMinusTwo());
-    auto & y_nm3 = this->auxStates_(ode::nMinusThree());
-    ::pressio::ops::deep_copy(y_nm3, y_nm2);
-    ::pressio::ops::deep_copy(y_nm2, y_nm1);
-    ::pressio::ops::deep_copy(y_nm1, odeState);
-  }
-
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
-  void rollBackAuxiliaryStorage()
-  {
-    auto & y_nm1 = this->auxStates_(ode::nMinusOne());
-    auto & y_nm2 = this->auxStates_(ode::nMinusTwo());
-    auto & y_nm3 = this->auxStates_(ode::nMinusThree());
-    ::pressio::ops::deep_copy(y_nm1, y_nm2);
-    ::pressio::ops::deep_copy(y_nm2, y_nm3);
-    ::pressio::ops::deep_copy(y_nm3, recoveryState_);
-  }
-
-private:
-  scalar_t t_  = {};
-  scalar_t dt_ = {};
-  types::step_t step_  = {};
-  std::reference_wrapper<const system_type> systemObj_;
-
-  aux_states_t auxStates_;
-
-  // state object to ensure the strong guarantee for handling excpetions
-  ode_state_type recoveryState_;
-
-  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
-  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
 };
 
 }}}}

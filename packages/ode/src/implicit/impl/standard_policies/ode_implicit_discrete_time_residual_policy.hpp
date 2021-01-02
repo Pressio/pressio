@@ -46,13 +46,13 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
-#define ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_DTIME_POLICY_HPP_
+#define ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_DTIME_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename residual_type>
-class ResidualStandardPolicy
+class ResidualStandardDiscreteTimePolicy
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,86 +63,48 @@ class ResidualStandardPolicy
    "Invalid residual type for standard residual policy");
 
 public:
-  ResidualStandardPolicy() = default;
-  ResidualStandardPolicy(const ResidualStandardPolicy &) = default;
-  ResidualStandardPolicy & operator=(const ResidualStandardPolicy &) = default;
-  ResidualStandardPolicy(ResidualStandardPolicy &&) = default;
-  ResidualStandardPolicy & operator=(ResidualStandardPolicy &&) = default;
-  ~ResidualStandardPolicy() = default;
+  ResidualStandardDiscreteTimePolicy() = default;
+  ResidualStandardDiscreteTimePolicy(const ResidualStandardDiscreteTimePolicy &) = default;
+  ResidualStandardDiscreteTimePolicy & operator=(const ResidualStandardDiscreteTimePolicy &) = default;
+  ResidualStandardDiscreteTimePolicy(ResidualStandardDiscreteTimePolicy &&) = default;
+  ResidualStandardDiscreteTimePolicy & operator=(ResidualStandardDiscreteTimePolicy &&) = default;
+  ~ResidualStandardDiscreteTimePolicy() = default;
 
 public:
   template <typename system_type>
-  mpl::enable_if_t<
-  ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-  residual_type
-  >
-  create(const system_type & system) const
+  residual_type create(const system_type & system) const
   {
-    residual_type R(system.createVelocity());
-    return R;
-  }
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+       "system type must meet the discrete time api");
 
-  template <typename system_type>
-  mpl::enable_if_t<
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-    residual_type
-    >
-  create(const system_type & system) const
-  {
     residual_type R(system.createDiscreteTimeResidual());
     return R;
   }
 
-  template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<
-    ::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value
-    >
-  compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+  //-------------------------------
+  // 1 aux state needed
+  //-------------------------------
+  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< aux_states_type::size()==1 >
+  compute(const state_type & predictedState,
+	  const aux_states_type & auxStatesMgr,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    try{
-      system.velocity(*odeCurrentState.data(), t, *R.data());
-      ::pressio::ode::impl::discrete_time_residual(odeCurrentState,
-						   R, prevStatesMgr, dt, ode_tag());
-    }
-    catch (::pressio::eh::velocity_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
-    }
-  }
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+       "system type must meet the discrete time api");
 
-  //-------------------------------
-  // specialize for n == 1
-  //-------------------------------
-  template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==1 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
-  compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
-	  const system_type & system,
-	  const scalar_type & t,
-	  const scalar_type & dt,
-	  const types::step_t & step,
-	  residual_type & R) const
-  {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
+    const auto & yn = auxStatesMgr(ode::n());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   *odeCurrentState.data(),
-					   *ynm1.data());
+					   *predictedState.data(),
+					   *yn.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -150,31 +112,29 @@ public:
   }
 
   //-------------------------------
-  // specialize for n == 2
+  // 2 aux states needed
   //-------------------------------
-  template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==2 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
-  compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< aux_states_type::size()==2 >
+  compute(const state_type & predictedState,
+	  const aux_states_type & auxStatesMgr,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+       "system type must meet the discrete time api");
+
+    const auto & yn = auxStatesMgr(ode::n());
+    const auto & ynm1 = auxStatesMgr(ode::nMinusOne());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   *odeCurrentState.data(),
-					   *ynm1.data(), *ynm2.data());
+					   *predictedState.data(),
+					   *yn.data(), *ynm1.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -182,34 +142,32 @@ public:
   }
 
   //-------------------------------
-  // specialize for n == 3
+  // 3 aux states needed
   //-------------------------------
-  template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<
-    prev_states_mgr_type::size()==3 and
-    ::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value
-    >
-  compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & prevStatesMgr,
+  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< aux_states_type::size()==3 >
+  compute(const state_type & predictedState,
+	  const aux_states_type & auxStatesMgr,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    const auto & ynm1 = prevStatesMgr.stateAt(ode::nMinusOne());
-    const auto & ynm2 = prevStatesMgr.stateAt(ode::nMinusTwo());
-    const auto & ynm3 = prevStatesMgr.stateAt(ode::nMinusThree());
+    static_assert
+      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+       "system type must meet the discrete time api");
+
+    const auto & yn = auxStatesMgr(ode::n());
+    const auto & ynm1 = auxStatesMgr(ode::nMinusOne());
+    const auto & ynm2 = auxStatesMgr(ode::nMinusTwo());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
-					   *odeCurrentState.data(),
+					   *predictedState.data(),
+					   *yn.data(),
 					   *ynm1.data(),
-					   *ynm2.data(),
-					   *ynm3.data());
+					   *ynm2.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();

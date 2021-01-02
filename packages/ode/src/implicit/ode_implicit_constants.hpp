@@ -52,20 +52,33 @@
 namespace pressio{ namespace ode{ namespace constants{
 
 template <typename scalar_t>
-struct bdf1{
-  static constexpr scalar_t c_n_   = ::pressio::utils::constants<scalar_t>::one();
-  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants<scalar_t>::negOne();
-  static constexpr scalar_t c_f_   = ::pressio::utils::constants<scalar_t>::negOne();
+struct bdf1
+{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_= cnst::one();
+  static constexpr scalar_t c_n_  = cnst::negOne();
+  static constexpr scalar_t c_f_  = cnst::negOne();
 };
 
 template <typename scalar_t>
-struct bdf2{
-  static constexpr scalar_t c_n_   = ::pressio::utils::constants<scalar_t>::one();
-  static constexpr scalar_t c_nm1_ = ::pressio::utils::constants<scalar_t>::negOne() * static_cast<scalar_t>(4)/3;
-  static constexpr scalar_t c_nm2_ = static_cast<scalar_t>(1)/3;
-  static constexpr scalar_t c_f_   = ::pressio::utils::constants<scalar_t>::negOne() * static_cast<scalar_t>(2)/3;
+struct bdf2
+{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_ = cnst::one();
+  static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
+  static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
+  static constexpr scalar_t c_f_   = cnst::negOne()*cnst::twoOvThree();
 };
 
+template <typename scalar_t>
+struct cranknicolson
+{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_  = cnst::one();
+  static constexpr scalar_t c_n_    = cnst::negOne();
+  static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
+  static constexpr scalar_t c_fn_   = cnst::negOneHalf();
+};
 
 }}}// end namespace pressio::ode::constants
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_CONSTANTS_HPP_

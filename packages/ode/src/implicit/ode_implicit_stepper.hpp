@@ -55,7 +55,8 @@ namespace pressio{ namespace ode{
 
 template<typename stepper_tag, typename ...Args>
 using ImplicitStepper =
-  typename ::pressio::ode::implicitmethods::impl::compose<stepper_tag, void, Args...>::type;
+  typename ::pressio::ode::implicitmethods::impl::compose<
+  stepper_tag, void, Args...>::type;
 
 }} // end namespace pressio::ode
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_

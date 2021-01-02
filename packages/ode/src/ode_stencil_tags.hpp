@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace ode{
 
+class n{};
 class nMinusOne{};
 class nMinusTwo{};
 class nMinusThree{};
