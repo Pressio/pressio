@@ -11,3 +11,7 @@ set(SRC3
   ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_rk4_user_defined_ops.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_rk4.cc)
 add_serial_utest(ode_serial_explicit_rk4 "${SRC3}")
+
+set(SRC
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_ab2.cc)
+add_serial_utest(ode_serial_explicit_ab2 "${SRC}")
