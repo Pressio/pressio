@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename jacobian_type>
-class JacobianStandardCrankNicolsonPolicy
+class JacobianStandardPolicyCrankNicolson
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,12 +63,12 @@ class JacobianStandardCrankNicolsonPolicy
    "Invalid jacobian type for standard jacobian policy");
 
 public:
-  JacobianStandardCrankNicolsonPolicy() = default;
-  JacobianStandardCrankNicolsonPolicy(const JacobianStandardCrankNicolsonPolicy &) = default;
-  JacobianStandardCrankNicolsonPolicy & operator=(const JacobianStandardCrankNicolsonPolicy &) = default;
-  JacobianStandardCrankNicolsonPolicy(JacobianStandardCrankNicolsonPolicy &&) = default;
-  JacobianStandardCrankNicolsonPolicy & operator=(JacobianStandardCrankNicolsonPolicy &&) = default;
-  ~JacobianStandardCrankNicolsonPolicy() = default;
+  JacobianStandardPolicyCrankNicolson() = default;
+  JacobianStandardPolicyCrankNicolson(const JacobianStandardPolicyCrankNicolson &) = default;
+  JacobianStandardPolicyCrankNicolson & operator=(const JacobianStandardPolicyCrankNicolson &) = default;
+  JacobianStandardPolicyCrankNicolson(JacobianStandardPolicyCrankNicolson &&) = default;
+  JacobianStandardPolicyCrankNicolson & operator=(JacobianStandardPolicyCrankNicolson &&) = default;
+  ~JacobianStandardPolicyCrankNicolson() = default;
 
 public:
   template <typename system_type>
@@ -84,7 +84,7 @@ public:
 
   template <
     typename ode_tag,
-    typename prev_states_mgr_type,
+    typename stencil_states_type,
     typename system_type,
     typename scalar_type
     >
@@ -92,7 +92,7 @@ public:
     std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
     >
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & auxStates,
+	  const stencil_states_type & stencilStates,
 	  const system_type & system,
 	  const scalar_type & t_np1,
 	  const scalar_type & dt,

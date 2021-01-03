@@ -54,8 +54,8 @@ namespace pressio{ namespace ode{ namespace constraints {
 template<
   typename T,
   typename tag,
-  std::size_t numPrevStates,
-  std::size_t numPrevRhs,
+  std::size_t nStates,
+  std::size_t nVelocities,
   typename state_t,
   typename residual_t,
   typename system_t,
@@ -64,17 +64,18 @@ template<
   >
 struct implicit_residual_policy : std::false_type{};
 
+// specialize for nVelocities >= 0
 template<
   typename T,
   typename tag,
-  std::size_t numPrevStates,
+  std::size_t nStates,
   typename state_t,
   typename residual_t,
   typename system_t,
   typename scalar_t
   >
 struct implicit_residual_policy<
-  T, tag, numPrevStates, 0,
+  T, tag, nStates, 0,
   state_t, residual_t, system_t, scalar_t,
   ::pressio::mpl::enable_if_t<
     std::is_same<
@@ -90,19 +91,66 @@ struct implicit_residual_policy<
       decltype
       (
        std::declval<T const>().template compute
-       <tag>(
-	     std::declval<state_t const &>(),
-	     std::declval<::pressio::ode::AuxStatesManager<state_t, numPrevStates> const &>(),
-	     std::declval<system_t const &>(),
-	     std::declval<scalar_t const &>(),
-	     std::declval<scalar_t const &>(),
-	     std::declval<::pressio::ode::types::step_t>(),
-	     std::declval<residual_t &>()
-	     )
+       <tag>
+       (
+	std::declval<state_t const &>(),
+	std::declval<implicitmethods::StencilStatesManager<state_t, nStates> const & >(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t>(),
+	std::declval<residual_t &>()
+	)
        )
       >::value
     >
   > : std::true_type{};
+
+// specialize for nVelocities >= 1
+template<
+  typename T,
+  typename tag,
+  std::size_t nStates,
+  std::size_t nVelocities,
+  typename state_t,
+  typename residual_t,
+  typename system_t,
+  typename scalar_t
+  >
+struct implicit_residual_policy<
+  T, tag, nStates, nVelocities,
+  state_t, residual_t, system_t, scalar_t,
+  ::pressio::mpl::enable_if_t<
+    nVelocities >= 1 and
+    std::is_same<
+      residual_t,
+      decltype
+      (
+       std::declval<T const>().create(std::declval<system_t const &>())
+       )
+      >::value
+    and
+    //
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().template compute
+       <tag>
+       (
+	std::declval<state_t const &>(),
+	std::declval<implicitmethods::StencilStatesManager<state_t, nStates> const & >(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::types::step_t>(),
+	std::declval<implicitmethods::StencilStatesManager<residual_t, nVelocities> & >(),
+	std::declval<residual_t &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+
 //------------------------------------------------------------------
 
 template<typename T, typename ... args>
@@ -114,6 +162,11 @@ template<typename T, typename ... args>
 using implicit_bdf2_residual_policy =
   implicit_residual_policy<
   T, ::pressio::ode::implicitmethods::BDF2, 2, 0, args...>;
+
+template<typename T, typename ... args>
+using implicit_cranknicolson_residual_policy =
+  implicit_residual_policy<
+  T, ::pressio::ode::implicitmethods::CrankNicolson, 1, 2, args...>;
 
 }}} // namespace pressio::ode::constraints
 #endif  // ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

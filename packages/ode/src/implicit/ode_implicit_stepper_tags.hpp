@@ -49,13 +49,13 @@
 #ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
 #define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio{ namespace ode{
 
+namespace implicitmethods{
 struct Undefined{};
 struct BDF1{};
 struct BDF2{};
 struct CrankNicolson{};
-
 using Euler = BDF1;
 
 // this is used to define a stepper that is user-defined,
@@ -63,5 +63,26 @@ using Euler = BDF1;
 // anything since the user assembles the time-discrete operators
 struct Arbitrary{};
 
-}}}
+}//end namespace implicitmethods
+
+// makes sense to leave the metafunctions here because every time
+// a new tag is added, a corresponding metaf is needed too
+namespace predicates{
+template <typename T>
+struct is_implicit_stepper_tag : std::false_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::BDF1> : std::true_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::BDF2> : std::true_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::CrankNicolson> : std::true_type{};
+
+template <>
+struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
+}//end namespace predicates
+
+}}//end namespace pressio::ode
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_

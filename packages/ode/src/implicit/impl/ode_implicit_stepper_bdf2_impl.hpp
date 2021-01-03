@@ -72,12 +72,12 @@ public:
   using residual_type = residual_t;
   using jacobian_type = jacobian_t;
 
+  using tag_name = ::pressio::ode::implicitmethods::BDF2;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   static constexpr types::stepper_order_t order_value = 2;
   static constexpr std::size_t numAuxStates = 2;
-  using tag_name = ::pressio::ode::implicitmethods::BDF2;
-  using aux_states_t =  ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
+  using stencil_states_t = StencilStatesManager<state_t, numAuxStates>;
 
 private:
   // auxiliary stepper
@@ -87,7 +87,7 @@ private:
   scalar_t dt_ = {};
   types::step_t stepNumber_  = {};
   std::reference_wrapper<const system_type> systemObj_;
-  aux_states_t auxStates_;
+  stencil_states_t stencilStates_;
 
   // state object to ensure the strong guarantee for handling excpetions
   state_type recoveryState_;
@@ -111,7 +111,7 @@ public:
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       recoveryState_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
@@ -126,7 +126,7 @@ public:
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       recoveryState_{state},
       resPolicy_{},
       jacPolicy_{}
@@ -179,7 +179,7 @@ public:
   void residual(const state_t & odeState, residual_t & R) const
   {
     resPolicy_.get().template compute
-      <tag_name>(odeState,  auxStates_,
+      <tag_name>(odeState,  stencilStates_,
 		 systemObj_.get(),
 		 rhsEvaluationTime_, dt_, stepNumber_, R);
   }
@@ -187,7 +187,7 @@ public:
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     jacPolicy_.get().template compute<
-      tag_name>(odeState, auxStates_, systemObj_.get(),
+      tag_name>(odeState, stencilStates_, systemObj_.get(),
                 rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
@@ -221,9 +221,9 @@ private:
     // first step, use auxiliary stepper
     if (stepNumber == 1){
       // step ==1 means that we are going from y_0 to y_1
-      // auxStates_(0) now holds y_0
-      ::pressio::ops::deep_copy(auxStates_(ode::n()), odeState);
-      ::pressio::ops::deep_copy(auxStates_(ode::nMinusOne()), odeState);
+      // stencilStates_(0) now holds y_0
+      ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::n()), odeState);
+      ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::nMinusOne()), odeState);
       auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver);
     }
     if (stepNumber >= 2)
@@ -248,8 +248,8 @@ private:
 	and so on...
       */
 
-      auto & odeState_n   = auxStates_(ode::n());
-      auto & odeState_nm1 = auxStates_(ode::nMinusOne());
+      auto & odeState_n   = stencilStates_.stateAt(ode::n());
+      auto & odeState_nm1 = stencilStates_.stateAt(ode::nMinusOne());
       ::pressio::ops::deep_copy(recoveryState_, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState_n);
       ::pressio::ops::deep_copy(odeState_n, odeState);

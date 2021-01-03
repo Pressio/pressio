@@ -75,8 +75,8 @@ public:
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   static constexpr types::stepper_order_t order_value = 2;
-  static constexpr std::size_t numAuxStates = 2;
-  using aux_states_t = ::pressio::ode::AuxStatesManager<state_type, numAuxStates>;
+  using stencil_states_t = StencilStatesManager<state_t, 1>;
+  using stencil_velocities_t = StencilVelocitiesManager<residual_t, 2>;
 
 private:
   scalar_t t_np1_  = {};
@@ -91,7 +91,10 @@ private:
   ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
   ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
 
-  aux_states_t auxStates_;
+  // stencilStates contains: y_n
+  stencil_states_t stencilStates_;
+  // stencilVelocities contains f(y_n,t_n) and f(y_np1, t_np1)
+  mutable stencil_velocities_t stencilVelocities_;
 
 public:
   StepperCrankNicolson() = delete;
@@ -109,7 +112,8 @@ public:
       recoveryState_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj},
-      auxStates_{state}
+      stencilStates_(state),
+      stencilVelocities_(resPolicy_.get().create(systemObj))
   {}
 
   template <
@@ -120,14 +124,14 @@ public:
 		       const system_type & systemObj)
     : systemObj_{systemObj},
       recoveryState_{state},
-      resPolicy_(residual_policy_t(systemObj)),
+      resPolicy_{},
       jacPolicy_{},
-      auxStates_{state}
+      stencilStates_(state),
+      stencilVelocities_(resPolicy_.get().create(systemObj))
   {}
 
 public:
-  ::pressio::ode::types::stepper_order_t order() const
-  {
+  ::pressio::ode::types::stepper_order_t order() const{
     return order_value;
   }
 
@@ -170,14 +174,17 @@ public:
 
   void residual(const state_t & odeState, residual_t & R) const{
     resPolicy_.get().template compute
-      <tag_name>(odeState, auxStates_, systemObj_.get(),
-		 t_np1_, dt_, stepNumber_, R);
+      <tag_name>(odeState, stencilStates_,
+		 systemObj_.get(), t_np1_,
+		 dt_, stepNumber_,
+		 stencilVelocities_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const{
     jacPolicy_.get().template compute<
-      tag_name>(odeState, auxStates_, systemObj_.get(),
-		t_np1_, dt_, stepNumber_, J);
+      tag_name>(odeState, stencilStates_,
+		systemObj_.get(), t_np1_,
+		dt_, stepNumber_, J);
   }
 
 private:
@@ -209,7 +216,7 @@ private:
     stepNumber_ = stepNumber;
 
     // current solution becomes y_n
-    auto & odeState_n = auxStates_(ode::n());
+    auto & odeState_n = stencilStates_.stateAt(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeSolution);
 
     // if provided, callback to provide a guess for the odeSolution
@@ -217,10 +224,14 @@ private:
 
     try{
       solver.solve(*this, odeSolution);
+
+      // auto & fn   = stencilStates_.rhsAt(ode::n());
+      // auto & fnp1 = stencilStates_.rhsAt(ode::nPlusOne());
+      // //::pressio::ops::deep_copy(fn, fnp1);
     }
     catch (::pressio::eh::nonlinear_solve_failure const & e)
     {
-      auto & rollBackState = auxStates_(ode::n());
+      auto & rollBackState = stencilStates_.stateAt(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);
       throw ::pressio::eh::time_step_failure();
     }

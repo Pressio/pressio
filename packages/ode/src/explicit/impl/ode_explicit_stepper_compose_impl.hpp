@@ -51,6 +51,7 @@
 
 #include "ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_runge_kutta4_stepper_impl.hpp"
+#include "ode_explicit_adams_bashforth2_stepper_impl.hpp"
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
@@ -65,7 +66,6 @@ struct UserDefinedOpsFilter<
 ::pressio::ode::explicitmethods::Euler, scalar_t, state_t, velocity_t, Args...
 >
 {
-  // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
     ::pressio::ode::constraints::user_defined_ops_for_explicit_euler, Args...>;
@@ -77,12 +77,23 @@ struct UserDefinedOpsFilter<
 ::pressio::ode::explicitmethods::RungeKutta4, scalar_t, state_t, velocity_t, Args...
 >
 {
-  // check if user passed an ops
   using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
     scalar_t, state_t, velocity_t,
     ::pressio::ode::constraints::user_defined_ops_for_explicit_rk4, Args...>;
   using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
 };
+
+template<typename scalar_t, typename state_t, typename velocity_t, typename ...Args>
+struct UserDefinedOpsFilter<
+  ::pressio::ode::explicitmethods::AdamsBashforth2, scalar_t, state_t, velocity_t, Args...
+>
+{
+  using ic4 = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
+    scalar_t, state_t, velocity_t,
+    ::pressio::ode::constraints::user_defined_ops_for_explicit_ab2, Args...>;
+  using type = ::pressio::mpl::variadic::at_or_t<void, ic4::value, Args...>;
+};
+// --------------------------------------------------------------------------
 
 template<typename tag>
 struct ImplSelector
@@ -106,10 +117,21 @@ struct ImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
     <Args..., is_standard_policy>;
 };
 
+template<>
+struct ImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>
+{
+  template<bool is_standard_policy, typename ...Args>
+  using type = ::pressio::ode::explicitmethods::impl::ExplicitAdamsBashforth2Stepper
+    <Args..., is_standard_policy>;
+};
+
+
+// --------------------------------------------------------------------------
 // tag, state_type, system_t
 // tag, state_type, system_t, ud_ops_t
 // tag, state_type, system_t, policy
 // tag, state_type, system_t, policy, ud_ops_t
+// --------------------------------------------------------------------------
 template<
   typename tag,
   typename state_type,

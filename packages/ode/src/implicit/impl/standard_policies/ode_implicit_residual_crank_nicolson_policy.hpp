@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename residual_type>
-class ResidualStandardCrankNicolsonPolicy
+class ResidualStandardPolicyCrankNicolson
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,28 +63,22 @@ class ResidualStandardCrankNicolsonPolicy
    "Invalid residual type for standard residual policy");
 
   mutable ::pressio::ode::types::step_t stepTracker_ = -1;
-  mutable residual_type f_n_;
 
 public:
-  ResidualStandardCrankNicolsonPolicy() = delete;
-
-  template<typename system_type>
-  explicit ResidualStandardCrankNicolsonPolicy(const system_type & systemObj)
-    : f_n_(systemObj.createVelocity())
-  {}
-
-  ResidualStandardCrankNicolsonPolicy(const ResidualStandardCrankNicolsonPolicy &) = default;
-  ResidualStandardCrankNicolsonPolicy & operator=(const ResidualStandardCrankNicolsonPolicy &) = default;
-  ResidualStandardCrankNicolsonPolicy(ResidualStandardCrankNicolsonPolicy &&) = default;
-  ResidualStandardCrankNicolsonPolicy & operator=(ResidualStandardCrankNicolsonPolicy &&) = default;
-  ~ResidualStandardCrankNicolsonPolicy() = default;
+  ResidualStandardPolicyCrankNicolson() = default;
+  ResidualStandardPolicyCrankNicolson(const ResidualStandardPolicyCrankNicolson &) = default;
+  ResidualStandardPolicyCrankNicolson & operator=(const ResidualStandardPolicyCrankNicolson &) = default;
+  ResidualStandardPolicyCrankNicolson(ResidualStandardPolicyCrankNicolson &&) = default;
+  ResidualStandardPolicyCrankNicolson & operator=(ResidualStandardPolicyCrankNicolson &&) = default;
+  ~ResidualStandardPolicyCrankNicolson() = default;
 
 public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
     static_assert
-      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
+      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
        "system type must meet the continuous time api");
 
     residual_type R(system.createVelocity());
@@ -93,7 +87,8 @@ public:
 
   template <
     class ode_tag,
-    class aux_states_type,
+    class stencil_states_type,
+    class stencil_velocities_type,
     class system_type,
     class scalar_type
     >
@@ -101,41 +96,54 @@ public:
     std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
     >
   compute(const state_type & predictedState,
-	  const aux_states_type & auxStates,
+	  const stencil_states_type & stencilStates,
 	  const system_type & system,
 	  const scalar_type & t_np1,
 	  const scalar_type & dt,
 	  const types::step_t & step,
+	  stencil_velocities_type & stencilVelocities,
 	  residual_type & R) const
   {
     static_assert
-    (constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-    "system type must meet the continuous time api");
+    (constraints::continuous_time_system_with_user_provided_jacobian
+     <system_type>::value,
+     "system type must meet the continuous time api");
 
     if (stepTracker_ != step){
-      auto & state_n = auxStates(::pressio::ode::n());
+      auto & f_n = stencilVelocities(::pressio::ode::n());
+      auto & state_n = stencilStates(::pressio::ode::n());
       const auto tn = t_np1-dt;
-      system.velocity(*state_n.data(), tn, *f_n_.data());
+      system.velocity(*state_n.data(), tn, *f_n.data());
     }
 
-    system.velocity(*predictedState.data(), t_np1, *R.data());
+    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+    system.velocity(*predictedState.data(), t_np1, *f_np1.data());
     ::pressio::ode::impl::discrete_time_residual
-	(predictedState, R, auxStates, f_n_, dt, ode_tag());
+    	(predictedState, R, stencilStates, stencilVelocities,
+	 dt, ode_tag());
 
-    // if (step==1 and stepTracker_ == -1)
-    // {
-    //   auto & state_n = auxStates(::pressio::ode::n());
+
+    // if (stepTracker_ != step){
+    //   auto & state_n = stencilDataManager.stateAt(::pressio::ode::n());
     //   const auto tn = t_np1-dt;
     //   system.velocity(*state_n.data(), tn, *f_n_.data());
     // }
+    // system.velocity(*predictedState.data(), t_np1, *R.data());
+    // ::pressio::ode::impl::discrete_time_residual
+    // 	(predictedState, R, stencilDataManager, f_n_, dt, ode_tag());
 
+    // if (step==1 and stepTracker_ == -1)
+    // {
+    //   auto & state_n = stencilDataManager(::pressio::ode::n());
+    //   const auto tn = t_np1-dt;
+    //   system.velocity(*state_n.data(), tn, *f_n_.data());
+    // }
     // if (stepTracker_ != step and step!=1){
     //   ::pressio::ops::deep_copy(f_n_, f_np1_);
     // }
-
     // system.velocity(*predictedState.data(), t_np1, *f_np1_.data());
     // ::pressio::ode::impl::discrete_time_residual
-    // 	(predictedState, R, auxStates, f_n_, f_np1_, dt, ode_tag());
+    // 	(predictedState, R, stencilDataManager, f_n_, f_np1_, dt, ode_tag());
 
     stepTracker_ = step;
   }

@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename jacobian_type>
-class JacobianStandardBdfPolicy
+class JacobianStandardPolicyBdf
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,12 +63,12 @@ class JacobianStandardBdfPolicy
    "Invalid jacobian type for standard jacobian policy");
 
 public:
-  JacobianStandardBdfPolicy() = default;
-  JacobianStandardBdfPolicy(const JacobianStandardBdfPolicy &) = default;
-  JacobianStandardBdfPolicy & operator=(const JacobianStandardBdfPolicy &) = default;
-  JacobianStandardBdfPolicy(JacobianStandardBdfPolicy &&) = default;
-  JacobianStandardBdfPolicy & operator=(JacobianStandardBdfPolicy &&) = default;
-  ~JacobianStandardBdfPolicy() = default;
+  JacobianStandardPolicyBdf() = default;
+  JacobianStandardPolicyBdf(const JacobianStandardPolicyBdf &) = default;
+  JacobianStandardPolicyBdf & operator=(const JacobianStandardPolicyBdf &) = default;
+  JacobianStandardPolicyBdf(JacobianStandardPolicyBdf &&) = default;
+  JacobianStandardPolicyBdf & operator=(JacobianStandardPolicyBdf &&) = default;
+  ~JacobianStandardPolicyBdf() = default;
 
 public:
   template <typename system_type>
@@ -85,12 +85,12 @@ public:
 
   template <
     typename ode_tag,
-    typename prev_states_mgr_type,
+    typename stencil_states_type,
     typename system_type,
     typename scalar_type
     >
   void compute(const state_type & odeCurrentState,
-	       const prev_states_mgr_type & auxStates,
+	       const stencil_states_type & stencilStates,
 	       const system_type & system,
 	       const scalar_type & t,
 	       const scalar_type & dt,

@@ -85,10 +85,10 @@ public:
   //-------------------------------
   // 1 aux state needed
   //-------------------------------
-  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< aux_states_type::size()==1 >
+  template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< stencil_states_type::size()==1 >
   compute(const state_type & predictedState,
-	  const aux_states_type & auxStatesMgr,
+	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -99,7 +99,7 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = auxStatesMgr(ode::n());
+    const auto & yn = stencilStatesManager.stateAt(ode::n());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
@@ -114,10 +114,10 @@ public:
   //-------------------------------
   // 2 aux states needed
   //-------------------------------
-  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< aux_states_type::size()==2 >
+  template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< stencil_states_type::size()==2 >
   compute(const state_type & predictedState,
-	  const aux_states_type & auxStatesMgr,
+	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -128,8 +128,8 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = auxStatesMgr(ode::n());
-    const auto & ynm1 = auxStatesMgr(ode::nMinusOne());
+    const auto & yn = stencilStatesManager.stateAt(ode::n());
+    const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),
@@ -144,10 +144,10 @@ public:
   //-------------------------------
   // 3 aux states needed
   //-------------------------------
-  template <class ode_tag, class aux_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< aux_states_type::size()==3 >
+  template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
+  mpl::enable_if_t< stencil_states_type::size()==3 >
   compute(const state_type & predictedState,
-	  const aux_states_type & auxStatesMgr,
+	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -158,9 +158,9 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = auxStatesMgr(ode::n());
-    const auto & ynm1 = auxStatesMgr(ode::nMinusOne());
-    const auto & ynm2 = auxStatesMgr(ode::nMinusTwo());
+    const auto & yn = stencilStatesManager.stateAt(ode::n());
+    const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
+    const auto & ynm2 = stencilStatesManager.stateAt(ode::nMinusTwo());
 
     try{
       system.template discreteTimeResidual(step, t, dt, *R.data(),

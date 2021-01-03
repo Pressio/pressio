@@ -77,14 +77,14 @@ public:
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
   static constexpr std::size_t numAuxStates = tot_n_setter_t::value - 1;
   using tag_name = ::pressio::ode::implicitmethods::Arbitrary;
-  using aux_states_t = ::pressio::ode::AuxStatesManager<ode_state_type, numAuxStates>;
+  using stencil_states_t = StencilStatesManager<ode_state_type, numAuxStates>;
 
 private:
   scalar_t rhsEvaluationTime_  = {};
   scalar_t dt_ = {};
   types::step_t stepNumber_  = {};
   std::reference_wrapper<const system_type> systemObj_;
-  aux_states_t auxStates_;
+  stencil_states_t stencilStates_;
 
   // state object to ensure the strong guarantee for handling excpetions
   ode_state_type recoveryState_;
@@ -107,7 +107,7 @@ public:
 		   residual_policy_t resPolicyObj,
 		   jacobian_policy_t jacPolicyObj)
     : systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       recoveryState_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
@@ -121,7 +121,7 @@ public:
   StepperArbitrary(const ode_state_type & state,
                    const system_type & systemObj)
     : systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       recoveryState_{state},
       resPolicy_{},
       jacPolicy_{}
@@ -146,7 +146,7 @@ public:
   void residual(const state_type & odeState, residual_type & R) const
   {
     resPolicy_.get().template compute
-      <tag_name>(odeState, auxStates_,
+      <tag_name>(odeState, stencilStates_,
 		 systemObj_.get(),
 		 rhsEvaluationTime_, dt_, stepNumber_, R);
   }
@@ -154,7 +154,7 @@ public:
   void jacobian(const state_type & odeState, jacobian_type & J) const
   {
     jacPolicy_.get().template compute
-      <tag_name>(odeState, auxStates_,
+      <tag_name>(odeState, stencilStates_,
 		 systemObj_.get(),
 		 rhsEvaluationTime_, dt_, stepNumber_, J);
   }
@@ -177,77 +177,82 @@ public:
     rhsEvaluationTime_ = currentTime;
     stepNumber_ = step;
 
-    constexpr auto nAux = decltype(auxStates_)::size();
-    updateAuxiliaryStorage<nAux>(odeState);
+    updateAuxiliaryStorage<numAuxStates>(odeState);
 
     try{
       solver.solve(*this, odeState);
     }
     catch (::pressio::eh::nonlinear_solve_failure const & e)
     {
-      rollBackStates<nAux>(odeState);
+      rollBackStates<numAuxStates>(odeState);
       throw ::pressio::eh::time_step_failure();
     }
   }
 
 private:
   // one aux states
-  template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
-  void updateAuxiliaryStorage(const ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==1>
+  updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
+    auto & y_n = stencilStates_.stateAt(ode::n());
     ::pressio::ops::deep_copy(recoveryState_, y_n);
     ::pressio::ops::deep_copy(y_n, odeState);
   }
 
-  template<std::size_t nAux, mpl::enable_if_t<nAux==1, int > = 0>
-  void rollBackStates(ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==1>
+  rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
+    auto & y_n = stencilStates_.stateAt(ode::n());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, recoveryState_);
   }
 
   // two aux states
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
-  void updateAuxiliaryStorage(const ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==2>
+  updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
-    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
     ::pressio::ops::deep_copy(recoveryState_, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_n);
     ::pressio::ops::deep_copy(y_n, odeState);
   }
 
-  template<std::size_t nAux, mpl::enable_if_t<nAux==2, int> = 0>
-  void rollBackStates(ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==2>
+  rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
-    auto & y_nm1 = auxStates_(ode::nMinusOne());
+    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, recoveryState_);
   }
 
   // three aux states
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
-  void updateAuxiliaryStorage(const ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==3>
+  updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
-    auto & y_nm1 = auxStates_(ode::nMinusOne());
-    auto & y_nm2 = auxStates_(ode::nMinusTwo());
+    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = stencilStates_.stateAt(ode::nMinusTwo());
     ::pressio::ops::deep_copy(recoveryState_, y_nm2);
     ::pressio::ops::deep_copy(y_nm2, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_n);
     ::pressio::ops::deep_copy(y_n, odeState);
   }
 
-  template<std::size_t nAux, mpl::enable_if_t<nAux==3, int> = 0>
-  void rollBackStates(ode_state_type & odeState)
+  template<std::size_t nAux>
+  mpl::enable_if_t<nAux==3>
+  rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = auxStates_(ode::n());
-    auto & y_nm1 = auxStates_(ode::nMinusOne());
-    auto & y_nm2 = auxStates_(ode::nMinusTwo());
+    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
+    auto & y_nm2 = stencilStates_.stateAt(ode::nMinusTwo());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_nm2);

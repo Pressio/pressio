@@ -79,10 +79,10 @@ struct explicit_velocity_policy<
       (
        std::declval<T const>().template compute
        (
-      	std::declval<state_t const &>(),
-      	std::declval<velocity_t &>(),
-      	std::declval<system_t const &>(),
-      	std::declval<scalar_t const &>()
+      	std::declval<state_t const &>(), // state
+      	std::declval<velocity_t &>(),	 // velocity
+      	std::declval<system_t const &>(),// system object
+      	std::declval<scalar_t const &>() // time
       	)
        )
       >::value

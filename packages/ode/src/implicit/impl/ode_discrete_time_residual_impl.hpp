@@ -52,46 +52,46 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 /*
-  compute the BDF1 residual:
-  R(y_n+1) = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
+  BDF1 residual: R(y_n+1) = y_n+1 - y_n - dt*f(t_n+1, y_n+1)
 
-  - on input R contains the application RHS, i.e. on input R = f(t_n+1, y_n+1, ...)
+  - on input R contains the application RHS: R = f(t_n+1, y_n+1, ...)
   - on output, R contains the time-discrete residual
 */
 template <
   typename state_type,
   typename residual_type,
-  typename aux_states_type,
+  typename stencil_states_type,
   typename scalar_type
   >
 void discrete_time_residual(const state_type & y_np1,
 			    residual_type & R,
-			    const aux_states_type & auxStates,
+			    const stencil_states_type & stencilStates,
 			    const scalar_type & dt,
 			    ::pressio::ode::implicitmethods::Euler)
 {
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-  ::pressio::ops::update(R, cf, y_np1, cnp1, auxStates(::pressio::ode::n()), cn);
+  ::pressio::ops::update(R, cf, y_np1, cnp1,
+			 stencilStates.stateAt(::pressio::ode::n()),
+			 cn);
 }
 
 /*
-  compute the BDF1 residual:
-  R(y_n+1) = y_n+1 - (4/3)*y_n + (1/3)*y_n-1 - (2/3)*dt*f(t_n+1, y_n+1)
+  BDF2 residual: R(y_n+1) = y_n+1 - (4/3)*y_n + (1/3)*y_n-1 - (2/3)*dt*f(t_n+1, y_n+1)
 
-  - on input R contains the application RHS, i.e. on input R = f(t_n+1, y_n+1, ...)
+  - on input R contains the application RHS: R = f(t_n+1, y_n+1, ...)
   - on output, R contains the time-discrete residual
 */
 template <
   typename state_type,
   typename residual_type,
-  typename aux_states_type,
+  typename stencil_states_type,
   typename scalar_type
   >
 void discrete_time_residual(const state_type	& y_np1,
 			    residual_type & R,
-			    const aux_states_type & auxStates,
+			    const stencil_states_type & stencilStates,
 			    const scalar_type & dt,
 			    ::pressio::ode::implicitmethods::BDF2)
 {
@@ -102,28 +102,29 @@ void discrete_time_residual(const state_type	& y_np1,
   const auto cf	      = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   ::pressio::ops::update(R, cf, y_np1, cnp1,
-			 auxStates(::pressio::ode::n()), cn,
-			 auxStates(nm1()), cnm1);
+			 stencilStates.stateAt(::pressio::ode::n()), cn,
+			 stencilStates.stateAt(nm1()), cnm1);
 }
 
 /*
-  compute the CrankNicolson residual:
+  CrankNicolson residual:
   R(y_n+1) = y_n+1 - y_n - 0.5*dt*[ f(t_n+1, y_n+1) + f(t_n, y_n) ]
 
-  - on input R contains f(t_n+1, y_n+1)
-  - on output, R contains the time-discrete residual
+  - Note that on entry, R does not contain anything, should be fully overwritten
+  - stencilStates contain: y_n
+  - stencilVelocities contain f_n, f_n+1
 */
 template <
   typename state_type,
   typename residual_type,
-  typename aux_states_type,
-  typename rhs_t,
+  typename stencil_states_type,
+  typename stencil_velocities_type,
   typename scalar_type
   >
 void discrete_time_residual(const state_type & y_np1,
 			    residual_type & R,
-			    const aux_states_type & auxStates,
-			    const rhs_t & f_n,
+			    const stencil_states_type & stencilStates,
+			    const stencil_velocities_type & stencilVelocities,
 			    const scalar_type & dt,
 			    ::pressio::ode::implicitmethods::CrankNicolson)
 {
@@ -134,10 +135,11 @@ void discrete_time_residual(const state_type & y_np1,
   const auto cfnDt   = cfn*dt;
   const auto cfnp1Dt = cfn*dt;
 
-  ::pressio::ops::update(R, cfnp1Dt,
-			 y_np1, cnp1,
-			 auxStates(::pressio::ode::n()), cn,
-			 f_n, cfnDt);
+  ::pressio::ops::update
+      (R, y_np1, cnp1,
+       stencilStates(::pressio::ode::n()), cn,
+       stencilVelocities(::pressio::ode::n()), cfnDt,
+       stencilVelocities(::pressio::ode::nPlusOne()), cfnp1Dt);
 }
 
 }}}//end namespace pressio::ode::impl

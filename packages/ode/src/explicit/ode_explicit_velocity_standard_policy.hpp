@@ -76,9 +76,9 @@ public:
   void compute(const state_type & state,
 	       state_type & f,
 	       const system_type & system,
-	       const scalar_type & time) const
+	       const scalar_type & timeToPassToRhsEvaluation) const
   {
-    system.velocity(*state.data(), time, *f.data());
+    system.velocity(*state.data(), timeToPassToRhsEvaluation, *f.data());
   }
 };
 

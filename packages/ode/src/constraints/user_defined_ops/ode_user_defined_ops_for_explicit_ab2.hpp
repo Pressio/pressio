@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_is_explicit_stepper_tag.hpp
+// ode_user_defined_ops_for_explicit_rk4.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,19 +46,35 @@
 //@HEADER
 */
 
-#ifndef ODE_PREDICATES_ODE_IS_EXPLICIT_STEPPER_TAG_HPP_
-#define ODE_PREDICATES_ODE_IS_EXPLICIT_STEPPER_TAG_HPP_
+#ifndef ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
+#define ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
 
-namespace pressio{ namespace ode{ namespace predicates {
+namespace pressio{ namespace ode{ namespace constraints {
 
-template <typename T>
-struct is_explicit_stepper_tag : std::false_type{};
+template<typename T,
+	 typename scalar_t,
+	 typename state_t,
+	 typename residual_t,
+	 typename enable = void>
+struct user_defined_ops_for_explicit_ab2
+  : std::false_type{};
 
-template <>
-struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
+template<typename T,
+	 typename scalar_t,
+	 typename state_t,
+	 typename residual_t>
+struct user_defined_ops_for_explicit_ab2<
+  T, scalar_t, state_t, residual_t,
+    mpl::enable_if_t<
+      ::pressio::ops::predicates::has_method_update_two_terms<
+	T,
+	scalar_t,
+	typename containers::details::traits<state_t>::wrapped_t,
+	typename containers::details::traits<residual_t>::wrapped_t,
+	typename containers::details::traits<residual_t>::wrapped_t
+	>::value
+      >
+  > : std::true_type{};
 
-template <>
-struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
-
-}}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_ODE_IS_EXPLICIT_STEPPER_TAG_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_

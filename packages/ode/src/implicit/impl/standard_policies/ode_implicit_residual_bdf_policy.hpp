@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
 template<typename state_type, typename residual_type>
-class ResidualStandardBdfPolicy
+class ResidualStandardPolicyBdf
 {
   static_assert
   (::pressio::ode::constraints::implicit_state<state_type>::value,
@@ -63,12 +63,12 @@ class ResidualStandardBdfPolicy
    "Invalid residual type for standard residual policy");
 
 public:
-  ResidualStandardBdfPolicy() = default;
-  ResidualStandardBdfPolicy(const ResidualStandardBdfPolicy &) = default;
-  ResidualStandardBdfPolicy & operator=(const ResidualStandardBdfPolicy &) = default;
-  ResidualStandardBdfPolicy(ResidualStandardBdfPolicy &&) = default;
-  ResidualStandardBdfPolicy & operator=(ResidualStandardBdfPolicy &&) = default;
-  ~ResidualStandardBdfPolicy() = default;
+  ResidualStandardPolicyBdf() = default;
+  ResidualStandardPolicyBdf(const ResidualStandardPolicyBdf &) = default;
+  ResidualStandardPolicyBdf & operator=(const ResidualStandardPolicyBdf &) = default;
+  ResidualStandardPolicyBdf(ResidualStandardPolicyBdf &&) = default;
+  ResidualStandardPolicyBdf & operator=(ResidualStandardPolicyBdf &&) = default;
+  ~ResidualStandardPolicyBdf() = default;
 
 public:
   template <typename system_type>
@@ -85,7 +85,7 @@ public:
 
   template <
     class ode_tag,
-    class aux_states_type,
+    class stencil_states_type,
     class system_type,
     class scalar_type
     >
@@ -94,7 +94,7 @@ public:
     std::is_same<ode_tag, ::pressio::ode::implicitmethods::BDF2>::value
     >
   compute(const state_type & predictedState,
-	  const aux_states_type & auxStatesMgr,
+	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
 	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
@@ -102,13 +102,14 @@ public:
 	  residual_type & R) const
   {
     static_assert
-      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
+      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
        "system type must meet the continuous time api");
 
     try{
       system.velocity(*predictedState.data(), rhsEvaluationTime, *R.data());
       ::pressio::ode::impl::discrete_time_residual(predictedState,
-						   R, auxStatesMgr,
+						   R, stencilStatesManager,
 						   dt, ode_tag());
     }
     catch (::pressio::eh::velocity_failure_unrecoverable const & e){

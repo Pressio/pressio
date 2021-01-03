@@ -86,12 +86,14 @@ public:
   // specialize for n == 1 aux states
   //-------------------------------
   template <
-    typename ode_tag, typename prev_states_mgr_type,
-    typename system_type, typename scalar_type
+    typename ode_tag,
+    typename stencil_data_type,
+    typename system_type,
+    typename scalar_type
     >
-  mpl::enable_if_t<prev_states_mgr_type::size()==1>
+  mpl::enable_if_t<stencil_data_type::size()==1>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & auxStates,
+	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -102,10 +104,8 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = auxStates(ode::n());
-
-    system.template discreteTimeJacobian(step, t, dt,
-					 *J.data(),
+    const auto & yn = stencilDataManager.stateAt(ode::n());
+    system.template discreteTimeJacobian(step, t, dt, *J.data(),
 					 *odeCurrentState.data(),
 					 *yn.data() );
   }
@@ -114,12 +114,12 @@ public:
   // specialize for n == 2 aux states
   //-------------------------------
   template <
-    typename ode_tag, typename prev_states_mgr_type,
+    typename ode_tag, typename stencil_data_type,
     typename system_type, typename scalar_type
     >
-  mpl::enable_if_t<prev_states_mgr_type::size()==2>
+  mpl::enable_if_t<stencil_data_type::size()==2>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & auxStates,
+	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -130,10 +130,10 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = auxStates(ode::n());
-    const auto & ynm1 = auxStates(ode::nMinusOne());
-
-    system.template discreteTimeJacobian(step, t, dt, *J.data(), *odeCurrentState.data(),
+    const auto & yn = stencilDataManager.stateAt(ode::n());
+    const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
+    system.template discreteTimeJacobian(step, t, dt, *J.data(),
+					 *odeCurrentState.data(),
 					 (*yn.data() ), (*ynm1.data()) );
   }
 
@@ -141,12 +141,12 @@ public:
   // specialize for n == 3 aux states
   //-------------------------------
   template <
-    typename ode_tag, typename prev_states_mgr_type,
+    typename ode_tag, typename stencil_data_type,
     typename system_type, typename scalar_type
     >
-  mpl::enable_if_t<prev_states_mgr_type::size()==3>
+  mpl::enable_if_t<stencil_data_type::size()==3>
   compute(const state_type & odeCurrentState,
-	  const prev_states_mgr_type & auxStates,
+	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
 	  const scalar_type & t,
 	  const scalar_type & dt,
@@ -157,12 +157,10 @@ public:
       (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = auxStates(ode::n());
-    const auto & ynm1 = auxStates(ode::nMinusOne());
-    const auto & ynm2 = auxStates(ode::nMinusTwo());
-
-    system.template discreteTimeJacobian(step, t, dt,
-					 *J.data(),
+    const auto & yn = stencilDataManager.stateAt(ode::n());
+    const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
+    const auto & ynm2 = stencilDataManager.stateAt(ode::nMinusTwo());
+    system.template discreteTimeJacobian(step, t, dt, *J.data(),
 					 *odeCurrentState.data(),
 					 (*yn.data()),
 					 (*ynm1.data()),

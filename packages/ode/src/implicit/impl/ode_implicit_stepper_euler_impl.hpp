@@ -71,19 +71,19 @@ public:
   using residual_type	= residual_t;
   using jacobian_type	= jacobian_t;
 
+  using tag_name = ::pressio::ode::implicitmethods::Euler;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   static constexpr types::stepper_order_t order_value = 1;
   static constexpr std::size_t numAuxStates = 1;
-  using tag_name = ::pressio::ode::implicitmethods::Euler;
-  using aux_states_t = ::pressio::ode::AuxStatesManager<state_t, numAuxStates>;
+  using stencil_states_t = StencilStatesManager<state_t, numAuxStates>;
 
 private:
   scalar_t rhsEvaluationTime_  = {};
   scalar_t dt_ = {};
   types::step_t stepNumber_  = {};
   std::reference_wrapper<const system_type> systemObj_;
-  aux_states_t auxStates_;
+  stencil_states_t stencilStates_;
   ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
   ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
 
@@ -100,7 +100,7 @@ public:
 	      const mpl::remove_cvref_t<residual_policy_t> & resPolicyObj,
 	      const mpl::remove_cvref_t<jacobian_policy_t> & jacPolicyObj)
     : systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
   {}
@@ -112,7 +112,7 @@ public:
   StepperBDF1(const state_type & state,
 	      const system_type & systemObj)
     : systemObj_{systemObj},
-      auxStates_{state},
+      stencilStates_{state},
       resPolicy_{},
       jacPolicy_{}
   {}
@@ -164,14 +164,14 @@ public:
   void residual(const state_t & odeState, residual_t & R) const
   {
     resPolicy_.get().template compute
-      <tag_name>(odeState, auxStates_, systemObj_.get(),
+      <tag_name>(odeState, stencilStates_, systemObj_.get(),
 		 rhsEvaluationTime_, dt_, stepNumber_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
     jacPolicy_.get().template compute<
-      tag_name>(odeState, auxStates_, systemObj_.get(),
+      tag_name>(odeState, stencilStates_, systemObj_.get(),
                 rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
@@ -203,7 +203,7 @@ private:
     stepNumber_ = stepNumber;
 
     // copy current solution into y_n
-    auto & odeState_n = this->auxStates_(ode::n());
+    auto & odeState_n = stencilStates_.stateAt(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeSolution);
 
     // if provided, callback to provide a guess for the odeSolution
@@ -216,7 +216,7 @@ private:
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeSolution to that
-      auto & rollBackState = auxStates_(ode::n());
+      auto & rollBackState = stencilStates_.stateAt(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);
 
       // now throw

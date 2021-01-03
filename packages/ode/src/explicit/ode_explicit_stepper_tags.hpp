@@ -50,11 +50,25 @@
 #ifndef ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
 #define ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{
 
+namespace explicitmethods{
 struct Undefined{};
 struct Euler{};
 struct RungeKutta4{};
+struct AdamsBashforth2{};
+}//end namespace explicitmethods
 
-}}}
+namespace predicates{
+template <typename T>
+struct is_explicit_stepper_tag : std::false_type{};
+
+template <>
+struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
+
+template <>
+struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
+}//end namespace predicates
+
+}}//end namespace pressio::ode
 #endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_

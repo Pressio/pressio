@@ -61,17 +61,34 @@ struct requiredNumberOfStates
 template <>
 struct requiredNumberOfStates<::pressio::ode::implicitmethods::Euler>
 {
-  // for euler, I need to store the state at the current step
-  // plus the state at the previous step, so 2 total
+  // need to store: state_n+1, state_n
   static constexpr std::size_t value = 2;
 };
 
 template <>
 struct requiredNumberOfStates<::pressio::ode::implicitmethods::BDF2>
 {
-  // for BDF2, I need to store the state at the current step
-  // plus the state at the previous two steps, so 3 total
+  // need: state_n+1, state_n, state_n-1
   static constexpr std::size_t value = 3;
+};
+
+template <>
+struct requiredNumberOfStates<::pressio::ode::implicitmethods::CrankNicolson>
+{
+  // need: state_n+1, state_n
+  static constexpr std::size_t value = 2;
+};
+
+template <>
+struct requiredNumberOfStates<::pressio::ode::explicitmethods::Euler>
+{
+  static constexpr std::size_t value = 1;
+};
+
+template <>
+struct requiredNumberOfStates<::pressio::ode::explicitmethods::RungeKutta4>
+{
+  static constexpr std::size_t value = 1;
 };
 
 }} //end namespace pressio::ode
