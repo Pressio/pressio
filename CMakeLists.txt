@@ -105,15 +105,15 @@ include(tplLapack)
 include(tplKokkos)
 message("")
 
-#=====================================================================
-# unit tests are enabled if
-#   (a) PRESSIO_ENABLE_UNIT_TESTS = ON
-#   (b) PRESSIO_ENABLE_TESTS = ON
-#=====================================================================
-if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
-  enable_testing()
-  add_subdirectory(unit_tests)
-endif()
+# #=====================================================================
+# # unit tests are enabled if
+# #   (a) PRESSIO_ENABLE_UNIT_TESTS = ON
+# #   (b) PRESSIO_ENABLE_TESTS = ON
+# #=====================================================================
+# if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
+#   enable_testing()
+#   add_subdirectory(unit_tests)
+# endif()
 
 #=====================================================================
 # basic regression tests are enabled if
