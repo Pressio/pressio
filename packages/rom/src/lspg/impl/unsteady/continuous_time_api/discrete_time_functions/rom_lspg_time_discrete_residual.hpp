@@ -205,7 +205,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
   {
     const auto yI = hypIndices(i);
-    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cf*R(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
   }
 }
 #endif
