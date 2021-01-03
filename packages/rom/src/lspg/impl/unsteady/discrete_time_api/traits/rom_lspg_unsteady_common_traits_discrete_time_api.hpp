@@ -157,13 +157,12 @@ Note that this is the total number of states needed including previous ones, \n 
 basically the size of the stpper stencil.");
 
   // total number fom states needed (size of stencil plus the state at current step)
-  static constexpr std::size_t numStates = tot_n_setter::value;
+  static constexpr std::size_t numstates = tot_n_setter::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<
-    numStates, fom_state_t, fom_state_reconstr_t, ud_ops_t>;
-
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
+    ::pressio::rom::UnsteadyImplicit,
+    fom_state_t, fom_state_reconstr_t, ud_ops_t, numstates>;
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unsteady::impl

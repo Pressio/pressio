@@ -92,7 +92,7 @@ public:
     timer->start("fom eval rhs");
 #endif
 
-    const auto & currFom = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & currFom = fomStatesMngr_.get().currentFomState();
     fomSystemObj.residual(*currFom.data(), *romResidual.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

@@ -90,7 +90,7 @@ public:
   stepper_t & stepperRef(){ return members_.stepperObj_; }
 
   const fom_native_state_t & currentFomStateCRef() const{
-    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
+    return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{

@@ -58,7 +58,6 @@ template <
   >
 class ResidualPolicyContinuousTimeApi
 {
-
 public:
   using data_type = residual_type;
 
@@ -87,8 +86,7 @@ public:
   // 2. non-void ops
   template <
     typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t<
-      !std::is_void<_ud_ops_t>::value, int > = 0
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
     >
   ResidualPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
 				  const _ud_ops_t & udOps)
@@ -105,20 +103,48 @@ public:
   template <
     typename stepper_tag,
     typename lspg_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
-  void compute(const lspg_state_t & romState,
-	       const prev_states_t & romPrevStates,
-	       const fom_system_t & fomSystemObj,
-	       const scalar_t & time,
-	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & timeStep,
-	       residual_type & romR) const
+  mpl::enable_if_t<
+    mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
+  compute(const lspg_state_t & romState,
+	  const stencil_states_t & stencilStates,
+	  const fom_system_t & fomSystemObj,
+	  const scalar_t & time,
+	  const scalar_t & dt,
+	  const ::pressio::ode::types::step_t & timeStep,
+	  residual_type & romR) const
   {
-    this->compute_impl<stepper_tag>(romState, romR, romPrevStates, fomSystemObj,
-				    time, dt, timeStep);
+    this->compute_impl<stepper_tag>(romState, romR, stencilStates,
+				    fomSystemObj, time, dt, timeStep);
+  }
+
+  template <
+    typename stepper_tag,
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t,
+    typename stencil_velocities_t
+    >
+  mpl::enable_if_t<
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
+  compute(const lspg_state_t & romState,
+	  const stencil_states_t & stencilStates,
+	  const fom_system_t & fomSystemObj,
+	  const scalar_t & time,
+	  const scalar_t & dt,
+	  const ::pressio::ode::types::step_t & timeStep,
+	  stencil_velocities_t & stencilVelocities,
+	  residual_type & romR) const
+  {
+    this->compute_cn_impl<stepper_tag>
+      (romState, romR, stencilStates, fomSystemObj,
+       time, dt, timeStep, stencilVelocities);
   }
 
 private:
@@ -129,9 +155,9 @@ private:
   typename _ud_ops_t = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
-  time_discrete_dispatcher(const fom_state_cont_type & fomStates,
-			   residual_type & romR,
-			   const scalar_t & dt) const
+  time_discrete_dispatch(const fom_state_cont_type & fomStates,
+			 residual_type & romR,
+			 const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt);
@@ -144,9 +170,9 @@ private:
     typename _ud_ops_t = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
-  time_discrete_dispatcher(const fom_state_cont_type & fomStates,
-			   residual_type & romR,
-			   const scalar_t & dt) const
+  time_discrete_dispatch(const fom_state_cont_type & fomStates,
+			 residual_type & romR,
+			 const scalar_t & dt) const
   {
     using namespace ::pressio::rom::lspg::impl::unsteady;
     time_discrete_residual<stepper_tag>(fomStates, romR, dt, udOps_);
@@ -155,14 +181,14 @@ private:
   template <
     typename stepper_tag,
     typename lspg_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
   >
   void compute_impl(const lspg_state_t & romState,
 		    residual_type & romR,
-		    const prev_states_t & romPrevStates,
-		    const fom_system_t  & fomSystemObj,
+		    const stencil_states_t & stencilStates,
+		    const fom_system_t & fomSystemObj,
 		    const scalar_t & time,
 		    const scalar_t & dt,
 		    const ::pressio::ode::types::step_t & timeStep) const
@@ -177,34 +203,76 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStatesMngr_.get().reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    /* the previous FOM states should only be recomputed when time step changes.
-     * no need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt)
-     */
+    /* previous FOM states should only be recomputed when the time step changes.
+     * The method below does not recompute all previous states, but only
+     * recomputes the n-th state and updates/shifts back all the other
+     * FOM states stored. */
     if (storedStep_ != timeStep){
-      fomStatesMngr_.get() << romPrevStates(ode::nMinusOne());
+      fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = timeStep;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
-    fomSystemObj.velocity(*currentFomState.data(), time, *romR.data());
+    const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
+    fomSystemObj.velocity(*fomState.data(), time, *romR.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
     timer->start("time discrete residual");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(fomStatesMngr_.get(), romR, dt);
+    this->time_discrete_dispatch<stepper_tag>(fomStatesMngr_.get(), romR, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete residual");
     timer->stop("lspg residual");
 #endif
+  }
+
+  template <
+    typename stepper_tag,
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t,
+    typename stencil_velocities_t
+  >
+  void compute_cn_impl(const lspg_state_t & romState,
+		       residual_type & romR,
+		       const stencil_states_t & stencilStates,
+		       const fom_system_t & fomSystemObj,
+		       const scalar_t & t_np1,
+		       const scalar_t & dt,
+		       const ::pressio::ode::types::step_t & timeStep,
+		       // for CN, stencilVelocities holds f_n+1 and f_n
+		       stencil_velocities_t & stencilVelocities) const
+  {
+    PRESSIOLOG_DEBUG("residual policy with compute_cn_impl");
+
+    fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
+
+    if (storedStep_ != timeStep){
+      fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
+      storedStep_ = timeStep;
+
+      // if the step changed, I need to compute f(y_n, t_n)
+      const auto tn = t_np1-dt;
+      auto & f_n = stencilVelocities(::pressio::ode::n());
+      const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
+      fomSystemObj.velocity(*fomState_n.data(), tn, *f_n.data());
+    }
+
+    // always compute f(y_n+1, t_n+1)
+    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+    const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    fomSystemObj.velocity(*fomState_np1.data(), t_np1, *f_np1.data());
+
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
+	<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt);
   }
 
 protected:

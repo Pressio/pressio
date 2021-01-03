@@ -123,10 +123,9 @@ struct CommonTraitsContinuousTimeApi
     ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // ---------------------------------------------------------------
-  /* the fom states manager stores the fom states.
+  /* the fom states manager
      For explicit time stepping, we only need to store one fom state that
      we reconstruct every time we need to compute the FOM velocity
-
      Keep in mind that this is Galerkin, so the FOM states are only needed
      when we query the FOM velocity.
      So for implicit time stepping, we might need to store more than one
@@ -136,11 +135,12 @@ struct CommonTraitsContinuousTimeApi
      For CrankNicolson, we need two evaluations of the FOM velocity
      at n and n+1, so we need two FOM states.
    */
-  using fom_states_manager_t =
-    ::pressio::rom::StencilFomStatesManager<
+  static constexpr auto nstates = _num_fom_states_needed<ode_tag>::value;
+  using tagtype = mpl::conditional_t<
     ::pressio::ode::predicates::is_explicit_stepper_tag<ode_tag>::value,
-    fom_state_t, fom_state_reconstr_t, ud_ops_type,
-    _num_fom_states_needed<ode_tag>::value>;
+    ::pressio::rom::UnsteadyExplicit, ::pressio::rom::UnsteadyImplicit>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
+    tagtype, fom_state_t, fom_state_reconstr_t, ud_ops_type, nstates>;
 
   // ---------------------
   // sentinel to tell if we are doing bindings for p4py:

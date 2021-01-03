@@ -97,8 +97,9 @@ struct valid_stepper_tag_continuous_time_api
 {
   static_assert
   (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value,
-   "Unsteady LSPG with continuous-time API currently accepts BDF1 or BDF2");
+   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
+   "Unsteady LSPG with continuous-time API currently accepts BDF1, BDF2 or CrankNicolson");
 
   static constexpr auto value = true;
 };

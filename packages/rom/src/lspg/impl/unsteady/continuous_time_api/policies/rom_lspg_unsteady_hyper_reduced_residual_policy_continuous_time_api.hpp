@@ -86,12 +86,12 @@ public:
   template <
     typename stepper_tag,
     typename lspg_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
-	       const prev_states_t & romPrevStates,
+	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
@@ -102,7 +102,7 @@ public:
     // is of the same extent as the romR
     assert(sTosInfo_.get().extent(0) == romR.extent(0));
 
-    this->compute_impl<stepper_tag>(romState, romR, romPrevStates,
+    this->compute_impl<stepper_tag>(romState, romR, stencilStates,
 				    fomSystemObj, time, dt, timeStep);
   }
 
@@ -110,13 +110,13 @@ private:
   template <
     typename stepper_tag,
     typename lspg_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
   >
   void compute_impl(const lspg_state_t & romState,
 		    residual_type & romR,
-		    const prev_states_t & romPrevStates,
+		    const stencil_states_t & stencilStates,
 		    const fom_system_t  & fomSystemObj,
 		    const scalar_t & time,
 		    const scalar_t & dt,
@@ -127,18 +127,19 @@ private:
      * where the time step does not change but this residual method
      * is called multiple times.
      */
-    fomStatesMngr_.get().reconstructCurrentFomState(romState);
+    fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    /* the previous FOM states should only be recomputed when time step changes.
-     * no need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt)
-     */
+    /* previous FOM states should only be recomputed when the time step changes.
+     * The method below does not recompute all previous states, but only
+     * recomputes the n-th state and updates/shifts back all the other
+     * FOM states stored. */
     if (storedStep_ != timeStep){
-      fomStatesMngr_.get() << romPrevStates(ode::nMinusOne());
+      fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = timeStep;
     }
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
-    fomSystemObj.velocity(*currentFomState.data(), time, *romR.data());
+
+    const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
+    fomSystemObj.velocity(*fomState.data(), time, *romR.data());
 
     ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
 	<stepper_tag>(fomStatesMngr_.get(), romR, dt, sTosInfo_.get());

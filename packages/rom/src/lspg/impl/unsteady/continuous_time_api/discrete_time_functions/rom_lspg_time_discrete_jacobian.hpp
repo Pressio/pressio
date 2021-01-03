@@ -62,6 +62,11 @@ template <typename scalar_t>
 struct dtPrefactor<::pressio::ode::implicitmethods::BDF2, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf2<scalar_t>::c_f_;
 };
+
+template <typename scalar_t>
+struct dtPrefactor<::pressio::ode::implicitmethods::CrankNicolson, scalar_t>{
+  static constexpr auto value = ::pressio::ode::constants::cranknicolson<scalar_t>::c_fnp1_;
+};
 // ------------------------------------------------------
 
 // regular c++ with user-defined OPS
@@ -80,7 +85,8 @@ template <
 void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 			    const scalar_type	& dt,
 			    const decoder_jac_type & phi,
-			    const ud_ops * udOps){
+			    const ud_ops * udOps)
+{
 
   constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -276,7 +282,6 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 /*************************************
             epetra
 *************************************/
-
 template <
   typename stepper_tag,
   typename lspg_matrix_type,
@@ -288,11 +293,12 @@ template <
   containers::predicates::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
-			    const scalar_type & dt,
-			    const decoder_jac_type & phi){
+		       const scalar_type & dt,
+		       const decoder_jac_type & phi)
+{
 
   // integral type of the global indices
-  using GO_t = typename containers::details::traits<lspg_matrix_type>::global_ordinal_t;
+  using GO_t = typename lspg_matrix_type::traits::global_ordinal_t;
 
   // row map of phi
   const auto & phi_map = phi.data()->Map();
@@ -319,7 +325,6 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   }
 }
 
-
 /*************************************
             tpetra
 *************************************/
@@ -334,8 +339,9 @@ template <
   containers::predicates::is_multi_vector_tpetra<decoder_jac_type>::value
   >
 time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
-			    const scalar_type & dt,
-			    const decoder_jac_type & phi){
+		       const scalar_type & dt,
+		       const decoder_jac_type & phi)
+{
 
   // row map of phi
   const auto phi_map = phi.getMap();
@@ -379,8 +385,8 @@ template <
 >
 time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const scalar_type	& dt,
-			    const decoder_jac_type & phi){
-
+			    const decoder_jac_type & phi)
+{
   time_discrete_jacobian<stepper_tag>(*jphi.data(), dt, *phi.data());
 }
 
@@ -396,7 +402,8 @@ template <
 >
 time_discrete_jacobian(lspg_matrix_type & jphi,
 			    const scalar_type & dt,
-			    const decoder_jac_type & phi){
+			    const decoder_jac_type & phi)
+{
   auto jphi_mvv = jphi.data()->getMultiVectorView();
   auto phi_mvv  = phi.data()->getMultiVectorView();
   time_discrete_jacobian<stepper_tag>(jphi_mvv, dt, phi_mvv);

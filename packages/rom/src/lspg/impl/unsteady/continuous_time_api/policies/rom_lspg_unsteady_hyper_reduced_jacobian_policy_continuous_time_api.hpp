@@ -90,14 +90,14 @@ public:
 
   template <
     typename stepper_tag,
-    typename prev_states_mgr,
+    typename stencil_states_t,
     typename lspg_state_t,
     typename lspg_jac_t,
     typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
-	       const prev_states_mgr & prevStatesMgr,
+	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
@@ -135,9 +135,9 @@ private:
     // update Jacobian of decoder
     decoderObj_.get().updateJacobian(romState);
 
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & basis = decoderObj_.get().jacobianCRef();
-    fomSystemObj.applyJacobian(*currentFomState.data(), *basis.data(), t, *romJac.data());
+    fomSystemObj.applyJacobian(*fomState.data(), *basis.data(), t, *romJac.data());
 
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
       stepper_tag>(romJac, dt, decoderJacobian_.get(), sTosInfo_.get());

@@ -130,6 +130,7 @@ public:
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
+
     fomSystemObj.discreteTimeResidual(step, time, dt,
 				      *fomResidual_.data(),
 				      *ynp1.data(), *yn.data(), *ynm1.data());

@@ -115,25 +115,19 @@ struct CommonTraitsContinuousTimeApi
   using lspg_jacobian_t	= decoder_jac_t;
 
   // ---------------------
-  // // if we have an admissible user-defined ops
-  // using icUdOps = ::pressio::mpl::variadic::find_if_quaternary_pred_t<
-  //   decoder_jac_t, lspg_state_t, fom_state_t,
-  //   ::pressio::rom::constraints::lspg::custom_ops_lspg_continuous_time, Args...>;
-  // using ud_ops_t = ::pressio::mpl::variadic::at_or_t<void,icUdOps::value,Args...>;
-
-  // ---------------------
   // fom state reconstructor type
   using fom_state_reconstr_t =
     typename ::pressio::rom::impl::FomStateReconHelper<
     ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step)
-  static constexpr auto numStates = ::pressio::ode::requiredNumberOfStates<stepper_tag>::value;
+  static constexpr auto numstates =
+    ::pressio::ode::requiredNumberOfStates<stepper_tag>::value;
 
   // type of class holding the fom states
-  using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<numStates, fom_state_t,
-					   fom_state_reconstr_t, ud_ops_type>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
+    ::pressio::rom::UnsteadyImplicit,
+    fom_state_t, fom_state_reconstr_t, ud_ops_type, numstates>;
 
   // sentinel to tell if we are doing bindings for p4py:
   // always false if pybind is disabled, otherwise detect from rom state

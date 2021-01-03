@@ -52,42 +52,41 @@
 namespace pressio{ namespace rom{
 
 template <
-  bool for_explicit_time_stepping,
+  typename tag,
   typename fom_state_type,
   typename reconstuctor_type,
   typename ud_ops_t,
-  std::size_t numstates
+  std::size_t numstates = 1
   >
-class StencilFomStatesManager;
+class ManagerFomStates;
 
-
+// *****************************************
+// partial specialize for steady
+// *****************************************
 template <
   typename fom_state_type,
   typename reconstuctor_type,
-  typename ud_ops_t,
-  std::size_t numstates
+  typename ud_ops_t
   >
-class StencilFomStatesManager<
-  true, fom_state_type, reconstuctor_type, ud_ops_t, numstates
+class ManagerFomStates<
+  ::pressio::rom::Steady,
+  fom_state_type, reconstuctor_type, ud_ops_t, 1
   >
 {
-  static_assert
-  (numstates>=1, "StencilFomStatesManager cannot be empty.");
-
 public:
-  using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type,
-								      numstates>;
+  using data_type =
+    ::pressio::containers::IndexableStaticCollection<fom_state_type, 1>;
   using value_type = fom_state_type;
 
-  StencilFomStatesManager() = delete;
-  StencilFomStatesManager(const StencilFomStatesManager &) = default;
-  StencilFomStatesManager & operator=(const StencilFomStatesManager &) = delete;
-  StencilFomStatesManager(StencilFomStatesManager &&) = default;
-  StencilFomStatesManager & operator=(StencilFomStatesManager &&) = delete;
-  ~StencilFomStatesManager() = default;
+  ManagerFomStates() = delete;
+  ManagerFomStates(const ManagerFomStates &) = default;
+  ManagerFomStates & operator=(const ManagerFomStates &) = delete;
+  ManagerFomStates(ManagerFomStates &&) = default;
+  ManagerFomStates & operator=(ManagerFomStates &&) = delete;
+  ~ManagerFomStates() = default;
 
-  StencilFomStatesManager(const reconstuctor_type & fomStateReconstr,
-			 const fom_state_type & fomState)
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)
   {
@@ -98,9 +97,96 @@ public:
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
     >
-  StencilFomStatesManager(const reconstuctor_type & fomStateReconstr,
-			 const fom_state_type & fomState,
-			 const _ud_ops_t & udOps)
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState,
+		   const _ud_ops_t & udOps)
+    : udOps_(udOps),
+      fomStateReconstrObj_(fomStateReconstr),
+      data_(fomState)
+  {
+    this->setContainersToZero();
+  }
+
+public:
+  static constexpr std::size_t size(){ return data_type::size(); }
+
+  fom_state_type const & currentFomState() const {return data_(0);}
+
+  template <typename rom_state_t>
+  void reconstructCurrentFomState(const rom_state_t & romStateIn)
+  {
+    fomStateReconstrObj_(romStateIn, data_(0));
+  }
+
+private:
+  template <typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< std::is_void< _ud_ops_t>::value >
+  setContainersToZero(){
+    ::pressio::ops::set_zero(data_(0));
+  }
+
+  template <typename _ud_ops_t = ud_ops_t>
+  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
+  setContainersToZero(){
+    udOps_.get().set_zero(*data_(0).data());
+  }
+
+private:
+  typename std::conditional<
+  std::is_void<ud_ops_t>::value,
+  ::pressio::utils::impl::empty,
+  std::reference_wrapper<const ud_ops_t>
+  >::type udOps_;
+
+  std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
+  data_type data_;
+};
+
+
+// *****************************************
+// partial specialize for explicit stepping
+// *****************************************
+template <
+  typename fom_state_type,
+  typename reconstuctor_type,
+  typename ud_ops_t,
+  std::size_t numstates
+  >
+class ManagerFomStates<
+  ::pressio::rom::UnsteadyExplicit, fom_state_type, reconstuctor_type,
+  ud_ops_t, numstates
+  >
+{
+  static_assert
+  (numstates>=1, "ManagerFomStates cannot be empty.");
+
+public:
+  using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type,
+								      numstates>;
+  using value_type = fom_state_type;
+
+  ManagerFomStates() = delete;
+  ManagerFomStates(const ManagerFomStates &) = default;
+  ManagerFomStates & operator=(const ManagerFomStates &) = delete;
+  ManagerFomStates(ManagerFomStates &&) = default;
+  ManagerFomStates & operator=(ManagerFomStates &&) = delete;
+  ~ManagerFomStates() = default;
+
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState)
+    : fomStateReconstrObj_(fomStateReconstr),
+      data_(fomState)
+  {
+    this->setContainersToZero();
+  }
+
+  template<
+    typename _ud_ops_t = ud_ops_t,
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
+    >
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState,
+		   const _ud_ops_t & udOps)
     : udOps_(udOps),
       fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)
@@ -151,7 +237,7 @@ public:
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::n)
   {
-    fomStateReconstrObj_.get()(romStateIn, data_(0));
+    fomStateReconstrObj_(romStateIn, data_(0));
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
@@ -168,7 +254,7 @@ public:
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::n)
   {
-    fomStateReconstrObj_.get()(romStateIn, data_(1));
+    fomStateReconstrObj_(romStateIn, data_(1));
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
@@ -215,27 +301,28 @@ template <
   typename ud_ops_t,
   std::size_t numstates
   >
-class StencilFomStatesManager<
-  false, fom_state_type, reconstuctor_type, ud_ops_t, numstates
+class ManagerFomStates<
+  ::pressio::rom::UnsteadyImplicit, fom_state_type, reconstuctor_type,
+  ud_ops_t, numstates
   >
 {
   static_assert
-  (numstates>=1, "StencilFomStatesManager cannot be empty.");
+  (numstates>=1, "ManagerFomStates cannot be empty.");
 
 public:
   using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type,
 								      numstates>;
   using value_type = fom_state_type;
 
-  StencilFomStatesManager() = delete;
-  StencilFomStatesManager(const StencilFomStatesManager &) = default;
-  StencilFomStatesManager & operator=(const StencilFomStatesManager &) = delete;
-  StencilFomStatesManager(StencilFomStatesManager &&) = default;
-  StencilFomStatesManager & operator=(StencilFomStatesManager &&) = delete;
-  ~StencilFomStatesManager() = default;
+  ManagerFomStates() = delete;
+  ManagerFomStates(const ManagerFomStates &) = default;
+  ManagerFomStates & operator=(const ManagerFomStates &) = delete;
+  ManagerFomStates(ManagerFomStates &&) = default;
+  ManagerFomStates & operator=(ManagerFomStates &&) = delete;
+  ~ManagerFomStates() = default;
 
-  StencilFomStatesManager(const reconstuctor_type & fomStateReconstr,
-			 const fom_state_type & fomState)
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)
   {
@@ -246,9 +333,9 @@ public:
     typename _ud_ops_t = ud_ops_t,
     mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
     >
-  StencilFomStatesManager(const reconstuctor_type & fomStateReconstr,
-			 const fom_state_type & fomState,
-			 const _ud_ops_t & udOps)
+  ManagerFomStates(const reconstuctor_type & fomStateReconstr,
+		   const fom_state_type & fomState,
+		   const _ud_ops_t & udOps)
     : udOps_(udOps),
       fomStateReconstrObj_(fomStateReconstr),
       data_(fomState)

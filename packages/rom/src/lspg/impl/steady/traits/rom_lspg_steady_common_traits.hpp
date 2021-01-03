@@ -121,8 +121,8 @@ struct CommonTraits
     FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
 
   // for steady lspg, we only need to store one FOM state
-  using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t, fom_state_reconstr_t, ud_ops_t>;
+  using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
+    ::pressio::rom::Steady, fom_state_t, fom_state_reconstr_t, ud_ops_t>;
 
   // sentinel to tell if we are doing bindings for p4py:
   // always false if pybind is disabled, otherwise detect from rom state

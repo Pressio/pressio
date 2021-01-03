@@ -99,65 +99,71 @@ public:
   template <
     typename ode_tag,
     typename lspg_state_t,
-    typename lspg_prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
-	       const lspg_prev_states_t & romPrevStates,
-	       const fom_system_t	& fomSystemObj,
-	       const scalar_t		& time,
-	       const scalar_t		& dt,
+	       const stencil_states_t & stencilStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & time,
+	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       residual_type & romR) const
   {
-    this->compute_impl(romState, romPrevStates, fomSystemObj,
-		       time, dt, step, romR);
+    this->compute_impl(romState, stencilStates,
+		       fomSystemObj, time, dt, step, romR);
   }
 
 private:
-  template <typename lspg_state_t, typename lspg_prev_states_t>
+  template <typename lspg_state_t, typename stencil_states_t>
   void doFomStatesReconstruction(const lspg_state_t & romState,
-				 const lspg_prev_states_t & romPrevStates,
+				 const stencil_states_t & stencilStates,
 				 const ::pressio::ode::types::step_t & step) const
   {
-    /* the currrent FOM has to be recomputed every time regardless
-     * of whether the step changes since we might be inside a non-linear solve
+    /* the FOM state corresponding to the new predicted state has to be
+     * recomputed every time regardless of the time step chaning or not,
+     *  since we might be inside a non-linear solve
      * where the time step does not change but this residual method
-     * is called multiple times.
-     */
-    fomStatesMngr_.get().reconstructCurrentFomState(romState);
+     * is called multiple times. */
+    fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    /* the previous FOM states should only be recomputed when the time step changes
-     * we do not need to reconstruct all the FOM states, we just need to reconstruct
-     * the state at the previous step (i.e. t-dt) which is stored in romPrevStates[0]
-     */
+    /* previous FOM states should only be recomputed when the time step changes.
+     * The method below does not recompute all previous states, but only
+     * recomputes the n-th state and updates/shifts back all the other
+     * FOM states stored. */
     if (storedStep_ != step){
-      fomStatesMngr_.get() << romPrevStates(ode::nMinusOne());
+      fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = step;
     }
   }
 
   // we have here n = 1 prev rom states
-  template <typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t, typename scalar_t>
-  mpl::enable_if_t< lspg_prev_states_t::size()==1 >
+  template <
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t
+    >
+  mpl::enable_if_t< stencil_states_t::size()==1 >
   compute_impl(const lspg_state_t & romState,
-	       const lspg_prev_states_t & romPrevStates,
+	       const stencil_states_t & stencilStates,
 	       const fom_system_t  & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       residual_type & romR) const
   {
-    doFomStatesReconstruction(romState, romPrevStates, step);
-    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
-    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
+    doFomStatesReconstruction(romState, stencilStates, step);
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
 
     try{
       fomSystemObj.discreteTimeResidual(step, time, dt,
 					*romR.data(),
-					*yn.data(),
-					*ynm1.data());
+					*ynp1.data(),
+					*yn.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
@@ -165,28 +171,33 @@ private:
   }
 
   // we have here n = 2 prev rom states
-  template <typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t, typename scalar_t>
-  mpl::enable_if_t< lspg_prev_states_t::size()==2 >
+  template <
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t
+    >
+  mpl::enable_if_t< stencil_states_t::size()==2 >
   compute_impl(const lspg_state_t & romState,
-	       const lspg_prev_states_t & romPrevStates,
+	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
 	       const ::pressio::ode::types::step_t & step,
 	       residual_type & romR) const
   {
-    doFomStatesReconstruction(romState, romPrevStates, step);
+    doFomStatesReconstruction(romState, stencilStates, step);
 
-    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
-    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    const auto & ynm2 = fomStatesMngr_.get().fomStatePrevPrevStepCRef();
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
     try{
       fomSystemObj.discreteTimeResidual(step, time, dt,
 					*romR.data(),
+					*ynp1.data(),
 					*yn.data(),
-					*ynm1.data(),
-					*ynm2.data());
+					*ynm1.data());
 
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){

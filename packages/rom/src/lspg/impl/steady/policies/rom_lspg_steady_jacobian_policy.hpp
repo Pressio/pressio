@@ -105,7 +105,7 @@ public:
 #endif
 
     const auto & basis = decoderObj_.get().jacobianCRef();
-    const auto & currFom = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & currFom = fomStatesMngr_.get().currentFomState();
     fomSystemObj.applyJacobian(*currFom.data(), *basis.data(), *romJacobian.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

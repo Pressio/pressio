@@ -136,6 +136,7 @@ public:
 template<typename T, std::size_t n>
 class StencilVelocitiesManager
 {
+
 public:
   using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
 
@@ -143,11 +144,19 @@ private:
   data_type rhs_;
 
 public:
-  StencilVelocitiesManager() = delete;
+  StencilVelocitiesManager() = default;
 
-  template <typename ...Args>
-  StencilVelocitiesManager(Args && ... args)
-    : rhs_(std::forward<Args>(args)...){}
+  StencilVelocitiesManager(const T & oin)
+    : rhs_(oin)
+  {
+    PRESSIOLOG_DEBUG("constructing from oin");
+  }
+
+  StencilVelocitiesManager(T && oin)
+    : rhs_(std::move(oin))
+  {
+    PRESSIOLOG_DEBUG("constructing moving oin");
+  }
 
   StencilVelocitiesManager(StencilVelocitiesManager const & other) = default;
   StencilVelocitiesManager & operator=(StencilVelocitiesManager const & other) = default;

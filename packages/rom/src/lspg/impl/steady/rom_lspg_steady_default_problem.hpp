@@ -87,7 +87,7 @@ public:
   }
 
   const fom_native_state_t & currentFomStateCRef() const{
-    return *(members_.fomStatesMngr_.currentFomStateCRef().data());
+    return *(members_.fomStatesMngr_.currentFomState().data());
   }
 
 public:

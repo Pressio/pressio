@@ -112,14 +112,14 @@ public:
 
   template <
     typename stepper_tag,
-    typename prev_states_mgr,
+    typename stencil_states_t,
     typename lspg_state_t,
     typename lspg_jac_t,
     typename fom_system_t,
     typename scalar_t
     >
   void compute(const lspg_state_t & romState,
-	       const prev_states_mgr & prevStatesMgr,
+	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
@@ -138,7 +138,7 @@ private:
   typename _ud_ops = ud_ops_type
   >
   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(matrix_t & romJac, scalar_t  dt) const
+  time_discrete_dispatch(matrix_t & romJac, scalar_t  dt) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
       stepper_tag>(romJac, dt, decoderJacobian_.get());
@@ -151,7 +151,7 @@ private:
     typename _ud_ops = ud_ops_type
     >
   ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value >
-  time_discrete_dispatcher(matrix_t & romJac, scalar_t dt) const
+  time_discrete_dispatch(matrix_t & romJac, scalar_t dt) const
   {
     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
       stepper_tag>(romJac, dt, decoderJacobian_.get(), udOps_);
@@ -188,16 +188,16 @@ private:
     timer->start("fom apply jac");
 #endif
 
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & basis = decoderObj_.get().jacobianCRef();
-    fomSystemObj.applyJacobian(*currentFomState.data(), *basis.data(), t, *romJac.data());
+    fomSystemObj.applyJacobian(*fomState.data(), *basis.data(), t, *romJac.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");
     timer->start("time discrete jacob");
 #endif
 
-    this->time_discrete_dispatcher<stepper_tag>(romJac, dt);
+    this->time_discrete_dispatch<stepper_tag>(romJac, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("time discrete jacob");

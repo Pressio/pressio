@@ -81,25 +81,23 @@ struct MyFakeSolver
       sys.jacobian(state, J_);
 
       std::cout << *state.data() << std::endl;
-      // std::cout << *R_.data() << std::endl;
-      // std::cout << *J_.data() << std::endl;
 
       // at first call to solver, the fom state should
       // be [8 8 8 ...]
       if (callCounter_==1 and k==0)
       {
-      	Eigen::VectorXd trueFomState(fomSize_);
-      	trueFomState.setConstant(8.);
-      	if (!trueFomState.isApprox(fomStateConstRef_)) checkString_ = "FAILED";
+	Eigen::VectorXd trueFomState(fomSize_);
+	trueFomState.setConstant(8.);
+	if (!trueFomState.isApprox(fomStateConstRef_)) checkString_ = "FAILED";
       }
 
       // at first call to solver, the fom state should
       // be [16 16 16 ...]
       if (callCounter_==1 and k==1)
       {
-      	Eigen::VectorXd trueFomState(fomSize_);
-      	trueFomState.setConstant(16.);
-      	if (!trueFomState.isApprox(fomStateConstRef_)) checkString_ = "FAILED";
+	Eigen::VectorXd trueFomState(fomSize_);
+	trueFomState.setConstant(16.);
+	if (!trueFomState.isApprox(fomStateConstRef_)) checkString_ = "FAILED";
       }
 
       for (auto i=0; i<state.extent(0); ++i) state(i) += 1.;
@@ -144,17 +142,16 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  // using problem_type = typename pressio::rom::lspg::composeDefaultProblem<
-  //     fom_t, decoder_t, rom_state_t>::type;
-  // problem_type problem(appObj, decoderObj, romState, refState);
   auto problem = pressio::rom::lspg::createDefaultProblemSteady(
     appObj, decoderObj, romState, refState);
 
   const auto & currFomState = problem.currentFomStateCRef();
+  std::cout << currFomState << std::endl;
 
   // here, the fom state should be [8 8 8 ...]
   Eigen::VectorXd trueFomState(fomSize);
   trueFomState.setConstant(8.);
+  std::cout << trueFomState << std::endl;
   if (!trueFomState.isApprox(currFomState)) checkStr = "FAILED";
 
   using solver_t = MyFakeSolver<rom_state_t,typename decoder_t::jacobian_type>;

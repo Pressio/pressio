@@ -106,7 +106,7 @@ public:
       stepper_tag>(currentState, prevStates, systemObj,
         time, dt, step, unpreconditionedField);
 
-    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & yFom = fomStatesMngr_(::pressio::ode::nPlusOne());
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time,
 						 *unpreconditionedField.data());
   }
@@ -123,7 +123,7 @@ public:
 	       const fom_t & systemObj) const
   {
     preconditionable_policy::compute(currentState, unpreconditionedField, systemObj);
-    const auto & yFom = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & yFom = fomStatesMngr_.get().currentFomState();
     preconditionerObj_.get().applyPreconditioner(*yFom.data(),
 						 *unpreconditionedField.data());
   }

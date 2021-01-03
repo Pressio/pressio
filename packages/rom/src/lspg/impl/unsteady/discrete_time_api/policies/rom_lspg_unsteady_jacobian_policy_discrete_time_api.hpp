@@ -126,12 +126,15 @@ public:
 private:
   // we have here n = 1 prev rom states
   template<
-    typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t,
-    typename scalar_t, typename lspg_jac_t
+  typename lspg_state_t,
+  typename stencil_states_t,
+  typename fom_system_t,
+  typename scalar_t,
+  typename lspg_jac_t
     >
-  mpl::enable_if_t< lspg_prev_states_t::size()==1 >
+  mpl::enable_if_t< stencil_states_t::size()==1 >
   compute_impl(const lspg_state_t			& romState,
-		    const lspg_prev_states_t		& romPrevStates,
+		    const stencil_states_t		& stencilStates,
   		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -147,23 +150,27 @@ private:
     decoderObj_.get().updateJacobian(romState);
 
     const auto & phi = decoderObj_.get().jacobianCRef();
-    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
-    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+
     fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
 					   *phi.data(),
 					   *romJac.data(),
-					   *yn.data(),
-					   *ynm1.data());
+					   *ynp1.data(),
+					   *yn.data());
   }
 
   // we have here n = 2 prev rom states
   template<
-    typename lspg_state_t, typename lspg_prev_states_t, typename fom_system_t,
-    typename scalar_t, typename lspg_jac_t
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t,
+    typename lspg_jac_t
   >
-  mpl::enable_if_t< lspg_prev_states_t::size()==2 >
+  mpl::enable_if_t< stencil_states_t::size()==2 >
   compute_impl(const lspg_state_t			& romState,
-		    const lspg_prev_states_t		& romPrevStates,
+		    const stencil_states_t		& stencilStates,
   		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& time,
   		    const scalar_t			& dt,
@@ -179,16 +186,17 @@ private:
     decoderObj_.get().updateJacobian(romState);
 
     const auto & phi = decoderObj_.get().jacobianCRef();
-    const auto & yn   = fomStatesMngr_.get().currentFomStateCRef();
-    const auto & ynm1 = fomStatesMngr_.get().fomStatePrevStepCRef();
-    const auto & ynm2 = fomStatesMngr_.get().fomStatePrevStepCRef();
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
     fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
 					   *phi.data(),
 					   *romJac.data(),
+					   *ynp1.data(),
 					   *yn.data(),
-					   *ynm1.data(),
-					   *ynm2.data());
+					   *ynm1.data());
   }
 
 protected:
