@@ -59,10 +59,11 @@ public:
   static constexpr ::pressio::rom::wls::window_size_t state_stencil_size_ = 2;
 
 private:
-  using aux_states_container_t = ::pressio::ode::AuxStatesManager<fom_state_t, state_stencil_size_>;
+  using aux_states_container_t = ::pressio::ode::implicitmethods::StencilStatesManager
+    <fom_state_t, state_stencil_size_>;
 
   ::pressio::rom::wls::rom_size_t romStateSize_;
-  mutable aux_states_container_t auxStatesContainer_;
+  mutable aux_states_container_t stencilStates_;
   mutable bool jacobianZeroNeedsRecomputing_ = true;
   mutable bool jacobianOneNeedsRecomputing_  = true;
 
@@ -76,7 +77,7 @@ public:
   BDF2(::pressio::rom::wls::rom_size_t & romStateSize,
        const fom_state_t & fomState)
     :  romStateSize_(romStateSize),
-       auxStatesContainer_(fomState)
+       stencilStates_(fomState)
   {}
 
 public:
@@ -90,13 +91,10 @@ public:
   void updateStatesFirstStep(const wls_state_type & wlsStateIC,
                              const fom_state_reconstr_t & fomStateReconstr) const
   {
-    using nm1 = ::pressio::ode::nMinusOne;
-    using nm2 = ::pressio::ode::nMinusTwo;
-
     const auto wlsInitialStateNm2 = ::pressio::containers::span(wlsStateIC, 0, romStateSize_);
     const auto wlsInitialStateNm1 = ::pressio::containers::span(wlsStateIC, romStateSize_, romStateSize_);
-    auto & fomStateNm2 = auxStatesContainer_(nm2());
-    auto & fomStateNm1 = auxStatesContainer_(nm1());
+    auto & fomStateNm2 = stencilStates_(::pressio::ode::nMinusOne());
+    auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
     fomStateReconstr(wlsInitialStateNm2,fomStateNm2);
     fomStateReconstr(wlsInitialStateNm1,fomStateNm1);
   }
@@ -104,11 +102,8 @@ public:
   // at an N step. Here we are just dealing with the aux container
   void updateStatesNStep(const fom_state_t & fomStateCurrent) const
   {
-    using nm1 = ::pressio::ode::nMinusOne;
-    using nm2 = ::pressio::ode::nMinusTwo;
-
-    auto & odeState_nm1 = auxStatesContainer_(nm1());
-    auto & odeState_nm2 = auxStatesContainer_(nm2());
+    auto & odeState_nm1 = stencilStates_(::pressio::ode::n());
+    auto & odeState_nm2 = stencilStates_(::pressio::ode::nMinusOne());
     ::pressio::ops::deep_copy(odeState_nm2, odeState_nm1);
     ::pressio::ops::deep_copy(odeState_nm1, fomStateCurrent);
   }
@@ -237,12 +232,12 @@ public:
     auto fomStateView = *fomState.data();
     const auto fomStateMap = fomStateView.getMap();
     const auto gIDy = fomStateMap->getMyGlobalIndices();
-    auto Unm1 = auxStatesContainer_(::pressio::ode::nMinusOne());
+    auto Unm1 = stencilStates_(::pressio::ode::n());
     auto Unm1View = *Unm1.data();
     auto Rdv = residualView.getDataNonConst();
     auto Udv = fomStateView.getData();
     auto Unm1dv = Unm1View.getData();
-    auto Unm2 = auxStatesContainer_(::pressio::ode::nMinusTwo());
+    auto Unm2 = stencilStates_(::pressio::ode::nMinusOne());
     auto Unm2View = *Unm2.data();
     auto Unm2dv = Unm2View.getData();
     time_discrete_residual_from_views(fomStateView,Unm1View,Unm2View,residualView,step,dt);
@@ -271,9 +266,9 @@ public:
     auto residualView = residualNative.getVectorView();
     auto fomStateNative = *fomState.data();
     auto fomStateView = fomStateNative.getVectorView();
-    auto Unm1 = auxStatesContainer_(::pressio::ode::nMinusOne());
+    auto Unm1 = stencilStates_(::pressio::ode::n());
     auto Unm1View = (*Unm1.data()).getVectorView();
-    auto Unm2 = auxStatesContainer_(::pressio::ode::nMinusTwo());
+    auto Unm2 = stencilStates_(::pressio::ode::nMinusOne());
     auto Unm2View = (*Unm2.data()).getVectorView();
 
     const auto hyperMap = residualView.getMap();
@@ -374,10 +369,8 @@ public:
 			 const pressio::rom::wls::window_size_t & step) const
   {
     if (step > 0){
-      using nm1 = ::pressio::ode::nMinusOne;
-      using nm2 = ::pressio::ode::nMinusTwo;
-      auto & fomStateNm2 = auxStatesContainer_(nm2());
-      auto & fomStateNm1 = auxStatesContainer_(nm1());
+      auto & fomStateNm2 = stencilStates_(::pressio::ode::nMinusOne());
+      auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
 
       fomSystemObj.discreteTimeResidual(step, t, dt,
 					*residual.data(),
@@ -386,9 +379,7 @@ public:
 
     if (step == 0){
       // u^n - u^{n-1}  - dt*f
-      using nm1 = ::pressio::ode::nMinusOne;
-      auto & fomStateNm1 = auxStatesContainer_(nm1());
-
+      auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
       fomSystemObj.discreteTimeResidual(step, t, dt,
 					*residual.data(),
 					*fomState.data(), *fomStateNm1.data());
@@ -418,8 +409,7 @@ public:
     // u^n - u^{n-1} - dt*f ;
     if (step == 0){
       if (arg == 0){
-        using nm1 = ::pressio::ode::nMinusOne;
-        auto & fomStateNm1 = auxStatesContainer_(nm1());
+        auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
         fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
 					       *Jphi.data(), *fomState.data(), *fomStateNm1.data());
       }
@@ -427,22 +417,20 @@ public:
 
     if (step > 0){
       if (arg == 0){
-        using nm1 = ::pressio::ode::nMinusOne;
-        using nm2 = ::pressio::ode::nMinusTwo;
-        auto & fomStateNm1 = auxStatesContainer_(nm1());
-        auto & fomStateNm2 = auxStatesContainer_(nm2());
+        auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
+        auto & fomStateNm2 = stencilStates_(::pressio::ode::nMinusOne());
         fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
 					       *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
-        constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
+        constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -4/3
         ::pressio::ops::update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
-        constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
+        constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  2/3
         ::pressio::ops::update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
@@ -490,8 +478,8 @@ private:
     if (step > 0){
       // get my global elements
       const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //  -2/3*dt
-      const auto cnm1     = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  -4./3.
-      const auto cnm2     = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  1./3.
+      const auto cnm1     = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //  -4./3.
+      const auto cnm2     = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  1./3.
       auto Unm2dv = Unm2View.getData();
       for (size_t i=0; i<residualView.getLocalLength(); i++){
 	const auto lid = fomStateMap->getLocalElement(gIDr[i]);
@@ -540,7 +528,6 @@ private:
     if (step == 0){
       if (arg == 0){
 	fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
-	// constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; //      1
 	const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
 
 	// get my global elements
@@ -557,7 +544,7 @@ private:
 
       //only perform computation once since this never changes
       if (arg == 1 && jacobianZeroNeedsRecomputing_){
-	constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
+	constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; // -1.
 	// get my global elements
 	for (size_t i=0; i<JphiView.getLocalLength(); i++){
 	  for (size_t k=0 ; k < (size_t)Jphi.extent(1); k++){
@@ -575,7 +562,6 @@ private:
 	if (arg == 0)
 	  {
 	    fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
-	    // constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //      1
 	    const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //  2/3*dt
 
 	    // get my global elements
@@ -592,7 +578,7 @@ private:
 
 	//only perform computation once since this never changes
 	if (arg == 1 && jacobianZeroNeedsRecomputing_){
-	  constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -1.
+	  constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -1.
 	  // get my global elements
 	  for (size_t i=0; i<JphiView.getLocalLength(); i++){
 	    const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
@@ -605,7 +591,7 @@ private:
 	}
 
 	if (arg == 2 && jacobianOneNeedsRecomputing_){
-	  constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; // -1.
+	  constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -1.
 	  // get my global elements
 	  for (size_t i=0; i<JphiView.getLocalLength(); i++){
 	    for (size_t k=0 ; k < (size_t)Jphi.extent(1); k++){
@@ -643,7 +629,7 @@ private:
       // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
       fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
-						   auxStatesContainer_, dt,
+						   stencilStates_, dt,
 						   ::pressio::ode::implicitmethods::BDF2());
     }
 
@@ -651,7 +637,7 @@ private:
       // u^n - u^{n-1}  - dt*f
       fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
-						   auxStatesContainer_, dt,
+						   stencilStates_, dt,
 						   ::pressio::ode::implicitmethods::Euler());
     }
   }
@@ -680,7 +666,7 @@ private:
     if (step == 0){
       if (arg == 0){
         fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
-        constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; //1
+        constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_; //1
         ::pressio::ops::update(Jphi, -dt, phi, cn);
       }
     }
@@ -688,19 +674,19 @@ private:
     if (step > 0){
       if (arg == 0){
         fomSystemObj.applyJacobian(*fomState.data(),*phi.data(),t,*(Jphi).data());
-        constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // 1
+        constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_; // 1
         const auto cfdt   = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //2/3
         ::pressio::ops::update(Jphi, cfdt, phi, cn);
       }
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
-        constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; // -4/3
+        constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -4/3
         ::pressio::ops::update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
-        constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm2_; //  2/3
+        constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  2/3
         ::pressio::ops::update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
