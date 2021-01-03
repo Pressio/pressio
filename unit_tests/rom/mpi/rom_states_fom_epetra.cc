@@ -17,7 +17,7 @@ using fom_state_w_t = containers::Vector<Epetra_Vector>;
 using decoder_t		= rom::LinearDecoder<matrix_w_t, fom_state_w_t>;
 
 using fom_state_rec_t	= rom::FomStateReconstructor<double, fom_state_w_t,decoder_t>;
-using fom_states	= rom::ManagerFomStatesStatic<1, fom_state_w_t, fom_state_rec_t, void>;
+using fom_states	= rom::ManagerFomStates<::pressio::rom::Steady, fom_state_w_t, fom_state_rec_t, void>;
 
 struct mytest
 {
@@ -33,7 +33,7 @@ struct mytest
   }
 
   void check(){
-    const auto & yfR = MyStates.currentFomStateCRef();
+    const auto & yfR = MyStates.currentFomState();
     const auto sz = yfR.extentLocal(0);
     for (auto i=0; i<sz; i++)
       EXPECT_DOUBLE_EQ( yfR(i), 2.4);

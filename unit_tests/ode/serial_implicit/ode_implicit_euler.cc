@@ -108,8 +108,8 @@ TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser)
   //**********************
   // define policies and stepper
   //**********************
-  using res_pol_t = ode::implicitmethods::policy::ResidualStandardBdfPolicy<state_t, res_t>;
-  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardBdfPolicy<state_t, jac_t>;
+  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicyBdf<state_t, res_t>;
+  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicyBdf<state_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
