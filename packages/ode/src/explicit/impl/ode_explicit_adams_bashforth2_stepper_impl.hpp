@@ -160,7 +160,6 @@ public:
 
     // y_n+1 = y_n + dt*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
 
-    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
     const auto cfn   = ::pressio::utils::constants<scalar_type>::threeOvTwo()*dt;
     const auto cfnm1 = ::pressio::utils::constants<scalar_type>::negOneHalf()*dt;
 
@@ -168,18 +167,74 @@ public:
       // use Euler forward or we could use something else here maybe RK4
       auto & rhs = velocities_(0);
       policy_.get().compute(odeSolution, rhs, systemObj_.get(), currentTime);
-      // y = y + dt * rhs
-      ::pressio::ops::update(odeSolution, one, rhs, dt);
+      doUpdate1(odeSolution, rhs, dt);
     }
     else{
       auto & fn   = velocities_(0);
       auto & fnm1 = velocities_(1);
       // fn -> fnm1
-      ::pressio::ops::deep_copy(fnm1, fn);
+      updateStoredVelocities(fnm1, fn);
 
       policy_.get().compute(odeSolution, fn, systemObj_.get(), currentTime);
-      ::pressio::ops::update(odeSolution, one, fn, cfn, fnm1, cfnm1);
+      doUpdate2(odeSolution, fn, cfn, fnm1, cfnm1);
     }
+  }
+
+private:
+  template<typename T, typename _ops_t = ops_t>
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
+  updateStoredVelocities(T & to, const T & from)
+  {
+    ::pressio::ops::deep_copy(to, from);
+  }
+
+  template<typename T, typename _ops_t = ops_t>
+  mpl::enable_if_t< mpl::not_void<_ops_t>::value >
+  updateStoredVelocities(T & to, const T & from)
+  {
+    udOps_->deep_copy(*to.data(), *from.data());
+  }
+
+  template<typename f_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
+  doUpdate1(state_type & odeSolution,
+	    const f_t & rhs,
+	    const scalar_type & dt)
+  {
+    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    ::pressio::ops::update(odeSolution, one, rhs, dt);
+  }
+
+  template<typename f_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< mpl::not_void<_ops_t>::value >
+  doUpdate1(state_type & odeSolution,
+	    const f_t & rhs,
+	    const scalar_type & dt)
+  {
+    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    udOps_->update(*odeSolution.data(), one, *rhs.data(), dt);
+  }
+
+  template<typename f_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
+  doUpdate2(state_type & odeSolution,
+	    const f_t & fn, const scalar_type & cfn,
+	    const f_t & fnm1, const scalar_type & cfnm1)
+  {
+    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    ::pressio::ops::update(odeSolution, one, fn, cfn, fnm1, cfnm1);
+  }
+
+  template<typename f_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< mpl::not_void<_ops_t>::value >
+  doUpdate2(state_type & odeSolution,
+	    const f_t & fn, const scalar_type & cfn,
+	    const f_t & fnm1, const scalar_type & cfnm1)
+  {
+    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    udOps_->update(*odeSolution.data(), one,
+		   *fn.data(), cfn,
+		   *fnm1.data(), cfnm1);
   }
 };
 
