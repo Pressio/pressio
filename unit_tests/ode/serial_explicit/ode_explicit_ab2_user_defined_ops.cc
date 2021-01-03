@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio_ode.hpp"
 
+namespace {
 struct MyApp{
   using scalar_type   = double;
   using state_type    = std::vector<scalar_type>;
@@ -96,6 +97,7 @@ struct MyOps
       v[i] = a*v[i] + b*v1[i] + c*v2[i];
   }
 };
+}
 
 TEST(ode_explicit_ab2, userDefinedOps)
 {

@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio_ode.hpp"
 
+namespace {
 struct MyApp
 {
   using scalar_type = double;
@@ -53,6 +54,7 @@ struct Collector
     }
   }
 };
+}
 
 TEST(ode_explicit_ab2, numericsStdResidualPolDefaultCreated)
 {
@@ -123,7 +125,6 @@ TEST(ode_explicit_ab2, numericsStdResidualPolPassedByUser)
 
   using pol_t = ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
   pol_t polObj;
-
   auto stepperObj = ode::createAdamsBashforth2Stepper(y, appObj, polObj);
 
   double dt = 2.;
