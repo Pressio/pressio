@@ -100,16 +100,7 @@ public:
     return data_[i];
   }
 
-  // data_type & data(){
-  //   return data_;
-  // }
-
-  // data_type const & data() const{
-  //   return data_;
-  // }
-
 public:
-
   template <
   typename _T = T,
   mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0

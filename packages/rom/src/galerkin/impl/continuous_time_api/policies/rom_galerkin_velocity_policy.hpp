@@ -117,9 +117,11 @@ public:
   void compute(const galerkin_state_t & galerkinState,
 	       galerkin_velocity_t & galerkinRhs,
 	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & time) const
+	       const scalar_t & timeToPassToRhsEvaluation) const
   {
-    projection_policy_t::compute(galerkinRhs, galerkinState, fomSystemObj, time);
+    projection_policy_t::compute(galerkinRhs, galerkinState,
+				 fomSystemObj, timeToPassToRhsEvaluation,
+				 ::pressio::ode::n());
   }
 };
 

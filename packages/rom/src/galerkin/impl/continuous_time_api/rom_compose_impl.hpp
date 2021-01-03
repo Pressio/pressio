@@ -87,8 +87,9 @@ template <typename tag>
 struct valid_implicit_stepper_tag{
   static_assert
   (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value,
-   "Implicit Galerkin with continuous-time API currently accepts BDF1 or BDF2");
+   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
+   "Implicit Galerkin with continuous-time API currently accepts BDF1, BDF2 or CrankNicolson");
   static constexpr auto value = true;
 };
 

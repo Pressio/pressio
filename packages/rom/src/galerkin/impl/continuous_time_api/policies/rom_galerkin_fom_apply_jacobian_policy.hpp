@@ -83,7 +83,7 @@ public:
   template<class galerkin_state_t, typename fom_system_t, typename scalar_t>
   void compute(const galerkin_state_t & galerkinState,
 	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & time) const
+	       const scalar_t & evaluationTime) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -93,12 +93,13 @@ public:
        by the residual policy. So we do not recompute the FOM state.
        Maybe we should find a way to ensure this is the case.
      */
-    // fomStatesMngr_.get().reconstructCurrentFomState(galerkinState);
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
+    const auto & fomState = fomStatesMngr_.get().fomStateAt(::pressio::ode::nPlusOne());
 
     // call applyJacobian on the fom object
-    fomSystemObj.applyJacobian(*currentFomState.data(), *phi_.get().data(),
-			       time, *fomApplyJac_.data());
+    fomSystemObj.applyJacobian(*fomState.data(),
+			       *phi_.get().data(),
+			       evaluationTime,
+			       *fomApplyJac_.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("galerkin apply fom jacobian");

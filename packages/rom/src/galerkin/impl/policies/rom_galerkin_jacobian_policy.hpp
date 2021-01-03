@@ -78,7 +78,7 @@ public:
   template <
     typename stepper_tag,
     typename galerkin_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
@@ -86,21 +86,23 @@ public:
     ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
     >
   compute(const galerkin_state_t & galerkinState,
-	  const prev_states_t & galerkinPrevStates,
+	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & time_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & stepNumber,
 	  galerkin_jacobian_type & galerkinJacobian) const
   {
-    projection_policy_t::compute(galerkinJacobian, galerkinState, fomSystemObj, time);
+    projection_policy_t::compute(galerkinJacobian, galerkinState,
+				 fomSystemObj, time_np1);
+
     ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt, stepper_tag());
   }
 
   template <
     typename stepper_tag,
     typename galerkin_state_t,
-    typename prev_states_t,
+    typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
@@ -108,19 +110,19 @@ public:
     ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value
     >
   compute(const galerkin_state_t & galerkinState,
-	  const prev_states_t & galerkinPrevStates,
+	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & time_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & stepNumber,
 	  galerkin_jacobian_type & galerkinJacobian) const
   {
     projection_policy_t::compute(galerkinJacobian, galerkinState,
-				 fomSystemObj, time, galerkinPrevStates,
-				 dt, timeStep);
+				 fomSystemObj, time_np1,
+				 dt, stepNumber, stencilStates);
   }
 
-protected:
+private:
   const std::size_t romSize_ = {};
 };
 

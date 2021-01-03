@@ -47,7 +47,7 @@ struct GalerkinBDF1WithContinuousTimeApi
     ::pressio::ops::resize(yROM_, romSize);
     ::pressio::ops::fill(yROM_, 0.0);
 
-    using ode_tag = pressio::ode::implicitmethods::Euler;
+    using ode_tag = pressio::ode::implicitmethods::BDF1;
     using pressio::rom::galerkin::createDefaultProblem;
     auto Problem = createDefaultProblem<ode_tag>(appobj, decoderObj, yROM_, yRef);
     using problem_t = decltype(Problem);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 
     if (std::abs(gold[i] - FomSol[i]) > 1e-11){
       checkStr = "FAILED";
-      break;
+      //break;
     }
   }
 

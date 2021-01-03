@@ -66,6 +66,7 @@ struct constants
   static constexpr scalar_t oneOvThree() { return one()/three(); }
   static constexpr scalar_t twoOvThree() { return two()/three(); }
   static constexpr scalar_t fourOvThree() { return four()/three(); }
+  static constexpr scalar_t threeOvTwo() { return three()/two(); }
 
 };
 

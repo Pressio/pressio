@@ -51,7 +51,28 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
+template<typename tag>
+struct _num_fom_states_needed{
+  static constexpr std::size_t value = 1;
+};
+
+template<>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::Euler>{
+  static constexpr std::size_t value = 1;
+};
+
+template<>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF2>{
+  static constexpr std::size_t value = 1;
+};
+
+template<>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::CrankNicolson>{
+  static constexpr std::size_t value = 2;
+};
+
 template <
+  typename ode_tag,
   typename fom_system_type,
   typename rom_state_type,
   typename decoder_type,
@@ -87,7 +108,7 @@ struct CommonTraitsContinuousTimeApi
    "The fom state type detected in the fom class must match the fom state type used in the decoder");
 
   // ---------------------
-  // for now we don't allow state and velocity to have different types
+  // now we don't allow fom state and fom velocity to have different types
   // but need to make sure this assumption is consistent with fom class
   using fom_velocity_t = fom_state_t;
   using fom_native_velocity_t = typename fom_system_type::velocity_type;
@@ -101,12 +122,25 @@ struct CommonTraitsContinuousTimeApi
     typename ::pressio::rom::impl::FomStateReconHelper<
     ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
-  // ---------------------
-  // for continuous time API, total number of fom states needed is always 1
-  // because the time integration is done on the ROM states.
+  // ---------------------------------------------------------------
+  /* the fom states manager stores the fom states.
+     For explicit time stepping, we only need to store one fom state that
+     we reconstruct every time we need to compute the FOM velocity
+
+     Keep in mind that this is Galerkin, so the FOM states are only needed
+     when we query the FOM velocity.
+     So for implicit time stepping, we might need to store more than one
+     depending on how many FOM velocity evaluations are needed.
+     For BDF1 and BDF2, we only need one evaluation of the
+     FOM velocity at n+1, so we only need one FOM state.
+     For CrankNicolson, we need two evaluations of the FOM velocity
+     at n and n+1, so we need two FOM states.
+   */
   using fom_states_manager_t =
-    ::pressio::rom::ManagerFomStatesStatic<1, fom_state_t,
-					   fom_state_reconstr_t, ud_ops_type>;
+    ::pressio::rom::StencilFomStatesManager<
+    ::pressio::ode::predicates::is_explicit_stepper_tag<ode_tag>::value,
+    fom_state_t, fom_state_reconstr_t, ud_ops_type,
+    _num_fom_states_needed<ode_tag>::value>;
 
   // ---------------------
   // sentinel to tell if we are doing bindings for p4py:

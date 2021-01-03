@@ -84,11 +84,12 @@ public:
 	       const fom_system_t  & fomSystemObj,
 	       Args && ...args) const
   {
-    projectable_t::compute(galerkinState, fomSystemObj, std::forward<Args>(args)...);
+    projectable_t::compute(galerkinState,
+			   fomSystemObj,
+			   std::forward<Args>(args)...);
 
     // the operand the fom velocity or the fom apply jacobain object
     const auto & fomOperand = projectable_t::get();
-
     projector_.get().apply(fomOperand, galerkinRhsOrJac);
   }
 };

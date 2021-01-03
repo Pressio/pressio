@@ -74,7 +74,7 @@ struct traits<
   >
 {
   using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
+    stepper_tag, fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;
@@ -93,7 +93,7 @@ struct traits<
   // for now, the velocity type is same as state
   using galerkin_velocity_t	= galerkin_state_t;
 
-  // for default galerkin, projector is just phi^T
+  // for default galerkin, projector is default projector (i.e. phi^T)
   using projector_t = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_t, ud_ops_t>;
 
   using velocity_policy_t =

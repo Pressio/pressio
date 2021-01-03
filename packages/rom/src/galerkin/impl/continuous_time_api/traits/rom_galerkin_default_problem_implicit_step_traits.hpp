@@ -82,7 +82,7 @@ struct traits<
 To use the arbitrary stepper, you need to use the discrete-time API.");
 
   using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
+    stepper_tag, fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
   using fom_system_t		= typename common_types_t::fom_system_t;
   using scalar_t		= typename common_types_t::scalar_t;

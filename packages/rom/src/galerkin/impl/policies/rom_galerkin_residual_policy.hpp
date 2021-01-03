@@ -54,6 +54,8 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <typename galerkin_residual_type, typename projection_policy_t>
 class ResidualPolicy : private projection_policy_t
 {
+  mutable ::pressio::ode::types::step_t stepTracker_ = -1;
+
 public:
   ResidualPolicy() = delete;
   ResidualPolicy(const ResidualPolicy &) = default;
@@ -79,7 +81,7 @@ public:
   template <
     typename stepper_tag,
     typename galerkin_state_t,
-    typename prev_states_t,
+    typename galerkin_stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
@@ -87,22 +89,68 @@ public:
     ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
     >
   compute(const galerkin_state_t & galerkinState,
-	  const prev_states_t & galerkinPrevStates,
+	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & time,
 	  const scalar_t & dt,
 	  const ::pressio::ode::types::step_t & timeStep,
 	  galerkin_residual_type & galerkinResidual) const
   {
-    projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj, time);
+    projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
+				 time, ::pressio::ode::nPlusOne());
+
     ::pressio::ode::impl::discrete_time_residual
-	(galerkinState, galerkinResidual, galerkinPrevStates, dt, stepper_tag());
+	(galerkinState, galerkinResidual,
+	 galerkinStencilStates, dt, stepper_tag());
   }
 
   template <
     typename stepper_tag,
     typename galerkin_state_t,
-    typename prev_states_t,
+    typename galerkin_stencil_states_t,
+    typename stencil_velocities_t,
+    typename fom_system_t,
+    typename scalar_t
+    >
+  mpl::enable_if_t<
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
+    >
+  compute(const galerkin_state_t & galerkinState,
+	  const galerkin_stencil_states_t & galerkinStencilStates,
+	  const fom_system_t & fomSystemObj,
+	  const scalar_t & t_np1,
+	  const scalar_t & dt,
+	  const ::pressio::ode::types::step_t & timeStep,
+	  stencil_velocities_t & galerkinStencilVelocities,
+	  galerkin_residual_type & galerkinResidual) const
+  {
+
+    // if the step changed, I need to compute f(y_n, t_n)
+    if (stepTracker_ != timeStep){
+      auto & f_n = galerkinStencilVelocities(::pressio::ode::n());
+      auto & galState_n = galerkinStencilStates(::pressio::ode::n());
+      const auto tn = t_np1-dt;
+      projection_policy_t::compute(f_n, galState_n, fomSystemObj,
+				   tn, ::pressio::ode::n());
+    }
+
+    // I always need to compute f(y_np1, t_np1)
+    auto & f_np1 = galerkinStencilVelocities(::pressio::ode::nPlusOne());
+    projection_policy_t::compute(f_np1, galerkinState, fomSystemObj,
+				 t_np1, ::pressio::ode::nPlusOne());
+
+    // compute discrete time residual
+    ::pressio::ode::impl::discrete_time_residual
+	(galerkinState, galerkinResidual,
+	 galerkinStencilStates, galerkinStencilVelocities,
+	 dt, stepper_tag());
+  }
+
+  template <
+    typename stepper_tag,
+    typename galerkin_state_t,
+    typename galerkin_stencil_states_t,
     typename fom_system_t,
     typename scalar_t
     >
@@ -110,16 +158,15 @@ public:
     ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value
   >
   compute(const galerkin_state_t & galerkinState,
-	  const prev_states_t & galerkinPrevStates,
+	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & time,
 	  const scalar_t & dt,
 	  const ::pressio::ode::types::step_t & timeStep,
 	  galerkin_residual_type & galerkinResidual) const
   {
-    projection_policy_t::compute(galerkinResidual, galerkinState,
-				 fomSystemObj, time, galerkinPrevStates,
-				 dt, timeStep);
+    projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
+				 time, dt, timeStep, galerkinStencilStates);
   }
 
 private:

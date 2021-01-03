@@ -56,11 +56,10 @@ template<typename T, std::size_t n>
 class StencilStatesManager
 {
 public:
-  using container_type =
-    ::pressio::containers::IndexableStaticCollection<T, n>;
+  using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
 
 private:
-  container_type states_;
+  data_type states_;
 
 public:
   StencilStatesManager() = delete;
@@ -138,11 +137,10 @@ template<typename T, std::size_t n>
 class StencilVelocitiesManager
 {
 public:
-  using container_type =
-    ::pressio::containers::IndexableStaticCollection<T, n>;
+  using data_type = ::pressio::containers::IndexableStaticCollection<T, n>;
 
 private:
-  container_type rhs_;
+  data_type rhs_;
 
 public:
   StencilVelocitiesManager() = delete;

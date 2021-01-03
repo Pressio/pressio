@@ -77,25 +77,17 @@ public:
   {}
 
 public:
-  template<class galerkin_state_t, typename fom_system_t, typename scalar_t>
+  template<
+  class galerkin_state_t, class fom_system_t, class scalar_t, class at_tag
+  >
   void compute(const galerkin_state_t & galerkinState,
 	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & time) const
+	       const scalar_t & velocityEvalTime,
+	       at_tag tag) const
   {
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("galerkin fom velocity");
-#endif
-    // reconstruct the current fom state
-    fomStatesMngr_.get().reconstructCurrentFomState(galerkinState);
-    const auto & currentFomState = fomStatesMngr_.get().currentFomStateCRef();
-
-    // compute FOM velocity (i.e. the rhs of FOM ode system)
-    fomSystemObj.velocity(*currentFomState.data(), time, *fomVelo_.data());
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("galerkin fom velocity");
-#endif
+    fomStatesMngr_.get().reconstructAt(galerkinState, tag);
+    const auto & fomState = fomStatesMngr_.get().fomStateAt(tag);
+    fomSystemObj.velocity(*fomState.data(), velocityEvalTime, *fomVelo_.data());
   }
 
   const fom_velocity_type & get() const{
