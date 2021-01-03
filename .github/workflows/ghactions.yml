@@ -95,7 +95,7 @@ jobs:
       run: |
         export TERM=xterm
         cd ${{ env.PRESSIO_REPOS }}/pressio-builder
-        ./main_pressio.sh ${{ matrix.config.envscript }} -dryrun=no -pressio-src=${{ env.WORKSPACE_PARENT_DIR }}/pressio -target-dir=${{ env.PRESSIO_BUILDS }} -cmake-generator-name=default_with_tests ${{ matrix.config.options }}
+        ./main_pressio.sh ${{ matrix.config.envscript }} -dryrun=no -pressio-src=${{ env.WORKSPACE_PARENT_DIR }}/pressio -target-dir=${{ env.PRESSIO_BUILDS }} -cmake-generator-name=default_with_tests ${{ matrix.config.options }} -ncpu-for-make=1
     - name: Run CTest
       run: |
         cd ${{ matrix.config.ctest_build }}
