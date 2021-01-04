@@ -178,7 +178,6 @@ public:
   explicit Tensor(const wrap_t & src)
     : data_{ wrap_t(const_cast<wrap_t &>(src).request()) }
   {
-    std::cout << "Correct cnstr" << std::endl;
     if ( data_.ndim() != 2 ){
       throw std::runtime_error
 	("You cannot construct a rank-2 tensor wrapper from a pybind::array with ndim!=2");
