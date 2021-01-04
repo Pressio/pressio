@@ -15,6 +15,7 @@ The full Pressio project site can be found [here](https://pressio.github.io).
 
 # License and Citation
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
 The full license is available [here](https://pressio.github.io/various/license/).
 
 We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798.
