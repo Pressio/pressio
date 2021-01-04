@@ -46,8 +46,8 @@ Here we demonstate how to create a linear decoder object using Eigen types. The 
 \DoxyCodeLine{  \textcolor{keyword}{using} native\_fom\_state\_t = Eigen::VectorXd;}
 \DoxyCodeLine{  \textcolor{keyword}{using} native\_phi\_t       = Eigen::MatrixXd;}
 \DoxyCodeLine{  \textcolor{comment}{// the wrapped types}}
-\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t = pressio::containers::Vector<native\_fom\_state\_t>;}
-\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t   = pressio::containers::DenseMatrix<native\_phi\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t   = pressio::containers::Vector<native\_fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t = pressio::containers::DenseMatrix<native\_phi\_t>;}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// *** fill phi ***}}
 \DoxyCodeLine{  \textcolor{comment}{// for simplicity, create a native phi with 10 rows and 3 columns}}

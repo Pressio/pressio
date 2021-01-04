@@ -9,13 +9,14 @@ public:
   using scalar_type = //..;
   using state_type  = //...;
   using discrete_time_residual_type = //...;
-  using dense_matrix_type = //...;
 
 public:
   discrete_time_residual_type createDiscreteTimeResidual() const;
-  dense_matrix_type createApplyDiscreteTimeJacobianResult(const dense_matrix_type &) const
+
+  // operand_type should be the data (matrix) type you used to store the basis.
+  operand_t createApplyDiscreteTimeJacobianResult(const operand_t &) const
   { // let A =  tdJac * B
-    dense_matrix_type A(/* construct A */);
+    operand_t A(/* construct A */);
     return A;
   }
 
@@ -34,9 +35,9 @@ public:
   void applyDiscreteTimeJacobian(const step_t & step,
            const scalar_type & time,
            const scalar_type & dt,
-           const dense_matrix_type & B,
-           dense_matrix_type & A,
-	         //variadic # of states (user sets stencil size)
+           const operand_t & B,
+           operand_t & A,
+           //variadic # of states (user sets stencil size)
            Args & ... states) const
   {
     this->applyDiscreteTimeJacobianImpl(step, time, dt, B, stateIdForJacobian,

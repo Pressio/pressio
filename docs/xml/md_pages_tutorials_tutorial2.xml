@@ -59,8 +59,8 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>wrapped<sp/>types</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>what<sp/>happens<sp/>in<sp/>pressio:<sp/>std::vector<sp/>is<sp/>treated<sp/>as<sp/>unknwon<sp/>type<sp/>by<sp/>pressio</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>so<sp/>effectively<sp/>pressio::containers::Vector<sp/>is<sp/>labeled<sp/>as<sp/>an<sp/>&quot;arbitrary&quot;<sp/>type</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/><sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/><sp/><sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>fill<sp/>phi<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>and<sp/>fill<sp/>with<sp/>ones</highlight><highlight class="normal"></highlight></codeline>
@@ -120,7 +120,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>beta*z[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(std::size_t<sp/>j=0;<sp/>j&lt;A[i].size();<sp/>++j){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>alpha*A[i][j]*x(j);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>z[i]<sp/>+=<sp/>alpha*A[i][j]*x(j);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>

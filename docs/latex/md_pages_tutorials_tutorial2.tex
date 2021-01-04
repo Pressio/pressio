@@ -52,8 +52,8 @@ Here we demonstate how to create a linear decoder object for a type that is N\+O
 \DoxyCodeLine{  \textcolor{comment}{// the wrapped types}}
 \DoxyCodeLine{  \textcolor{comment}{// what happens in pressio: std::vector is treated as unknwon type by pressio}}
 \DoxyCodeLine{  \textcolor{comment}{// so effectively pressio::containers::Vector is labeled as an "{}arbitrary"{} type}}
-\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t = pressio::containers::Vector<native\_fom\_state\_t>;}
-\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t   = pressio::containers::DenseMatrix<native\_phi\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_t   = pressio::containers::Vector<native\_fom\_state\_t>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} decoder\_jac\_t = pressio::containers::DenseMatrix<native\_phi\_t>;}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// *** fill phi ***}}
 \DoxyCodeLine{  \textcolor{comment}{// create a native phi and fill with ones}}
@@ -113,7 +113,7 @@ In order for pressio to handle the linear mapping, it needs to know how to opera
 \DoxyCodeLine{    \{}
 \DoxyCodeLine{      z[i] += beta*z[i];}
 \DoxyCodeLine{      \textcolor{keywordflow}{for} (std::size\_t j=0; j<A[i].size(); ++j)\{}
-\DoxyCodeLine{    z[i] += alpha*A[i][j]*x(j);}
+\DoxyCodeLine{       z[i] += alpha*A[i][j]*x(j);}
 \DoxyCodeLine{      \}}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{  \}}

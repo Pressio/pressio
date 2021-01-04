@@ -15,14 +15,16 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/>=</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>dense_matrix_type<sp/>=</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>dense_matrix_type<sp/>createApplyJacobianResult(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>dense_matrix_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(state,<sp/>time,<sp/>velo)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyJacobian(state,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>dense_matrix_type<sp/>&amp;<sp/>B,<sp/>time,<sp/>dense_matrix_type<sp/>&amp;<sp/>A)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>computes:<sp/>A<sp/>=<sp/>Jac<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>operand_type<sp/>should<sp/>be<sp/>the<sp/>data<sp/>(matrix)<sp/>type<sp/>you<sp/>used<sp/>to<sp/>store<sp/>the<sp/>basis.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>operand_t<sp/>createApplyJacobianResult(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>operand_t<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>computes:<sp/>A<sp/>=<sp/>Jac<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyJacobian(state,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>operand_t<sp/>&amp;<sp/>B,<sp/>time,<sp/>operand_t<sp/>&amp;<sp/>A)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting> </para>
 </parblock></para>

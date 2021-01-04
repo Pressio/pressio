@@ -14,14 +14,16 @@ public:
   using scalar_type =
   using state_type =
   using velocity_type =
-  using dense_matrix_type =
 
 public:
   velocity_type createVelocity() const;
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type &) const;
-
   void velocity(state, time, velo) const;
-  void applyJacobian(state, const dense_matrix_type & B, time, dense_matrix_type & A) const; // computes: A = Jac B
+
+  // operand_type should be the data (matrix) type you used to store the basis.
+  operand_t createApplyJacobianResult(const operand_t &) const;
+
+  // computes: A = Jac B
+  void applyJacobian(state, const operand_t & B, time, operand_t & A) const;
 };
 @endcode
 @endparblock

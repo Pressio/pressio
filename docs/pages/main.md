@@ -8,12 +8,14 @@ If this is a mistake, please go back to the [project website](https://pressio.gi
 
 
 ## Getting Started
-You can start by reading the description of [packages](./md_pages_getstarted_packages.html) composing this C++ library,
-and the [installation process](./md_pages_getstarted_build_and_install.html).
-Untill we start filling the tutorials and examples, you can peek at the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library.
+You can start by reading the description of [packages](./md_pages_getstarted_packages.html)
+composing this C++ library, the [installation process](./md_pages_getstarted_build_and_install.html),
+or the [tutorials](./md_pages_tutorials_tutorial1.html) which we are gradually filling up.
+While we work on more complete tutorials and examples, you can peek at
+the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library.
 
 ## License and Citation
-The full license is available [here](https://pressio.github.io/various/license/).
+The full license (BSD-3) is available [here](https://pressio.github.io/various/license/).
 
 We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
 

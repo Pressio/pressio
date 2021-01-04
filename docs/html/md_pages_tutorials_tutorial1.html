@@ -258,8 +258,8 @@ $\phi$
   <span class="k">using</span> <span class="n">native_fom_state_t</span> <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXd</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">native_phi_t</span>       <span class="o">=</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXd</span><span class="p">;</span>
   <span class="c1">// the wrapped types</span>
-  <span class="k">using</span> <span class="n">fom_state_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">decoder_jac_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">fom_state_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">decoder_jac_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
 
   <span class="c1">// *** fill phi ***</span>
   <span class="c1">// for simplicity, create a native phi with 10 rows and 3 columns</span>

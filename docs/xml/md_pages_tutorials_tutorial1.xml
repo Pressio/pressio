@@ -53,8 +53,8 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_fom_state_t<sp/>=<sp/>Eigen::VectorXd;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>native_phi_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/>Eigen::MatrixXd;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>wrapped<sp/>types</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/><sp/><sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/><sp/><sp/>=<sp/>pressio::containers::Vector&lt;native_fom_state_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>decoder_jac_t<sp/>=<sp/>pressio::containers::DenseMatrix&lt;native_phi_t&gt;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>***<sp/>fill<sp/>phi<sp/>***</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>simplicity,<sp/>create<sp/>a<sp/>native<sp/>phi<sp/>with<sp/>10<sp/>rows<sp/>and<sp/>3<sp/>columns</highlight><highlight class="normal"></highlight></codeline>

@@ -86,16 +86,16 @@
   <span class="k">using</span> <span class="n">scalar_type</span>       <span class="o">=</span> <span class="cm">/* your native scalar type */</span>
   <span class="k">using</span> <span class="n">state_type</span>        <span class="o">=</span> <span class="cm">/* your native state type */</span>
   <span class="k">using</span> <span class="n">residual_type</span>     <span class="o">=</span> <span class="cm">/* your native residual type */</span>
-  <span class="k">using</span> <span class="n">dense_matrix_type</span> <span class="o">=</span> <span class="cm">/* your native dense matrix type */</span>
 
 <span class="k">public</span><span class="o">:</span>
   <span class="c1">// creates the residual object</span>
   <span class="c1">// This is only called once to create the operators, does not need to contain real data.</span>
   <span class="n">residual_type</span> <span class="n">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
-  <span class="c1">// creates the result of applying the jacobian to the argument</span>
+  <span class="c1">// creates the result of applying the jacobian to the operand.</span>
   <span class="c1">// This is only called once to create the operators, does not need to contain real data.</span>
-  <span class="n">dense_matrix_type</span> <span class="nf">createApplyJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">dense_matrix_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="c1">// operand_type should be the data (matrix) type you used to store the basis.</span>
+  <span class="n">operand_type</span> <span class="nf">createApplyJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">operand_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
   <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 

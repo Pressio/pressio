@@ -24,16 +24,16 @@ public:
   using scalar_type       = /* your native scalar type */
   using state_type        = /* your native state type */
   using residual_type     = /* your native residual type */
-  using dense_matrix_type = /* your native dense matrix type */
 
 public:
   // creates the residual object
   // This is only called once to create the operators, does not need to contain real data.
   residual_type createResidual() const;
 
-  // creates the result of applying the jacobian to the argument
+  // creates the result of applying the jacobian to the operand.
   // This is only called once to create the operators, does not need to contain real data.
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type &) const;
+  // operand_type should be the data (matrix) type you used to store the basis.
+  operand_type createApplyJacobianResult(const operand_type &) const;
 
   void residual(state, r) const;
 

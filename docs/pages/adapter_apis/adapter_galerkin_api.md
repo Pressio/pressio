@@ -14,7 +14,6 @@ public:
   using scalar_type =
   using state_type =
   using velocity_type =
-  using dense_matrix_type =
 
 public:
   velocity_type createVelocity() const;

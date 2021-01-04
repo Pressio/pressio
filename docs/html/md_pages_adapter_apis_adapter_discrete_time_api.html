@@ -82,13 +82,14 @@
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="c1">//..;</span>
   <span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="c1">//...;</span>
   <span class="k">using</span> <span class="n">discrete_time_residual_type</span> <span class="o">=</span> <span class="c1">//...;</span>
-  <span class="k">using</span> <span class="n">dense_matrix_type</span> <span class="o">=</span> <span class="c1">//...;</span>
 
 <span class="k">public</span><span class="o">:</span>
   <span class="n">discrete_time_residual_type</span> <span class="n">createDiscreteTimeResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-  <span class="n">dense_matrix_type</span> <span class="nf">createApplyDiscreteTimeJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">dense_matrix_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span>
+
+  <span class="c1">// operand_type should be the data (matrix) type you used to store the basis.</span>
+  <span class="n">operand_t</span> <span class="nf">createApplyDiscreteTimeJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span> <span class="c1">// let A =  tdJac * B</span>
-    <span class="n">dense_matrix_type</span> <span class="n">A</span><span class="p">(</span><span class="cm">/* construct A */</span><span class="p">);</span>
+    <span class="n">operand_t</span> <span class="n">A</span><span class="p">(</span><span class="cm">/* construct A */</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">A</span><span class="p">;</span>
   <span class="p">}</span>
 
@@ -107,9 +108,9 @@
   <span class="kt">void</span> <span class="n">applyDiscreteTimeJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">dense_matrix_type</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
-           <span class="n">dense_matrix_type</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-             <span class="c1">//variadic # of states (user sets stencil size)</span>
+           <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
+           <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+           <span class="c1">//variadic # of states (user sets stencil size)</span>
            <span class="n">Args</span> <span class="o">&amp;</span> <span class="p">...</span> <span class="n">states</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">applyDiscreteTimeJacobianImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">stateIdForJacobian</span><span class="p">,</span>

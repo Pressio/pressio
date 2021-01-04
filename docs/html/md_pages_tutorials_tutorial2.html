@@ -264,8 +264,8 @@ $\phi$
   <span class="c1">// the wrapped types</span>
   <span class="c1">// what happens in pressio: std::vector is treated as unknwon type by pressio</span>
   <span class="c1">// so effectively pressio::containers::Vector is labeled as an &quot;arbitrary&quot; type</span>
-  <span class="k">using</span> <span class="n">fom_state_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">decoder_jac_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">fom_state_t</span>   <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">native_fom_state_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">decoder_jac_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">DenseMatrix</span><span class="o">&lt;</span><span class="n">native_phi_t</span><span class="o">&gt;</span><span class="p">;</span>
 
   <span class="c1">// *** fill phi ***</span>
   <span class="c1">// create a native phi and fill with ones</span>
@@ -330,7 +330,7 @@ $\phi$
     <span class="p">{</span>
       <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">beta</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
       <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">j</span><span class="p">){</span>
-    <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
+       <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>

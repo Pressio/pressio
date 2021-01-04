@@ -6,13 +6,14 @@
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = \textcolor{comment}{//..;}}
 \DoxyCodeLine{  \textcolor{keyword}{using} state\_type  = \textcolor{comment}{//...;}}
 \DoxyCodeLine{  \textcolor{keyword}{using} discrete\_time\_residual\_type = \textcolor{comment}{//...;}}
-\DoxyCodeLine{  \textcolor{keyword}{using} dense\_matrix\_type = \textcolor{comment}{//...;}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{public}:}
 \DoxyCodeLine{  discrete\_time\_residual\_type createDiscreteTimeResidual() \textcolor{keyword}{const};}
-\DoxyCodeLine{  dense\_matrix\_type createApplyDiscreteTimeJacobianResult(\textcolor{keyword}{const} dense\_matrix\_type \&)\textcolor{keyword}{ const}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// operand\_type should be the data (matrix) type you used to store the basis.}}
+\DoxyCodeLine{  operand\_t createApplyDiscreteTimeJacobianResult(\textcolor{keyword}{const} operand\_t \&)\textcolor{keyword}{ const}}
 \DoxyCodeLine{\textcolor{keyword}{  }\{ \textcolor{comment}{// let A =  tdJac * B}}
-\DoxyCodeLine{    dense\_matrix\_type A(\textcolor{comment}{/* construct A */});}
+\DoxyCodeLine{    operand\_t A(\textcolor{comment}{/* construct A */});}
 \DoxyCodeLine{    \textcolor{keywordflow}{return} A;}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{}
@@ -31,9 +32,9 @@
 \DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
 \DoxyCodeLine{           \textcolor{keyword}{const} scalar\_type \& time,}
 \DoxyCodeLine{           \textcolor{keyword}{const} scalar\_type \& dt,}
-\DoxyCodeLine{           \textcolor{keyword}{const} dense\_matrix\_type \& B,}
-\DoxyCodeLine{           dense\_matrix\_type \& A,}
-\DoxyCodeLine{             \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
+\DoxyCodeLine{           \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{           operand\_t \& A,}
+\DoxyCodeLine{           \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
 \DoxyCodeLine{           Args \& ... states)\textcolor{keyword}{ const}}
 \DoxyCodeLine{\textcolor{keyword}{  }\{}
 \DoxyCodeLine{    this-\/>applyDiscreteTimeJacobianImpl(step, time, dt, B, stateIdForJacobian,}
