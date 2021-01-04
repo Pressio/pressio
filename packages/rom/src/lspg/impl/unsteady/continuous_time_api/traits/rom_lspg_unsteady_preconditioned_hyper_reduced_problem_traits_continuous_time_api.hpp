@@ -104,14 +104,10 @@ struct traits<
   using preconditioner_t = preconditioner_type;
   static_assert
   (
-    ::pressio::rom::lspg::constraints::unsteady_preconditioner<
-      preconditioner_t,
-      fom_native_state_t,
-      scalar_t,
-      typename ::pressio::containers::details::traits<lspg_residual_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<lspg_jacobian_t>::wrapped_t
-      >::value,
-      "Invalid preconditioner type passed to unsteady LSPG"
+   ::pressio::rom::lspg::constraints::unsteady_preconditioner<
+   preconditioner_t, fom_state_t, scalar_t, lspg_residual_t, lspg_jacobian_t
+   >::value,
+   "Invalid preconditioner type passed to unsteady LSPG"
   );
 
   using residual_policy_t =

@@ -64,6 +64,7 @@ public:
   using lspg_state_t		= typename traits::lspg_state_t;
   using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using decoder_t		= typename traits::decoder_t;
+  using lspg_jacobian_t		= typename traits::lspg_jacobian_t;
   using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using masker_t		= typename traits::masker_t;

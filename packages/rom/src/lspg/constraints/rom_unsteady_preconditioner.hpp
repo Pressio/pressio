@@ -76,12 +76,18 @@ struct unsteady_preconditioner<
     ::pressio::rom::lspg::constraints::lspg_jacobian<operand2_t>::value
     and
     ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
-      T, typename ::pressio::containers::details::traits<state_t>::wrapped_t, scalar_t,
-      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value
+      T,
+      typename ::pressio::containers::details::traits<state_t>::wrapped_t,
+      scalar_t,
+      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t
+      >::value
     and
     ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_time_result_return_void<
-      T, typename ::pressio::containers::details::traits<state_t>::wrapped_t, scalar_t,
-      typename ::pressio::containers::details::traits<operand2_t>::wrapped_t>::value
+      T,
+      typename ::pressio::containers::details::traits<state_t>::wrapped_t,
+      scalar_t,
+      typename ::pressio::containers::details::traits<operand2_t>::wrapped_t
+      >::value
     >
   > : std::true_type{};
 
