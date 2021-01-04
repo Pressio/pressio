@@ -72,7 +72,7 @@ public:
   ~HypRedJacobianPolicyContinuousTimeApi() = default;
 
   HypRedJacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
-					const decoder_type & decoder,
+					decoder_type & decoder,
 					const sample_to_stencil_t & sTosInfo)
     : fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
@@ -145,7 +145,7 @@ private:
 
 protected:
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
-  std::reference_wrapper<const decoder_type> decoderObj_ = {};
+  std::reference_wrapper<decoder_type> decoderObj_ = {};
   std::reference_wrapper<const typename decoder_type::jacobian_type> decoderJacobian_ = {};
   std::reference_wrapper<const sample_to_stencil_t> sTosInfo_;
 };

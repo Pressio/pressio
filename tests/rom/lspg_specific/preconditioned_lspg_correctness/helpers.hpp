@@ -24,7 +24,7 @@ public:
   }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type &) const{}
+  void updateJacobian(const rom_state_type &){}
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,

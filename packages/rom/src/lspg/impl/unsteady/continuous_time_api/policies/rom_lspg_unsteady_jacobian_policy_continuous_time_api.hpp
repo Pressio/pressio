@@ -82,7 +82,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
-				  const decoder_type & decoder)
+				  decoder_type & decoder)
     : fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
       decoderJacobian_(decoder.jacobianCRef())
@@ -94,7 +94,7 @@ public:
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
-				  const decoder_type & decoder,
+				  decoder_type & decoder,
 				  const _ud_ops & udOps)
     : fomStatesMngr_(fomStatesMngr),
       decoderObj_(decoder),
@@ -207,7 +207,7 @@ private:
 
 protected:
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
-  std::reference_wrapper<const decoder_type> decoderObj_ = {};
+  std::reference_wrapper<decoder_type> decoderObj_ = {};
   std::reference_wrapper<const typename decoder_type::jacobian_type> decoderJacobian_ = {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

@@ -10,7 +10,7 @@ struct MyCustomDecoder
 
 private:
   const int romSize_ = {};
-  mutable jacobian_type jac_;
+  jacobian_type jac_;
   mutable int applyMappingCount_ = 0;
 
 public:
@@ -23,7 +23,7 @@ public:
   const jacobian_type & jacobianCRef() const{ return jac_; }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type &) const{}
+  void updateJacobian(const rom_state_type &){}
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,

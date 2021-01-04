@@ -80,7 +80,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(T::fomStatesMngr_),
@@ -93,7 +93,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const _ops_t & ops)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, ops),
@@ -135,7 +135,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const T5 & masker)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
@@ -179,7 +179,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const T5 & preconditioner)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
@@ -211,7 +211,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(T::fomStatesMngr_),
@@ -243,7 +243,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const T5 & meshToStencilMapper)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
@@ -276,7 +276,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const T5 & preconditioner)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
@@ -309,7 +309,7 @@ struct PoliciesMixin<
     >
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
-		const T3 & decoder,
+		T3 & decoder,
 		const T4 & fomNominalStateNative,
 		const T5 & preconditioner,
 		const T6 & meshToStencilMapper)

@@ -66,7 +66,7 @@ mpl::enable_if_t<
     stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
   >
 createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
-				  const decoder_type & decoder,
+				  decoder_type & decoder,
 				  const rom_state_type & stateIn,
 				  const fom_native_state & fomRef,
 				  const projector_type & projector,
@@ -106,7 +106,7 @@ mpl::enable_if_t<
     >
   >
 createHyperReducedResidualProblem(const fom_system_type & fomSysObj,
-				  const decoder_type & decoder,
+				  decoder_type & decoder,
 				  const rom_state_type & stateIn,
 				  const fom_native_state & fomRef,
 				  const projector_type & projector)

@@ -64,7 +64,7 @@ mpl::enable_if_t<
   impl::composeDefaultProblemContTime_t<stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
-		     const decoder_type & decoder,
+		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef,
 		     Args && ... args)
@@ -101,7 +101,7 @@ mpl::enable_if_t<
     >
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
-		     const decoder_type & decoder,
+		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef)
 {
@@ -142,7 +142,7 @@ mpl::enable_if_t<
     >
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
-		     const decoder_type & decoder,
+		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef)
 {

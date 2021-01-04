@@ -106,7 +106,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int > = 0
     >
   DefaultProblemContinuousTimeApi(const fom_system_t & fomObj,
-				  const decoder_t & decoder,
+				  decoder_t & decoder,
 				  const lspg_state_t & romStateIn,
 				  const fom_native_state_t & fomNominalStateNative)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative)
@@ -118,7 +118,7 @@ public:
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
     >
   DefaultProblemContinuousTimeApi(const fom_system_t & fomObj,
-				  const decoder_t & decoder,
+				  decoder_t & decoder,
 				  const lspg_state_t & romStateIn,
 				  const fom_native_state_t & fomNominalStateNative,
 				  const _ud_ops_t & udOps)
@@ -134,7 +134,7 @@ public:
       int > = 0
     >
   DefaultProblemContinuousTimeApi(pybind11::object fomObjPython,
-				  const decoder_t & decoder,
+				  decoder_t & decoder,
 				  const lspg_native_state_t & romStateIn,
 				  const fom_native_state_t fomNominalStateIn)
     : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)

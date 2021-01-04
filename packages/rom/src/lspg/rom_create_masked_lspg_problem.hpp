@@ -66,7 +66,7 @@ mpl::enable_if_t<
     >
   >
 createMaskedProblemSteady(const fom_system_type & fomSysObj,
-			  const decoder_type & decoder,
+			  decoder_type & decoder,
 			  const rom_state_type & romStateIn,
 			  const fom_native_state & fomRef,
 			  const masker_type & masker)
@@ -99,7 +99,7 @@ mpl::enable_if_t<
     >
   >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
-			    const decoder_type & decoder,
+			    decoder_type & decoder,
 			    const rom_state_type & romStateIn,
 			    const fom_native_state & fomRef,
 			    const masker_type & masker)
@@ -135,7 +135,7 @@ mpl::enable_if_t<
     >
   >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
-			    const decoder_type & decoder,
+			    decoder_type & decoder,
 			    const rom_state_type & romStateIn,
 			    const fom_native_state & fomNominalState,
 			    const masker_type & masker)

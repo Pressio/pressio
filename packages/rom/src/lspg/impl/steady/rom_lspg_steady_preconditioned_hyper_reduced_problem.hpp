@@ -99,7 +99,7 @@ public:
   ~PreconditionedHyperReducedProblemSteady() = default;
 
   PreconditionedHyperReducedProblemSteady(const fom_system_t & fomObj,
-					  const decoder_t	& decoder,
+					  decoder_t & decoder,
 					  const lspg_state_t & romStateIn,
 					  const fom_native_state_t & fomNominalStateNative,
 					  const preconditioner_t & preconditionerObj)

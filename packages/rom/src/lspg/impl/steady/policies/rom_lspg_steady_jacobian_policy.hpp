@@ -71,7 +71,7 @@ public:
   ~JacobianPolicy() = default;
 
   JacobianPolicy(fom_states_manager_t & fomStatesMngr,
-		 const decoder_type & decoder)
+		 decoder_type & decoder)
     : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
 public:
@@ -115,7 +115,7 @@ public:
   }
 
 protected:
-  std::reference_wrapper<const decoder_type> decoderObj_;
+  std::reference_wrapper<decoder_type> decoderObj_;
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 };
 

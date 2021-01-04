@@ -88,7 +88,7 @@ struct decoder<
     ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<
       T, operand_t, result_t>::value
     and
-    ::pressio::rom::predicates::has_const_update_jacobian_method_accept_operand_return_void<
+    ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<
       T, operand_t>::value
     >
   > : std::true_type{};
@@ -107,7 +107,7 @@ struct decoder<
     ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<
       T, operand_t, typename T::fom_state_type>::value
     and
-    ::pressio::rom::predicates::has_const_update_jacobian_method_accept_operand_return_void<
+    ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<
       T, operand_t>::value
     >
   > : std::true_type{};

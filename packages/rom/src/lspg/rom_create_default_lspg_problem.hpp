@@ -63,7 +63,7 @@ mpl::enable_if_t<
   impl::composeDefaultProblem_t<fom_system_type, decoder_type, rom_state_type>
   >
 createDefaultProblemSteady(const fom_system_type & fomSysObj,
-			   const decoder_type & decoder,
+			   decoder_type & decoder,
 			   const rom_state_type & romStateIn,
 			   const fom_native_state & fomNominalState)
 {
@@ -94,7 +94,7 @@ mpl::enable_if_t<
     >
   >
 createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
-			     const decoder_type & decoder,
+			     decoder_type & decoder,
 			     const rom_state_type & romStateIn,
 			     const fom_native_state & fomNominalState,
 			     Args && ...args)
@@ -132,7 +132,7 @@ mpl::enable_if_t<
     >
   >
 createDefaultProblemUnsteady(const fom_system_type & fomSysObj,
-			     const decoder_type & decoder,
+			     decoder_type & decoder,
 			     const rom_state_type & romStateIn,
 			     const fom_native_state & fomNominalState,
 			     Args && ...args)

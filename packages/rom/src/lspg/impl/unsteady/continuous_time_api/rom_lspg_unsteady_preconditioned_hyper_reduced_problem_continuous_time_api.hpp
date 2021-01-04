@@ -81,7 +81,7 @@ public:
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t, 
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
   fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = PrecHypRedPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t, sample_to_stencil_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
@@ -126,7 +126,7 @@ public:
       int > = 0
     >
   PreconditionedHyperReducedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
-						     const decoder_t & decoder,
+						     decoder_t & decoder,
 						     const lspg_state_t & romStateIn,
 						     const fom_native_state_t & fomNominalStateNative,
 						     const preconditioner_t & preconditionerObj)
@@ -142,7 +142,7 @@ public:
       int > = 0
     >
   PreconditionedHyperReducedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
-						     const decoder_t & decoder,
+						     decoder_t & decoder,
 						     const lspg_state_t & romStateIn,
 						     const fom_native_state_t & fomNominalStateNative,
 						     const preconditioner_t & preconditionerObj,

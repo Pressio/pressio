@@ -66,7 +66,7 @@ mpl::enable_if_t<
     >
   >
 createPreconditionedDefaultProblemSteady(const fom_system_type & fomSysObj,
-					 const decoder_type & decoder,
+					 decoder_type & decoder,
 					 const rom_state_type & romStateIn,
 					 const fom_native_state & fomRef,
 					 Args && ...args)
@@ -99,7 +99,7 @@ mpl::enable_if_t<
     >
   >
 createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
-					   const decoder_type & decoder,
+					   decoder_type & decoder,
 					   const rom_state_type & romStateIn,
 					   const fom_native_state & fomRef,
 					   Args && ...args)
@@ -138,7 +138,7 @@ mpl::enable_if_t<
     >
   >
 createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
-					   const decoder_type & decoder,
+					   decoder_type & decoder,
 					   const rom_state_type & romStateIn,
 					   const fom_native_state & fomRef,
 					   const precond_type & prec,

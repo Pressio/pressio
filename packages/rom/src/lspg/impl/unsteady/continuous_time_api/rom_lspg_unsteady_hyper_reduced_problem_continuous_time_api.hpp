@@ -109,7 +109,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_sample_to_stencil_t>::value, int > = 0
     >
   HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
-				       const decoder_t & decoder,
+				       decoder_t & decoder,
 				       const lspg_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn)
     : members_(romStateIn, fomObj, decoder, fomNominalStateIn)
@@ -120,7 +120,7 @@ public:
     ::pressio::mpl::enable_if_t<!_binding_sentinel, int > = 0
     >
   HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
-				       const decoder_t & decoder,
+				       decoder_t & decoder,
 				       const lspg_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn,
 				       const sample_to_stencil_t & sTosInfo)
@@ -133,7 +133,7 @@ public:
     ::pressio::mpl::enable_if_t<_binding_sentinel, int > = 0
     >
   HyperReducedProblemContinuousTimeApi(pybind11::object fomObjPy,
-				       const decoder_t & decoder,
+				       decoder_t & decoder,
 				       const lspg_native_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn,
 				       sample_to_stencil_native_t sTosInfo)

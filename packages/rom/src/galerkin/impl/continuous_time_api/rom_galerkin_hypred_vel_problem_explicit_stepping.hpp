@@ -109,7 +109,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int> = 0
     >
   HypRedVeloProblemExplicitStepContinuousTimeApi(const fom_system_t       & fomObj,
-						 const decoder_t	  & decoder,
+						 decoder_t	  & decoder,
 						 const galerkin_state_t   & romStateIn,
 						 const fom_native_state_t & fomNominalStateNative,
 						 const projector_t & projector)
@@ -121,7 +121,7 @@ public:
     ::pressio::mpl::enable_if_t<mpl::not_void<_ud_ops_t>::value, int> = 0
     >
   HypRedVeloProblemExplicitStepContinuousTimeApi(const fom_system_t     & fomObj,
-						 const decoder_t	       & decoder,
+						 decoder_t	       & decoder,
 						 const galerkin_state_t   & romStateIn,
 						 const fom_native_state_t & fomNominalStateNative,
 						 const projector_t & projector,
@@ -136,7 +136,7 @@ public:
       int > = 0
     >
   HypRedVeloProblemExplicitStepContinuousTimeApi(pybind11::object fomObjPython,
-						 const decoder_t & decoder,
+						 decoder_t & decoder,
 						 const galerkin_native_state_t & romStateIn,
 						 const fom_native_state_t fomNominalStateIn,
 						 const projector_t & projector)

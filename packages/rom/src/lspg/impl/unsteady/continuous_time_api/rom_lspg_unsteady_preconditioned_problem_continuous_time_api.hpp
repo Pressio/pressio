@@ -78,7 +78,7 @@ public:
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t, 
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
       fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = PrecondPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
@@ -112,7 +112,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int > = 0
   >
   PreconditionedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
-					 const decoder_t & decoder,
+					 decoder_t & decoder,
 					 const lspg_state_t & romStateIn,
 					 const fom_native_state_t & fomNominalStateNative,
 					 const preconditioner_t & preconditionerObj)

@@ -77,7 +77,7 @@ public:
     ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
-				const decoder_type & decoder)
+				decoder_type & decoder)
     : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
   // 2. nonvoid ops
@@ -86,7 +86,7 @@ public:
     ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
     >
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
-				const decoder_type & decoder,
+				decoder_type & decoder,
 				const _ud_ops & udOps)
     : decoderObj_(decoder),
       fomStatesMngr_(fomStatesMngr),
@@ -200,7 +200,7 @@ private:
   }
 
 protected:
-  std::reference_wrapper<const decoder_type> decoderObj_;
+  std::reference_wrapper<decoder_type> decoderObj_;
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
   const ud_ops_type * udOps_ = {};
 };

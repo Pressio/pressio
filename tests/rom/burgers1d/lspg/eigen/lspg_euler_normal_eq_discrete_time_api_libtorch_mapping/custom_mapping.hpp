@@ -18,7 +18,7 @@ struct MyCustomDecoder
 
 private:
   const int romSize_ = {};
-  mutable jacobian_type jac_;
+  jacobian_type jac_;
   const char* filename_;
   mutable torch::jit::script::Module decoder_;
 public:
@@ -65,7 +65,7 @@ public:
   }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type & romState) const
+  void updateJacobian(const rom_state_type & romState)
   {
     // Create a vector of inputs.
     std::vector<torch::jit::IValue> inputs;

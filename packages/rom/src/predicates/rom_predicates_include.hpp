@@ -55,6 +55,7 @@
 #include "./decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
 #include "./decoder/rom_has_const_get_reference_to_jacobian.hpp"
 #include "./decoder/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
+#include "./decoder/rom_has_nonconst_update_jacobian_method_accept_operand_return_void.hpp"
 
 #include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_result_return_void.hpp"
 #include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_time_result_return_void.hpp"

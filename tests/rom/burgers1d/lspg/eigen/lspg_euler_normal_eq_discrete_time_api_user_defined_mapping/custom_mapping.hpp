@@ -45,7 +45,7 @@ public:
   }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type &) const
+  void updateJacobian(const rom_state_type &)
   {
     // no op, the Jacobian is fixed
   }
