@@ -86,6 +86,9 @@ struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
 template <>
 struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
 
+template <>
+struct is_explicit_stepper_tag<explicitmethods::AdamsBashforth2> : std::true_type{};
+
 // implicit
 template <typename T>
 struct is_implicit_stepper_tag : std::false_type{};

@@ -75,29 +75,39 @@
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace conttime{
 
 template <typename tag>
-struct valid_explicit_stepper_tag{
-  static_assert
-  (std::is_same<tag, ::pressio::ode::explicitmethods::Euler>::value or
-   std::is_same<tag, ::pressio::ode::explicitmethods::RungeKutta4>::value,
-   "Explicit Galerkin with continuous-time API currently accepts Euler, RK4");
-  static constexpr auto value = true;
-};
-
-template <typename tag>
-struct valid_implicit_stepper_tag{
+struct supported_implicit_stepper_tag{
   static_assert
   (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
-   "Implicit Galerkin with continuous-time API currently accepts BDF1, BDF2 or CrankNicolson");
+   "The implicit stepper tag you are passing to create the galerkin problem \
+is not supported: this can be because the Galerkin implementation does \
+not support it, or because you added a new ode scheme in the ode package \
+but forgot to update the list of implicit tags supported by Galerkin which \
+currently contains: BDF1, BDF2 or CrankNicolson");
+  static constexpr auto value = true;
+};
+
+template <typename tag>
+struct supported_explicit_stepper_tag{
+  static_assert
+  (std::is_same<tag, ::pressio::ode::explicitmethods::Euler>::value or
+   std::is_same<tag, ::pressio::ode::explicitmethods::RungeKutta4>::value or
+   std::is_same<tag, ::pressio::ode::explicitmethods::AdamsBashforth2>::value,
+   "The explicit stepper tag you are passing to create the galerkin problem \
+is not supported: this can be because the Galerkin implementation does \
+not support it, or because you added a new ode scheme in the ode package \
+but forgot to update the list of explicit tags supported by Galerkin which \
+currently contains: Forward Euler, RK4, AdamsBashforth2");
+
   static constexpr auto value = true;
 };
 
 template <typename tag>
 struct valid_stepper_tag{
   static constexpr auto value =
-    valid_explicit_stepper_tag<tag>::value or
-    valid_implicit_stepper_tag<tag>::value;
+    supported_explicit_stepper_tag<tag>::value or
+    supported_implicit_stepper_tag<tag>::value;
 };
 
 //------------------------
@@ -124,16 +134,26 @@ template<
   typename ...Args>
 struct compose
 {
-  // todo: if we get here, something is wrong,
-  // find out what it is similarly to how we do lspg
+  /* if we fall here, it means something is wrong
+     because it could not match any specialization below.
+     Use assertions to tell users what is wrong.
+  */
+  // 1. check that the ode_tag is a valid stepper tag
+  static constexpr auto is_ode_tag =
+    ::pressio::ode::predicates::is_stepper_tag<ode_tag>::value;
+  static_assert
+    (is_ode_tag,
+     "Galerkin with continuous-time API: to set the stepping scheme, \
+it seems you are using a tag type that is not a valid ode stepper tag.   \
+This error is typically caused by the way you create the galerkin problem: \
+e.g. createDefaultProblem<ode_tag>(...)");
+
   using type = void;
 };
-
 
 //*********************************************************
 // EXPLICIT TIME STEPPING
 //*********************************************************
-
 /****
      Galerkin default, pressio ops, explicit stepping
 ***/
@@ -150,7 +170,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::DefaultProblemExplicitStepContinuousTimeApi<
@@ -174,7 +194,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
   static_assert(mpl::not_void<ud_ops_type>::value, "ud_ops_type cannot be void");
 
   using type =
@@ -199,7 +219,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::HypRedVeloProblemExplicitStepContinuousTimeApi<
@@ -224,7 +244,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {
-  static_assert(valid_explicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::MaskedVeloProblemExplicitStepContinuousTimeApi<
@@ -251,7 +271,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
-  static_assert(valid_implicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "");
 
   // infer residual and jacobian from state, see NOTE (A) at top
   using galerkin_residual_t =
@@ -282,7 +302,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
-  static_assert(valid_implicit_stepper_tag<stepper_tag>::value, "");
+  static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "");
   static_assert(mpl::not_void<ud_ops_type>::value, "ud_ops_type cannot be void");
 
   // infer residual and jacobian from state, see NOTE (A) at top
@@ -315,7 +335,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
-  static_assert(valid_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
+  static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
 
   using galerkin_residual_t =
     typename ::pressio::rom::galerkin::impl::select_galerkin_types<galerkin_state_type>::residual_type;
@@ -346,7 +366,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type, ud_ops_type>
 {
-  static_assert(valid_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
+  static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
   static_assert(mpl::not_void<ud_ops_type>::value, "ud_ops_type cannot be void");
 
   // infer residual and jacobian from state, see NOTE (A) at top
@@ -379,7 +399,7 @@ struct compose<
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {
-  static_assert(valid_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
+  static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
 
   // infer residual and jacobian from state, see NOTE (A) at top
   using galerkin_residual_t =

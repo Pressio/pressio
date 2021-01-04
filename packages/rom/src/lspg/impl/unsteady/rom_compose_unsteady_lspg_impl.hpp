@@ -99,7 +99,11 @@ struct valid_stepper_tag_continuous_time_api
   (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
-   "Unsteady LSPG with continuous-time API currently accepts BDF1, BDF2 or CrankNicolson");
+   "The implicit stepper tag you are passing to create the LSPG problem \
+is not supported: this can be because the current LSPG implementation does \
+not support it, or because you added a new ode scheme in the ode package \
+but forgot to update the list of implicit tags supported by LSPG which \
+currently contains: BDF1, BDF2 or CrankNicolson");
 
   static constexpr auto value = true;
 };
@@ -145,9 +149,7 @@ struct composeUnsteady
   static_assert
   (::pressio::ode::predicates::is_stepper_tag<ode_tag>::value,
    "\nThe unsteady LSPG problem you are trying to create cannot be created because \
-the first template argument is not a valid stepper tag. \
-Current choices are: ode::implicitmethods::{Euler, BDF2} for the continuous-time API, \
-and  ode::implicitmethods::{Arbitrary} for the discrete-time API.");
+the first template argument is not a valid stepper tag.");
 
   /*if here, it means that the adapter class is the problem.
     There are two scenarios: either the user wants to use the discrete-time
@@ -466,7 +468,7 @@ struct composeUnsteady<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
+   "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::DefaultProblemDiscreteTimeApi<
@@ -525,7 +527,7 @@ struct composeUnsteady<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
+   "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::PreconditionedProblemDiscreteTimeApi<
@@ -553,7 +555,7 @@ struct composeUnsteady<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Unsteady default LSPG with discrete-time API currently accepts Arbitrary stepper");
+   "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
     ::pressio::rom::lspg::impl::unsteady::MaskedProblemDiscreteTimeApi<

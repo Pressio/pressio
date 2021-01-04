@@ -68,13 +68,20 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace 
 template<
   typename problem_tag,
   typename dummy,
-  typename ode_tag,
+  typename stepper_tag,
   typename fom_system_t,
+  typename decoder_type,
+  typename galerkin_state_type,
+  typename galerkin_jacobian_type,
   typename ...Args>
 struct compose
 {
-  // if we get here, something is wrong, find out what it is
-  // similarly to how we do lspg
+  static constexpr bool api_error =
+    ::pressio::rom::why_not_discrete_time_system_with_user_provided_apply_jacobian<
+    fom_system_t, typename decoder_type::jacobian_type>::value;
+  static_assert(api_error, "");
+
+  using type = void;
 };
 
 /***
@@ -98,7 +105,7 @@ struct compose<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Default Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type,
@@ -129,7 +136,7 @@ struct compose<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Default Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::MaskedResidualProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type, galerkin_jacobian_type,
@@ -159,7 +166,7 @@ struct compose<
 {
   static_assert
   (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Default Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::HyperReducedResidualProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type, galerkin_jacobian_type,

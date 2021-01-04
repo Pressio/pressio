@@ -31,9 +31,6 @@ struct GalerkinBDF1WithResidualApi
     fom_t appobj( mu, numCell);
     scalar_t dt = 0.01;
 
-    static_assert(::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<
-      fom_t, decoder_jac_t>::value, "");
-
     // read from file the jacobian of the decoder
     constexpr int romSize = 11;
     // store modes computed before from file
