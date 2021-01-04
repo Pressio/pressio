@@ -112,4 +112,4 @@ struct is_stepper_tag
 }//end namespace predicates
 
 }}//end namespace pressio::ode
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
+#endif  // ODE_ODE_STEPPER_TAGS_HPP_

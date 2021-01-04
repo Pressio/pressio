@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_crankNicolson_impl.hpp
+// ode_implicit_stepper_cranknicolson_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -239,4 +239,4 @@ private:
 };
 
 }}} // end namespace pressio::ode::implicitmethods
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CrankNicolson_IMPL_HPP_
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_

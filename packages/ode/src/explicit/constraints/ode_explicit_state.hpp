@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
-#define ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
+#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
+#define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -72,4 +72,4 @@ struct explicit_state<::pressio::containers::Tensor<3, T>> : std::true_type{};
 #endif
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_
+#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_STATE_HPP_

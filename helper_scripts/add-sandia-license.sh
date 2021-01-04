@@ -31,8 +31,6 @@ for file in $allfiles
 do
   filename=$(basename $file)
   filedir=$(dirname $file)
-  #echo $filename
-  #echo $filedir
 
   if ! grep -q 'Ennio' "$file"
   then

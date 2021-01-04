@@ -526,7 +526,6 @@ private:
 };
 
 }}//end namespace pressio::rom
-#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
 
 
 
@@ -715,3 +714,4 @@ private:
 //   // etc..
 //   data_type data_;
 // };
+#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_

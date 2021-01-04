@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
-#define ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -169,4 +169,4 @@ using implicit_cranknicolson_residual_policy =
   T, ::pressio::ode::implicitmethods::CrankNicolson, 1, 2, args...>;
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_POLICIES_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

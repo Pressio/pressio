@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_residual_standard_policy.hpp
+// ode_implicit_residual_bdf_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
-#define ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
+#ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
+#define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
@@ -119,4 +119,4 @@ public:
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_IMPLICIT_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_STANDARD_POLICY_HPP_
+#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_

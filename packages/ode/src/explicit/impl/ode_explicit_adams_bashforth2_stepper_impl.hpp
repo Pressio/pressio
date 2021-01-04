@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_runge_kutta4_stepper_impl.hpp
+// ode_explicit_adams_bashforth2_stepper_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ABAS2_STEPPER_IMPL_HPP_
-#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ABAS2_STEPPER_IMPL_HPP_
+#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_
+#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
@@ -239,4 +239,4 @@ private:
 };
 
 }}}}//end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_

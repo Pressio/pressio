@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_user_defined_ops_for_explicit_rk4.hpp
+// ode_user_defined_ops_for_explicit_ab2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
-#define ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
+#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
+#define ODE_EXPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -90,4 +90,4 @@ struct user_defined_ops_for_explicit_ab2<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_
+#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_EXPLICIT_AB2_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
-#define ODE_CONSTRAINTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
+#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
+#define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -90,4 +90,4 @@ struct explicit_velocity_policy<
   > : std::true_type{};
 
 }}}//end namespace pressio::containers::constraints
-#endif  // ODE_CONSTRAINTS_POLICIES_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
+#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_

@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
-#define ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -67,4 +67,4 @@ struct implicit_residual<::pressio::containers::Tensor<1, T>> : std::true_type{}
 #endif
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_

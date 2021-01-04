@@ -125,4 +125,4 @@ public:
 };
 
 }} // end of namespace pressio::utils
-#endif  // UTILS_UTILS_POSSIBLY_OWNING_REF_WRAPPER_HPP_
+#endif  // UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_

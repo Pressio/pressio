@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_aux_states_manager.hpp
+// ode_stencil_velocities_manager.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_ODE_VELOCITIES_MANAGER_HPP_
-#define ODE_ODE_VELOCITIES_MANAGER_HPP_
+#ifndef ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_
+#define ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_
 
 namespace pressio{ namespace ode{ namespace implicitmethods{
 
@@ -146,4 +146,4 @@ template<typename T, std::size_t n>
 using StencilVelocitiesManager = impl::StencilVelocitiesManager<T, n>;
 
 }}}//end namespace pressio::ode::implicitmethods
-#endif  // ODE_ODE_AUX_STATES_MANAGER_HPP_
+#endif  // ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_

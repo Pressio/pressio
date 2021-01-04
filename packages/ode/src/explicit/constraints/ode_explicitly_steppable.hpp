@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
-#define ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
+#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
+#define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
@@ -74,4 +74,4 @@ struct explicitly_steppable<
   > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
+#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_

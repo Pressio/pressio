@@ -68,4 +68,4 @@ struct has_nonconst_update_jacobian_method_accept_operand_return_void<
   > : std::true_type{};
 
 }}} // namespace pressio::rom::predicates
-#endif  // ROM_PREDICATES_DECODER_ROM_HAS_CONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
+#endif  // ROM_PREDICATES_DECODER_ROM_HAS_NONCONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
