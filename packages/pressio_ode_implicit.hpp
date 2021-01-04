@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicitly_steppable.hpp
+// pressio_ode_implicit.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,50 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
-#define ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
+#ifndef PRESSIO_ODE_IMPLICIT_HPP_
+#define PRESSIO_ODE_IMPLICIT_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+/*
+   include everything needed for ODE implicit integration
+   NOTE that the order below matters!
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
+*/
 
-template <typename T, typename state_type, typename time_type, typename enable = void>
-struct explicitly_steppable : std::false_type{};
+// need all of the dependent packages
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
+#include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_solvers.hpp"
 
-template <typename T, typename state_type, typename time_type>
-struct explicitly_steppable<
-  T, state_type, time_type,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype(
-	       std::declval<T>().doStep
-	       (
-		std::declval<state_type &>(),
-		std::declval<time_type const &>(),
-		std::declval<time_type const &>(),
-		std::declval<::pressio::ode::types::step_t const &>()
-		)
-	       )
-      >::value
-    >
-  > : std::true_type{};
+// common things
+#include "ode/src/pressio_ode_common.hpp"
 
-}}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
+// specific to implicit
+#include "ode/src/implicit/ode_implicit_constants.hpp"
+#include "ode/src/implicit/constraints/ode_implicit_state.hpp"
+#include "ode/src/implicit/constraints/ode_implicit_residual.hpp"
+#include "ode/src/implicit/constraints/ode_implicit_jacobian.hpp"
+#include "ode/src/implicit/constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
+#include "ode/src/implicit/constraints/ode_user_defined_ops_for_implicit_bdf2.hpp"
+#include "ode/src/implicit/constraints/ode_user_defined_ops_for_implicit_euler.hpp"
+#include "ode/src/implicit/constraints/ode_user_defined_ops_for_implicit_ode.hpp"
+#include "ode/src/implicit/constraints/ode_implicitly_steppable.hpp"
+#include "ode/src/implicit/constraints/ode_implicitly_steppable_with_guesser.hpp"
+#include "ode/src/implicit/constraints/ode_auxiliary_stepper_for_bdf2.hpp"
+
+#include "ode/src/implicit/ode_stencil_states_manager.hpp"
+#include "ode/src/implicit/ode_stencil_velocities_manager.hpp"
+#include "ode/src/implicit/constraints/ode_implicit_residual_policy.hpp"
+#include "ode/src/implicit/constraints/ode_implicit_jacobian_policy.hpp"
+
+#include "ode/src/implicit/ode_implicit_stepper.hpp"
+
+#include "ode/src/integrators/ode_advance_n_steps_implicit_arbitrary_step_size.hpp"
+#include "ode/src/integrators/ode_advance_n_steps_implicit_constant_step_size.hpp"
+#include "ode/src/integrators/ode_advance_to_target_time_implicit_arbitrary_step_size.hpp"
+
+#endif

@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio_ode_explicit.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 struct MyApp{
@@ -89,9 +89,9 @@ TEST(ode_explicit_rk4, userDefinedOps){
   double dt = 0.1;
   ode::advanceNSteps(stepperObj, y, 0.0, dt, 1);
   {
-    std::cout << std::setprecision(14) 
-    << (*y.data())[0] << " " 
-    << (*y.data())[1] << " " 
+    std::cout << std::setprecision(14)
+    << (*y.data())[0] << " "
+    << (*y.data())[1] << " "
     << (*y.data())[2] << std::endl;
 
     auto yptr2 = y.data();

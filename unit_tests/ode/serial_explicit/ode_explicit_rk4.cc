@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio_ode_explicit.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 // TEST(ode_explicit_rk4, traits){

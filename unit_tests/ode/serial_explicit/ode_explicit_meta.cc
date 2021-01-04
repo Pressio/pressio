@@ -1,9 +1,9 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio_ode_explicit.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-namespace 
+namespace
 {
 
 template<typename state_type>
@@ -44,7 +44,7 @@ TEST(user_defined_model, admissibleVelocityPolicy)
   using state_w_type = pressio::containers::Vector<Eigen::VectorXd>;
   using policy_t = MyPolicyOk<state_w_type>;
   static_assert
-  (ode::constraints::explicit_velocity_policy<policy_t, double, 
+  (ode::constraints::explicit_velocity_policy<policy_t, double,
   	state_w_type, state_w_type, app_t>::value, "");
 }
 
@@ -55,7 +55,7 @@ TEST(user_defined_model, nonAdmissibleVelocityPolicy)
   using state_w_type = pressio::containers::Vector<Eigen::VectorXd>;
   using policy_t = MyPolicyNotOk<state_w_type>;
   static_assert
-  (!ode::constraints::explicit_velocity_policy<policy_t, double, 
+  (!ode::constraints::explicit_velocity_policy<policy_t, double,
   	state_w_type, state_w_type, app_t>::value, "");
 }
 

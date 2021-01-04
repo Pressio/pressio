@@ -65,7 +65,7 @@
 #include "pressio_svd.hpp"
 #include "pressio_optimizers.hpp"
 #include "pressio_solvers.hpp"
-#include "pressio_ode.hpp"
+#include "pressio_ode_implicit.hpp"
 
 // common classes for rom
 #include "rom/src/pressio_rom_common.hpp"

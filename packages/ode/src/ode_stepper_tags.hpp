@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_stepper_tags.hpp
+// ode_stepper_tags.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,10 +46,18 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
-#define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
+
+#ifndef ODE_ODE_STEPPER_TAGS_HPP_
+#define ODE_ODE_STEPPER_TAGS_HPP_
 
 namespace pressio{ namespace ode{
+
+namespace explicitmethods{
+struct Undefined{};
+struct Euler{};
+struct RungeKutta4{};
+struct AdamsBashforth2{};
+}//end namespace explicitmethods
 
 namespace implicitmethods{
 struct Undefined{};
@@ -62,12 +70,23 @@ using Euler = BDF1;
 // so there is no specific info about it and it can be
 // anything since the user assembles the time-discrete operators
 struct Arbitrary{};
-
 }//end namespace implicitmethods
+
 
 // makes sense to leave the metafunctions here because every time
 // a new tag is added, a corresponding metaf is needed too
 namespace predicates{
+// explicit
+template <typename T>
+struct is_explicit_stepper_tag : std::false_type{};
+
+template <>
+struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
+
+template <>
+struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
+
+// implicit
 template <typename T>
 struct is_implicit_stepper_tag : std::false_type{};
 
@@ -82,7 +101,15 @@ struct is_implicit_stepper_tag<implicitmethods::CrankNicolson> : std::true_type{
 
 template <>
 struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
+
+// is_stepper_tag
+template <typename T>
+struct is_stepper_tag
+{
+  static constexpr auto value = is_explicit_stepper_tag<T>::value
+    or is_implicit_stepper_tag<T>::value;
+};
 }//end namespace predicates
 
 }}//end namespace pressio::ode
-#endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_TAGS_HPP_
+#endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_

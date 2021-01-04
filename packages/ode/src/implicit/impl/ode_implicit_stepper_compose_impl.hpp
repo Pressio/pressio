@@ -49,6 +49,16 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 
+#include "ode_discrete_time_residual_impl.hpp"
+#include "ode_discrete_time_jacobian_impl.hpp"
+
+#include "standard_policies/ode_implicit_residual_bdf_policy.hpp"
+#include "standard_policies/ode_implicit_jacobian_bdf_policy.hpp"
+#include "standard_policies/ode_implicit_residual_crank_nicolson_policy.hpp"
+#include "standard_policies/ode_implicit_jacobian_crank_nicolson_policy.hpp"
+#include "standard_policies/ode_implicit_discrete_time_residual_policy.hpp"
+#include "standard_policies/ode_implicit_discrete_time_jacobian_policy.hpp"
+
 #include "ode_implicit_stepper_euler_impl.hpp"
 #include "ode_implicit_stepper_bdf2_impl.hpp"
 #include "ode_implicit_stepper_cranknicolson_impl.hpp"

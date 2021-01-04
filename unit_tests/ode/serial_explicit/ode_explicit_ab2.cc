@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio_ode_explicit.hpp"
 
 namespace {
 struct MyApp

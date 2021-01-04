@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_user_defined_ops_for_implicit_ode.hpp
+// ode_explicitly_steppable.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,32 @@
 //@HEADER
 */
 
-#ifndef ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
-#define ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
+#ifndef ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
+#define ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_
 
 namespace pressio{ namespace ode{ namespace constraints {
 
-template<
-  typename T,
-  typename scalar_t,
-  typename state_t,
-  typename residual_t,
-  typename jacobian_t,
-  typename enable = void
-  >
-struct user_defined_ops_for_implicit_ode : std::false_type{};
+template <typename T, typename state_type, typename time_type, typename enable = void>
+struct explicitly_steppable : std::false_type{};
 
-template<
-  typename T,
-  typename scalar_t,
-  typename state_t,
-  typename residual_t,
-  typename jacobian_t
-  >
-struct user_defined_ops_for_implicit_ode<
-  T, scalar_t, state_t, residual_t, jacobian_t,
+template <typename T, typename state_type, typename time_type>
+struct explicitly_steppable<
+  T, state_type, time_type,
   mpl::enable_if_t<
-    is_valid_user_defined_ops_for_implicit_euler<
-      T, scalar_t, state_t, residual_t, jacobian_t
-      >::value 
-    and
-    is_valid_user_defined_ops_for_implicit_bdf2<
-      T, scalar_t, state_t, residual_t, jacobian_t
+    std::is_void<
+      decltype
+      (
+       std::declval<T>().doStep
+       (
+	std::declval<state_type &>(),
+	std::declval<time_type const &>(),
+	std::declval<time_type const &>(),
+	std::declval<::pressio::ode::types::step_t const &>()
+	)
+       )
       >::value
     >
   > : std::true_type{};
 
 }}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
+#endif  // ODE_CONSTRAINTS_STEPPABLE_ODE_EXPLICITLY_STEPPABLE_HPP_

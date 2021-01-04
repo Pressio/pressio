@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio_ode_implicit.hpp"
 #include "../reference_apps_for_testing.hpp"
 
 TEST(ode_implicit_bdf2, numericsStdPoliciesDefaultCreated)

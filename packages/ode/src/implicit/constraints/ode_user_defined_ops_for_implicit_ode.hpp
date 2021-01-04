@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_stepper_tags.hpp
+// ode_user_defined_ops_for_implicit_ode.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,40 @@
 //@HEADER
 */
 
+#ifndef ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
+#define ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
+namespace pressio{ namespace ode{ namespace constraints {
 
-namespace pressio{ namespace ode{
+template<
+  typename T,
+  typename scalar_t,
+  typename state_t,
+  typename residual_t,
+  typename jacobian_t,
+  typename enable = void
+  >
+struct user_defined_ops_for_implicit_ode : std::false_type{};
 
-namespace explicitmethods{
-struct Undefined{};
-struct Euler{};
-struct RungeKutta4{};
-struct AdamsBashforth2{};
-}//end namespace explicitmethods
+template<
+  typename T,
+  typename scalar_t,
+  typename state_t,
+  typename residual_t,
+  typename jacobian_t
+  >
+struct user_defined_ops_for_implicit_ode<
+  T, scalar_t, state_t, residual_t, jacobian_t,
+  mpl::enable_if_t<
+    ::pressio::ode::constraints::user_defined_ops_for_implicit_euler<
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value
+    and
+    ::pressio::ode::constraints::user_defined_ops_for_implicit_bdf2<
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value
+    >
+  > : std::true_type{};
 
-namespace predicates{
-template <typename T>
-struct is_explicit_stepper_tag : std::false_type{};
-
-template <>
-struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
-
-template <>
-struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
-}//end namespace predicates
-
-}}//end namespace pressio::ode
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_TAGS_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_CONSTRAINTS_USER_DEFINED_OPS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
