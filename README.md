@@ -5,7 +5,7 @@ Pressio is an open-source computational framework aimed at enabling
 leading-edge projection-based reduced-order models (pROMs) capabilties
 for dynamical systems in science and engineering.
 
-#[![Codecove](https://codecov.io/gh/Pressio/pressio/branch/master/graphs/badge.svg?precision=2)](https://codecov.io/gh/Pressio/pressio/branch/master)
+<!-- [![Codecove](https://codecov.io/gh/Pressio/pressio/branch/master/graphs/badge.svg?precision=2)](https://codecov.io/gh/Pressio/pressio/branch/master) -->
 
 # Userguide and documentation
 This is the repository for the C++ library.
