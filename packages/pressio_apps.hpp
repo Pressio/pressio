@@ -65,6 +65,7 @@
 #include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
+#include "apps/src/burgers1d/apps_burgers1d_tpetra_discrete_time_api.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 

@@ -409,8 +409,33 @@ public:
     //only perform computation once since this never changes
     if (arg == 1 && jacobianNeedsRecomputing_){
       constexpr auto cnm1   = ::pressio::ode::constants::bdf1<scalar_type>::c_nm1_; // -1.
-      ::pressio::ops::update(Jphi,phi,cnm1);
-      jacobianNeedsRecomputing_ = true;
+      scalar_type eps = 1e-5;
+      auto phiView = *phi.data();
+      auto JphiView = *phi.data();
+
+      fom_state_t fomStateNm1(fomState);
+      auto rnom = fomSystemObj.createDiscreteTimeResidual();
+      auto rtmp = fomSystemObj.createDiscreteTimeResidual();
+
+      auto fomStateNm1View = *fomStateNm1.data();
+      fomSystemObj.discreteTimeResidual(step, t, dt,rnom,*fomState.data(), fomStateNm1View);
+      for (int i = 0; i < phi.extent(1); i++){
+        auto phiCol = *phiView.getVector(i);
+        auto JphiCol = *phiView.getVectorNonConst(i);
+        fomStateNm1View.update(eps,phiCol,1.);
+        fomSystemObj.discreteTimeResidual(step, t, dt,rtmp,*fomState.data(), fomStateNm1View);
+        fomStateNm1View.update(-eps,phiCol,1.);
+        rtmp.update(-1.,rnom,1.); //rtmp - rnom / eps
+        rtmp.scale(1./eps);
+        JphiCol.update(1.,rtmp,0.);
+      } 
+      /*
+       fomStateNm1View = *fomStateNM1.getDataNonConst();
+       fomStateNM1View.update(1.,fomStateNM1View,eps,JphiCol);
+       //auto workingVector = ::pressio::ops::deepcopy(fomStateNM1);
+      */ 
+      //::pressio::ops::update(Jphi,phi,cnm1);
+      jacobianNeedsRecomputing_ = false;
     }
   }
 

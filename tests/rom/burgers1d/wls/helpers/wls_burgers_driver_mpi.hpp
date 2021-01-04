@@ -28,6 +28,24 @@ auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag,
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);
   return trueY;
 }
+
+/*
+template <typename fom_t>
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dTpetra>::value, fom_t >
+constructAppObj(std::size_t fomSize)
+{
+  auto appObj = constructAppObj<fom_t>(fomSize,Comm);
+  return appObj;
+};
+
+template <typename fom_t>
+pressio::mpl::enable_if_t< std::is_same<fom_t, pressio::apps::Burgers1dTpetraDiscreteTimeApi>::value, fom_t >
+constructAppObj(std::size_t fomSize)
+{
+  return fom_t( Eigen::Vector3d{5.0, 0.02, 0.02}, fomSize);
+};
+*/
+
 }//end namespace anonym
 
 
@@ -55,6 +73,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // app object
   constexpr std::size_t fomSize = 20;
   fom_t appObj({{5.0, 0.02, 0.02}}, fomSize,Comm);
+  //auto appObj = constructAppObj<fom_t>(fomSize,Comm);
   constexpr scalar_t dt = 0.01;
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
