@@ -121,13 +121,13 @@ public:
   void compute(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
-	       const scalar_t & time,
+	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & timeStep,
+	       const ::pressio::ode::types::step_t & currentStepNumber,
 	       lspg_jac_t & romJac) const
   {
     this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
-    				    time, dt, timeStep);
+    				    timeAtNextStep, dt, currentStepNumber);
   }
 
 private:
@@ -167,9 +167,9 @@ private:
   void compute_impl(const lspg_state_t & romState,
 		    lspg_jac_t & romJac,
 		    const fom_system_t & fomSystemObj,
-		    const scalar_t   & t,
+		    const scalar_t   & timeAtNextStep,
 		    const scalar_t   & dt,
-		    const ::pressio::ode::types::step_t & timeStep) const
+		    const ::pressio::ode::types::step_t & currentStepNumber) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -190,7 +190,8 @@ private:
 
     const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & basis = decoderObj_.get().jacobianCRef();
-    fomSystemObj.applyJacobian(*fomState.data(), *basis.data(), t, *romJac.data());
+    fomSystemObj.applyJacobian(*fomState.data(), *basis.data(),
+			       timeAtNextStep, *romJac.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom apply jac");

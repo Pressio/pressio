@@ -93,9 +93,9 @@ public:
   void compute(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
-	       const scalar_t & time,
+	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & timeStep,
+	       const ::pressio::ode::types::step_t & currentStepNumber,
 	       residual_type & romR) const
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
@@ -103,7 +103,7 @@ public:
     assert(sTosInfo_.get().extent(0) == romR.extent(0));
 
     this->compute_impl<stepper_tag>(romState, romR, stencilStates,
-				    fomSystemObj, time, dt, timeStep);
+				    fomSystemObj, timeAtNextStep, dt, currentStepNumber);
   }
 
 private:
@@ -118,12 +118,12 @@ private:
 		    residual_type & romR,
 		    const stencil_states_t & stencilStates,
 		    const fom_system_t  & fomSystemObj,
-		    const scalar_t & time,
+		    const scalar_t & timeAtNextStep,
 		    const scalar_t & dt,
-		    const ::pressio::ode::types::step_t & timeStep) const
+		    const ::pressio::ode::types::step_t & currentStepNumber) const
   {
     /* the currrent FOM has to be recomputed every time regardless of
-     * whether the timeStep changes since we might be inside a non-linear solve
+     * whether the currentStepNumber changes since we might be inside a non-linear solve
      * where the time step does not change but this residual method
      * is called multiple times.
      */
@@ -133,13 +133,13 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != timeStep){
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
-      storedStep_ = timeStep;
+      storedStep_ = currentStepNumber;
     }
 
     const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
-    fomSystemObj.velocity(*fomState.data(), time, *romR.data());
+    fomSystemObj.velocity(*fomState.data(), timeAtNextStep, *romR.data());
 
     ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
 	<stepper_tag>(fomStatesMngr_.get(), romR, dt, sTosInfo_.get());

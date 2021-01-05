@@ -95,7 +95,7 @@ public:
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t &  step,
 	  jacobian_type & J) const
@@ -105,7 +105,7 @@ public:
        system_type>::value, "system type must meet the discrete time api");
 
     const auto & yn = stencilDataManager.stateAt(ode::n());
-    system.template discreteTimeJacobian(step, t, dt, *J.data(),
+    system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, *J.data(),
 					 *odeCurrentState.data(),
 					 *yn.data() );
   }
@@ -121,7 +121,7 @@ public:
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  jacobian_type & J) const
@@ -132,7 +132,7 @@ public:
 
     const auto & yn = stencilDataManager.stateAt(ode::n());
     const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
-    system.template discreteTimeJacobian(step, t, dt, *J.data(),
+    system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, *J.data(),
 					 *odeCurrentState.data(),
 					 (*yn.data() ), (*ynm1.data()) );
   }
@@ -148,7 +148,7 @@ public:
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  jacobian_type & J) const
@@ -160,7 +160,8 @@ public:
     const auto & yn = stencilDataManager.stateAt(ode::n());
     const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
     const auto & ynm2 = stencilDataManager.stateAt(ode::nMinusTwo());
-    system.template discreteTimeJacobian(step, t, dt, *J.data(),
+    system.template discreteTimeJacobian(step, rhsEvaluationTime, dt,
+					 *J.data(),
 					 *odeCurrentState.data(),
 					 (*yn.data()),
 					 (*ynm1.data()),

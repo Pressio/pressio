@@ -91,13 +91,13 @@ public:
   compute(const galerkin_state_t & galerkinState,
 	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  galerkin_residual_type & galerkinResidual) const
   {
     projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
-				 time, ::pressio::ode::nPlusOne());
+				 timeAtNextStep, ::pressio::ode::nPlusOne());
 
     ::pressio::ode::impl::discrete_time_residual
 	(galerkinState, galerkinResidual,
@@ -121,13 +121,13 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & t_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  stencil_velocities_t & galerkinStencilVelocities,
 	  galerkin_residual_type & galerkinResidual) const
   {
 
     // if the step changed, I need to compute f(y_n, t_n)
-    if (stepTracker_ != timeStep){
+    if (stepTracker_ != currentStepNumber){
       auto & f_n = galerkinStencilVelocities(::pressio::ode::n());
       auto & galState_n = galerkinStencilStates(::pressio::ode::n());
       const auto tn = t_np1-dt;
@@ -160,13 +160,14 @@ public:
   compute(const galerkin_state_t & galerkinState,
 	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  galerkin_residual_type & galerkinResidual) const
   {
     projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
-				 time, dt, timeStep, galerkinStencilStates);
+				 timeAtNextStep, dt, currentStepNumber,
+				 galerkinStencilStates);
   }
 
 private:

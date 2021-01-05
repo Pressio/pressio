@@ -94,9 +94,9 @@ public:
   mpl::enable_if_t< galerkin_stencil_states_t::size()==1 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & step,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     // we assume the residual policy already reconstucted the FOM states
@@ -104,7 +104,7 @@ public:
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
-    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+    fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep, dt,
 					   *(phi_.get().data()),
 					   *fomApplyJac_.data(),
 					   *ynp1.data(),
@@ -121,9 +121,9 @@ public:
   mpl::enable_if_t< galerkin_stencil_states_t::size()==2 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & step,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     // we assume the residual policy already reconstucted the FOM states
@@ -132,7 +132,7 @@ public:
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
-    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
+    fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep, dt,
 					   *(phi_.get().data()),
 					   *fomApplyJac_.data(),
 					   *ynp1.data(),

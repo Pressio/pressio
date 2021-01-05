@@ -90,7 +90,7 @@ public:
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
@@ -102,7 +102,7 @@ public:
     const auto & yn = stencilStatesManager.stateAt(ode::n());
 
     try{
-      system.template discreteTimeResidual(step, t, dt, *R.data(),
+      system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data());
     }
@@ -119,7 +119,7 @@ public:
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
@@ -132,7 +132,7 @@ public:
     const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
 
     try{
-      system.template discreteTimeResidual(step, t, dt, *R.data(),
+      system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data(), *ynm1.data());
     }
@@ -149,7 +149,7 @@ public:
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
-	  const scalar_type & t,
+	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
 	  const types::step_t & step,
 	  residual_type & R) const
@@ -163,7 +163,7 @@ public:
     const auto & ynm2 = stencilStatesManager.stateAt(ode::nMinusTwo());
 
     try{
-      system.template discreteTimeResidual(step, t, dt, *R.data(),
+      system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data(),
 					   *ynm1.data(),

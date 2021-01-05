@@ -149,18 +149,18 @@ private:
   compute_impl(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & time,
+	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::types::step_t & currentStepNumber,
 	       residual_type & romR) const
   {
-    doFomStatesReconstruction(romState, stencilStates, step);
+    doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
 
     try{
-      fomSystemObj.discreteTimeResidual(step, time, dt,
+      fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
 					*romR.data(),
 					*ynp1.data(),
 					*yn.data());
@@ -181,19 +181,19 @@ private:
   compute_impl(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
-	       const scalar_t & time,
+	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::types::step_t & currentStepNumber,
 	       residual_type & romR) const
   {
-    doFomStatesReconstruction(romState, stencilStates, step);
+    doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
     try{
-      fomSystemObj.discreteTimeResidual(step, time, dt,
+      fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
 					*romR.data(),
 					*ynp1.data(),
 					*yn.data(),
