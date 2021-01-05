@@ -174,7 +174,7 @@ public:
       "Invalid solver for Arbitrary stepper");
 
     dt_ = dt;
-    rhsEvaluationTime_ = currentTime;
+    rhsEvaluationTime_ = currentTime + dt;
     stepNumber_ = step;
 
     updateAuxiliaryStorage<numAuxStates>(odeState);
