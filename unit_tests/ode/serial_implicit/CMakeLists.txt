@@ -28,3 +28,6 @@ add_serial_utest(ode_implicit_bdf1_velocity_called_with_correct_time
 
 add_serial_utest(ode_implicit_bdf2_velocity_called_with_correct_time
   ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_bdf2_velocity_called_with_correct_time.cc)
+
+add_serial_utest(ode_arbitrary_stepper_call_with_correct_time
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_arbitrary_stepper_call_with_correct_time.cc)

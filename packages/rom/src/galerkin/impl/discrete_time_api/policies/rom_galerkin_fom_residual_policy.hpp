@@ -97,17 +97,17 @@ public:
   mpl::enable_if_t< galerkin_stencil_states_t::size()==1 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & step,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
-    this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, step);
+    this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
-    fomSystemObj.discreteTimeResidual(step, time, dt, *fomResidual_.data(),
-				      *ynp1.data(), *yn.data());
+    fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
+				      *fomResidual_.data(), *ynp1.data(), *yn.data());
   }
 
   // we have here n = 2 stencil state
@@ -120,19 +120,19 @@ public:
   mpl::enable_if_t< galerkin_stencil_states_t::size()==2 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & step,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
-    this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, step);
+    this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
-    fomSystemObj.discreteTimeResidual(step, time, dt,
-				      *fomResidual_.data(),
+    fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep,
+				      dt, *fomResidual_.data(),
 				      *ynp1.data(), *yn.data(), *ynm1.data());
   }
 
@@ -140,7 +140,7 @@ private:
   template <typename galerkin_state_t, typename galerkin_stencil_states_t>
   void doFomStatesReconstruction(const galerkin_state_t & galerkinState,
 				 const galerkin_stencil_states_t & galerkinStencilStates,
-				 const ::pressio::ode::types::step_t & step) const
+				 const ::pressio::ode::types::step_t & currentStepNumber) const
   {
     /* the FOM state corresponding to the new predicted state has to be
      * recomputed every time regardless of the time step chaning or not,
@@ -153,9 +153,9 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != step){
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(galerkinStencilStates(ode::n()));
-      storedStep_ = step;
+      storedStep_ = currentStepNumber;
     }
   }
 };

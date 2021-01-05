@@ -92,7 +92,7 @@ public:
   void compute(const state_type & odeCurrentState,
 	       const stencil_states_type & stencilStates,
 	       const system_type & system,
-	       const scalar_type & t,
+	       const scalar_type & rhsEvaluationTime,
 	       const scalar_type & dt,
 	       const types::step_t &  step,
 	       jacobian_type & J) const
@@ -102,7 +102,7 @@ public:
        <system_type>::value,
        "system type must meet the continuous time api");
 
-    system.jacobian( *odeCurrentState.data(), t, *J.data());
+    system.jacobian( *odeCurrentState.data(), rhsEvaluationTime, *J.data());
     ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
   }
 };

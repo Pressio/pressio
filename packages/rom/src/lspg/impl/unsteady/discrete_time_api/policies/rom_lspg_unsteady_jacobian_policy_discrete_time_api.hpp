@@ -136,9 +136,9 @@ private:
   compute_impl(const lspg_state_t			& romState,
 		    const stencil_states_t		& stencilStates,
   		    const fom_system_t		        & fomSystemObj,
-  		    const scalar_t			& time,
+  		    const scalar_t			& timeAtNextStep,
   		    const scalar_t			& dt,
-		    const ::pressio::ode::types::step_t	& step,
+		    const ::pressio::ode::types::step_t	& currentStepNumber,
 		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd
@@ -153,8 +153,8 @@ private:
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
 
-    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
-					   *phi.data(),
+    fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
+					   dt, *phi.data(),
 					   *romJac.data(),
 					   *ynp1.data(),
 					   *yn.data());
@@ -172,9 +172,9 @@ private:
   compute_impl(const lspg_state_t			& romState,
 		    const stencil_states_t		& stencilStates,
   		    const fom_system_t		        & fomSystemObj,
-  		    const scalar_t			& time,
+  		    const scalar_t			& timeAtNextStep,
   		    const scalar_t			& dt,
-		    const ::pressio::ode::types::step_t	& step,
+		    const ::pressio::ode::types::step_t	& currentStepNumber,
 		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd
@@ -191,8 +191,8 @@ private:
     const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
-    fomSystemObj.applyDiscreteTimeJacobian(step, time, dt,
-					   *phi.data(),
+    fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
+					   dt, *phi.data(),
 					   *romJac.data(),
 					   *ynp1.data(),
 					   *yn.data(),

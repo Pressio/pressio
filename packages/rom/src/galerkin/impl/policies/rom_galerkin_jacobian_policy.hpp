@@ -90,7 +90,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & time_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & stepNumber,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  galerkin_jacobian_type & galerkinJacobian) const
   {
     projection_policy_t::compute(galerkinJacobian, galerkinState,
@@ -114,12 +114,12 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & time_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & stepNumber,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  galerkin_jacobian_type & galerkinJacobian) const
   {
     projection_policy_t::compute(galerkinJacobian, galerkinState,
 				 fomSystemObj, time_np1,
-				 dt, stepNumber, stencilStates);
+				 dt, currentStepNumber, stencilStates);
   }
 
 private:

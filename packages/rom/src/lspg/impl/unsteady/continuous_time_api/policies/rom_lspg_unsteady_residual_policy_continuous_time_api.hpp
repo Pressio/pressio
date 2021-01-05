@@ -113,13 +113,13 @@ public:
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  residual_type & romR) const
   {
     this->compute_impl<stepper_tag>(romState, romR, stencilStates,
-				    fomSystemObj, time, dt, timeStep);
+				    fomSystemObj, timeAtNextStep, dt, currentStepNumber);
   }
 
   template <
@@ -136,15 +136,15 @@ public:
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
-	  const scalar_t & time,
+	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & timeStep,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
 	  stencil_velocities_t & stencilVelocities,
 	  residual_type & romR) const
   {
     this->compute_cn_impl<stepper_tag>
       (romState, romR, stencilStates, fomSystemObj,
-       time, dt, timeStep, stencilVelocities);
+       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
   }
 
 private:
@@ -189,9 +189,9 @@ private:
 		    residual_type & romR,
 		    const stencil_states_t & stencilStates,
 		    const fom_system_t & fomSystemObj,
-		    const scalar_t & time,
+		    const scalar_t & timeAtNextStep,
 		    const scalar_t & dt,
-		    const ::pressio::ode::types::step_t & timeStep) const
+		    const ::pressio::ode::types::step_t & currentStepNumber) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -199,7 +199,7 @@ private:
 #endif
 
     /* the currrent FOM has to be recomputed every time regardless of
-     * whether the timeStep changes since we might be inside a non-linear solve
+     * whether the currentStepNumber changes since we might be inside a non-linear solve
      * where the time step does not change but this residual method
      * is called multiple times.
      */
@@ -209,16 +209,16 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != timeStep){
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
-      storedStep_ = timeStep;
+      storedStep_ = currentStepNumber;
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->start("fom eval rhs");
 #endif
     const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
-    fomSystemObj.velocity(*fomState.data(), time, *romR.data());
+    fomSystemObj.velocity(*fomState.data(), timeAtNextStep, *romR.data());
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     timer->stop("fom eval rhs");
@@ -247,7 +247,7 @@ private:
 		       const fom_system_t & fomSystemObj,
 		       const scalar_t & t_np1,
 		       const scalar_t & dt,
-		       const ::pressio::ode::types::step_t & timeStep,
+		       const ::pressio::ode::types::step_t & currentStepNumber,
 		       // for CN, stencilVelocities holds f_n+1 and f_n
 		       stencil_velocities_t & stencilVelocities) const
   {
@@ -255,9 +255,9 @@ private:
 
     fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    if (storedStep_ != timeStep){
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
-      storedStep_ = timeStep;
+      storedStep_ = currentStepNumber;
 
       // if the step changed, I need to compute f(y_n, t_n)
       const auto tn = t_np1-dt;

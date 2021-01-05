@@ -239,7 +239,6 @@ int main(int argc, char *argv[])
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using app_t		= MyApp;
-  using sc_t		= typename app_t::scalar_type;
   using nstate_t	= typename app_t::state_type;
   using nvelo_t	        = typename app_t::velocity_type;
   using njacobian_t	= typename app_t::jacobian_type;
