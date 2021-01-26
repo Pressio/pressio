@@ -14,7 +14,7 @@ include(colors)
 #=====================================================================
 set(Pressio_VERSION_MAJOR 0)
 set(Pressio_VERSION_MINOR 6)
-set(Pressio_VERSION_PATCH 0)
+set(Pressio_VERSION_PATCH 1)
 set(Pressio_VERSION
   "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
 math(EXPR PRESSIO_VERSION
