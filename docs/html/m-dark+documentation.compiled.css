@@ -340,7 +340,9 @@ body { margin: 0; }
 
 html {
   font-size: 16px;
-  background-color: #2f363f;
+  background-color: #17202A;
+  /*#000000; */
+  /*#2f363f;*/
 }
 body {
   font-family: 'Source Sans Pro', sans-serif;
