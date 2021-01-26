@@ -57,7 +57,7 @@ bool _matching_extents(const T1 & a, const T2 & b)
 {
   using size_type = typename T1::traits::size_t;
   for (size_type i=0; i<T1::traits::rank; ++i){
-    if(a.extent(i) != a.extent(i)) return false;
+    if(a.extent(i) != b.extent(i)) return false;
   }
   return true;
 }
@@ -67,8 +67,11 @@ bool _matching_extents(const T1 & a, const T2 & b, const T3& c)
 {
   using size_type = typename T1::traits::size_t;
   for (size_type i=0; i<T1::traits::rank; ++i){
-    if(a.extent(i)!=a.extent(i) or
-       a.extent(i)!=c.extent(i)) return false;
+    if(a.extent(i)!=b.extent(i) or
+       a.extent(i)!=c.extent(i))
+      {
+	return false;
+      }
   }
   return true;
 }
@@ -78,11 +81,28 @@ bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d)
 {
   using size_type = typename T1::traits::size_t;
   for (size_type i=0; i<T1::traits::rank; ++i){
-    if(a.extent(i)!=a.extent(i) or
+    if(a.extent(i)!=b.extent(i) or
        a.extent(i)!=c.extent(i) or
-       a.extent(i)!=c.extent(i)){
-      return false;
-    }
+       a.extent(i)!=d.extent(i))
+      {
+	return false;
+      }
+  }
+  return true;
+}
+
+template<class T1, class T2, class T3, class T4, class T5>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d, const T5 & d)
+{
+  using size_type = typename T1::traits::size_t;
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=a.extent(i) or
+       a.extent(i)!=b.extent(i) or
+       a.extent(i)!=c.extent(i) or
+       a.extent(i)!=d.extent(i))
+      {
+	return false;
+      }
   }
   return true;
 }
