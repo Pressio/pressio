@@ -3,10 +3,10 @@
 \begin{DoxyParagraph}{Content}
 This tutorial shows how to create a linear decoder for data structures N\+OT supported in pressio. This is the scenario where you have an application using some arbitrary data types for which pressio does not know how to operate on.
 \end{DoxyParagraph}
-\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md42}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1udops_autotoc_md42}
+\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md43}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1udops_autotoc_md43}
 A key assumption of projection-\/based R\+O\+Ms is to approximate the full-\/order model (F\+OM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
-where $y_{rom}$ is the reduced state, also called generalized coordinates, and $g$ is the mapping between the two. If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md43}{}\doxysection{Code}\label{md_pages_tutorials_tutorial1udops_autotoc_md43}
+where $y_{rom}$ is the reduced state, also called generalized coordinates, and $g$ is the mapping between the two. If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md44}{}\doxysection{Code}\label{md_pages_tutorials_tutorial1udops_autotoc_md44}
 Here we demonstate how to create a linear decoder object for a type that is N\+OT know to pressio\+: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found \href{https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc}{\texttt{ here}}.
 
 
@@ -92,7 +92,7 @@ Here we demonstate how to create a linear decoder object for a type that is N\+O
 \DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{\}}
 \end{DoxyCode}
-\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md44}{}\doxysection{The ops struct}\label{md_pages_tutorials_tutorial1udops_autotoc_md44}
+\hypertarget{md_pages_tutorials_tutorial1udops_autotoc_md45}{}\doxysection{The ops struct}\label{md_pages_tutorials_tutorial1udops_autotoc_md45}
 In order for pressio to handle the linear mapping, it needs to know how to operate on $\phi$. To this end, in the code above, you need to pass to the {\ttfamily Linear\+Decoder} constructor an object that handle that computation. 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} scalar\_t>}

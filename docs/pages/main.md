@@ -8,11 +8,32 @@ If this is a mistake, please go back to the [project website](https://pressio.gi
 
 
 ## Getting Started
-You can start by reading the description of [packages](./md_pages_getstarted_packages.html)
-composing this C++ library, the [installation process](./md_pages_getstarted_build_and_install.html),
-or the [tutorials](./md_pages_tutorials_tutorial1.html) which we are gradually filling up.
-While we work on more complete tutorials and examples, you can peek at
-the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library.
+
+* learn about the [installation process](./md_pages_getstarted_build_and_install.html);
+
+* read the description of [packages](./md_pages_getstarted_packages.html) composing this C++ library;
+
+* the tutorials are divided in two drop-down tabs:
+  * [tutorialsA](./md_pages_tutorials_tutorial1.html): these use data structures/types that are *known* to pressio.
+	<br/>Pressio *recognizes* them and has built-in support for kernels to operate on them;
+
+  * [tutorialsB](./md_pages_tutorials_tutorial1udops.html): these use data
+	structures/types that are *unknown* to pressio. <br/>Pressio detects them
+	as *arbitrary* types, and the user **has to** provide kernels for operating on them;
+
+* dig into the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library.
+
+
+## What if your types are not natively supported in pressio?
+
+Check if your types are supported by lookig at the
+[dependencies](md_pages_getstarted_build_and_install.html): if they are
+listed there, most likely you are good to go, and you don't need to provide extra information to pressio.
+
+Not supported? You can file an [issue](https://github.com/Pressio/pressio/issues)
+to request it and wait on it, or can proceed
+as in [tutorialsB](./md_pages_tutorials_tutorial1udops.html). Or do both!
+
 
 ## License and Citation
 The full license (BSD-3) is available [here](https://pressio.github.io/various/license/).
@@ -20,8 +41,8 @@ The full license (BSD-3) is available [here](https://pressio.github.io/various/l
 We are working on publishing this: you can find our arXiv preprint at: https://arxiv.org/abs/2003.07798
 
 ## Questions?
-Find us on Slack: https://pressioteam.slack.com or open an issue on github.
-
+Find us on Slack: https://pressioteam.slack.com or
+open an issue on [github](https://github.com/Pressio/pressio).
 
 
 <!--

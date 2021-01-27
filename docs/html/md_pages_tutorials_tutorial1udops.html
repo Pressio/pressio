@@ -81,7 +81,7 @@
         <h1>
           Tutorial: Linear Decoder with arbitrary data structures
         </h1>
-<aside class="m-block m-info"><h3>Content</h3><p>This tutorial shows how to create a linear decoder for data structures NOT supported in pressio. This is the scenario where you have an application using some arbitrary data types for which pressio does not know how to operate on.</p></aside><section id="autotoc_md42"><h2><a href="#autotoc_md42">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
+<aside class="m-block m-info"><h3>Content</h3><p>This tutorial shows how to create a linear decoder for data structures NOT supported in pressio. This is the scenario where you have an application using some arbitrary data types for which pressio does not know how to operate on.</p></aside><section id="autotoc_md43"><h2><a href="#autotoc_md43">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -228,7 +228,7 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div></section><section id="autotoc_md43"><h2><a href="#autotoc_md43">Code</a></h2><p>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</svg></div></section><section id="autotoc_md44"><h2><a href="#autotoc_md44">Code</a></h2><p>Here we demonstate how to create a linear decoder object for a type that is NOT know to pressio: this means pressio does not know how to compute operations on this type, so the user is responsible to pass the ops. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Running tutorial 5</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
@@ -307,7 +307,7 @@ $\phi$
           <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre></section><section id="autotoc_md44"><h2><a href="#autotoc_md44">The ops struct</a></h2><p>In order for pressio to handle the linear mapping, it needs to know how to operate on <svg class="m-math" style="width: 0.722em; height: 1.107em;" viewBox="0 -8.302191 6.928102 10.626798">
+<span class="p">}</span></pre></section><section id="autotoc_md45"><h2><a href="#autotoc_md45">The ops struct</a></h2><p>In order for pressio to handle the linear mapping, it needs to know how to operate on <svg class="m-math" style="width: 0.722em; height: 1.107em;" viewBox="0 -8.302191 6.928102 10.626798">
 <title>
 $\phi$
 </title>
