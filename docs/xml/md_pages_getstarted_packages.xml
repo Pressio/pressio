@@ -6,70 +6,100 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
-<para><simplesect kind="par"><title>What is this page about?</title><para>This page describes the structure of C++ pressio library. By the end, you should be able to understand the structure with its main packages, and the logic behind.</para>
-</simplesect>
-The pressio C++ library is divided into several packages:</para>
-<para><table rows="10" cols="3"><row>
+<para>The pressio C++ library is divided into several packages:</para>
+<para><table rows="10" cols="4"><row>
 <entry thead="yes"><para>Package <linebreak/>
  name  </para>
 </entry><entry thead="yes"><para>Description  </para>
-</entry><entry thead="yes"><para>Link   </para>
+</entry><entry thead="yes"><para>Link  </para>
+</entry><entry thead="yes"><para>Reference header(s)   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>  </para>
 </entry><entry thead="no"><para>metaprogramming functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/mpl/src">Source</ulink>   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/mpl/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_mpl.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>  </para>
-</entry><entry thead="no"><para>common functionalities, e.g., I/O helpers, static constants, etc  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/utils/src">Source</ulink>   </para>
+</entry><entry thead="no"><para>common functionalities<linebreak/>
+e.g., I/O helpers, static constants, etc  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/utils/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_utils.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">containers</mcss:span>  </para>
-</entry><entry thead="no"><para>wrappers for vectors, matrices and multi-vectors, <linebreak/>
- expressions (span, diagonal and subspan)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/containers/src">Source</ulink>   </para>
+</entry><entry thead="no"><para>wrappers for vectors, matrices and multi-vectors, expressions (span, diagonal and subspan)  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/containers/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_containers.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>  </para>
-</entry><entry thead="no"><para>shared-memory and distributed linear algebra kernels  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ops/src">Source</ulink>   </para>
+</entry><entry thead="no"><para>shared-memory and distributed linear algebra  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ops/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_ops.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">apps</mcss:span>  </para>
 </entry><entry thead="no"><para>suites of mini-apps used for basic testing  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/apps/src">Source</ulink>   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/apps/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_apps.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>  </para>
 </entry><entry thead="no"><para>QR factorization functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/qr/src">Source</ulink>   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/qr/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_qr.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers</mcss:span>  </para>
 </entry><entry thead="no"><para>linear and non-linear solvers <linebreak/>
  (e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/solvers/src">Source</ulink>   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/solvers/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_solvers.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>  </para>
-</entry><entry thead="no"><para>explicit and implict time steppers and integrators  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/ode/src">Source</ulink>   </para>
+</entry><entry thead="no"><para>explicit only methods <linebreak/>
+implict only methods <linebreak/>
+ all  </para>
+</entry><entry thead="no"><para><linebreak/>
+<linebreak/>
+<ulink url="https://github.com/Pressio/pressio/tree/master/packages/ode/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_ode_explicit.hpp&gt;</computeroutput><linebreak/>
+ <computeroutput>#include&lt;pressio_ode_implicit.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>#include&lt;pressio_ode.hpp&gt;</computeroutput>   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>  </para>
-</entry><entry thead="no"><para>reduced-order modeling algorithms  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/packages/rom/src">Source</ulink>   </para>
+</entry><entry thead="no"><para>Galerkin ROMs <linebreak/>
+ LSPG ROMs <linebreak/>
+ WLS ROMs <linebreak/>
+ all  </para>
+</entry><entry thead="no"><para><linebreak/>
+<linebreak/>
+<linebreak/>
+<ulink url="https://github.com/Pressio/pressio/tree/master/packages/rom/src">Source</ulink>  </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_rom_galerkin.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>#include&lt;pressio_rom_lspg.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>#include&lt;pressio_rom_wls.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>#include&lt;pressio_rom.hpp&gt;</computeroutput>   </para>
 </entry></row>
 </table>
 </para>
 <para>The top-down order used above is informative of the dependency structure. For example, every package depends on <computeroutput>mpl</computeroutput>. The <computeroutput>ops</computeroutput> package depends only on <computeroutput>mpl</computeroutput>, <computeroutput>utils</computeroutput>, <computeroutput>containers</computeroutput>. At the bottom of the stack we have the <computeroutput>rom</computeroutput> package which requires all the others.</para>
 <para>Splitting the framework into separate packages has several benefits.<itemizedlist>
 <listitem><para>Maintability: <computeroutput>pressio</computeroutput> can be more easily developed and maintained since packages depend on one another through well-defined public interfaces, and appropriate namespaces are used to organize classes.</para>
-</listitem><listitem><para>Selective usability: this modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically. </para>
+</listitem><listitem><para>Selective usability: this modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically.</para>
 </listitem></itemizedlist>
+</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title></title><para>When you use functionalities from a specific package, you should just include the corresponding header and the dependencies (based on the explanation above) are included automatically. For example, if you want to do Galerkin with explicit time integration, you just do <computeroutput>#include &lt;pressio_rom_galerkin.hpp&gt;</computeroutput> because all the needed packages are automatically included. There is not need to manually include all of them yourself. In the future, we might refine further the granularity of the headers to allow a finer control.</para>
+</simplesect>
+ <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>One header to include them all</title><para>If you want to access <emphasis>all</emphasis> functionalities, you can use: <programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio.hpp&quot;</highlight></codeline>
+</programlisting> </para>
+</simplesect>
 </para>
     </detaileddescription>
   </compounddef>

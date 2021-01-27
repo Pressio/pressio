@@ -4,7 +4,7 @@
 
 @m_class{m-block m-info}
 
-@par What is this page about?
+@par
 This page describes the dependencies of `pressio` and its installation process.
 By the end, you should be able to clone pressio, install it,
 and point to the installed headers from your application.
@@ -102,9 +102,9 @@ the Trilinos example above or always requiring BLAS and LAPACK to be simulateneo
 
 
 ## In practice, what are the steps to get, install and use Pressio?
-We suggest to follow these steps:
 <ol>
-<li>Clone [pressio](https://github.com/Pressio/pressio) (defaults to the master branch)</li>
+<li>Clone [pressio](https://github.com/Pressio/pressio) (defaults to the master branch),
+or you can pick a [release version](https://github.com/Pressio/pressio/releases) </li>
 
 <li>Create a build and install subdirectories
 @m_class{m-code-figure}
@@ -115,9 +115,8 @@ mkdir build && mkdir install
 @endcode
 </li>
 
-<li> Use cmake to configure by passing to the comand line the target
-list of cmake variables to define. For example, if we want to enable
-support in `pressio` for Trilinos and the debug prints, we would do:
+<li> Use cmake to configure by passing to the comand line the target list of cmake variables to define. <br/>
+For example, suppose we want to enable support for Trilinos and the debug prints. We would do:
 @m_class{m-code-figure}
 
 @code{.bash}
@@ -133,20 +132,21 @@ make install # nothing is built, just headers copied to installation
 @endcode
 </li>
 
-Note that this step does **not** build anything because `pressio` is header-only,
+*Note that this step does **not** build anything because `pressio` is header-only,
 but only processes the cmake arguments and copies the pressio headers to the
-install prefix `<where-you-cloned-pressio>/install`.
-If you want, you can inspect the file `<where-you-cloned-pressio>/install/presssio_cmake_config.h`
-which contains the cmake variables defined.
+install prefix* `<where-you-cloned-pressio>/install`.<br/>
+If you want, inspect the file `<where-you-cloned-pressio>/install/presssio_cmake_config.h`
+which contains the cmake variables configuration.
 
-We also remark that during the step above pressio does not need to know
-if and where a target TPL exists in your system.
-Above you are simply telling Pressio that you have
-a certain TPL and want to enable the corresponding code in pressio for later use.
-Those TPLs will be needed when you build any code that *uses* pressio.
+We also remark that during the configuration step above pressio
+does not need to know where a target TPL exists in your system.
+In the configuration step above, you are simply telling Pressio that you have
+a certain TPL and want to enable the corresponding code in pressio.
+The TPLs will be needed at linking stage when you build *your* code that *uses* pressio.
 
-<li> When building your application, you point to the installed headers
-and include the `pressio` header `pressio.hpp`, for example as:
+<li> When building your application to use pressio, you just have to point to
+the installation directory `<where-you-cloned-pressio>/install` with the installed
+pressio headers, and you can access all pressio functionalities via the C++ include `#include<pressio.hpp>`:
 @m_class{m-code-figure}
 
 @code{.cpp}
@@ -159,16 +159,19 @@ int main(){
 </li>
 </ol>
 
-
 @m_class{m-block m-warning}
 
-@par Warning:
-The procedue above is highly advised because it enables `pressio`
+@par
+The procedure above is advised because it enables `pressio`
 to properly process the cmake options and turn on/off based
 on certain conditions (as explained above).
 The alternative way to use pressio would be to just clone the repo,
-point to its source code and use cmake variables directly when building
-your code. However, this could have unexpected consequences since
+point to the `<where-you-cloned-pressio>/packages` subdirectory
+and use cmake variables directly when building your code.
+However, this could have unexpected consequences since
 you would be resposible to set the variables correctly but you would not
-know exactly all the possible constrants.
-Therefore, we suggest to use the steps above.
+know exactly all the possible constraints.
+
+## Where to go from here?
+Navigate [this page](./md_pages_getstarted_packages.html) to learn which packages
+pressio includes, and how you can have finer-grained access to certain functionalities.

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FOM Adapter API for Unsteady LSPG | Pressio|C++</title>
+  <title>tutorial1udops.md file | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -79,24 +79,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          FOM Adapter API for Unsteady LSPG
+          tutorial1udops.md <span class="m-thin">file</span>
         </h1>
-<p><span class="m-text m-danger">todo</span> say that for LSPG, the adapater is the one for galerkin plus something</p><section id="autotoc_md8"><h2><a href="#autotoc_md8">API for Basic Unsteady LSPG Problem</a></h2><p>For a basic unsteady LSPG with the <em>continuous-time</em> API we have:</p><div><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterUnsteadyLSPG</span><span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
-  <span class="k">using</span> <span class="n">state_type</span> <span class="o">=</span>
-  <span class="k">using</span> <span class="n">velocity_type</span> <span class="o">=</span>
-
-<span class="k">public</span><span class="o">:</span>
-  <span class="n">velocity_type</span> <span class="n">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-  <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">velo</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-  <span class="c1">// operand_type should be the data (matrix) type you used to store the basis.</span>
-  <span class="n">operand_t</span> <span class="nf">createApplyJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-
-  <span class="c1">// computes: A = Jac B</span>
-  <span class="kt">void</span> <span class="nf">applyJacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></div></section><section id="autotoc_md9"><h2><a href="#autotoc_md9">Discrete-time API</a></h2><p>The discrete-time API for LSPG is the same as for all methods, and you can see it <a href="./md_pages_adapter_apis_adapter_discrete_time_api.html">here</a>.</p></section>
+        <p><span></span></p>
       </div>
     </div>
   </div>

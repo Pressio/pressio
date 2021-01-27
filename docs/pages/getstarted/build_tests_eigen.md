@@ -4,7 +4,7 @@
 
 @m_class{m-block m-info}
 
-@par What does this page describe?
+@par
 This page shows the steps to build the unit and regression tests
 in `pressio` depending only on Eigen (and GoogleTest).
 By the end, you should be able to have pressio built

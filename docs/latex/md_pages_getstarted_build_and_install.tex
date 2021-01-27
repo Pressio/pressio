@@ -1,6 +1,6 @@
 
 
-\begin{DoxyParagraph}{What is this page about?}
+\begin{DoxyParagraph}{}
 This page describes the dependencies of {\ttfamily pressio} and its installation process. By the end, you should be able to clone pressio, install it, and point to the installed headers from your application.
 \end{DoxyParagraph}
 
@@ -64,9 +64,9 @@ Obviously, the choice of which T\+P\+Ls to enable is related to your application
 Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then {\ttfamily pressio} automatically enables also Kokkos, B\+L\+AS, L\+A\+P\+A\+CK and M\+PI. The reason for this choice is that in a production scenario---which is what pressio mainly targets---it is reasonable to expect a user to have Trilinos built with B\+L\+AS, L\+A\+P\+A\+CK, M\+PI and Kokkos support.
 
 There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring B\+L\+AS and L\+A\+P\+A\+CK to be simulateneously on.\hypertarget{md_pages_getstarted_build_and_install_autotoc_md14}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_getstarted_build_and_install_autotoc_md14}
-We suggest to follow these steps\+: 
+
 \begin{DoxyEnumerate}
-\item Clone \href{https://github.com/Pressio/pressio}{\texttt{ pressio}} (defaults to the master branch)
+\item Clone \href{https://github.com/Pressio/pressio}{\texttt{ pressio}} (defaults to the master branch), or you can pick a \href{https://github.com/Pressio/pressio/releases}{\texttt{ release version}} 
 
 
 \item Create a build and install subdirectories 
@@ -79,7 +79,8 @@ We suggest to follow these steps\+:
  
 
 
-\item Use cmake to configure by passing to the comand line the target list of cmake variables to define. For example, if we want to enable support in {\ttfamily pressio} for Trilinos and the debug prints, we would do\+: 
+\item Use cmake to configure by passing to the comand line the target list of cmake variables to define. ~\newline
+ For example, suppose we want to enable support for Trilinos and the debug prints. We would do\+: 
 
 
 \begin{DoxyCode}{0}
@@ -95,12 +96,13 @@ We suggest to follow these steps\+:
 \end{DoxyCode}
  
 
-Note that this step does {\bfseries{not}} build anything because {\ttfamily pressio} is header-\/only, but only processes the cmake arguments and copies the pressio headers to the install prefix {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install}. If you want, you can inspect the file {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install/presssio\+\_\+cmake\+\_\+config.h} which contains the cmake variables defined.
+{\itshape Note that this step does {\bfseries{not}} build anything because {\ttfamily pressio} is header-\/only, but only processes the cmake arguments and copies the pressio headers to the install prefix} {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install}.~\newline
+ If you want, inspect the file {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install/presssio\+\_\+cmake\+\_\+config.h} which contains the cmake variables configuration.
 
-We also remark that during the step above pressio does not need to know if and where a target T\+PL exists in your system. Above you are simply telling Pressio that you have a certain T\+PL and want to enable the corresponding code in pressio for later use. Those T\+P\+Ls will be needed when you build any code that {\itshape uses} pressio.
+We also remark that during the configuration step above pressio does not need to know where a target T\+PL exists in your system. In the configuration step above, you are simply telling Pressio that you have a certain T\+PL and want to enable the corresponding code in pressio. The T\+P\+Ls will be needed at linking stage when you build {\itshape your} code that {\itshape uses} pressio.
 
 
-\item When building your application, you point to the installed headers and include the {\ttfamily pressio} header {\ttfamily pressio.\+hpp}, for example as\+: 
+\item When building your application to use pressio, you just have to point to the installation directory {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/install} with the installed pressio headers, and you can access all pressio functionalities via the C++ include {\ttfamily \#include$<$pressio.\+hpp$>$}\+: 
 
 
 \begin{DoxyCode}{0}
@@ -115,6 +117,8 @@ We also remark that during the step above pressio does not need to know if and w
 
 
 
-\begin{DoxyParagraph}{Warning\+:}
-The procedue above is highly advised because it enables {\ttfamily pressio} to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to its source code and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constrants. Therefore, we suggest to use the steps above. 
+\begin{DoxyParagraph}{}
+The procedure above is advised because it enables {\ttfamily pressio} to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to the {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/packages} subdirectory and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constraints.
 \end{DoxyParagraph}
+\hypertarget{md_pages_getstarted_build_and_install_autotoc_md15}{}\doxysection{Where to go from here?}\label{md_pages_getstarted_build_and_install_autotoc_md15}
+Navigate \href{./md_pages_getstarted_packages.html}{\texttt{ this page}} to learn which packages pressio includes, and how you can have finer-\/grained access to certain functionalities. 

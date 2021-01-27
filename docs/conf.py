@@ -7,17 +7,22 @@ LINKS_NAVBAR1 = [
   #("<a href=\"md_pages_get_started.html\">Get Started</a>",
   ("<a href=>Get Started</a>", # empty href so that get started only has children
    [
-     ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
+     ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
      ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",),
      ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
   # tutorials
-  ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+  ("<a href=>Tutorials (known data types)</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
-     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
-     ("<a href=\"md_pages_tutorials_tutorial2.html\">Linear Decoder with arbitrary types</a>", )
+     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", )
+   ]),
+
+  # tutorials for user-provided ops
+  ("<a href=>Tutorials (unknown data types)</a>",
+   [
+     ("<a href=\"md_pages_tutorials_tutorial1udops.html\">Linear Decoder for arbitrary types</a>", )
    ]),
 
   # # demos

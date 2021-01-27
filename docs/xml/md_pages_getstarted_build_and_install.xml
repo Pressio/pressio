@@ -7,7 +7,7 @@
     </briefdescription>
     <detaileddescription>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
-<para><simplesect kind="par"><title>What is this page about?</title><para>This page describes the dependencies of <computeroutput>pressio</computeroutput> and its installation process. By the end, you should be able to clone pressio, install it, and point to the installed headers from your application.</para>
+<para><simplesect kind="par"><title></title><para>This page describes the dependencies of <computeroutput>pressio</computeroutput> and its installation process. By the end, you should be able to clone pressio, install it, and point to the installed headers from your application.</para>
 </simplesect>
  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
 <para><parblock><para><computeroutput>pressio</computeroutput> is header-only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details. </para>
@@ -129,9 +129,9 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 </sect1>
 <sect1 id="md_pages_getstarted_build_and_install_1autotoc_md14">
 <title>In practice, what are the steps to get, install and use Pressio?</title>
-<para>We suggest to follow these steps: <orderedlist>
+<para><orderedlist>
 <listitem>
-<para>Clone <ulink url="https://github.com/Pressio/pressio">pressio</ulink> (defaults to the master branch)</para>
+<para>Clone <ulink url="https://github.com/Pressio/pressio">pressio</ulink> (defaults to the master branch), or you can pick a <ulink url="https://github.com/Pressio/pressio/releases">release version</ulink> </para>
 <para></para>
 </listitem>
 <listitem>
@@ -142,7 +142,8 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 <para></para>
 </listitem>
 <listitem>
-<para>Use cmake to configure by passing to the comand line the target list of cmake variables to define. For example, if we want to enable support in <computeroutput>pressio</computeroutput> for Trilinos and the debug prints, we would do:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /></para>
+<para>Use cmake to configure by passing to the comand line the target list of cmake variables to define. <linebreak/>
+ For example, suppose we want to enable support for Trilinos and the debug prints. We would do:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /></para>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">export<sp/>PRESSIO_SRC=&lt;where-you-cloned-pressio&gt;</highlight></codeline>
 <codeline><highlight class="normal">cd<sp/>&lt;where-you-cloned-pressio&gt;/build</highlight></codeline>
 <codeline></codeline>
@@ -153,12 +154,13 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 <codeline></codeline>
 <codeline><highlight class="normal">make<sp/>install<sp/>#<sp/>nothing<sp/>is<sp/>built,<sp/>just<sp/>headers<sp/>copied<sp/>to<sp/>installation</highlight></codeline>
 </programlisting> </para>
-<para>Note that this step does <bold>not</bold> build anything because <computeroutput>pressio</computeroutput> is header-only, but only processes the cmake arguments and copies the pressio headers to the install prefix <computeroutput>&lt;where-you-cloned-pressio&gt;/install</computeroutput>. If you want, you can inspect the file <computeroutput>&lt;where-you-cloned-pressio&gt;/install/presssio_cmake_config.h</computeroutput> which contains the cmake variables defined.</para>
-<para>We also remark that during the step above pressio does not need to know if and where a target TPL exists in your system. Above you are simply telling Pressio that you have a certain TPL and want to enable the corresponding code in pressio for later use. Those TPLs will be needed when you build any code that <emphasis>uses</emphasis> pressio.</para>
+<para><emphasis>Note that this step does <bold>not</bold> build anything because <computeroutput>pressio</computeroutput> is header-only, but only processes the cmake arguments and copies the pressio headers to the install prefix</emphasis> <computeroutput>&lt;where-you-cloned-pressio&gt;/install</computeroutput>.<linebreak/>
+ If you want, inspect the file <computeroutput>&lt;where-you-cloned-pressio&gt;/install/presssio_cmake_config.h</computeroutput> which contains the cmake variables configuration.</para>
+<para>We also remark that during the configuration step above pressio does not need to know where a target TPL exists in your system. In the configuration step above, you are simply telling Pressio that you have a certain TPL and want to enable the corresponding code in pressio. The TPLs will be needed at linking stage when you build <emphasis>your</emphasis> code that <emphasis>uses</emphasis> pressio.</para>
 <para></para>
 </listitem>
 <listitem>
-<para>When building your application, you point to the installed headers and include the <computeroutput>pressio</computeroutput> header <computeroutput>pressio.hpp</computeroutput>, for example as:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /></para>
+<para>When building your application to use pressio, you just have to point to the installation directory <computeroutput>&lt;where-you-cloned-pressio&gt;/install</computeroutput> with the installed pressio headers, and you can access all pressio functionalities via the C++ include <computeroutput>#include&lt;pressio.hpp&gt;</computeroutput>:  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /></para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(){</highlight></codeline>
@@ -169,9 +171,13 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 </orderedlist>
 </para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>Warning:</title><para>The procedue above is highly advised because it enables <computeroutput>pressio</computeroutput> to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to its source code and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constrants. Therefore, we suggest to use the steps above. </para>
+<para><simplesect kind="par"><title></title><para>The procedure above is advised because it enables <computeroutput>pressio</computeroutput> to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to the <computeroutput>&lt;where-you-cloned-pressio&gt;/packages</computeroutput> subdirectory and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constraints.</para>
 </simplesect>
 </para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_and_install_1autotoc_md15">
+<title>Where to go from here?</title>
+<para>Navigate <ulink url="./md_pages_getstarted_packages.html">this page</ulink> to learn which packages pressio includes, and how you can have finer-grained access to certain functionalities. </para>
 </sect1>
     </detaileddescription>
   </compounddef>
