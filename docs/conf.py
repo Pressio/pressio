@@ -14,15 +14,15 @@ LINKS_NAVBAR1 = [
    ]),
 
   # tutorials
-  ("<a href=>Tutorials (known data types)</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+  ("<a href=>Tutorials A</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
      ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", )
    ]),
 
   # tutorials for user-provided ops
-  ("<a href=>Tutorials (unknown data types)</a>",
+  ("<a href=>Tutorials B</a>",
    [
-     ("<a href=\"md_pages_tutorials_tutorial1udops.html\">Linear Decoder for arbitrary types</a>", )
+     ("<a href=\"md_pages_tutorials_tutorial1udops.html\">Linear Decoder for arbitrary types</a>",)
    ]),
 
   # # demos
@@ -46,17 +46,18 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_adapter_apis_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",),
      ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
      #("<a href=\"md_pages_adapter_apis_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",)
-   ])
-]
+   ]),
 
-LINKS_NAVBAR2 = [
   ('Classes', 'annotated', []),
   ('Namespaces', 'namespaces', [])
 ]
 
-PLUGINS = ['m.htmlsanity', 'm.math',
-           'm.code', 'm.components',
-           'm.dot']
+LINKS_NAVBAR2 = []
+#   ('Classes', 'annotated', []),
+#   ('Namespaces', 'namespaces', [])
+# ]
+
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot']
 
 SHOW_UNDOCUMENTED = "YES"
 
