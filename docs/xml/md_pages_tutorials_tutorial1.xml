@@ -94,7 +94,7 @@
 </sect1>
 <sect1 id="md_pages_tutorials_tutorial1_1autotoc_md41">
 <title>Comments</title>
-<para>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see <ulink url="https://pressio.github.io/pressio/html/md_pages_tutorials_tutorial2.html">this tutorial</ulink>. </para>
+<para>For other types (e.g., Trilinos) already known to pressio (which means pressio knows how to operate on), it would work similarly. If you work with an arbitrary type (i.e. one for which pressio does not know how to operate on), see <ulink url="tutorial1udops_8md.html">this tutorial</ulink>. </para>
 </sect1>
     </detaileddescription>
   </compounddef>
