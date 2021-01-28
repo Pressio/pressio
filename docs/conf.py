@@ -14,15 +14,9 @@ LINKS_NAVBAR1 = [
    ]),
 
   # tutorials
-  ("<a href=>Tutorials A</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+  ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
      ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", )
-   ]),
-
-  # tutorials for user-provided ops
-  ("<a href=>Tutorials B</a>",
-   [
-     ("<a href=\"md_pages_tutorials_tutorial1udops.html\">Linear Decoder for arbitrary types</a>",)
    ]),
 
   # # demos
@@ -57,7 +51,7 @@ LINKS_NAVBAR2 = []
 #   ('Namespaces', 'namespaces', [])
 # ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot']
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot', 'm.images']
 
 SHOW_UNDOCUMENTED = "YES"
 

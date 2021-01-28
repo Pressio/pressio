@@ -43,7 +43,7 @@ We can distinguish between *optional* and *required* dependencies.
 | Kokkos             | Optional          | 3.1.0                 |
 | BLAS               | Optional          | --                    |
 | LAPACK             | Optional          | --                    |
-| Pybind11           | Optional          | v2.5                  |
+| Pybind11           | Optional          | v2.6                  |
 | GoogleTest         | Optional          | 1.10.0                |
 |                    |                   |                       |
 
