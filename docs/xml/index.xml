@@ -2,6 +2,8 @@
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
   <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
   </compound>
+  <compound refid="adapter__continuous__time__api_8md" kind="file"><name>adapter_continuous_time_api.md</name>
+  </compound>
   <compound refid="adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
   </compound>
   <compound refid="adapter__galerkin__api_8md" kind="file"><name>adapter_galerkin_api.md</name>
@@ -45,6 +47,8 @@
   <compound refid="license_8md" kind="file"><name>license.md</name>
   </compound>
   <compound refid="md_pages_adapter_api" kind="page"><name>md_pages_adapter_api</name>
+  </compound>
+  <compound refid="md_pages_adapter_apis_adapter_continuous_time_api" kind="page"><name>md_pages_adapter_apis_adapter_continuous_time_api</name>
   </compound>
   <compound refid="md_pages_adapter_apis_adapter_discrete_time_api" kind="page"><name>md_pages_adapter_apis_adapter_discrete_time_api</name>
   </compound>

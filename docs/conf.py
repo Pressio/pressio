@@ -36,10 +36,8 @@ LINKS_NAVBAR1 = [
   # Adapter API
   ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
    [
-     ("<a href=\"md_pages_adapter_apis_adapter_galerkin_api.html\">Galerkin ROM</a>",),
-     ("<a href=\"md_pages_adapter_apis_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",),
+     ("<a href=\"md_pages_adapter_apis_adapter_continuous_time_api.html\">Continuous-time API</a>",),
      ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
-     #("<a href=\"md_pages_adapter_apis_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",)
    ]),
 
   ('Classes', 'annotated', []),

@@ -8,7 +8,7 @@
     <detaileddescription>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> discuss what is Galerkin ROM, the variants of the problem and what we support.</para>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: discuss that the types exposed must be compatible and make sense.</para>
-<sect1 id="md_pages_adapter_apis_adapter_galerkin_api_1autotoc_md3">
+<sect1 id="md_pages_adapter_apis_adapter_galerkin_api_1autotoc_md6">
 <title>Basic Galerkin ROM</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Adapter{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
@@ -23,7 +23,7 @@
 </programlisting> </para>
 </parblock></para>
 </sect1>
-<sect1 id="md_pages_adapter_apis_adapter_galerkin_api_1autotoc_md4">
+<sect1 id="md_pages_adapter_apis_adapter_galerkin_api_1autotoc_md7">
 <title>Discrete-time API</title>
 <para>The discrete-time API for Galerkin is the same as for all methods, and you can see it <ulink url="./md_pages_adapter_apis_adapter_discrete_time_api.html">here</ulink>. </para>
 </sect1>
