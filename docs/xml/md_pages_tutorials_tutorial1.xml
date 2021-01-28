@@ -7,13 +7,14 @@
     </briefdescription>
     <detaileddescription>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
-<para><simplesect kind="par"><title>Content</title><para>This tutorial shows how to create a linear decoder for data structures already supported in pressio.</para>
+<para><simplesect kind="par"><title></title><para>This tutorial shows how to create a linear decoder object for data structures already supported in pressio.</para>
 </simplesect>
 </para>
 <sect1 id="md_pages_tutorials_tutorial1_1autotoc_md39">
 <title>Context</title>
 <para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="0">$y_{fom}$</formula>, as: <formula id="1">\[ y_{fom} = g(y_{rom}) \]</formula></para>
-<para>where <formula id="2">$y_{rom}$</formula> is the reduced state, also called generalized coordinates, and <formula id="3">$g$</formula> is the mapping between the two. If <formula id="3">$g$</formula> is linear, then we can write: <formula id="4">\[ y_{fom} = \phi y_{rom} \]</formula> where <formula id="5">$\phi$</formula> is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is: <formula id="6">\[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]</formula></para>
+<para>where <formula id="2">$y_{rom}$</formula> is the reduced state (or generalized coordinates), and <formula id="3">$g$</formula> is the mapping between the two. <linebreak/>
+ If <formula id="3">$g$</formula> is linear, then we can write: <formula id="4">\[ y_{fom} = \phi y_{rom} \]</formula> where <formula id="5">$\phi$</formula> is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is: <formula id="6">\[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]</formula></para>
 </sect1>
 <sect1 id="md_pages_tutorials_tutorial1_1autotoc_md40">
 <title>Code</title>

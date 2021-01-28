@@ -1,12 +1,13 @@
 
 
-\begin{DoxyParagraph}{Content}
-This tutorial shows how to create a linear decoder for data structures already supported in pressio.
+\begin{DoxyParagraph}{}
+This tutorial shows how to create a linear decoder object for data structures already supported in pressio.
 \end{DoxyParagraph}
 \hypertarget{md_pages_tutorials_tutorial1_autotoc_md39}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1_autotoc_md39}
 A key assumption of projection-\/based R\+O\+Ms is to approximate the full-\/order model (F\+OM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
-where $y_{rom}$ is the reduced state, also called generalized coordinates, and $g$ is the mapping between the two. If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial1_autotoc_md40}{}\doxysection{Code}\label{md_pages_tutorials_tutorial1_autotoc_md40}
+where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two. ~\newline
+ If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). A linear decoder in pressio implements this linear mapping. Since it is linear, the Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]\hypertarget{md_pages_tutorials_tutorial1_autotoc_md40}{}\doxysection{Code}\label{md_pages_tutorials_tutorial1_autotoc_md40}
 Here we demonstate how to create a linear decoder object using Eigen types. The full tutorial can be found \href{https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc}{\texttt{ here}}.
 
 
