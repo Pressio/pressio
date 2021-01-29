@@ -57,6 +57,7 @@
 // burgers1d eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
+#include "apps/src/swe2d/swe.hpp"
 #include "apps/src/burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
 #endif
 
