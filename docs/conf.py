@@ -34,6 +34,12 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
    ]),
 
+  # custom ops
+  ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
+   [
+     ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
+   ]),
+
   # Adapter API
   ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
    [

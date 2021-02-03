@@ -1,0 +1,51 @@
+
+# Custom Ops for Default Explicit-time Galerkin
+
+```cpp
+template <typename sc_t, typename dec_jac_t>
+struct myOps
+{
+  //  y = beta * y + alpha*A*x
+  template <typename x_t>
+  void product(::pressio::nontranspose mode,
+	       const sc_t alpha,
+	       const dec_jac_t & A,
+	       const x_t & x,
+	       const sc_t beta,
+	       pressio::apps::arbds::Vector<sc_t> & y) const
+  {
+    // x is subscriptable like a regular array, e.g. you can do x[i] or x(i)
+  }
+
+  //  y = beta * y + alpha*A^T*x
+  template <typename y_t>
+  void product(::pressio::transpose mode,
+	       const sc_t alpha,
+	       const dec_jac_t & A,
+	       const pressio::apps::arbds::Vector<sc_t> & x,
+	       const sc_t beta,
+	       y_t & y) const
+  {
+    // y is subscriptable like a regular array
+  }
+
+  void deep_copy(pressio::apps::arbds::Vector<sc_t> & to,
+  		 const pressio::apps::arbds::Vector<sc_t> & from) const
+  {
+    // here you need do deep copy from -> to
+  }
+
+  void set_zero(pressio::apps::arbds::Vector<sc_t> & vec) const
+  {
+	 // self explanatory
+  }
+
+  void axpy(sc_t alpha,
+	    const pressio::apps::arbds::Vector<sc_t> & x,
+	    pressio::apps::arbds::Vector<sc_t> & y) const
+  {
+    // compute y = y + alfa * x
+  }
+};
+};
+```
