@@ -12,6 +12,10 @@
   </compound>
   <compound refid="adapter__unsteady__lspg__api_8md" kind="file"><name>adapter_unsteady_lspg_api.md</name>
   </compound>
+  <compound refid="custom__ops_8md" kind="file"><name>custom_ops.md</name>
+  </compound>
+  <compound refid="default__gal__exp_8md" kind="file"><name>default_gal_exp.md</name>
+  </compound>
   <compound refid="example1_8md" kind="file"><name>example1.md</name>
   </compound>
   <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
@@ -60,6 +64,10 @@
   </compound>
   <compound refid="md_pages_adapter_apis_adapter_unsteady_lspg_api" kind="page"><name>md_pages_adapter_apis_adapter_unsteady_lspg_api</name>
   </compound>
+  <compound refid="md_pages_custom_ops_default_gal_exp" kind="page"><name>md_pages_custom_ops_default_gal_exp</name>
+  </compound>
+  <compound refid="md_pages_custom_ops" kind="page"><name>md_pages_custom_ops</name>
+  </compound>
   <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
   </compound>
   <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
@@ -95,6 +103,8 @@
   <compound refid="md_pages_various" kind="page"><name>md_pages_various</name>
   </compound>
   <compound refid="dir_ba97ba3ce07c772fb98545b004f56066" kind="dir"><name>pages/adapter_apis</name>
+  </compound>
+  <compound refid="dir_4e0155dca2ee8148a495d63774f1631d" kind="dir"><name>pages/custom_ops</name>
   </compound>
   <compound refid="dir_c8b5f49f42f70cbb2789196c6be03b08" kind="dir"><name>pages/examples</name>
   </compound>

@@ -10,7 +10,9 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
      ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
      ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",),
-     ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
+     ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",),
+     ("<a href=\"md_pages_getstarted_adapter_continuous_time_api.html\">Continuous-time API</a>",),
+     ("<a href=\"md_pages_getstarted_adapter_discrete_time_api.html\">Discrete-time API</a>",)
    ]),
 
   # tutorials
@@ -40,12 +42,12 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
    ]),
 
-  # Adapter API
-  ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
-   [
-     ("<a href=\"md_pages_adapter_apis_adapter_continuous_time_api.html\">Continuous-time API</a>",),
-     ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
-   ]),
+  # # Adapter API
+  # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
+  #  [
+  #    ("<a href=\"md_pages_adapter_apis_adapter_continuous_time_api.html\">Continuous-time API</a>",),
+  #    ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
+  #  ]),
 
   ('Classes', 'annotated', []),
   ('Namespaces', 'namespaces', [])

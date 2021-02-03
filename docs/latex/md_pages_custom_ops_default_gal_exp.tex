@@ -1,0 +1,50 @@
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} sc\_t, \textcolor{keyword}{typename} dec\_jac\_t>}
+\DoxyCodeLine{\textcolor{keyword}{struct }myOps}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{//  y = beta * y + alpha*A*x}}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} x\_t>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} product(::pressio::nontranspose mode,}
+\DoxyCodeLine{           \textcolor{keyword}{const} sc\_t alpha,}
+\DoxyCodeLine{           \textcolor{keyword}{const} dec\_jac\_t \& A,}
+\DoxyCodeLine{           \textcolor{keyword}{const} x\_t \& x,}
+\DoxyCodeLine{           \textcolor{keyword}{const} sc\_t beta,}
+\DoxyCodeLine{           pressio::apps::arbds::Vector<sc\_t> \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// x is subscriptable like a regular array, e.g. you can do x[i] or x(i)}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{//  y = beta * y + alpha*A\string^T*x}}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} y\_t>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} product(::pressio::transpose mode,}
+\DoxyCodeLine{           \textcolor{keyword}{const} sc\_t alpha,}
+\DoxyCodeLine{           \textcolor{keyword}{const} dec\_jac\_t \& A,}
+\DoxyCodeLine{           \textcolor{keyword}{const} pressio::apps::arbds::Vector<sc\_t> \& x,}
+\DoxyCodeLine{           \textcolor{keyword}{const} sc\_t beta,}
+\DoxyCodeLine{           y\_t \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// y is subscriptable like a regular array}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} deep\_copy(pressio::apps::arbds::Vector<sc\_t> \& to,}
+\DoxyCodeLine{         \textcolor{keyword}{const} pressio::apps::arbds::Vector<sc\_t> \& from)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// here you need do deep copy from -\/> to}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} set\_zero(pressio::apps::arbds::Vector<sc\_t> \& vec)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{     \textcolor{comment}{// self explanatory}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} axpy(sc\_t alpha,}
+\DoxyCodeLine{        \textcolor{keyword}{const} pressio::apps::arbds::Vector<sc\_t> \& x,}
+\DoxyCodeLine{        pressio::apps::arbds::Vector<sc\_t> \& y)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// compute y = y + alfa * x}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+ 
