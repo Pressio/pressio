@@ -6,9 +6,7 @@
   </compound>
   <compound refid="adapter__continuous__time__api_8md" kind="file"><name>adapter_continuous_time_api.md</name>
   </compound>
-  <compound refid="adapter__apis_2adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
-  </compound>
-  <compound refid="getstarted_2adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
+  <compound refid="adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
   </compound>
   <compound refid="adapter__galerkin__api_8md" kind="file"><name>adapter_galerkin_api.md</name>
   </compound>
@@ -75,8 +73,6 @@
   <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
   </compound>
   <compound refid="md_pages_getstarted_adapter_api" kind="page"><name>md_pages_getstarted_adapter_api</name>
-  </compound>
-  <compound refid="md_pages_getstarted_adapter_discrete_time_api" kind="page"><name>md_pages_getstarted_adapter_discrete_time_api</name>
   </compound>
   <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
   </compound>

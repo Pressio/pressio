@@ -6,8 +6,9 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
+<para>In order to use the ROM functionalities in pressio, one needs to create a FOM adapter class. Pressio supports two main types of API as described below.</para>
 <sect1 id="md_pages_getstarted_adapter_api_1autotoc_md17">
-<title>Continuous-time FOM adapter API</title>
+<title>Continuous-time API</title>
 <para>Recall that pressio targets a generic full-order model (FOM) system written as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity.</para>
 <para>We envision two scenarios:<itemizedlist>
 <listitem><para>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</para>
@@ -70,7 +71,7 @@
 </sect2>
 </sect1>
 <sect1 id="md_pages_getstarted_adapter_api_1autotoc_md20">
-<title>Discrete-time FOM adapter API</title>
+<title>Discrete-time API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>

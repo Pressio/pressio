@@ -1,4 +1,4 @@
-\hypertarget{md_pages_getstarted_adapter_api_autotoc_md17}{}\doxysection{Continuous-\/time F\+O\+M adapter A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md17}
+In order to use the R\+OM functionalities in pressio, one needs to create a F\+OM adapter class. Pressio supports two main types of A\+PI as described below.\hypertarget{md_pages_getstarted_adapter_api_autotoc_md17}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md17}
 Recall that pressio targets a generic full-\/order model (F\+OM) system written as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity.
 
 We envision two scenarios\+:
@@ -65,7 +65,7 @@ This version of the adapter can be used for doing Galerkin R\+O\+Ms with explici
 \begin{DoxyParagraph}{Where can you use the AdapterB?}
 This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit and implicit time stepping, L\+S\+PG and W\+LS (note that L\+S\+PG and W\+LS only make sense for implicit time integration).
 \end{DoxyParagraph}
-\hypertarget{md_pages_getstarted_adapter_api_autotoc_md20}{}\doxysection{Discrete-\/time F\+O\+M adapter A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md20}
+\hypertarget{md_pages_getstarted_adapter_api_autotoc_md20}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md20}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class}}
