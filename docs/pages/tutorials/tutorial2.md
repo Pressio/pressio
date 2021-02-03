@@ -41,6 +41,7 @@ where @f$\hat{y}@f$ is the reduced state, also called generalized coordinates,
 to the figure below.
 @image html tut_f3.png width=65%
 
+
 # How to create a default Galerkin problem?
 
 To create a default Galerkin problem object, one needs:
@@ -62,10 +63,11 @@ Note the function is templated on the ode tag.
 To select a different time stepping scheme, one can change the tag.
 To see the list of currently supported explicit stepping schemes, see \todo.
 
+
 # How to solve a default Galerkin problem?
 
-Once the target problem object is created, the reduced system
-can be integrated in time. Pressio provides a few variants to advance in time.
+After creating the problem object, the reduced system can be integrated in time.
+Pressio provides a few variants to advance in time.
 Synopsis:
 
 ```cpp
