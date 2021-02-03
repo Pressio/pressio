@@ -35,7 +35,7 @@ Synopsis\+:
 
 
 Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, seetodo.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md50}{}\doxysection{How to solve a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md50}
-Once the target problem object is created, the reduced system can be integrated in time. Pressio provides a few variants to advance in time. Synopsis\+:
+Once the target problem object is created, the reduced system can be integrated in time. Here we provide the most basic function to do so, which advances the system for a fixed number of steps. Synopsis\+:
 
 
 \begin{DoxyCode}{0}
@@ -47,15 +47,6 @@ Once the target problem object is created, the reduced system can be integrated 
 \DoxyCodeLine{                                    Nsteps       \# number of steps}
 \DoxyCodeLine{                                    [, observer] \# optional observer}
 \DoxyCodeLine{                                   )}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// solve for fixed number of steps and time step}}
-\DoxyCodeLine{pressio::rom::galerkin::solveToTargetTime(problem,     \# problem \textcolor{keywordtype}{object}}
-\DoxyCodeLine{                                          yRom,        \# rom state to advance}
-\DoxyCodeLine{                                          t0,          \# initial time}
-\DoxyCodeLine{                                          tFinal,      \# \textcolor{keyword}{final} time}
-\DoxyCodeLine{                                          dtSetter,    \# functor to set time step}
-\DoxyCodeLine{                                          [, observer] \# optional observer}
-\DoxyCodeLine{                                         )}
 \end{DoxyCode}
 
 

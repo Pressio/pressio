@@ -66,8 +66,9 @@ To see the list of currently supported explicit stepping schemes, see \todo.
 
 # How to solve a default Galerkin problem?
 
-After creating the problem object, the reduced system can be integrated in time.
-Pressio provides a few variants to advance in time.
+Once the target problem object is created, the reduced system
+can be integrated in time. Here we provide the most basic function
+to do so, which advances the system for a fixed number of steps.
 Synopsis:
 
 ```cpp
@@ -79,15 +80,6 @@ pressio::rom::galerkin::solveNSteps(problem,     # problem object
 									Nsteps       # number of steps
 									[, observer] # optional observer
 								   )
-
-// solve for fixed number of steps and time step
-pressio::rom::galerkin::solveToTargetTime(problem,     # problem object
-										  yRom,        # rom state to advance
-										  t0,          # initial time
-										  tFinal,      # final time
-										  dtSetter,    # functor to set time step
-										  [, observer] # optional observer
-										 )
 ```
 The optional argument allows one to pass an "observer" object whose
 purpose is to monitor the evolution of the reduced state.
