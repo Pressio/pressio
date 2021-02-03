@@ -75,17 +75,18 @@
         <h1>
           Custom Ops for Default Explicit-time Galerkin
         </h1>
-<pre class="m-code"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">sc_t</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">dec_jac_t</span><span class="o">&gt;</span>
-<span class="k">struct</span> <span class="nc">myOps</span>
+<pre class="m-code"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">scalar_t</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">CustomOps</span>
 <span class="p">{</span>
+
   <span class="c1">//  y = beta * y + alpha*A*x</span>
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">x_t</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">nontranspose</span> <span class="n">mode</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">sc_t</span> <span class="n">alpha</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">dec_jac_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">x_t</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">sc_t</span> <span class="n">beta</span><span class="p">,</span>
-           <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">dec_jac_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">x_t</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
+               <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="c1">// x is subscriptable like a regular array, e.g. you can do x[i] or x(i)</span>
   <span class="p">}</span>
@@ -93,29 +94,29 @@
   <span class="c1">//  y = beta * y + alpha*A^T*x</span>
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">y_t</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">transpose</span> <span class="n">mode</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">sc_t</span> <span class="n">alpha</span><span class="p">,</span>
+           <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
            <span class="k">const</span> <span class="n">dec_jac_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">sc_t</span> <span class="n">beta</span><span class="p">,</span>
+           <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+           <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
            <span class="n">y_t</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="c1">// y is subscriptable like a regular array</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">deep_copy</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">to</span><span class="p">,</span>
-         <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">from</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="n">deep_copy</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">to</span><span class="p">,</span>
+         <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">from</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="c1">// here you need do deep copy from -&gt; to</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">set_zero</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="n">set_zero</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
      <span class="c1">// self explanatory</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="n">sc_t</span> <span class="n">alpha</span><span class="p">,</span>
-        <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-        <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">sc_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+        <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+        <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="c1">// compute y = y + alfa * x</span>
   <span class="p">}</span>

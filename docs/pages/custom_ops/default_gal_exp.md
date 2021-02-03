@@ -6,7 +6,11 @@ template <typename scalar_t>
 struct CustomOps
 {
 
-  //  y = beta * y + alpha*A*x
+  /*
+     compute: y = beta * y + alpha*A*x
+     where y is your application vector type
+	 and A is a matrix of same type as your basis
+  */
   template <typename x_t>
   void product(::pressio::nontranspose mode,
 			   const scalar_t alpha,
