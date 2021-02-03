@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+  <compounddef id="md_pages_tutorials_tutorial2" kind="page">
+    <compoundname>md_pages_tutorials_tutorial2</compoundname>
+    <title>Tutorial: Default Galerkin with explicit time stepping</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title></title><para>This tutorial shows how to create and solve a time-explicit <emphasis>default</emphasis> Galerkin problem.</para>
+</simplesect>
+</para>
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md48">
+<title>What is a default Galerkin problem?</title>
+<para>pressio4py supports different variants of Galerkin, as we will show in subsequent tutorials. The &quot;default&quot; qualification in pressio4py refers to a formulation that does <emphasis>not</emphasis> use hyper-reduction. Suppose that your full-order model (FOM) is written as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula></para>
+<para>where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity. Both <formula id="1">$y$</formula> and <formula id="10">$f$</formula> are large, see figure below. <image type="html" name="tut_f2.png" width="30%"></image>
+</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title></title><para>pressio4py defines a <emphasis>default Galerkin</emphasis> problem as: <formula id="11">\[ \dot{\hat{\mathbf{y}}}(t;\mathbf{\mu}) = \mathbf{\phi}^T \mathbf{f} \Big(\mathbf{y}_{ref}(\mathbf{\mu}) + \mathbf{\phi}\hat{\mathbf{y}} \Big) \]</formula></para>
+</simplesect>
+where <formula id="12">$\hat{y}$</formula> is the reduced state, also called generalized coordinates, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="13">$y_{ref}$</formula> is a reference FOM state, <formula id="8">$\phi$</formula> is the orthonormal basis, and <formula id="2">$f(...)$</formula> is the FOM velocity. Schematically, this system corresponds to the figure below. <image type="html" name="tut_f3.png" width="65%"></image>
+</para>
+</sect1>
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md49">
+<title>How to create a default Galerkin problem?</title>
+<para>To create a default Galerkin problem object, one needs:<orderedlist>
+<listitem><para>a FOM object satisfying the API described [here]()</para>
+</listitem><listitem><para>a linear decoder (see <ulink url="./md_pages_tutorials_tutorial1.html">this tutorial</ulink>)</para>
+</listitem><listitem><para>a rom state</para>
+</listitem><listitem><para>a FOM reference state</para>
+</listitem><listitem><para>[optional] an object with specific kernels when the FOM types are not natively supported by pressio</para>
+</listitem></orderedlist>
+</para>
+<para>Synopsis:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ode_tag<sp/>=<sp/>pressio::ode::explicitmethods::Euler;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>pressio::rom::galerkin::createDefaultProblem;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>Problem<sp/>=<sp/>createDefaultProblem&lt;ode_tag&gt;(fomObj,<sp/>decoder,<sp/>yRom,<sp/>yRef,<sp/>[,<sp/>opsObject]);</highlight></codeline>
+</programlisting></para>
+<para>Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, see <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>.</para>
+</sect1>
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md50">
+<title>How to solve a default Galerkin problem?</title>
+<para>Once the target problem object is created, the reduced system can be integrated in time. Pressio provides a few variants to advance in time. Synopsis:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>solve<sp/>for<sp/>fixed<sp/>number<sp/>of<sp/>steps<sp/>and<sp/>time<sp/>step</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">pressio::rom::galerkin::solveNSteps(problem,<sp/><sp/><sp/><sp/><sp/>#<sp/>problem<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>yRom,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>rom<sp/>state<sp/>to<sp/>advance</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>t0,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>initial<sp/>time</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dt,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>time<sp/>step</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Nsteps<sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>number<sp/>of<sp/>steps</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>[,<sp/>observer]<sp/>#<sp/>optional<sp/>observer</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>solve<sp/>for<sp/>fixed<sp/>number<sp/>of<sp/>steps<sp/>and<sp/>time<sp/>step</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">pressio::rom::galerkin::solveToTargetTime(problem,<sp/><sp/><sp/><sp/><sp/>#<sp/>problem<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>yRom,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>rom<sp/>state<sp/>to<sp/>advance</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>t0,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>initial<sp/>time</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tFinal,<sp/><sp/><sp/><sp/><sp/><sp/>#<sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>time</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dtSetter,<sp/><sp/><sp/><sp/>#<sp/>functor<sp/>to<sp/>set<sp/>time<sp/>step</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>[,<sp/>observer]<sp/>#<sp/>optional<sp/>observer</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>)</highlight></codeline>
+</programlisting></para>
+<para>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation. </para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

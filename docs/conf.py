@@ -16,7 +16,8 @@ LINKS_NAVBAR1 = [
   # tutorials
   ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
-     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", )
+     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
+     ("<a href=\"md_pages_tutorials_tutorial2.html\">Default Galerkin explicit</a>", ),
    ]),
 
   # # demos

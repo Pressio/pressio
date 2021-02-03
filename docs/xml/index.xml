@@ -36,6 +36,8 @@
   </compound>
   <compound refid="tutorial1_8md" kind="file"><name>tutorial1.md</name>
   </compound>
+  <compound refid="tutorial2_8md" kind="file"><name>tutorial2.md</name>
+  </compound>
   <compound refid="various_8md" kind="file"><name>various.md</name>
   </compound>
   <compound refid="formulation__galerkin_8md" kind="file"><name>formulation_galerkin.md</name>
@@ -79,6 +81,8 @@
   <compound refid="md_pages_hyperreduction" kind="page"><name>md_pages_hyperreduction</name>
   </compound>
   <compound refid="md_pages_tutorials_tutorial1" kind="page"><name>md_pages_tutorials_tutorial1</name>
+  </compound>
+  <compound refid="md_pages_tutorials_tutorial2" kind="page"><name>md_pages_tutorials_tutorial2</name>
   </compound>
   <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
   </compound>

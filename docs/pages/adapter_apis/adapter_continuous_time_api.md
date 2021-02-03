@@ -35,8 +35,8 @@ public:
 
 @m_class{m-block m-warning}
 
-@par Where can you do with `AdapterA`?
-This kind of adapter can be used for doing Galerkin ROMs with explicit time stepping.
+@par Where can you use the `AdapterA`?
+This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.
 
 
 ## B: velocity and Jacobian action
@@ -69,7 +69,7 @@ public:
 
 @m_class{m-block m-warning}
 
-@par Where can you do with `AdapterB`?
-This kind of adapter can be used for doing Galerkin ROMs with explicit
+@par Where can you use the `AdapterB`?
+This version of the adapter can be used for doing Galerkin ROMs with explicit
 and implicit time stepping, LSPG and WLS (note that LSPG and WLS only
 make sense for implicit time integration).

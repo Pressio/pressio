@@ -6,10 +6,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>LSPG projection corresponds to minimizing the (weighted) <formula id="10">$\ell^2$</formula>-norm of the <emphasis>time-discrete</emphasis> residual over the trial manifold. Hence, the starting point for this approach is the residual ODE formulation discretized in time with an arbitrary time-discretization method.</para>
-<para>LSPG projection is derived by substituting the approximate state in the time-discrete residual and minimizing its (weighted) <formula id="10">$\ell^2$</formula>-norm, which yields a sequence of residual-minimization problems  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-default" /></para>
-<para><formula id="11">\[ \hat{x}^n(\mu) = \underset{\xi \in R^{p}}{arg min} \left\| A r^{n}\left(x_{ref}(\mu)+g(\xi);\mu)\right) \right\|_2^2,\quad n=1,\ldots,N_t \]</formula></para>
-<para>with initial condition <formula id="12">$\hat{x}(0;\mu)=\hat{x}^0(\mu)$</formula>. The matrix <formula id="13">$A \in R^{z \times N}$</formula> with <formula id="14">$z \leq N$</formula> denotes a weighting matrix that can enable hyper-reduction. </para>
+<para>LSPG projection corresponds to minimizing the (weighted) <formula id="14">$\ell^2$</formula>-norm of the <emphasis>time-discrete</emphasis> residual over the trial manifold. Hence, the starting point for this approach is the residual ODE formulation discretized in time with an arbitrary time-discretization method.</para>
+<para>LSPG projection is derived by substituting the approximate state in the time-discrete residual and minimizing its (weighted) <formula id="14">$\ell^2$</formula>-norm, which yields a sequence of residual-minimization problems  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-default" /></para>
+<para><formula id="15">\[ \hat{x}^n(\mu) = \underset{\xi \in R^{p}}{arg min} \left\| A r^{n}\left(x_{ref}(\mu)+g(\xi);\mu)\right) \right\|_2^2,\quad n=1,\ldots,N_t \]</formula></para>
+<para>with initial condition <formula id="16">$\hat{x}(0;\mu)=\hat{x}^0(\mu)$</formula>. The matrix <formula id="17">$A \in R^{z \times N}$</formula> with <formula id="18">$z \leq N$</formula> denotes a weighting matrix that can enable hyper-reduction. </para>
     </detaileddescription>
   </compounddef>
 </doxygen>
