@@ -3,7 +3,7 @@
 \begin{DoxyParagraph}{}
 This tutorial shows how to create and solve a time-\/explicit {\itshape default} Galerkin problem.
 \end{DoxyParagraph}
-\hypertarget{md_pages_tutorials_tutorial2_autotoc_md54}{}\doxysection{What is a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md54}
+\hypertarget{md_pages_tutorials_tutorial2_autotoc_md56}{}\doxysection{What is a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md56}
 pressio4py supports different variants of Galerkin, as we will show in subsequent tutorials. The \char`\"{}default\char`\"{} qualification in pressio4py refers to a formulation that does {\itshape not} use hyper-\/reduction. Suppose that your full-\/order model (F\+OM) is written as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]
 
 where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity. Both $y$ and $f$ are large, see figure below. 
@@ -13,7 +13,7 @@ where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity. Both $y$ and $f
 \begin{DoxyParagraph}{}
 pressio4py defines a {\itshape default Galerkin} problem as\+: \[ \dot{\hat{\mathbf{y}}}(t;\mathbf{\mu}) = \mathbf{\phi}^T \mathbf{f} \Big(\mathbf{y}_{ref}(\mathbf{\mu}) + \mathbf{\phi}\hat{\mathbf{y}} \Big) \]
 \end{DoxyParagraph}
-where $\hat{y}$ is the reduced state, also called generalized coordinates, $y$ is the full-\/order model (F\+OM) state, $y_{ref}$ is a reference F\+OM state, $\phi$ is the orthonormal basis, and $f(...)$ is the F\+OM velocity. Schematically, this system corresponds to the figure below. \hypertarget{md_pages_tutorials_tutorial2_autotoc_md55}{}\doxysection{How to create a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md55}
+where $\hat{y}$ is the reduced state, also called generalized coordinates, $y$ is the full-\/order model (F\+OM) state, $y_{ref}$ is a reference F\+OM state, $\phi$ is the orthonormal basis, and $f(...)$ is the F\+OM velocity. Schematically, this system corresponds to the figure below. \hypertarget{md_pages_tutorials_tutorial2_autotoc_md57}{}\doxysection{How to create a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md57}
 To create a default Galerkin problem object, one needs\+:
 \begin{DoxyEnumerate}
 \item a F\+OM object satisfying the A\+PI described \mbox{[}here\mbox{]}()
@@ -34,7 +34,7 @@ Synopsis\+:
 \end{DoxyCode}
 
 
-Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, seetodo.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md56}{}\doxysection{How to solve a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md56}
+Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, seetodo.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md58}{}\doxysection{How to solve a default Galerkin problem?}\label{md_pages_tutorials_tutorial2_autotoc_md58}
 Once the target problem object is created, the reduced system can be integrated in time. Here we provide the most basic function to do so, which advances the system for a fixed number of steps. Synopsis\+:
 
 

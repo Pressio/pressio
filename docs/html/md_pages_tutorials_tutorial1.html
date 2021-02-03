@@ -31,8 +31,7 @@
                 <li><a href="md_pages_getstarted_packages.html">Packages</a></li>
                 <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
                 <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
-                <li><a href="md_pages_getstarted_adapter_continuous_time_api.html">Continuous-time API</a></li>
-                <li><a href="md_pages_getstarted_adapter_discrete_time_api.html">Discrete-time API</a></li>
+                <li><a href="md_pages_getstarted_adapter_api.html">Adapter API</a></li>
               </ol>
             </li>
             <li>
@@ -76,7 +75,7 @@
         <h1>
           Tutorial: Linear Decoder
         </h1>
-<aside class="m-block m-info"><p>This tutorial shows how to create a pressio linear decoder object.</p></aside><section id="autotoc_md47"><h2><a href="#autotoc_md47">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
+<aside class="m-block m-info"><p>This tutorial shows how to create a pressio linear decoder object.</p></aside><section id="autotoc_md49"><h2><a href="#autotoc_md49">Context</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -223,7 +222,7 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div><p>Graphically, this corresponds to:</p><img class="m-image" src="tut_f1.png" alt="Image" style="width: 35%;" /><p><em>A linear decoder in pressio implements this linear mapping.</em></p></section><section id="autotoc_md48"><h2><a href="#autotoc_md48">Types Description</a></h2><ul><li><svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
+</svg></div><p>Graphically, this corresponds to:</p><img class="m-image" src="tut_f1.png" alt="Image" style="width: 35%;" /><p><em>A linear decoder in pressio implements this linear mapping.</em></p></section><section id="autotoc_md50"><h2><a href="#autotoc_md50">Types Description</a></h2><ul><li><svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -291,7 +290,7 @@ $y_{rom}$
 <use x='9.764299' y='1.793263' xlink:href='#eq13-g0-111'/>
 <use x='13.857348' y='1.793263' xlink:href='#eq13-g0-109'/>
 </g>
-</svg>: this is the ROM state. ROM data strutures generally involve small, dense operators that fit well on a single node. In pressio, <em>regardless of what the FOM types are</em>, the ROM operators/data structures are either Eigen (always enabled) or Kokkos (optional dependency) types.</li></ul></section><section id="autotoc_md49"><h2><a href="#autotoc_md49">Scenario A: your FOM types are natively supported in pressio</a></h2><p>This case refers to data types which pressio knows how to manipulate and operate on. Examples include vector and matrix classes in Eigen, Epetra/Tpetra in Trilinos, or Kokkos views. What do we mean by <em>natively supported</em>? If you try to use a pressio functionality/class using data structure types that are already supported/known to pressio, pressio <em>detects</em> them, and automatically uses the (best) native kernels to perform computations. The full list of supported data structures types can be found [here]( <span class="m-text m-danger">todo</span>).</p><p>Here, for demonstration purposes, we pretend the FOM uses Eigen types too. For other FOM types already known to pressio it would work similarly. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</svg>: this is the ROM state. ROM data strutures generally involve small, dense operators that fit well on a single node. In pressio, <em>regardless of what the FOM types are</em>, the ROM operators/data structures are either Eigen (always enabled) or Kokkos (optional dependency) types.</li></ul></section><section id="autotoc_md51"><h2><a href="#autotoc_md51">Scenario A: your FOM types are natively supported in pressio</a></h2><p>This case refers to data types which pressio knows how to manipulate and operate on. Examples include vector and matrix classes in Eigen, Epetra/Tpetra in Trilinos, or Kokkos views. What do we mean by <em>natively supported</em>? If you try to use a pressio functionality/class using data structure types that are already supported/known to pressio, pressio <em>detects</em> them, and automatically uses the (best) native kernels to perform computations. The full list of supported data structures types can be found [here]( <span class="m-text m-danger">todo</span>).</p><p>Here, for demonstration purposes, we pretend the FOM uses Eigen types too. For other FOM types already known to pressio it would work similarly. The full tutorial can be found <a href="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</a>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Running tutorial 4</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
@@ -344,7 +343,7 @@ $y_{rom}$
           <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre></section><section id="autotoc_md50"><h2><a href="#autotoc_md50">Scenario B: your FOM types are NOT natively supported in pressio</a></h2><p>This case refers to data types which pressio does <em>not</em> know how to manipulate and operate on. What do we mean by <em>not natively supported</em>? If you try to use a pressio functionality/class usign a data structure type that is <strong>NOT</strong> already supported/known to pressio, pressio <em>detects/labels</em> it as an <em>arbitrary</em> type, and you <strong>have to</strong> provide pressio with kernels to operate on these types.</p><p>Here, for demonstration, we pretend that:</p><ul><li><svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
+<span class="p">}</span></pre></section><section id="autotoc_md52"><h2><a href="#autotoc_md52">Scenario B: your FOM types are NOT natively supported in pressio</a></h2><p>This case refers to data types which pressio does <em>not</em> know how to manipulate and operate on. What do we mean by <em>not natively supported</em>? If you try to use a pressio functionality/class usign a data structure type that is <strong>NOT</strong> already supported/known to pressio, pressio <em>detects/labels</em> it as an <em>arbitrary</em> type, and you <strong>have to</strong> provide pressio with kernels to operate on these types.</p><p>Here, for demonstration, we pretend that:</p><ul><li><svg class="m-math" style="width: 2.316em; height: 0.884em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -432,7 +431,7 @@ $\phi$
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;i= &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span>
           <span class="o">&lt;&lt;</span> <span class="s">&quot;, yFom(i) = &quot;</span>  <span class="o">&lt;&lt;</span> <span class="n">yFom</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
           <span class="o">&lt;&lt;</span> <span class="s">&quot;, expected = &quot;</span> <span class="o">&lt;&lt;</span> <span class="mf">4.</span>
-          <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span></pre><section id="autotoc_md51"><h3><a href="#autotoc_md51">The ops struct</a></h3><p>In order for pressio to handle the linear mapping, it needs to know how to operate on <svg class="m-math" style="width: 0.722em; height: 1.107em;" viewBox="0 -8.302191 6.928102 10.626798">
+          <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span></pre><section id="autotoc_md53"><h3><a href="#autotoc_md53">The ops struct</a></h3><p>In order for pressio to handle the linear mapping, it needs to know how to operate on <svg class="m-math" style="width: 0.722em; height: 1.107em;" viewBox="0 -8.302191 6.928102 10.626798">
 <title>
 $\phi$
 </title>
@@ -464,7 +463,7 @@ $\phi$
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">};</span></pre></section></section><section id="autotoc_md52"><h2><a href="#autotoc_md52">Comments</a></h2><p>We are constantly working increasing support in pressio for more external libraries. If you application types are not supported but you would like them to be, you can file an <a href="https://github.com/Pressio/pressio/issues">issue</a> to request it.</p></section>
+<span class="p">};</span></pre></section></section><section id="autotoc_md54"><h2><a href="#autotoc_md54">Comments</a></h2><p>We are constantly working increasing support in pressio for more external libraries. If you application types are not supported but you would like them to be, you can file an <a href="https://github.com/Pressio/pressio/issues">issue</a> to request it.</p></section>
       </div>
     </div>
   </div>

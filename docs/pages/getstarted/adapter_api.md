@@ -1,7 +1,11 @@
 
 # FOM Adapter API
 
-## Continuous-time FOM adapter API
+In order to use the ROM functionalities in pressio, 
+one needs to create a FOM adapter class.
+Pressio supports two main types of API as described below.
+
+## Continuous-time API
 
 Recall that pressio targets a generic full-order model (FOM) system written as
 @f[
@@ -76,7 +80,7 @@ and implicit time stepping, LSPG and WLS (note that LSPG and WLS only
 make sense for implicit time integration).
 
 
-## Discrete-time FOM adapter API
+## Discrete-time API
 
 ```cpp
 class
