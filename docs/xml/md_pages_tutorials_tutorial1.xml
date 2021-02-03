@@ -10,7 +10,7 @@
 <para><simplesect kind="par"><title></title><para>This tutorial shows how to create a pressio linear decoder object.</para>
 </simplesect>
 </para>
-<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md43">
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md47">
 <title>Context</title>
 <para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="3">$y_{fom}$</formula>, as: <formula id="4">\[ y_{fom} = g(y_{rom}) \]</formula></para>
 <para>where <formula id="5">$y_{rom}$</formula> is the reduced state (or generalized coordinates), and <formula id="6">$g$</formula> is the mapping between the two.</para>
@@ -19,7 +19,7 @@
 </para>
 <para><emphasis>A linear decoder in pressio implements this linear mapping.</emphasis></para>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md44">
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md48">
 <title>Types Description</title>
 <para><itemizedlist>
 <listitem><para><formula id="3">$y_{fom}$</formula>: this is the FOM state and, therefore, it is a data structure of your application. For example, if you are using Trilinos/Epetra, the FOM state can be, e.g., an Epetra vector. Typically, <formula id="3">$y_{fom}$</formula> is a large (distributed) vector.</para>
@@ -28,7 +28,7 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md45">
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md49">
 <title>Scenario A: your FOM types are natively supported in pressio</title>
 <para>This case refers to data types which pressio knows how to manipulate and operate on. Examples include vector and matrix classes in Eigen, Epetra/Tpetra in Trilinos, or Kokkos views. What do we mean by <emphasis>natively supported</emphasis>? If you try to use a pressio functionality/class using data structure types that are already supported/known to pressio, pressio <emphasis>detects</emphasis> them, and automatically uses the (best) native kernels to perform computations. The full list of supported data structures types can be found [here]( <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>).</para>
 <para>Here, for demonstration purposes, we pretend the FOM uses Eigen types too. For other FOM types already known to pressio it would work similarly. The full tutorial can be found <ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">here</ulink>.</para>
@@ -88,7 +88,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md46">
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md50">
 <title>Scenario B: your FOM types are NOT natively supported in pressio</title>
 <para>This case refers to data types which pressio does <emphasis>not</emphasis> know how to manipulate and operate on. What do we mean by <emphasis>not natively supported</emphasis>? If you try to use a pressio functionality/class usign a data structure type that is <bold>NOT</bold> already supported/known to pressio, pressio <emphasis>detects/labels</emphasis> it as an <emphasis>arbitrary</emphasis> type, and you <bold>have to</bold> provide pressio with kernels to operate on these types.</para>
 <para>Here, for demonstration, we pretend that:<itemizedlist>
@@ -161,7 +161,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>expected<sp/>=<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>4.</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_tutorials_tutorial1_1autotoc_md47">
+<sect2 id="md_pages_tutorials_tutorial1_1autotoc_md51">
 <title>The ops struct</title>
 <para>In order for pressio to handle the linear mapping, it needs to know how to operate on <formula id="8">$\phi$</formula>. To this end, in the code above, you need to pass to the <computeroutput>LinearDecoder</computeroutput> constructor an object to handle that computation. To compute the mapping, pressio will call the <computeroutput>product</computeroutput> method. <programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>scalar_t&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MyOps</highlight></codeline>
@@ -189,7 +189,7 @@
 </programlisting></para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md48">
+<sect1 id="md_pages_tutorials_tutorial1_1autotoc_md52">
 <title>Comments</title>
 <para>We are constantly working increasing support in pressio for more external libraries. If you application types are not supported but you would like them to be, you can file an <ulink url="https://github.com/Pressio/pressio/issues">issue</ulink> to request it. </para>
 </sect1>

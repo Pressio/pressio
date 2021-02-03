@@ -10,7 +10,7 @@
 <para><simplesect kind="par"><title></title><para>This tutorial shows how to create and solve a time-explicit <emphasis>default</emphasis> Galerkin problem.</para>
 </simplesect>
 </para>
-<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md50">
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md54">
 <title>What is a default Galerkin problem?</title>
 <para>pressio4py supports different variants of Galerkin, as we will show in subsequent tutorials. The &quot;default&quot; qualification in pressio4py refers to a formulation that does <emphasis>not</emphasis> use hyper-reduction. Suppose that your full-order model (FOM) is written as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula></para>
 <para>where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity. Both <formula id="1">$y$</formula> and <formula id="10">$f$</formula> are large, see figure below. <image type="html" name="tut_f2.png" width="30%"></image>
@@ -21,7 +21,7 @@
 where <formula id="12">$\hat{y}$</formula> is the reduced state, also called generalized coordinates, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="13">$y_{ref}$</formula> is a reference FOM state, <formula id="8">$\phi$</formula> is the orthonormal basis, and <formula id="2">$f(...)$</formula> is the FOM velocity. Schematically, this system corresponds to the figure below. <image type="html" name="tut_f3.png" width="65%"></image>
 </para>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md51">
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md55">
 <title>How to create a default Galerkin problem?</title>
 <para>To create a default Galerkin problem object, one needs:<orderedlist>
 <listitem><para>a FOM object satisfying the API described [here]()</para>
@@ -39,7 +39,7 @@ where <formula id="12">$\hat{y}$</formula> is the reduced state, also called gen
 </programlisting></para>
 <para>Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, see <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>.</para>
 </sect1>
-<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md52">
+<sect1 id="md_pages_tutorials_tutorial2_1autotoc_md56">
 <title>How to solve a default Galerkin problem?</title>
 <para>Once the target problem object is created, the reduced system can be integrated in time. Here we provide the most basic function to do so, which advances the system for a fixed number of steps. Synopsis:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>solve<sp/>for<sp/>fixed<sp/>number<sp/>of<sp/>steps<sp/>and<sp/>time<sp/>step</highlight><highlight class="normal"></highlight></codeline>
