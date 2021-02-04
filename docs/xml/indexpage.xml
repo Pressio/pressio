@@ -8,7 +8,7 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>You landed on the documentation of the C++ library! If this is a mistake, please go back to the <ulink url="https://pressio.github.io/">project website</ulink>.</para>
-<sect1 id="index_1autotoc_md40">
+<sect1 id="index_1autotoc_md42">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
@@ -18,12 +18,12 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md41">
+<sect1 id="index_1autotoc_md43">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md42">
+<sect1 id="index_1autotoc_md44">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

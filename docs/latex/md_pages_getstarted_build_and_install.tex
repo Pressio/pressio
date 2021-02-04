@@ -5,7 +5,7 @@ This page describes the dependencies of {\ttfamily pressio} and its installation
 \end{DoxyParagraph}
 
 
-{\ttfamily pressio} is header-\/only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-\/party libraries, one needs to account for this. See below for the details. \hypertarget{md_pages_getstarted_build_and_install_autotoc_md23}{}\doxysection{Dependencies}\label{md_pages_getstarted_build_and_install_autotoc_md23}
+{\ttfamily pressio} is header-\/only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-\/party libraries, one needs to account for this. See below for the details. \hypertarget{md_pages_getstarted_build_and_install_autotoc_md25}{}\doxysection{Dependencies}\label{md_pages_getstarted_build_and_install_autotoc_md25}
 Some packages of {\ttfamily pressio} contain code and implementations that are specific to third-\/party libraries (T\+P\+Ls). For example, the {\ttfamily containers} and {\ttfamily ops} packages of {\ttfamily pressio} contain thin wrappers and kernels that are custom-\/built for target libraries. The main reason for doing this is that we aim to alleviate the user from writing custom operations and allows {\ttfamily pressio} to decide when and how to leverage the native libraries\textquotesingle{} operations to obtain the best performance. This should facilitate the integration and use of {\ttfamily pressio} by existing applications. Obviously, this is a growing capability and we currently only provide built-\/in support to some external H\+PC libraries (see below). We can distinguish between {\itshape optional} and {\itshape required} dependencies.
 
 \tabulinesep=1mm
@@ -63,7 +63,7 @@ Obviously, the choice of which T\+P\+Ls to enable is related to your application
 
 Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then {\ttfamily pressio} automatically enables also Kokkos, B\+L\+AS, L\+A\+P\+A\+CK and M\+PI. The reason for this choice is that in a production scenario---which is what pressio mainly targets---it is reasonable to expect a user to have Trilinos built with B\+L\+AS, L\+A\+P\+A\+CK, M\+PI and Kokkos support.
 
-There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring B\+L\+AS and L\+A\+P\+A\+CK to be simulateneously on.\hypertarget{md_pages_getstarted_build_and_install_autotoc_md24}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_getstarted_build_and_install_autotoc_md24}
+There might be other constraints on the variables one can set. The reason for this is twofold\+: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring B\+L\+AS and L\+A\+P\+A\+CK to be simulateneously on.\hypertarget{md_pages_getstarted_build_and_install_autotoc_md26}{}\doxysection{In practice, what are the steps to get, install and use Pressio?}\label{md_pages_getstarted_build_and_install_autotoc_md26}
 
 \begin{DoxyEnumerate}
 \item Clone \href{https://github.com/Pressio/pressio}{\texttt{ pressio}} (defaults to the master branch), or you can pick a \href{https://github.com/Pressio/pressio/releases}{\texttt{ release version}} 
@@ -120,5 +120,5 @@ We also remark that during the configuration step above pressio does not need to
 \begin{DoxyParagraph}{}
 The procedure above is advised because it enables {\ttfamily pressio} to properly process the cmake options and turn on/off based on certain conditions (as explained above). The alternative way to use pressio would be to just clone the repo, point to the {\ttfamily $<$where-\/you-\/cloned-\/pressio$>$/packages} subdirectory and use cmake variables directly when building your code. However, this could have unexpected consequences since you would be resposible to set the variables correctly but you would not know exactly all the possible constraints.
 \end{DoxyParagraph}
-\hypertarget{md_pages_getstarted_build_and_install_autotoc_md25}{}\doxysection{Where to go from here?}\label{md_pages_getstarted_build_and_install_autotoc_md25}
+\hypertarget{md_pages_getstarted_build_and_install_autotoc_md27}{}\doxysection{Where to go from here?}\label{md_pages_getstarted_build_and_install_autotoc_md27}
 Navigate \href{./md_pages_getstarted_packages.html}{\texttt{ this page}} to learn which packages pressio includes, and how you can have finer-\/grained access to certain functionalities. 

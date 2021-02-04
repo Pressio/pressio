@@ -75,53 +75,63 @@
         <h1>
           Custom Ops for Default Explicit-time Galerkin
         </h1>
-<pre class="m-code"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">scalar_t</span><span class="o">&gt;</span>
-<span class="k">struct</span> <span class="nc">CustomOps</span>
+<p>This page explains which operations you need to provide to pressio to construct and run Galerkin with explicit time stepping when you are using FOM types that are <em>not</em> natively supported in pressio.</p><p>We remark that when you types already known to pressio, you don&#x27;t need to provide any custom ops.</p><pre class="m-code"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">scalar_t</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">CustomOps</span> <span class="c1">// or whatever name you want</span>
 <span class="p">{</span>
-
-  <span class="c1">//  y = beta * y + alpha*A*x</span>
-  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">x_t</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">nontranspose</span> <span class="n">mode</span><span class="p">,</span>
-               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
-               <span class="k">const</span> <span class="n">dec_jac_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-               <span class="k">const</span> <span class="n">x_t</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
-               <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
-    <span class="c1">// x is subscriptable like a regular array, e.g. you can do x[i] or x(i)</span>
+    <span class="c1">// deep copy content of src into dest</span>
   <span class="p">}</span>
 
-  <span class="c1">//  y = beta * y + alpha*A^T*x</span>
-  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">y_t</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">transpose</span> <span class="n">mode</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">dec_jac_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-           <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
-           <span class="n">y_t</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
-  <span class="p">{</span>
-    <span class="c1">// y is subscriptable like a regular array</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="n">deep_copy</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">to</span><span class="p">,</span>
-         <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">from</span><span class="p">)</span> <span class="k">const</span>
-  <span class="p">{</span>
-    <span class="c1">// here you need do deep copy from -&gt; to</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="n">set_zero</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">vec</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
      <span class="c1">// self explanatory</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
-        <span class="k">const</span> <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
-        <span class="n">pressio</span><span class="o">::</span><span class="n">apps</span><span class="o">::</span><span class="n">arbds</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">scalar_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+  <span class="kt">void</span> <span class="nf">axpy</span><span class="p">(</span><span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+            <span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
     <span class="c1">// compute y = y + alfa * x</span>
   <span class="p">}</span>
-<span class="p">};</span>
-<span class="p">};</span></pre>
+
+  <span class="cm">/*</span>
+<span class="cm">  compute: y = beta * y + alpha*A*x</span>
+<span class="cm">  - y is your application vector type</span>
+<span class="cm">  - A is the basis matrix</span>
+<span class="cm">  - x is the rom state</span>
+<span class="cm">  */</span>
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">x_t</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">nontranspose</span> <span class="n">mode</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">TypeUsedForBasisMatrix</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">x_t</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
+               <span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// when running on CPU, here you can assume that</span>
+    <span class="c1">// x is subscriptable on host as: x(i)</span>
+  <span class="p">}</span>
+
+  <span class="cm">/*</span>
+<span class="cm">  compute: y = beta * y + alpha*A^T*x</span>
+<span class="cm">  - y is the rom state</span>
+<span class="cm">  - A is the basis matrix</span>
+<span class="cm">  - x is your application vector type</span>
+<span class="cm">  */</span>
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">y_t</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">transpose</span> <span class="n">mode</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">alpha</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">TypeUsedForBasisMatrix</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">TypeOfYourForFomState</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+               <span class="k">const</span> <span class="n">scalar_t</span> <span class="n">beta</span><span class="p">,</span>
+               <span class="n">y_t</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// when running on CPU, here you can assume that</span>
+    <span class="c1">// y is subscriptable on host as: y(i)</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre><section id="autotoc_md14"><h2><a href="#autotoc_md14">Where does one need to use this?</a></h2><p>An object of the class template above needs to be passed to the constructor of the Galerkin problem as explained in <a href="./md_pages_tutorials_tutorial2.html">this tutorial</a>.</p></section>
       </div>
     </div>
   </div>

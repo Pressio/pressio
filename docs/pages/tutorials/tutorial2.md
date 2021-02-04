@@ -49,7 +49,8 @@ To create a default Galerkin problem object, one needs:
 2. a linear decoder (see [this tutorial](./md_pages_tutorials_tutorial1.html))
 3. a rom state
 4. a FOM reference state
-5. [optional] an object with specific kernels when the FOM types are not natively supported by pressio
+5. [optional] an object with specific kernels when the FOM types are not natively supported by pressio.
+   See [this page](./md_pages_custom_ops_default_gal_exp.html) for more information on this.
 
 Synopsis:
 

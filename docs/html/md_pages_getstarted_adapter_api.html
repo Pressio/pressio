@@ -75,7 +75,7 @@
         <h1>
           FOM Adapter API
         </h1>
-<p>In order to use the ROM functionalities in pressio, one needs to create a FOM adapter class. Pressio supports two main types of API as described below.</p><section id="autotoc_md17"><h2><a href="#autotoc_md17">Continuous-time API</a></h2><p>Recall that pressio targets a generic full-order model (FOM) system written as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
+<section id="autotoc_md18"><h2><a href="#autotoc_md18">What is it? Why we need it?</a></h2><aside class="m-block m-info"><p>An adapter class allows a FOM application to expose data via an API conforming to pressio requirements.</p></aside><p>Recall that pressio assumes your full-order model (FOM) system to be expressible as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]
 </title>
@@ -149,7 +149,7 @@ $f(...)$
 <use x='18.102085' y='0' xlink:href='#eq3-g0-58'/>
 <use x='21.353746' y='0' xlink:href='#eq3-g1-41'/>
 </g>
-</svg> is the FOM velocity.</p><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md18"><h3><a href="#autotoc_md18">A: velocity only</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
+</svg> is the FOM velocity,  <span class="m-text m-danger">todo</span> finish.</p><p>To use the functionalities in pressio, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, in pressio we leverage the idea of an <em>adapter class</em> as a layer allowing to standardize the way pressio interfaces with any application.</p><p>Schematically, the flow of interfation is shown below:</p><img class="m-image" src="schem.svg" alt="Image" style="width: 65%;" /><p>To facilitate the integration with existing applications, pressio supports adapters with two main types of API:</p><ol><li><em>continuous-time</em> API: this directly stems from the formulation above, and is the preferred one;</li><li><em>discrete-time</em> API: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.</li></ol></section><section id="autotoc_md19"><h2><a href="#autotoc_md19">Continuous-time API</a></h2><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md20"><h3><a href="#autotoc_md20">A: velocity only</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -162,7 +162,7 @@ $f(...)$
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                 <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md19"><h3><a href="#autotoc_md19">B: velocity and Jacobian action</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md21"><h3><a href="#autotoc_md21">B: velocity and Jacobian action</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -185,7 +185,7 @@ $f(...)$
                      <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
                      <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                      <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section></section><section id="autotoc_md20"><h2><a href="#autotoc_md20">Discrete-time API</a></h2><pre class="m-code"><span class="k">class</span>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section></section><section id="autotoc_md22"><h2><a href="#autotoc_md22">Discrete-time API</a></h2><pre class="m-code"><span class="k">class</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="c1">//..;</span>
@@ -226,7 +226,7 @@ $f(...)$
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">applyDiscreteTimeJacobianImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">stateIdForJacobian</span><span class="p">,</span>
           <span class="n">A</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...);</span>
   <span class="p">}</span>
-<span class="p">};</span></pre></section>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the discrete-time API?</h3><p>This version of the adapter can be <strong>only</strong> used for doing Galerkin and LSPG ROMs with <em>implicit</em> time stepping.</p></aside><aside class="m-note m-default"><h4>Should one prefer the continuous-time or discrete-time API?</h4><p>In general, we suggest users to always prefer the continuous-time API because it is more general.</p></aside></section>
       </div>
     </div>
   </div>

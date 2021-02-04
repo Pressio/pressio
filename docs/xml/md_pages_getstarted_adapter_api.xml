@@ -6,16 +6,29 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>In order to use the ROM functionalities in pressio, one needs to create a FOM adapter class. Pressio supports two main types of API as described below.</para>
-<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md17">
+<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md18">
+<title>What is it? Why we need it?</title>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title></title><para>An adapter class allows a FOM application to expose data via an API conforming to pressio requirements.</para>
+</simplesect>
+Recall that pressio assumes your full-order model (FOM) system to be expressible as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity,  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
+<para>To use the functionalities in pressio, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, in pressio we leverage the idea of an <emphasis>adapter class</emphasis> as a layer allowing to standardize the way pressio interfaces with any application.</para>
+<para>Schematically, the flow of interfation is shown below: <image type="html" name="schem.svg" width="65%"></image>
+</para>
+<para>To facilitate the integration with existing applications, pressio supports adapters with two main types of API:<orderedlist>
+<listitem><para><emphasis>continuous-time</emphasis> API: this directly stems from the formulation above, and is the preferred one;</para>
+</listitem><listitem><para><emphasis>discrete-time</emphasis> API: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.</para>
+</listitem></orderedlist>
+</para>
+</sect1>
+<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md19">
 <title>Continuous-time API</title>
-<para>Recall that pressio targets a generic full-order model (FOM) system written as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity.</para>
 <para>We envision two scenarios:<itemizedlist>
 <listitem><para>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</para>
 </listitem><listitem><para>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&apos;s Jacobian on some operand</para>
 </listitem></itemizedlist>
 </para>
-<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md18">
+<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md20">
 <title>A: velocity only</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterA</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -37,7 +50,7 @@
 </simplesect>
 </para>
 </sect2>
-<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md19">
+<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md21">
 <title>B: velocity and Jacobian action</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterB</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -70,7 +83,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md20">
+<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md22">
 <title>Discrete-time API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -114,7 +127,14 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>A,<sp/>std::forward&lt;Args&gt;(states)...);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
-</programlisting> </para>
+</programlisting></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>Where can you use the discrete-time API?</title><para>This version of the adapter can be <bold>only</bold> used for doing Galerkin and LSPG ROMs with <emphasis>implicit</emphasis> time stepping.</para>
+</simplesect>
+ <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title>Should one prefer the continuous-time or discrete-time API?</title><para>In general, we suggest users to always prefer the continuous-time API because it is more general. </para>
+</simplesect>
+</para>
 </sect1>
     </detaileddescription>
   </compounddef>
