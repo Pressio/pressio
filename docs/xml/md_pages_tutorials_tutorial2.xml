@@ -71,6 +71,9 @@ where <formula id="12">$\hat{y}$</formula> is the reduced state, also called gen
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>pressio::rom::galerkin::createDefaultProblem;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>Problem<sp/>=<sp/>createDefaultProblem&lt;ode_tag&gt;(fomObj,<sp/>decoder,<sp/>yRom,<sp/>yRef,<sp/>[,<sp/>opsObject]);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>to<sp/>solve,<sp/>we<sp/>set<sp/>as<sp/>an<sp/>example,<sp/>t0=0,<sp/>dt=0.1,<sp/>Nstep<sp/>=<sp/>100</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">pressio::rom::galerkin::solveNSteps(Problem,<sp/>yRom,<sp/>0.,<sp/>0.1,<sp/>100)</highlight></codeline>
 </programlisting></para>
 <para>Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, see <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>. </para>
 </sect1>
