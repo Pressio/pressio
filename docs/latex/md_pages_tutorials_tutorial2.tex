@@ -69,9 +69,6 @@ The optional argument allows one to pass an \char`\"{}observer\char`\"{} object 
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{using} pressio::rom::galerkin::createDefaultProblem;}
 \DoxyCodeLine{\textcolor{keyword}{auto} Problem = createDefaultProblem<ode\_tag>(fomObj, decoder, yRom, yRef, [, opsObject]);}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{// here we set as an example, t0=0, dt=0.1, Nstep = 100}}
-\DoxyCodeLine{pressio::rom::galerkin::solveNSteps(Problem, yRom, 0., 0.1, 100)}
 \end{DoxyCode}
 
 
