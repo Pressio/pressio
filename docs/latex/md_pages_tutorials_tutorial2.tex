@@ -51,16 +51,27 @@ Once the target problem object is created, the reduced system can be integrated 
 \end{DoxyCode}
 
 
-The optional argument allows one to pass an \char`\"{}observer\char`\"{} object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.\+g., save the generalized coordinates, or usign them to perfom some other operation.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md60}{}\doxysection{Pseudo-\/code for the various steps}\label{md_pages_tutorials_tutorial2_autotoc_md60}
+The optional argument allows one to pass an \char`\"{}observer\char`\"{} object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.\+g., save the generalized coordinates, or usign them to perfom some other operation.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md60}{}\doxysection{Putting all steps together}\label{md_pages_tutorials_tutorial2_autotoc_md60}
 
 \begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// create adapter/FOM object}}
+\DoxyCodeLine{\textcolor{comment}{// ...}}
+\DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// create the decoder}}
 \DoxyCodeLine{decoder = \textcolor{comment}{/*see, e.g., tutorial for linear decoder */}}
 \DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// create ROM state: here we use Eigen}}
+\DoxyCodeLine{\textcolor{keyword}{using} rom\_state\_t = pressio::containers::Vector<Eigen::VectorXd>;}
+\DoxyCodeLine{rom\_state\_t yRom(\textcolor{comment}{/*whatever rom size needed*/});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// create the Galerkin problem}}
 \DoxyCodeLine{\textcolor{keyword}{using} ode\_tag = pressio::ode::explicitmethods::Euler;}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{using} pressio::rom::galerkin::createDefaultProblem;}
 \DoxyCodeLine{\textcolor{keyword}{auto} Problem = createDefaultProblem<ode\_tag>(fomObj, decoder, yRom, yRef, [, opsObject]);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// here we set as an example, t0=0, dt=0.1, Nstep = 100}}
+\DoxyCodeLine{pressio::rom::galerkin::solveNSteps(Problem, yRom, 0., 0.1, 100)}
 \end{DoxyCode}
 
 

@@ -55,10 +55,18 @@ where <formula id="12">$\hat{y}$</formula> is the reduced state, also called gen
 <para>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation.</para>
 </sect1>
 <sect1 id="md_pages_tutorials_tutorial2_1autotoc_md60">
-<title>Pseudo-code for the various steps</title>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>the<sp/>decoder</highlight><highlight class="normal"></highlight></codeline>
+<title>Putting all steps together</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>adapter/FOM<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>the<sp/>decoder</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">decoder<sp/>=<sp/></highlight><highlight class="comment">/*see,<sp/>e.g.,<sp/>tutorial<sp/>for<sp/>linear<sp/>decoder<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>ROM<sp/>state:<sp/>here<sp/>we<sp/>use<sp/>Eigen</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>rom_state_t<sp/>=<sp/>pressio::containers::Vector&lt;Eigen::VectorXd&gt;;</highlight></codeline>
+<codeline><highlight class="normal">rom_state_t<sp/>yRom(</highlight><highlight class="comment">/*whatever<sp/>rom<sp/>size<sp/>needed*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>the<sp/>Galerkin<sp/>problem</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ode_tag<sp/>=<sp/>pressio::ode::explicitmethods::Euler;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>pressio::rom::galerkin::createDefaultProblem;</highlight></codeline>

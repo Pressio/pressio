@@ -296,9 +296,17 @@ $f(...)$
                                     <span class="n">dt</span><span class="p">,</span>          <span class="err">#</span> <span class="n">time</span> <span class="n">step</span>
                                     <span class="n">Nsteps</span>       <span class="err">#</span> <span class="n">number</span> <span class="n">of</span> <span class="n">steps</span>
                                     <span class="p">[,</span> <span class="n">observer</span><span class="p">]</span> <span class="err">#</span> <span class="n">optional</span> <span class="n">observer</span>
-                                   <span class="p">)</span></pre><p>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation.</p></section><section id="autotoc_md60"><h2><a href="#autotoc_md60">Pseudo-code for the various steps</a></h2><pre class="m-code"><span class="c1">// create the decoder</span>
+                                   <span class="p">)</span></pre><p>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation.</p></section><section id="autotoc_md60"><h2><a href="#autotoc_md60">Putting all steps together</a></h2><pre class="m-code"><span class="c1">// create adapter/FOM object</span>
+<span class="c1">// ...</span>
+
+<span class="c1">// create the decoder</span>
 <span class="n">decoder</span> <span class="o">=</span> <span class="cm">/*see, e.g., tutorial for linear decoder */</span>
 
+<span class="c1">// create ROM state: here we use Eigen</span>
+<span class="k">using</span> <span class="n">rom_state_t</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">containers</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXd</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">rom_state_t</span> <span class="nf">yRom</span><span class="p">(</span><span class="cm">/*whatever rom size needed*/</span><span class="p">);</span>
+
+<span class="c1">// create the Galerkin problem</span>
 <span class="k">using</span> <span class="n">ode_tag</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">explicitmethods</span><span class="o">::</span><span class="n">Euler</span><span class="p">;</span>
 
 <span class="k">using</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">galerkin</span><span class="o">::</span><span class="n">createDefaultProblem</span><span class="p">;</span>
