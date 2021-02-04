@@ -51,4 +51,17 @@ Once the target problem object is created, the reduced system can be integrated 
 \end{DoxyCode}
 
 
-The optional argument allows one to pass an \char`\"{}observer\char`\"{} object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.\+g., save the generalized coordinates, or usign them to perfom some other operation. 
+The optional argument allows one to pass an \char`\"{}observer\char`\"{} object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.\+g., save the generalized coordinates, or usign them to perfom some other operation.\hypertarget{md_pages_tutorials_tutorial2_autotoc_md60}{}\doxysection{Pseudo-\/code for the various steps}\label{md_pages_tutorials_tutorial2_autotoc_md60}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// create the decoder}}
+\DoxyCodeLine{decoder = \textcolor{comment}{/*see, e.g., tutorial for linear decoder */}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{using} ode\_tag = pressio::ode::explicitmethods::Euler;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{using} pressio::rom::galerkin::createDefaultProblem;}
+\DoxyCodeLine{\textcolor{keyword}{auto} Problem = createDefaultProblem<ode\_tag>(fomObj, decoder, yRom, yRef, [, opsObject]);}
+\end{DoxyCode}
+
+
+Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, seetodo. 

@@ -89,13 +89,20 @@ at every time step. This can be useful to, e.g., save the
 generalized coordinates, or usign them to perfom some other operation.
 
 
-# Pseudo-code for the various steps
+# Putting all steps together
 
 ```cpp
+// create adapter/FOM object
+// ...
 
 // create the decoder
 decoder = /*see, e.g., tutorial for linear decoder */
 
+// create ROM state: here we use Eigen
+using rom_state_t = pressio::containers::Vector<Eigen::VectorXd>;
+rom_state_t yRom(/*whatever rom size needed*/);
+
+// create the Galerkin problem
 using ode_tag = pressio::ode::explicitmethods::Euler;
 
 using pressio::rom::galerkin::createDefaultProblem;
