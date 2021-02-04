@@ -107,6 +107,9 @@ using ode_tag = pressio::ode::explicitmethods::Euler;
 
 using pressio::rom::galerkin::createDefaultProblem;
 auto Problem = createDefaultProblem<ode_tag>(fomObj, decoder, yRom, yRef, [, opsObject]);
+
+// to solve, we set as an example, t0=0, dt=0.1, Nstep = 100
+pressio::rom::galerkin::solveNSteps(Problem, yRom, 0., 0.1, 100)
 ```
 Note the function is templated on the ode tag.
 To select a different time stepping scheme, one can change the tag.
