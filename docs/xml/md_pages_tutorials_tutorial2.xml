@@ -28,7 +28,8 @@ where <formula id="12">$\hat{y}$</formula> is the reduced state, also called gen
 </listitem><listitem><para>a linear decoder (see <ulink url="./md_pages_tutorials_tutorial1.html">this tutorial</ulink>)</para>
 </listitem><listitem><para>a rom state</para>
 </listitem><listitem><para>a FOM reference state</para>
-</listitem><listitem><para>[optional] an object with specific kernels when the FOM types are not natively supported by pressio. See <ulink url="./md_pages_custom_ops_default_gal_exp.html">this page</ulink> for more information on this.</para>
+</listitem><listitem><para>[optional] an object with specific kernels when the FOM types are not natively supported by pressio.<linebreak/>
+ See <ulink url="./md_pages_custom_ops_default_gal_exp.html">this page</ulink> for more information on this.</para>
 </listitem></orderedlist>
 </para>
 <para>Synopsis:</para>

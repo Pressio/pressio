@@ -88,6 +88,25 @@ The observer is called back by pressio4py during the time integration
 at every time step. This can be useful to, e.g., save the
 generalized coordinates, or usign them to perfom some other operation.
 
+
+# Pseudo-code for the various steps
+
+```cpp
+
+// create the decoder
+decoder = /*see, e.g., tutorial for linear decoder */
+
+using ode_tag = pressio::ode::explicitmethods::Euler;
+
+using pressio::rom::galerkin::createDefaultProblem;
+auto Problem = createDefaultProblem<ode_tag>(fomObj, decoder, yRom, yRef, [, opsObject]);
+```
+Note the function is templated on the ode tag.
+To select a different time stepping scheme, one can change the tag.
+To see the list of currently supported explicit stepping schemes, see \todo.
+
+
+
 <!-- The observer class must meee the following API: -->
 <!-- ```py -->
 <!-- class OdeObserver: -->
