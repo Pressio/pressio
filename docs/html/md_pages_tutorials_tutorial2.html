@@ -30,8 +30,13 @@
                 <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
                 <li><a href="md_pages_getstarted_packages.html">Packages</a></li>
                 <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
-                <li><a href="md_pages_getstarted_adapter_api.html">Adapter API</a></li>
-                <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
+              </ol>
+            </li>
+            <li>
+              <a href=>Core Concepts</a>
+              <ol>
+                <li><a href="md_pages_coreconcepts_adapter_api.html">Adapter API</a></li>
+                <li><a href="md_pages_coreconcepts_adapting_app.html">Step-by-step on adapting an app</a></li>
               </ol>
             </li>
             <li>
@@ -47,12 +52,6 @@
                 <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
                 <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
                 <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
-            <li>
-              <a href=>Custom Ops</a>
-              <ol>
-                <li><a href="md_pages_custom_ops_default_gal_exp.html">Ops for Galerkin Explicit Time</a></li>
               </ol>
             </li>
             <li><a href="annotated.html">Classes</a></li>
@@ -75,7 +74,7 @@
         <h1>
           Tutorial: Default Galerkin with explicit time stepping
         </h1>
-<aside class="m-block m-info"><p>This tutorial shows how to create and solve a time-explicit <em>default</em> Galerkin problem.</p></aside><section id="autotoc_md57"><h2><a href="#autotoc_md57">What is a default Galerkin problem?</a></h2><p>pressio4py supports different variants of Galerkin, as we will show in subsequent tutorials. The &quot;default&quot; qualification in pressio4py refers to a formulation that does <em>not</em> use hyper-reduction. Suppose that your full-order model (FOM) is written as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
+<aside class="m-block m-info"><p>This tutorial shows how to create and solve a time-explicit <em>default</em> Galerkin problem.</p></aside><section id="autotoc_md45"><h2><a href="#autotoc_md45">What is a default Galerkin problem?</a></h2><p>pressio4py supports different variants of Galerkin, as we will show in subsequent tutorials. The &quot;default&quot; qualification in pressio4py refers to a formulation that does <em>not</em> use hyper-reduction. Suppose that your full-order model (FOM) is written as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]
 </title>
@@ -286,17 +285,17 @@ $f(...)$
 <use x='18.102085' y='0' xlink:href='#eq11-g0-58'/>
 <use x='21.353746' y='0' xlink:href='#eq11-g1-41'/>
 </g>
-</svg> is the FOM velocity. Schematically, this system corresponds to the figure below.</p><img class="m-image" src="tut_f3.png" alt="Image" style="width: 65%;" /></section><section id="autotoc_md58"><h2><a href="#autotoc_md58">How to create a default Galerkin problem?</a></h2><p>To create a default Galerkin problem object, one needs:</p><ol><li>a FOM object satisfying the API described [here]()</li><li>a linear decoder (see <a href="./md_pages_tutorials_tutorial1.html">this tutorial</a>)</li><li>a rom state</li><li>a FOM reference state</li><li>[optional] an object with specific kernels when the FOM types are not natively supported by pressio.<br />See <a href="./md_pages_custom_ops_default_gal_exp.html">this page</a> for more information on this.</li></ol><p>Synopsis:</p><pre class="m-code"><span class="k">using</span> <span class="n">ode_tag</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">explicitmethods</span><span class="o">::</span><span class="n">Euler</span><span class="p">;</span>
+</svg> is the FOM velocity. Schematically, this system corresponds to the figure below.</p><img class="m-image" src="tut_f3.png" alt="Image" style="width: 65%;" /></section><section id="autotoc_md46"><h2><a href="#autotoc_md46">How to create a default Galerkin problem?</a></h2><p>To create a default Galerkin problem object, one needs:</p><ol><li>a FOM object satisfying the API described [here]()</li><li>a linear decoder (see <a href="./md_pages_tutorials_tutorial1.html">this tutorial</a>)</li><li>a rom state</li><li>a FOM reference state</li><li>[optional] an object with specific kernels when the FOM types are not natively supported by pressio.<br />See <a href="./md_pages_custom_ops_default_gal_exp.html">this page</a> for more information on this.</li></ol><p>Synopsis:</p><pre class="m-code"><span class="k">using</span> <span class="n">ode_tag</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">explicitmethods</span><span class="o">::</span><span class="n">Euler</span><span class="p">;</span>
 
 <span class="k">using</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">galerkin</span><span class="o">::</span><span class="n">createDefaultProblem</span><span class="p">;</span>
-<span class="k">auto</span> <span class="n">Problem</span> <span class="o">=</span> <span class="n">createDefaultProblem</span><span class="o">&lt;</span><span class="n">ode_tag</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fomObj</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">yRom</span><span class="p">,</span> <span class="n">yRef</span><span class="p">,</span> <span class="p">[,</span> <span class="n">opsObject</span><span class="p">]);</span></pre><p>Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, see <span class="m-text m-danger">todo</span>.</p></section><section id="autotoc_md59"><h2><a href="#autotoc_md59">How to solve a default Galerkin problem?</a></h2><p>Once the target problem object is created, the reduced system can be integrated in time. Here we provide the most basic function to do so, which advances the system for a fixed number of steps. Synopsis:</p><pre class="m-code"><span class="c1">// solve for fixed number of steps and time step</span>
+<span class="k">auto</span> <span class="n">Problem</span> <span class="o">=</span> <span class="n">createDefaultProblem</span><span class="o">&lt;</span><span class="n">ode_tag</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fomObj</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">yRom</span><span class="p">,</span> <span class="n">yRef</span><span class="p">,</span> <span class="p">[,</span> <span class="n">opsObject</span><span class="p">]);</span></pre><p>Note the function is templated on the ode tag. To select a different time stepping scheme, one can change the tag. To see the list of currently supported explicit stepping schemes, see <span class="m-text m-danger">todo</span>.</p></section><section id="autotoc_md47"><h2><a href="#autotoc_md47">How to solve a default Galerkin problem?</a></h2><p>Once the target problem object is created, the reduced system can be integrated in time. Here we provide the most basic function to do so, which advances the system for a fixed number of steps. Synopsis:</p><pre class="m-code"><span class="c1">// solve for fixed number of steps and time step</span>
 <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">galerkin</span><span class="o">::</span><span class="n">solveNSteps</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span>     <span class="err">#</span> <span class="n">problem</span> <span class="n">object</span>
                                     <span class="n">yRom</span><span class="p">,</span>        <span class="err">#</span> <span class="n">rom</span> <span class="n">state</span> <span class="n">to</span> <span class="n">advance</span>
                                     <span class="n">t0</span><span class="p">,</span>          <span class="err">#</span> <span class="n">initial</span> <span class="n">time</span>
                                     <span class="n">dt</span><span class="p">,</span>          <span class="err">#</span> <span class="n">time</span> <span class="n">step</span>
                                     <span class="n">Nsteps</span>       <span class="err">#</span> <span class="n">number</span> <span class="n">of</span> <span class="n">steps</span>
                                     <span class="p">[,</span> <span class="n">observer</span><span class="p">]</span> <span class="err">#</span> <span class="n">optional</span> <span class="n">observer</span>
-                                   <span class="p">)</span></pre><p>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation.</p></section><section id="autotoc_md60"><h2><a href="#autotoc_md60">Putting all steps together</a></h2><pre class="m-code"><span class="c1">// create adapter/FOM object</span>
+                                   <span class="p">)</span></pre><p>The optional argument allows one to pass an &quot;observer&quot; object whose purpose is to monitor the evolution of the reduced state. The observer is called back by pressio4py during the time integration at every time step. This can be useful to, e.g., save the generalized coordinates, or usign them to perfom some other operation.</p></section><section id="autotoc_md48"><h2><a href="#autotoc_md48">Putting all steps together</a></h2><pre class="m-code"><span class="c1">// create adapter/FOM object</span>
 <span class="c1">// ...</span>
 
 <span class="c1">// create the decoder</span>

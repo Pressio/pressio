@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Continuous-time FOM adapter API | Pressio|C++</title>
+  <title>Adapter API | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -30,8 +30,13 @@
                 <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
                 <li><a href="md_pages_getstarted_packages.html">Packages</a></li>
                 <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
-                <li><a href="md_pages_getstarted_adapter_api.html">Adapter API</a></li>
-                <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
+              </ol>
+            </li>
+            <li>
+              <a href=>Core Concepts</a>
+              <ol>
+                <li><a href="md_pages_coreconcepts_adapter_api.html">Adapter API</a></li>
+                <li><a href="md_pages_coreconcepts_adapting_app.html">Step-by-step on adapting an app</a></li>
               </ol>
             </li>
             <li>
@@ -47,12 +52,6 @@
                 <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
                 <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
                 <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
-            <li>
-              <a href=>Custom Ops</a>
-              <ol>
-                <li><a href="md_pages_custom_ops_default_gal_exp.html">Ops for Galerkin Explicit Time</a></li>
               </ol>
             </li>
             <li><a href="annotated.html">Classes</a></li>
@@ -73,9 +72,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          Continuous-time FOM adapter API
+          Adapter API
         </h1>
-<p>Recall that pressio targets a generic full-order model (FOM) system written as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
+<section id="autotoc_md1"><h2><a href="#autotoc_md1">What is it? Why we need it?</a></h2><aside class="m-block m-info"><p>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</p></aside><p>Recall that the role of the adapter is to enable Pressio to interface to an external application expressible as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]
 </title>
@@ -149,7 +148,7 @@ $f(...)$
 <use x='18.102085' y='0' xlink:href='#eq3-g0-58'/>
 <use x='21.353746' y='0' xlink:href='#eq3-g1-41'/>
 </g>
-</svg> is the FOM velocity.</p><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md2"><h2><a href="#autotoc_md2">A: velocity only</a></h2><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
+</svg> is the FOM velocity,  <span class="m-text m-danger">todo</span> finish.</p><p>To facilitate this integration, pressio supports two main types of adapter APIs:</p><ol><li><em>continuous-time</em> API: this directly stems from the formulation above, and is the preferred one;</li><li><em>discrete-time</em> API: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.</li></ol></section><section id="autotoc_md2"><h2><a href="#autotoc_md2">Continuous-time API</a></h2><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md3"><h3><a href="#autotoc_md3">A: velocity only</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -162,7 +161,7 @@ $f(...)$
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                 <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md3"><h2><a href="#autotoc_md3">B: velocity and Jacobian action</a></h2><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md4"><h3><a href="#autotoc_md4">B: velocity and Jacobian action</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -185,7 +184,48 @@ $f(...)$
                      <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
                      <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                      <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section></section><section id="autotoc_md5"><h2><a href="#autotoc_md5">Discrete-time API</a></h2><pre class="m-code"><span class="k">class</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="c1">//..;</span>
+  <span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="c1">//...;</span>
+  <span class="k">using</span> <span class="n">discrete_time_residual_type</span> <span class="o">=</span> <span class="c1">//...;</span>
+
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">discrete_time_residual_type</span> <span class="n">createDiscreteTimeResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="c1">// operand_type should be the data (matrix) type you used to store the basis.</span>
+  <span class="n">operand_t</span> <span class="nf">createApplyDiscreteTimeJacobianResult</span><span class="p">(</span><span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// let A =  discreteTimeJac * B</span>
+    <span class="n">operand_t</span> <span class="n">A</span><span class="p">(</span><span class="cm">/* construct A */</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">A</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
+                <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+              <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span> <span class="n">R</span><span class="p">,</span>
+              <span class="c1">//variadic # of states (user sets stencil size)</span>
+              <span class="n">Args</span> <span class="o">&amp;</span> <span class="p">...</span> <span class="n">states</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">discreteTimeResidualImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">applyDiscreteTimeJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
+                 <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+                 <span class="c1">//variadic # of states (user sets stencil size)</span>
+                 <span class="n">Args</span> <span class="o">&amp;</span> <span class="p">...</span> <span class="n">states</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">applyDiscreteTimeJacobianImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">stateIdForJacobian</span><span class="p">,</span>
+          <span class="n">A</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...);</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the discrete-time API?</h3><p>This version of the adapter can be <strong>only</strong> used for doing Galerkin and LSPG ROMs with <em>implicit</em> time stepping.</p></aside><aside class="m-note m-default"><h4>Should one prefer the continuous-time or discrete-time API?</h4><p>In general, we suggest users to always prefer the continuous-time API because it is more general.</p></aside></section>
       </div>
     </div>
   </div>

@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
-  <compounddef id="adapter__discrete__time__api_8md" kind="file" language="Markdown">
-    <compoundname>adapter_discrete_time_api.md</compoundname>
+  <compounddef id="dir_4717976f96b05f9f4cdaf1b62094876b" kind="dir">
+    <compoundname>pages/coreconcepts</compoundname>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="pages/adapter_apis/adapter_discrete_time_api.md"/>
+    <location file="pages/coreconcepts/"/>
   </compounddef>
 </doxygen>

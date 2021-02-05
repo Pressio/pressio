@@ -1,34 +1,31 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
-  <compounddef id="md_pages_getstarted_adapter_api" kind="page">
-    <compoundname>md_pages_getstarted_adapter_api</compoundname>
-    <title>FOM Adapter API</title>
+  <compounddef id="md_pages_coreconcepts_adapter_api" kind="page">
+    <compoundname>md_pages_coreconcepts_adapter_api</compoundname>
+    <title>Adapter API</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md18">
+<sect1 id="md_pages_coreconcepts_adapter_api_1autotoc_md1">
 <title>What is it? Why we need it?</title>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
-<para><simplesect kind="par"><title></title><para>An adapter class allows a FOM application to expose data via an API conforming to pressio requirements.</para>
+<para><simplesect kind="par"><title></title><para>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</para>
 </simplesect>
-Recall that pressio assumes your full-order model (FOM) system to be expressible as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity,  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
-<para>To use the functionalities in pressio, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, in pressio we leverage the idea of an <emphasis>adapter class</emphasis> as a layer allowing to standardize the way pressio interfaces with any application.</para>
-<para>Schematically, the flow of interfation is shown below: <image type="html" name="schem.svg" width="65%"></image>
-</para>
-<para>To facilitate the integration with existing applications, pressio supports adapters with two main types of API:<orderedlist>
+Recall that the role of the adapter is to enable Pressio to interface to an external application expressible as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity,  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
+<para>To facilitate this integration, pressio supports two main types of adapter APIs:<orderedlist>
 <listitem><para><emphasis>continuous-time</emphasis> API: this directly stems from the formulation above, and is the preferred one;</para>
 </listitem><listitem><para><emphasis>discrete-time</emphasis> API: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.</para>
 </listitem></orderedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md19">
+<sect1 id="md_pages_coreconcepts_adapter_api_1autotoc_md2">
 <title>Continuous-time API</title>
 <para>We envision two scenarios:<itemizedlist>
 <listitem><para>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</para>
 </listitem><listitem><para>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&apos;s Jacobian on some operand</para>
 </listitem></itemizedlist>
 </para>
-<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md20">
+<sect2 id="md_pages_coreconcepts_adapter_api_1autotoc_md3">
 <title>A: velocity only</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterA</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -50,7 +47,7 @@ Recall that pressio assumes your full-order model (FOM) system to be expressible
 </simplesect>
 </para>
 </sect2>
-<sect2 id="md_pages_getstarted_adapter_api_1autotoc_md21">
+<sect2 id="md_pages_coreconcepts_adapter_api_1autotoc_md4">
 <title>B: velocity and Jacobian action</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterB</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -83,7 +80,7 @@ Recall that pressio assumes your full-order model (FOM) system to be expressible
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_getstarted_adapter_api_1autotoc_md22">
+<sect1 id="md_pages_coreconcepts_adapter_api_1autotoc_md5">
 <title>Discrete-time API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

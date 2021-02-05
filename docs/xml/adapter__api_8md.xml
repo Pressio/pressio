@@ -6,6 +6,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="pages/adapter_api.md"/>
+    <location file="pages/coreconcepts/adapter_api.md"/>
   </compounddef>
 </doxygen>

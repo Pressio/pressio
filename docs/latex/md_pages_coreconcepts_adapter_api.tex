@@ -1,25 +1,21 @@
-\hypertarget{md_pages_getstarted_adapter_api_autotoc_md18}{}\doxysection{What is it? Why we need it?}\label{md_pages_getstarted_adapter_api_autotoc_md18}
+\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md1}{}\doxysection{What is it? Why we need it?}\label{md_pages_coreconcepts_adapter_api_autotoc_md1}
 
 
 \begin{DoxyParagraph}{}
-An adapter class allows a F\+OM application to expose data via an A\+PI conforming to pressio requirements.
+An adapter class allows a F\+OM application to expose data via an A\+PI conforming to Pressio requirements.
 \end{DoxyParagraph}
-Recall that pressio assumes your full-\/order model (F\+OM) system to be expressible as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity, todo finish.
+Recall that the role of the adapter is to enable Pressio to interface to an external application expressible as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity, todo finish.
 
-To use the functionalities in pressio, obviously there needs to be a way to exchange data/information between pressio and your F\+OM application. To do so, in pressio we leverage the idea of an {\itshape adapter class} as a layer allowing to standardize the way pressio interfaces with any application.
-
-Schematically, the flow of interfation is shown below\+: 
-
-To facilitate the integration with existing applications, pressio supports adapters with two main types of A\+PI\+:
+To facilitate this integration, pressio supports two main types of adapter A\+P\+Is\+:
 \begin{DoxyEnumerate}
 \item {\itshape continuous-\/time} A\+PI\+: this directly stems from the formulation above, and is the preferred one;
 \item {\itshape discrete-\/time} A\+PI\+: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.
-\end{DoxyEnumerate}\hypertarget{md_pages_getstarted_adapter_api_autotoc_md19}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md19}
+\end{DoxyEnumerate}\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md2}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_coreconcepts_adapter_api_autotoc_md2}
 We envision two scenarios\+:
 \begin{DoxyItemize}
 \item A\+: you are only able to expose the right-\/hand-\/side (or velocity) of your F\+OM application
 \item B\+: you expose the right-\/hand-\/side of your F\+OM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand
-\end{DoxyItemize}\hypertarget{md_pages_getstarted_adapter_api_autotoc_md20}{}\doxysubsection{A\+: velocity only}\label{md_pages_getstarted_adapter_api_autotoc_md20}
+\end{DoxyItemize}\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md3}{}\doxysubsection{A\+: velocity only}\label{md_pages_coreconcepts_adapter_api_autotoc_md3}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }AdapterA}
@@ -44,7 +40,7 @@ We envision two scenarios\+:
 \begin{DoxyParagraph}{Where can you use the AdapterA?}
 This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit time stepping.
 \end{DoxyParagraph}
-\hypertarget{md_pages_getstarted_adapter_api_autotoc_md21}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_getstarted_adapter_api_autotoc_md21}
+\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md4}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_coreconcepts_adapter_api_autotoc_md4}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }AdapterB}
@@ -79,7 +75,7 @@ This version of the adapter can be used for doing Galerkin R\+O\+Ms with explici
 \begin{DoxyParagraph}{Where can you use the AdapterB?}
 This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit and implicit time stepping, L\+S\+PG and W\+LS (note that L\+S\+PG and W\+LS only make sense for implicit time integration).
 \end{DoxyParagraph}
-\hypertarget{md_pages_getstarted_adapter_api_autotoc_md22}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md22}
+\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md5}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_coreconcepts_adapter_api_autotoc_md5}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class}}

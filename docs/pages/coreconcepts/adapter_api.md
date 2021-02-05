@@ -1,15 +1,15 @@
 
-# FOM Adapter API
+# Adapter API
 
 ## What is it? Why we need it?
 
 @m_class{m-block m-info}
 
 @par
-An adapter class allows a FOM application to expose data via an API conforming to pressio requirements.
+An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.
 
-
-Recall that pressio assumes your full-order model (FOM) system to be expressible as
+Recall that the role of the adapter is to enable Pressio to interface 
+to an external application expressible as
 @f[
 \frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}),
@@ -18,17 +18,15 @@ Recall that pressio assumes your full-order model (FOM) system to be expressible
 where @f$y@f$ is the FOM state and @f$f(...)@f$ is the FOM velocity,
 \todo finish.
 
-To use the functionalities in pressio, obviously there needs to be
+<!-- To use the functionalities in pressio, obviously there needs to be
 a way to exchange data/information between pressio and your FOM application.
 To do so, in pressio we leverage the idea of an *adapter class* as a layer
 allowing to standardize the way pressio interfaces with any application.
 
-
 Schematically, the flow of interfation is shown below:
 @image html schem.svg width=65%
-
-To facilitate the integration with existing applications, pressio supports
-adapters with two main types of API:
+ -->
+To facilitate this integration, pressio supports two main types of adapter APIs:
 1. *continuous-time* API: this directly stems from the formulation above, and is the preferred one;
 2. *discrete-time* API: this version is intended as an auxiliary tool, mainly aimed
 at those applications that only operate at the discrete level and therefore option 1 is not applicable.
@@ -159,3 +157,38 @@ This version of the adapter can be **only** used for doing Galerkin and LSPG ROM
 
 @par Should one prefer the continuous-time or discrete-time API?
 In general, we suggest users to always prefer the continuous-time API because it is more general.
+
+
+
+<!-- 
+
+@m_class{m-code-figure} @parblock
+@code{.cpp}
+class AdapterSteadyLSPG
+{
+  // ...
+public:
+  // The following aliases MUST be exposed because Pressio detects them.
+  // If these are not visible, mispelled or not found, you get a compile-time error
+  // because your adapter class does not the right API
+  using scalar_type       = /* your native scalar type */
+  using state_type        = /* your native state type */
+  using residual_type     = /* your native residual type */
+
+public:
+  // creates the residual object
+  // This is only called once to create the operators, does not need to contain real data.
+  residual_type createResidual() const;
+
+  // creates the result of applying the jacobian to the operand.
+  // This is only called once to create the operators, does not need to contain real data.
+  // operand_type should be the data (matrix) type you used to store the basis.
+  operand_type createApplyJacobianResult(const operand_type &) const;
+
+  void residual(state, r) const;
+
+  // computes the result of applying the jacobian to the argument: A  = Jacobian B
+  void applyJacobian(state, B, A) const; // computes: A = Jac B
+};
+@endcode
+@endparblock -->
