@@ -85,7 +85,7 @@ public:
 
   //==========
   void velocity(const state_type & U, 
-                const scalar_t & /*t*/, 
+                const scalar_type & /*t*/, 
                 velocity_type & V) const
   {
     scalar_type FL[3];
@@ -195,7 +195,7 @@ public:
   // Finite difference version of Jacobian, keep for validation  
   void jacobian_fd(const state_type & U,  
                   const scalar_type /*t*/, 
-                  jacobian_type & jac) consti
+                  jacobian_type & jac) const
   {
     velocity_type V0(3*nDofsSample_);
     velocity_type Vp(3*nDofsSample_);
@@ -216,7 +216,6 @@ public:
           for (int l=0;l<3;l++){
             // Get index to use for velocity
             auto sm_lid = 3*j + l;
-            //std::cout << smps_relid << std::endl; 
             if (abs(colVal(sm_lid)) > 1e-30){
               tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid,smps_lid,colVal(sm_lid) ) );
             }

@@ -231,7 +231,6 @@ public:
    
   }
 
-  //========
   velocity_type createVelocity() const {
     velocity_type V(3*nx_*ny_);
     return V;
