@@ -9,7 +9,10 @@ template <typename rom_state_t, typename native_state_t>
 struct observer{
   std::ofstream myfile_;
   std::ofstream myRefFile_;
-  observer(native_state_t y0): myfile_("solution.bin",  std::ios::out | std::ios::binary), myRefFile_("state_ref.bin",  std::ios::out | std::ios::binary){
+  observer(const native_state_t & y0)
+    : myfile_("solution.bin",  std::ios::out | std::ios::binary), 
+      myRefFile_("state_ref.bin",  std::ios::out | std::ios::binary)
+  {
     for (int i =0; i < y0.size(); i++){
       myRefFile_.write(reinterpret_cast<const char*>(&y0(i)),sizeof(y0(i)));
     }
@@ -34,8 +37,6 @@ struct observer{
 int main(int argc, char *argv[])
 {
   pressio::log::initialize(pressio::logto::terminal);
-  //pressio::log::setVerbosity({pressio::log::level::trace});
-
   std::string checkStr {"PASSED"};
 
   using fom_t		= pressio::apps::swe2d_hyper<std::vector<int>>;
@@ -131,6 +132,10 @@ int main(int argc, char *argv[])
   const int numBasis = phi.numVectors();
   if( numBasis != romSize ) return 0;
 
+  // ------------------------------------------------------
+  // construct decoder 
+  // ------------------------------------------------------
+
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
   using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
@@ -148,13 +153,13 @@ int main(int argc, char *argv[])
 
   // define ROM state
   lspg_state_t yROM(romSize);
-  // initialize to zero (this has to be done)
+  // initialize to zero (reference state is the initial condition)
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
   using ode_tag  = pressio::ode::implicitmethods::Euler;
-  fom_state_t yRefWrap(yRef);
   auto lspgProblem = pressio::rom::lspg::createHyperReducedProblemUnsteady<ode_tag>(appObj, decoderObj, yROM, yRef,sampleMeshRelIds);
+
   // linear solver
   using eig_dyn_mat  = Eigen::Matrix<scalar_t, -1, -1>;
   using hessian_t  = pressio::containers::DenseMatrix<eig_dyn_mat>;

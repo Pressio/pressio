@@ -9,7 +9,10 @@ template <typename rom_state_t, typename native_state_t>
 struct observer{
   std::ofstream myfile_;
   std::ofstream myRefFile_;
-  observer(native_state_t y0): myfile_("solution.bin",  std::ios::out | std::ios::binary), myRefFile_("state_ref.bin",  std::ios::out | std::ios::binary){
+  observer(const native_state_t & y0)
+  : myfile_("solution.bin",  std::ios::out | std::ios::binary), 
+    myRefFile_("state_ref.bin",  std::ios::out | std::ios::binary)
+  {
     for (int i =0; i < y0.size(); i++){
       myRefFile_.write(reinterpret_cast<const char*>(&y0(i)),sizeof(y0(i)));
     }
@@ -39,7 +42,6 @@ struct observer{
 int main(int argc, char *argv[])
 {
   pressio::log::initialize(pressio::logto::terminal);
-  //pressio::log::setVerbosity({pressio::log::level::trace});
 
   std::string checkStr {"PASSED"};
 
@@ -63,7 +65,6 @@ int main(int argc, char *argv[])
   scalar_t et = 10.;
   scalar_t dt = 0.5;
 
-  // for this problem, my reference state = initial state
 
   // -------------------------------------------------------
   // read basis
@@ -90,7 +91,7 @@ int main(int argc, char *argv[])
 
   // define ROM state
   lspg_state_t yROM(romSize);
-  // initialize to zero (this has to be done)
+  // initialize to zero (reference state is IC)
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
