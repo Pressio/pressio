@@ -40,6 +40,7 @@ private:
   scalar_t g_;
   scalar_t mu_ic_;
   scalar_t mu_f_;
+  mutable jacobian_t jac_;
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
   int state_index_mapper(int k, int i,int j) const {
@@ -205,6 +206,15 @@ public:
 		     scalar_t t,
 		     dense_matrix_type &JA) const
   {
+    jacobian(U,t,jac_);
+    JA = jac_*A;
+  }
+
+  void applyJacobian_fd(const state_type &U,
+		     const dense_matrix_type & A,
+		     scalar_t t,
+		     dense_matrix_type &JA) const
+  {
     
     scalar_t eps = 1.e-5;
     state_type Up(3*nx_*ny_);
@@ -254,6 +264,7 @@ protected:
       }
     }
     U_.resize(N_cell*3);
+    jac_ = createJacobian();
   };
 
 public:

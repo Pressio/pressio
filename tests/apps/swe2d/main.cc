@@ -1,6 +1,26 @@
 #include "pressio_ode_implicit.hpp"
 #include "pressio_apps.hpp"
 
+template <typename state_t>
+struct observer{
+  std::ofstream myfile_;
+  observer(): myfile_("solution.bin",  std::ios::out | std::ios::binary){}
+
+  void operator()(size_t step,
+  		  double t,
+  		  const state_t & y){
+    auto ydata = *y.data();
+    for (int i=0;i<y.extent(0);i++){
+      myfile_.write(reinterpret_cast<const char*>(&ydata(i)),sizeof(ydata(i)));
+    }
+    std::cout << "Time = " << t << std::endl; 
+  }
+
+  void closeFile(){
+    myfile_.close();
+  }
+};
+
 
 int main(int argc, char *argv[]){
   using scalar_t = double;
@@ -40,8 +60,11 @@ int main(int argc, char *argv[]){
     pressio::solvers::linear::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
 
+  // Define observer
+  observer<ode_state_t> Obs;
+
   auto NonLinSolver=
-    pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y, linSolverObj);
+    pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y,linSolverObj);
   NonLinSolver.setTolerance(1e-11);
   // integrate in time
   auto Nsteps = static_cast<::pressio::ode::types::step_t>(et/dt);
@@ -49,15 +72,8 @@ int main(int argc, char *argv[]){
   std::string filename = "solution.bin";
   std::ofstream myfile (filename,  std::ios::out | std::ios::binary);
 
-  for (int i = 0; i < Nsteps; i++){
-    pressio::ode::advanceNSteps(stepperObj, y, t, dt, 1, NonLinSolver);
-    t += dt;
-    std::cout << t << std::endl;
-    auto U = *y.data();
-    for (int i=0;i<nx*ny*3;i++){
-      myfile.write(reinterpret_cast<const char*>(&U(i)),sizeof(U(i)));
-    }
-  }
-  myfile.close();
+  pressio::ode::advanceNSteps(stepperObj, y, t, dt, Nsteps,Obs, NonLinSolver);
+
+  Obs.closeFile();
   return 0;
 }
