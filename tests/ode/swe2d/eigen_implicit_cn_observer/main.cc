@@ -79,9 +79,9 @@ int main(int argc, char *argv[]){
 
   pressio::ode::advanceNSteps(stepperObj, y, t, dt, Nsteps,Obs, NonLinSolver);
   Obs.closeFile();
-  double solNormGold = 8.12213076;
+  double solNormGold = 8.1221307554237;
   auto solNorm = (*y.data()).norm();
-  if (std::abs(solNorm - solNormGold) > 1e-8){
+  if (std::abs(solNorm - solNormGold) > 1e-12){
     checkStr = "Failed";
   }
   std::cout << checkStr << std::endl;
