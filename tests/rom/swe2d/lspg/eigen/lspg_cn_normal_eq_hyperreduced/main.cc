@@ -2,6 +2,9 @@
 #include "pressio_rom_lspg.hpp"
 #include "pressio_apps.hpp"
 #include "utils_eigen.hpp"
+
+std::string checkStr {"PASSED"};
+
 template <typename rom_state_t, typename native_state_t>
 struct observer{
   std::ofstream myfile_;
@@ -41,8 +44,8 @@ int main(int argc, char *argv[])
   // -------------------------------------------------------
   // create FOM object
   // -------------------------------------------------------
-  constexpr int nx = 64;
-  constexpr int ny = 64;
+  constexpr int nx = 8;
+  constexpr int ny = 8;
   scalar_t params[3];
   params[0] = 9.8;
   params[1] = 0.125;
@@ -52,7 +55,7 @@ int main(int argc, char *argv[])
   scalar_t mu_ic = 0.125;
   scalar_t t = 0;
   scalar_t et = 10.;
-  scalar_t dt = 0.02;
+  scalar_t dt = 0.5;
 
 
   int romSize;
@@ -169,7 +172,9 @@ int main(int argc, char *argv[])
   // solve
   pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, Nsteps, Obs,solver);
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
-
+  auto solNorm = (*yFomFinal.data()).norm();
+  std::cout << std::setprecision(14) << solNorm << std::endl;
   Obs.closeFile();
+  std::cout << checkStr << std::endl;
   return 0;
 }
