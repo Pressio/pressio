@@ -1,5 +1,6 @@
 
 add_subdirectory(burgers1d)
+add_subdirectory(swe2d)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
   add_subdirectory(advance_n_steps_arbitrary_dt_setter_with_collector)

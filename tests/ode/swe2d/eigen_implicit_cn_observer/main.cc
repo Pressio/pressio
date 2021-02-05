@@ -1,6 +1,6 @@
 #include "pressio_ode_implicit.hpp"
 #include "pressio_apps.hpp"
-
+std::string checkStr {"PASSED"};
 template <typename state_t>
 struct observer{
   std::ofstream myfile_;
@@ -21,6 +21,11 @@ struct observer{
   }
 };
 
+/*
+   Regression test for the 2D Shallow Water Equations with Eigen data structures
+   and Crank Nicolson time stepping. Solution will be written to a solution.bin 
+   output file. 
+*/
 
 int main(int argc, char *argv[]){
   using scalar_t = double;
@@ -30,8 +35,8 @@ int main(int argc, char *argv[]){
   using app_jacob_t	= typename app_t::jacobian_type;
 
 
-  int nx = 64;
-  int ny = 64;
+  int nx = 8;
+  int ny = 8;
   scalar_t params[3];
   params[0] = 9.8;
   params[1] = 0.125;
@@ -42,7 +47,7 @@ int main(int argc, char *argv[]){
   app_t appObj(Lx,Ly,nx,ny,params);
   scalar_t t = 0;
   scalar_t et = 10.;
-  scalar_t dt = 0.02;
+  scalar_t dt = 0.5;
 
   // types for ode
   using ode_state_t = pressio::containers::Vector<app_state_t>;
@@ -73,7 +78,12 @@ int main(int argc, char *argv[]){
   std::ofstream myfile (filename,  std::ios::out | std::ios::binary);
 
   pressio::ode::advanceNSteps(stepperObj, y, t, dt, Nsteps,Obs, NonLinSolver);
-
   Obs.closeFile();
+  double solNormGold = 8.12213076;
+  auto solNorm = (*y.data()).norm();
+  if (std::abs(solNorm - solNormGold) > 1e-8){
+    checkStr = "Failed";
+  }
+  std::cout << checkStr << std::endl;
   return 0;
 }
