@@ -16,7 +16,8 @@ LINKS_NAVBAR1 = [
   ("<a href=>Core Concepts</a>", 
    [
      ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
-     ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
+     ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",)
+     # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
   # tutorials

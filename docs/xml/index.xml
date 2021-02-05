@@ -4,6 +4,8 @@
   </compound>
   <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
   </compound>
+  <compound refid="datatypes_8md" kind="file"><name>datatypes.md</name>
+  </compound>
   <compound refid="custom__ops_8md" kind="file"><name>custom_ops.md</name>
   </compound>
   <compound refid="default__gal__exp_8md" kind="file"><name>default_gal_exp.md</name>
@@ -45,6 +47,8 @@
   <compound refid="md_pages_coreconcepts_adapter_api" kind="page"><name>md_pages_coreconcepts_adapter_api</name>
   </compound>
   <compound refid="md_pages_coreconcepts_adapting_app" kind="page"><name>md_pages_coreconcepts_adapting_app</name>
+  </compound>
+  <compound refid="md_pages_coreconcepts_datatypes" kind="page"><name>md_pages_coreconcepts_datatypes</name>
   </compound>
   <compound refid="md_pages_custom_ops_default_gal_exp" kind="page"><name>md_pages_custom_ops_default_gal_exp</name>
   </compound>
