@@ -17,72 +17,73 @@ protected:
 
 public:
   using scalar_type	= double; 
-  using scalar_t        = scalar_type;
   using state_type	= eigVec;
-  using state_t          = state_type;
   using velocity_type	= eigVec;
-  using eig_sp_mat = Eigen::SparseMatrix<scalar_t, Eigen::RowMajor, int>;
+  using eig_sp_mat = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using jacobian_type	= eig_sp_mat;
-  using jacobian_t = jacobian_type;
-  using velocity_t = velocity_type;
   using dense_matrix_type = Eigen::MatrixXd; 
 
 
 private:
-  mutable std::vector<  Eigen::Triplet<scalar_t> > tripletList;
-  scalar_t Lx_;
-  scalar_t Ly_;
+  mutable std::vector<  Eigen::Triplet<scalar_type> > tripletList;
+  scalar_type Lx_;
+  scalar_type Ly_;
   int nx_;
   int ny_;
-  scalar_t dx_;
-  scalar_t dy_;
+  scalar_type dx_;
+  scalar_type dy_;
   int nDofs_;
-  scalar_t g_;
-  scalar_t mu_ic_;
-  scalar_t mu_f_;
-  mutable jacobian_t jac_;
+  scalar_type g_;
+  scalar_type mu_ic_;
+  scalar_type mu_f_;
+  mutable jacobian_type jac_;
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
-  int state_index_mapper(int k, int i,int j) const {
+  int state_index_mapper(const int k,const int i,const int j) const {
     int state_global_indx = 3 * ( (modulus(j,ny_))*nx_ + modulus(i,nx_) ) + k;
     return state_global_indx;
   }
 
   // mapping from i (x-index), and  (y-index) to global index
-  int index_mapper(int i,int j) const {
+  int index_mapper(const int i,const int j) const {
     int global_indx = (modulus(j,ny_))*nx_ + modulus(i,nx_);
     return global_indx;
   }
 
-  std::array<int,2> get_ij_from_gid(int gid) const {
+  std::array<int,2> get_ij_from_gid(const int gid) const {
       int j = gid/nx_;
       int i = gid%nx_;
       std::array<int,2> ij = {i,j};
       return ij;
   }
 
-  int modulus(int n,int M) const {
+  int modulus(const int n,const int M) const {
     return ((n % M) + M) % M;
   }
 
 
 public:
-  swe2d(scalar_t Lx, scalar_t Ly, int nx, int ny, scalar_t params[3]) :
-    nx_(nx),Lx_(Lx),ny_(ny),Ly_(Ly), g_(params[0]),mu_ic_(params[1]),mu_f_(params[2]){
+  swe2d(const scalar_type Lx,const scalar_type Ly, 
+        const int nx,const int ny,const scalar_type params[3]) 
+    : nx_(nx),Lx_(Lx),ny_(ny),Ly_(Ly), 
+      g_(params[0]),mu_ic_(params[1]),mu_f_(params[2])
+    {
       this->setup();
     }
 
 
   //==========
-  void velocity(const state_type & U, const scalar_t & t, velocity_type & V) const
+  void velocity(const state_type & U, 
+                const scalar_type /*t*/,
+                velocity_type & V) const
   {
-    scalar_t FL[3];
-    scalar_t FR[3];
-    scalar_t FU[3];
-    scalar_t FD[3];
-    scalar_t forcing[3];
-    std::array<scalar_t, 2> nx = { 1, 0 };
-    std::array<scalar_t, 2> ny = { 0, 1 };
+    scalar_type FL[3];
+    scalar_type FR[3];
+    scalar_type FU[3];
+    scalar_type FD[3];
+    scalar_type forcing[3];
+    std::array<scalar_type, 2> nx = { 1, 0 };
+    std::array<scalar_type, 2> ny = { 0, 1 };
 
     int isL;
     int isR;
@@ -115,27 +116,22 @@ public:
       }
     }
   }
-  /*
 
-   */
-  void jacobian(const state_type & U, const scalar_type /*t*/, jacobian_type & jac) const{
-      scalar_t *UL;
-      scalar_t *UR;
-      scalar_t *UU;
-      scalar_t *UD;
-      scalar_t *V_view;
+  void jacobian(const state_type & U,  
+                const scalar_type /*t*/, 
+                jacobian_type & jac) const
+    {
+      scalar_type JL_L[3][3];
+      scalar_type JR_L[3][3];
+      scalar_type JL_R[3][3];
+      scalar_type JR_R[3][3];
+      scalar_type JD_D[3][3];
+      scalar_type JU_D[3][3];
+      scalar_type JD_U[3][3];
+      scalar_type JU_U[3][3];
 
-      scalar_t JL_L[3][3];
-      scalar_t JR_L[3][3];
-      scalar_t JL_R[3][3];
-      scalar_t JR_R[3][3];
-      scalar_t JD_D[3][3];
-      scalar_t JU_D[3][3];
-      scalar_t JD_U[3][3];
-      scalar_t JU_U[3][3];
-
-      std::array<scalar_t, 2> nx = { 1, 0 };
-      std::array<scalar_t, 2> ny = { 0, 1 };
+      std::array<scalar_type, 2> nx = { 1, 0 };
+      std::array<scalar_type, 2> ny = { 0, 1 };
 
 
       //=================
@@ -155,36 +151,38 @@ public:
         for (int j = 0; j < 3; ++j) {
           for (int i = 0; i < 3; ++i) {
             auto val = -1./dx_*(JL_R[i][j] - JR_L[i][j]) - 1./dy_*(JD_U[i][j] - JU_D[i][j]);
-            tripletList.push_back( Eigen::Triplet<scalar_t>( gid+i,gid+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( gid+i,gid+j,val ) );
 
             val =  1./dx_*JL_L[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( gid+i,gid_im1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( gid+i,gid_im1+j,val ) );
 
             val = -1./dx_*JR_R[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( gid+i,gid_ip1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( gid+i,gid_ip1+j,val ) );
 
             val = 1./dy_*JD_D[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( gid+i,gid_jm1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( gid+i,gid_jm1+j,val ) );
 
             val = -1./dy_*JU_U[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( gid+i,gid_jp1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( gid+i,gid_jp1+j,val ) );
 
           }
         }
         // add forcing terms
-        auto val = mu_f_;
-        tripletList.push_back( Eigen::Triplet<scalar_t>( gid+1,gid+2,val ) );
-        tripletList.push_back( Eigen::Triplet<scalar_t>( gid+2,gid+1,val ) );
+        tripletList.push_back( Eigen::Triplet<scalar_type>( gid+1,gid+2,mu_f_ ) );
+        tripletList.push_back( Eigen::Triplet<scalar_type>( gid+2,gid+1,mu_f_ ) );
       }
       jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
 
-  void jacobian_fd(const state_type & U, const scalar_type /*t*/, jacobian_type & jac) const{
+  // finite difference Jacobian, keep for validation
+  void jacobian_fd(const state_type & U, 
+                   const scalar_type /*t*/, 
+                   jacobian_type & jac) const{
     velocity_type V0(nDofs_);
     velocity_type Vp(nDofs_);
     state_type Up(U);
     velocity(U,0.,V0);
-    scalar_t eps = 1e-5;
+    scalar_type eps = 1e-5;
     tripletList.clear();
     for (int i = 0; i < nDofs_; i++){
       Up(i) += eps;
@@ -193,7 +191,7 @@ public:
       Up(i) -= eps;
       for (int j=0;j<nDofs_;j++){
         if (abs(colVal(j)) > 1e-30){
-          tripletList.push_back( Eigen::Triplet<scalar_t>( j,i,colVal(j) ) );
+          tripletList.push_back( Eigen::Triplet<scalar_type>( j,i,colVal(j) ) );
         }
       } 
     }
@@ -203,20 +201,21 @@ public:
 
   void applyJacobian(const state_type &U,
 		     const dense_matrix_type & A,
-		     scalar_t t,
+		     scalar_type t,
 		     dense_matrix_type &JA) const
   {
     jacobian(U,t,jac_);
     JA = jac_*A;
   }
 
+  // finite difference Jacbian, keep for validation
   void applyJacobian_fd(const state_type &U,
 		     const dense_matrix_type & A,
-		     scalar_t t,
+		     scalar_type t,
 		     dense_matrix_type &JA) const
   {
     
-    scalar_t eps = 1.e-5;
+    scalar_type eps = 1.e-5;
     state_type Up(3*nx_*ny_);
     velocity_type V0(3*nx_*ny_);
     velocity_type V_perturb(3*nx_*ny_);
@@ -250,9 +249,8 @@ public:
 
 protected:
   void setup(){
-    // distribute cells
-    dx_ = Lx_/static_cast<scalar_t>(nx_);
-    dy_ = Ly_/static_cast<scalar_t>(ny_);
+    dx_ = Lx_/static_cast<scalar_type>(nx_);
+    dy_ = Ly_/static_cast<scalar_type>(ny_);
     nDofs_ = 3*nx_*ny_;
     int N_cell = nx_*ny_;
     xGrid_.resize(N_cell);
@@ -263,12 +261,11 @@ protected:
         yGrid_(index_mapper(i,j)) = dy_*j + dy_*0.5;
       }
     }
-    U_.resize(N_cell*3);
     jac_ = createJacobian();
   };
 
 public:
-  state_type getGaussianIC(scalar_t mu) const{
+  state_type getGaussianIC(scalar_type mu) const{
     state_type U0(3*nx_*ny_);
     for (int i=0; i < nx_; i++){
       for (int j=0; j < ny_; j++){

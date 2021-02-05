@@ -9,43 +9,36 @@ class swe2d_hyper
 {
 
   using eigVec = Eigen::VectorXd;
-  using ui_t = unsigned int;
 protected:
 
-  eigVec U_;
   eigVec xGrid_; // mesh points coordinates
   eigVec yGrid_; // mesh points coordinates
 
 public:
   using scalar_type	= double; 
-  using scalar_t        = scalar_type;
   using state_type	= eigVec;
-  using state_t          = state_type;
   using velocity_type	= eigVec;
-  using eig_sp_mat = Eigen::SparseMatrix<scalar_t, Eigen::RowMajor, int>;
+  using eig_sp_mat = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
   using jacobian_type	= eig_sp_mat;
-  using jacobian_t = jacobian_type;
-  using velocity_t = velocity_type;
   using dense_matrix_type = Eigen::MatrixXd; 
 
-
 private:
-  mutable std::vector<  Eigen::Triplet<scalar_t> > tripletList;
-  scalar_t Lx_;
-  scalar_t Ly_;
+  mutable std::vector<  Eigen::Triplet<scalar_type> > tripletList;
+  scalar_type Lx_;
+  scalar_type Ly_;
   int nx_;
   int ny_;
-  scalar_t dx_;
-  scalar_t dy_;
+  scalar_type dx_;
+  scalar_type dy_;
   int nDofsSample_;
   int nDofsStencil_;
 
-  scalar_t g_;
-  scalar_t mu_ic_;
-  scalar_t mu_f_;
+  scalar_type g_;
+  scalar_type mu_ic_;
+  scalar_type mu_f_;
   gids_t gidsSample_;
   gids_t gidsStencil_;
-  mutable jacobian_t jac_;
+  mutable jacobian_type jac_;
   mutable std::map<int,int> smLidToGidMap_;
   mutable std::map<int,int> smGidToLidMap_;
   mutable std::map<int,int> smpsLidToGidMap_;
@@ -53,53 +46,60 @@ private:
 
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
-  int state_index_mapper(int k, int i,int j) const {
+  int state_index_mapper(const int k,const int i,const int j) const {
     int state_global_indx = 3 * ( (modulus(j,ny_))*nx_ + modulus(i,nx_) ) + k;
     return state_global_indx;
   }
 
   // mapping from i (x-index), and  (y-index) to global index
-  int index_mapper(int i,int j) const {
+  int index_mapper(const int i,const int j) const {
     int global_indx = (modulus(j,ny_))*nx_ + modulus(i,nx_);
     return global_indx;
   }
 
-  std::array<int,2> get_ij_from_gid(int gid) const {
+  // get ij index from global index
+  std::array<int,2> get_ij_from_gid(const int gid) const {
       int j = gid/nx_;
       int i = gid%nx_;
       std::array<int,2> ij = {i,j};
       return ij;
   }
-
+ 
   int modulus(int n,int M) const {
     return ((n % M) + M) % M;
   }
 
 
 public:
-  swe2d_hyper(scalar_t Lx, scalar_t Ly, int nx, int ny, scalar_t params[3], gids_t gidsSample, gids_t gidsStencil) :
-    nx_(nx),Lx_(Lx),ny_(ny),Ly_(Ly), g_(params[0]),mu_ic_(params[1]),mu_f_(params[2]), gidsSample_(gidsSample),gidsStencil_(gidsStencil){
-      this->setup();
+  swe2d_hyper(const scalar_type Lx,const scalar_type Ly, 
+              const int nx,const int ny,const scalar_type params[3], 
+              const gids_t gidsSample,const gids_t gidsStencil)
+    : nx_(nx),Lx_(Lx),ny_(ny),Ly_(Ly), 
+      g_(params[0]),mu_ic_(params[1]),
+      mu_f_(params[2]), gidsSample_(gidsSample),
+      gidsStencil_(gidsStencil)
+    {
+        this->setup();
     }
 
 
   //==========
-  void velocity(const state_type & U, const scalar_t & t, velocity_type & V) const
+  void velocity(const state_type & U, 
+                const scalar_t & /*t*/, 
+                velocity_type & V) const
   {
-    scalar_t FL[3];
-    scalar_t FR[3];
-    scalar_t FU[3];
-    scalar_t FD[3];
-    scalar_t forcing[3];
-    std::array<scalar_t, 2> nx = { 1, 0 };
-    std::array<scalar_t, 2> ny = { 0, 1 };
+    scalar_type FL[3];
+    scalar_type FR[3];
+    scalar_type FU[3];
+    scalar_type FD[3];
+    scalar_type forcing[3];
+    std::array<scalar_type, 2> nx = { 1, 0 };
+    std::array<scalar_type, 2> ny = { 0, 1 };
 
     int isL;
     int isR;
     int isU;
     int isD;
-//    for (int i=0; i < nx_  ; i++){
-//      for (int j=0; j < ny_ ; j++){
     for (int sampleMeshIndexCounter=0; sampleMeshIndexCounter < nDofsSample_  ; sampleMeshIndexCounter++){
         auto sampleMeshIndex = smLidToGidMap_[sampleMeshIndexCounter];
         auto ij = get_ij_from_gid(sampleMeshIndex); // get ij location
@@ -132,30 +132,24 @@ public:
 	}
     }
   }
-  /*
 
-   */
-  void jacobian(const state_type & U, const scalar_type /*t*/, jacobian_type & jac) const{
-      scalar_t *UL;
-      scalar_t *UR;
-      scalar_t *UU;
-      scalar_t *UD;
-      scalar_t *V_view;
+  void jacobian(const state_type & U, 
+                const scalar_type /*t*/, 
+                jacobian_type & jac) const
+  {
+      scalar_type JL_L[3][3];
+      scalar_type JR_L[3][3];
+      scalar_type JL_R[3][3];
+      scalar_type JR_R[3][3];
+      scalar_type JD_D[3][3];
+      scalar_type JU_D[3][3];
+      scalar_type JD_U[3][3];
+      scalar_type JU_U[3][3];
 
-      scalar_t JL_L[3][3];
-      scalar_t JR_L[3][3];
-      scalar_t JL_R[3][3];
-      scalar_t JR_R[3][3];
-      scalar_t JD_D[3][3];
-      scalar_t JU_D[3][3];
-      scalar_t JD_U[3][3];
-      scalar_t JU_U[3][3];
-
-      std::array<scalar_t, 2> nx = { 1, 0 };
-      std::array<scalar_t, 2> ny = { 0, 1 };
+      std::array<scalar_type, 2> nx = { 1, 0 };
+      std::array<scalar_type, 2> ny = { 0, 1 };
 
 
-      //=================
       tripletList.clear();
       for (int sampleMeshIndexCounter=0; sampleMeshIndexCounter < nDofsSample_  ; sampleMeshIndexCounter++){
         auto sampleMeshGlobalIndex = smLidToGidMap_[sampleMeshIndexCounter];  
@@ -174,36 +168,40 @@ public:
         for (int j = 0; j < 3; ++j) {
           for (int i = 0; i < 3; ++i) {
             auto val = -1./dx_*(JL_R[i][j] - JR_L[i][j]) - 1./dy_*(JD_U[i][j] - JU_D[i][j]);
-            tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+i,smps_lid+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+i,smps_lid+j,val ) );
 
             val =  1./dx_*JL_L[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+i,smps_lid_im1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+i,smps_lid_im1+j,val ) );
 
             val = -1./dx_*JR_R[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+i,smps_lid_ip1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+i,smps_lid_ip1+j,val ) );
 
             val = 1./dy_*JD_D[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+i,smps_lid_jm1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+i,smps_lid_jm1+j,val ) );
 
             val = -1./dy_*JU_U[i][j];
-            tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+i,smps_lid_jp1+j,val ) );
+            tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+i,smps_lid_jp1+j,val ) );
 
           }
         }
         // add forcing terms
         auto val = mu_f_;
-        tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+1,smps_lid+2,val ) );
-        tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid+2,smps_lid+1,val ) );
+        tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+1,smps_lid+2,val ) );
+        tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid+2,smps_lid+1,val ) );
       }
       jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
-   
-  void jacobian_fd(const state_type & U, const scalar_type t, jacobian_type & jac) const{
+  
+  // Finite difference version of Jacobian, keep for validation  
+  void jacobian_fd(const state_type & U,  
+                  const scalar_type /*t*/, 
+                  jacobian_type & jac) consti
+  {
     velocity_type V0(3*nDofsSample_);
     velocity_type Vp(3*nDofsSample_);
     state_type Up(U);
     velocity(U,0.,V0);
-    scalar_t eps = 1e-5;
+    scalar_type eps = 1e-5;
     tripletList.clear();
     // Loop through all points on stencil mesh and perturb
     for (int i = 0; i < nDofsStencil_; i++){
@@ -220,7 +218,7 @@ public:
             auto sm_lid = 3*j + l;
             //std::cout << smps_relid << std::endl; 
             if (abs(colVal(sm_lid)) > 1e-30){
-              tripletList.push_back( Eigen::Triplet<scalar_t>( sm_lid,smps_lid,colVal(sm_lid) ) );
+              tripletList.push_back( Eigen::Triplet<scalar_type>( sm_lid,smps_lid,colVal(sm_lid) ) );
             }
           }
         } 
@@ -231,19 +229,20 @@ public:
   
   void applyJacobian(const state_type &U,
 		     const dense_matrix_type & A,
-		     scalar_t t,
+		     scalar_type t,
 		     dense_matrix_type &JA) const
   {
     jacobian(U,t,jac_);
     JA = jac_*A;
   }
 
+  // Finite difference version, keep for validation
   void applyJacobian_fd(const state_type &U,
 		     const dense_matrix_type & A,
-		     scalar_t t,
+		     scalar_type t,
 		     dense_matrix_type &JA) const
   {
-    scalar_t eps = 1.e-5;
+    scalar_type eps = 1.e-5;
     state_type Up(3*nDofsStencil_);
     velocity_type V0(3*nDofsSample_);
     velocity_type V_perturb(3*nDofsSample_);
@@ -288,9 +287,8 @@ protected:
       smpsGidToLidMap_.emplace(gidsStencil_[i],i);
     }
 
-    // distribute cells
-    dx_ = Lx_/static_cast<scalar_t>(nx_);
-    dy_ = Ly_/static_cast<scalar_t>(ny_);
+    dx_ = Lx_/static_cast<scalar_type>(nx_);
+    dy_ = Ly_/static_cast<scalar_type>(ny_);
     int N_cell = nx_*ny_;
     xGrid_.resize(N_cell);
     yGrid_.resize(N_cell);
@@ -300,12 +298,12 @@ protected:
         yGrid_(index_mapper(i,j)) = dy_*j + dy_*0.5;
       }
     }
-    U_.resize(N_cell*3);
     jac_ = createJacobian();
   };
 
 public:
-  state_type getGaussianICFull(scalar_t mu) const{
+  // Get Gaussian IC at full mesh
+  state_type getGaussianICFull(const scalar_type mu) const{
     state_type U0(3*nx_*ny_);
     for (int i=0; i < nx_; i++){
       for (int j=0; j < ny_; j++){
@@ -319,15 +317,15 @@ public:
     return U0;
   }
 
-
-  state_type getGaussianIC(scalar_t mu) const{
+  // Get Gaussian IC on stencil mesh
+  state_type getGaussianIC(const scalar_type mu) const{
     state_type U0(3*nDofsStencil_);
     for (int smpsIndexCounter=0; smpsIndexCounter < nDofsStencil_  ; smpsIndexCounter++){
         auto smpsGlobalIndex = smpsLidToGidMap_[smpsIndexCounter];
         auto ij = get_ij_from_gid(smpsGlobalIndex); // get ij location
         auto i = ij[0];
         auto j = ij[1];
-        auto indexStencil = 3*smpsIndexCounter;//smpsGidToLidMap_[index_mapper(i,j)]; //gives global id
+        auto indexStencil = 3*smpsIndexCounter;
         U0(indexStencil) = 1. + mu_ic_*exp( - ( pow( xGrid_(index_mapper(i,j)) - 1.5,2)
                                    + pow( yGrid_(index_mapper(i,j)) - 1.5,2) ));
         U0(indexStencil+1) = 0.;
