@@ -11,14 +11,14 @@
 <sect1 id="index_1autotoc_md30">
 <title>In a nutshell</title>
 <para>Pressio provides model reduction functionalities applicable to any system expressible as <formula id="3">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> where <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="4">$f$</formula> is the FOM velocity, and <formula id="5">$t$</formula> is time.</para>
-<para>We leverage this simple, expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems. To use Pressio, you only need to create an <emphasis>adapter class</emphasis> to expose the right-hand-side of your system and optionally the action of its Jacobian. Schematically, Pressio exchanges data with your application as shown below: <image type="html" name="frontpageschem.svg" width="65%"></image>
+<para>We leverage this simple but expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems. To interface your application to Pressio, you need to create an <emphasis>adapter class</emphasis> to expose the right-hand-side of your system and optionally the action of its Jacobian. Schematically, this is shown below: <image type="html" name="frontpageschem.svg" width="85%"></image>
 </para>
 </sect1>
 <sect1 id="index_1autotoc_md31">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
-</listitem><listitem><para>read the description of <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing this C++ library</para>
+</listitem><listitem><para>read about the <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing this C++ library</para>
 </listitem><listitem><para>explore the <ulink url="./md_pages_tutorials_tutorial1.html">tutorials</ulink></para>
 </listitem><listitem><para>dig into the <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</ulink> of the C++ library</para>
 </listitem></itemizedlist>

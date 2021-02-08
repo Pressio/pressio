@@ -3,7 +3,7 @@
 *Leading-edge projection-based reduced order models (\proms) for
 dynamical systems in science and engineering.*
 
-You landed on the documentation of the C++ library, 
+You landed on the documentation of the C++ library,
 which is one component of the [Pressio project](https://pressio.github.io/).
 
 
@@ -14,23 +14,23 @@ Pressio provides model reduction functionalities applicable to any system expres
 \frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)
 @f]
-where @f$y@f$ is the full-order model (FOM) state, 
+where @f$y@f$ is the full-order model (FOM) state,
 @f$f@f$ is the FOM velocity, and @f$t@f$ is time.
 
-We leverage this simple, expressive mathematical framework as a pivotal 
+We leverage this simple but expressive mathematical framework as a pivotal
 design choice to enable a minimal application programming interface (API)
 that is natural to dynamical systems.
-To use Pressio, you only need to create an *adapter class* 
+To interface your application to Pressio, you need to create an *adapter class*
 to expose the right-hand-side of your system and optionally the action of its Jacobian.
-Schematically, Pressio exchanges data with your application as shown below:
-@image html frontpageschem.svg width=65%
+Schematically, this is shown below:
+@image html frontpageschem.svg width=85%
 
 
 ## Getting Started
 
 * learn about the [installation process](./md_pages_getstarted_build_and_install.html)
 
-* read the description of [packages](./md_pages_getstarted_packages.html) composing this C++ library
+* read about the [packages](./md_pages_getstarted_packages.html) composing this C++ library
 
 * explore the [tutorials](./md_pages_tutorials_tutorial1.html)
 
