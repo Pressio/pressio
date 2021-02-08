@@ -33,9 +33,9 @@ private:
   scalar_type dx_;
   scalar_type dy_;
   int nDofs_;
-  scalar_type g_;
-  scalar_type mu_ic_;
-  scalar_type mu_f_;
+  mutable scalar_type g_;
+  mutable scalar_type mu_ic_;
+  mutable scalar_type mu_f_;
   mutable jacobian_type jac_;
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
@@ -71,7 +71,13 @@ public:
       this->setup();
     }
 
-
+  // Sets parameter values
+  void setParams(const scalar_type params[3]) const
+  {
+    g_ = params[0];
+    mu_ic_ = params[1]; 
+    mu_f_ = params[2];
+  }
   //==========
   void velocity(const state_type & U, 
                 const scalar_type /*t*/,
