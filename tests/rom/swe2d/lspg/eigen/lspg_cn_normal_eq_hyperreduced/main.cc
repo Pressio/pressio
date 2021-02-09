@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
-  using ode_tag  = pressio::ode::implicitmethods::Euler;
+  using ode_tag  = pressio::ode::implicitmethods::CrankNicolson;
   auto lspgProblem = pressio::rom::lspg::createHyperReducedProblemUnsteady<ode_tag>(appObj, decoderObj, yROM, yRef,sampleMeshRelIds);
 
   // linear solver
@@ -176,6 +176,13 @@ int main(int argc, char *argv[])
   observer<lspg_state_t,native_state_t> Obs(yRefFull);
   // solve
   pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, Nsteps, Obs,solver);
+
+
+  // Reconstruct full state for verification
+  //decoder_jac_t phiFull = pressio::rom::test::eigen::readBasis("basis.txt", romSize, 3*nx*ny);
+  //decoder_t decoderObjFull(phiFull);
+  //using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  //fom_state_reconstr_t fomStateReconstructorFull(yRefFull,decoderObjFull);
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
   auto solNorm = (*yFomFinal.data()).norm();
   std::cout << std::setprecision(14) << solNorm << std::endl;

@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
   params[2] = 0.25;
   scalar_t Lx = 5;
   scalar_t Ly = 5;
-  scalar_t mu_ic = 0.125;
+  scalar_t mu_ic = params[1];
   fom_t appObj(Lx,Ly,nx,ny,params);
   scalar_t t = 0;
   scalar_t et = 10.;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
-  using ode_tag  = pressio::ode::implicitmethods::Euler;
+  using ode_tag  = pressio::ode::implicitmethods::CrankNicolson;
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
     appObj, decoderObj, yROM, yRef);
 
