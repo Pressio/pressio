@@ -106,6 +106,34 @@ public:
 				    fomSystemObj, timeAtNextStep, dt, currentStepNumber);
   }
 
+  template <
+    typename stepper_tag,
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t,
+    typename stencil_velocities_t
+    >
+  mpl::enable_if_t<
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
+  compute(const lspg_state_t & romState,
+	  const stencil_states_t & stencilStates,
+	  const fom_system_t & fomSystemObj,
+	  const scalar_t & timeAtNextStep,
+	  const scalar_t & dt,
+	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  stencil_velocities_t & stencilVelocities,
+	  residual_type & romR) const
+  {
+
+    assert(sTosInfo_.get().extent(0) == romR.extent(0));
+
+    this->compute_cn_impl<stepper_tag>
+      (romState, romR, stencilStates, fomSystemObj,
+       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
+  }
+
 private:
   template <
     typename stepper_tag,
@@ -144,6 +172,49 @@ private:
     ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
 	<stepper_tag>(fomStatesMngr_.get(), romR, dt, sTosInfo_.get());
   }
+
+  template <
+    typename stepper_tag,
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t,
+    typename stencil_velocities_t
+  >
+  void compute_cn_impl(const lspg_state_t & romState,
+		       residual_type & romR,
+		       const stencil_states_t & stencilStates,
+		       const fom_system_t & fomSystemObj,
+		       const scalar_t & t_np1,
+		       const scalar_t & dt,
+		       const ::pressio::ode::types::step_t & currentStepNumber,
+		       // for CN, stencilVelocities holds f_n+1 and f_n
+		       stencil_velocities_t & stencilVelocities) const
+  {
+    PRESSIOLOG_DEBUG("residual policy with compute_cn_impl");
+
+    fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
+
+    if (storedStep_ != currentStepNumber){
+      fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
+      storedStep_ = currentStepNumber;
+
+      // if the step changed, I need to compute f(y_n, t_n)
+      const auto tn = t_np1-dt;
+      auto & f_n = stencilVelocities(::pressio::ode::n());
+      const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
+      fomSystemObj.velocity(*fomState_n.data(), tn, *f_n.data());
+    }
+
+    // always compute f(y_n+1, t_n+1)
+    auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
+    const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    fomSystemObj.velocity(*fomState_np1.data(), t_np1, *f_np1.data());
+
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
+	<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt, sTosInfo_.get());
+  }
+
 
 protected:
   // storedStep is used to keep track of which step we are doing.
