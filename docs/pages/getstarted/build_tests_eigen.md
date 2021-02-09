@@ -33,8 +33,6 @@ As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to
 
 ## Prerequisites
 
-In order for the steps below to be successful, you need:
-
 * C and C++11 compilers: either Clang or GNU
 * CMake >= 3.11.0
 * Bash >= 3.2.57
@@ -42,14 +40,11 @@ In order for the steps below to be successful, you need:
 
 ## 1. Prep
 
-Create (or choose) a directory where you want to clone all repos needed and where to put all builds, e,g.:
+Create (or choose) a directory where you want to clone all repos needed and where to put all builds,
+and to make things easier below, create environment variables to refer to these directories:
 ```bash
 mkdir $HOME/pressio_repos
 mkdir $HOME/pressio_builds
-```
-
-To make things easier and cleaner below, create environment variables to refer to these directories:
-```bash
 export PRESSIO_REPOS=$HOME/pressio_repos
 export PRESSIO_BUILDS=$HOME/pressio_builds
 ```
@@ -64,7 +59,6 @@ These are needed because `CC` and `CXX` are used to do all the builds.
 
 ## 2. Cloning
 
-You need to clone the following repos:
 ```bash
 cd ${PRESSIO_REPOS}
 git clone git@github.com:Pressio/pressio-builder.git
@@ -73,7 +67,6 @@ git clone git@github.com:Pressio/pressio.git
 
 ## 3. Install TPLs
 
-To get and installed Eigen and Gtest, you can simply run the command:
 ```bash
 cd ${PRESSIO_REPOS}/pressio-builder
 ./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
@@ -83,8 +76,9 @@ cd ${PRESSIO_REPOS}/pressio-builder
 
 ## 4. Build the tests
 
-From the same directory, i.e. `${PRESSIO_REPOS}/pressio-builder`, run the command:
 ```bash
+cd ${PRESSIO_REPOS}/pressio-builder
+
 ./main_pressio.sh \
 	-dryrun=no \
 	-pressio-src=${PRESSIO_REPOS}/pressio \

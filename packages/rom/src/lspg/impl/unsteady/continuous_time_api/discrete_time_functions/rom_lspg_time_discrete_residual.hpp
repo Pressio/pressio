@@ -249,6 +249,85 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfdt*R(i);
   }
 }
+
+
+/* BDF2 and hyper-reduction indices passed in */
+template<
+  typename stepper_tag,
+  typename fom_states_manager_t,
+  typename residual_type,
+  typename scalar_type,
+  typename hyp_ind_t
+  >
+::pressio::mpl::enable_if_t<
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+  >
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
+		       residual_type & R,
+		       const scalar_type & dt,
+		       const hyp_ind_t & hypIndices)
+{
+  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
+
+  const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+
+  // hypindices has same extent as sample mesh and contains
+  // indices of the entries in the state that correspond to
+  // the sample mesh points
+  assert(R.extent(0) == hypIndices.extent(0));
+  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  {
+    const auto yI = hypIndices(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
+  }
+}
+
+// Crank-Nicolson and hyper-reduction indices passed in */
+template<
+  typename stepper_tag,
+  typename fom_states_manager_t,
+  typename fom_velocities_manager_t,
+  typename residual_type,
+  typename scalar_type,
+  typename hyp_ind_t
+  >
+::pressio::mpl::enable_if_t<
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+  >
+time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
+                       const fom_velocities_manager_t & fomVelocitiesMngr,
+		       residual_type & R,
+		       const scalar_type & dt,
+		       const hyp_ind_t & hypIndices)
+{
+  using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
+  constexpr auto cnp1  = cnst::c_np1_;
+  constexpr auto cn    = cnst::c_n_;
+  constexpr auto cfn   = cnst::c_fn_;
+  const auto cfnDt   = cfn*dt;
+  const auto cfnp1Dt = cfn*dt;
+
+  const auto & y_np1  = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr(::pressio::ode::n());
+
+  const auto & f_np1  = fomVelocitiesMngr(::pressio::ode::nPlusOne());
+  const auto & f_n    = fomVelocitiesMngr(::pressio::ode::n());
+
+  assert(R.extent(0) == hypIndices.extent(0));
+  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  {
+    const auto yI = hypIndices(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfnp1Dt*f_np1(i) + cfnDt*f_n(i);
+  }
+}
 #endif
 
 // ----------------------------------------------------------------------

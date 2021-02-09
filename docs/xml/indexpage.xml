@@ -8,33 +8,22 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>You landed on the documentation of the C++ library! If this is a mistake, please go back to the <ulink url="https://pressio.github.io/">project website</ulink>.</para>
-<sect1 id="index_1autotoc_md30">
+<sect1 id="index_1autotoc_md42">
 <title>Getting Started</title>
 <para><itemizedlist>
-<listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink>;</para>
-</listitem><listitem><para>read the description of <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing this C++ library;</para>
-</listitem><listitem><para>the tutorials are divided in two drop-down tabs:<itemizedlist>
-<listitem><para><ulink url="./md_pages_tutorials_tutorial1.html">tutorialsA</ulink>: these use data structures/types that are <emphasis>known</emphasis> to pressio. <linebreak/>
-Pressio <emphasis>recognizes</emphasis> them and has built-in support for kernels to operate on them;</para>
-</listitem><listitem><para><ulink url="./md_pages_tutorials_tutorial1udops.html">tutorialsB</ulink>: these use data structures/types that are <emphasis>unknown</emphasis> to pressio. <linebreak/>
-Pressio detects them as <emphasis>arbitrary</emphasis> types, and the user <bold>has to</bold> provide kernels for operating on them;</para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para>dig into the <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</ulink> of the C++ library.</para>
+<listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
+</listitem><listitem><para>read the description of <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing this C++ library</para>
+</listitem><listitem><para>explore the <ulink url="./md_pages_tutorials_tutorial1.html">tutorials</ulink></para>
+</listitem><listitem><para>dig into the <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</ulink> of the C++ library</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md31">
-<title>What if your types are not natively supported in pressio?</title>
-<para>Check if your types are supported by lookig at the <ulink url="md_pages_getstarted_build_and_install.html">dependencies</ulink>: if they are listed there, most likely you are good to go, and you don&apos;t need to provide extra information to pressio.</para>
-<para>Not supported? You can file an <ulink url="https://github.com/Pressio/pressio/issues">issue</ulink> to request it and wait on it, or can proceed as in <ulink url="./md_pages_tutorials_tutorial1udops.html">tutorialsB</ulink>. Or do both!</para>
-</sect1>
-<sect1 id="index_1autotoc_md32">
+<sect1 id="index_1autotoc_md43">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md33">
+<sect1 id="index_1autotoc_md44">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

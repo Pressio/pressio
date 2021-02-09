@@ -1,0 +1,25 @@
+The adapter class sits between pressio and the external application. This adapter class---if needed---must meet a specific A\+PI.
+
+Pressio supports two variants of the A\+PI, a so-\/called {\itshape continuous-\/time} and {\itshape discrete-\/time} version. The continuous-\/time A\+PI operates such that the user is responsible to compute the continuous-\/time operators, e.\+g., the velocity, and pressio assembles the discrete-\/time operators. It is an A\+PI that very expressive of the formulation on which pressio relies on. The discrete-\/time A\+PI is designed such that the user is given the necessary operators and operands needed to assemble the time-\/discrete operators directly.
+
+todo\+: why are we forced to keep these two separate? explain
+
+todo\+: discuss pros and cons of the two A\+P\+Is
+
+The following table illustrates what A\+PI is supported for each R\+OM
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ R\+OM Method  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Continuous-\/time A\+PI support  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete-\/time A\+PI support   }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ R\+OM Method  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Continuous-\/time A\+PI support  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete-\/time A\+PI support   }\\\cline{1-3}
+\endhead
+Galerkin (explicit time stepping)  &yes  &no   \\\cline{1-3}
+Galerkin (implicit time stepping)  &yes  &yes   \\\cline{1-3}
+L\+S\+PG  &yes  &yes   \\\cline{1-3}
+W\+LS  &yes  &yes   \\\cline{1-3}
+\end{longtabu}

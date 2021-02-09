@@ -2,6 +2,10 @@
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
   <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
   </compound>
+  <compound refid="getstarted_2adapter__api_8md" kind="file"><name>adapter_api.md</name>
+  </compound>
+  <compound refid="adapter__continuous__time__api_8md" kind="file"><name>adapter_continuous_time_api.md</name>
+  </compound>
   <compound refid="adapter__discrete__time__api_8md" kind="file"><name>adapter_discrete_time_api.md</name>
   </compound>
   <compound refid="adapter__galerkin__api_8md" kind="file"><name>adapter_galerkin_api.md</name>
@@ -9,6 +13,10 @@
   <compound refid="adapter__steady__lspg__api_8md" kind="file"><name>adapter_steady_lspg_api.md</name>
   </compound>
   <compound refid="adapter__unsteady__lspg__api_8md" kind="file"><name>adapter_unsteady_lspg_api.md</name>
+  </compound>
+  <compound refid="custom__ops_8md" kind="file"><name>custom_ops.md</name>
+  </compound>
+  <compound refid="default__gal__exp_8md" kind="file"><name>default_gal_exp.md</name>
   </compound>
   <compound refid="example1_8md" kind="file"><name>example1.md</name>
   </compound>
@@ -34,7 +42,7 @@
   </compound>
   <compound refid="tutorial1_8md" kind="file"><name>tutorial1.md</name>
   </compound>
-  <compound refid="tutorial1udops_8md" kind="file"><name>tutorial1udops.md</name>
+  <compound refid="tutorial2_8md" kind="file"><name>tutorial2.md</name>
   </compound>
   <compound refid="various_8md" kind="file"><name>various.md</name>
   </compound>
@@ -48,6 +56,8 @@
   </compound>
   <compound refid="md_pages_adapter_api" kind="page"><name>md_pages_adapter_api</name>
   </compound>
+  <compound refid="md_pages_adapter_apis_adapter_continuous_time_api" kind="page"><name>md_pages_adapter_apis_adapter_continuous_time_api</name>
+  </compound>
   <compound refid="md_pages_adapter_apis_adapter_discrete_time_api" kind="page"><name>md_pages_adapter_apis_adapter_discrete_time_api</name>
   </compound>
   <compound refid="md_pages_adapter_apis_adapter_galerkin_api" kind="page"><name>md_pages_adapter_apis_adapter_galerkin_api</name>
@@ -56,7 +66,13 @@
   </compound>
   <compound refid="md_pages_adapter_apis_adapter_unsteady_lspg_api" kind="page"><name>md_pages_adapter_apis_adapter_unsteady_lspg_api</name>
   </compound>
+  <compound refid="md_pages_custom_ops_default_gal_exp" kind="page"><name>md_pages_custom_ops_default_gal_exp</name>
+  </compound>
+  <compound refid="md_pages_custom_ops" kind="page"><name>md_pages_custom_ops</name>
+  </compound>
   <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
+  </compound>
+  <compound refid="md_pages_getstarted_adapter_api" kind="page"><name>md_pages_getstarted_adapter_api</name>
   </compound>
   <compound refid="md_pages_getstarted_adapting_app" kind="page"><name>md_pages_getstarted_adapting_app</name>
   </compound>
@@ -78,7 +94,7 @@
   </compound>
   <compound refid="md_pages_tutorials_tutorial1" kind="page"><name>md_pages_tutorials_tutorial1</name>
   </compound>
-  <compound refid="md_pages_tutorials_tutorial1udops" kind="page"><name>md_pages_tutorials_tutorial1udops</name>
+  <compound refid="md_pages_tutorials_tutorial2" kind="page"><name>md_pages_tutorials_tutorial2</name>
   </compound>
   <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
   </compound>
@@ -91,6 +107,8 @@
   <compound refid="md_pages_various" kind="page"><name>md_pages_various</name>
   </compound>
   <compound refid="dir_ba97ba3ce07c772fb98545b004f56066" kind="dir"><name>pages/adapter_apis</name>
+  </compound>
+  <compound refid="dir_4e0155dca2ee8148a495d63774f1631d" kind="dir"><name>pages/custom_ops</name>
   </compound>
   <compound refid="dir_c8b5f49f42f70cbb2789196c6be03b08" kind="dir"><name>pages/examples</name>
   </compound>

@@ -13,24 +13,17 @@ If you just want a quick way to get the code up-\/and-\/running and ready to pla
 \begin{DoxyParagraph}{Disclaimer}
 The guide below does {\bfseries{not}} assume you are a Unix/\+C\+S/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/\+C\+S/coding ninja, some steps will be fairly obvious to you!
 \end{DoxyParagraph}
-\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md17}{}\doxysection{Prerequisites}\label{md_pages_getstarted_build_tests_eigen_autotoc_md17}
-In order for the steps below to be successful, you need\+:
-
+\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md29}{}\doxysection{Prerequisites}\label{md_pages_getstarted_build_tests_eigen_autotoc_md29}
 
 \begin{DoxyItemize}
 \item C and C++11 compilers\+: either Clang or G\+NU
 \item C\+Make $>$= 3.\+11.\+0
 \item Bash $>$= 3.\+2.\+57
-\end{DoxyItemize}\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md18}{}\doxysection{1. Prep}\label{md_pages_getstarted_build_tests_eigen_autotoc_md18}
-Create (or choose) a directory where you want to clone all repos needed and where to put all builds, e,g.\+: 
+\end{DoxyItemize}\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md30}{}\doxysection{1. Prep}\label{md_pages_getstarted_build_tests_eigen_autotoc_md30}
+Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{mkdir \$HOME/pressio\_repos}
 \DoxyCodeLine{mkdir \$HOME/pressio\_builds}
-\end{DoxyCode}
-
-
-To make things easier and cleaner below, create environment variables to refer to these directories\+: 
-\begin{DoxyCode}{0}
 \DoxyCodeLine{export PRESSIO\_REPOS=\$HOME/pressio\_repos}
 \DoxyCodeLine{export PRESSIO\_BUILDS=\$HOME/pressio\_builds}
 \end{DoxyCode}
@@ -43,22 +36,24 @@ Unless you already have them, set the following compilers environment variable\+
 \end{DoxyCode}
 
 
-These are needed because {\ttfamily CC} and {\ttfamily C\+XX} are used to do all the builds.\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md19}{}\doxysection{2. Cloning}\label{md_pages_getstarted_build_tests_eigen_autotoc_md19}
-You need to clone the following repos\+: 
+These are needed because {\ttfamily CC} and {\ttfamily C\+XX} are used to do all the builds.\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md31}{}\doxysection{2. Cloning}\label{md_pages_getstarted_build_tests_eigen_autotoc_md31}
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}}
 \DoxyCodeLine{git clone git@github.com:Pressio/pressio-\/builder.git}
 \DoxyCodeLine{git clone git@github.com:Pressio/pressio.git}
 \end{DoxyCode}
-\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md20}{}\doxysection{3. Install T\+P\+Ls}\label{md_pages_getstarted_build_tests_eigen_autotoc_md20}
-To get and installed Eigen and Gtest, you can simply run the command\+: 
+\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md32}{}\doxysection{3. Install T\+P\+Ls}\label{md_pages_getstarted_build_tests_eigen_autotoc_md32}
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
 \DoxyCodeLine{./main\_tpls.sh -\/dryrun=no -\/tpls=eigen,gtest -\/target-\/dir=\$\{PRESSIO\_BUILDS\}}
 \end{DoxyCode}
-\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md21}{}\doxysection{4. Build the tests}\label{md_pages_getstarted_build_tests_eigen_autotoc_md21}
-From the same directory, i.\+e. {\ttfamily \$\{P\+R\+E\+S\+S\+I\+O\+\_\+\+R\+E\+P\+OS\}/pressio-\/builder}, run the command\+: 
+\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md33}{}\doxysection{4. Build the tests}\label{md_pages_getstarted_build_tests_eigen_autotoc_md33}
+
 \begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
+\DoxyCodeLine{}
 \DoxyCodeLine{./main\_pressio.sh \(\backslash\)}
 \DoxyCodeLine{    -\/dryrun=no \(\backslash\)}
 \DoxyCodeLine{    -\/pressio-\/src=\$\{PRESSIO\_REPOS\}/pressio \(\backslash\)}
@@ -67,7 +62,7 @@ From the same directory, i.\+e. {\ttfamily \$\{P\+R\+E\+S\+S\+I\+O\+\_\+\+R\+E\+
 \DoxyCodeLine{    -\/eigen-\/path=\$\{PRESSIO\_BUILDS\}/eigen/install}
 \DoxyCodeLine{    -\/cmake-\/generator-\/name=default\_with\_tests}
 \end{DoxyCode}
-\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md22}{}\doxysection{5. Running the tests}\label{md_pages_getstarted_build_tests_eigen_autotoc_md22}
+\hypertarget{md_pages_getstarted_build_tests_eigen_autotoc_md34}{}\doxysection{5. Running the tests}\label{md_pages_getstarted_build_tests_eigen_autotoc_md34}
 To run the tests, you can follow this\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_BUILDS\}/pressio/build}

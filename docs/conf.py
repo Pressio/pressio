@@ -10,19 +10,15 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
      ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
      ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",),
+     ("<a href=\"md_pages_getstarted_adapter_api.html\">Adapter API</a>",),
      ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
   # tutorials
-  ("<a href=>Tutorials A</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+  ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
    [
-     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", )
-   ]),
-
-  # tutorials for user-provided ops
-  ("<a href=>Tutorials B</a>",
-   [
-     ("<a href=\"md_pages_tutorials_tutorial1udops.html\">Linear Decoder for arbitrary types</a>",)
+     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
+     ("<a href=\"md_pages_tutorials_tutorial2.html\">Default Galerkin explicit</a>", ),
    ]),
 
   # # demos
@@ -39,14 +35,18 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
    ]),
 
-  # Adapter API
-  ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
+  # custom ops
+  ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
    [
-     ("<a href=\"md_pages_adapter_apis_adapter_galerkin_api.html\">Galerkin ROM</a>",),
-     ("<a href=\"md_pages_adapter_apis_adapter_unsteady_lspg_api.html\">Unsteady LSPG ROM</a>",),
-     ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
-     #("<a href=\"md_pages_adapter_apis_adapter_steady_lspg_api.html\">Steady LSPG ROM</a>",)
+     ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
    ]),
+
+  # # Adapter API
+  # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",
+  #  [
+  #    ("<a href=\"md_pages_adapter_apis_adapter_continuous_time_api.html\">Continuous-time API</a>",),
+  #    ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
+  #  ]),
 
   ('Classes', 'annotated', []),
   ('Namespaces', 'namespaces', [])
@@ -57,7 +57,7 @@ LINKS_NAVBAR2 = []
 #   ('Namespaces', 'namespaces', [])
 # ]
 
-PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot']
+PLUGINS = ['m.htmlsanity', 'm.math', 'm.code', 'm.components', 'm.dot', 'm.images']
 
 SHOW_UNDOCUMENTED = "YES"
 

@@ -1,0 +1,139 @@
+\hypertarget{md_pages_getstarted_adapter_api_autotoc_md18}{}\doxysection{What is it? Why we need it?}\label{md_pages_getstarted_adapter_api_autotoc_md18}
+
+
+\begin{DoxyParagraph}{}
+An adapter class allows a F\+OM application to expose data via an A\+PI conforming to pressio requirements.
+\end{DoxyParagraph}
+Recall that pressio assumes your full-\/order model (F\+OM) system to be expressible as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity, todo finish.
+
+To use the functionalities in pressio, obviously there needs to be a way to exchange data/information between pressio and your F\+OM application. To do so, in pressio we leverage the idea of an {\itshape adapter class} as a layer allowing to standardize the way pressio interfaces with any application.
+
+Schematically, the flow of interfation is shown below\+: 
+
+To facilitate the integration with existing applications, pressio supports adapters with two main types of A\+PI\+:
+\begin{DoxyEnumerate}
+\item {\itshape continuous-\/time} A\+PI\+: this directly stems from the formulation above, and is the preferred one;
+\item {\itshape discrete-\/time} A\+PI\+: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.
+\end{DoxyEnumerate}\hypertarget{md_pages_getstarted_adapter_api_autotoc_md19}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md19}
+We envision two scenarios\+:
+\begin{DoxyItemize}
+\item A\+: you are only able to expose the right-\/hand-\/side (or velocity) of your F\+OM application
+\item B\+: you expose the right-\/hand-\/side of your F\+OM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand
+\end{DoxyItemize}\hypertarget{md_pages_getstarted_adapter_api_autotoc_md20}{}\doxysubsection{A\+: velocity only}\label{md_pages_getstarted_adapter_api_autotoc_md20}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterA}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type =}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the AdapterA?}
+This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit time stepping.
+\end{DoxyParagraph}
+\hypertarget{md_pages_getstarted_adapter_api_autotoc_md21}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_getstarted_adapter_api_autotoc_md21}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterB}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type =}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// operand\_type is the data (matrix) type you use}}
+\DoxyCodeLine{  \textcolor{comment}{// to represent the decoder's jacobian}}
+\DoxyCodeLine{  operand\_t createApplyJacobianResult(\textcolor{keyword}{const} operand\_t \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// computes: A = Jac B}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyJacobian(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                     operand\_t \& A) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the AdapterB?}
+This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit and implicit time stepping, L\+S\+PG and W\+LS (note that L\+S\+PG and W\+LS only make sense for implicit time integration).
+\end{DoxyParagraph}
+\hypertarget{md_pages_getstarted_adapter_api_autotoc_md22}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_getstarted_adapter_api_autotoc_md22}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = \textcolor{comment}{//..;}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type  = \textcolor{comment}{//...;}}
+\DoxyCodeLine{  \textcolor{keyword}{using} discrete\_time\_residual\_type = \textcolor{comment}{//...;}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  discrete\_time\_residual\_type createDiscreteTimeResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// operand\_type should be the data (matrix) type you used to store the basis.}}
+\DoxyCodeLine{  operand\_t createApplyDiscreteTimeJacobianResult(\textcolor{keyword}{const} operand\_t \&)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// let A =  discreteTimeJac * B}}
+\DoxyCodeLine{    operand\_t A(\textcolor{comment}{/* construct A */});}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} A;}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} discreteTimeResidual(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{              \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{              discrete\_time\_residual\_type \& R,}
+\DoxyCodeLine{              \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
+\DoxyCodeLine{              Args \& ... states)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    this-\/>discreteTimeResidualImpl(step, time, dt, R, std::forward<Args>(states)... );}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                 \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                 \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                 \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                 operand\_t \& A,}
+\DoxyCodeLine{                 \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
+\DoxyCodeLine{                 Args \& ... states)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    this-\/>applyDiscreteTimeJacobianImpl(step, time, dt, B, stateIdForJacobian,}
+\DoxyCodeLine{          A, std::forward<Args>(states)...);}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the discrete-\/time A\+PI?}
+This version of the adapter can be {\bfseries{only}} used for doing Galerkin and L\+S\+PG R\+O\+Ms with {\itshape implicit} time stepping.
+\end{DoxyParagraph}
+
+
+\begin{DoxyParagraph}{Should one prefer the continuous-\/time or discrete-\/time A\+PI?}
+In general, we suggest users to always prefer the continuous-\/time A\+PI because it is more general. 
+\end{DoxyParagraph}

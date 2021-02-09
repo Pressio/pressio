@@ -3,6 +3,7 @@
   <compounddef id="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir">
     <compoundname>pages</compoundname>
     <innerdir refid="dir_ba97ba3ce07c772fb98545b004f56066">pages/adapter_apis</innerdir>
+    <innerdir refid="dir_4e0155dca2ee8148a495d63774f1631d">pages/custom_ops</innerdir>
     <innerdir refid="dir_c8b5f49f42f70cbb2789196c6be03b08">pages/examples</innerdir>
     <innerdir refid="dir_72e76ac6147c72c291306ebceacd125b">pages/getstarted</innerdir>
     <innerdir refid="dir_c47e5d700743d14fcf5d1e609c4d899d">pages/hyperreduction</innerdir>

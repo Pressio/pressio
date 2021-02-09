@@ -30,19 +30,15 @@
                 <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
                 <li><a href="md_pages_getstarted_packages.html">Packages</a></li>
                 <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
+                <li><a href="md_pages_getstarted_adapter_api.html">Adapter API</a></li>
                 <li><a href="md_pages_getstarted_adapting_app.html">Step-by-step on adapting an app</a></li>
               </ol>
             </li>
             <li>
-              <a href=>Tutorials A</a>
+              <a href=>Tutorials</a>
               <ol>
                 <li><a href="md_pages_tutorials_tutorial1.html">Linear Decoder</a></li>
-              </ol>
-            </li>
-            <li>
-              <a href=>Tutorials B</a>
-              <ol>
-                <li><a href="md_pages_tutorials_tutorial1udops.html">Linear Decoder for arbitrary types</a></li>
+                <li><a href="md_pages_tutorials_tutorial2.html">Default Galerkin explicit</a></li>
               </ol>
             </li>
             <li>
@@ -54,17 +50,15 @@
               </ol>
             </li>
             <li>
-              <a href="md_pages_adapter_api.html">Adapter API</a>
+              <a href=>Custom Ops</a>
               <ol>
-                <li><a href="md_pages_adapter_apis_adapter_galerkin_api.html">Galerkin ROM</a></li>
-                <li><a href="md_pages_adapter_apis_adapter_unsteady_lspg_api.html">Unsteady LSPG ROM</a></li>
-                <li><a href="md_pages_adapter_apis_adapter_discrete_time_api.html">Discrete-time API</a></li>
+                <li><a href="md_pages_custom_ops_default_gal_exp.html">Ops for Galerkin Explicit Time</a></li>
               </ol>
             </li>
             <li><a href="annotated.html">Classes</a></li>
             <li><a href="namespaces.html">Namespaces</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="8">
+          <ol class="m-col-t-6 m-col-m-none" start="7">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -81,7 +75,7 @@
         <h1>
           FOM Adapter API for Galerkin ROM
         </h1>
-<p><span class="m-text m-danger">todo</span> discuss what is Galerkin ROM, the variants of the problem and what we support.</p><p><span class="m-text m-danger">todo</span>: discuss that the types exposed must be compatible and make sense.</p><section id="autotoc_md3"><h2><a href="#autotoc_md3">Basic Galerkin ROM</a></h2><div><pre class="m-code"><span class="k">class</span> <span class="nc">Adapter</span><span class="p">{</span>
+<p><span class="m-text m-danger">todo</span> discuss what is Galerkin ROM, the variants of the problem and what we support.</p><p><span class="m-text m-danger">todo</span>: discuss that the types exposed must be compatible and make sense.</p><section id="autotoc_md6"><h2><a href="#autotoc_md6">Basic Galerkin ROM</a></h2><div><pre class="m-code"><span class="k">class</span> <span class="nc">Adapter</span><span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
   <span class="k">using</span> <span class="n">state_type</span> <span class="o">=</span>
@@ -90,7 +84,7 @@
 <span class="k">public</span><span class="o">:</span>
   <span class="n">velocity_type</span> <span class="n">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">velo</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></div></section><section id="autotoc_md4"><h2><a href="#autotoc_md4">Discrete-time API</a></h2><p>The discrete-time API for Galerkin is the same as for all methods, and you can see it <a href="./md_pages_adapter_apis_adapter_discrete_time_api.html">here</a>.</p></section>
+<span class="p">};</span></pre></div></section><section id="autotoc_md7"><h2><a href="#autotoc_md7">Discrete-time API</a></h2><p>The discrete-time API for Galerkin is the same as for all methods, and you can see it <a href="./md_pages_adapter_apis_adapter_discrete_time_api.html">here</a>.</p></section>
       </div>
     </div>
   </div>

@@ -7,7 +7,7 @@
     </briefdescription>
     <detaileddescription>
 <para>Note that the adapter classes shown below serve the purpose of interfacing your native application with pressio, but the actual object instantiated from one of these should be created as part of your application. These classes do <bold>not</bold> contain anything strictly related to pressio, but just contain types native to your application.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> (fix)</para>
-<sect1 id="md_pages_adapter_apis_adapter_steady_lspg_api_1autotoc_md6">
+<sect1 id="md_pages_adapter_apis_adapter_steady_lspg_api_1autotoc_md9">
 <title>Basic Steady LSPG problem</title>
 <para>The adapter class should look like:</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-code-figure" /> <parblock><para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterSteadyLSPG</highlight></codeline>

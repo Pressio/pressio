@@ -1,7 +1,0 @@
-L\+S\+PG projection corresponds to minimizing the (weighted) $\ell^2$-\/norm of the {\itshape time-\/discrete} residual over the trial manifold. Hence, the starting point for this approach is the residual O\+DE formulation discretized in time with an arbitrary time-\/discretization method.
-
-L\+S\+PG projection is derived by substituting the approximate state in the time-\/discrete residual and minimizing its (weighted) $\ell^2$-\/norm, which yields a sequence of residual-\/minimization problems 
-
-\[ \hat{x}^n(\mu) = \underset{\xi \in R^{p}}{arg min} \left\| A r^{n}\left(x_{ref}(\mu)+g(\xi);\mu)\right) \right\|_2^2,\quad n=1,\ldots,N_t \]
-
-with initial condition $\hat{x}(0;\mu)=\hat{x}^0(\mu)$. The matrix $A \in R^{z \times N}$ with $z \leq N$ denotes a weighting matrix that can enable hyper-\/reduction. 
