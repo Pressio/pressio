@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
   params[2] = 0.25;
   scalar_t Lx = 5;
   scalar_t Ly = 5;
-  scalar_t mu_ic = 0.125;
+  scalar_t mu_ic = params[1];
   scalar_t t = 0;
   scalar_t et = 10.;
   scalar_t dt = 0.5;
@@ -170,8 +170,8 @@ int main(int argc, char *argv[])
   // GaussNewton solver with normal equations
   auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
   auto Nsteps = static_cast<::pressio::ode::types::step_t>(et/dt);
-  solver.setTolerance(1e-6);
-  solver.setMaxIterations(10);
+  solver.setTolerance(1e-13);
+  solver.setMaxIterations(100);
   // define observer
   observer<lspg_state_t,native_state_t> Obs(yRefFull);
   // solve
@@ -179,14 +179,19 @@ int main(int argc, char *argv[])
 
 
   // Reconstruct full state for verification
-  //decoder_jac_t phiFull = pressio::rom::test::eigen::readBasis("basis.txt", romSize, 3*nx*ny);
-  //decoder_t decoderObjFull(phiFull);
-  //using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
-  //fom_state_reconstr_t fomStateReconstructorFull(yRefFull,decoderObjFull);
-  auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
+  decoder_jac_t phiFull = pressio::rom::test::eigen::readBasis("basis.txt", romSize, 3*nx*ny);
+  decoder_t decoderObjFull(phiFull);
+  using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
+  const fom_state_t yRefFullWrap(yRefFull);
+  fom_state_reconstr_t fomStateReconstructorFull(yRefFullWrap,decoderObjFull);
+  auto yFomFinal = fomStateReconstructorFull(yROM);
+  double solNormGold = 8.1221307554237;
   auto solNorm = (*yFomFinal.data()).norm();
-  std::cout << std::setprecision(14) << solNorm << std::endl;
   Obs.closeFile();
+  std::cout << solNorm << std::endl;
+  if (std::abs(solNorm - solNormGold) > 1e-12){
+    checkStr = "Failed";
+  }
   std::cout << checkStr << std::endl;
   return 0;
 }
