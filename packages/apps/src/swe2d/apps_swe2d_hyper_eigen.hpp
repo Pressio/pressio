@@ -298,8 +298,8 @@ protected:
     int N_cell = nx_*ny_;
     xGrid_.resize(N_cell);
     yGrid_.resize(N_cell);
-    for (int i=0; i < nx_; i ++){
-      for (int j=0; j < ny_; j++){
+    for (int j=0; j < ny_; j++){
+      for (int i=0; i < nx_; i ++){
         xGrid_(index_mapper(i,j)) = dx_*i + dx_*0.5;
         yGrid_(index_mapper(i,j)) = dy_*j + dy_*0.5;
       }
@@ -311,8 +311,8 @@ public:
   // Get Gaussian IC at full mesh
   state_type getGaussianICFull(const scalar_type mu) const{
     state_type U0(3*nx_*ny_);
-    for (int i=0; i < nx_; i++){
-      for (int j=0; j < ny_; j++){
+    for (int j=0; j < ny_; j++){
+      for (int i=0; i < nx_; i++){
         const auto sid = state_index_mapper(0,i,j);
         U0(sid) = 1. + mu_ic_*exp( - ( pow( xGrid_(index_mapper(i,j)) - 1.5,2)
                                    + pow( yGrid_(index_mapper(i,j)) - 1.5,2) ));
