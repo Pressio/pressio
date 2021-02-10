@@ -57,13 +57,12 @@ int main(int argc, char *argv[])
   params[0] = 9.8;
   params[1] = 0.125;
   params[2] = 0.25;
-  scalar_t Lx = 5;
-  scalar_t Ly = 5;
-  scalar_t mu_ic = params[1];
+  constexpr scalar_t Lx = 5;
+  constexpr scalar_t Ly = 5;
   fom_t appObj(Lx,Ly,nx,ny,params);
   scalar_t t = 0;
-  scalar_t et = 10.;
-  scalar_t dt = 0.5;
+  constexpr scalar_t et = 10.;
+  constexpr scalar_t dt = 0.5;
 
 
   // -------------------------------------------------------
@@ -83,7 +82,7 @@ int main(int argc, char *argv[])
   using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
   decoder_t decoderObj(phi);
 
-  native_state_t yRef(appObj.getGaussianIC(mu_ic));
+  native_state_t yRef(appObj.getGaussianIC(params[1]));
   // -------------------------------------------------------
   // create ROM problem
   // -------------------------------------------------------
@@ -117,7 +116,7 @@ int main(int argc, char *argv[])
   // solve
   pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, Nsteps, Obs,solver);
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);
-  double solNormGold = 8.1221307554237;
+  constexpr double solNormGold = 8.1221307554237;
   auto solNorm = (*yFomFinal.data()).norm();
   Obs.closeFile();
   if (std::abs(solNorm - solNormGold) > 1e-12){

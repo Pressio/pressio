@@ -40,19 +40,19 @@ private:
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
   int state_index_mapper(const int k,const int i,const int j) const {
-    int state_global_indx = 3 * ( (modulus(j,ny_))*nx_ + modulus(i,nx_) ) + k;
+    const int state_global_indx = 3 * ( (modulus(j,ny_))*nx_ + modulus(i,nx_) ) + k;
     return state_global_indx;
   }
 
   // mapping from i (x-index), and  (y-index) to global index
   int index_mapper(const int i,const int j) const {
-    int global_indx = (modulus(j,ny_))*nx_ + modulus(i,nx_);
+    const int global_indx = (modulus(j,ny_))*nx_ + modulus(i,nx_);
     return global_indx;
   }
 
   std::array<int,2> get_ij_from_gid(const int gid) const {
-      int j = gid/nx_;
-      int i = gid%nx_;
+      const int j = gid/nx_;
+      const int i = gid%nx_;
       std::array<int,2> ij = {i,j};
       return ij;
   }
@@ -88,8 +88,8 @@ public:
     scalar_type FU[3];
     scalar_type FD[3];
     scalar_type forcing[3];
-    std::array<scalar_type, 2> nx = { 1, 0 };
-    std::array<scalar_type, 2> ny = { 0, 1 };
+    const std::array<scalar_type, 2> nx = { 1, 0 };
+    const std::array<scalar_type, 2> ny = { 0, 1 };
 
     int isL;
     int isR;
@@ -99,18 +99,18 @@ public:
       for (int j=0; j < ny_ ; j++){
         isL = state_index_mapper(0,i-1,j);
         isR = state_index_mapper(0,i,j);
-	rusanovflux_eigen(FL,U,isL,isR,nx,g_);
+	rusanovFluxFullStateIn(FL,U,isL,isR,nx,g_);
         isL = state_index_mapper(0,i,j);
         isR = state_index_mapper(0,i+1,j);
-	rusanovflux_eigen(FR,U,isL,isR,nx,g_);
+	rusanovFluxFullStateIn(FR,U,isL,isR,nx,g_);
 
         isD = state_index_mapper(0,i,j-1);
         isU = state_index_mapper(0,i,j);
-	rusanovflux_eigen(FD,U,isD,isU,ny,g_);
+	rusanovFluxFullStateIn(FD,U,isD,isU,ny,g_);
 
         isD = state_index_mapper(0,i,j);
         isU = state_index_mapper(0,i,j+1);
-	rusanovflux_eigen(FU,U,isD,isU,ny,g_);
+	rusanovFluxFullStateIn(FU,U,isD,isU,ny,g_);
 
         auto is = state_index_mapper(0,i,j);
         forcing[0] = 0;
@@ -143,17 +143,17 @@ public:
       //=================
       tripletList.clear();
       for (int sid=0; sid < nx_*ny_  ; sid++){
-        auto ij = get_ij_from_gid(sid);
-        auto gid = state_index_mapper(0,ij[0],ij[1]);
-        auto gid_im1 = state_index_mapper(0,ij[0] - 1,ij[1]);
-        auto gid_ip1 = state_index_mapper(0,ij[0] + 1,ij[1]);
-        auto gid_jm1 = state_index_mapper(0,ij[0],ij[1] - 1);
-        auto gid_jp1 = state_index_mapper(0,ij[0],ij[1] + 1);
+        const auto ij = get_ij_from_gid(sid);
+        const auto gid = state_index_mapper(0,ij[0],ij[1]);
+        const auto gid_im1 = state_index_mapper(0,ij[0] - 1,ij[1]);
+        const auto gid_ip1 = state_index_mapper(0,ij[0] + 1,ij[1]);
+        const auto gid_jm1 = state_index_mapper(0,ij[0],ij[1] - 1);
+        const auto gid_jp1 = state_index_mapper(0,ij[0],ij[1] + 1);
 
-        rusanovflux_jacobian_eigen(JL_L,JR_L,U,gid_im1,gid,nx,g_);
-        rusanovflux_jacobian_eigen(JL_R,JR_R,U,gid,gid_ip1,nx,g_);
-        rusanovflux_jacobian_eigen(JD_D,JU_D,U,gid_jm1,gid,ny,g_);
-        rusanovflux_jacobian_eigen(JD_U,JU_U,U,gid,gid_jp1,ny,g_);
+        rusanovFluxJacobianFullStateIn(JL_L,JR_L,U,gid_im1,gid,nx,g_);
+        rusanovFluxJacobianFullStateIn(JL_R,JR_R,U,gid,gid_ip1,nx,g_);
+        rusanovFluxJacobianFullStateIn(JD_D,JU_D,U,gid_jm1,gid,ny,g_);
+        rusanovFluxJacobianFullStateIn(JD_U,JU_U,U,gid,gid_jp1,ny,g_);
         for (int j = 0; j < 3; ++j) {
           for (int i = 0; i < 3; ++i) {
             auto val = -1./dx_*(JL_R[i][j] - JR_L[i][j]) - 1./dy_*(JD_U[i][j] - JU_D[i][j]);
@@ -188,7 +188,7 @@ public:
     velocity_type Vp(nDofs_);
     state_type Up(U);
     velocity(U,0.,V0);
-    scalar_type eps = 1e-5;
+    const scalar_type eps = 1e-5;
     tripletList.clear();
     for (int i = 0; i < nDofs_; i++){
       Up(i) += eps;
@@ -221,7 +221,7 @@ public:
 		     dense_matrix_type &JA) const
   {
     
-    scalar_type eps = 1.e-5;
+    const scalar_type eps = 1.e-5;
     state_type Up(3*nx_*ny_);
     velocity_type V0(3*nx_*ny_);
     velocity_type V_perturb(3*nx_*ny_);

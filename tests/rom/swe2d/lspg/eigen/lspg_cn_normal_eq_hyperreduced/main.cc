@@ -51,12 +51,11 @@ int main(int argc, char *argv[])
   params[0] = 9.8;
   params[1] = 0.125;
   params[2] = 0.25;
-  scalar_t Lx = 5;
-  scalar_t Ly = 5;
-  scalar_t mu_ic = params[1];
+  constexpr scalar_t Lx = 5;
+  constexpr scalar_t Ly = 5;
   scalar_t t = 0;
-  scalar_t et = 10.;
-  scalar_t dt = 0.5;
+  constexpr scalar_t et = 10.;
+  constexpr scalar_t dt = 0.5;
 
 
   int romSize;
@@ -184,9 +183,9 @@ int main(int argc, char *argv[])
   using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
   const fom_state_t yRefFullWrap(yRefFull);
   fom_state_reconstr_t fomStateReconstructorFull(yRefFullWrap,decoderObjFull);
-  auto yFomFinal = fomStateReconstructorFull(yROM);
-  double solNormGold = 8.1221307554237;
-  auto solNorm = (*yFomFinal.data()).norm();
+  const auto yFomFinal = fomStateReconstructorFull(yROM);
+  constexpr double solNormGold = 8.1221307554237;
+  const auto solNorm = (*yFomFinal.data()).norm();
   Obs.closeFile();
   std::cout << solNorm << std::endl;
   if (std::abs(solNorm - solNormGold) > 1e-12){
