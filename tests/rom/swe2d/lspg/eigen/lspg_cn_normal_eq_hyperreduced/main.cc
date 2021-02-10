@@ -141,9 +141,9 @@ int main(int argc, char *argv[])
   decoder_t decoderObj(phi);
 
   // create the reference vector (on the stencil mesh).
-  native_state_t yRef(appObj.getGaussianIC(mu_ic));
+  native_state_t yRef(appObj.getGaussianIC(params[1]));
   // For post processing, we also make a vector on the full mesh
-  native_state_t yRefFull(appObj.getGaussianICFull(mu_ic)); 
+  native_state_t yRefFull(appObj.getGaussianICFull(params[1])); 
 
   // -------------------------------------------------------
   // create ROM problem
