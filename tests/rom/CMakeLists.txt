@@ -10,5 +10,6 @@ endif()
 
 add_subdirectory(galerkin_projector)
 add_subdirectory(burgers1d)
+add_subdirectory(swe2d)
 add_subdirectory(steady_linear_adv_diff_2d)
 add_subdirectory(explicit_galerkin_rank2_correctness)
