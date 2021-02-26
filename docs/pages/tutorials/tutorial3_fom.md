@@ -1,5 +1,5 @@
 
-# Tutorial: End-to-end analysis of the Shallow Water Equations with LSPG 
+# Tutorial: End-to-end analysis of the Shallow Water Equations with LSPG: Coupling to the FOM 
 The first step in our driver file is to define types. Here, we start by defining our application to be the swe2d app, and then extract the relavant types from the app.
 ```cpp
 @codesnippet
