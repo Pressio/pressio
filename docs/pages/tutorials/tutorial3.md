@@ -41,16 +41,16 @@ export $SWE2D_DIR="build_location"/tutorials/swe2d
 A full-order model that can be used to solve the SWEs is located in the packages/apps section of the Pressio repo (see [here](https://github.com/Pressio/pressio/tree/swe2d/packages/apps/src/swe2d) ). The full-order model employs a first-order finite volume 
 discretization with the Rusanov flux scheme at the cell interfaces.  
 
-The first step in our analysis is to run the full-order model for training parameter instances. To do this, we can write the driver file *run_fom_for_training_params.cc*. Thie file couples Pressio to the application, and uses Pressio's time marching scheme to solve the model. See [here](./md_pages_tutorials_tutorial3_fom.html) for a step-by-step walkthrough of constructing this driver file. In summary, the driver file executes the full-order model for 9 parameter instances on the grid @f$\mu_1 \times \mu_3 = [3,6,8]\times [0.05,0.15,0.25]@f$, and saves the solutions to file.
+The first step in our analysis is to run the full-order model for training parameter instances. To do this, we can write the driver file *run_fom_for_training_params.cc*. This file couples Pressio to the application, and uses Pressio's time marching schemes to solve the model. See [here](./md_pages_tutorials_tutorial3_fom.html) for a step-by-step walkthrough of constructing this driver file. In summary, the driver file executes the full-order model for 9 parameter instances on the grid @f$\mu_1 \times \mu_3 = [3,6,9]\times [0.05,0.15,0.25]@f$, and saves the solutions to file.
 
 To run the driver file, move to the offline_phase directory and run the script: 
 ```bash
 cd $SWE2D_DIR/offline_phase
 ./run_fom_for_training_params
 ```
-This will take some time to run, approximately 30 minutes. If succesful, a series of *solution#.bin* files should have been written. These solution files contain the FOM solutions at every time step for each of the nine training parameter instances. To view the results of one sample simulation, we can go to the supportingPythonFiles directory and run the *viewSolutionAndMakePlots.py* script
+This will take some time to run, approximately 30 minutes. If succesful, a series of *solution#.bin* files should have been written. These solution files contain the FOM solutions at every time step for each of the nine training parameter instances. To view the results of one sample simulation, we can go to the supporting_python_scripts directory and run the *viewSolutionAndMakePlots.py* script
 ```bash
-cd supportingPythonFiles 
+cd $SWE2D_DIR/offline_phase/supporting_python_scripts
 python viewSolutionAndMakePlots.py
 ```
 This script will bring up a live animation of the solution for the first parameter instance.
@@ -67,7 +67,7 @@ This script loads in the snapshots and performs POD to obtain the ROM basis. Add
 3. *sample_mesh_gids.txt* This file contains the global IDs of the indices used for the sample mesh
 4. *sample_mesh_plus_stencil_gids.txt* This file contains the global IDs of the indices used for the sample *and* stencil mesh
 5. *PhiSamplePlusStencil.txt* This file contains the ROM basis, but only at the sample mesh plus stencil mesh
-Additionally, this script will create a file, *samplemesh.png*, depicting the sample and stencil mesh. Cells in black are the sample mesh, while cells in red are on the sample mesh.
+Additionally, this script will create a file, *samplemesh.png*, depicting the sample and stencil mesh. Cells in black are the sample mesh, while cells in red are on the stencil mesh.
 
 @image html samplemesh.png width=50%
 
@@ -77,12 +77,17 @@ With the offline stage complete, we can now run our ROMs for novel parameter ins
 cd $SWE2D_DIR/online_phase/
 vim novel_params.txt
 ```
-By default, we have the novel parameter instance set to be @f$\mu_1 = 7.5, \; \mu_2=0.125, \; \mu_3 = 0.2@f$. The rest of this tutorial will present results for this parameter instance, but the user is encouraged to play around with different parameters and see how it impacts the results. 
+By default, we have the novel parameter instance set to be @f$\mu_1 = 7.5, \; \mu_2=0.125, \; \mu_3 = 0.2@f$. The rest of this tutorial will present results for this parameter instance, but the user is encouraged to play around with different parameters and see how it impacts the results. Before we run the ROM, we first run a FOM for this new parameter instance so we can assess the accuracy of our ROM (of course, in a pratical scenario we would not do this step!). We do not provide a detailed explanation on this driver script, since it closely follows that written previously. To run the FOM for our new parameter instance, we do the following: 
+ ```bash
+cd $SWE2D_DIR/online_phase/fom
+./run_fom
+```
+This will run the FOM and save the solution to file. The ROM was tested on a 2.7 GHz 12-Core Intel Xeon E5 core, and took 152 seconds to run. 
 
 ##LSPG ROM 
-To run an LSPG ROM, we write a driver file, called *run_lspg.cc*. This file couples the application to Pressio, loads in the basis information we generated in the offline phase, and couples to Pressio's ROM capabilities to run an LSPG ROM. See [here](./md_pages_tutorials_tutorial3_lspg.html) for a step-by-step walkthrough of constructing this driver file. 
+To run an LSPG ROM, we write a driver file, called [run_lspg.cc](https://github.com/Pressio/pressio-tutorials/blob/swe2d_tutorial/tutorials/swe2d/online_phase/lspg_rom/run_lspg.cc). See [here](./md_pages_tutorials_tutorial3_lspg.html) for a step-by-step walkthrough of constructing this driver file. In summary, this script couples the application to Pressio, loads in the basis information we generated in the offline phase, and couples to Pressio's ROM capabilities to run an LSPG ROM. 
 
-To run the LSPG ROM, we move to the *lspg_rom* directory, copy our ROM basis, and run the script:
+To run the LSPG ROM, we move to the *lspg_rom* directory, copy our ROM basis, and run the ROM, 
 
 ```bash
 cd $SWE2D_DIR/online_phase/lspg_rom
@@ -92,8 +97,11 @@ python viewSolutionAndMakePlots.py
 ```
 This process saves the generalized coordinates of the ROM to the *solution.bin* file, and *viewSolutionAndMakePlots.py* plots the height of the water surface for a given spatial location as a function of time, and saves the plot to *result.png*. This plot looks as follows:
 @image html result_lspg.png width=50%
+The ROM was tested on a 2.7 GHz 12-Core Intel Xeon E5 core, and took 179 seconds to run. We immediately note that our *ROM is slower than the FOM!* This, of course, is due to the well known bottleneck associated with nonlinear systems. To gain computational speedups, we need hyperreduction. We now detail this. 
 
-
+##Hyperreduced LSPG ROM 
+We now run construct and run a hyper-reduced LSPG ROM. To do this, we again need to write a driver file, which here wel call [run_lspg_with_hyperreduction.cc](https://github.com/Pressio/pressio-tutorials/blob/swe2d_tutorial/tutorials/swe2d/online_phase/lspg_hyperReducedRom/run_lspg_with_hyperreduction.cc). A step-by-step tutorial for what is entailed in constructing this driver file is provided [here](./md_pages_tutorials_tutorial3_lspg_hyper.html). In summary, this file loads the basis on the *stencil mesh*, loads in information about the *sample mesh* and *stencil mesh*, and then constructs and runs an LSPG ROM employing the collocation hyperreduction technique.
+  
 To run the LSPG ROM with hyperreduction, we move to the *lspg_hyperReducedRom* directory, copy over our basis and sample mesh information, and then run our ROM.
 ```bash
 cd $SWE2D_DIR/online_phase/lspg_hyperReducedRom
