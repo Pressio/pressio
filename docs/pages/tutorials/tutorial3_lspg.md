@@ -15,7 +15,7 @@ The next step for us is to start out int main file, and first we define and init
 68:87
 ```
 
-After constructing the app object, we now read in the bases. For standard LSPG, we need to read in the bases for all mesh points. Here, we assume the the basis exists in a local file named *basis.txt*. The following lines of code read in the basis:
+After constructing the app object, we now read in the bases. For standard LSPG, we need to read in the bases for all mesh points. Here, we assume the basis exists in a local file named *basis.txt*. The following lines of code read in the basis:
 
 ```cpp
 @codesnippet
@@ -92,13 +92,13 @@ Finally, we can now use Pressio to solve the ROM. The following code advances th
 145:150
 ```
 
-Next, we construct a Crank Nicolson time stepper that we will use to march the problem in time. In Pressio, the steppers (1) act on Pressio datatypes that wrap the native datatype and (2) are templated on the time scheme types for the state, residual, jacobian, and application. As such, we first define the relevant Pressio wrapped data types, and then define the stepper type. 
+Next, we construct a Crank Nicolson time stepper that we will use to march the problem in time. In Pressio, the steppers (1) act on Pressio data types that wrap the native datatype and (2) are templated on the time scheme types for the state, residual, Jacobian, and application. As such, we first define the relevant Pressio wrapped data types, and then define the stepper type. 
 ```cpp
 @codesnippet
 ../../../../pressio-tutorials/tutorials/swe2d/offline_phase/run_fom_for_training_params.cc
 54:62
 ```
-Next, we define the linear solver type, and construct the solver. Here, we use the stabilized biconjugate gradient method. 
+Next, we define the linear solver type, and construct the solver. Here, we use the stabilized bi-conjugate gradient method. 
 ```cpp
 @codesnippet
 ../../../../pressio-tutorials/tutorials/swe2d/offline_phase/run_fom_for_training_params.cc
