@@ -109,6 +109,44 @@ product(::pressio::nontranspose mode,
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
 
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+/* -------------------------------------------------------------------
+ * y = beta * y + alpha*A*x
+ * x is a sharedmem vector wrapper eigen
+ * A = Eigen::MultiVector
+ * y = Epetra Vector
+ * this covers the case where the matrix A acts locally to x
+   while y is distributed, so A*x only fills the corresponding part of y
+ *-------------------------------------------------------------------*/
+template < typename A_type, typename x_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	::pressio::containers::Vector<Epetra_Vector> & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
+
+  using eig_mapping_t = Eigen::Map< Eigen::Matrix<scalar_type, -1, -1> >;
+  eig_mapping_t yMapped(y.data()->Values(), y.extentLocal(0), 1);
+  const auto & AE = *A.data();
+  const auto & xE = *x.data();
+  yMapped = beta * yMapped + alpha * AE * xE;
+}
+#endif
+
 /* -------------------------------------------------------------------
  * x is a distributed Epetra vector wrapper
  *-------------------------------------------------------------------*/
@@ -141,6 +179,37 @@ product(::pressio::transpose mode,
     y(i) = beta * y(i) + alpha * tmp;
   }
 }
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+/* -------------------------------------------------------------------
+ * y = beta * y + alpha*A^T*x
+ * x is a distributed Epetra vector wrapper
+ * A is an Eigen MV
+ * y is vector wrapper Eigen
+ *-------------------------------------------------------------------*/
+template <typename A_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const ::pressio::containers::Vector<Epetra_Vector> & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  using eig_mapping_t = const Eigen::Map< const Eigen::Matrix<scalar_type, -1, -1> >;
+  eig_mapping_t xMapped(x.data()->Values(), x.extentLocal(0), 1);
+  const auto & AE = *A.data();
+  auto & yE = *y.data();
+  yE = beta * yE + alpha * AE.transpose() * xMapped;
+}
+#endif
 
 }}//end namespace pressio::ops
 #endif  // OPS_EPETRA_OPS_LEVEL2_HPP_
