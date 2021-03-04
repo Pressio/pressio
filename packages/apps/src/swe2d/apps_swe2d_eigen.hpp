@@ -26,17 +26,17 @@ public:
 
 private:
   mutable std::vector<  Eigen::Triplet<scalar_type> > tripletList;
-  scalar_type Lx_;
-  scalar_type Ly_;
   int nx_;
   int ny_;
+  scalar_type Lx_;
+  scalar_type Ly_;
   scalar_type dx_;
   scalar_type dy_;
-  int nDofs_;
   mutable scalar_type g_;
   mutable scalar_type mu_ic_;
   mutable scalar_type mu_f_;
   mutable jacobian_type jac_;
+  int nDofs_;
 
   // mapping from k (state index), i (x-index), and  (y-index) to global index
   int state_index_mapper(const int k,const int i,const int j) const {
@@ -65,7 +65,7 @@ private:
 public:
   swe2d(const scalar_type Lx,const scalar_type Ly, 
         const int nx,const int ny,const scalar_type params[3]) 
-    : nx_(nx),Lx_(Lx),ny_(ny),Ly_(Ly), 
+    : nx_(nx),ny_(ny),Lx_(Lx),Ly_(Ly), 
       g_(params[0]),mu_ic_(params[1]),mu_f_(params[2])
     {
       this->setup();
