@@ -13,3 +13,9 @@ add_subdirectory(burgers1d)
 add_subdirectory(swe2d)
 add_subdirectory(steady_linear_adv_diff_2d)
 add_subdirectory(explicit_galerkin_rank2_correctness)
+
+
+if(PRESSIO_ENABLE_TPL_TRILINOS)
+add_subdirectory(mpi_independent_explicit_galerkin_euler_continuous_time_api_epetra)
+add_subdirectory(mpi_independent_explicit_galerkin_euler_continuous_time_api_tpetra)
+endif()

@@ -20,16 +20,16 @@ const std::vector<double> bdf1Sol
 
  int main(int argc, char *argv[]){
 
-  using fom_t		= pressio::apps::Burgers1dEpetra;
-  using scalar_t	= typename fom_t::scalar_type;
+  using fom_t   = pressio::apps::Burgers1dEpetra;
+  using scalar_t  = typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
   using fom_state_t  = pressio::containers::Vector<native_state_t>;
 
   using eig_dyn_vec = Eigen::Matrix<scalar_t, -1, 1>;
   using rom_state_t = pressio::containers::Vector<eig_dyn_vec>;
 
-  using decoder_jac_t	= pressio::containers::MultiVector<Epetra_MultiVector>;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
+  using decoder_jac_t = pressio::containers::MultiVector<Epetra_MultiVector>;
+  using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   std::string checkStr {"PASSED"};
 
@@ -50,7 +50,7 @@ const std::vector<double> bdf1Sol
   constexpr int romSize = 20;
   decoder_jac_t phi =
     pressio::rom::test::epetra::readBasis("basis.txt", romSize, numCell,
-					 Comm, appobj.getDataMap());
+           Comm, appobj.getDataMap());
   decoder_t decoderObj(phi);
 
   // this is my reference state

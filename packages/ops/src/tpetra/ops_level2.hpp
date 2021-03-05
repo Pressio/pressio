@@ -173,6 +173,53 @@ product(::pressio::nontranspose,
   ::pressio::ops::impl::_product_tpetra_mv_sharedmem_vec_kokkos(alpha, A, x, beta, y);
 }
 
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+/* -------------------------------------------------------------------
+ * y = beta * y + alpha*A*x
+ * x is a sharedmem vector wrapper eigen
+ * A = Eigen::MultiVector wrapper
+ * y = Tpetra Vector
+ * this covers the case where the matrix A acts locally to x
+   while y is distributed, so A*x only fills the corresponding part of y
+ *-------------------------------------------------------------------*/
+template < typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
+
+  using kuv = Kokkos::MemoryTraits<Kokkos::Unmanaged>;
+
+  using A_view_t = Kokkos::View<const scalar_type**, Kokkos::HostSpace, kuv>;
+  A_view_t Aview(A.data()->data(), A.extent(0), A.extent(1));
+
+  using x_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace, kuv>;
+  x_view_t xview(x.data()->data(), x.extent(0));
+
+  const char ctA = 'N';
+  const auto yLocalView_h = y.data()->getLocalViewHost();
+  const auto yLocalView_rank1 = Kokkos::subview(yLocalView_h, Kokkos::ALL(), 0);
+  ::KokkosBlas::gemv(&ctA, alpha, Aview, xview, beta, yLocalView_rank1);
+}
+#endif
+
+
 /* -------------------------------------------------------------------
  * x is a distributed Tpetra vector wrapper
  *-------------------------------------------------------------------*/
@@ -253,6 +300,51 @@ product(::pressio::transpose mode,
     y(i) = beta * y(i) + alpha * colI->dot(*x.data());
   }
 }
+
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+/* -------------------------------------------------------------------
+ * y = beta * y + alpha*A^T*x
+ * x is a distributed Tpetra vector wrapper
+ * A is an Eigen MV
+ * y is vector wrapper Eigen
+ *-------------------------------------------------------------------*/
+template <typename A_type, typename x_type, typename y_type, typename scalar_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<x_type>::value and
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  >
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
+
+  using kuv = Kokkos::MemoryTraits<Kokkos::Unmanaged>;
+
+  using A_view_t = Kokkos::View<const scalar_type**, Kokkos::HostSpace, kuv>;
+  A_view_t Aview(A.data()->data(), A.extent(0), A.extent(1));
+
+  const auto xLocalView_h     = x.data()->getLocalViewHost();
+  const auto xLocalView_rank1 = Kokkos::subview(xLocalView_h, Kokkos::ALL(), 0);
+
+  using y_view_t = Kokkos::View<scalar_type*, Kokkos::HostSpace, kuv>;
+  y_view_t yview(y.data()->data(), y.extent(0));
+
+  const char ctA = 'T';
+  ::KokkosBlas::gemv(&ctA, alpha, Aview, xLocalView_rank1, beta, yview);
+}
+#endif
 
 }}//end namespace pressio::ops
 #endif  // OPS_TPETRA_OPS_LEVEL2_HPP_
