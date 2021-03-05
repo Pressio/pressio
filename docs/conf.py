@@ -9,9 +9,15 @@ LINKS_NAVBAR1 = [
    [
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
      ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
-     ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",),
-     ("<a href=\"md_pages_getstarted_adapter_api.html\">Adapter API</a>",),
-     ("<a href=\"md_pages_getstarted_adapting_app.html\">Step-by-step on adapting an app</a>",)
+     ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",)
+   ]),
+
+  # core concepts
+  ("<a href=>Core Concepts</a>", 
+   [
+     ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
+     ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",)
+     # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
   # tutorials
@@ -35,11 +41,11 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
    ]),
 
-  # custom ops
-  ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
-   [
-     ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
-   ]),
+  # # custom ops
+  # ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
+  #  [
+  #    ("<a href=\"md_pages_custom_ops_default_gal_exp.html\">Ops for Galerkin Explicit Time</a>", ),
+  #  ]),
 
   # # Adapter API
   # ("<a href=\"md_pages_adapter_api.html\">Adapter API</a>",

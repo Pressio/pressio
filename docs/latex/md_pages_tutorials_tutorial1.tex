@@ -3,7 +3,7 @@
 \begin{DoxyParagraph}{}
 This tutorial shows how to create a pressio linear decoder object.
 \end{DoxyParagraph}
-\hypertarget{md_pages_tutorials_tutorial1_autotoc_md50}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1_autotoc_md50}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md39}{}\doxysection{Context}\label{md_pages_tutorials_tutorial1_autotoc_md39}
 A key assumption of projection-\/based R\+O\+Ms is to approximate the full-\/order model (F\+OM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
 where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.
@@ -12,13 +12,13 @@ If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$
 
 Graphically, this corresponds to\+: 
 
-{\itshape A linear decoder in pressio implements this linear mapping.}\hypertarget{md_pages_tutorials_tutorial1_autotoc_md51}{}\doxysection{Types Description}\label{md_pages_tutorials_tutorial1_autotoc_md51}
+{\itshape A linear decoder in pressio implements this linear mapping.}\hypertarget{md_pages_tutorials_tutorial1_autotoc_md40}{}\doxysection{Types Description}\label{md_pages_tutorials_tutorial1_autotoc_md40}
 
 \begin{DoxyItemize}
 \item $y_{fom}$\+: this is the F\+OM state and, therefore, it is a data structure of your application. For example, if you are using Trilinos/\+Epetra, the F\+OM state can be, e.\+g., an Epetra vector. Typically, $y_{fom}$ is a large (distributed) vector.
 \item $\phi$\+: this is the matrix of the linear mapping (e.\+g. P\+OD modes). Should be a data structure from your application. For example, if you are using Trilinos/\+Epetra, the F\+OM state can be, e.\+g., an Epetra Multi\+Vector. Typically, $\phi$ is a large (distributed) matrix.
 \item $y_{rom}$\+: this is the R\+OM state. R\+OM data strutures generally involve small, dense operators that fit well on a single node. In pressio, {\itshape regardless of what the F\+OM types are}, the R\+OM operators/data structures are either Eigen (always enabled) or Kokkos (optional dependency) types.
-\end{DoxyItemize}\hypertarget{md_pages_tutorials_tutorial1_autotoc_md52}{}\doxysection{Scenario A\+: your F\+O\+M types are natively supported in pressio}\label{md_pages_tutorials_tutorial1_autotoc_md52}
+\end{DoxyItemize}\hypertarget{md_pages_tutorials_tutorial1_autotoc_md41}{}\doxysection{Scenario A\+: your F\+O\+M types are natively supported in pressio}\label{md_pages_tutorials_tutorial1_autotoc_md41}
 This case refers to data types which pressio knows how to manipulate and operate on. Examples include vector and matrix classes in Eigen, Epetra/\+Tpetra in Trilinos, or Kokkos views. What do we mean by {\itshape natively supported}? If you try to use a pressio functionality/class using data structure types that are already supported/known to pressio, pressio {\itshape detects} them, and automatically uses the (best) native kernels to perform computations. The full list of supported data structures types can be found \mbox{[}here\mbox{]}(todo).
 
 Here, for demonstration purposes, we pretend the F\+OM uses Eigen types too. For other F\+OM types already known to pressio it would work similarly. The full tutorial can be found \href{https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc}{\texttt{ here}}.
@@ -80,7 +80,7 @@ Here, for demonstration purposes, we pretend the F\+OM uses Eigen types too. For
 \DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{\}}
 \end{DoxyCode}
-\hypertarget{md_pages_tutorials_tutorial1_autotoc_md53}{}\doxysection{Scenario B\+: your F\+O\+M types are N\+O\+T natively supported in pressio}\label{md_pages_tutorials_tutorial1_autotoc_md53}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md42}{}\doxysection{Scenario B\+: your F\+O\+M types are N\+O\+T natively supported in pressio}\label{md_pages_tutorials_tutorial1_autotoc_md42}
 This case refers to data types which pressio does {\itshape not} know how to manipulate and operate on. What do we mean by {\itshape not natively supported}? If you try to use a pressio functionality/class usign a data structure type that is {\bfseries{N\+OT}} already supported/known to pressio, pressio {\itshape detects/labels} it as an {\itshape arbitrary} type, and you {\bfseries{have to}} provide pressio with kernels to operate on these types.
 
 Here, for demonstration, we pretend that\+:
@@ -157,7 +157,7 @@ Note that the code below would work for any other "{}arbitrary\textquotesingle{}
 \DoxyCodeLine{          << \textcolor{stringliteral}{"{}, expected = "{}} << 4.}
 \DoxyCodeLine{          << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
 \end{DoxyCode}
-\hypertarget{md_pages_tutorials_tutorial1_autotoc_md54}{}\doxysubsection{The ops struct}\label{md_pages_tutorials_tutorial1_autotoc_md54}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md43}{}\doxysubsection{The ops struct}\label{md_pages_tutorials_tutorial1_autotoc_md43}
 In order for pressio to handle the linear mapping, it needs to know how to operate on $\phi$. To this end, in the code above, you need to pass to the {\ttfamily Linear\+Decoder} constructor an object to handle that computation. To compute the mapping, pressio will call the {\ttfamily product} method. 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template} <\textcolor{keyword}{typename} scalar\_t>}
@@ -184,5 +184,5 @@ In order for pressio to handle the linear mapping, it needs to know how to opera
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{\};}
 \end{DoxyCode}
-\hypertarget{md_pages_tutorials_tutorial1_autotoc_md55}{}\doxysection{Comments}\label{md_pages_tutorials_tutorial1_autotoc_md55}
+\hypertarget{md_pages_tutorials_tutorial1_autotoc_md44}{}\doxysection{Comments}\label{md_pages_tutorials_tutorial1_autotoc_md44}
 We are constantly working increasing support in pressio for more external libraries. If you application types are not supported but you would like them to be, you can file an \href{https://github.com/Pressio/pressio/issues}{\texttt{ issue}} to request it. 

@@ -16,7 +16,7 @@
 <para><simplesect kind="par"><title>Disclaimer</title><para>The guide below does <bold>not</bold> assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to you!</para>
 </simplesect>
 </para>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md29">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md17">
 <title>Prerequisites</title>
 <para><itemizedlist>
 <listitem><para>C and C++11 compilers: either Clang or GNU</para>
@@ -25,7 +25,7 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md30">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md18">
 <title>1. Prep</title>
 <para>Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories: <programlisting filename=".bash"><codeline><highlight class="normal">mkdir<sp/>$HOME/pressio_repos</highlight></codeline>
 <codeline><highlight class="normal">mkdir<sp/>$HOME/pressio_builds</highlight></codeline>
@@ -37,20 +37,20 @@
 </programlisting></para>
 <para>These are needed because <computeroutput>CC</computeroutput> and <computeroutput>CXX</computeroutput> are used to do all the builds.</para>
 </sect1>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md31">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md19">
 <title>2. Cloning</title>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}</highlight></codeline>
 <codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:Pressio/pressio-builder.git</highlight></codeline>
 <codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:Pressio/pressio.git</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md32">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md20">
 <title>3. Install TPLs</title>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}/pressio-builder</highlight></codeline>
 <codeline><highlight class="normal">./main_tpls.sh<sp/>-dryrun=no<sp/>-tpls=eigen,gtest<sp/>-target-dir=${PRESSIO_BUILDS}</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md33">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md21">
 <title>4. Build the tests</title>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}/pressio-builder</highlight></codeline>
 <codeline></codeline>
@@ -63,7 +63,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-cmake-generator-name=default_with_tests</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md34">
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md22">
 <title>5. Running the tests</title>
 <para>To run the tests, you can follow this: <programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_BUILDS}/pressio/build</highlight></codeline>
 <codeline><highlight class="normal">ctest</highlight></codeline>
