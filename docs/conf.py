@@ -25,6 +25,7 @@ LINKS_NAVBAR1 = [
    [
      ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
      ("<a href=\"md_pages_tutorials_tutorial2.html\">Default Galerkin explicit</a>", ),
+     ("<a href=\"md_pages_tutorials_tutorial3.html\">LSPG ROM of the shallow water equations</a>", )
    ]),
 
   # # demos
