@@ -13,20 +13,20 @@ LINKS_NAVBAR1 = [
    ]),
 
   # core concepts
-  ("<a href=>Core Concepts</a>", 
+  ("<a href=>Core Concepts</a>",
    [
      ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
      ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",)
      # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
    ]),
 
-  # tutorials
-  ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
-   [
-     ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
-     ("<a href=\"md_pages_tutorials_tutorial2.html\">Default Galerkin explicit</a>", ),
-     ("<a href=\"md_pages_tutorials_tutorial3.html\">LSPG ROM of the shallow water equations</a>", )
-   ]),
+  # # tutorials
+  # ("<a href=>Tutorials</a>", #("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
+  #  [
+  #    ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
+  #    ("<a href=\"md_pages_tutorials_tutorial2.html\">Default Galerkin explicit</a>", ),
+  #    ("<a href=\"md_pages_tutorials_tutorial3.html\">LSPG ROM of the shallow water equations</a>", )
+  #  ]),
 
   # # demos
   # ("<a href=>Demos</a>", #("<a href=\"md_pages_examples.html\">Full Examples</a>",
