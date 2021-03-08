@@ -89,7 +89,7 @@ public:
     return U0;
   }
 
-  void setParams(const scalar_type params[3]) const
+  void setParams(const scalar_type params[3])
   {
     g_ = params[0];
     mu_ic_ = params[1];
