@@ -19,7 +19,7 @@
 <para><itemizedlist>
 <listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
 </listitem><listitem><para>read about the <ulink url="./md_pages_getstarted_packages.html">packages</ulink> composing this C++ library</para>
-</listitem><listitem><para>explore the <ulink url="./md_pages_tutorials_tutorial1.html">tutorials</ulink></para>
+</listitem><listitem><para>explore the <ulink url="./md_pages_tutorials.html">tutorials</ulink></para>
 </listitem><listitem><para>dig into the <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</ulink> of the C++ library</para>
 </listitem></itemizedlist>
 </para>

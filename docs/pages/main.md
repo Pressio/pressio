@@ -32,7 +32,7 @@ Schematically, this is shown below:
 
 * read about the [packages](./md_pages_getstarted_packages.html) composing this C++ library
 
-* explore the [tutorials](./md_pages_tutorials_tutorial1.html)
+* explore the [tutorials](./md_pages_tutorials.html)
 
 * dig into the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library
 

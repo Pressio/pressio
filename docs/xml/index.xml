@@ -30,9 +30,7 @@
   </compound>
   <compound refid="main_8md" kind="file"><name>main.md</name>
   </compound>
-  <compound refid="tutorial1_8md" kind="file"><name>tutorial1.md</name>
-  </compound>
-  <compound refid="tutorial2_8md" kind="file"><name>tutorial2.md</name>
+  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
   </compound>
   <compound refid="various_8md" kind="file"><name>various.md</name>
   </compound>
@@ -72,9 +70,7 @@
   </compound>
   <compound refid="md_pages_hyperreduction" kind="page"><name>md_pages_hyperreduction</name>
   </compound>
-  <compound refid="md_pages_tutorials_tutorial1" kind="page"><name>md_pages_tutorials_tutorial1</name>
-  </compound>
-  <compound refid="md_pages_tutorials_tutorial2" kind="page"><name>md_pages_tutorials_tutorial2</name>
+  <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
   </compound>
   <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
   </compound>
@@ -97,8 +93,6 @@
   <compound refid="dir_c47e5d700743d14fcf5d1e609c4d899d" kind="dir"><name>pages/hyperreduction</name>
   </compound>
   <compound refid="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir"><name>pages</name>
-  </compound>
-  <compound refid="dir_d37f90f6dfa16220c69059cd0bfa7aa7" kind="dir"><name>pages/tutorials</name>
   </compound>
   <compound refid="dir_641e6e2d6329e01ae5e5715108e316c1" kind="dir"><name>pages/various</name>
   </compound>
