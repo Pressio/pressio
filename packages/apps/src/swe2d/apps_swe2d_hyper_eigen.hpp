@@ -4,7 +4,7 @@
 
 #include "Eigen/Core"
 #include "rusanovflux.hpp"
-#include <<unordered_map>
+#include <unordered_map>
 
 namespace pressio{ namespace apps{
 
