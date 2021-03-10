@@ -3,26 +3,37 @@
 *Leading-edge projection-based reduced order models (\proms) for
 dynamical systems in science and engineering.*
 
-You landed on the documentation of the C++ library,
+This is the documentation of the C++ library,
 which is one component of the [Pressio project](https://pressio.github.io/).
-
 
 ## In a nutshell
 
-Pressio provides model reduction functionalities applicable to any system expressible as
+Pressio can be applied to any dynamical system expressible in
+a *continuous-time* form as
 @f[
 \frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)
 @f]
-where @f$y@f$ is the full-order model (FOM) state,
-@f$f@f$ is the FOM velocity, and @f$t@f$ is time.
+and/or in a *discrete-time* form
+@f[
+\boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}
+@f]
 
-We leverage this simple but expressive mathematical framework as a pivotal
+Here, @f$y@f$ is the full-order model (FOM) state,
+@f$f@f$ the FOM velocity, @f$t@f$ is time, and @f$R@f$ is the residual.
+
+We leverage this expressive mathematical framework as a pivotal
 design choice to enable a minimal application programming interface (API)
-that is natural to dynamical systems.
-To interface your application to Pressio, you need to create an *adapter class*
-to expose the right-hand-side of your system and optionally the action of its Jacobian.
-Schematically, this is shown below:
+that is natural to dynamical systems: you choose the formulation
+more convenient to you, and interface your application to
+Pressio by creating a corresponding *adapter class* to expose
+the operators needed for the chosen formulation.
+In general, you don't need to support both: there are advantages and disadvantages for both,
+and sometimes the choice is dictated directly by your native application (for example,
+in some cases it might be easier to directly expose the residual).
+Read [the doc page](./md_pages_coreconcepts_adapter_api.html)
+to learn more about the adapter classes and see code templates.
+
 @image html frontpageschem.svg width=85%
 
 
@@ -30,7 +41,7 @@ Schematically, this is shown below:
 
 * learn about the [installation process](./md_pages_getstarted_build_and_install.html)
 
-* read about the [packages](./md_pages_getstarted_packages.html) composing this C++ library
+* read about the [packages](./md_pages_getstarted_packages.html) composing the pressio C++ library
 
 * explore the [tutorials](./md_pages_tutorials.html)
 

@@ -8,31 +8,25 @@
 @par
 An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.
 
-Recall that the role of the adapter is to enable Pressio to interface 
-to an external application expressible as
+<!-- To use the functionalities in pressio, obviously there needs to be
+a way to exchange data/information between pressio and your FOM application.
+To do so, in pressio we leverage the idea of an *adapter class* as a layer
+allowing to standardize the way pressio interfaces with any application.
+Schematically, the flow of interfation is shown below:
+@image html schem.svg width=65%
+ -->
+
+## Continuous-time API
+
+This API is intended for any system expressible in *time-continuous* form as
 @f[
 \frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}),
 \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}),
 @f]
-where @f$y@f$ is the FOM state and @f$f(...)@f$ is the FOM velocity,
+where @f$y@f$ is the full-order model (FOM) state,
+@f$f@f$ the FOM velocity, and @f$t@f$ is time.
 \todo finish.
-
-<!-- To use the functionalities in pressio, obviously there needs to be
-a way to exchange data/information between pressio and your FOM application.
-To do so, in pressio we leverage the idea of an *adapter class* as a layer
-allowing to standardize the way pressio interfaces with any application.
-
-Schematically, the flow of interfation is shown below:
-@image html schem.svg width=65%
- -->
-To facilitate this integration, pressio supports two main types of adapter APIs:
-1. *continuous-time* API: this directly stems from the formulation above, and is the preferred one;
-2. *discrete-time* API: this version is intended as an auxiliary tool, mainly aimed
-at those applications that only operate at the discrete level and therefore option 1 is not applicable.
-
-
-## Continuous-time API
 
 We envision two scenarios:
 * A: you are only able to expose the right-hand-side (or velocity) of your FOM application
@@ -101,6 +95,13 @@ make sense for implicit time integration).
 
 ## Discrete-time API
 
+This API is intended for any system expressible in a discrete-time form as
+@f[
+\boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}
+@f]
+where @f$y@f$ is the full-order model (FOM) state, @f$t@f$ is time, and @f$R@f$ is the residual.
+\todo finish.
+
 ```cpp
 class
 {
@@ -160,7 +161,7 @@ In general, we suggest users to always prefer the continuous-time API because it
 
 
 
-<!-- 
+<!--
 
 @m_class{m-code-figure} @parblock
 @code{.cpp}

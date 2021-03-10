@@ -11,15 +11,11 @@
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
 <para><simplesect kind="par"><title></title><para>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</para>
 </simplesect>
-Recall that the role of the adapter is to enable Pressio to interface to an external application expressible as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the FOM state and <formula id="2">$f(...)$</formula> is the FOM velocity,  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
-<para>To facilitate this integration, pressio supports two main types of adapter APIs:<orderedlist>
-<listitem><para><emphasis>continuous-time</emphasis> API: this directly stems from the formulation above, and is the preferred one;</para>
-</listitem><listitem><para><emphasis>discrete-time</emphasis> API: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.</para>
-</listitem></orderedlist>
 </para>
 </sect1>
 <sect1 id="md_pages_coreconcepts_adapter_api_1autotoc_md2">
 <title>Continuous-time API</title>
+<para>This API is intended for any system expressible in <emphasis>time-continuous</emphasis> form as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, and <formula id="3">$t$</formula> is time.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
 <para>We envision two scenarios:<itemizedlist>
 <listitem><para>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</para>
 </listitem><listitem><para>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&apos;s Jacobian on some operand</para>
@@ -82,6 +78,7 @@ Recall that the role of the adapter is to enable Pressio to interface to an exte
 </sect1>
 <sect1 id="md_pages_coreconcepts_adapter_api_1autotoc_md5">
 <title>Discrete-time API</title>
+<para>This API is intended for any system expressible in a discrete-time form as <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula> where <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>

@@ -4,13 +4,9 @@
 \begin{DoxyParagraph}{}
 An adapter class allows a F\+OM application to expose data via an A\+PI conforming to Pressio requirements.
 \end{DoxyParagraph}
-Recall that the role of the adapter is to enable Pressio to interface to an external application expressible as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the F\+OM state and $f(...)$ is the F\+OM velocity, todo finish.
+\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md2}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_coreconcepts_adapter_api_autotoc_md2}
+This A\+PI is intended for any system expressible in {\itshape time-\/continuous} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the full-\/order model (F\+OM) state, $f$ the F\+OM velocity, and $t$ is time. todo finish.
 
-To facilitate this integration, pressio supports two main types of adapter A\+P\+Is\+:
-\begin{DoxyEnumerate}
-\item {\itshape continuous-\/time} A\+PI\+: this directly stems from the formulation above, and is the preferred one;
-\item {\itshape discrete-\/time} A\+PI\+: this version is intended as an auxiliary tool, mainly aimed at those applications that only operate at the discrete level and therefore option 1 is not applicable.
-\end{DoxyEnumerate}\hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md2}{}\doxysection{Continuous-\/time A\+PI}\label{md_pages_coreconcepts_adapter_api_autotoc_md2}
 We envision two scenarios\+:
 \begin{DoxyItemize}
 \item A\+: you are only able to expose the right-\/hand-\/side (or velocity) of your F\+OM application
@@ -76,6 +72,8 @@ This version of the adapter can be used for doing Galerkin R\+O\+Ms with explici
 This version of the adapter can be used for doing Galerkin R\+O\+Ms with explicit and implicit time stepping, L\+S\+PG and W\+LS (note that L\+S\+PG and W\+LS only make sense for implicit time integration).
 \end{DoxyParagraph}
 \hypertarget{md_pages_coreconcepts_adapter_api_autotoc_md5}{}\doxysection{Discrete-\/time A\+PI}\label{md_pages_coreconcepts_adapter_api_autotoc_md5}
+This A\+PI is intended for any system expressible in a discrete-\/time form as \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \] where $y$ is the full-\/order model (F\+OM) state, $t$ is time, and $R$ is the residual. todo finish.
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class}}

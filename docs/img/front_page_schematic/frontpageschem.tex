@@ -61,11 +61,11 @@
 \newcommand{\dparams}{\boldsymbol \nu}
 \newcommand{\paramDomain}{\mathcal D}
 \newcommand{\nparams}{n_{\params}}
-\newcommand{\fomJac}{\partial\velocity/\partial \dstate}
+\newcommand{\fomJac}{\partial\velocity/\partial \state}
 %\newcommand{\aprxFomJac}{\partial\velocity/\partial \aprxState}
-\newcommand{\aprxFomJac}{\frac{\partial\velocity}{\partial
-\dstate}(\aprxState,t;\params)}
-\newcommand{\fomJacFrac}{ \frac{\partial\velocity}{\partial \dstate}}
+%\newcommand{\aprxFomJac}{\frac{\partial\velocity}{\partial \state}(\aprxState,t;\params)}
+\newcommand{\fomJacVel}{ \boldsymbol J_{\velocity}}
+\newcommand{\fomJacRes}{ \boldsymbol J_{R}}
 \newcommand{\aprxFomJacFrac}{ \frac{\partial\velocity}{\partial \aprxState}}
 
 % ROM macros
@@ -144,14 +144,38 @@
     text=appCol,
     below=of app.south east,
     anchor=north east,
-    node distance=9cm, rounded corners,
-    minimum width=0.6\textwidth,
+    node distance=9cm,
+    rounded corners,
+    minimum width=0.29\textwidth,
     minimum height=3cm,
-    yshift=0.6cm
+    yshift=0.6cm,
+    xshift=-3.75cm
   ] (adapter)
   {
     \shortstack{
-      \LARGE{Adapter}
+      \Large{Contin.-time}\\
+      \Large{Adapter}
+      }
+  };
+
+  % adapter2
+  \node [
+    block,
+    draw=appCol,
+    text=appCol,
+    below=of app.south east,
+    anchor=north east,
+    node distance=9cm,
+    rounded corners,
+    minimum width=0.29\textwidth,
+    minimum height=3cm,
+    xshift=0cm,
+    yshift=0.6cm
+  ] (adapter2)
+  {
+    \shortstack{
+      \Large{Discrete-time}\\
+      \Large{Adapter}
       }
   };
 
@@ -182,7 +206,7 @@
     node distance=1.2cm,
     minimum width=0.17\textwidth,
     yshift=0.6cm,
-    xshift=-2.32cm
+    xshift=-0.375cm
   ](galerkin){GALERKIN};
 
   \node [
@@ -226,7 +250,8 @@
     %node distance=9cm,
     rounded corners,
     minimum width=0.6\textwidth,
-    yshift=-0.75cm
+    yshift=-0.75cm,
+    xshift=1.95cm
   ] (ode){ODE};
 
   % nonlinear solvers
@@ -249,7 +274,7 @@
     rounded corners,
     minimum width=0.875\textwidth,
     yshift=1.8cm,
-    xshift=-3.9cm
+    xshift=-3.85cm
   ] (basicpacks){MPL UTILS CONTAINERS OPS QR ...};
 
   \node [left=of adapter, text=appCol, yshift=2cm, xshift=0.8cm](pApp)  {\rotatebox{90}{\Large{Application}}};
@@ -275,28 +300,43 @@
         {\arrow[scale=1.3,>=stealth]{>}}},postaction={decorate}}}
 
       % rom -> adapter
-      \draw[red, line width=2pt, myptr] ([xshift=-1cm]pressiorom.north -| adapter)
-      -- node {\LARGE{$\aprxState, t, \Boper$}}
-      ([xshift=-1cm]adapter.south);
-
+      \draw[red, line width=1.5pt, myptr] ([xshift=-0.4cm]pressiorom.north -| adapter)
+      -- node {\begin{tabular}{c} \large{$\aprxState,t$} \\ \large{[,$\Boper$]} \end{tabular}}
+      ([xshift=-0.4cm]adapter.south);
       % adapter -> rom
-      \draw[green, line width=2pt, myptr]([xshift=1cm]adapter.south)
-      --  node [right] {\LARGE{$\velocity [, \fomJacFrac \Boper]$}}
-      ([xshift=1cm]pressiorom.north -| adapter);
-
+      \draw[green, line width=1.5pt, myptr]([xshift=-0.15cm]adapter.south)
+      --  node [right] {\large{$\velocity [,\fomJacVel \Boper]$}}
+      ([xshift=-0.15cm]pressiorom.north -| adapter);
       % adapter -> app
-      \draw[appCol, text=appCol, line width=2pt, myptr]([xshift=-1cm]adapter.north)
-      -- node {\LARGE{$\aprxState, t, \Boper$}}
-      ([xshift=-1cm]app.south);
-
+      \draw[appCol, text=appCol, line width=1.5pt, myptr]([xshift=-0.4cm]adapter.north)
+      -- node {\begin{tabular}{c} \large{$\aprxState,t$} \\ \large{[,$\Boper$]} \end{tabular}}
+      ([xshift=-2.26cm]app.south);
       % app -> adapter
-      \draw[appCol, text=appCol, line width=2pt, myptr]([xshift=1cm]app.south)
-      -- node [right] {\LARGE{$\velocity [, \fomJacFrac \Boper]$}}
-      ([xshift=1cm]adapter.north);
+      \draw[appCol, text=appCol, line width=1.5pt, myptr]([xshift=-2.01cm]app.south)
+      -- node [right] {\large{$\velocity [,\fomJacVel \Boper]$}}
+      ([xshift=-0.15cm]adapter.north);
+
+      % rom -> adapter2
+      \draw[red, line width=1.5pt, myptr] ([xshift=0.15cm]pressiorom.north -| adapter2)
+      -- node {\begin{tabular}{c} \large{$\aprxState_{n,n-1,...}$} \\ \large{$t,\Boper$} \end{tabular}}
+      ([xshift=0.15cm]adapter2.south);
+      % adapter2 -> rom
+      \draw[green, line width=1.5pt, myptr]([xshift=0.4cm]adapter2.south)
+      --  node [right] {\large{$R,\fomJacRes \Boper$}}
+      ([xshift=0.4cm]pressiorom.north -| adapter2);
+      % adapter2 -> app
+      \draw[appCol, text=appCol, line width=1.5pt, myptr]([xshift=0.15cm]adapter2.north)
+      -- node {\begin{tabular}{c} \large{$\aprxState_{n,n-1,...}$} \\ \large{$t,\Boper$} \end{tabular}}
+      ([xshift=2.03cm]app.south);
+      % app -> adapter2
+      \draw[appCol, text=appCol, line width=1.5pt, myptr]([xshift=2.28cm]app.south)
+      --  node [right] {\large{$R,\fomJacRes \Boper$}}
+      ([xshift=0.4cm]adapter2.north);
+
 
       \node [left=of app.west, yshift=1.65cm, xshift=1cm](p1){};
       \node [left=of adapter.west, yshift=-1.64cm, xshift=1cm](p2){};
-      \node [right=of adapter.east, yshift=-1.65cm, xshift=-1.8cm](p3){};
+      \node [right=of adapter2.east, yshift=-1.65cm, xshift=-1.8cm](p3){};
       \node [left=of main.south west, yshift=-0.1cm, xshift=1.95cm](p4){};
       \node [right=of main.south east, yshift=-0.1cm, xshift=-1.92cm](p5){};
       \node [right=of main.north east, yshift=0.15cm, xshift=-1.92cm](p6){};
