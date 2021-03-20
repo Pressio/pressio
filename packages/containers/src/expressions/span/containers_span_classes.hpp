@@ -282,5 +282,84 @@ public:
 #endif
 
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename vector_t>
+struct SpanExpr<
+  vector_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<vector_t>::value
+    >
+  >
+{
+  using this_t = SpanExpr<vector_t>;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+private:
+  std::reference_wrapper<vector_t> vecObj_;
+  size_t startIndex_;
+  size_t extent_ = {};
+
+public:
+  SpanExpr() = delete;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = delete;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(SpanExpr && other) = delete;
+  ~SpanExpr() = default;
+
+  SpanExpr(vector_t & objIn,
+	   const size_t startIndexIn,
+	   const size_t extentIn)
+    : vecObj_(objIn),
+      startIndex_(startIndexIn),
+      extent_(extentIn)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
+  }
+
+  SpanExpr(vector_t & objIn,
+	   pair_t indexRange)
+    : vecObj_(objIn),
+      startIndex_(std::get<0>(indexRange)),
+      extent_(std::get<1>(indexRange)-startIndex_)
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
+  }
+
+public:
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
+
+  // non-const subscripting
+  template<typename _vector_t = vector_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_vector_t>::type>::value,
+    ref_t
+    >
+  operator()(size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return vecObj_.get()(startIndex_+i);
+  }
+
+  // const subscripting
+  const_ref_t operator()(size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return vecObj_.get()(startIndex_+i);
+  }
+};
+#endif
+
 }}} //end namespace pressio::containers::expressions
 #endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_

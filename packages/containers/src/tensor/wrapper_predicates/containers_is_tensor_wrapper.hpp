@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_subspan_function.hpp
+// containers_is_tensor_wrapper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,36 +46,29 @@
 //@HEADER
 */
 
-#ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
-#define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
+#ifndef CONTAINERS_TENSOR_WRAPPER_PREDICATES_CONTAINERS_IS_TENSOR_WRAPPER_HPP_
+#define CONTAINERS_TENSOR_WRAPPER_PREDICATES_CONTAINERS_IS_TENSOR_WRAPPER_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio{ namespace containers{ namespace predicates {
 
-template <typename T, typename ... Args>
-mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
-   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==2))
-  and (0 < sizeof...(Args)),
-  typename details::traits<T>::subspan_const_ret_t
-  >
-subspan(const T & obj, Args&& ... args)
-{
-  using return_t = typename details::traits<T>::subspan_const_ret_t;
-  return return_t(obj, std::forward<Args>(args)... );
-}
+template <typename T, typename enable = void>
+struct is_tensor_wrapper : std::false_type {};
 
-template <typename T, typename ... Args>
-mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
-   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==2))
-  and (0 < sizeof...(Args)),
-  typename details::traits<T>::subspan_ret_t
-  >
-subspan(T & obj, Args&& ... args)
-{
-  using return_t = typename details::traits<T>::subspan_ret_t;
-  return return_t(obj, std::forward<Args>(args)... );
-}
+template <typename T>
+struct is_tensor_wrapper<
+  ::pressio::containers::Tensor<1, T>
+  > : std::true_type{};
 
-}} //end namespace pressio::containers
-#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
+template <typename T>
+struct is_tensor_wrapper<
+  ::pressio::containers::Tensor<2, T>
+  > : std::true_type{};
+
+
+template <typename T>
+struct is_tensor_wrapper<
+  ::pressio::containers::Tensor<3, T>
+  > : std::true_type{};
+
+}}}//end namespace pressio::containers::predicates
+#endif  // CONTAINERS_TENSOR_WRAPPER_PREDICATES_CONTAINERS_IS_TENSOR_WRAPPER_HPP_

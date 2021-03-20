@@ -85,6 +85,8 @@ struct traits<
   using reference_t	    = scalar_t &;
   using const_reference_t   = scalar_t const &;
 
+  using span_ret_t   = expressions::SpanExpr<Tensor<1,wrapped_type>>;
+  using span_const_ret_t = expressions::SpanExpr< const Tensor<1,wrapped_type>>;
   using asdiagonalmatrix_ret_t = expressions::AsDiagonalMatrixExpr<Tensor<1,wrapped_type>>;
   using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Tensor<1,wrapped_type>>;
 };
@@ -126,6 +128,8 @@ struct traits<
 
   using diag_ret_t = expressions::DiagExpr<Tensor<2,wrapped_type>>;
   using diag_const_ret_t = expressions::DiagExpr<const Tensor<2,wrapped_type>>;
+  using subspan_ret_t   = expressions::SubspanExpr<Tensor<2,wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const Tensor<2,wrapped_type>>;
 
   using unsuited_layout_wrapped_t = pybind11::array_t<scalar_t, pybind11::array::c_style>;
 };

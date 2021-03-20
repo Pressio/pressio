@@ -264,5 +264,90 @@ public:
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename matrix_t>
+struct SubspanExpr<
+  matrix_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value
+    >
+  >
+{
+
+  using this_t = SubspanExpr<matrix_t>;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using ord_t = typename traits::ordinal_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using pair_t = std::pair<std::size_t, std::size_t>;
+
+private:
+  std::reference_wrapper<matrix_t> matObj_;
+  ord_t rowStart_;
+  ord_t colStart_;
+  ord_t endRow_;
+  ord_t endCol_;
+  ord_t numRows_ = {};
+  ord_t numCols_ = {};
+
+public:
+  SubspanExpr() = delete;
+  SubspanExpr(const SubspanExpr & other) = default;
+  SubspanExpr & operator=(const SubspanExpr & other) = delete;
+  SubspanExpr(SubspanExpr && other) = default;
+  SubspanExpr & operator=(SubspanExpr && other) = delete;
+  ~SubspanExpr() = default;
+
+  SubspanExpr(matrix_t & matObjIn,
+	      const pair_t rowRangeIn,
+	      const pair_t colRangeIn)
+    : matObj_(matObjIn),
+    rowStart_(std::get<0>(rowRangeIn)),
+    colStart_(std::get<0>(colRangeIn)),
+    endRow_(std::get<1>(rowRangeIn)-1),
+    endCol_(std::get<1>(colRangeIn)-1),
+    numRows_(endRow_ - rowStart_ + 1),
+    numCols_(endCol_ - colStart_ + 1)
+  {
+    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
+    assert( (int)std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
+    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
+    assert( (int)std::get<1>(colRangeIn) <= matObjIn.extent(1) );
+
+    // here the ranges are exclusive of the last index (like Kokkos and Python)
+    // so the indices of the last row and col included are:
+    assert(endRow_ >= rowStart_);
+    assert(endCol_ >= colStart_);
+  }
+
+public:
+  size_t extent(size_t i) const{
+    return (i==0) ? numRows_ : numCols_;
+  }
+
+  // non-const subscripting
+  template<typename _matrix_t = matrix_t>
+  mpl::enable_if_t<
+    !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+    ref_t
+    >
+  operator()(const ord_t & i, const ord_t & j)
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return matObj_(rowStart_+i, colStart_+j);
+  }
+
+  const_ref_t operator()(const ord_t & i, const ord_t & j) const
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return matObj_(rowStart_+i, colStart_+j);
+  }
+};
+#endif
+
 }}} //end namespace pressio::containers::expressions
 #endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_CLASSES_HPP_

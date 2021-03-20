@@ -159,5 +159,31 @@ struct traits<
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename T>
+struct traits<
+  ::pressio::containers::expressions::SpanExpr<T>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+    >
+  >
+  : public containers_shared_traits<
+  typename details::traits<T>::wrapped_t,
+  WrappedPackageIdentifier::Pybind,
+  true,
+  1
+  >
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
+  using wrapped_t = typename traits<T>::wrapped_t;
+  using scalar_t  = typename traits<T>::scalar_t;
+  using ordinal_t = typename traits<T>::ordinal_t;
+  using size_t    = ordinal_t;
+  using reference_t =  scalar_t &;
+  using const_reference_t = scalar_t const &;
+};
+#endif
+
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_TRAITS_HPP_

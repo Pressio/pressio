@@ -53,7 +53,8 @@ namespace pressio{ namespace containers{
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper<T>::value
+  (::pressio::containers::predicates::is_vector_wrapper<T>::value
+   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==1))
   and (0 < sizeof...(Args)),
   typename details::traits<T>::span_const_ret_t
   >
@@ -65,7 +66,8 @@ span(const T & vecObj, Args&& ... args)
 
 template <typename T, typename ... Args>
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper<T>::value
+  (::pressio::containers::predicates::is_vector_wrapper<T>::value
+   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==1))
   and (0 < sizeof...(Args)),
   typename details::traits<T>::span_ret_t
   >

@@ -162,15 +162,14 @@ struct traits<
   using reference_t =  scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  // type of the native expression
-  // this should be a pybind11::array that views the diagonal of the matrix
-  // for time being we make this of the same type as the wrapped_type
-  // even if this is not fully right I think.
-  // it seems to be doing the right thing.
-  using native_expr_t = wrapped_t;
-
-  using const_data_return_t = native_expr_t const *;
-  using data_return_t = native_expr_t *;
+  // // type of the native expression
+  // // this should be a pybind11::array that views the diagonal of the matrix
+  // // for time being we make this of the same type as the wrapped_type
+  // // even if this is not fully right I think.
+  // // it seems to be doing the right thing.
+  // using native_expr_t = wrapped_t;
+  // using const_data_return_t = native_expr_t const *;
+  // using data_return_t = native_expr_t *;
 };
 #endif
 

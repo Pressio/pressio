@@ -244,15 +244,10 @@ struct DiagExpr<
   using size_t = typename traits::size_t;
   using ref_t = typename traits::reference_t;
   using const_ref_t = typename traits::const_reference_t;
-  using native_expr_t = typename traits::native_expr_t;
-  using data_return_t = typename traits::data_return_t;
-  using const_data_return_t = typename traits::const_data_return_t;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  //pybind11::object np_ = pybind11::module::import("numpy");
   std::reference_wrapper<matrix_t> matObj_;
-  /*native_expr_t nativeExprObj_;*/
   size_t extent_ = {};
 
 public:
@@ -265,30 +260,12 @@ public:
 
   DiagExpr(matrix_t & matObjIn)
     : matObj_(matObjIn),
-      /*nativeExprObj_
-	( np_.attr("diag")(matObj_.get().data()) ),*/
       extent_(matObjIn.extent(0))
   {
     assert(matObjIn.extent(0) == matObjIn.extent(1));
   }
 
 public:
-  // auto proxy() const{
-  //   return nativeExprObj_.unchecked();
-  // }
-
-  // auto proxy(){
-  //   return nativeExprObj_.mutable_unchecked();
-  // }
-
-  // const_data_return_t data() const{
-  //   return &nativeExprObj_;
-  // }
-
-  // data_return_t data(){
-  //   return &nativeExprObj_;
-  // }
-
   size_t extent() const{
     return extent_;
   }

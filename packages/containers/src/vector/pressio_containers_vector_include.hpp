@@ -83,9 +83,6 @@
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "./wrapper_predicates/containers_is_vector_wrapper_eigen.hpp"
 #endif
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// #include "./wrapper_predicates/containers_is_vector_wrapper_pybind.hpp"
-// #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 #include "./wrapper_predicates/containers_is_vector_wrapper_epetra.hpp"
 #include "./wrapper_predicates/containers_is_vector_wrapper_tpetra_block.hpp"

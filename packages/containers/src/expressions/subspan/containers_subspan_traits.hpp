@@ -159,5 +159,30 @@ struct traits<
 };
 #endif
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename matrix_type>
+struct traits<
+  ::pressio::containers::expressions::SubspanExpr<matrix_type>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_type>::value
+    >
+  >
+  : public containers_shared_traits<
+  typename details::traits<matrix_type>::wrapped_t,
+  WrappedPackageIdentifier::Pybind, true, 2>,
+  public matrix_shared_traits<false>
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using wrapped_t = typename traits<matrix_type>::wrapped_t;
+  using scalar_t  = typename traits<matrix_type>::scalar_t;
+  using ordinal_t = typename traits<matrix_type>::ordinal_t;
+  using size_t    = ordinal_t;
+  using reference_t =  scalar_t &;
+  using const_reference_t = scalar_t const &;
+};
+#endif
+
 }}}//end namespace pressio::containers::details
 #endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_
