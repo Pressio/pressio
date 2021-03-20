@@ -43,7 +43,7 @@ We can distinguish between *optional* and *required* dependencies.
 | Kokkos             | Optional          | 3.1.0                 |
 | BLAS               | Optional          | --                    |
 | LAPACK             | Optional          | --                    |
-| Pybind11           | Optional          | v2.6                  |
+| Pybind11           | Optional          | v2.7                  |
 | GoogleTest         | Optional          | 1.10.0                |
 |                    |                   |                       |
 
@@ -61,7 +61,6 @@ Enabling/disabling specific dependencies is done via the following cmake variabl
 | `PRESSIO_ENABLE_TPL_LAPACK`     | self-explanatory                     | `OFF`; automatically `ON` if `PRESSIO_ENABLE_TPL_BLAS=ON` or `PRESSIO_ENABLE_TPL_TRILINOS=ON`   |
 | `PRESSIO_ENABLE_TPL_PYBIND11`   | self-explanatory                     | `OFF`                                                                                           |
 | `PRESSIO_ENABLE_DEBUG_PRINT`    | to enable debugging print statements | `OFF`                                                                                           |
-<!-- | `PRESSIO_ENABLE_TPL_TORCH`| self-explanatory | `OFF` |-->
 
 @m_class{m-block m-default}
 
