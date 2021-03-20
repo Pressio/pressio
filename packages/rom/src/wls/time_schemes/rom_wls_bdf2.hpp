@@ -80,6 +80,14 @@ public:
        stencilStates_(fomState)
   {}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  BDF2(::pressio::rom::wls::rom_size_t & romStateSize,
+       const typename fom_state_t::traits::wrapped_t & fomState)
+    :  romStateSize_(romStateSize),
+       stencilStates_(fom_state_t(fomState))
+  {}
+#endif
+
 public:
   bool jacobianNeedsRecomputing(std::size_t i) const
   {
@@ -109,7 +117,7 @@ public:
   }
 
   /* ==================================================================
-			time-continuous API
+     time-continuous API
      ================================================================== */
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -131,7 +139,7 @@ public:
 			 const scalar_type & dt,
 			 const pressio::rom::wls::window_size_t & step) const
   {
-    _ct_time_discrete_residual_eig_kok(fomSystemObj, fomState, residual, t, dt, step);
+    _ct_time_discrete_residual_eig_kok_p4py(fomSystemObj, fomState, residual, t, dt, step);
   }
 
   template <
@@ -154,8 +162,54 @@ public:
 			 const pressio::rom::wls::window_size_t & step,
 			 int arg=0 ) const
   {
-    _ct_time_discrete_jacobian_eig_kok(fomSystemObj, fomState, Jphi, phi,
-				       t, dt, step, arg);
+    _ct_time_discrete_jacobian_eig_kok_p4py(fomSystemObj, fomState, Jphi, phi,
+					    t, dt, step, arg);
+  }
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename residual_type,
+    typename scalar_type
+    >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<fom_state_type>::value == true
+    >
+  time_discrete_residual(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 residual_type & residual,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step) const
+  {
+    _ct_time_discrete_residual_eig_kok_p4py(fomSystemObj, fomState, residual, t, dt, step);
+  }
+
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+    >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<fom_state_type>::value == true
+    >
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
+  {
+    _ct_time_discrete_jacobian_eig_kok_p4py(fomSystemObj, fomState, Jphi, phi,
+					    t, dt, step, arg);
   }
 #endif
 
@@ -178,7 +232,7 @@ public:
 			 const scalar_type & dt,
 			 const pressio::rom::wls::window_size_t & step) const
   {
-    _ct_time_discrete_residual_eig_kok(fomSystemObj, fomState, residual, t, dt, step);
+    _ct_time_discrete_residual_eig_kok_p4py(fomSystemObj, fomState, residual, t, dt, step);
   }
 
   template <
@@ -201,8 +255,8 @@ public:
 			 const pressio::rom::wls::window_size_t & step,
 			 int arg=0 ) const
   {
-    _ct_time_discrete_jacobian_eig_kok(fomSystemObj, fomState, Jphi, phi,
-				       t, dt, step, arg);
+    _ct_time_discrete_jacobian_eig_kok_p4py(fomSystemObj, fomState, Jphi, phi,
+					    t, dt, step, arg);
   }
 #endif
 
@@ -346,9 +400,8 @@ public:
   }
 #endif
 
-
   /* ==================================================================
-			discrete-time API
+     discrete-time API
      ================================================================== */
 
   /* time_discrete_residual function overload for discrete time API */
@@ -606,9 +659,7 @@ private:
   }
 #endif
 
-
-#if defined(PRESSIO_ENABLE_TPL_KOKKOS) or defined(PRESSIO_ENABLE_TPL_EIGEN)
-  /* time_discrete_residual for eigen */
+#if defined(PRESSIO_ENABLE_TPL_KOKKOS) or defined(PRESSIO_ENABLE_TPL_EIGEN) or defined(PRESSIO_ENABLE_TPL_PYBIND11)
   template <
     typename fom_type,
     typename fom_state_type,
@@ -618,12 +669,12 @@ private:
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value
     >
-  _ct_time_discrete_residual_eig_kok(const fom_type & fomSystemObj,
-				     const fom_state_type & fomState,
-				     residual_type & residual,
-				     const scalar_type & t,
-				     const scalar_type & dt,
-				     const pressio::rom::wls::window_size_t & step) const
+  _ct_time_discrete_residual_eig_kok_p4py(const fom_type & fomSystemObj,
+					  const fom_state_type & fomState,
+					  residual_type & residual,
+					  const scalar_type & t,
+					  const scalar_type & dt,
+					  const pressio::rom::wls::window_size_t & step) const
   {
     if (step > 0){
       // u^n - 4./3.*u^{n-1} + 1./3.u^{n-2} - 2./3.*dt*f
@@ -652,14 +703,14 @@ private:
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value
     >
-  _ct_time_discrete_jacobian_eig_kok(const fom_type & fomSystemObj,
-				     const fom_state_type & fomState,
-				     jac_type & Jphi,
-				     const basis_type & phi,
-				     const scalar_type & t,
-				     const scalar_type & dt,
-				     const pressio::rom::wls::window_size_t & step,
-				     int arg=0 ) const
+  _ct_time_discrete_jacobian_eig_kok_p4py(const fom_type & fomSystemObj,
+					  const fom_state_type & fomState,
+					  jac_type & Jphi,
+					  const basis_type & phi,
+					  const scalar_type & t,
+					  const scalar_type & dt,
+					  const pressio::rom::wls::window_size_t & step,
+					  int arg=0 ) const
   {
 
     // u^n - u^{n-1} - dt*f ;
@@ -673,7 +724,7 @@ private:
 
     if (step > 0){
       if (arg == 0){
-        fomSystemObj.applyJacobian(*fomState.data(),*phi.data(),t,*(Jphi).data());
+        fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
         constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_; // 1
         const auto cfdt   = ::pressio::ode::constants::bdf2<scalar_type>::c_f_*dt; //2/3
         ::pressio::ops::update(Jphi, cfdt, phi, cn);

@@ -52,131 +52,126 @@
 namespace pressio{ namespace rom{ namespace wls{ namespace impl{
 
 template<
-  typename wls_state_type, typename decoder_t, typename ode_tag, typename wls_hessian_type, typename policy_t
-  >
+  typename wls_state_type,
+  typename decoder_t,
+  typename wls_hessian_type,
+  typename policy_t
+>
 class SystemHessianGradientApi
 {
-  // in all cases we need types to be wrappers from containers
-  static_assert(::pressio::containers::predicates::is_vector_wrapper<wls_state_type>::value,
-		"For WLS, the state_type must be a pressio container vector");
-  static_assert(::pressio::containers::predicates::is_dense_matrix_wrapper<wls_hessian_type>::value,
-		"WLS: hessian_type must be a pressio container dense matrix");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<wls_state_type>::value and
+   wls_state_type::traits::rank == 1,
+   "For WLS, the state_type must be a rank-1 pressio container");
+
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<wls_hessian_type>::value and
+   wls_hessian_type::traits::rank == 2,
+   "WLS: hessian_type must be a rank-2 pressio container");
 
 public:
-  // aliases for scalar, state, gradient and hessian NEEDED for solver to detect
   using scalar_type		= typename policy_t::scalar_t;
   using state_type		= wls_state_type;
   using gradient_type		= wls_state_type;
   using hessian_type		= wls_hessian_type;
-
-  using fom_state_t		= typename policy_t::fom_state_t;
+  using fom_state_t		= typename decoder_t::fom_state_type;
+  using fom_native_state_t      = typename fom_state_t::traits::wrapped_t;
   using fom_state_reconstr_t	= ::pressio::rom::FomStateReconstructor<scalar_type, fom_state_t, decoder_t>;
-
-  // information on stencil width, time discrete resiudal, time discrete jacobian, etc.
-  using time_stencil_t = ::pressio::rom::wls::timeschemes::timescheme_t<ode_tag, fom_state_t>;
-  static constexpr auto timeStencilSize_ = time_stencil_t::state_stencil_size_;
-
-private:
-  //size of generalized coordinates
-  rom_size_t romSize_ = {};
-
-  //number of discrete time instances in a window
-  window_size_t numStepsInWindow_ = {};
-
-  // policy for evaluating the hessian and gradient
-  std::reference_wrapper<const policy_t> hessianGradientPolicy_;
-
-  // cache the size of the wls problem: romSize*numStepsInWindow
-  window_size_t wlsProblemSize_ = romSize_*numStepsInWindow_;
-  window_size_t wlsStencilSize_ = romSize_*timeStencilSize_;
-
-  wls_state_type wlsStateIC_;
-
-  // fom state reconstructor
-  const fom_state_reconstr_t fomStateReconstructor_;
-
-  // object knowing the time stencil for doing chuncks of steps
-  //time_stencil_t timeSchemeObj_;
-
-  window_size_t activeWindowIndex_ = {};
-
-  // global step number
-  window_size_t step_s_		= {};
-  scalar_type dt_		= {};
-  scalar_type windowStartTime_	= {};
+  using wls_native_state_t	= typename wls_state_type::traits::wrapped_t;
 
 public:
-  SystemHessianGradientApi(const rom_size_t romSize,
-			   const window_size_t numStepsInWindow,
-			   const decoder_t & decoderObj,
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  // constructor needed for pressio4py
+  SystemHessianGradientApi(const decoder_t & decoderObj,
+			   const policy_t & policy,
+			   const fom_native_state_t & fomStateInitCondition,
+			   const fom_native_state_t & fomNominalState,
+			   const wls_native_state_t & wlsStateIcIn)
+    : wlsProblemSize_(policy.romSize()*policy.numStepsInWindow()),
+      hessianGradientPolicy_(policy),
+      wlsStateIC_(policy_t::timeStencilSize_*policy.romSize()),
+      fomStateReconstructor_(fomNominalState, decoderObj)
+  {
+    const auto spanStartIndex = policy.romSize()*(policy_t::timeStencilSize_-1);
+    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, policy.romSize());
+    ::pressio::ops::deep_copy(wlsInitialStateNm1,
+			      wls_state_type(wlsStateIcIn, ::pressio::view()));
+  }
+
+#else
+
+  SystemHessianGradientApi(const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
 			   const fom_state_t & fomNominalState,
 			   const wls_state_type & wlsStateIcIn)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
+    : SystemHessianGradientApi(decoderObj, policy, fomNominalState)
   {
-    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
-    auto wlsInitialStateNm1   = containers::span(wlsStateIC_, spanStartIndex, romSize_);
+    const auto spanStartIndex = policy.romSize()*(policy_t::timeStencilSize_-1);
+    auto wlsInitialStateNm1   = containers::span(wlsStateIC_, spanStartIndex, policy.romSize());
     ::pressio::ops::deep_copy(wlsInitialStateNm1, wlsStateIcIn);
   }
 
   template <
   typename linear_solver_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::mpl::is_detected<::pressio::solvers::predicates::has_matrix_typedef, linear_solver_type>::value and
+    ::pressio::mpl::is_detected<
+      ::pressio::solvers::predicates::has_matrix_typedef, linear_solver_type
+      >::value and
     !std::is_void<typename linear_solver_type::matrix_type>::value and
-    // has a solveAllowMatOverwrite method
     std::is_void<
       decltype
       (
        std::declval<linear_solver_type>().solveAllowMatOverwrite
        (
-        std::declval<typename linear_solver_type::matrix_type &>(), 
-        std::declval<wls_state_type const &>(), 
+        std::declval<typename linear_solver_type::matrix_type &>(),
+        std::declval<wls_state_type const &>(),
         std::declval<wls_state_type &>()
         )
        )
       >::value,
       int > = 0
   >
-  SystemHessianGradientApi(const rom_size_t romSize,
-			   const window_size_t numStepsInWindow,
-			   const decoder_t & decoderObj,
+  SystemHessianGradientApi(const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomStateInitCondition,
 			   const fom_state_t & fomNominalState,
   			   linear_solver_type & linSolverObj)
-    : SystemHessianGradientApi(romSize, numStepsInWindow, decoderObj, policy, fomNominalState)
+    : SystemHessianGradientApi(decoderObj, policy, fomNominalState)
   {
     // Set initial condition based on L^2 projection onto trial space
     // note that wlsStateIC_[-romSize:end] contains nm1, wlsStateIC[-2*romSize:-romSize] contains nm2 entry, etc.
-    wls_state_type wlsStateTmp(romSize);
+    wls_state_type wlsStateTmp(policy.romSize());
     const auto & decoderJac = decoderObj.jacobianCRef();
 
-    ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj, decoderJac,
-  									  fomStateInitCondition, fomNominalState,
+    ::pressio::rom::utils::set_gen_coordinates_L2_projection<scalar_type>(linSolverObj,
+									  decoderJac,
+									  fomStateInitCondition,
+									  fomNominalState,
 									  wlsStateTmp);
 
-    const auto spanStartIndex = romSize_*(timeStencilSize_-1);
-    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, romSize_);
+    const auto spanStartIndex = policy.romSize()*(policy_t::timeStencilSize_-1);
+    auto wlsInitialStateNm1 = containers::span(wlsStateIC_, spanStartIndex, policy.romSize());
     ::pressio::ops::deep_copy(wlsInitialStateNm1, wlsStateTmp);
   }
+#endif
 
 private:
   // delegated constructor to simplify the ones above
-  SystemHessianGradientApi(const rom_size_t romSize,
-			   const window_size_t numStepsInWindow,
-			   const decoder_t & decoderObj,
+  SystemHessianGradientApi(const decoder_t & decoderObj,
 			   const policy_t & policy,
 			   const fom_state_t & fomNominalState)
-    : romSize_(romSize),
-      numStepsInWindow_{numStepsInWindow},
+    : wlsProblemSize_(policy.romSize()*policy.numStepsInWindow()),
       hessianGradientPolicy_(policy),
-      wlsStateIC_(wlsStencilSize_),
+      wlsStateIC_(policy_t::timeStencilSize_*policy.romSize()),
       fomStateReconstructor_(fomNominalState, decoderObj)
   {}
 
 public:
+  const ::pressio::rom::wls::window_size_t timeStencilSize() const{
+    return policy_t::timeStencilSize_;
+  }
+
   const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return fomStateReconstructor_;
   }
@@ -191,97 +186,89 @@ public:
     return g;
   }
 
-  void hessianAndGradient(const state_type	      & wls_state,
-			  hessian_type		      & hessian,
-			  gradient_type		      & gradient,
+  void hessianAndGradient(const state_type & wls_state,
+			  hessian_type & hessian,
+			  gradient_type & gradient,
 			  const pressio::Norm & normType,
-			  scalar_type		      & rnorm,
-        bool recomputeJacobian) const
+			  scalar_type & rnorm,
+			  bool recomputeJacobian) const
   {
-    if (normType != ::pressio::Norm::L2)
+    if (normType != ::pressio::Norm::L2){
       throw std::runtime_error("cannot call WLS with a norm != L2");
+    }
 
     rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_.get()(
-			   wls_state,
+    hessianGradientPolicy_(wls_state,
 			   wlsStateIC_,
 			   hessian,
 			   gradient,
 			   fomStateReconstructor_,
 			   dt_,
-			   numStepsInWindow_,
-			   windowStartTime_,
-			   step_s_,
-			   rnorm);
-  }//end computeHessianAndGradient
-
-  void residualNorm(const state_type	      & wls_state,
-		    const pressio::Norm & normType,
-		    scalar_type		      & rnorm) const
-  {
-    if (normType != ::pressio::Norm::L2)
-      throw std::runtime_error("cannot call WLS with a norm != L2");
-
-    rnorm = pressio::utils::constants<scalar_type>::zero();
-    hessianGradientPolicy_.get().computeResidualNorm(
-			   wls_state,
-			   wlsStateIC_,
-			   fomStateReconstructor_,
-			   dt_,
-			   numStepsInWindow_,
 			   windowStartTime_,
 			   step_s_,
 			   rnorm);
   }
 
-  // method to advance one window. We may want to put this into some type of window stepper class
-  // if we want to have more complex stepping
-  template <typename solverType>
-  void advanceOneWindow(wls_state_type & wlsState,
-			solverType & solver,
-			const window_size_t & windowIndex,
-			scalar_type dt)
+  void residualNorm(const state_type & wls_state,
+		    const pressio::Norm & normType,
+		    scalar_type	& rnorm) const
   {
-    dt_			= dt;
-    activeWindowIndex_  = windowIndex;
-    windowStartTime_	= windowIndex*dt_*numStepsInWindow_;
-    step_s_		= windowIndex*numStepsInWindow_;
-
-    // set initial guess over window (needed to avoid bad initial guesses that yield NaN)
-    for (window_size_t i =0; i < numStepsInWindow_; i++){
-      auto wlsViewAssign = ::pressio::containers::span(wlsState,i*romSize_,romSize_);
-      auto wlsViewCopy = ::pressio::containers::span(wlsStateIC_,(timeStencilSize_ - 1)*romSize_,romSize_);
-      ::pressio::ops::deep_copy(wlsViewAssign, wlsViewCopy);
+    if (normType != ::pressio::Norm::L2){
+      throw std::runtime_error("cannot call WLS with a norm != L2");
     }
 
-    // solve system
-    solver.solve(*this, wlsState);
+    rnorm = pressio::utils::constants<scalar_type>::zero();
+    hessianGradientPolicy_.get().computeResidualNorm
+      (
+       wls_state,
+       wlsStateIC_,
+       fomStateReconstructor_,
+       dt_,
+       windowStartTime_,
+       step_s_,
+       rnorm);
+  }
 
-    // Loop to update the the wlsStateIC vector.
-    // If we add multistep explicit methods, need to add things here.
-    const auto start = std::max(0,this->timeStencilSize_  - this->numStepsInWindow_);
-    for (window_size_t i = 0; i < start; ++i)
-    {
-      auto wlsTmpState	      = ::pressio::containers::span(wlsStateIC_, i*romSize_,     romSize_);
-      const auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC_, (i+1)*romSize_, romSize_);
-      ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
-    }
+  void setTimeStepSize(scalar_type dtIn){
+    dt_ = dtIn;
+  }
 
-    for (window_size_t i = start ; i < timeStencilSize_; ++i)
-    {
-      auto wlsTmpState  = ::pressio::containers::span(wlsStateIC_, i*romSize_, romSize_);
-      const auto wlsTmpState2 = ::pressio::containers::span(wlsState,
-							    (numStepsInWindow_-timeStencilSize_+i)*romSize_,
-							    romSize_);
-      ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
-    }
-#ifdef PRESSIO_ENABLE_DEBUG_PRINT
-    ::pressio::utils::io::print_stdout("\n");
-    auto fmt = ::pressio::utils::io::underline();
-    ::pressio::utils::io::print_stdout(fmt, "Completed window ", windowIndex, ::pressio::utils::io::reset(), "\n");
-#endif
-  }// end advanceOneWindow
+  void setWindowStartTime(scalar_type value){
+    windowStartTime_ = value;
+  }
 
+  void setStepS(window_size_t value){
+    step_s_ = value;
+  }
+
+  window_size_t numStepsInWindow() const{
+    return hessianGradientPolicy_.get().numStepsInWindow();
+  }
+
+  rom_size_t romSize() const{
+    return hessianGradientPolicy_.get().romSize();
+  }
+
+  wls_state_type & wlsStateInitConditionRef(){
+    return wlsStateIC_;
+  }
+
+private:
+  // cache the size of the wls problem: romSize*numStepsInWindow
+  window_size_t wlsProblemSize_ = {};
+
+  // policy for evaluating the hessian and gradient
+  std::reference_wrapper<const policy_t> hessianGradientPolicy_;
+
+  wls_state_type wlsStateIC_;
+
+  // fom state reconstructor
+  const fom_state_reconstr_t fomStateReconstructor_;
+
+  // global step number
+  window_size_t step_s_		= {};
+  scalar_type dt_		= {};
+  scalar_type windowStartTime_	= {};
 };
 
 }}}}//end namespace pressio::rom::src::wls::impl

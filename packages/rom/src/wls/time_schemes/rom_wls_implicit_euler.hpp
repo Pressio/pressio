@@ -78,6 +78,14 @@ public:
       stencilStates_(fomState)
   {}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  ImplicitEuler(::pressio::rom::wls::rom_size_t & romStateSize,
+		const typename fom_state_t::traits::wrapped_t & fomState)
+    : romStateSize_(romStateSize),
+      stencilStates_(fom_state_t(fomState))
+  {}
+#endif
+
 public:
   bool jacobianNeedsRecomputing(std::size_t i) const{
     return jacobianNeedsRecomputing_;
@@ -166,6 +174,68 @@ public:
     }
   }
 #endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename residual_type,
+    typename scalar_type
+    >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<fom_state_type>::value == true
+    >
+  time_discrete_residual(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 residual_type & residual,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const window_size_t & step) const
+  {
+    fomSystemObj.velocity(*fomState.data(),t,*residual.data());
+    ::pressio::ode::impl::discrete_time_residual(fomState, residual,
+						 stencilStates_, dt,
+						 ::pressio::ode::implicitmethods::Euler());
+  }
+
+  template <
+    typename fom_type,
+    typename fom_state_type,
+    typename jac_type,
+    typename basis_type,
+    typename scalar_type
+    >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_type>::value and
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<fom_state_type>::value == true
+    >
+  time_discrete_jacobian(const fom_type & fomSystemObj,
+			 const fom_state_type & fomState,
+			 jac_type & Jphi,
+			 const basis_type & phi,
+			 const scalar_type & t,
+			 const scalar_type & dt,
+			 const ::pressio::rom::wls::window_size_t & step,
+			 int arg=0 ) const
+  {
+    // u^n - u^{n-1} - f ;
+    if (arg == 0){
+      fomSystemObj.applyJacobian(*fomState.data(), *phi.data(), t, *(Jphi).data());
+      constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
+      const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_*dt; //  -1*dt
+      ::pressio::ops::update(Jphi, cfdt, phi, cnp1);
+    }
+
+    //only perform computation once since this never changes
+    if (arg == 1 && jacobianNeedsRecomputing_){
+      constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; // -1.
+      ::pressio::ops::update(Jphi, phi, cn);
+      jacobianNeedsRecomputing_ = true;
+    }
+  }
+#endif
+
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
   /** time_discrete_residual for kokkos */
