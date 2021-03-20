@@ -248,6 +248,39 @@ product(::pressio::transpose modeA,
 
 /*
  * C = beta * C + alpha*A^T*B
+ * A,B = rank-2 tensors
+ * C = subspan expression
+*/
+template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<B_type>::value
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A,
+	const B_type & B,
+	const scalar_type beta,
+	::pressio::containers::expressions::SubspanExpr<C_type> & C)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
+
+  for (std::size_t i=0; i<A.extent(1); i++){
+    for (std::size_t j=0; j<B.extent(1); j++){
+      C(i,j) = beta * C(i,j);
+      for (std::size_t k=0; k<A.extent(0); ++k){
+	C(i,j) += alpha * A(k,i) * B(k,j);
+      }
+    }
+  }
+}
+
+
+/*
+ * C = beta * C + alpha*A^T*B
  * A = rank-3 tensor
  * B,C = rank-2 tensor
 */

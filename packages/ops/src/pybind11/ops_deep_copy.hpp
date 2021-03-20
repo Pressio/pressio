@@ -51,6 +51,9 @@
 
 namespace pressio{ namespace ops{
 
+//**************
+//*** RANK-1 ***
+//**************
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
@@ -66,6 +69,50 @@ deep_copy(T1 & dest, const T2 & src)
 
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
+  >
+deep_copy(T1 & dest,
+	  const ::pressio::containers::expressions::SpanExpr<T2> & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  for (std::size_t i=0; i<dest.extent(0); ++i){
+    dest(i) = src(i);
+  }
+}
+
+template<typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
+  >
+deep_copy(::pressio::containers::expressions::SpanExpr<T1> & dest,
+	  const T2 & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  for (std::size_t i=0; i<dest.extent(0); ++i){
+    dest(i) = src(i);
+  }
+}
+
+template<typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  T1::traits::wrapped_package_identifier == ::pressio::containers::details::WrappedPackageIdentifier::Pybind and
+  T2::traits::wrapped_package_identifier == ::pressio::containers::details::WrappedPackageIdentifier::Pybind
+  >
+deep_copy(::pressio::containers::expressions::SpanExpr<T1> & dest,
+	  const ::pressio::containers::expressions::SpanExpr<T2> & src)
+{
+  assert( dest.extent(0) == src.extent(0) );
+  for (std::size_t i=0; i<dest.extent(0); ++i){
+    dest(i) = src(i);
+  }
+}
+
+
+//**************
+//*** RANK-2 ***
+//**************
+template<typename T1, typename T2>
+::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
   ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
   >
@@ -79,7 +126,6 @@ deep_copy(T1 & dest, const T2 & src)
     }
   }
 }
-
 
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
@@ -97,6 +143,9 @@ deep_copy(T1 & dest, const T2 & src)
   }
 }
 
+//**************
+//*** RANK-3 ***
+//**************
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and

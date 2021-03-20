@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 /*
  * y = beta * y + alpha*A*x
- * where y,A,x are wrappers
+ * where y,A,x are tensor wrappers
 */
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
@@ -93,7 +93,7 @@ product(::pressio::nontranspose mode,
 
 /*
  * y = beta * y + alpha*A^T*x
- * where y,A,x are wrappers
+ * where y,A,x are tensor wrappers
 */
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
@@ -129,6 +129,75 @@ product(::pressio::transpose mode,
   constexpr auto overWritey = ione;
   pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE,
 			izero, ione, izero, ione, transA, overWritey);
+}
+
+
+/*
+ * y = beta * y + alpha*A*x
+ * where y,A are tensor wrappers
+ * x is span expression
+*/
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value and
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value
+>
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const pressio::containers::expressions::SpanExpr<x_type> & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( y.extent(0) == A.extent(0) );
+  assert( x.extent(0) == A.extent(1) );
+
+  const auto nArows = A.extent(0);
+  const auto nAcols = A.extent(1);
+
+  for (std::size_t i=0; i<nArows; ++i){
+    y(i) = beta*y(i);
+  }
+  for (std::size_t j=0; j<nAcols; ++j){
+    for (std::size_t i=0; i<nArows; ++i){
+      y(i) += alpha * A(i,j) * x(j);
+    }
+  }
+}
+
+/*
+ * y = beta * y + alpha*A^T*x
+ * where A,x are tensor wrappers
+ * y is span expression
+*/
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value and
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value
+>
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	pressio::containers::expressions::SpanExpr<y_type> & y)
+{
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( y.extent(0) == A.extent(1) );
+  assert( x.extent(0) == A.extent(0) );
+  for (std::size_t i=0; i<A.extent(1); i++){
+    y(i) = beta * y(i);
+    for (std::size_t j=0; j<x.extent(0); j++){
+      y(i) += alpha * A(j,i) * x(j);
+    }
+  }
 }
 
 }}//end namespace pressio::ops
