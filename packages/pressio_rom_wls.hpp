@@ -85,5 +85,6 @@
 
 #include "rom/src/wls/rom_wls_hessian_gradient_system_api.hpp"
 #include "rom/src/wls/rom_wls_hessian_and_gradient_sequential_policy.hpp"
+#include "rom/src/wls/rom_wls_solve_windows.hpp"
 
 #endif

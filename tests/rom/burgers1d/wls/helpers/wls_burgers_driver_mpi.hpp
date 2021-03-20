@@ -78,12 +78,19 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
   using jacobians_update_tag = ::pressio::rom::wls::NonFrozenJacobian;
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, ode_tag,hessian_matrix_structure_tag,precon_type,jacobians_update_tag>;
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, ode_tag, wls_hessian_t, policy_t>;
+  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy
+    <fom_t, decoder_t, ode_tag, hessian_matrix_structure_tag, precon_type, jacobians_update_tag>;
+
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi
+    <wls_state_t, decoder_t, wls_hessian_t, policy_t>;
+
   // create policy and wls system
-  int jacobianUpdateFrequency = 1;
-  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj, appObj, fomNominalState, wls_system_t::timeStencilSize_,jacobianUpdateFrequency);
-  wls_system_t wlsSystem(romSize, numStepsInWindow, decoderObj, hgPolicy, fomStateInitCond, fomNominalState, linearSolver);
+  int jacobianUpdateFrequency = 2;
+  policy_t hgPolicy(romSize, numStepsInWindow, decoderObj,
+		    appObj, fomNominalState, jacobianUpdateFrequency);
+
+  wls_system_t wlsSystem(decoderObj, hgPolicy, fomStateInitCond,
+			 fomNominalState, linearSolver);
 
   // create the wls state
   wls_state_t  wlsState(wlsSize);
@@ -99,10 +106,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // solve wls problem
   // -----------------
   auto startTime = std::chrono::high_resolution_clock::now();
-  for (auto iWind = 0; iWind < numWindows; iWind++){
-    wlsSystem.advanceOneWindow(wlsState, GNSolver, iWind, dt);
-  }
-
+  ::pressio::rom::wls::solveWindowsSequentially(wlsSystem, wlsState, GNSolver, numWindows, dt);
   const auto finishTime = std::chrono::high_resolution_clock::now();
   const std::chrono::duration<double> elapsed = finishTime - startTime;
   std::cout << "Walltime = " << elapsed.count() << '\n';
