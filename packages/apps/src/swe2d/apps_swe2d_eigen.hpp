@@ -4,6 +4,7 @@
 
 #include "Eigen/Core"
 #include "rusanovflux.hpp"
+#include <chrono>
 
 namespace pressio{ namespace apps{
 

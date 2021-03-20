@@ -5,6 +5,7 @@
 #include "Eigen/Core"
 #include "rusanovflux.hpp"
 #include <unordered_map>
+#include <chrono>
 
 namespace pressio{ namespace apps{
 
