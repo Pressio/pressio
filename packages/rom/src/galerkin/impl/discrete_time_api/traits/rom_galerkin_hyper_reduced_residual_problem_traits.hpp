@@ -92,6 +92,7 @@ struct traits<
   using fom_state_reconstr_t	= typename common_types::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types::fom_states_manager_t;
   using ud_ops_t		= typename common_types::ud_ops_t;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
 
   // for implicit time stepping we need to know the type of the reduced
   // residual and jacobian. Obviously, this should be something that is compatible

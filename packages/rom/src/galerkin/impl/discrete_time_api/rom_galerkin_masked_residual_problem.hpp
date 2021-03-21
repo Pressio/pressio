@@ -77,9 +77,10 @@ public:
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using stepper_t		= typename traits::stepper_t;
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At  = ::pressio::rom::impl::FomObjMixin<fom_system_t, false>;
+  using At  = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt  = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
 						       fom_state_reconstr_t,
 						       fom_states_manager_t>;
@@ -114,6 +115,23 @@ public:
 				       const projector_t & projector)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative, masker, projector){}
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  MaskedResidualProblemDiscreteTimeApi(pybind11::object fomObjPython,
+				       decoder_t & decoder,
+				       const galerkin_native_state_t & romStateIn,
+				       const fom_native_state_t fomNominalStateIn,
+				       pybind11::object masker,
+				       const projector_t & projector)
+    : members_(galerkin_state_t(romStateIn), fomObjPython, decoder,
+	       fomNominalStateIn, masker, projector)
+  {}
+#endif
 };
 
 }}}}//end namespace

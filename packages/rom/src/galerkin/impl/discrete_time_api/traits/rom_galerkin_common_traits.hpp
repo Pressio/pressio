@@ -143,6 +143,16 @@ basically the size of the stpper stencil.");
   using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
     ::pressio::rom::UnsteadyImplicit, fom_state_t, fom_state_reconstr_t,
     ud_ops_t, numstates>;
+
+  // ---------------------
+  // sentinel to tell if we are doing bindings for p4py:
+  // always false if pybind is disabled, otherwise detect from galerkin state
+  static constexpr bool binding_sentinel =
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+    ::pressio::containers::predicates::is_tensor_wrapper_pybind<galerkin_state_t>::value;
+#else
+  false;
+#endif
 };
 
 }}}}//end  namespace
