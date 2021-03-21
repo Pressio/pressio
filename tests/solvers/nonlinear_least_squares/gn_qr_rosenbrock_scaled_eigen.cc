@@ -13,7 +13,6 @@ int main()
   using problem_t = solvers::test::EigenRosenbrockscaled;
   using state_t   = typename problem_t::state_type;
   using mat_type  = typename problem_t::jacobian_type;
-  using hessian_t = containers::DenseMatrix<Eigen::MatrixXd>;
 
   problem_t problem;
   state_t x(4);
