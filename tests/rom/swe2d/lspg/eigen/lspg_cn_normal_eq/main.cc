@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
   constexpr scalar_t Lx = 5;
   constexpr scalar_t Ly = 5;
   fom_t appObj(Lx,Ly,nx,ny,params);
-  scalar_t t = 0;
   constexpr scalar_t et = 10.;
   constexpr scalar_t dt = 0.5;
 
