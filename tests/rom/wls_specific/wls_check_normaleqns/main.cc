@@ -16,9 +16,6 @@ struct MyFakeApp
 {
   int N_ = {};
   std::string & sentinel_;
-  mutable int counter_  ={};
-  mutable int counter1_ ={};
-
 public:
   using scalar_type = double;
   using state_type  = Eigen::VectorXd;
