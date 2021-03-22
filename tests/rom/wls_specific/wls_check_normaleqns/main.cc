@@ -3,9 +3,9 @@
 #include "../helpers.hpp"
 
 /*
-This regression test validates the the Hessian and gradient computed by the WLS system 
-is correct. We test this by construcing a fake application from which we can analytically 
-calculate the hessians and gradients. 
+This regression test validates the Hessian and gradient computed by the WLS system 
+is correct. We test this by constructing a fake application from which we can analytically 
+calculate the Hessians and gradients. 
 
 This regression test checks BDF1 and BDF2 for upper and lower symmetric Hessian structures
 */
@@ -352,11 +352,8 @@ std::string doRun()
 
   // define ROM state
   wls_state_t wlsState(romSize*numStepsInWindow);
-  for (int i=0;i<numStepsInWindow;i++){
-    wlsState(romSize*i) = static_cast<double>(i+1.);
-    wlsState(romSize*i + 1) = static_cast<double>(i+1.);
-  }
   wls_state_t wlsStateIC(romSize);
+  pressio::ops::fill(wlsState, 0.0);
   pressio::ops::fill(wlsStateIC, 1.0);
 
   //*** WLS problem ***
@@ -409,7 +406,7 @@ int main(int argc, char *argv[])
      checkStr = "FAILED";
   }
 
-   // Test for BDF2 with lower triangular
+   // Test for BDF2 with upper triangular
   auto checkStr4 = doRun<::pressio::ode::implicitmethods::BDF2,
                           ::pressio::matrixUpperTriangular>();
   if (checkStr4 == "FAILED"){
