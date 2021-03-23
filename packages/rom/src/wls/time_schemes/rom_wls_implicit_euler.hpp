@@ -442,7 +442,8 @@ public:
     auto & fomStateN = stencilStates_(::pressio::ode::n());
     fomSystemObj.discreteTimeResidual(step, t, dt,
 				      *residual.data(),
-				      *fomState.data(), *fomStateN.data());
+				      *fomState.data(),
+				      *fomStateN.data());
   }
 
   /* time_discrete_jacobian */
@@ -468,8 +469,10 @@ public:
     // u^n+1 - u^{n} - f ;
     if (arg == 0){
       auto & fomStateN = stencilStates_(::pressio::ode::n());
-      fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
-					     *Jphi.data(), *fomState.data(),
+      fomSystemObj.applyDiscreteTimeJacobian(step, t, dt,
+					     *phi.data(),
+					     *Jphi.data(),
+					     *fomState.data(),
 					     *fomStateN.data());
     }
 

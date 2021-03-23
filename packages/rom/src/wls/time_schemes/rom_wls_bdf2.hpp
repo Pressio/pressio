@@ -427,7 +427,9 @@ public:
 
       fomSystemObj.discreteTimeResidual(step, t, dt,
 					*residual.data(),
-					*fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
+					*fomState.data(),
+					*fomStateNm1.data(),
+					*fomStateNm2.data());
     }
 
     if (step == 0){
@@ -435,7 +437,8 @@ public:
       auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
       fomSystemObj.discreteTimeResidual(step, t, dt,
 					*residual.data(),
-					*fomState.data(), *fomStateNm1.data());
+					*fomState.data(),
+					*fomStateNm1.data());
     }
   }
 
@@ -463,8 +466,11 @@ public:
     if (step == 0){
       if (arg == 0){
         auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
-        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
-					       *Jphi.data(), *fomState.data(), *fomStateNm1.data());
+        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt,
+					       *phi.data(),
+					       *Jphi.data(),
+					       *fomState.data(),
+					       *fomStateNm1.data());
       }
     }
 
@@ -472,17 +478,23 @@ public:
       if (arg == 0){
         auto & fomStateNm1 = stencilStates_(::pressio::ode::n());
         auto & fomStateNm2 = stencilStates_(::pressio::ode::nMinusOne());
-        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt, *phi.data(),
-					       *Jphi.data(), *fomState.data(), *fomStateNm1.data(), *fomStateNm2.data());
+        fomSystemObj.applyDiscreteTimeJacobian(step, t, dt,
+					       *phi.data(),
+					       *Jphi.data(),
+					       *fomState.data(),
+					       *fomStateNm1.data(),
+					       *fomStateNm2.data());
       }
 
-      if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
+      //only perform computation once since this never changes
+      if (arg == 1 && jacobianOneNeedsRecomputing_){
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -4/3
         ::pressio::ops::update(Jphi, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
-      if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
+      //only perform computation once since this never changes
+      if (arg == 2 && jacobianZeroNeedsRecomputing_){
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  2/3
         ::pressio::ops::update(Jphi, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;

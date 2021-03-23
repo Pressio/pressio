@@ -115,6 +115,34 @@ public:
     checkJacobianUpdatingFrequency(jacobianUpdateFrequency);
   }
 
+  // constructor for discrete-time API
+  template<
+    typename U = fom_system_type,
+    mpl::enable_if_t<
+      ::pressio::rom::constraints::most_likely_discrete_time_system<U>::value
+      > * = nullptr
+    >
+  HessianGradientSequentialPolicy(rom_size_t romSize,
+				  window_size_t numStepsInWindow,
+				  const decoder_t & decoderObj,
+				  pybind11::object fomSystemObj,
+				  const fom_native_state_t & fomState,
+				  const window_size_t jacobianUpdateFrequency = 1)
+    : romSize_(romSize),
+      numStepsInWindow_(numStepsInWindow),
+      jacStencilSize_(std::min(timeStencilSize_+1, numStepsInWindow)),
+      jacobianUpdateFrequency_(jacobianUpdateFrequency),
+      fomSystemObj_(fomSystemObj),
+      phi_(decoderObj.jacobianCRef()),
+      fomStateCurrent_(fomState),
+      residual_(fomSystemObj_.fomCRef().createDiscreteTimeResidual()),
+      J_( fomSystemObj_.fomCRef().createApplyDiscreteTimeJacobianResult(*(phi_.get().data())) ),
+      // construct wls Jacobians from jacobian of the decoder: we might need to change this later
+      jacobians_(timeStencilSize_, numStepsInWindow , J_),
+      timeSchemeObj_(romSize_, fomState)
+  {
+    checkJacobianUpdatingFrequency(jacobianUpdateFrequency);
+  }
 #else
 
   // Constructor for continuous-time API

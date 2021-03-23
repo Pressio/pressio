@@ -69,12 +69,14 @@ public:
   using fom_states_manager_t	= typename traits::fom_states_manager_t;
   using ud_ops_t		= typename traits::ud_ops_t;
   using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
   using residual_policy_t	= typename traits::residual_policy_t;
   using jacobian_policy_t	= typename traits::jacobian_policy_t;
   using stepper_t		= typename traits::stepper_t;
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
     At, ud_ops_t, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
   using Ct = DefaultPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t>;
@@ -124,6 +126,23 @@ public:
 				const _ud_ops_t & udOps)
     : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative, udOps)
   {}
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+  template <
+    bool _binding_sentinel = binding_sentinel,
+    typename _ud_ops_t = ud_ops_t,
+    ::pressio::mpl::enable_if_t<
+      _binding_sentinel and std::is_void<_ud_ops_t>::value,
+      int > = 0
+    >
+  DefaultProblemDiscreteTimeApi(pybind11::object fomObjPython,
+				decoder_t & decoder,
+				const lspg_native_state_t & romStateIn,
+				const fom_native_state_t fomNominalStateIn)
+    : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)
+  {}
+#endif
+
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl

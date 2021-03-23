@@ -84,6 +84,7 @@ struct traits<
   using fom_native_residual_t	= typename common_types_t::fom_native_residual_t;
   using fom_state_t		= typename common_types_t::fom_state_t;
   using lspg_state_t		= typename common_types_t::lspg_state_t;
+  using lspg_native_state_t	= typename common_types_t::lspg_native_state_t;
   using lspg_residual_t		= typename common_types_t::lspg_residual_t;
   using decoder_t		= typename common_types_t::decoder_t;
   using decoder_jac_t		= typename common_types_t::decoder_jac_t;
@@ -91,6 +92,7 @@ struct traits<
   using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
   using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
   using ud_ops_t		= typename common_types_t::ud_ops_t;
+  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
   // policy to compute the LSPG time-discrete residual
   using residual_policy_t	=
