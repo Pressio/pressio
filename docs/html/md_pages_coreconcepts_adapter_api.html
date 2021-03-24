@@ -279,26 +279,55 @@ $R$
 
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
-                <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
-              <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
-              <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span> <span class="n">R</span><span class="p">,</span>
-              <span class="c1">//variadic # of states (user sets stencil size)</span>
-              <span class="n">Args</span> <span class="o">&amp;</span> <span class="p">...</span> <span class="n">states</span><span class="p">)</span> <span class="k">const</span>
+                            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                            <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span> <span class="n">R</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_np1</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_n</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">discreteTimeResidualImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...</span> <span class="p">);</span>
+    <span class="c1">// given y_n+1, y_n</span>
+    <span class="c1">// compute R</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">discreteTimeResidual</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                            <span class="n">discrete_time_residual_type</span> <span class="o">&amp;</span> <span class="n">R</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_np1</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_n</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_nm1</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// given y_n+1, y_n, y_n-1</span>
+    <span class="c1">// compute R</span>
+  <span class="p">}</span>
+
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">applyDiscreteTimeJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
+                                 <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_np1</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_n</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// given y_n+1, y_n</span>
+    <span class="c1">// compute A = dR/dy_n+1 B</span>
   <span class="p">}</span>
 
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">step_t</span><span class="p">,</span> <span class="k">typename</span> <span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">applyDiscreteTimeJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">step_t</span> <span class="o">&amp;</span> <span class="n">step</span><span class="p">,</span>
-                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
-                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
-                 <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
-                 <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
-                 <span class="c1">//variadic # of states (user sets stencil size)</span>
-                 <span class="n">Args</span> <span class="o">&amp;</span> <span class="p">...</span> <span class="n">states</span><span class="p">)</span> <span class="k">const</span>
+                                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
+                                 <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_np1</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_n</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">y_nm1</span><span class="p">)</span> <span class="k">const</span>
   <span class="p">{</span>
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">applyDiscreteTimeJacobianImpl</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">stateIdForJacobian</span><span class="p">,</span>
-          <span class="n">A</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">states</span><span class="p">)...);</span>
+    <span class="c1">// given y_n+1, y_n, y_n-1</span>
+    <span class="c1">// compute A = dR/dy_n+1 B</span>
   <span class="p">}</span>
 <span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the discrete-time API?</h3><p>This version of the adapter can be <strong>only</strong> used for doing Galerkin and LSPG ROMs with <em>implicit</em> time stepping.</p></aside><aside class="m-note m-default"><h4>Should one prefer the continuous-time or discrete-time API?</h4><p>In general, we suggest users to always prefer the continuous-time API because it is more general.</p></aside></section>
       </div>

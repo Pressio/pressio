@@ -123,26 +123,55 @@ public:
 
   template <typename step_t, typename ... Args>
   void discreteTimeResidual(const step_t & step,
-                const scalar_type & time,
-              const scalar_type & dt,
-              discrete_time_residual_type & R,
-              //variadic # of states (user sets stencil size)
-              Args & ... states) const
+                            const scalar_type & time,
+							const scalar_type & dt,
+							discrete_time_residual_type & R,
+							const state_type & y_np1,
+							const state_type & y_n) const
   {
-    this->discreteTimeResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+    // given y_n+1, y_n
+	// compute R
+  }
+
+  template <typename step_t, typename ... Args>
+  void discreteTimeResidual(const step_t & step,
+                            const scalar_type & time,
+							const scalar_type & dt,
+							discrete_time_residual_type & R,
+							const state_type & y_np1,
+							const state_type & y_n,
+							const state_type & y_nm1) const
+  {
+    // given y_n+1, y_n, y_n-1
+	// compute R
+  }
+
+
+  template <typename step_t, typename ... Args>
+  void applyDiscreteTimeJacobian(const step_t & step,
+								 const scalar_type & time,
+								 const scalar_type & dt,
+								 const operand_t & B,
+								 operand_t & A,
+								 const state_type & y_np1,
+								 const state_type & y_n) const
+  {
+    // given y_n+1, y_n
+	// compute A = dR/dy_n+1 B
   }
 
   template <typename step_t, typename ... Args>
   void applyDiscreteTimeJacobian(const step_t & step,
-                 const scalar_type & time,
-                 const scalar_type & dt,
-                 const operand_t & B,
-                 operand_t & A,
-                 //variadic # of states (user sets stencil size)
-                 Args & ... states) const
+								 const scalar_type & time,
+								 const scalar_type & dt,
+								 const operand_t & B,
+								 operand_t & A,
+								 const state_type & y_np1,
+								 const state_type & y_n,
+								 const state_type & y_nm1) const
   {
-    this->applyDiscreteTimeJacobianImpl(step, time, dt, B, stateIdForJacobian,
-          A, std::forward<Args>(states)...);
+    // given y_n+1, y_n, y_n-1
+	// compute A = dR/dy_n+1 B
   }
 };
 ```

@@ -96,26 +96,55 @@ This A\+PI is intended for any system expressible in a discrete-\/time form as \
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} discreteTimeResidual(\textcolor{keyword}{const} step\_t \& step,}
-\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
-\DoxyCodeLine{              \textcolor{keyword}{const} scalar\_type \& dt,}
-\DoxyCodeLine{              discrete\_time\_residual\_type \& R,}
-\DoxyCodeLine{              \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
-\DoxyCodeLine{              Args \& ... states)\textcolor{keyword}{ const}}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                            discrete\_time\_residual\_type \& R,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_n)\textcolor{keyword}{ const}}
 \DoxyCodeLine{\textcolor{keyword}{  }\{}
-\DoxyCodeLine{    this-\/>discreteTimeResidualImpl(step, time, dt, R, std::forward<Args>(states)... );}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n}}
+\DoxyCodeLine{    \textcolor{comment}{// compute R}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} discreteTimeResidual(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                            discrete\_time\_residual\_type \& R,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_n,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_nm1)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n, y\_n-\/1}}
+\DoxyCodeLine{    \textcolor{comment}{// compute R}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                                 operand\_t \& A,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_n)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n}}
+\DoxyCodeLine{    \textcolor{comment}{// compute A = dR/dy\_n+1 B}}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
-\DoxyCodeLine{                 \textcolor{keyword}{const} scalar\_type \& time,}
-\DoxyCodeLine{                 \textcolor{keyword}{const} scalar\_type \& dt,}
-\DoxyCodeLine{                 \textcolor{keyword}{const} operand\_t \& B,}
-\DoxyCodeLine{                 operand\_t \& A,}
-\DoxyCodeLine{                 \textcolor{comment}{//variadic \# of states (user sets stencil size)}}
-\DoxyCodeLine{                 Args \& ... states)\textcolor{keyword}{ const}}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                                 operand\_t \& A,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_n,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_nm1)\textcolor{keyword}{ const}}
 \DoxyCodeLine{\textcolor{keyword}{  }\{}
-\DoxyCodeLine{    this-\/>applyDiscreteTimeJacobianImpl(step, time, dt, B, stateIdForJacobian,}
-\DoxyCodeLine{          A, std::forward<Args>(states)...);}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n, y\_n-\/1}}
+\DoxyCodeLine{    \textcolor{comment}{// compute A = dR/dy\_n+1 B}}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{\};}
 \end{DoxyCode}
