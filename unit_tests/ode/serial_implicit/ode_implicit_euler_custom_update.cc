@@ -3,9 +3,35 @@
 #include "pressio_ode_implicit.hpp"
 #include "../reference_apps_for_testing.hpp"
 
-
-TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated)
+namespace{
+struct CustomUpdate
 {
+  void reset(){}
+
+  template<typename system_t, typename state_t, typename solver_t>
+  void operator()(const system_t & sys,
+		  state_t & state,
+		  solver_t & solver)
+  {
+    PRESSIOLOG_DEBUG("custom update");
+    const auto & correction = solver.correctionCRef();
+    std::cout << *state.data() << std::endl;
+    ::pressio::ops::update(state, 1., correction, 0.);
+    std::cout << *state.data() << std::endl;
+  }
+};
+}
+
+TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreatedCustomUpdate)
+{
+  // this test is trivial, just aimed at testing
+  // we can pass the custom update via the ode integrate
+  // to the solver
+  // the custom update sets correction to zero so that solution should never change
+
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::trace});
+
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
   using nstate_t = typename app_t::state_type;
@@ -17,7 +43,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated)
   using res_t = containers::Vector<nveloc_t>;
   using jac_t = containers::SparseMatrix<njacobian_t>;
   state_t y(3);
-  *y.data() = appObj.getInitCond();
+  y(0) = 1.; y(1) = 2.; y(2) = 4.;
 
   using stepper_t = ode::ImplicitStepper<
     ode::implicitmethods::Euler,
@@ -30,21 +56,20 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreated)
   lin_solver_t linSolverObj;
 
   auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj,y,linSolverObj);
+  NonLinSolver.setMaxIterations(1);
 
   // integrate in time
-  ::pressio::ode::types::step_t nSteps = 2;
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, NonLinSolver, CustomUpdate{});
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
-  appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-
-  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
-  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
-  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
+  EXPECT_DOUBLE_EQ(y(0), 1.);
+  EXPECT_DOUBLE_EQ(y(1), 2.);
+  EXPECT_DOUBLE_EQ(y(2), 4.);
 }
 
-TEST(ode_implicit_euler, guesserLambda)
+
+TEST(ode_implicit_euler, guesserLambdaCustomUpdate)
 {
   using namespace pressio;
   using app_t = ode::testing::refAppForImpEigen;
@@ -80,57 +105,10 @@ TEST(ode_implicit_euler, guesserLambda)
   			  };
 
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1, testLambda, NonLinSolver);
+  ode::advanceNSteps(stepperObj, y, 0.0, dt, 5, testLambda, NonLinSolver, CustomUpdate{});
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y(0), -22.0);
   EXPECT_DOUBLE_EQ(y(1), -26.0);
   EXPECT_DOUBLE_EQ(y(2), -28.0);
-}
-
-
-TEST(ode_implicit_euler, numericsStdResidualPolPassedByUser)
-{
-  using namespace pressio;
-  using app_t = ode::testing::refAppForImpEigen;
-  using nstate_t = typename app_t::state_type;
-  using nveloc_t = typename app_t::velocity_type;
-  using njacobian_t = typename app_t::jacobian_type;
-  app_t appObj;
-
-  using state_t = containers::Vector<nstate_t>;
-  using res_t = containers::Vector<nveloc_t>;
-  using jac_t = containers::SparseMatrix<njacobian_t>;
-  state_t y(3);
-  *y.data() = appObj.getInitCond();
-
-  //**********************
-  // define policies and stepper
-  //**********************
-  using res_pol_t = ode::implicitmethods::policy::ResidualStandardPolicyBdf<state_t, res_t>;
-  using jac_pol_t = ode::implicitmethods::policy::JacobianStandardPolicyBdf<state_t, jac_t>;
-
-  using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
-  stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t());
-
-  //**********************
-  // define solver
-  //**********************
-  using lin_solver_t = solvers::linear::Solver<
-      solvers::linear::iterative::Bicgstab, jac_t>;
-  lin_solver_t linSolverObj;
-  auto NonLinSolver = pressio::solvers::nonlinear::createNewtonRaphson(stepperObj,y,linSolverObj);
-
-  // integrate in time
-  ::pressio::ode::types::step_t nSteps = 2;
-  double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
-  std::cout << std::setprecision(14) << *y.data() << "\n";
-
-  appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
-
-  EXPECT_DOUBLE_EQ(y(0), appObj.y(0));
-  EXPECT_DOUBLE_EQ(y(1), appObj.y(1));
-  EXPECT_DOUBLE_EQ(y(2), appObj.y(2));
 }

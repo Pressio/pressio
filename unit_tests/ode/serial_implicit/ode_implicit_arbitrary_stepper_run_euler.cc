@@ -295,7 +295,7 @@ struct CustomBdf1Solver
 				  dt = dt_;
 				};
 
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
@@ -308,7 +308,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_*2.;
 				};
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, solverO, dtSetterLambda);
+    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
   };
 
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
@@ -320,7 +320,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0, finalTime, solverO, dtSetterLambda);
+    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0, finalTime, dtSetterLambda, solverO);
   };
 
   template <typename observer_t>
@@ -339,8 +339,7 @@ struct CustomBdf1Solver
 				  dt = dt_;
 				};
     ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0,
-					  finalTime, solverO,
-					  dtSetterLambda, observer);
+					  finalTime, dtSetterLambda, observer, solverO);
   };
 
 };
