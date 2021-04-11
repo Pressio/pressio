@@ -159,12 +159,14 @@ public:
 		 rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
-  template<typename solver_type>
+  template<typename solver_type, typename ...Args>
   void doStep(ode_state_type & odeState,
 	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & step,
-	      solver_type & solver)
+	      solver_type & solver,
+	      Args&& ...args)
+
   {
     PRESSIOLOG_DEBUG("arbitrary stepper: do step");
 
@@ -180,7 +182,7 @@ public:
     updateAuxiliaryStorage<numAuxStates>(odeState);
 
     try{
-      solver.solve(*this, odeState);
+      solver.solve(*this, odeState, std::forward<Args>(args)...);
     }
     catch (::pressio::eh::nonlinear_solve_failure const & e)
     {

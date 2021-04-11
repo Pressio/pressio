@@ -59,13 +59,14 @@ struct IntegratorNStepsWithConstDt
 {
 
   template <
-    typename stepPolicy,
+    typename stepper_type,
     typename time_type,
     typename state_type,
     typename collector_type,
     typename ... Args
     >
-  static void execute(const ::pressio::ode::types::step_t & numSteps,
+  static void execute(stepper_type & stepper,
+		      const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      const time_type			  & dt,
 		      state_type			  & odeStateInOut,
@@ -97,8 +98,8 @@ struct IntegratorNStepsWithConstDt
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepPolicy::execute(time, dt, step, odeStateInOut,
-			  std::forward<Args>(args)...);
+      stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif
@@ -120,14 +121,15 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 {
 
   template <
-    typename stepPolicy,
+    typename stepper_type,
     typename time_type,
     typename dt_setter,
     typename state_type,
     typename collector_type,
     typename ... Args
     >
-  static void execute(const ::pressio::ode::types::step_t & numSteps,
+  static void execute(stepper_type & stepper,
+		      const ::pressio::ode::types::step_t & numSteps,
 		      const time_type			  & start_time,
 		      state_type			  & odeStateInOut,
 		      dt_setter				  && dtManager,
@@ -161,8 +163,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepPolicy::execute(time, dt, step,
-			  odeStateInOut, std::forward<Args>(args)...);
+      stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif

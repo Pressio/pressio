@@ -49,7 +49,6 @@
 #ifndef ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 #define ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
 
-#include "./impl/ode_call_stepper_policy.hpp"
 #include "./impl/ode_to_target_time_integrators.hpp"
 
 namespace pressio{ namespace ode{
@@ -58,58 +57,64 @@ template<
   typename stepper_type,
   typename state_type,
   typename time_type,
+  typename step_size_cb_t,
   typename solver_type,
-  typename step_size_cb_t
+  typename ...Args
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
   ::pressio::ode::constraints::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value
+    step_size_cb_t, types::step_t, time_type>::value and
+  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value
   >
 advanceToTargetTime(stepper_type	& stepper,
 		    state_type		& odeStateInOut,
 		    const time_type	start_time,
 		    const time_type	final_time,
+		    step_size_cb_t	&& dtManager,
 		    solver_type		& solver,
-		    step_size_cb_t	&& dtManager)
+		    Args&& ... solver_args)
 {
   static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
   collector_t collector;
-
-  impl::integrateToTargetTimeWithTimeStepSizeManager<false, step_policy>
-    (start_time, final_time, collector,
-     std::forward<step_size_cb_t>(dtManager),
-     odeStateInOut, stepper, solver);
+  impl::integrateToTargetTimeWithTimeStepSizeManager<false>
+    (stepper, start_time, final_time, odeStateInOut,
+     collector, std::forward<step_size_cb_t>(dtManager),
+     solver, std::forward<Args>(solver_args)...);
 }
 
 template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename solver_type,
   typename step_size_cb_t,
-  typename collector_type
+  typename collector_type,
+  typename solver_type,
+  typename ...Args
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
   ::pressio::ode::constraints::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value and
-  ode::constraints::collector<collector_type, time_type, state_type>::value
+  ode::constraints::collector<collector_type, time_type, state_type>::value and
+  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value
   >
 advanceToTargetTime(stepper_type	& stepper,
 		    state_type		& odeStateInOut,
 		    const time_type	start_time,
 		    const time_type	final_time,
-		    solver_type		& solver,
 		    step_size_cb_t	&& dtManager,
-		    collector_type	& collector)
+		    collector_type	& collector,
+		    solver_type		& solver,
+		    Args&& ...solver_args)
 {
 
   static_assert
@@ -117,35 +122,38 @@ advanceToTargetTime(stepper_type	& stepper,
      "You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-  impl::integrateToTargetTimeWithTimeStepSizeManager<false, step_policy>
-    (start_time, final_time, collector,
-     std::forward<step_size_cb_t>(dtManager),
-     odeStateInOut, stepper, solver);
+  impl::integrateToTargetTimeWithTimeStepSizeManager<false>
+    (stepper, start_time, final_time, odeStateInOut,
+     collector, std::forward<step_size_cb_t>(dtManager),
+     solver, std::forward<Args>(solver_args)...);
 }
-
 
 template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename solver_type,
   typename step_size_cb_t,
-  typename collector_type
+  typename collector_type,
+  typename solver_type,
+  typename ...Args
   >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
   ::pressio::ode::constraints::time_step_size_manager<
     step_size_cb_t, types::step_t, time_type>::value and
-  ode::constraints::collector<collector_type, time_type, state_type>::value>
+  ode::constraints::collector<collector_type, time_type, state_type>::value and
+  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value
+  >
 advanceToTargetTimeWithTimeStepRecovery(stepper_type	& stepper,
 					state_type	& odeStateInOut,
 					const time_type	start_time,
 					const time_type	final_time,
-					solver_type	& solver,
 					step_size_cb_t	&& dtManager,
-					collector_type	& collector)
+					collector_type	& collector,
+					solver_type	& solver,
+					Args&& ... solver_args)
 {
 
   static_assert
@@ -153,12 +161,10 @@ advanceToTargetTimeWithTimeStepRecovery(stepper_type	& stepper,
      "You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
-  using step_policy = impl::ImplicitDoStepBasic<solver_type>;
-
-  impl::integrateToTargetTimeWithTimeStepSizeManager<true, step_policy>
-    (start_time, final_time, collector,
-     std::forward<step_size_cb_t>(dtManager),
-     odeStateInOut, stepper, solver);
+  impl::integrateToTargetTimeWithTimeStepSizeManager<true>
+    (stepper, start_time, final_time, odeStateInOut,
+     collector, std::forward<step_size_cb_t>(dtManager),
+     solver, std::forward<Args>(solver_args)...);
 }
 
 }}//end namespace pressio::ode

@@ -81,30 +81,33 @@ callDtManager(dt_manager && dtManager,
 
 template <
   bool enableTimeStepRecovery,
-  typename stepPolicy,
+  typename stepper_type,
   typename time_type,
+  typename state_type,
   typename collector_t,
   typename dt_manager,
-  typename state_type,
   typename ... Args>
 void
-integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
-					     const time_type	& final_time,
-					     collector_t	& collector,
-					     dt_manager	&& dtManager,
+integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
+					     const time_type & start_time,
+					     const time_type & final_time,
 					     state_type	& odeStateInOut,
-					     Args		&& ... args)
+					     collector_t & collector,
+					     dt_manager	&& dtManager,
+					     Args && ... args)
 {
 
   using step_t = ::pressio::ode::types::step_t;
   using collector_dispatch = CallCollectorDispatch<collector_t, time_type, state_type>;
   constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
-  if (final_time < start_time)
+  if (final_time < start_time){
     throw std::runtime_error("You cannot call the advancer with final time < start time.");
+  }
 
-  if (final_time == start_time)
+  if (final_time == start_time){
     return;
+  }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -163,8 +166,7 @@ integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
 	while(!needStop){
 	  try
 	  {
-	    stepPolicy::execute(time, dt, step, odeStateInOut,
-				std::forward<Args>(args)...);
+	    stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
 	    needStop=true;
 	  }
 	  catch (::pressio::eh::time_step_failure const & e)
@@ -176,19 +178,12 @@ integrateToTargetTimeWithTimeStepSizeManager(const time_type	& start_time,
 	    }
 
 	    PRESSIOLOG_CRITICAL("time step={} failed, retrying with dt={}", step, dt);
-	    // auto fmt = ::pressio::utils::io::red();
-	    // auto rst = ::pressio::utils::io::reset();
-	    // ::pressio::utils::io::print_stdout
-	    // 	(std::setw(1), fmt,
-	    // 	 "time step=", step, "failed, retrying with dt=", dt,
-	    // 	 rst, "\n");
 	  }
 	}
       }
       else
       {
-	stepPolicy::execute(time, dt, step, odeStateInOut,
-			    std::forward<Args>(args)...);
+	stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
       }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

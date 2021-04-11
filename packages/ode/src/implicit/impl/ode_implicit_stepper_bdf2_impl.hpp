@@ -138,12 +138,13 @@ public:
     return order_value;
   }
 
-  template<typename solver_type>
+  template<typename solver_type, typename ...Args>
   void doStep(state_type & odeState,
 	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
-	      solver_type & solver)
+	      solver_type & solver,
+	      Args&& ...args)
   {
     PRESSIOLOG_DEBUG("bdf2 stepper: do step");
 
@@ -151,19 +152,22 @@ public:
       [](const types::step_t &, const scalar_t &, state_type &)
       { /*no op*/ };
 
-    doStepImpl(odeState, currentTime, dt, stepNumber, solver, dummyGuesser);
+    doStepImpl(odeState, currentTime, dt, stepNumber,
+	       solver, dummyGuesser, std::forward<Args>(args)...);
   }
 
-  template<typename solver_type, typename guess_callback_t>
+  template<typename solver_type, typename guess_callback_t, class ...Args>
   void doStep(state_type & odeState,
 	      const scalar_t &  currentTime,
 	      const scalar_t &  dt,
 	      const types::step_t & stepNumber,
+	      guess_callback_t && guesserCb,
 	      solver_type & solver,
-	      guess_callback_t && guesserCb)
+	      Args&& ...args)
   {
     PRESSIOLOG_DEBUG("bdf2 stepper: do step with callback to state guesser");
-    doStepImpl(odeState, currentTime, dt, stepNumber, solver, guesserCb);
+    doStepImpl(odeState, currentTime, dt, stepNumber,
+	       solver, guesserCb, std::forward<Args>(args)...);
   }
 
   residual_t createResidual() const
@@ -192,13 +196,14 @@ public:
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t>
+  template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStepImpl(state_type & odeState,
 		  const scalar_t & currentTime,
 		  const scalar_t & dt,
 		  const types::step_t & stepNumber,
 		  solver_type & solver,
-		  guess_callback_t && guesserCb)
+		  guess_callback_t && guesserCb,
+		  Args&& ...args)
   {
     static_assert(::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
       solver_type, decltype(*this), state_type>::value,
@@ -224,7 +229,8 @@ private:
       // stencilStates_(0) now holds y_0
       ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::n()), odeState);
       ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::nMinusOne()), odeState);
-      auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver);
+      auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver,
+			 std::forward<Args>(args)...);
     }
     if (stepNumber >= 2)
     {
@@ -256,7 +262,7 @@ private:
 
       try{
 	guesserCb(stepNumber, rhsEvaluationTime_, odeState);
-	solver.solve(*this, odeState);
+	solver.solve(*this, odeState, std::forward<Args>(args)...);
       }
       catch (::pressio::eh::nonlinear_solve_failure const & e)
 	{

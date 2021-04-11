@@ -135,12 +135,13 @@ public:
     return order_value;
   }
 
-  template<typename solver_type>
+  template<typename solver_type, typename ...Args>
   void doStep(state_type & odeState,
 	      const scalar_t &  currentTime,
 	      const scalar_t &  dt,
 	      const types::step_t & stepNumber,
-	      solver_type & solver)
+	      solver_type & solver,
+	      Args&& ...args)
   {
     PRESSIOLOG_DEBUG("crankNicolson stepper: do step");
 
@@ -148,20 +149,23 @@ public:
       [](const types::step_t &, const scalar_t &, state_type &)
       { /*no op*/ };
 
-    doStepImpl(odeState, currentTime, dt, stepNumber, solver, dummyGuesser);
+    doStepImpl(odeState, currentTime, dt, stepNumber,
+	       solver, dummyGuesser, std::forward<Args>(args)...);
   }
 
   // overload for when we have a guesser callback
-  template<typename solver_type, typename guess_callback_t>
+  template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStep(state_type & odeState,
 	      const scalar_t &  currentTime,
 	      const scalar_t &  dt,
 	      const types::step_t & stepNumber,
+	      guess_callback_t && guesserCb,
 	      solver_type & solver,
-	      guess_callback_t && guesserCb)
+	      Args&& ...args)
   {
     PRESSIOLOG_DEBUG("crankNicolson stepper: do step with callback to state guesser");
-    doStepImpl(odeState, currentTime, dt, stepNumber, solver, guesserCb);
+    doStepImpl(odeState, currentTime, dt, stepNumber,
+	       solver, guesserCb, std::forward<Args>(args)...);
   }
 
   residual_t createResidual() const{
@@ -188,13 +192,14 @@ public:
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t>
+  template<typename solver_type, typename guess_callback_t, typename ...Args>
   void doStepImpl(state_type & odeSolution,
 		  const scalar_t &  currentTime,
 		  const scalar_t &  dt,
 		  const types::step_t & stepNumber,
 		  solver_type & solver,
-		  guess_callback_t && guesserCb)
+		  guess_callback_t && guesserCb,
+		  Args&& ...args)
   {
     static_assert(::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
       solver_type, decltype(*this), state_type>::value,
@@ -223,7 +228,7 @@ private:
     guesserCb(stepNumber, t_np1_, odeSolution);
 
     try{
-      solver.solve(*this, odeSolution);
+      solver.solve(*this, odeSolution, std::forward<Args>(args)...);
 
       // auto & fn   = stencilStates_.rhsAt(ode::n());
       // auto & fnp1 = stencilStates_.rhsAt(ode::nPlusOne());
