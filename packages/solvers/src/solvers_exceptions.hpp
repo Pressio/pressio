@@ -92,5 +92,24 @@ public:
    }
 };
 
+class residual_has_nans
+  : public std::exception
+{
+  std::string myerr_ = "NaNs found in residual";
+  std::string append_ = {};
+
+public:
+  residual_has_nans() = default;
+
+  explicit residual_has_nans(std::string append)
+    : append_{append}{
+    myerr_ += append_;
+  }
+
+  const char * what () const throw (){
+    return myerr_.c_str();
+   }
+};
+
 }}//end namespace pressio::eh
 #endif  // SOLVERS_SOLVERS_EXCEPTIONS_HPP_
