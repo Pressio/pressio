@@ -86,9 +86,8 @@
 #include "solvers/src/constraints/solvers_implicit_state.hpp"
 #include "solvers/src/constraints/solvers_ops_normal_equations_rj_api.hpp"
 #include "solvers/src/constraints/solvers_least_squares_weighting_operator.hpp"
-
 #include "solvers/src/nonlinear/impl/updaters/solvers_create_updater.hpp"
-#include "solvers/src/nonlinear/impl/updaters/solvers_apply_updater.hpp"
+#include "solvers/src/nonlinear/impl/solvers_observer.hpp"
 
 #include "solvers/src/constraints/solvers_legitimate_linear_solver_for_newton_raphson.hpp"
 #include "solvers/src/predicates/solvers_has_const_residualnorm_method_accept_state_norm_return_void.hpp"
