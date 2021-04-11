@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 
   stepper_t stepperObj(y, appObj);
   pressio::ode::advanceToTargetTimeWithTimeStepRecovery
-    (stepperObj, y, 0., 0.4, solver, dtManager, collector);
+    (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;
   return 0;

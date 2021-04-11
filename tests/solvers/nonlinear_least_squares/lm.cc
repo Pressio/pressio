@@ -60,7 +60,7 @@ int main()
 
   NonLinearLeastSquareSystem sys;
 
-  // LM with default update
+  // // LM with default update
   vector_w_t x0(2);
   {
     x0(0) = 0.5;

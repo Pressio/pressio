@@ -94,7 +94,7 @@ int main(int argc, char *argv[]){
   setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 
   // solve
-  pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, 10, solver, setter);
+  pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, 10, setter, solver);
 
   // compute the fom corresponding to our rom final state
   auto yFomFinal = lspgProblem.fomStateReconstructorCRef()(yROM);

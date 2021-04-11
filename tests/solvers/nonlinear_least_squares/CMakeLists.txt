@@ -33,6 +33,18 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 
   set(fn gn_qr_nist_mgh10)
   add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_normal_eq_custom_update)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_normal_eq_observer)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_normal_eq_nan_residual)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
+
+  set(fn gn_normal_eq_print_metrics)
+  add_serial_exe_and_test(${fn} solvers ${CMAKE_CURRENT_SOURCE_DIR}/${fn}.cc "PASSED")
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)

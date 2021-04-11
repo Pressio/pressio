@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 		     }
 		   };
 
-  pressio::ode::advanceNSteps(stepper, y, 0., 3, solver, dtManager, collector);
+  pressio::ode::advanceNSteps(stepper, y, 0., 3, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;
   return 0;

@@ -3,7 +3,8 @@
 #include "pressio_apps.hpp"
 #include "utils_epetra.hpp"
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
   using fom_t		= pressio::apps::Burgers1dEpetra;
   using scalar_t	= typename fom_t::scalar_type;
   using native_state_t  = typename fom_t::state_type;
@@ -23,6 +24,9 @@ int main(int argc, char *argv[]){
   int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
   if(Comm.NumProc() != 1) return 0;
+
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::trace});
 
   //-------------------------------
   // app object
