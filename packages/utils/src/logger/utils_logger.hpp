@@ -124,6 +124,7 @@ std::shared_ptr<::pressio::logger> getLogger()
   return get("pressioLogger");
 }
 
+template <class T= void>
 void finalize()
 {
   spdlog::shutdown();
