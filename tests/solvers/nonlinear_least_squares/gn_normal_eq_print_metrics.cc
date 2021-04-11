@@ -92,45 +92,48 @@ int main()
       std::cout << line << std::endl;
       ++lc;
       if(lc==1){
-      	auto s = line.substr(43, line.size()-43);
-        std::cout << "l1 " << s << std::endl;
+      	auto s = line.substr(line.size()-28, 28);
+        std::cout << s << std::endl;
 	      const auto gold = "nonlinsolver: create updater";
 	      if (s != gold) sentinel = "FAILED";
       }
       if(lc==2){
-      	auto s = line.substr(43, line.size()-43);
-        std::cout << "l2 " << s << std::endl;
+      	auto s = line.substr(line.size()-19, 19);
+        std::cout << s << std::endl;
       	const auto gold = "nonlinsolver: solve";
       	if (s != gold) sentinel = "FAILED";
       }
- //      if(lc==3 or lc==4 or lc==5){
-	// auto s = line.substr(44, line.size()-44);
-	// auto sV = split(s, ' ');
-	// // if (std::stoi(sV[0]) != (lc-2)) sentinel = "FAILED";
-	// if (std::stod(sV[1]) != 3.162278) sentinel = "FAILED";
-	// if (std::stod(sV[2]) != 1.) sentinel = "FAILED";
-	// if (std::stod(sV[3]) != 20.) sentinel = "FAILED";
-	// if (std::stod(sV[4]) != 1.) sentinel = "FAILED";
-	// if (std::stod(sV[5]) != 2.2) sentinel = "FAILED";
-	// if (std::stod(sV[6]) != 1.) sentinel = "FAILED";
- //      }
+      if(lc==3 or lc==4 or lc==5){
+	auto s = line.substr(line.size()-79, 79);
+  std::cout << s << std::endl;
+	auto sV = split(s, ' ');
+	if (std::stoi(sV[0]) != (lc-2)) sentinel = "FAILED";
+	if (std::stod(sV[1]) != 3.162278) sentinel = "FAILED";
+	if (std::stod(sV[2]) != 1.) sentinel = "FAILED";
+	if (std::stod(sV[3]) != 20.) sentinel = "FAILED";
+	if (std::stod(sV[4]) != 1.) sentinel = "FAILED";
+	if (std::stod(sV[5]) != 2.2) sentinel = "FAILED";
+	if (std::stod(sV[6]) != 1.) sentinel = "FAILED";
+      }
 
- //      if(lc==6){
-	// auto s = line.substr(43, line.size()-43);
-	// const auto gold = "nonlinsolver: solve";
-	// if (s != gold) sentinel = "FAILED";
- //      }
- //      if(lc==7 or lc==8 or lc==9){
-	// auto s = line.substr(44, line.size()-44);
-	// auto sV = split(s, ' ');
-	// // if (std::stoi(sV[0]) != (lc-6)) sentinel = "FAILED";
-	// if (std::stod(sV[1]) != 3.162278) sentinel = "FAILED";
-	// if (std::stod(sV[2]) != 1.) sentinel = "FAILED";
-	// if (std::stod(sV[3]) != 20.) sentinel = "FAILED";
-	// if (std::stod(sV[4]) != 1.) sentinel = "FAILED";
-	// if (std::stod(sV[5]) != 2.2) sentinel = "FAILED";
-	// if (std::stod(sV[6]) != 1.) sentinel = "FAILED";
- //      }
+      if(lc==6){
+  auto s = line.substr(line.size()-19, 19);
+	const auto gold = "nonlinsolver: solve";
+	if (s != gold) sentinel = "FAILED";
+      }
+      if(lc==7 or lc==8 or lc==9)
+      {
+  auto s = line.substr(line.size()-79, 79);
+  std::cout << s << std::endl;
+	auto sV = split(s, ' ');
+	// if (std::stoi(sV[0]) != (lc-6)) sentinel = "FAILED";
+	if (std::stod(sV[1]) != 3.162278) sentinel = "FAILED";
+	if (std::stod(sV[2]) != 1.) sentinel = "FAILED";
+	if (std::stod(sV[3]) != 20.) sentinel = "FAILED";
+	if (std::stod(sV[4]) != 1.) sentinel = "FAILED";
+	if (std::stod(sV[5]) != 2.2) sentinel = "FAILED";
+	if (std::stod(sV[6]) != 1.) sentinel = "FAILED";
+      }
 
     }
     file.close();
