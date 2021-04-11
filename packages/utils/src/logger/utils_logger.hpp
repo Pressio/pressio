@@ -109,25 +109,36 @@ void initialize(::pressio::logto en, std::string fileName = "log")
 // example: spdlog::get("my_logger")->info("hello {}", "world");
 
 template <class T= void>
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 std::shared_ptr<::pressio::logger> get(const std::string &name)
+#else
+void get(const std::string &name)
+#endif
 {
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   return spdlog::details::registry::instance().get(name);
-#else
-  return nullptr;
 #endif
 }
 
 template <class T= void>
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 std::shared_ptr<::pressio::logger> getLogger()
+#else
+void getLogger()
+#endif
 {
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   return get("pressioLogger");
+#else
+#endif  
 }
 
 template <class T= void>
 void finalize()
 {
+#if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   spdlog::shutdown();
+#endif
 }
 
 
