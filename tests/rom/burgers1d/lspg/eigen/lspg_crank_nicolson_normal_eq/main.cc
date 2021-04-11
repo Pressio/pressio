@@ -93,5 +93,6 @@ int main(int argc, char *argv[])
 
   std::cout << std::setprecision(14) << *yROM.data() << std::endl;
   std::cout << checkStr <<  std::endl;
+  pressio::log::finalize();
   return 0;
 }

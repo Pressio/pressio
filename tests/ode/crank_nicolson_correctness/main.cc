@@ -259,5 +259,6 @@ int main(int argc, char *argv[])
   stepper_t stepperObj(y, appObj);
   pressio::ode::advanceNSteps(stepperObj, y, 0., 1.5, 3, solver);
   std::cout << checkStr << std::endl;
+  pressio::log::finalize();
   return 0;
 }

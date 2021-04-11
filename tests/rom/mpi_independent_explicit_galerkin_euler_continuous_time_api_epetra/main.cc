@@ -145,6 +145,7 @@ int main(int argc, char *argv[])
     checkStr = "FAILED";
   }
 
+  pressio::log::finalize();
   MPI_Finalize();
   std::cout << checkStr <<  std::endl;
   return 0;

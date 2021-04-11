@@ -41,4 +41,5 @@ int main()
     sentinel = "FAILED";
   }
   std::cout << sentinel << std::endl;
+  return 0;
 }

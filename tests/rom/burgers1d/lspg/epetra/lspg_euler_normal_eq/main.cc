@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
       if (std::abs(yFomFinal(i) - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
   }
 
+  pressio::log::finalize();
   MPI_Finalize();
   std::cout << checkStr <<  std::endl;
   return 0;

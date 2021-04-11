@@ -135,5 +135,6 @@ int main()
   }
 
   std::cout << checkStr << std::endl;
+  pressio::log::finalize();
   return 0;
 }

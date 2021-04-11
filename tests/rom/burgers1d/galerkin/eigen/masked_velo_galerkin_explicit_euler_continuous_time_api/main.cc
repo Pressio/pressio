@@ -163,5 +163,6 @@ int main(int argc, char *argv[])
   }
 
   std::cout << checkStr <<  std::endl;
+  pressio::log::finalize();
   return 0;
 }

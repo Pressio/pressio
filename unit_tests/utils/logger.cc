@@ -12,4 +12,5 @@ TEST(utils_basic, Logger)
   double a = 2.;
   PRESSIOLOG_WARN("this should appear in both console and file");
   PRESSIOLOG_INFO("this message should not appear in the console, only in the file, {:3}", a);
+  pressio::log::finalize();
 }

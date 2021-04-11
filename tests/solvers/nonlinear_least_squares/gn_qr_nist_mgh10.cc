@@ -69,4 +69,5 @@ int main()
   // #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   // utils::TeuchosPerformanceMonitor::stackedTimersReportSerial();
   // #endif
+  return 0;
 }

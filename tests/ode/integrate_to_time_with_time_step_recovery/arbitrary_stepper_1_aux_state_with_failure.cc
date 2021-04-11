@@ -187,5 +187,6 @@ int main(int argc, char *argv[])
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;
+  pressio::log::finalize();
   return 0;
 }

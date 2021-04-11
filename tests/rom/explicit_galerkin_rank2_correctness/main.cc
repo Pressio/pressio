@@ -175,5 +175,6 @@ int main(int argc, char *argv[])
   if (!romState.data()->isApprox(goldRom)) checkStr = "FAILED";
 
   std::cout << checkStr <<  std::endl;
+  pressio::log::finalize();
   return 0;
 }

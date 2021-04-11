@@ -33,4 +33,6 @@ int main()
   if( std::abs(x(1) - 0.70131382960973) > 1e-6 ) sentinel = "FAILED";
   if( std::abs(x(2) - 0.37498940601500) > 1e-6 ) sentinel = "FAILED";
   std::cout << sentinel << std::endl;
+  pressio::log::finalize();
+  return 0;
 }

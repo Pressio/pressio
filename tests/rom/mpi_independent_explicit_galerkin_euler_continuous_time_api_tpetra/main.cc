@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
     if (!yROM.data()->isApprox(goldRom)){
       checkStr = "FAILED";
     }
+    pressio::log::finalize();
   }
 
   std::cout << checkStr <<  std::endl;

@@ -66,6 +66,7 @@ TEST(ode_implicit_euler, numericsStdPoliciesDefaultCreatedCustomUpdate)
   EXPECT_DOUBLE_EQ(y(0), 1.);
   EXPECT_DOUBLE_EQ(y(1), 2.);
   EXPECT_DOUBLE_EQ(y(2), 4.);
+  pressio::log::finalize();
 }
 
 

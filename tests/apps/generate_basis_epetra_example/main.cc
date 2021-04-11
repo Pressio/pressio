@@ -131,6 +131,5 @@ int main(int argc, char *argv[]){
 
   MPI_Finalize();
   std::cout << checkStr <<  std::endl;
-
   return 0;
 }

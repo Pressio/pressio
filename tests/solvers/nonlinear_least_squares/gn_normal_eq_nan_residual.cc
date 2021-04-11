@@ -120,4 +120,6 @@ int main()
     std::cout << sentinel << std::endl;
     std::cout << std::setprecision(14) << *x.data() << std::endl;
   }
+  pressio::log::finalize();
+  return 0;
 }

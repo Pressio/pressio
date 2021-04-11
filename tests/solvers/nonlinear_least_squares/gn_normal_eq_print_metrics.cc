@@ -142,4 +142,6 @@ int main()
   }
 
   std::cout << sentinel << std::endl;
+  pressio::log::finalize();
+  return 0;
 }

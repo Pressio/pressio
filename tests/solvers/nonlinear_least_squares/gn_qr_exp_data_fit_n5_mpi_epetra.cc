@@ -91,4 +91,5 @@ int main(int argc, char **argv)
   std::cout << sentinel << std::endl;
 
   MPI_Finalize();
+  return 0;
 }

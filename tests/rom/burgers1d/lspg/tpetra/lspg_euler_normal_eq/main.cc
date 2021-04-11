@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
     for (auto i=0; i<myn; i++)
       if (std::abs(yFF_v[i] - trueY[i+shift]) > 1e-10) checkStr = "FAILED";
 
+    pressio::log::finalize();
+
   }//tpetra scope
 
   std::cout << checkStr <<  std::endl;

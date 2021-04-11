@@ -72,4 +72,6 @@ int main()
 
   std::cout <<  strOut << std::endl;
   std::cout << *y.data() << std::endl;
+  pressio::log::finalize();
+  return 0;
 }

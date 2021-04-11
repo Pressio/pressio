@@ -39,4 +39,5 @@ int main()
 
   std::cout << *y.data() << std::endl;
   std::cout << strOut << std::endl;
+  return 0;
 }

@@ -82,5 +82,6 @@ int main(int argc, char *argv[])
 
   std::cout << std::setprecision(15) << *yFomFinal.data() << std::endl;
   std::cout << checkStr <<  std::endl;
+  pressio::log::finalize();
   return 0;
 }

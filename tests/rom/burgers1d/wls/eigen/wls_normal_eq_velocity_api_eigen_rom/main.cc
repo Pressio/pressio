@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
      std::cout << "WLS failed on implicit Euler with residual API" << std::endl;
      checkStr = "FAILED";
   }
+  pressio::log::finalize();
   std::cout << checkStr << std::endl;
   return 0;
 }
