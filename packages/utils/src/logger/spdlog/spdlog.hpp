@@ -195,12 +195,12 @@ void flush_every(std::chrono::seconds interval)
 //   details::registry::instance().drop_all();
 // }
 
-// // stop any running threads started by spdlog and clean registry loggers
-// template<class T = void>
-// void shutdown()
-// {
-//   details::registry::instance().shutdown();
-// }
+// stop any running threads started by spdlog and clean registry loggers
+template<class T = void>
+void shutdown()
+{
+  details::registry::instance().shutdown();
+}
 
 // // Automatic registration of loggers when using spdlog::create() or spdlog::create_async
 // template<class T = void>

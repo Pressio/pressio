@@ -57,10 +57,10 @@ namespace pressio{
 
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 using logger = spdlog::logger;
-#else
-// need to make a trivial logger type so that instrumentation
-// around pressio code can be a noop without needing to add preproc dirs
-using logger = ::pressio::utils::empty;
+// #else
+// // need to make a trivial logger type so that instrumentation
+// // around pressio code can be a noop easily
+// using logger = ::pressio::utils::empty;
 #endif
 
 namespace log{
@@ -101,7 +101,9 @@ void initialize(::pressio::logto en, std::string fileName = "log")
   spdlog::set_default_logger(logger);
 #endif
 }
-#endif
+
+#endif//PRESSIO_ENABLE_TPL_PYBIND11
+
 
 // Return an existing logger or nullptr if a logger with such name doesn't exist.
 // example: spdlog::get("my_logger")->info("hello {}", "world");
@@ -121,6 +123,12 @@ std::shared_ptr<::pressio::logger> getLogger()
 {
   return get("pressioLogger");
 }
+
+void finalize()
+{
+  spdlog::shutdown();
+}
+
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <typename T> void setVerbosity(T levels)
