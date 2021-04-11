@@ -92,6 +92,8 @@ int main()
       std::cout << line << std::endl;
       ++lc;
       if(lc==1){
+        // need to start from the end because the beginning of the print 
+        // contains the thread ID so that might have different extents 
       	auto s = line.substr(line.size()-28, 28);
         std::cout << s << std::endl;
 	      const auto gold = "nonlinsolver: create updater";
