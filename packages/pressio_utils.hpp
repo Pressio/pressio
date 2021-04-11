@@ -54,6 +54,7 @@
 #include "utils/src/utils_crtp_helper.hpp"
 #include "utils/src/utils_static_constants.hpp"
 #include "utils/src/utils_empty.hpp"
+#include "utils/src/utils_make_unique.hpp"
 #include "utils/src/utils_instance_or_reference_wrapper.hpp"
 #include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
 #include "utils/src/utils_set_stream_precision.hpp"
