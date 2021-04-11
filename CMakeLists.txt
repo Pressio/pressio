@@ -25,8 +25,6 @@ message("${Yellow} Pressio version = ${Pressio_VERSION} ${ColourReset}")
 message("${Yellow}----------------------------------${ColourReset}")
 
 #=====================================================================
-# guard here for specific cases
-#=====================================================================
 # guard against in-source builds
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "In-source builds are not allowed.
@@ -34,11 +32,14 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     You may need to remove CMakeCache.txt.")
 endif()
 
-# default to relase if build type is empty
+#=====================================================================
+# check build type
+
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+# convert cmake build type to lower string
 string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_tolower)
 if( NOT cmake_build_type_tolower STREQUAL "debug"
     AND NOT cmake_build_type_tolower STREQUAL "release")
@@ -60,19 +61,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 #=====================================================================
-# other stuff
+# do processing
 #=====================================================================
 include(GNUInstallDirs)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(packages)
 
-#=====================================================================
-# note that actually linking the TPLs libraries is only needed
-# when building tests or when the user builds their app.
-# For just installing pressio, we only need to set the cmake vars.
-#=====================================================================
 message("")
-message("${Magenta}Processing what is being enabled/disabled:${ColourReset}")
+message("${Magenta}Processing:${ColourReset}")
+
+if( cmake_build_type_tolower STREQUAL "debug")
+  set(PRESSIO_DEBUG_BUILD ON)
+  message( "> PRESSIO_DEBUG_BUILD is ON since CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" )
+  message("")
+endif()
 
 if( cmake_build_type_tolower STREQUAL "debug" AND NOT PRESSIO_ENABLE_DEBUG_PRINT)
   set(PRESSIO_ENABLE_DEBUG_PRINT ON)
@@ -89,6 +91,11 @@ endif()
 option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
 option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
 
+#=====================================================================
+# note that here we don't link anything, the TPLs are only needed
+# when building tests or when the user builds their app.
+# For just installing pressio, we only need to set the cmake vars.
+#=====================================================================
 option(PRESSIO_ENABLE_TPL_EIGEN		"Enable Eigen TPL"	ON)
 option(PRESSIO_ENABLE_TPL_TRILINOS	"Enable Trilinos TPL"	OFF)
 option(PRESSIO_ENABLE_TPL_BLAS		"Enable BLAS TPL"	OFF)
