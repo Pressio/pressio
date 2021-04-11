@@ -89,6 +89,7 @@ int main()
     int lc = 0;
     while (std::getline(file, line))
     {
+      std::cout << line << std::endl;
  //      ++lc;
  //      if(lc==1){
 	// auto s = line.substr(43, line.size()-43);
@@ -130,8 +131,8 @@ int main()
  //      }
 
     }
+    file.close();
   }
-  file.close();
 
   std::cout << sentinel << std::endl;
 }
