@@ -146,7 +146,7 @@ public:
     assert( A.NumVectors() == B.NumVectors() );
     // compute jacobian
     jacobian(y, t, *Jac_);
-    Jac_->Print(std::cout);
+    //Jac_->Print(std::cout);
     // multiply
     Jac_->Multiply(false, B, A);
     //A.Print(std::cout);
