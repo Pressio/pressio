@@ -90,17 +90,19 @@ int main()
     while (std::getline(file, line))
     {
       std::cout << line << std::endl;
- //      ++lc;
- //      if(lc==1){
-	// auto s = line.substr(43, line.size()-43);
-	// const auto gold = "nonlinsolver: create updater";
-	// if (s != gold) sentinel = "FAILED";
- //      }
- //      if(lc==2){
-	// auto s = line.substr(43, line.size()-43);
-	// const auto gold = "nonlinsolver: solve";
-	// if (s != gold) sentinel = "FAILED";
- //      }
+      ++lc;
+      if(lc==1){
+      	auto s = line.substr(43, line.size()-43);
+        std::cout << "l1 " << s << std::endl;
+	      const auto gold = "nonlinsolver: create updater";
+	      if (s != gold) sentinel = "FAILED";
+      }
+      if(lc==2){
+      	auto s = line.substr(43, line.size()-43);
+        std::cout << "l2 " << s << std::endl;
+      	const auto gold = "nonlinsolver: solve";
+      	if (s != gold) sentinel = "FAILED";
+      }
  //      if(lc==3 or lc==4 or lc==5){
 	// auto s = line.substr(44, line.size()-44);
 	// auto sV = split(s, ' ');
