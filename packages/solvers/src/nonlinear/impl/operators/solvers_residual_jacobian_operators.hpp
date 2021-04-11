@@ -123,6 +123,10 @@ public:
     sys.residual(state, r_);
     residualNorm = ::pressio::ops::norm2(r_);
 
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
+
     if  (recomputeSystemJacobian){
       sys.jacobian(state, J_);
     }
@@ -139,6 +143,10 @@ public:
   {
     sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
     residualNorm = ::pressio::ops::norm2(r_);
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
   template< typename system_t, typename state_t>
@@ -151,6 +159,10 @@ public:
   {
     system.residual(state, auxR_);
     residualNorm = ::pressio::ops::norm2(auxR_);
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
   template< typename system_t, typename state_t>
@@ -163,6 +175,10 @@ public:
   {
     system.residualAndJacobian(state, auxR_, J_, false);
     residualNorm = ::pressio::ops::norm2(auxR_);
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 };
 

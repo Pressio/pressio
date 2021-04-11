@@ -67,7 +67,8 @@ enum class update
    standard, // default
    armijo,
    LMSchedule1,
-   LMSchedule2
+   LMSchedule2,
+   custom
   };
 
 }}}

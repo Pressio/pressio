@@ -298,6 +298,10 @@ public:
 
     residualNorm = this->_computeNorm();
 
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
+
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
       _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
@@ -322,6 +326,10 @@ public:
     _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
     residualNorm = this->_computeNorm();
 
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
+
     if (recomputeSystemJacobian){
       _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
       _computeHessian();
@@ -341,6 +349,10 @@ public:
     system.residual(state, r_);
     _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
     residualNorm = this->_computeNorm();
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
   template< typename system_t, typename state_t>
@@ -355,6 +367,10 @@ public:
     system.residualAndJacobian(state, r_, J_, false);
     _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
     residualNorm = this->_computeNorm();
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
 private:

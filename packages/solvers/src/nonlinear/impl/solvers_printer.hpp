@@ -54,6 +54,7 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 template <typename step_t, typename sc_t>
 void _printMetrics(bool printGradient,
 		   step_t iStep,
+		   bool stripLabels,
 		   const sc_t & absCorrectionNorm,
 		   const sc_t & relCorrectionNorm,
 		   const sc_t & absResNorm,
@@ -61,22 +62,38 @@ void _printMetrics(bool printGradient,
 		   const sc_t & absGNorm,
 		   const sc_t & relGNorm)
 {
+
   if (printGradient)
   {
-    PRESSIOLOG_INFO
-      ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
-       iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+    if (stripLabels){
+      PRESSIOLOG_INFO
+	("{:2d} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e}",
+	 iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+    }
+    else{
+      PRESSIOLOG_INFO
+	("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+	 iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+    }
   }
   else
   {
-    PRESSIOLOG_INFO
-      ("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
-       iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+    if (stripLabels){
+      PRESSIOLOG_INFO
+	("{:2d} {:.6e} {:.6e} {:.6e} {:.6e}",
+	 iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+    }
+    else{
+      PRESSIOLOG_INFO
+	("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+	 iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+    }
   }
 }
 
 template <typename step_t, typename sc_t>
 void printMetrics(step_t iStep,
+		  bool stripLabels,
 		  const sc_t & absCorrectionNorm,
 		  const sc_t & relCorrectionNorm,
 		  const sc_t & absResNorm,
@@ -84,21 +101,22 @@ void printMetrics(step_t iStep,
 		  const sc_t & absGNorm,
 		  const sc_t & relGNorm)
 {
-  _printMetrics(true,
-		iStep, absCorrectionNorm, relCorrectionNorm,
+  _printMetrics(true, iStep, stripLabels,
+		absCorrectionNorm, relCorrectionNorm,
 		absResNorm, relResNorm,
 		absGNorm, relGNorm);
 }
 
 template <typename step_t, typename sc_t>
 void printMetrics(step_t iStep,
+		  bool stripLabels,
 		  const sc_t & absCorrectionNorm,
 		  const sc_t & relCorrectionNorm,
 		  const sc_t & absResNorm,
 		  const sc_t & relResNorm)
 {
-  _printMetrics(false,
-		iStep, absCorrectionNorm, relCorrectionNorm,
+  _printMetrics(false, iStep, stripLabels,
+		absCorrectionNorm, relCorrectionNorm,
 		absResNorm, relResNorm, sc_t(), sc_t());
 }
 

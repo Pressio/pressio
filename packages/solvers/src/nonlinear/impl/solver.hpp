@@ -122,10 +122,23 @@ private:
 
   // updating criterion enum
   update updatingE_ = update::standard;
-  std::shared_ptr<impl::BaseUpdater> updater_ = nullptr;
+  std::unique_ptr<impl::BaseUpdater> updater_ = nullptr;
 
   // stopping creterion enum
   stop stoppingE_   = stop::whenCorrectionAbsoluteNormBelowTolerance;
+
+  // size of system object is used to check if system changes
+  // this might not be a great solution, but we will work on this
+  std::size_t sizeOfSystemObj_ = {};
+
+  // to monitor state during nonlinear solver
+  std::unique_ptr<impl::BaseObserver> observer_ = nullptr;
+
+  // by default, printing metrics is done with
+  // column strings with the labels, but if one
+  // wants to print only the numbers stripping everything else,
+  // one can turn this on
+  bool printStrippedMetrics_ = false;
 
 public:
   Solver() = delete;
@@ -185,6 +198,10 @@ public:
 #endif
 
 public:
+  void printStrippedMetrics(){
+    printStrippedMetrics_ = true;
+  }
+
   void setSystemJacobianUpdateFreq(std::size_t newFreq){
     jacobianUpdateFreq_ = newFreq;
   }
@@ -193,19 +210,17 @@ public:
     return iStep_;
   }
 
-  // *****************************************
   // *** set or query updatating criterion ***
   void setUpdatingCriterion(update value){
     updatingE_ = value;
-    // set null to indicate it needs to be constructed
-    updater_ = nullptr;
+    // set 0 to indicate it needs to be constructed
+    sizeOfSystemObj_ = 0;
   }
 
   update updatingCriterion() const{
     return updatingE_;
   }
 
-  // *****************************************
   // *** set or query stopping criterion ***
   void setStoppingCriterion(stop value){
     stoppingE_ = value;
@@ -214,7 +229,16 @@ public:
     return stoppingE_;
   }
 
-  // *****************************************
+  template<class functor_t>
+  void setObserver(const functor_t & obsF)
+  {
+    PRESSIOLOG_INFO("nonlinsolver: creating observer");
+
+    using o_t = Observer<state_t, const functor_t &>;
+    observer_ = pressio::utils::make_unique<o_t>(obsF);
+    observer_->applyFnc_ = applyObserver<o_t>;
+  }
+
   // *** set or query tolerances ***
 
   // this is used to set a single tol for all
@@ -235,10 +259,41 @@ public:
   sc_t gradientAbsoluteTolerance()const   { return tolerances_[4]; }
   sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
 
+
+  // *** solve ***
   template<typename system_t>
   void solve(const system_t & system, state_t & state)
   {
-    this->solveImpl(system, state);
+    // before we solve, we check if we need to recreate the updater
+    // for example, this is the case if the system object changes
+    if (recreateUpdater(system)){
+      PRESSIOLOG_INFO("nonlinsolver: create updater");
+      updater_ = createUpdater<this_t, system_t>(state, updatingE_);
+    }
+    this->solveImpl(system, state, *updater_);
+  }
+
+  template<class system_t, class custom_updater_t>
+  void solve(const system_t & system,
+	     state_t & state,
+	     custom_updater_t && updater)
+  {
+    // here we have to create the updater each time becuase
+    // we don't know if the updater changes or not
+
+    PRESSIOLOG_INFO("nonlinsolver: custom updater");
+    updatingE_ = pressio::solvers::nonlinear::update::custom;
+
+    using u_t =
+      mpl::conditional_t<
+	std::is_lvalue_reference<custom_updater_t&&>::value,
+      Updater<system_t, state_t, this_t, custom_updater_t&>,
+      Updater<system_t, state_t, this_t, custom_updater_t>
+      >;
+    updater_ = pressio::utils::make_unique<u_t>(std::forward<custom_updater_t>(updater));
+    updater_->applyFnc_ = applyUpdater<u_t>;
+    updater_->resetFnc_ = resetUpdater<u_t>;
+    this->solveImpl(system, state, *updater_);
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -255,22 +310,38 @@ public:
     // which is numpy array owned by the user inside their Python code.
     // upon exit of this function, the original state is changed.
     ::pressio::containers::Tensor<1, _state_t> stateView(state, ::pressio::view());
-    this->solveImpl(system, stateView);
+
+    if (recreateUpdater(system)){
+      PRESSIOLOG_INFO("nonlinsolver: create updater");
+      updater_ = createUpdater<this_t, system_t>(state, updatingE_);
+    }
+    this->solveImpl(system, state, *updater_);
   }
 #endif
 
 private:
-  template<typename system_t, typename state_t>
-  void solveImpl(const system_t & system, state_t & state)
+  template<typename system_t>
+  bool recreateUpdater(const system_t & system)
+  {
+    if( (sizeOfSystemObj_ != sizeof(system)) or (sizeOfSystemObj_ == 0)){
+      sizeOfSystemObj_ = sizeof(system);
+      return true;
+    }
+    else if(!updater_){
+      sizeOfSystemObj_ = sizeof(system);
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  template<class system_t, class state_t, class updater_t>
+  void solveImpl(const system_t & system,
+		 state_t & state,
+		 updater_t & updater)
   {
     PRESSIOLOG_INFO("nonlinsolver: solve");
-
-    if (!updater_){
-      PRESSIOLOG_DEBUG("nonlinsolver: creating updater");
-      updater_ = createUpdater<solvertag>(state, updatingE_);
-    }
-    // after construction, it should NOT be null
-    assert(updater_);
 
     sc_t residualNorm0 = {};
     sc_t correctionNorm0 = {};
@@ -283,13 +354,22 @@ private:
       recomputeSystemJacobian =
 	(iStep_ == 1) ? true : ((iStep_ % jacobianUpdateFreq_) == 0);
 
+      if (observer_){
+	(*observer_)(iStep_, state);
+      }
+
       // 1.
       try{
 	T::computeCorrection(system, state, recomputeSystemJacobian);
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e)
       {
-	PRESSIOLOG_CRITICAL("nonlinsolver: failure");
+	PRESSIOLOG_CRITICAL("nonlinsolver: residual evaluation failure");
+	throw ::pressio::eh::nonlinear_solve_failure();
+      }
+      catch (::pressio::eh::residual_has_nans const &e)
+      {
+	PRESSIOLOG_CRITICAL("nonlinsolver: residual failure due to NaNs");
 	throw ::pressio::eh::nonlinear_solve_failure();
       }
 
@@ -315,13 +395,13 @@ private:
 
       if (T::hasGradientComputation()){
 	impl::printMetrics
-	  (iStep_,
+	  (iStep_, printStrippedMetrics_,
 	   norms_[0], norms_[1], norms_[2],
 	   norms_[3], norms_[4], norms_[5]);
       }
       else{
 	impl::printMetrics
-	  (iStep_,
+	  (iStep_, printStrippedMetrics_,
 	   norms_[0], norms_[1], norms_[2], norms_[3]);
       }
 
@@ -332,12 +412,12 @@ private:
       }
 
       // 5.
-      applyUpdater(system, state, *this, updatingE_, updater_);
+      updater(system, state, *this);
     }
 
     // when we are done with a solver, reset params to default
     T::resetForNewCall();
-    updater_->resetForNewCall();
+    updater_->reset();
   }
 
   // stopping check

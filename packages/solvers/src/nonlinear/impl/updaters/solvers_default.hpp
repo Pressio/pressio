@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_base_updater.hpp
+// solvers_default_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,34 +46,37 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-class BaseUpdater
+class DefaultUpdater
 {
 public:
-  BaseUpdater() = default;
-  BaseUpdater(BaseUpdater const &) = default;
-  BaseUpdater & operator=(BaseUpdater const &) = default;
-  BaseUpdater(BaseUpdater &&) = default;
-  BaseUpdater & operator=(BaseUpdater &&) = default;
-  virtual ~BaseUpdater() = default;
+  DefaultUpdater() = default;
+  DefaultUpdater(DefaultUpdater const &) = default;
+  DefaultUpdater & operator=(DefaultUpdater const &) = default;
+  DefaultUpdater(DefaultUpdater &&) = default;
+  DefaultUpdater & operator=(DefaultUpdater &&) = default;
+  ~DefaultUpdater() = default;
 
-  template<
-    typename T, typename system_t, typename state_t, typename solver_mixin_t
-    >
-  mpl::enable_if_t<std::is_base_of<BaseUpdater, T>::value>
-  updateState(const system_t & sys,
-	      state_t & state,
-	      solver_mixin_t & solver)
+public:
+  void reset(){}
+
+  template<typename system_t, typename state_t, typename solver_mixin_t>
+  void operator()(const system_t & sys,
+		  state_t & state,
+		  solver_mixin_t & solver)
   {
-    static_cast<T*>(this)->updateState(sys, state, solver);
+    PRESSIOLOG_DEBUG("nonlinsolver: default update");
+    using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
+    // default update: y = y + alpha*correction
+    const auto & correction = solver.correctionCRef();
+    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    ::pressio::ops::update(state, one, correction, one);
   }
-
-  virtual void resetForNewCall() = 0;
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_

@@ -54,7 +54,7 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template<typename state_t>
-class LMSchedule2Updater : public BaseUpdater
+class LMSchedule2Updater
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
@@ -79,13 +79,13 @@ public:
     : gainFactorEval_(state){}
 
 public:
-  void resetForNewCall() final
+  void reset()
   {
     gainFactorEval_.resetForNewCall();
   }
 
   template<typename system_t, typename solver_mixin_t>
-  void updateState(const system_t & sys,
+  void operator()(const system_t & sys,
 		   state_t & state,
 		   solver_mixin_t & solver)
   {

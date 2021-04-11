@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_default_updater.hpp
+// solvers_base_observer.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,37 +46,64 @@
 //@HEADER
 */
 
-#ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
-#define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
+#ifndef SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
+#define SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
 
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-class DefaultUpdater : public BaseUpdater
+struct BaseObserver
 {
-public:
-  DefaultUpdater() = default;
-  DefaultUpdater(DefaultUpdater const &) = default;
-  DefaultUpdater & operator=(DefaultUpdater const &) = default;
-  DefaultUpdater(DefaultUpdater &&) = default;
-  DefaultUpdater & operator=(DefaultUpdater &&) = default;
-  ~DefaultUpdater() = default;
+  using apply_function_type = void (*)(BaseObserver*, int, const void*);
+  apply_function_type applyFnc_;
 
-public:
-  void resetForNewCall() final{}
+  BaseObserver() = default;
+  BaseObserver(BaseObserver const &) = default;
+  BaseObserver & operator=(BaseObserver const &) = default;
+  BaseObserver(BaseObserver &&) = default;
+  BaseObserver & operator=(BaseObserver &&) = default;
+  virtual ~BaseObserver() = default;
 
-  template<typename system_t, typename state_t, typename solver_mixin_t>
-  void updateState(const system_t & sys,
-		   state_t & state,
-		   solver_mixin_t & solver)
+  template <class state_t>
+  void operator()(int step, const state_t & state)
   {
-    PRESSIOLOG_DEBUG("nonlinsolver: default update");
-    using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
-    // default update: y = y + alpha*correction
-    const auto & correction = solver.correctionCRef();
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
-    ::pressio::ops::update(state, one, correction, one);
+    (*applyFnc_)(this, step, &state);
   }
 };
 
+template <class state_t, class functor_t>
+class Observer : public BaseObserver
+{
+public:
+  using state_type = state_t;
+
+private:
+  pressio::utils::instance_or_reference_wrapper<functor_t> F_;
+
+public:
+  Observer(functor_t Fin) : F_(Fin){}
+
+  Observer() = delete;
+  Observer(Observer const &) = default;
+  Observer & operator=(Observer const &) = default;
+  Observer(Observer &&) = default;
+  Observer & operator=(Observer &&) = default;
+  ~Observer() = default;
+
+  functor_t get() const{
+    return F_.get();
+  }
+};
+
+template<typename T>
+void applyObserver(BaseObserver* observer,
+		   int step,
+		   const void * state_as_void)
+{
+  using state_t = typename T::state_type;
+  const auto* p = static_cast<T*>(observer);
+  const auto* state = reinterpret_cast<const state_t*>(state_as_void);
+  p->get()(step, *state);
+}
+
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_

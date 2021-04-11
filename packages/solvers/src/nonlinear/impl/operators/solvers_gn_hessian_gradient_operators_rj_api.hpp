@@ -163,6 +163,10 @@ public:
     // compute norm of r_
     residualNorm = this->_computeNormR();
 
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
+
     // recompute Jacobian is needed
     if (recomputeSystemJacobian){
       systemObj.jacobian(state, J_);
@@ -187,6 +191,10 @@ public:
     // compute  norm of r_
     residualNorm = this->_computeNormR();
 
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
+
     // hessian only recomputed if Jacobian has been updated
     if (recomputeSystemJacobian){
       this->_computeHessian();
@@ -206,6 +214,10 @@ public:
   {
     systemObj.residual(state, r_);
     residualNorm = this->_computeNormR();
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
   template< typename system_t, typename state_t>
@@ -218,6 +230,10 @@ public:
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
     residualNorm = this->_computeNormR();
+
+    if (std::isnan(residualNorm)){
+      throw ::pressio::eh::residual_has_nans();
+    }
   }
 
 private:

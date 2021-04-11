@@ -52,7 +52,7 @@
 namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename state_t>
-class ArmijoUpdater : public BaseUpdater
+class ArmijoUpdater
 {
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
@@ -75,12 +75,12 @@ public:
   }
 
 public:
-  void resetForNewCall() final{ /* no op */ }
+  void reset(){ /* no op */ }
 
   template<typename system_t, typename solver_mixin_t>
-  void updateState(const system_t & system,
-		   state_t & state,
-		   solver_mixin_t & solver)
+  void operator()(const system_t & system,
+		  state_t & state,
+		  solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("armijo update");
 
@@ -107,11 +107,16 @@ public:
     fx_k = std::pow(fx_k, ::pressio::utils::constants<sc_t>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
-    PRESSIOLOG_DEBUG("starting backtracking"); //: alpha = {}", alpha);
+    PRESSIOLOG_DEBUG("starting backtracking");
     sc_t ftrial = {};
     bool done = false;
     while (not done)
     {
+      if (std::abs(alpha) <= 1e-12){
+	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
+	done = true;
+      }
+
       // update : trialState = x_k + alpha*p_k
       ::pressio::ops::update(trialState_, state, one, p_k, alpha);
 
@@ -124,8 +129,6 @@ public:
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;
-
-      //::pressio::utils::io::print_stdout(" f(x_k+alpha*p_k) =", ftrial, "\n");
       PRESSIOLOG_DEBUG("alpha = {:5f}: (f_trial-f) = {:6e}, rhs = {:6e}", alpha, lhs, rhs);
 
       if (lhs <= rhs){
@@ -136,7 +139,7 @@ public:
       // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
       if (std::abs(lhs) <= 1e-14){
-	PRESSIOLOG_DEBUG("change of obj. function too small, terminating");
+	PRESSIOLOG_DEBUG("obj. function change too small, terminating");
 	done = true;
       }
 
