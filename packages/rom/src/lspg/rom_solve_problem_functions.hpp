@@ -62,16 +62,17 @@ namespace pressio{ namespace rom{ namespace lspg{
 /************************************
 	      STEADY
 ***********************************/
-template<typename rom_problem_t, typename rom_state_t, typename solver_t>
+template<typename rom_problem_t, typename rom_state_t, typename solver_t, typename ...Args>
 void solveSteady(rom_problem_t & problem,
 		 rom_state_t & romState,
-		 solver_t & solver)
+		 solver_t & solver,
+		 Args&& ...args)
 {
   static_assert
     (::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
      "rom::lspg::solve() can only be called for a steady problem");
 
-  solver.solve(problem.systemRef(), romState);
+  solver.solve(problem.systemRef(), romState, std::forward<Args>(args)...);
 }
 
 /************************************
