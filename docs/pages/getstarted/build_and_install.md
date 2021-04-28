@@ -102,7 +102,7 @@ the Trilinos example above or always requiring BLAS and LAPACK to be simulateneo
 
 ## In practice, what are the steps to get, install and use Pressio?
 <ol>
-<li>Clone [pressio](https://github.com/Pressio/pressio) (defaults to the master branch),
+<li>Clone [pressio](https://github.com/Pressio/pressio) (defaults to the main branch),
 or you can pick a [release version](https://github.com/Pressio/pressio/releases) </li>
 
 <li>Create a build and install subdirectories
