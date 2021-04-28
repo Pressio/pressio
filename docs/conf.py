@@ -8,7 +8,7 @@ LINKS_NAVBAR1 = [
   ("<a>Get Started</a>", # empty href so that get started only has children
    [
      ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
-     ("<a href=\"md_pages_getstarted_packages.html\">Packages</a>",),
+     ("<a href=\"md_pages_getstarted_packages.html\">Components</a>",),
      ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",)
    ]),
 

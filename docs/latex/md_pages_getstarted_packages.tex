@@ -1,31 +1,29 @@
-The pressio C++ library is divided into several packages\+:
+The pressio C++ library is divided into several components\+:
 
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package ~\newline
- name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Reference header(s)   }\\\cline{1-4}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Reference header(s)   }\\\cline{1-4}
 \endfirsthead
 \hline
 \endfoot
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package ~\newline
- name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Reference header(s)   }\\\cline{1-4}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Link  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Reference header(s)   }\\\cline{1-4}
 \endhead
-mpl  &metaprogramming functionalities  &\href{https://github.com/Pressio/pressio/tree/master/packages/mpl/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+mpl.\+hpp$>$}   \\\cline{1-4}
+mpl  &metaprogramming functionalities  &\href{https://github.com/Pressio/pressio/tree/master/include/mpl/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+mpl.\+hpp$>$}   \\\cline{1-4}
 utils  &common functionalities~\newline
-e.\+g., I/O helpers, static constants, etc  &\href{https://github.com/Pressio/pressio/tree/master/packages/utils/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+utils.\+hpp$>$}   \\\cline{1-4}
-containers  &wrappers for vectors, matrices and multi-\/vectors, expressions (span, diagonal and subspan)  &\href{https://github.com/Pressio/pressio/tree/master/packages/containers/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+containers.\+hpp$>$}   \\\cline{1-4}
-ops  &shared-\/memory and distributed linear algebra  &\href{https://github.com/Pressio/pressio/tree/master/packages/ops/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+ops.\+hpp$>$}   \\\cline{1-4}
-apps  &suites of mini-\/apps used for basic testing  &\href{https://github.com/Pressio/pressio/tree/master/packages/apps/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+apps.\+hpp$>$}   \\\cline{1-4}
-qr  &QR factorization functionalities  &\href{https://github.com/Pressio/pressio/tree/master/packages/qr/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+qr.\+hpp$>$}   \\\cline{1-4}
+e.\+g., I/O helpers, static constants, etc  &\href{https://github.com/Pressio/pressio/tree/master/include/utils/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+utils.\+hpp$>$}   \\\cline{1-4}
+containers  &wrappers for vectors, matrices and multi-\/vectors, and expressions (span, diagonal and subspan)  &\href{https://github.com/Pressio/pressio/tree/master/include/containers/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+containers.\+hpp$>$}   \\\cline{1-4}
+ops  &shared-\/memory and distributed linear algebra  &\href{https://github.com/Pressio/pressio/tree/master/include/ops/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+ops.\+hpp$>$}   \\\cline{1-4}
+apps  &suites of mini-\/apps used for basic testing  &\href{https://github.com/Pressio/pressio/tree/master/include/apps/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+apps.\+hpp$>$}   \\\cline{1-4}
+qr  &QR factorization functionalities  &\href{https://github.com/Pressio/pressio/tree/master/include/qr/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+qr.\+hpp$>$}   \\\cline{1-4}
 solvers  &linear and non-\/linear solvers ~\newline
- (e.\+g., Newton-\/\+Raphson, Gauss-\/\+Newton, Levenberg-\/\+Marquardt)  &\href{https://github.com/Pressio/pressio/tree/master/packages/solvers/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+solvers.\+hpp$>$}   \\\cline{1-4}
+ (e.\+g., Newton-\/\+Raphson, Gauss-\/\+Newton, Levenberg-\/\+Marquardt)  &\href{https://github.com/Pressio/pressio/tree/master/include/solvers/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+solvers.\+hpp$>$}   \\\cline{1-4}
 ode  &explicit only methods ~\newline
 implict only methods ~\newline
  all  &~\newline
 ~\newline
-\href{https://github.com/Pressio/pressio/tree/master/packages/ode/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+ode\+\_\+explicit.\+hpp$>$}~\newline
+\href{https://github.com/Pressio/pressio/tree/master/include/ode/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+ode\+\_\+explicit.\+hpp$>$}~\newline
  {\ttfamily \#include$<$pressio\+\_\+ode\+\_\+implicit.\+hpp$>$} ~\newline
  {\ttfamily \#include$<$pressio\+\_\+ode.\+hpp$>$}   \\\cline{1-4}
 rom  &Galerkin R\+O\+Ms ~\newline
@@ -34,7 +32,7 @@ rom  &Galerkin R\+O\+Ms ~\newline
  all  &~\newline
 ~\newline
 ~\newline
-\href{https://github.com/Pressio/pressio/tree/master/packages/rom/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+rom\+\_\+galerkin.\+hpp$>$} ~\newline
+\href{https://github.com/Pressio/pressio/tree/master/include/rom/src}{\texttt{ Source}}  &{\ttfamily \#include$<$pressio\+\_\+rom\+\_\+galerkin.\+hpp$>$} ~\newline
  {\ttfamily \#include$<$pressio\+\_\+rom\+\_\+lspg.\+hpp$>$} ~\newline
  {\ttfamily \#include$<$pressio\+\_\+rom\+\_\+wls.\+hpp$>$} ~\newline
  {\ttfamily \#include$<$pressio\+\_\+rom.\+hpp$>$}   \\\cline{1-4}
@@ -43,10 +41,10 @@ rom  &Galerkin R\+O\+Ms ~\newline
 
 The top-\/down order used above is informative of the dependency structure. For example, every package depends on {\ttfamily mpl}. The {\ttfamily ops} package depends only on {\ttfamily mpl}, {\ttfamily utils}, {\ttfamily containers}. At the bottom of the stack we have the {\ttfamily rom} package which requires all the others.
 
-Splitting the framework into separate packages has several benefits.
+This structure of the framework has several benefits.
 \begin{DoxyItemize}
-\item Maintability\+: {\ttfamily pressio} can be more easily developed and maintained since packages depend on one another through well-\/defined public interfaces, and appropriate namespaces are used to organize classes.
-\item Selective usability\+: this modular framework allows users, if needed, to leverage invidual packages. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically.
+\item Maintability\+: {\ttfamily pressio} can be more easily developed and maintained since its components depend on one another through well-\/defined public interfaces, and appropriate namespaces are used to organize classes.
+\item Selective usability\+: this modular framework allows users, if needed, to leverage invidual components. For instance, if a user needs/wants just the QR methods, they can simply use that package, and all the dependencies on the others are enabled automatically.
 \end{DoxyItemize}
 
 

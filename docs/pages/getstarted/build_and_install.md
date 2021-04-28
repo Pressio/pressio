@@ -23,9 +23,9 @@ one needs to account for this. See below for the details.
 
 ## Dependencies
 
-Some packages of `pressio` contain code and implementations
+Some parts of `pressio` contain code and implementations
 that are specific to third-party libraries (TPLs).
-For example, the `containers` and `ops` packages of `pressio` contain
+For example, the `containers` and `ops` components of `pressio` contain
 thin wrappers and kernels that are custom-built for target libraries.
 The main reason for doing this is that we aim to alleviate the user from
 writing custom operations and allows `pressio` to decide when and how to leverage
@@ -165,7 +165,7 @@ The procedure above is advised because it enables `pressio`
 to properly process the cmake options and turn on/off based
 on certain conditions (as explained above).
 The alternative way to use pressio would be to just clone the repo,
-point to the `<where-you-cloned-pressio>/packages` subdirectory
+point to the `<where-you-cloned-pressio>/include` subdirectory
 and use cmake variables directly when building your code.
 However, this could have unexpected consequences since
 you would be resposible to set the variables correctly but you would not
