@@ -72,7 +72,7 @@ public:
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };
@@ -97,7 +97,7 @@ public:
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };
@@ -122,7 +122,7 @@ public:
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };

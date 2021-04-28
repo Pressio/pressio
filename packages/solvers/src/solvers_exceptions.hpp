@@ -62,16 +62,15 @@ class nonlinear_solve_failure
 public:
   nonlinear_solve_failure() = default;
 
-  explicit nonlinear_solve_failure(std::string append)
+  explicit nonlinear_solve_failure(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };
-
 
 class residual_evaluation_failure_unrecoverable
   : public std::exception
@@ -82,12 +81,12 @@ class residual_evaluation_failure_unrecoverable
 public:
   residual_evaluation_failure_unrecoverable() = default;
 
-  explicit residual_evaluation_failure_unrecoverable(std::string append)
+  explicit residual_evaluation_failure_unrecoverable(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };
@@ -101,12 +100,12 @@ class residual_has_nans
 public:
   residual_has_nans() = default;
 
-  explicit residual_has_nans(std::string append)
+  explicit residual_has_nans(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }
 
-  const char * what () const throw (){
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
    }
 };

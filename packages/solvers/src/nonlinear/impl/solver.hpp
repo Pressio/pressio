@@ -364,12 +364,12 @@ private:
       }
       catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e)
       {
-	PRESSIOLOG_CRITICAL("nonlinsolver: residual evaluation failure");
+	PRESSIOLOG_CRITICAL(e.what());
 	throw ::pressio::eh::nonlinear_solve_failure();
       }
       catch (::pressio::eh::residual_has_nans const &e)
       {
-	PRESSIOLOG_CRITICAL("nonlinsolver: residual failure due to NaNs");
+	PRESSIOLOG_CRITICAL(e.what());
 	throw ::pressio::eh::nonlinear_solve_failure();
       }
 
