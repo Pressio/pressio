@@ -328,7 +328,6 @@ std::string doRun()
   using fom_state_t     = pressio::containers::Vector<native_state_t>;
   using scalar_t        = typename fom_t::scalar_type;
   using eig_dyn_vec	= Eigen::Matrix<scalar_t, -1, 1>;
-  using eig_dyn_mat	= Eigen::Matrix<scalar_t, -1, -1>;
   using wls_state_t	= pressio::containers::Vector<eig_dyn_vec>;
 
   using decoder_t	= MyCustomDecoder;
