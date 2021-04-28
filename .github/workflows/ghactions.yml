@@ -81,7 +81,7 @@ jobs:
         cd ${{ env.PRESSIO_REPOS }}
         git clone git://github.com/Pressio/pressio-builder.git
         cd pressio-builder
-        git checkout master
+        git checkout main
 
     - name: Get TPLs...
       run: |
