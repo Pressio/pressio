@@ -19,18 +19,6 @@ jobs:
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
             }
 
-          - {
-              name: "ubuntu_20.04_gcc_coverage",
-              build_type: "Debug", cc: "gcc", cxx: "g++",
-              options: "-cmake-generator-name=default_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
-              envscript: "",
-              requirements: "sudo apt install gcovr",
-              ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
-              coverage: true,
-              coverage_filename: "pressio_tests_coverage.xml",
-              coverage_uploadname: "codecoverage-pressio",
-              flag: "pressio-packages"
-            }
 
           - {
               name: "ubuntu_20.04_clang",
@@ -49,6 +37,19 @@ jobs:
               requirements: "sudo apt install -y openmpi-bin libopenmpi-dev;sudo sed -i -e '$alocalhost slots=4' /etc/openmpi/openmpi-default-hostfile",
               ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build
             }
+
+          # - {
+          #     name: "ubuntu_20.04_gcc_coverage",
+          #     build_type: "Debug", cc: "gcc", cxx: "g++",
+          #     options: "-cmake-generator-name=default_with_tests_codecov -eigen-path=/home/runner/work/pressio/pressio_builds/eigen/install -gtest-path=/home/runner/work/pressio/pressio_builds/gtest/install",
+          #     envscript: "",
+          #     requirements: "sudo apt install gcovr",
+          #     ctest_build: /home/runner/work/pressio/pressio_builds/pressio/build,
+          #     coverage: true,
+          #     coverage_filename: "pressio_tests_coverage.xml",
+          #     coverage_uploadname: "codecoverage-pressio",
+          #     flag: "pressio-packages"
+          #   }
 
           # - {
           #     name: "Ubuntu 20.04 MPI - trilinos - coverage",
