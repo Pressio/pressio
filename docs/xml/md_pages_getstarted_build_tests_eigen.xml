@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+  <compounddef id="md_pages_getstarted_build_tests_eigen" kind="page">
+    <compoundname>md_pages_getstarted_build_tests_eigen</compoundname>
+    <title>Build Tests with Eigen only</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title></title><para>This page shows the steps to build the unit and regression tests in <computeroutput>pressio</computeroutput> depending only on Eigen (and GoogleTest). By the end, you should be able to have pressio built with GoogleTest and Eigen enabled, run the test suite inside.</para>
+</simplesect>
+ <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
+<para><simplesect kind="par"><title>Why can this be useful?</title><para>If you just want a quick way to get the code up-and-running and ready to play around with, these steps are what you want. Once you have the build ready, you can easily test/play/explore.</para>
+</simplesect>
+ <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>Disclaimer</title><para>The guide below does <bold>not</bold> assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to you!</para>
+</simplesect>
+</para>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md17">
+<title>Prerequisites</title>
+<para><itemizedlist>
+<listitem><para>C and C++11 compilers: either Clang or GNU</para>
+</listitem><listitem><para>CMake &gt;= 3.11.0</para>
+</listitem><listitem><para>Bash &gt;= 3.2.57</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md18">
+<title>1. Prep</title>
+<para>Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories: <programlisting filename=".bash"><codeline><highlight class="normal">mkdir<sp/>$HOME/pressio_repos</highlight></codeline>
+<codeline><highlight class="normal">mkdir<sp/>$HOME/pressio_builds</highlight></codeline>
+<codeline><highlight class="normal">export<sp/>PRESSIO_REPOS=$HOME/pressio_repos</highlight></codeline>
+<codeline><highlight class="normal">export<sp/>PRESSIO_BUILDS=$HOME/pressio_builds</highlight></codeline>
+</programlisting></para>
+<para>Unless you already have them, set the following compilers environment variable: <programlisting filename=".bash"><codeline><highlight class="normal">export<sp/>CC=&lt;path-to-your-C-compiler&gt;</highlight></codeline>
+<codeline><highlight class="normal">export<sp/>CXX=&lt;path-to-your-CXX-compiler&gt;</highlight></codeline>
+</programlisting></para>
+<para>These are needed because <computeroutput>CC</computeroutput> and <computeroutput>CXX</computeroutput> are used to do all the builds.</para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md19">
+<title>2. Cloning</title>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}</highlight></codeline>
+<codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:Pressio/pressio-builder.git</highlight></codeline>
+<codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:Pressio/pressio.git</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md20">
+<title>3. Install TPLs</title>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}/pressio-builder</highlight></codeline>
+<codeline><highlight class="normal">./main_tpls.sh<sp/>-dryrun=no<sp/>-tpls=eigen,gtest<sp/>-target-dir=${PRESSIO_BUILDS}</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md21">
+<title>4. Build the tests</title>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_REPOS}/pressio-builder</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">./main_pressio.sh<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-dryrun=no<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-pressio-src=${PRESSIO_REPOS}/pressio<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-target-dir=${PRESSIO_BUILDS}<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-gtest-path=${PRESSIO_BUILDS}/gtest/install<sp/>\</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-eigen-path=${PRESSIO_BUILDS}/eigen/install</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>-cmake-generator-name=default_with_tests</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_getstarted_build_tests_eigen_1autotoc_md22">
+<title>5. Running the tests</title>
+<para>To run the tests, you can follow this: <programlisting filename=".bash"><codeline><highlight class="normal">cd<sp/>${PRESSIO_BUILDS}/pressio/build</highlight></codeline>
+<codeline><highlight class="normal">ctest</highlight></codeline>
+</programlisting></para>
+<para>To learn more about ctest, you can do <computeroutput>ctest --help</computeroutput>. </para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+  <compounddef id="md_pages_tutorials" kind="page">
+    <compoundname>md_pages_tutorials</compoundname>
+    <title>Tutorials</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><table rows="7" cols="3"><row>
+<entry thead="yes"><para>Description  </para>
+</entry><entry thead="yes"><para></para>
+</entry><entry thead="yes"><para></para>
+</entry></row>
+<row>
+<entry thead="no"><para>Explicit time stepping (natively supported types)  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_ode_tutorial1.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial2.cc">Source Code</ulink>   </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Explicit time stepping (custom types)  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_ode_tutorial2.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial3.cc">Source Code</ulink>   </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Linear decoder (natively supported types)  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_tutorial1.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial4.cc">Source Code</ulink>   </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Linear decoder (custom types)  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_tutorial1.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio-tutorials/blob/master/tutorials/tutorial5.cc">Source Code</ulink>   </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Default Galerkin explicit time  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_rom_tutorial2.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><mdash/>   </para>
+</entry></row>
+<row>
+<entry thead="no"><para>End-to-end demo for Shallow Water Eq.  </para>
+</entry><entry thead="no"><para><ulink url="https://pressio.github.io/pressio-tutorials/html/md_pages_swe_main.html">Tutorial Link</ulink>  </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio-tutorials/tree/master/tutorials/swe2d">Source Code</ulink>   </para>
+</entry></row>
+</table>
+</para>
+<para>More coming soon! </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
