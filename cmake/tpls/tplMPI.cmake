@@ -1,6 +1,6 @@
 
 if(PRESSIO_ENABLE_TPL_MPI)
-  message("> Enabling MPI since PRESSIO_ENABLE_TPL_MPI=ON")
+  message(">> Enabling MPI since PRESSIO_ENABLE_TPL_MPI=ON")
 endif()
 
 

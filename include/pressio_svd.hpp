@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_apps.hpp
+// pressio_svd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,47 +46,22 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_APPS_HPP_
-#define PRESSIO_APPS_HPP_
+#ifndef PRESSIO_SVD_HPP_
+#define PRESSIO_SVD_HPP_
 
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
 #include "pressio_containers.hpp"
 #include "pressio_ops.hpp"
+#include "pressio_qr.hpp"
 
-// burgers1d eigen
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "apps/src/burgers1d/apps_burgers1d_eigen.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
-#include "apps/src/swe2d/apps_swe2d_eigen.hpp"
-#include "apps/src/swe2d/apps_swe2d_hyper_eigen.hpp"
-#endif
+#include "svd/svd_ConfigDefs.hpp"
+#include "svd/svd_fwd.hpp"
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/src/burgers1d/apps_burgers1d_epetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_tpetra.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_tpetra_block.hpp"
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "apps/src/burgers1d/apps_burgers1d_kokkos.hpp"
-#endif
-
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp"
-#include "apps/src/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp"
-
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/src/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
-
-// steady 2d adv-diff
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
-#include "apps/src/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
+#include "svd/svd_solver_traits.hpp"
+#include "svd/svd_solver_generic_base.hpp"
+#if defined(PRESSIO_ENABLE_TPL_TRILINOS) and defined(PRESSIO_ENABLE_TPL_EIGEN)
+#include "svd/svd_multi_vector_epetra.hpp"
 #endif
 
 #endif

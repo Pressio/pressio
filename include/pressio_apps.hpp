@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_utils.hpp
+// pressio_apps.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,46 +46,47 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_UTILS_HPP_
-#define PRESSIO_UTILS_HPP_
+#ifndef PRESSIO_APPS_HPP_
+#define PRESSIO_APPS_HPP_
 
 #include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_containers.hpp"
+#include "pressio_ops.hpp"
 
-#include "utils/src/utils_crtp_helper.hpp"
-#include "utils/src/utils_static_constants.hpp"
-#include "utils/src/utils_empty.hpp"
-#include "utils/src/utils_make_unique.hpp"
-#include "utils/src/utils_instance_or_reference_wrapper.hpp"
-#include "utils/src/utils_read_ascii_matrix_std_vec_vec.hpp"
-#include "utils/src/utils_set_stream_precision.hpp"
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-#include "utils/src/utils_teuchos_performance_monitor.hpp"
+// burgers1d eigen
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+#include "apps/burgers1d/apps_burgers1d_eigen.hpp"
+#include "apps/burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
+#include "apps/swe2d/apps_swe2d_eigen.hpp"
+#include "apps/swe2d/apps_swe2d_hyper_eigen.hpp"
 #endif
 
-#include "utils/src/io/utils_colorize_print.hpp"
-#include "utils/src/io/utils_print_helper.hpp"
-
-/* headers needed for logging */
-
-// fmt is needed
-#include "utils/src/logger/fmt/fmt.hpp"
-
-#define PRESSIO_LOG_LEVEL_TRACE		0
-#define PRESSIO_LOG_LEVEL_DEBUG		1
-#define PRESSIO_LOG_LEVEL_INFO		2
-#define PRESSIO_LOG_LEVEL_WARN		3
-#define PRESSIO_LOG_LEVEL_ERROR		4
-#define PRESSIO_LOG_LEVEL_CRITICAL	5
-#define PRESSIO_LOG_LEVEL_OFF		6
-
-#if defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
-#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_TRACE
-#elif !defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
-#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "apps/burgers1d/apps_burgers1d_epetra.hpp"
+#include "apps/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
+#include "apps/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
+#include "apps/burgers1d/apps_burgers1d_tpetra.hpp"
+#include "apps/burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 
-#include "utils/src/logger/utils_logger_enums.hpp"
-#include "utils/src/logger/utils_logger.hpp"
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "apps/burgers1d/apps_burgers1d_kokkos.hpp"
+#endif
+
+#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
+#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
+#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
+#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp"
+#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp"
+
+#include "apps/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
+#include "apps/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+
+// steady 2d adv-diff
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "apps/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
+#include "apps/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
+#endif
 
 #endif

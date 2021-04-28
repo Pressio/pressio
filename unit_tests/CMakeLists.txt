@@ -1,10 +1,12 @@
 
 # set where all the mains for google tests are
 set(GTESTMAINSDIR "${CMAKE_CURRENT_SOURCE_DIR}/gtest_mains")
-message("Google tests main files are in: " ${GTESTMAINSDIR})
+message(">> Google tests main files are in: " ${GTESTMAINSDIR})
 
-# include the package directory where we have all the global headers
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../packages)
+include_directories(
+  ${CMAKE_BINARY_DIR} # needed for the pressio_cmake_config.h
+  ${CMAKE_SOURCE_DIR}/include # include all the global headers
+  )
 
 # we need Gtest for unit tests
 find_package(GTest REQUIRED)

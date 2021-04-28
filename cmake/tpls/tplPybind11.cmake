@@ -1,7 +1,7 @@
 
 
 if(PRESSIO_ENABLE_TPL_Pybind11)
-  message("> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
+  message(">> Enabling Pybind11 since PRESSIO_ENABLE_TPL_PYBIND11=ON")
 endif()
 
 function(pybind11_fatal)

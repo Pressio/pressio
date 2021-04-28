@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom_lspg.hpp
+// pressio_rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,11 +46,11 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_LSPG_INCLUDE_HPP_
-#define PRESSIO_ROM_LSPG_INCLUDE_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_HPP_
+#define PRESSIO_ROM_GALERKIN_HPP_
 
 /*
-   this header includes everything needed for LSPG.
+   this header includes everything needed for GALERKIN.
    NOTE that the order below matters!
    - Includes are ordered properly to avoid a tangled system.
    - don't rely on files inside impl, these might change
@@ -65,42 +65,51 @@
 #include "pressio_svd.hpp"
 #include "pressio_optimizers.hpp"
 #include "pressio_solvers.hpp"
-#include "pressio_ode_implicit.hpp"
+#include "pressio_ode.hpp"
 
 // common classes for rom
-#include "rom/src/pressio_rom_common.hpp"
+#include "rom/pressio_rom_common.hpp"
 
 // constraints
-#include "rom/src/lspg/constraints/rom_fom_state.hpp"
-#include "rom/src/lspg/constraints/rom_fom_velocity.hpp"
-#include "rom/src/lspg/constraints/rom_lspg_jacobian.hpp"
-#include "rom/src/lspg/constraints/rom_lspg_residual.hpp"
-#include "rom/src/lspg/constraints/rom_lspg_state.hpp"
-#include "rom/src/lspg/constraints/rom_steady_preconditioner.hpp"
-#include "rom/src/lspg/constraints/rom_unsteady_preconditioner.hpp"
-#include "rom/src/lspg/constraints/rom_steady_masker.hpp"
-#include "rom/src/lspg/constraints/rom_unsteady_masker.hpp"
-#include "rom/src/lspg/constraints/rom_custom_ops_continuous_time.hpp"
-#include "rom/src/lspg/constraints/rom_custom_ops_discrete_time.hpp"
+#include "rom/galerkin/constraints/rom_fom_state.hpp"
+#include "rom/galerkin/constraints/rom_fom_velocity.hpp"
 
-// decorators
-#include "rom/src/lspg/decorators/rom_preconditioned.hpp"
-#include "rom/src/lspg/decorators/rom_masked.hpp"
+#include "rom/galerkin/constraints/rom_galerkin_explicit_state.hpp"
+#include "rom/galerkin/constraints/rom_galerkin_implicit_state.hpp"
+#include "rom/galerkin/constraints/rom_galerkin_velocity.hpp"
+#include "rom/galerkin/constraints/rom_galerkin_residual.hpp"
+#include "rom/galerkin/constraints/rom_galerkin_jacobian.hpp"
 
-// lspg classes
-#include "rom/src/impl/rom_auxiliary_stepper_type_helper.hpp"
-#include "rom/src/impl/rom_problem_members_mixins.hpp"
-#include "rom/src/lspg/impl/rom_problem_members.hpp"
-#include "rom/src/lspg/impl/steady/rom_compose_steady_lspg_impl.hpp"
-#include "rom/src/lspg/impl/unsteady/rom_compose_unsteady_lspg_impl.hpp"
-#include "rom/src/lspg/impl/rom_compose_problem.hpp"
+#include "rom/galerkin/constraints/rom_custom_ops_continuous_time.hpp"
+#include "rom/galerkin/constraints/rom_masker_explicit.hpp"
+#include "rom/galerkin/constraints/rom_masker_implicit.hpp"
+#include "rom/galerkin/constraints/rom_projector_explicit.hpp"
+#include "rom/galerkin/constraints/rom_projector_implicit.hpp"
 
-#include "rom/src/lspg/rom_create_default_lspg_problem.hpp"
-#include "rom/src/lspg/rom_create_preconditioned_default_lspg_problem.hpp"
-#include "rom/src/lspg/rom_create_masked_lspg_problem.hpp"
-#include "rom/src/lspg/rom_create_hyper_reduced_lspg_problem.hpp"
-#include "rom/src/lspg/rom_create_preconditioned_hyper_reduced_lspg_problem.hpp"
-#include "rom/src/lspg/rom_create_solver_functions.hpp"
-#include "rom/src/lspg/rom_solve_problem_functions.hpp"
+// projectors
+#include "rom/galerkin/impl/projectors/galerkin_arbitrary_projector.hpp"
+#include "rom/galerkin/impl/projectors/galerkin_default_projector_ortho_decoder_jacobian.hpp"
+
+// galerkin classes
+#include "rom/impl/rom_auxiliary_stepper_type_helper.hpp"
+#include "rom/impl/rom_problem_members_mixins.hpp"
+#include "rom/galerkin/impl/rom_problem_members.hpp"
+
+#include "rom/galerkin/impl/decorators/rom_masked.hpp"
+#include "rom/galerkin/impl/decorators/rom_projected.hpp"
+#include "rom/galerkin/impl/policies/rom_galerkin_residual_policy.hpp"
+#include "rom/galerkin/impl/policies/rom_galerkin_jacobian_policy.hpp"
+
+#include "rom/galerkin/impl/continuous_time_api/rom_compose_impl.hpp"
+#include "rom/galerkin/impl/discrete_time_api/rom_compose_impl.hpp"
+
+#include "rom/galerkin/rom_create_default_galerkin_problem.hpp"
+#include "rom/galerkin/rom_create_masked_galerkin_problem.hpp"
+#include "rom/galerkin/rom_create_hyperreduced_galerkin_problem.hpp"
+
+#include "rom/galerkin/rom_create_solver_functions.hpp"
+#include "rom/galerkin/rom_solve_problem_functions.hpp"
+#include "rom/galerkin/rom_create_collocation_projector.hpp"
+#include "rom/galerkin/rom_create_arbitrary_projector.hpp"
 
 #endif

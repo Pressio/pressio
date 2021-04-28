@@ -1,6 +1,6 @@
 
 if(PRESSIO_ENABLE_TPL_BLAS)
-  message("> Enabling BLAS since PRESSIO_ENABLE_TPL_BLAS=ON ==> enabling also LAPACK")
+  message(">> Enabling BLAS since PRESSIO_ENABLE_TPL_BLAS=ON ==> enabling also LAPACK")
   set(PRESSIO_ENABLE_TPL_LAPACK ON)
 endif()
 

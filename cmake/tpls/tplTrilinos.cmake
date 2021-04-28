@@ -2,7 +2,7 @@
 
 # if trilinos is on, then also set MPI, BLAS, LAPACK and KOKKOS ON
 if(PRESSIO_ENABLE_TPL_TRILINOS)
-  message("> PRESSIO_ENABLE_TPL_TRILINOS=ON ==> enabling also BLAS, LAPACK, MPI, KOKKOS")
+  message(">> PRESSIO_ENABLE_TPL_TRILINOS=ON ==> enabling also BLAS, LAPACK, MPI, KOKKOS")
 
   set(PRESSIO_ENABLE_TPL_KOKKOS ON)
   set(PRESSIO_ENABLE_TPL_MPI ON)

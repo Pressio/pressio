@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom_wls.hpp
+// pressio_ode_explicit.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,14 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_WLS_HPP_
-#define PRESSIO_ROM_WLS_HPP_
+#ifndef PRESSIO_ODE_EXPLICIT_HPP_
+#define PRESSIO_ODE_EXPLICIT_HPP_
 
 /*
-   this header includes everything needed for WLS.
+   include everything needed for ODE explicit integration
    NOTE that the order below matters!
-   Includes are ordered in a logical way and this
-   allows us to avoid ending up with a tangled system.
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
 */
 
 // need all of the dependent packages
@@ -63,28 +63,21 @@
 #include "pressio_ops.hpp"
 #include "pressio_qr.hpp"
 #include "pressio_svd.hpp"
-#include "pressio_optimizers.hpp"
 #include "pressio_solvers.hpp"
-#include "pressio_ode.hpp"
 
-// common classes for rom
-#include "rom/src/pressio_rom_common.hpp"
+// common things
+#include "ode/pressio_ode_common.hpp"
 
-// wls classes
-#include "rom/src/utils/rom_utils_set_gen_coordinates.hpp"
-#include "rom/src/wls/rom_wls_types.hpp"
-#include "rom/src/wls/rom_wls_jacobian_updating_tag.hpp"
-#include "rom/src/wls/rom_wls_jacobians_container.hpp"
-#include "rom/src/wls/rom_wls_preconditioners.hpp"
-
-#include "rom/src/wls/predicates/rom_wls_is_legitimate_preconditioner_type.hpp"
-#include "rom/src/wls/predicates/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
-#include "rom/src/wls/time_schemes/rom_wls_implicit_euler.hpp"
-#include "rom/src/wls/time_schemes/rom_wls_bdf2.hpp"
-#include "rom/src/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
-
-#include "rom/src/wls/rom_wls_hessian_gradient_system_api.hpp"
-#include "rom/src/wls/rom_wls_hessian_and_gradient_sequential_policy.hpp"
-#include "rom/src/wls/rom_wls_solve_windows.hpp"
+// specific to explicit
+#include "ode/explicit/constraints/ode_explicit_state.hpp"
+#include "ode/explicit/constraints/ode_explicit_velocity.hpp"
+#include "ode/explicit/constraints/ode_explicit_velocity_policy.hpp"
+#include "ode/explicit/constraints/ode_explicitly_steppable.hpp"
+#include "ode/explicit/constraints/ode_user_defined_ops_for_explicit_euler.hpp"
+#include "ode/explicit/constraints/ode_user_defined_ops_for_explicit_rk4.hpp"
+#include "ode/explicit/constraints/ode_user_defined_ops_for_explicit_ab2.hpp"
+#include "ode/explicit/ode_explicit_velocity_standard_policy.hpp"
+#include "ode/explicit/ode_explicit_stepper.hpp"
+#include "ode/integrators/ode_advance_n_steps_explicit.hpp"
 
 #endif

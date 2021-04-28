@@ -63,39 +63,39 @@
 */
 
 //----------------------------------------------
-#include "ode/src/ode_types.hpp"
-#include "ode/src/ode_stencil_tags.hpp"
-#include "ode/src/ode_exceptions.hpp"
-#include "ode/src/ode_stepper_tags.hpp"
-#include "ode/src/ode_required_number_of_states.hpp"
+#include "ode_types.hpp"
+#include "ode_stencil_tags.hpp"
+#include "ode_exceptions.hpp"
+#include "ode_stepper_tags.hpp"
+#include "ode_required_number_of_states.hpp"
 
 //----------------------------------------------
 // predicates
-#include "ode/src/predicates/typedefs/ode_has_state_typedef.hpp"
-#include "ode/src/predicates/typedefs/ode_has_velocity_typedef.hpp"
-#include "ode/src/predicates/typedefs/ode_has_residual_typedef.hpp"
-#include "ode/src/predicates/typedefs/ode_has_jacobian_typedef.hpp"
-#include "ode/src/predicates/typedefs/ode_has_discrete_time_residual_typedef.hpp"
-#include "ode/src/predicates/typedefs/ode_has_discrete_time_jacobian_typedef.hpp"
+#include "predicates/typedefs/ode_has_state_typedef.hpp"
+#include "predicates/typedefs/ode_has_velocity_typedef.hpp"
+#include "predicates/typedefs/ode_has_residual_typedef.hpp"
+#include "predicates/typedefs/ode_has_jacobian_typedef.hpp"
+#include "predicates/typedefs/ode_has_discrete_time_residual_typedef.hpp"
+#include "predicates/typedefs/ode_has_discrete_time_jacobian_typedef.hpp"
 
-#include "ode/src/predicates/velocity_methods/ode_has_const_create_velocity_method_return_result.hpp"
-#include "ode/src/predicates/velocity_methods/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
-#include "ode/src/predicates/ode_is_stepper_total_n_states_setter.hpp"
-#include "ode/src/predicates/ode_is_stepper_order_setter.hpp"
-#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
-#include "ode/src/predicates/discrete_time_residual_methods/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_states_return_void.hpp"
-#include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_create_discrete_time_jacobian_method_return_result.hpp"
-#include "ode/src/predicates/discrete_time_jacobian_methods/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
-#include "ode/src/predicates/jacobian_methods/ode_has_const_create_jacobian_method_return_result.hpp"
-#include "ode/src/predicates/jacobian_methods/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
+#include "predicates/velocity_methods/ode_has_const_create_velocity_method_return_result.hpp"
+#include "predicates/velocity_methods/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
+#include "predicates/ode_is_stepper_total_n_states_setter.hpp"
+#include "predicates/ode_is_stepper_order_setter.hpp"
+#include "predicates/discrete_time_residual_methods/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
+#include "predicates/discrete_time_residual_methods/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_states_return_void.hpp"
+#include "predicates/discrete_time_jacobian_methods/ode_has_const_create_discrete_time_jacobian_method_return_result.hpp"
+#include "predicates/discrete_time_jacobian_methods/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
+#include "predicates/jacobian_methods/ode_has_const_create_jacobian_method_return_result.hpp"
+#include "predicates/jacobian_methods/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
 
 //----------------------------------------------
 // common constraints (depend on predicates)
-#include "ode/src/constraints/ode_collector.hpp"
-#include "ode/src/constraints/ode_guesser.hpp"
-#include "ode/src/constraints/ode_time_step_size_manager.hpp"
-#include "ode/src/constraints/system/ode_continuous_time_system_with_at_least_velocity.hpp"
-#include "ode/src/constraints/system/ode_continuous_time_system_with_user_provided_jacobian.hpp"
-#include "ode/src/constraints/system/ode_discrete_time_system_with_user_provided_jacobian.hpp"
+#include "constraints/ode_collector.hpp"
+#include "constraints/ode_guesser.hpp"
+#include "constraints/ode_time_step_size_manager.hpp"
+#include "constraints/system/ode_continuous_time_system_with_at_least_velocity.hpp"
+#include "constraints/system/ode_continuous_time_system_with_user_provided_jacobian.hpp"
+#include "constraints/system/ode_discrete_time_system_with_user_provided_jacobian.hpp"
 
 #endif  // ODE_PRESSIO_ODE_COMMON_HPP_

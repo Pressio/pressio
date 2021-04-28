@@ -64,47 +64,47 @@ headers are included (and classes found) in the proper order.
 #include <pybind11/numpy.h>
 #include <pybind11/functional.h>
 #endif
-#include "containers/src/containers_fwd.hpp"
-#include "containers/src/containers_wrapped_types_enum.hpp"
-#include "containers/src/containers_shared_traits.hpp"
+#include "containers/containers_fwd.hpp"
+#include "containers/containers_wrapped_types_enum.hpp"
+#include "containers/containers_shared_traits.hpp"
 
 // common predicates
-#include "containers/src/predicates/typedefs/containers_has_communicator_typedef.hpp"
-#include "containers/src/predicates/typedefs/containers_has_data_map_typedef.hpp"
-#include "containers/src/predicates/typedefs/containers_has_global_ordinal_typedef.hpp"
-#include "containers/src/predicates/typedefs/containers_has_local_ordinal_typedef.hpp"
-#include "containers/src/predicates/typedefs/containers_has_ordinal_typedef.hpp"
-#include "containers/src/predicates/typedefs/containers_has_scalar_typedef.hpp"
-#include "containers/src/predicates/containers_has_method_size.hpp"
-#include "containers/src/predicates/containers_has_method_extent.hpp"
+#include "containers/predicates/typedefs/containers_has_communicator_typedef.hpp"
+#include "containers/predicates/typedefs/containers_has_data_map_typedef.hpp"
+#include "containers/predicates/typedefs/containers_has_global_ordinal_typedef.hpp"
+#include "containers/predicates/typedefs/containers_has_local_ordinal_typedef.hpp"
+#include "containers/predicates/typedefs/containers_has_ordinal_typedef.hpp"
+#include "containers/predicates/typedefs/containers_has_scalar_typedef.hpp"
+#include "containers/predicates/containers_has_method_size.hpp"
+#include "containers/predicates/containers_has_method_extent.hpp"
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "containers/src/predicates/containers_is_teuchos_rcp.hpp"
+#include "containers/predicates/containers_is_teuchos_rcp.hpp"
 #endif
 
 // include all detection for native types
-#include "containers/src/predicates/native_types_detection/containers_native_all.hpp"
+#include "containers/predicates/native_types_detection/containers_native_all.hpp"
 
 // concrete Vector/Matrix/MV/Tensor classes
-#include "containers/src/vector/pressio_containers_vector_include.hpp"
-#include "containers/src/dense_matrix/pressio_containers_dense_matrix_include.hpp"
-#include "containers/src/sparse_matrix/pressio_containers_sparse_matrix_include.hpp"
-#include "containers/src/multi_vector/pressio_containers_multi_vector_include.hpp"
-#include "containers/src/tensor/pressio_containers_tensor_include.hpp"
+#include "containers/vector/pressio_containers_vector_include.hpp"
+#include "containers/dense_matrix/pressio_containers_dense_matrix_include.hpp"
+#include "containers/sparse_matrix/pressio_containers_sparse_matrix_include.hpp"
+#include "containers/multi_vector/pressio_containers_multi_vector_include.hpp"
+#include "containers/tensor/pressio_containers_tensor_include.hpp"
 
 // expressions
-#include "containers/src/expressions/pressio_containers_expressions_include.hpp"
+#include "containers/expressions/pressio_containers_expressions_include.hpp"
 
 // experimental
-#include "containers/src/experimental/containers_multivector_set.hpp"
+#include "containers/experimental/containers_multivector_set.hpp"
 
 // others
-#include "containers/src/predicates/containers_is_wrapper.hpp"
-#include "containers/src/predicates/containers_not_wrapper.hpp"
-#include "containers/src/predicates/containers_are_wrappers.hpp"
-#include "containers/src/predicates/containers_are_scalar_compatible.hpp"
-#include "containers/src/collection/containers_static_collection.hpp"
+#include "containers/predicates/containers_is_wrapper.hpp"
+#include "containers/predicates/containers_not_wrapper.hpp"
+#include "containers/predicates/containers_are_wrappers.hpp"
+#include "containers/predicates/containers_are_scalar_compatible.hpp"
+#include "containers/collection/containers_static_collection.hpp"
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "containers/src/predicates/containers_have_matching_exe_space.hpp"
+#include "containers/predicates/containers_have_matching_exe_space.hpp"
 #endif
 
 #endif

@@ -1,6 +1,8 @@
 
-# include the package directory where we have all the global headers
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../packages)
+include_directories(
+  ${CMAKE_BINARY_DIR} # needed for the pressio_cmake_config.h
+  ${CMAKE_SOURCE_DIR}/include # include all the global headers
+  )
 
 # load macros that help creating tests
 include(macrosForCreatingTests)

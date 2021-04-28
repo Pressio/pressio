@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_ode_explicit.hpp
+// pressio_ode_implicit.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,11 +46,11 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ODE_EXPLICIT_HPP_
-#define PRESSIO_ODE_EXPLICIT_HPP_
+#ifndef PRESSIO_ODE_IMPLICIT_HPP_
+#define PRESSIO_ODE_IMPLICIT_HPP_
 
 /*
-   include everything needed for ODE explicit integration
+   include everything needed for ODE implicit integration
    NOTE that the order below matters!
    - Includes are ordered properly to avoid a tangled system.
    - don't rely on files inside impl, these might change
@@ -66,18 +66,30 @@
 #include "pressio_solvers.hpp"
 
 // common things
-#include "ode/src/pressio_ode_common.hpp"
+#include "ode/pressio_ode_common.hpp"
 
-// specific to explicit
-#include "ode/src/explicit/constraints/ode_explicit_state.hpp"
-#include "ode/src/explicit/constraints/ode_explicit_velocity.hpp"
-#include "ode/src/explicit/constraints/ode_explicit_velocity_policy.hpp"
-#include "ode/src/explicit/constraints/ode_explicitly_steppable.hpp"
-#include "ode/src/explicit/constraints/ode_user_defined_ops_for_explicit_euler.hpp"
-#include "ode/src/explicit/constraints/ode_user_defined_ops_for_explicit_rk4.hpp"
-#include "ode/src/explicit/constraints/ode_user_defined_ops_for_explicit_ab2.hpp"
-#include "ode/src/explicit/ode_explicit_velocity_standard_policy.hpp"
-#include "ode/src/explicit/ode_explicit_stepper.hpp"
-#include "ode/src/integrators/ode_advance_n_steps_explicit.hpp"
+// specific to implicit
+#include "ode/implicit/ode_implicit_constants.hpp"
+#include "ode/implicit/constraints/ode_implicit_state.hpp"
+#include "ode/implicit/constraints/ode_implicit_residual.hpp"
+#include "ode/implicit/constraints/ode_implicit_jacobian.hpp"
+#include "ode/implicit/constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
+#include "ode/implicit/constraints/ode_user_defined_ops_for_implicit_bdf2.hpp"
+#include "ode/implicit/constraints/ode_user_defined_ops_for_implicit_euler.hpp"
+#include "ode/implicit/constraints/ode_user_defined_ops_for_implicit_ode.hpp"
+#include "ode/implicit/constraints/ode_implicitly_steppable.hpp"
+#include "ode/implicit/constraints/ode_implicitly_steppable_with_guesser.hpp"
+#include "ode/implicit/constraints/ode_auxiliary_stepper_for_bdf2.hpp"
+
+#include "ode/implicit/ode_stencil_states_manager.hpp"
+#include "ode/implicit/ode_stencil_velocities_manager.hpp"
+#include "ode/implicit/constraints/ode_implicit_residual_policy.hpp"
+#include "ode/implicit/constraints/ode_implicit_jacobian_policy.hpp"
+
+#include "ode/implicit/ode_implicit_stepper.hpp"
+
+#include "ode/integrators/ode_advance_n_steps_implicit_arbitrary_step_size.hpp"
+#include "ode/integrators/ode_advance_n_steps_implicit_constant_step_size.hpp"
+#include "ode/integrators/ode_advance_to_target_time_implicit_arbitrary_step_size.hpp"
 
 #endif

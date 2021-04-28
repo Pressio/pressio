@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_rom_galerkin.hpp
+// pressio_rom_wls.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,14 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_ROM_GALERKIN_HPP_
-#define PRESSIO_ROM_GALERKIN_HPP_
+#ifndef PRESSIO_ROM_WLS_HPP_
+#define PRESSIO_ROM_WLS_HPP_
 
 /*
-   this header includes everything needed for GALERKIN.
+   this header includes everything needed for WLS.
    NOTE that the order below matters!
-   - Includes are ordered properly to avoid a tangled system.
-   - don't rely on files inside impl, these might change
+   Includes are ordered in a logical way and this
+   allows us to avoid ending up with a tangled system.
 */
 
 // need all of the dependent packages
@@ -68,48 +68,23 @@
 #include "pressio_ode.hpp"
 
 // common classes for rom
-#include "rom/src/pressio_rom_common.hpp"
+#include "rom/pressio_rom_common.hpp"
 
-// constraints
-#include "rom/src/galerkin/constraints/rom_fom_state.hpp"
-#include "rom/src/galerkin/constraints/rom_fom_velocity.hpp"
+// wls classes
+#include "rom/utils/rom_utils_set_gen_coordinates.hpp"
+#include "rom/wls/rom_wls_types.hpp"
+#include "rom/wls/rom_wls_jacobian_updating_tag.hpp"
+#include "rom/wls/rom_wls_jacobians_container.hpp"
+#include "rom/wls/rom_wls_preconditioners.hpp"
 
-#include "rom/src/galerkin/constraints/rom_galerkin_explicit_state.hpp"
-#include "rom/src/galerkin/constraints/rom_galerkin_implicit_state.hpp"
-#include "rom/src/galerkin/constraints/rom_galerkin_velocity.hpp"
-#include "rom/src/galerkin/constraints/rom_galerkin_residual.hpp"
-#include "rom/src/galerkin/constraints/rom_galerkin_jacobian.hpp"
+#include "rom/wls/predicates/rom_wls_is_legitimate_preconditioner_type.hpp"
+#include "rom/wls/predicates/rom_wls_is_legitimate_jacobian_updating_tag.hpp"
+#include "rom/wls/time_schemes/rom_wls_implicit_euler.hpp"
+#include "rom/wls/time_schemes/rom_wls_bdf2.hpp"
+#include "rom/wls/time_schemes/rom_wls_select_timescheme_helper.hpp"
 
-#include "rom/src/galerkin/constraints/rom_custom_ops_continuous_time.hpp"
-#include "rom/src/galerkin/constraints/rom_masker_explicit.hpp"
-#include "rom/src/galerkin/constraints/rom_masker_implicit.hpp"
-#include "rom/src/galerkin/constraints/rom_projector_explicit.hpp"
-#include "rom/src/galerkin/constraints/rom_projector_implicit.hpp"
-
-// projectors
-#include "rom/src/galerkin/impl/projectors/galerkin_arbitrary_projector.hpp"
-#include "rom/src/galerkin/impl/projectors/galerkin_default_projector_ortho_decoder_jacobian.hpp"
-
-// galerkin classes
-#include "rom/src/impl/rom_auxiliary_stepper_type_helper.hpp"
-#include "rom/src/impl/rom_problem_members_mixins.hpp"
-#include "rom/src/galerkin/impl/rom_problem_members.hpp"
-
-#include "rom/src/galerkin/impl/decorators/rom_masked.hpp"
-#include "rom/src/galerkin/impl/decorators/rom_projected.hpp"
-#include "rom/src/galerkin/impl/policies/rom_galerkin_residual_policy.hpp"
-#include "rom/src/galerkin/impl/policies/rom_galerkin_jacobian_policy.hpp"
-
-#include "rom/src/galerkin/impl/continuous_time_api/rom_compose_impl.hpp"
-#include "rom/src/galerkin/impl/discrete_time_api/rom_compose_impl.hpp"
-
-#include "rom/src/galerkin/rom_create_default_galerkin_problem.hpp"
-#include "rom/src/galerkin/rom_create_masked_galerkin_problem.hpp"
-#include "rom/src/galerkin/rom_create_hyperreduced_galerkin_problem.hpp"
-
-#include "rom/src/galerkin/rom_create_solver_functions.hpp"
-#include "rom/src/galerkin/rom_solve_problem_functions.hpp"
-#include "rom/src/galerkin/rom_create_collocation_projector.hpp"
-#include "rom/src/galerkin/rom_create_arbitrary_projector.hpp"
+#include "rom/wls/rom_wls_hessian_gradient_system_api.hpp"
+#include "rom/wls/rom_wls_hessian_and_gradient_sequential_policy.hpp"
+#include "rom/wls/rom_wls_solve_windows.hpp"
 
 #endif

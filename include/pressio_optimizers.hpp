@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_svd.hpp
+// pressio_optimizers.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,21 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_SVD_HPP_
-#define PRESSIO_SVD_HPP_
+#ifndef PRESSIO_OPTIMIZERS_HPP_
+#define PRESSIO_OPTIMIZERS_HPP_
 
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
 #include "pressio_containers.hpp"
 #include "pressio_ops.hpp"
 #include "pressio_qr.hpp"
+#include "pressio_svd.hpp"
+#include "pressio_solvers.hpp"
 
-#include "svd/src/svd_ConfigDefs.hpp"
-#include "svd/src/svd_fwd.hpp"
-
-#include "svd/src/svd_solver_traits.hpp"
-#include "svd/src/svd_solver_generic_base.hpp"
-#if defined(PRESSIO_ENABLE_TPL_TRILINOS) and defined(PRESSIO_ENABLE_TPL_EIGEN)
-#include "svd/src/svd_multi_vector_epetra.hpp"
+#include "optimizers/optimizers_enums.hpp"
+#include "optimizers/optimizers_params.hpp"
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "optimizers/optimizers_unconstrained.hpp"
 #endif
 
 #endif

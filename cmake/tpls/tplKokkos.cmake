@@ -1,6 +1,6 @@
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
-  message("> Enabling Kokkos since PRESSIO_ENABLE_TPL_KOKKOS=ON")
+  message(">> Enabling Kokkos since PRESSIO_ENABLE_TPL_KOKKOS=ON")
 endif()
 
 

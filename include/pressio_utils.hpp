@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_optimizers.hpp
+// pressio_utils.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,46 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_OPTIMIZERS_HPP_
-#define PRESSIO_OPTIMIZERS_HPP_
+#ifndef PRESSIO_UTILS_HPP_
+#define PRESSIO_UTILS_HPP_
 
 #include "pressio_mpl.hpp"
-#include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
-#include "pressio_ops.hpp"
-#include "pressio_qr.hpp"
-#include "pressio_svd.hpp"
-#include "pressio_solvers.hpp"
 
-#include "optimizers/src/optimizers_enums.hpp"
-#include "optimizers/src/optimizers_params.hpp"
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "optimizers/src/optimizers_unconstrained.hpp"
+#include "utils/utils_crtp_helper.hpp"
+#include "utils/utils_static_constants.hpp"
+#include "utils/utils_empty.hpp"
+#include "utils/utils_make_unique.hpp"
+#include "utils/utils_instance_or_reference_wrapper.hpp"
+#include "utils/utils_read_ascii_matrix_std_vec_vec.hpp"
+#include "utils/utils_set_stream_precision.hpp"
+
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+#include "utils/utils_teuchos_performance_monitor.hpp"
 #endif
+
+#include "utils/io/utils_colorize_print.hpp"
+#include "utils/io/utils_print_helper.hpp"
+
+/* headers needed for logging */
+
+// fmt is needed
+#include "utils/logger/fmt/fmt.hpp"
+
+#define PRESSIO_LOG_LEVEL_TRACE		0
+#define PRESSIO_LOG_LEVEL_DEBUG		1
+#define PRESSIO_LOG_LEVEL_INFO		2
+#define PRESSIO_LOG_LEVEL_WARN		3
+#define PRESSIO_LOG_LEVEL_ERROR		4
+#define PRESSIO_LOG_LEVEL_CRITICAL	5
+#define PRESSIO_LOG_LEVEL_OFF		6
+
+#if defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_TRACE
+#elif !defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+#define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
+#endif
+
+#include "utils/logger/utils_logger_enums.hpp"
+#include "utils/logger/utils_logger.hpp"
 
 #endif

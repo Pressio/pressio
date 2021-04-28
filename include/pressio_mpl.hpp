@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_qr.hpp
+// pressio_mpl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,43 +46,12 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_QR_HPP_
-#define PRESSIO_QR_HPP_
+#ifndef PRESSIO_MPL_HPP_
+#define PRESSIO_MPL_HPP_
 
-#include "pressio_mpl.hpp"
-#include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
-#include "pressio_ops.hpp"
+#include "./mpl/mpl_ConfigDefs.hpp"
 
-#include "qr/src/qr_ConfigDefs.hpp"
-#include "qr/src/qr_fwd.hpp"
-#include "qr/src/qr_algorithms_tags.hpp"
-
-#include "qr/src/qr_meta.hpp"
-
-#include "qr/src/base/qr_in_place_base.hpp"
-#include "qr/src/base/qr_out_of_place_base.hpp"
-#include "qr/src/base/qr_r_factor_base.hpp"
-#include "qr/src/base/qr_solve_base.hpp"
-
-#include "qr/src/qr_traits.hpp"
-
-#include "qr/src/impl/qr_rfactor_solve_impl.hpp"
-#include "qr/src/impl/qr_out_of_place.hpp"
-#include "qr/src/impl/qr_in_place.hpp"
-
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "qr/src/impl/eigen/qr_eigen_dense_out_of_place_impl.hpp"
-#endif
-
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "qr/src/impl/epetra/qr_epetra_multi_vector_tsqr_impl.hpp"
-#include "qr/src/impl/epetra/qr_epetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/src/impl/epetra/qr_epetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#include "qr/src/impl/tpetra/qr_tpetra_multi_vector_tsqr_impl.hpp"
-#include "qr/src/impl/tpetra/qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp"
-#include "qr/src/impl/tpetra/qr_tpetra_mv_householder_using_eigen_impl.hpp"
-#include "qr/src/impl/tpetra/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
-#endif
+#include "./mpl/mpl_non_variadic.hpp"
+#include "./mpl/mpl_variadic.hpp"
 
 #endif

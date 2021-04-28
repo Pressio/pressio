@@ -20,9 +20,7 @@ set(Pressio_VERSION
 math(EXPR PRESSIO_VERSION
   "${Pressio_VERSION_MAJOR} * 10000 + ${Pressio_VERSION_MINOR} * 100 + ${Pressio_VERSION_PATCH}")
 
-message("${Yellow}----------------------------------${ColourReset}")
-message("${Yellow} Pressio version = ${Pressio_VERSION} ${ColourReset}")
-message("${Yellow}----------------------------------${ColourReset}")
+message("${Magenta}>> Pressio version = ${Pressio_VERSION} ${ColourReset}")
 
 #=====================================================================
 # guard against in-source builds
@@ -64,26 +62,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # do processing
 #=====================================================================
 include(GNUInstallDirs)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-add_subdirectory(packages)
 
 message("")
-message("${Magenta}Processing:${ColourReset}")
+message("${Magenta}>> Processing:${ColourReset}")
 
 if( cmake_build_type_tolower STREQUAL "debug")
   set(PRESSIO_DEBUG_BUILD ON)
-  message( "> PRESSIO_DEBUG_BUILD is ON since CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" )
+  message( ">> PRESSIO_DEBUG_BUILD is ON since CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" )
   message("")
 endif()
 
 if( cmake_build_type_tolower STREQUAL "debug" AND NOT PRESSIO_ENABLE_DEBUG_PRINT)
   set(PRESSIO_ENABLE_DEBUG_PRINT ON)
-  message( "> CMAKE_BUILD_TYPE==Debug, setting PRESSIO_ENABLE_DEBUG_PRINT=${PRESSIO_ENABLE_DEBUG_PRINT}" )
+  message( ">> CMAKE_BUILD_TYPE==Debug, setting PRESSIO_ENABLE_DEBUG_PRINT=${PRESSIO_ENABLE_DEBUG_PRINT}" )
   message( "  To disable: reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
   message("")
 endif()
 if(PRESSIO_ENABLE_DEBUG_PRINT)
-  message( "> Enabling debug prints since PRESSIO_ENABLE_DEBUG_PRINT=ON" )
+  message( ">> Enabling debug prints since PRESSIO_ENABLE_DEBUG_PRINT=ON" )
   message( "  To disable: reconfigure with -DPRESSIO_ENABLE_DEBUG_PRINT=OFF" )
   message("")
 endif()
@@ -114,6 +110,73 @@ include(tplKokkos)
 message("")
 
 #=====================================================================
+# configure file with some cmakedefines that are used
+# within the code in preprocessor directives statements
+#=====================================================================
+configure_file(include/pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+)
+
+#=====================================================================
+# install
+#=====================================================================
+set(INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
+
+file(GLOB all_files "${CMAKE_CURRENT_SOURCE_DIR}/include/*")
+foreach(f ${all_files})
+  if(NOT f MATCHES "\\.txt"
+      AND NOT f MATCHES ".DS_Store"
+      AND NOT f MATCHES ".h.in"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/mpl"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/utils"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/containers"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ops"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/apps"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/qr"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/svd"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/optimizers"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/solvers"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ode"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/rom"
+      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/[.].+")
+    list(APPEND files_to_install ${f})
+  endif()
+endforeach(f ${all_files})
+
+install(FILES ${files_to_install} DESTINATION ${INC_INSTALL_DIR})
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/mpl
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/utils
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/containers
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ops
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/apps
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/qr
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/svd
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/optimizers
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/solvers
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ode
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/rom
+  DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+
+#=====================================================================
+# Add uninstall target
+#=====================================================================
+add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pressioUninstall.cmake)
+
+#=====================================================================
 # unit tests are enabled if
 #   (a) PRESSIO_ENABLE_UNIT_TESTS = ON
 #   (b) PRESSIO_ENABLE_TESTS = ON
@@ -131,22 +194,6 @@ if(PRESSIO_ENABLE_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
-
-#=====================================================================
-# configure file with some cmakedefines that are used
-# within the code in preprocessor directives statements
-#=====================================================================
-configure_file(packages/pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
-install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-)
-
-#=====================================================================
-# Add uninstall target
-#=====================================================================
-add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pressioUninstall.cmake)
 
 #=====================================================================
 # log to screen
