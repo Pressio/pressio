@@ -13,7 +13,7 @@ include(colors)
 # versioning
 #=====================================================================
 set(Pressio_VERSION_MAJOR 0)
-set(Pressio_VERSION_MINOR 9)
+set(Pressio_VERSION_MINOR 10)
 set(Pressio_VERSION_PATCH 0)
 set(Pressio_VERSION
   "${Pressio_VERSION_MAJOR}.${Pressio_VERSION_MINOR}.${Pressio_VERSION_PATCH}")
@@ -32,7 +32,6 @@ endif()
 
 #=====================================================================
 # check build type
-
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif()
