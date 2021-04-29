@@ -62,6 +62,8 @@ namespace pressio{ namespace rom{ namespace lspg{
 /************************************
 	      STEADY
 ***********************************/
+// For pressio4py, I cannot handle the variadic case.
+#if not defined PRESSIO_ENABLE_TPL_PYBIND11
 template<typename rom_problem_t, typename rom_state_t, typename solver_t, typename ...Args>
 void solveSteady(rom_problem_t & problem,
 		 rom_state_t & romState,
@@ -74,6 +76,20 @@ void solveSteady(rom_problem_t & problem,
 
   solver.solve(problem.systemRef(), romState, std::forward<Args>(args)...);
 }
+#else
+template<typename rom_problem_t, typename rom_state_t, typename solver_t>
+void solveSteady(rom_problem_t & problem,
+		 rom_state_t & romState,
+		 solver_t & solver)
+{
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+     "rom::lspg::solve() can only be called for a steady problem");
+
+  solver.solve(problem.systemRef(), romState);
+}
+#endif
+
 
 /************************************
 	      UNSTEADY
@@ -88,10 +104,10 @@ void solveNTimes
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
 
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // For pressio4py, I cannot handle the variadic case so I need to specify
 // the number of arguments and this will work. For now leave to just
 // a specific case, we can add more later.
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // with valid collector
 template<
   class rom_problem_type,

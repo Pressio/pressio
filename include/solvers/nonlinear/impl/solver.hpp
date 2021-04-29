@@ -273,6 +273,7 @@ public:
     this->solveImpl(system, state, *updater_);
   }
 
+#if not defined PRESSIO_ENABLE_TPL_PYBIND11
   template<class system_t, class custom_updater_t>
   void solve(const system_t & system,
 	     state_t & state,
@@ -295,6 +296,7 @@ public:
     updater_->resetFnc_ = resetUpdater<u_t>;
     this->solveImpl(system, state, *updater_);
   }
+#endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   // this overload is needed when calling the solver from Python directly,
@@ -313,9 +315,9 @@ public:
 
     if (recreateUpdater(system)){
       PRESSIOLOG_INFO("nonlinsolver: create updater");
-      updater_ = createUpdater<this_t, system_t>(state, updatingE_);
+      updater_ = createUpdater<this_t, system_t>(stateView, updatingE_);
     }
-    this->solveImpl(system, state, *updater_);
+    this->solveImpl(system, stateView, *updater_);
   }
 #endif
 
