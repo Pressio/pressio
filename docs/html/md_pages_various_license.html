@@ -37,6 +37,8 @@
               <ol>
                 <li><a href="md_pages_coreconcepts_adapter_api.html">Adapter API</a></li>
                 <li><a href="md_pages_coreconcepts_datatypes.html">Data Types</a></li>
+                <li><a href="md_pages_coreconcepts_densenature.html">Dense nature of ROMs</a></li>
+                <li><a href="md_pages_coreconcepts_decoder.html">ROM-to-FOM Decoder</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
@@ -68,50 +70,50 @@
         <h1>
           Licence
         </h1>
-<pre class="m-code"><span class="c1">//@HEADER</span>
-<span class="c1">// ************************************************************************</span>
-<span class="c1">//</span>
-<span class="c1">//                              Pressio</span>
-<span class="c1">// Copyright 2019 National Technology &amp; Engineering Solutions of Sandia,LLC</span>
-<span class="c1">//                              (NTESS)</span>
-<span class="c1">//</span>
-<span class="c1">// Under the terms of Contract DE-NA0003525 with NTESS, the</span>
-<span class="c1">// U.S. Government retains certain rights in this software.</span>
-<span class="c1">//</span>
-<span class="c1">// Pressio is licensed under BSD-3-Clause terms of use:</span>
-<span class="c1">//</span>
-<span class="c1">// Redistribution and use in source and binary forms, with or without</span>
-<span class="c1">// modification, are permitted provided that the following conditions</span>
-<span class="c1">// are met:</span>
-<span class="c1">//</span>
-<span class="c1">// 1. Redistributions of source code must retain the above copyright</span>
-<span class="c1">// notice, this list of conditions and the following disclaimer.</span>
-<span class="c1">//</span>
-<span class="c1">// 2. Redistributions in binary form must reproduce the above copyright</span>
-<span class="c1">// notice, this list of conditions and the following disclaimer in the</span>
-<span class="c1">// documentation and/or other materials provided with the distribution.</span>
-<span class="c1">//</span>
-<span class="c1">// 3. Neither the name of the copyright holder nor the names of its</span>
-<span class="c1">// contributors may be used to endorse or promote products derived</span>
-<span class="c1">// from this software without specific prior written permission.</span>
-<span class="c1">//</span>
-<span class="c1">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</span>
-<span class="c1">// &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</span>
-<span class="c1">// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS</span>
-<span class="c1">// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE</span>
-<span class="c1">// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,</span>
-<span class="c1">// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</span>
-<span class="c1">// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span>
-<span class="c1">// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</span>
-<span class="c1">// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,</span>
-<span class="c1">// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING</span>
-<span class="c1">// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
-<span class="c1">// POSSIBILITY OF SUCH DAMAGE.</span>
-<span class="c1">//</span>
-<span class="c1">// Questions? Contact Francesco Rizzi (fnrizzi@sandia.gov)</span>
-<span class="c1">//</span>
-<span class="c1">// ************************************************************************</span>
-<span class="c1">//@HEADER</span></pre>
+<pre class="m-code">//@HEADER
+// ************************************************************************
+//
+//                              Pressio
+// Copyright <span class="m">2019</span> National Technology <span class="p">&amp;</span> Engineering Solutions of Sandia,LLC
+//                              <span class="o">(</span>NTESS<span class="o">)</span>
+//
+// Under the terms of Contract DE-NA0003525 with NTESS, the
+// U.S. Government retains certain rights in this software.
+//
+// Pressio is licensed under BSD-3-Clause terms of use:
+//
+// Redistribution and use in <span class="nb">source</span> and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//
+// <span class="m">1</span>. Redistributions of <span class="nb">source</span> code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// <span class="m">2</span>. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// <span class="m">3</span>. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived
+// from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// <span class="s2">&quot;AS IS&quot;</span> AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// <span class="o">(</span>INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES<span class="p">;</span> LOSS OF USE, DATA, OR PROFITS<span class="p">;</span> OR BUSINESS INTERRUPTION<span class="o">)</span>
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT <span class="o">(</span>INCLUDING NEGLIGENCE OR OTHERWISE<span class="o">)</span> ARISING
+// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Francesco Rizzi <span class="o">(</span>fnrizzi@sandia.gov<span class="o">)</span>
+//
+// ************************************************************************
+//@HEADER</pre>
       </div>
     </div>
   </div>
@@ -156,7 +158,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

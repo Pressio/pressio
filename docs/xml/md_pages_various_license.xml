@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_various_license" kind="page">
     <compoundname>md_pages_various_license</compoundname>
     <title>Licence</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><programlisting><codeline><highlight class="normal">//@HEADER</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">//@HEADER</highlight></codeline>
 <codeline><highlight class="normal">//<sp/>************************************************************************</highlight></codeline>
 <codeline><highlight class="normal">//</highlight></codeline>
 <codeline><highlight class="normal">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Pressio</highlight></codeline>
@@ -52,5 +52,6 @@
 <codeline><highlight class="normal">//@HEADER</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
+    <location file="pages/various/license.md"/>
   </compounddef>
 </doxygen>

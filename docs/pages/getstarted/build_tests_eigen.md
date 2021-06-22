@@ -42,43 +42,45 @@ As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to
 
 Create (or choose) a directory where you want to clone all repos needed and where to put all builds,
 and to make things easier below, create environment variables to refer to these directories:
-```bash
+
+@code{.bash}
 mkdir $HOME/pressio_repos
 mkdir $HOME/pressio_builds
 export PRESSIO_REPOS=$HOME/pressio_repos
 export PRESSIO_BUILDS=$HOME/pressio_builds
-```
+@endcode
 
 Unless you already have them, set the following compilers environment variable:
-```bash
+
+@code{.bash}
 export CC=<path-to-your-C-compiler>
 export CXX=<path-to-your-CXX-compiler>
-```
+@endcode
+
 These are needed because `CC` and `CXX` are used to do all the builds.
 
 
 ## 2. Cloning
 
-```bash
+@code{.bash}
 cd ${PRESSIO_REPOS}
 git clone git@github.com:Pressio/pressio-builder.git
 git clone git@github.com:Pressio/pressio.git
-```
+@endcode
 
 ## 3. Install TPLs
 
-```bash
+@code{.bash}
 cd ${PRESSIO_REPOS}/pressio-builder
 ./main_tpls.sh -dryrun=no -tpls=eigen,gtest -target-dir=${PRESSIO_BUILDS}
-```
+@endcode
 <!-- To learn more about the script's command line args, type `./main_tpls.sh -h`. -->
 
 
 ## 4. Build the tests
 
-```bash
+@code{.bash}
 cd ${PRESSIO_REPOS}/pressio-builder
-
 ./main_pressio.sh \
 	-dryrun=no \
 	-pressio-src=${PRESSIO_REPOS}/pressio \
@@ -86,14 +88,16 @@ cd ${PRESSIO_REPOS}/pressio-builder
 	-gtest-path=${PRESSIO_BUILDS}/gtest/install \
 	-eigen-path=${PRESSIO_BUILDS}/eigen/install
 	-cmake-generator-name=default_with_tests
-```
+@endcode
 <!-- To learn more about the script's command line args, type `./main_pressio.sh -h`. -->
 
 
 ## 5. Running the tests
 To run the tests, you can follow this:
-```bash
+
+@code{.bash}
 cd ${PRESSIO_BUILDS}/pressio/build
 ctest
-```
+@endcode
+
 To learn more about ctest, you can do `ctest --help`.

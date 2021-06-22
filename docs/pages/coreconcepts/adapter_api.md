@@ -1,8 +1,6 @@
 
 # Adapter API
 
-## What is it? Why we need it?
-
 @m_class{m-block m-info}
 
 @par

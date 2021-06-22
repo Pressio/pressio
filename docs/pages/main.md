@@ -3,8 +3,7 @@
 *Leading-edge projection-based reduced order models (\proms) for
 dynamical systems in science and engineering.*
 
-This is the documentation of the C++ library,
-which is one component of the [Pressio project](https://pressio.github.io/).
+This is the documentation of the [C++ library](https://github.com/Pressio/pressio), which is one component of the [Pressio project](https://pressio.github.io/).
 
 ## In a nutshell
 

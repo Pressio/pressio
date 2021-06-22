@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_getstarted_packages" kind="page">
     <compoundname>md_pages_getstarted_packages</compoundname>
     <title>Components</title>
@@ -8,77 +8,77 @@
     <detaileddescription>
 <para>The pressio C++ library is divided into several components:</para>
 <para><table rows="10" cols="4"><row>
-<entry thead="yes"><para>Name  </para>
-</entry><entry thead="yes"><para>Description  </para>
-</entry><entry thead="yes"><para>Link  </para>
-</entry><entry thead="yes"><para>Reference header(s)   </para>
+<entry thead="yes"><para>Name   </para>
+</entry><entry thead="yes"><para>Description   </para>
+</entry><entry thead="yes"><para>Link   </para>
+</entry><entry thead="yes"><para>Reference header(s)    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>  </para>
-</entry><entry thead="no"><para>metaprogramming functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/mpl/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_mpl.hpp&gt;</computeroutput>   </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">mpl</mcss:span>   </para>
+</entry><entry thead="no"><para>metaprogramming functionalities   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/mpl">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_mpl.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>  </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
 </entry><entry thead="no"><para>common functionalities<linebreak/>
-e.g., I/O helpers, static constants, etc  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/utils/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_utils.hpp&gt;</computeroutput>   </para>
+e.g., I/O helpers, static constants, etc   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/utils">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_utils.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">containers</mcss:span>  </para>
-</entry><entry thead="no"><para>wrappers for vectors, matrices and multi-vectors, and expressions (span, diagonal and subspan)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/containers/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_containers.hpp&gt;</computeroutput>   </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">containers</mcss:span>   </para>
+</entry><entry thead="no"><para>wrappers for vectors, matrices and multi-vectors, and expressions (span, diagonal and subspan)   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/containers">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_containers.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>  </para>
-</entry><entry thead="no"><para>shared-memory and distributed linear algebra  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/ops/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_ops.hpp&gt;</computeroutput>   </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>   </para>
+</entry><entry thead="no"><para>shared-memory and distributed linear algebra   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/ops">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_ops.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">apps</mcss:span>  </para>
-</entry><entry thead="no"><para>suites of mini-apps used for basic testing  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/apps/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_apps.hpp&gt;</computeroutput>   </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">apps</mcss:span>   </para>
+</entry><entry thead="no"><para>suites of mini-apps used for basic testing   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/apps">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_apps.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>  </para>
-</entry><entry thead="no"><para>QR factorization functionalities  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/qr/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_qr.hpp&gt;</computeroutput>   </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">qr</mcss:span>   </para>
+</entry><entry thead="no"><para>QR factorization functionalities   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/qr">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_qr.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers</mcss:span>  </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">solvers</mcss:span>   </para>
 </entry><entry thead="no"><para>linear and non-linear solvers <linebreak/>
- (e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt)  </para>
-</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/master/include/solvers/src">Source</ulink>  </para>
-</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_solvers.hpp&gt;</computeroutput>   </para>
+ (e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt)   </para>
+</entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/solvers">Source</ulink>   </para>
+</entry><entry thead="no"><para><computeroutput>#include&lt;pressio_solvers.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>  </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>   </para>
 </entry><entry thead="no"><para>explicit only methods <linebreak/>
 implict only methods <linebreak/>
- all  </para>
+ all   </para>
 </entry><entry thead="no"><para><linebreak/>
 <linebreak/>
-<ulink url="https://github.com/Pressio/pressio/tree/master/include/ode/src">Source</ulink>  </para>
+<ulink url="https://github.com/Pressio/pressio/tree/main/include/ode">Source</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>#include&lt;pressio_ode_explicit.hpp&gt;</computeroutput><linebreak/>
  <computeroutput>#include&lt;pressio_ode_implicit.hpp&gt;</computeroutput> <linebreak/>
- <computeroutput>#include&lt;pressio_ode.hpp&gt;</computeroutput>   </para>
+ <computeroutput>#include&lt;pressio_ode.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>  </para>
+<entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>   </para>
 </entry><entry thead="no"><para>Galerkin ROMs <linebreak/>
  LSPG ROMs <linebreak/>
  WLS ROMs <linebreak/>
- all  </para>
+ all   </para>
 </entry><entry thead="no"><para><linebreak/>
 <linebreak/>
 <linebreak/>
-<ulink url="https://github.com/Pressio/pressio/tree/master/include/rom/src">Source</ulink>  </para>
+<ulink url="https://github.com/Pressio/pressio/tree/main/include/rom">Source</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>#include&lt;pressio_rom_galerkin.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>#include&lt;pressio_rom_lspg.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>#include&lt;pressio_rom_wls.hpp&gt;</computeroutput> <linebreak/>
@@ -101,5 +101,6 @@ implict only methods <linebreak/>
 </simplesect>
 </para>
     </detaileddescription>
+    <location file="pages/getstarted/packages.md"/>
   </compounddef>
 </doxygen>

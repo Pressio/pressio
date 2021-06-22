@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_custom_ops" kind="page">
     <compoundname>md_pages_custom_ops</compoundname>
     <title>FOM Adapter API</title>
@@ -12,32 +12,33 @@
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: discuss pros and cons of the two APIs</para>
 <para>The following table illustrates what API is supported for each ROM</para>
 <para><table rows="5" cols="3"><row>
-<entry thead="yes"><para>ROM Method  </para>
-</entry><entry thead="yes"><para>Continuous-time API support  </para>
-</entry><entry thead="yes"><para>Discrete-time API support   </para>
+<entry thead="yes"><para>ROM Method   </para>
+</entry><entry thead="yes"><para>Continuous-time API support   </para>
+</entry><entry thead="yes"><para>Discrete-time API support    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>Galerkin (explicit time stepping)  </para>
-</entry><entry thead="no"><para>yes  </para>
-</entry><entry thead="no"><para>no   </para>
-</entry></row>
-<row>
-<entry thead="no"><para>Galerkin (implicit time stepping)  </para>
-</entry><entry thead="no"><para>yes  </para>
+<entry thead="no"><para>Galerkin (explicit time stepping)   </para>
 </entry><entry thead="no"><para>yes   </para>
+</entry><entry thead="no"><para>no    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>LSPG  </para>
-</entry><entry thead="no"><para>yes  </para>
+<entry thead="no"><para>Galerkin (implicit time stepping)   </para>
 </entry><entry thead="no"><para>yes   </para>
+</entry><entry thead="no"><para>yes    </para>
 </entry></row>
 <row>
-<entry thead="no"><para>WLS  </para>
-</entry><entry thead="no"><para>yes  </para>
+<entry thead="no"><para>LSPG   </para>
+</entry><entry thead="no"><para>yes   </para>
+</entry><entry thead="no"><para>yes    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>WLS   </para>
+</entry><entry thead="no"><para>yes   </para>
 </entry><entry thead="no"><para>yes   </para>
 </entry></row>
 </table>
 </para>
     </detaileddescription>
+    <location file="pages/custom_ops.md"/>
   </compounddef>
 </doxygen>

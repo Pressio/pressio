@@ -860,7 +860,7 @@
   <use xlink:href="#glyph7-2" x="261.927" y="115.592"/>
 </g>
 <g clip-path="url(#clip3)" clip-rule="nonzero">
-<path style="fill:none;stroke-width:0.79701;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,0%);stroke-opacity:1;stroke-dasharray:2.98883,2.98883;stroke-miterlimit:10;" d="M -135.179094 43.252156 L -134.929094 -168.091594 M -131.405656 -171.618938 L 108.984969 -171.892375 M 112.5045 -175.415813 L 112.551375 -310.111125 M 116.070906 -313.630656 L 200.957625 -313.630656 M 204.477156 -310.111125 L 204.477156 43.252156 M 200.957625 46.771687 L -131.663469 46.771687 " transform="matrix(1,0,0,-1,163.308,50.092)"/>
+<path style="fill:none;stroke-width:0.79701;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,0%);stroke-opacity:1;stroke-dasharray:2.98883,2.98883;stroke-miterlimit:10;" d="M -135.179094 43.252156 L -134.929094 -164.122844 M -131.405656 -167.646281 L 108.984969 -167.646281 M 112.5045 -171.165813 L 112.551375 -310.111125 M 116.070906 -313.630656 L 200.957625 -313.630656 M 204.477156 -310.111125 L 204.477156 43.252156 M 200.957625 46.771687 L -131.663469 46.771687 " transform="matrix(1,0,0,-1,163.308,50.092)"/>
 </g>
 </g>
 </svg>

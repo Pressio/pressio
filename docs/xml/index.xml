@@ -1,10 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.20" xml:lang="en-US">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
   <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
   </compound>
   <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
   </compound>
   <compound refid="datatypes_8md" kind="file"><name>datatypes.md</name>
+  </compound>
+  <compound refid="decoder_8md" kind="file"><name>decoder.md</name>
+  </compound>
+  <compound refid="densenature_8md" kind="file"><name>densenature.md</name>
   </compound>
   <compound refid="custom__ops_8md" kind="file"><name>custom_ops.md</name>
   </compound>
@@ -47,6 +51,10 @@
   <compound refid="md_pages_coreconcepts_adapting_app" kind="page"><name>md_pages_coreconcepts_adapting_app</name>
   </compound>
   <compound refid="md_pages_coreconcepts_datatypes" kind="page"><name>md_pages_coreconcepts_datatypes</name>
+  </compound>
+  <compound refid="md_pages_coreconcepts_decoder" kind="page"><name>md_pages_coreconcepts_decoder</name>
+  </compound>
+  <compound refid="md_pages_coreconcepts_densenature" kind="page"><name>md_pages_coreconcepts_densenature</name>
   </compound>
   <compound refid="md_pages_custom_ops_default_gal_exp" kind="page"><name>md_pages_custom_ops_default_gal_exp</name>
   </compound>
