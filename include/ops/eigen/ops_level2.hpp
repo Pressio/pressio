@@ -76,8 +76,8 @@ product(::pressio::nontranspose mode,
     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
 
-  assert( y.extent(0) == A.extent(0) );
-  assert( x.extent(0) == A.extent(1) );
+  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
   const auto & AE = *A.data();
   const auto & xE = *x.data();
   auto & yE = *y.data();
@@ -105,8 +105,8 @@ product(::pressio::transpose mode,
     (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
 
-  assert( y.extent(0) == A.extent(1) );
-  assert( x.extent(0) == A.extent(0) );
+  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
 
   auto & yE	  = *y.data();
   const auto & xE = *x.data();

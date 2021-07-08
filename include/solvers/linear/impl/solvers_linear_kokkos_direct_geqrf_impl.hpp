@@ -126,15 +126,12 @@ public:
   >
   solve(const _MatrixT & A, const T& b, T & y)
   {
-    // if (!auxMatInitialized_){
-    //   Kokkos::resize(auxMat_.data(), A.extent(0), A.extent(1));
-    // }
-    // else{
-    if (A.extent(0) != auxMat_.extent(0) or
-	A.extent(1) != auxMat_.extent(1)){
-	Kokkos::resize(*auxMat_.data(), A.extent(0), A.extent(1));
-      }
-    //    }
+    const auto Aext0 = ::pressio::ops::extent(A, 0);
+    const auto Aext1 = ::pressio::ops::extent(A, 1);
+    if (Aext0 != ::pressio::ops::extent(auxMat_, 0) or	
+        Aext1 != ::pressio::ops::extent(auxMat_, 1)){
+    	Kokkos::resize(*auxMat_.data(), Aext0, Aext1);
+    }
 
     ::pressio::ops::deep_copy(auxMat_, A);
     this->solveAllowMatOverwrite(auxMat_, b, y);
@@ -163,16 +160,16 @@ public:
   solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
   {
     // gerts is for square matrices
-    assert(A.extent(0) == A.extent(1));
+    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(A,1));
 
-    assert(A.extent(0) == b.extent(0) );
-    assert(A.extent(1) == y.extent(0) );
+    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(b,0) );
+    assert(::pressio::ops::extent(A,1) == ::pressio::ops::extent(y,0) );
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // just use n, since rows == cols
-    const auto n = A.extent(0);
+    const auto n = ::pressio::ops::extent(A,0);
 
     // to store the return code of the function
     int info = 0;

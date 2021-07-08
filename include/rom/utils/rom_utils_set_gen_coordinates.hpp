@@ -69,7 +69,7 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
   constexpr auto one    = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
 
-  const auto romSize = romState.extent(0);
+  const auto romSize = ::pressio::ops::extent(romState,0);
 
   //compute hessian for phi^T phi
   hessian_t H(romSize,romSize);

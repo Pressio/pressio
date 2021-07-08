@@ -67,8 +67,8 @@ elementwise_multiply
  typename ::pressio::containers::details::traits<T>::scalar_t beta,
  T2 & y)
 {
-  assert(x.extent(0)==z.extent(0));
-  assert(z.extent(0)==y.extent(0));
+  assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
+  assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
   (*y.data()) = beta * (*y.data()) + alpha * x.data()->cwiseProduct(*z.data());
 }
 

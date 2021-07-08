@@ -164,8 +164,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // the sample mesh points
 
   //R = y_n+1 - y_n - dt * R but we need to combine the correct entries
-  assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
   {
     const auto yI = hypIndices(i);
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfdt*R(i);
@@ -201,8 +201,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
-  assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
   {
     const auto yI = hypIndices(i);
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
@@ -242,8 +242,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
-  assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
   {
     const auto yI = hypIndices(i);
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfdt*R(i);
@@ -281,8 +281,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
-  assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
   {
     const auto yI = hypIndices(i);
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
@@ -321,8 +321,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   const auto & f_np1  = fomVelocitiesMngr(::pressio::ode::nPlusOne());
   const auto & f_n    = fomVelocitiesMngr(::pressio::ode::n());
 
-  assert(R.extent(0) == hypIndices.extent(0));
-  for (std::size_t i=0; i<(std::size_t) R.extent(0); ++i)
+  assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
   {
     const auto yI = hypIndices(i);
     R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfnp1Dt*f_np1(i) + cfnDt*f_n(i);

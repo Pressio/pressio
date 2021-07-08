@@ -559,7 +559,7 @@ private:
       // get my global elements
       for (size_t i=0; i<JphiView.getLocalLength(); i++){
         const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
-        for (size_t k=0 ; k < (size_t)Jphi.extent(1); k++){
+        for (size_t k=0 ; k < (size_t) ::pressio::ops::extent(Jphi,1); k++){
           auto Jphid = JphiView.getDataNonConst(k)[i];
           auto phid = phiView.getData(k)[lid];
           Jphid = cfdt*Jphid + phid;
@@ -573,7 +573,7 @@ private:
       constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_; // -1.
       // get my global elements
       for (size_t i=0; i<JphiView.getLocalLength(); i++){
-        for (size_t k=0 ; k < (size_t)Jphi.extent(1); k++){
+        for (size_t k=0 ; k < (size_t) ::pressio::ops::extent(Jphi,1); k++){
           const auto lid = fomStateMap->getLocalElement(gIDJphi[i]);
           auto phid = phiView.getData(k)[lid];
           JphiView.replaceLocalValue(i,k,cn*phid);

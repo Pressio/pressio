@@ -64,7 +64,7 @@ dot(const T0 & vecA,
   static_assert
     (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
      "types are not scalar compatible");
-  assert(vecA.extent(0) == vecB.extent(0));
+  assert(::pressio::ops::extent(vecA, 0) == ::pressio::ops::extent(vecB, 0));
   result = vecA.data()->dot(*vecB.data());
 }
 

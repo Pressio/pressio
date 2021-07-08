@@ -64,7 +64,7 @@ abs(T1 & y, const T2 & x)
      "Types are not scalar compatible");
 
   using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
-  for (ord_t i=0; i< x.extent(0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
     y(i) = std::abs(x(i));
 }
 

@@ -112,18 +112,13 @@ public:
   >
   solve(const _MatrixT & A, const T& b, T & y)
   {
-    // if (!auxMat_){
-    //   auxMat_ = std::unique_ptr<_MatrixT>(new _MatrixT("potrsUppAuxM",
-    // 						       A.extent(0),
-    // 						       A.extent(1)));
-    // }
-    // else{
-      if (A.extent(0) != auxMat_.extent(0) or
-	  A.extent(1) != auxMat_.extent(1))
-	{
-	  Kokkos::resize(*auxMat_.data(), A.extent(0), A.extent(1));
-	}
-      //    }
+    const auto Aext0 = ::pressio::ops::extent(A, 0);
+    const auto Aext1 = ::pressio::ops::extent(A, 1);
+    if (Aext0 != ::pressio::ops::extent(auxMat_, 0) or 
+        Aext1 != ::pressio::ops::extent(auxMat_, 1))
+    {
+      Kokkos::resize(*auxMat_.data(), Aext0, Aext1);
+    }
 
     ::pressio::ops::deep_copy(auxMat_, A);
     this->solveAllowMatOverwrite(auxMat_, b, y);
@@ -149,16 +144,16 @@ public:
   >
   solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
   {
-    assert(A.extent(0) == b.extent(0) );
-    assert(A.extent(1) == y.extent(0) );
+    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(b,0) );
+    assert(::pressio::ops::extent(A,1) == ::pressio::ops::extent(y,0) );
     // potrs is for symmetric pos def
-    assert(A.extent(0) == A.extent(1) );
+    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(A,1) );
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // just use n, since rows == cols
-    const auto n = A.extent(0);
+    const auto n = ::pressio::ops::extent(A,0);
 
     // Cholesky factorization
     int info = 0;
@@ -170,7 +165,7 @@ public:
     Kokkos::deep_copy(*y.data(), *b.data());
 
     lpk_.POTRS(uplo_, n, nRhs, A.data()->data(), n,
-	       y.data()->data(), y.extent(0), &info);
+	       y.data()->data(), ::pressio::ops::extent(y,0), &info);
     assert(info == 0);
   }
 #endif

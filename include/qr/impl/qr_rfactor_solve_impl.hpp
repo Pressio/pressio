@@ -119,7 +119,7 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
   using sc_t	  = typename R_type::element_type::scalarType;
   using tservec_t = Teuchos::SerialDenseVector<ord_t, sc_t>;
 
-  auto vecSize = rhs.extent(0);
+  auto vecSize = ::pressio::ops::extent(rhs,0);
   tservec_t rhsTV(Teuchos::View, const_cast<sc_t*>(rhs.data()->data()), vecSize);
   tservec_t yTV(Teuchos::View, y.data()->data(), vecSize);
 

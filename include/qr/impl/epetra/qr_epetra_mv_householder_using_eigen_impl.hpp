@@ -97,8 +97,8 @@ public:
 
   void computeThinOutOfPlace(const matrix_t & A)
   {
-    auto rows = A.extent(0);
-    auto cols = A.numVectors();
+    auto rows = ::pressio::ops::extent(A,0);
+    auto cols = ::pressio::ops::extent(A,1);
     auto & ArowMap = A.data()->Map();
 
     // convert it to replicated eptra matrix

@@ -73,7 +73,7 @@ struct FomStateReconstructorPressioOps
       decoderObj_(decoder)
   {
     PRESSIOLOG_DEBUG
-      ("cnstr: fomNominalState extent = {}", fomNominalState.extent(0));
+      ("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState,0));
   }
 
   FomStateReconstructorPressioOps(const native_fom_state_t & fomNominalState,
@@ -82,7 +82,7 @@ struct FomStateReconstructorPressioOps
       decoderObj_(decoder)
   {
     PRESSIOLOG_DEBUG
-      ("cnstr: fomNominalState extent = {}", fomNominalState_.extent(0));
+      ("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState_,0));
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11

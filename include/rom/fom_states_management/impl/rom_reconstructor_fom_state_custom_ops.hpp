@@ -72,7 +72,7 @@ struct FomStateReconstructorCustomOps
     : fomNominalState_(fomStateIn), decoderObj_(decoder), udOps_{udOps}
   {
     PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}",
-		     fomStateIn.extent(0));
+		     ::pressio::ops::extent(fomStateIn,0));
   }
 
   template <typename rom_state_t>

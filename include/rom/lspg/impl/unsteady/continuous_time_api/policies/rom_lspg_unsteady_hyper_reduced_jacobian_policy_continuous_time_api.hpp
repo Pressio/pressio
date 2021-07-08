@@ -106,7 +106,7 @@ public:
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
     // is consistent with romJacobian
-    assert(sTosInfo_.get().extent(0) == romJac.extent(0));
+    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romJac, 0));
 
     this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
 				    timeAtNextStep, dt, currentStepNumber);

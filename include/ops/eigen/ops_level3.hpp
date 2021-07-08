@@ -77,9 +77,9 @@ product(::pressio::transpose modeA,
     (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
      "Types are not scalar compatible");
 
-  assert( C.extent(0) == A.extent(1) );
-  assert( C.extent(1) == B.extent(1) );
-  assert( A.extent(0) == B.extent(0) );
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
 
   const auto & AE = *A.data();
   const auto & BE = *B.data();
@@ -110,8 +110,8 @@ product(::pressio::transpose,
   for (std::size_t i=0; i<A.size(); ++i)
   {
     const auto currMatrixEigen = *(A(i).data());
-    assert( C.extent(0) == currMatrixEigen.cols() );
-    assert( B.extent(0) == currMatrixEigen.rows() );
+    assert( ::pressio::ops::extent(C, 0) == currMatrixEigen.cols() );
+    assert( ::pressio::ops::extent(B, 0) == currMatrixEigen.rows() );
     CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen.transpose() * BE.col(i);
   }
 }
@@ -137,9 +137,9 @@ product(::pressio::nontranspose modeA,
     (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
      "Types are not scalar compatible");
 
-  assert( C.extent(0) == A.extent(0) );
-  assert( C.extent(1) == B.extent(1) );
-  assert( A.extent(1) == B.extent(0) );
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
 
   const auto & AE = *A.data();
   const auto & BE = *B.data();
@@ -171,8 +171,8 @@ product(::pressio::nontranspose,
   for (std::size_t i=0; i<A.size(); ++i)
   {
     const auto & currMatrixEigen = *(A(i).data());
-    assert( C.extent(0) == currMatrixEigen.rows() );
-    assert( B.extent(0) == currMatrixEigen.cols() );
+    assert( ::pressio::ops::extent(C, 0) == currMatrixEigen.rows() );
+    assert( ::pressio::ops::extent(B, 0) == currMatrixEigen.cols() );
     CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen * BE.col(i);
   }
 }
@@ -217,7 +217,7 @@ product(::pressio::transpose modeA,
      "Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
-  C_type C(A.extent(1), A.extent(1));
+  C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;
 }
@@ -244,9 +244,9 @@ product(::pressio::nontranspose modeA,
     (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
      "Types are not scalar compatible");
 
-  assert( C.extent(0) == A.extent(0) );
-  assert( C.extent(1) == B.extent(1) );
-  assert( A.extent(1) == B.extent(0) );
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
   const auto & AE = *(A.pressioObj()->data());
   const auto & BE = *B.data();
   auto & CE = *C.data();

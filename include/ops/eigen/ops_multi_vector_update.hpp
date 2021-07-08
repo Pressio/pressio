@@ -62,8 +62,8 @@ template<typename T, typename scalar_t>
 update(T & mv, const scalar_t &a,
        const T & mv1, const scalar_t &b)
 {
-  assert( mv.extent(0) == mv1.extent(0) );
-  assert( mv.extent(1) == mv1.extent(1) );
+  assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
+  assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
   *mv.data() = a * (*mv.data()) + b * (*mv1.data());
 }
 
@@ -73,8 +73,8 @@ template<typename T, typename scalar_t>
 >
 update(T & mv, const T & mv1, const scalar_t & b)
 {
-  assert( mv.extent(0) == mv1.extent(0) );
-  assert( mv.extent(1) == mv1.extent(1) );
+  assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
+  assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
   *mv.data() = b * (*mv1.data());
 }
 

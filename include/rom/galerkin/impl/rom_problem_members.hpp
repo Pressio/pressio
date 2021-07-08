@@ -116,8 +116,8 @@ struct ImplicitPoliciesMixin<T, true, false, false, r_pol_t, j_pol_t> : T
 			const T4 & fomNominalStateNative,
 			Args && ... args)
     : T(romStateIn, fomObj, decoder, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_, decoder)
   {}
 };
 
@@ -143,8 +143,8 @@ struct ImplicitPoliciesMixin<T, false, true, false, r_pol_t, j_pol_t> : T
 			const T5 & projector,
 			Args && ... args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_, decoder)
   {}
 };
 
@@ -182,11 +182,11 @@ struct ImplicitPoliciesMixin<T, false, false, true, masker_t, r_pol_t, j_pol_t> 
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      residualPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
 #else
-      residualPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_, decoder)
 #endif
   {}
 };
@@ -231,7 +231,7 @@ struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
     >
   ExplicitPoliciesMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
   {}
 
   template<
@@ -240,7 +240,7 @@ struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
     >
   ExplicitPoliciesMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), romStateIn.extent(1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 T::projector_, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
@@ -269,7 +269,7 @@ struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
 			const T5 & projector,
 			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), projector, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_)
   {}
 
   template<
@@ -283,7 +283,7 @@ struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
 			const T5 & projector,
 			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(romStateIn.extent(0), romStateIn.extent(1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, T::fomCRef(), T::fomStatesMngr_)
   {}
 };
@@ -324,9 +324,9 @@ struct ExplicitPoliciesMixin<T, false, false, true, masker_t, rhs_pol_t> : T
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      rhsPolicy_(romStateIn.extent(0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
 #else
-      rhsPolicy_(romStateIn.extent(0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
 #endif
   {
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
@@ -350,10 +350,10 @@ struct ExplicitPoliciesMixin<T, false, false, true, masker_t, rhs_pol_t> : T
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      rhsPolicy_(romStateIn.extent(0), romStateIn.extent(1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, masker_, T::fomCRef(), T::fomStatesMngr_)
 #else
-      rhsPolicy_(romStateIn.extent(0), romStateIn.extent(1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, masker, T::fomCRef(), T::fomStatesMngr_)
 #endif
   {

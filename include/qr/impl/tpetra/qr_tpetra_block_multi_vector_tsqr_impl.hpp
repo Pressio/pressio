@@ -78,7 +78,7 @@ public:
   {
     auto & A = const_cast<matrix_t &>(Ain);
 
-    auto nVecs	   = A.numVectors();
+    auto nVecs	   = ::pressio::ops::extent(A,1);
     auto blockSize = A.data()->getBlockSize();
     createLocalRIfNeeded(nVecs);
 

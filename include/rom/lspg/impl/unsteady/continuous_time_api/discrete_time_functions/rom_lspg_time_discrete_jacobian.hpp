@@ -110,8 +110,8 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 {
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
-  const auto nRows = jphi.extent(0);
-  const auto nCols = jphi.extent(1);
+  const auto nRows = ::pressio::ops::extent(jphi, 0);
+  const auto nCols = ::pressio::ops::extent(jphi, 1);
   for (std::size_t j=0; j<(std::size_t)nCols; ++j){
     for (std::size_t i=0; i<(std::size_t)nRows; ++i){
       jphi(i,j) = phi(i,j) + prefactor*jphi(i,j);
@@ -137,11 +137,11 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
-  assert(jphi.extent(0) == hypIndices.extent(0));
+  assert(::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(hypIndices, 0));
 
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
-  const auto nRows = jphi.extent(0);
-  const auto nCols = jphi.extent(1);
+  const auto nRows = ::pressio::ops::extent(jphi, 0);
+  const auto nCols = ::pressio::ops::extent(jphi, 1);
   for (std::size_t j=0; j<(std::size_t)nCols; ++j)
   {
     for (std::size_t i=0; i<(std::size_t)nRows; ++i)
@@ -174,11 +174,11 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
-  assert(jphi.extent(0) == hypIndices.extent(0));
+  assert(::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(hypIndices, 0));
 
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
-  const auto nRows = jphi.extent(0);
-  const auto nCols = jphi.extent(1);
+  const auto nRows = ::pressio::ops::extent(jphi, 0);
+  const auto nCols = ::pressio::ops::extent(jphi, 1);
   for (std::size_t i=0; i<(std::size_t)nRows; ++i)
   {
     const auto rowInd = hypIndices(i);
@@ -209,8 +209,8 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const decoder_jac_type & phi)
 {
 
-  assert( jphi.numVectors() == phi.numVectors() );
-  assert( jphi.extent(0) == phi.extent(0) );
+  assert( ::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1) );
+  assert( ::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0) );
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -237,8 +237,8 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const decoder_jac_type & phi)
 {
 
-  assert( jphi.numVectors() == phi.numVectors() );
-  assert( jphi.extent(0) == phi.extent(0) );
+  assert( ::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1) );
+  assert( ::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0) );
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -320,7 +320,7 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.LID(gIDjphi[i]);
-    for (auto j=0; j<jphi.numVectors(); j++)
+    for (auto j=0; j<::pressio::ops::extent(jphi, 1); j++)
       jphi(i,j) = phi(lid,j) + prefactor*dt*jphi(i,j);
   }
 }

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,30 @@
 //@HEADER
 */
 
-#ifndef OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
-#define OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_OPS_EXTENT_HPP_
+#define OPS_OPS_EXTENT_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
-  typename vec_type::traits::scalar_t
+template<class T, class index_t>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_wrapper<T>::value,
+  decltype(std::declval<const T>().extent(0))
   >
-norm1(const vec_type & a)
+extent(const T & objectIn, const index_t i)
 {
-  using ordinal_t = typename vec_type::traits::ordinal_t;
-  using sc_t = typename vec_type::traits::scalar_t;
-  sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++)
-    result += std::abs(a(i));
-  return result;
+  return objectIn.extent(i);
 }
 
-
-template <typename vec_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
-  typename vec_type::traits::scalar_t
+template<class T, class index_t>
+mpl::enable_if_t<
+  ::pressio::containers::predicates::is_expression<T>::value,
+  decltype(std::declval<const T>().extent(0))
   >
-norm2(const vec_type & a)
+extent(const T & objectIn, const index_t i)
 {
-  using ordinal_t = typename vec_type::traits::ordinal_t;
-  using sc_t = typename vec_type::traits::scalar_t;
-  sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++)
-    result += a(i)*a(i);
-  return std::sqrt(result);
+  return objectIn.extent(i);
 }
 
-}}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_NORMS_VECTOR_HPP_
+}}
+#endif

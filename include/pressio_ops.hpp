@@ -78,6 +78,7 @@
 #include "ops/constraints/ops_sharedmem_host_subscriptable_rank1_container.hpp"
 #include "ops/constraints/ops_sharedmem_host_subscriptable_rank2_container.hpp"
 
+#include "ops/ops_extent.hpp"
 #include "ops/ops_matching_extents_impl.hpp"
 
 // Eigen

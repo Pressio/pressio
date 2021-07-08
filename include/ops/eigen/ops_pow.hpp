@@ -60,7 +60,7 @@ pow(T & x,
     const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (ord_t i=0; i<x.extent(0); ++i)
+  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i)
     x(i) = std::pow(x(i), exponent);
 }
 
@@ -79,8 +79,8 @@ pow(T1 & y,
      "not scalar compatible");
   using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
 
-  assert(x.extent(0) == y.extent(0));
-  for (ord_t i=0; i<x.extent(0); ++i)
+  assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
+  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i)
     y(i) = std::pow(x(i), exponent);
 }
 
@@ -100,12 +100,12 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
 
-  assert(x.extent(0) == y.extent(0));
+  assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
   if (exponent < ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent > 0");
 
-  for (ord_t i=0; i< x.extent(0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
     y(i) = std::pow(std::abs(x(i)), exponent);
 }
 
@@ -126,13 +126,13 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
 
-  assert(x.extent(0) == y.extent(0));
+  assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
   if (exponent > ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent < 0");
 
   constexpr auto one = ::pressio::utils::constants<sc_t>::one();
-  for (ord_t i=0; i< x.extent(0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
     y(i) = one/std::max(eps, std::pow(std::abs(x(i)), -exponent));
 }
 

@@ -100,7 +100,7 @@ public:
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
     // is of the same extent as the romR
-    assert(sTosInfo_.get().extent(0) == romR.extent(0));
+    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR,0));
 
     this->compute_impl<stepper_tag>(romState, romR, stencilStates,
 				    fomSystemObj, timeAtNextStep, dt, currentStepNumber);
@@ -127,7 +127,7 @@ public:
 	  residual_type & romR) const
   {
 
-    assert(sTosInfo_.get().extent(0) == romR.extent(0));
+    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR,0));
 
     this->compute_cn_impl<stepper_tag>
       (romState, romR, stencilStates, fomSystemObj,

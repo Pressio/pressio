@@ -70,7 +70,7 @@ public:
 
   void computeThinOutOfPlace(const matrix_t & A)
   {
-    auto nVecs = A.numVectors();
+    auto nVecs = ::pressio::ops::extent(A,1);
     auto & ArowMap = A.data()->Map();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);

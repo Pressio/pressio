@@ -99,8 +99,8 @@ public:
   {
     auto & A = const_cast<matrix_t &>(Ain);
 
-    auto rows = A.extent(0);
-    auto cols = A.numVectors();
+    auto rows = ::pressio::ops::extent(A,0);
+    auto cols = ::pressio::ops::extent(A,1);
     auto ArowMap = A.data()->getMap();
     Teuchos::RCP<const Teuchos::Comm<int> > comm =
       Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
