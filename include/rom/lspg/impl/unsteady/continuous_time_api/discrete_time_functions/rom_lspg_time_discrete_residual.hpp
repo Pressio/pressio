@@ -581,17 +581,17 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // map of y_np1 (prevStates has for sure the same map as y_np1)
   const auto & y_map = y_np1.data()->Map();
   // my global elements
-  std::vector<GO_t> gIDy( y_np1.extentLocal(0) );
+  std::vector<GO_t> gIDy( ::pressio::ops::extent_local(y_np1,0) );
   y_map.MyGlobalElements( gIDy.data() );
 
   // map of R
   const auto & R_map = R.data()->Map();
   // global elements
-  std::vector<GO_t> gIDr( R.extentLocal(0) );
+  std::vector<GO_t> gIDr( ::pressio::ops::extent_local(R,0) );
   R_map.MyGlobalElements( gIDr.data() );
 
   //loop over elements of R
-  for (auto i=0; i<R.extentLocal(0); i++){
+  for (auto i=0; i<::pressio::ops::extent_local(R,0); i++){
     // ask the state map what is the local index corresponding
     // to the global index we are handling
     const auto lid = y_map.LID(gIDr[i]);

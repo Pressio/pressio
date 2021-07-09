@@ -303,20 +303,20 @@ time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
   // row map of phi
   const auto & phi_map = phi.data()->Map();
   // my global elements
-  std::vector<GO_t> gIDphi( phi.extentLocal(0) );
+  std::vector<GO_t> gIDphi( ::pressio::ops::extent_local(phi,0) );
   phi_map.MyGlobalElements( gIDphi.data() );
 
   // map of jphi
   const auto & jphi_map = jphi.data()->Map();
   // global elements
-  std::vector<GO_t> gIDjphi( jphi.extentLocal(0) );
+  std::vector<GO_t> gIDjphi( j::pressio::ops::extent_local(phi,0) );
   jphi_map.MyGlobalElements( gIDjphi.data() );
 
   // prefactor (f) multiplying f*dt*J*phi
   constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
 
   //loop over elements of jphi
-  for (auto i=0; i<jphi.extentLocal(0); i++){
+  for (auto i=0; i<j::pressio::ops::extent_local(phi,0); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.LID(gIDjphi[i]);
