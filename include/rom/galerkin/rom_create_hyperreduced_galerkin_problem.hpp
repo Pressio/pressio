@@ -63,7 +63,7 @@ template<
     stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
+    ::pressio::ode::predicates::is_stepper_tag<stepper_tag>::value,
     return_t
   >
 createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
@@ -73,6 +73,10 @@ createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
 				  const projector_type & projector,
 				  Args && ... args)
 {
+  static_assert
+  (::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
+   "The type deduced for the FOM system passed to the create function does not \
+look like expected continous time API");
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \

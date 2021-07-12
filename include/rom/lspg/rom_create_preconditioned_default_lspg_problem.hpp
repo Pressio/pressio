@@ -92,7 +92,7 @@ template<
     odetag, fom_system_type, decoder_type, rom_state_type, Args...>
   >
 mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
+  ::pressio::ode::predicates::is_stepper_tag<odetag>::value,
   return_t
   >
 createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
@@ -101,6 +101,10 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   const fom_native_state & fomRef,
 					   Args && ...args)
 {
+  static_assert
+  (::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
+  "The type deduced for the FOM system passed to the create function does not \
+look like expected continous time API");
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
@@ -128,10 +132,7 @@ template<
     Args...
     >
   >
-mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  return_t
-  >
+return_t
 createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   decoder_type & decoder,
 					   const rom_state_type & romStateIn,
@@ -139,6 +140,10 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   const precond_type & prec,
 					   Args && ...args)
 {
+  static_assert
+  (::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
+  "The type deduced for the FOM nominal state passed to the create function does not \
+look like expected discrete time API");
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
