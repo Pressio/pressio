@@ -61,16 +61,17 @@ template<
   typename return_t = impl::composeMaskedProblem_t<
     fom_system_type, decoder_type, rom_state_type, masker_type>
   >
-mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
-  return_t
-  >
+return_t
 createMaskedProblemSteady(const fom_system_type & fomSysObj,
 			  decoder_type & decoder,
 			  const rom_state_type & romStateIn,
 			  const fom_native_state & fomRef,
 			  const masker_type & masker)
 {
+  static_assert
+    (::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
+     "The type deduced for the FOM system type to the create function does not \
+look like expected steady problem API");
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
