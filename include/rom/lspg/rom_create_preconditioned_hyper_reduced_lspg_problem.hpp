@@ -57,13 +57,13 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename ...Args
+  typename ...Args,
+  typename return_t = impl::composePreconditionedHyperReducedProblem_t<
+    fom_system_type, decoder_type, rom_state_type, Args...>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
-  impl::composePreconditionedHyperReducedProblem_t<
-    fom_system_type, decoder_type, rom_state_type, Args...
-    >
+  return_t
   >
 createPreconditionedHyperReducedProblemSteady(const fom_system_type & fomSysObj,
 					      decoder_type & decoder,
@@ -71,9 +71,6 @@ createPreconditionedHyperReducedProblemSteady(const fom_system_type & fomSysObj,
 					      const fom_native_state & fomRef,
 					      Args && ...args)
 {
-  using return_t = impl::composePreconditionedHyperReducedProblem_t<
-    fom_system_type, decoder_type, rom_state_type, Args...>;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
@@ -90,13 +87,13 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename ...Args
+  typename ...Args,
+  typename return_t = impl::composePreconditionedHyperReducedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, Args...>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composePreconditionedHyperReducedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, Args...
-    >
+  return_t
   >
 createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysObj,
 						decoder_type & decoder,
@@ -104,9 +101,6 @@ createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysOb
 						const fom_native_state & fomRef,
 						Args && ...args)
 {
-  using return_t = impl::composePreconditionedHyperReducedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, Args...>;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \

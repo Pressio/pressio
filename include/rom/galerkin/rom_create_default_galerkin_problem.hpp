@@ -57,11 +57,13 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename ...Args
+  typename ...Args,
+  typename return_t = impl::composeDefaultProblemContTime_t<
+    stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composeDefaultProblemContTime_t<stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>
+  return_t
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
@@ -69,9 +71,6 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 		     const fom_native_state & fomRef,
 		     Args && ... args)
 {
-  using return_t = impl::composeDefaultProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
@@ -89,30 +88,24 @@ template<
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
-  typename fom_native_state
+  typename fom_native_state,
+  typename return_t =
+    impl::composeDefaultProblemDiscTime_t<
+      ::pressio::ode::implicitmethods::Arbitrary,
+      fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
+      ::pressio::ode::types::StepperOrder<order>,
+      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+      >
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  impl::composeDefaultProblemDiscTime_t<
-    pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >
+  return_t
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef)
 {
-  using return_t =
-    impl::composeDefaultProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
@@ -130,30 +123,24 @@ template<
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
-  typename fom_native_state
+  typename fom_native_state,
+  typename return_t =
+    impl::composeDefaultProblemDiscTime_t<
+      ::pressio::ode::implicitmethods::Arbitrary,
+      fom_system_type, decoder_type, rom_state_type, void,
+      ::pressio::ode::types::StepperOrder<order>,
+      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+      >
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  impl::composeDefaultProblemDiscTime_t<
-    pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >
+  return_t
   >
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef)
 {
-  using return_t =
-    impl::composeDefaultProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \

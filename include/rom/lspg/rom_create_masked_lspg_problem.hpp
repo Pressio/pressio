@@ -57,13 +57,13 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type
+  typename masker_type,
+  typename return_t = impl::composeMaskedProblem_t<
+    fom_system_type, decoder_type, rom_state_type, masker_type>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
-  impl::composeMaskedProblem_t<
-    fom_system_type, decoder_type, rom_state_type, masker_type
-    >
+  return_t
   >
 createMaskedProblemSteady(const fom_system_type & fomSysObj,
 			  decoder_type & decoder,
@@ -71,9 +71,6 @@ createMaskedProblemSteady(const fom_system_type & fomSysObj,
 			  const fom_native_state & fomRef,
 			  const masker_type & masker)
 {
-  using return_t = impl::composeMaskedProblem_t<
-    fom_system_type, decoder_type, rom_state_type, masker_type>;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
@@ -90,13 +87,13 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type
+  typename masker_type,
+  typename return_t = impl::composeMaskedProblem_t<
+    odetag, fom_system_type, decoder_type, rom_state_type, masker_type>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composeMaskedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, masker_type
-    >
+  return_t
   >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
@@ -104,9 +101,6 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    const fom_native_state & fomRef,
 			    const masker_type & masker)
 {
-  using return_t = impl::composeMaskedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, masker_type>;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The fom reference state type deduced for the create function is not \
@@ -123,16 +117,17 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type
-  >
-mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  impl::composeMaskedProblem_t<
+  typename masker_type,
+  typename return_t = impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::types::StepperOrder<order>,
     ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
     >
+  >
+mpl::enable_if_t<
+  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
+  return_t
   >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
@@ -140,13 +135,6 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    const fom_native_state & fomNominalState,
 			    const masker_type & masker)
 {
-  using return_t = impl::composeMaskedProblem_t<
-    pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, masker_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The type deduced for the FOM nominal state passed to the create function is not \

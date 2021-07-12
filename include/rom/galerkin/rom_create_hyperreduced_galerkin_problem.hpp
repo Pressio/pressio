@@ -58,12 +58,13 @@ template<
   typename rom_state_type,
   typename fom_native_state,
   typename projector_type,
-  typename ...Args
+  typename ...Args,
+  typename return_t = impl::composeHyperReducedVelocityProblemContTime_t<
+    stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composeHyperReducedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
+    return_t
   >
 createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
 				  decoder_type & decoder,
@@ -72,9 +73,6 @@ createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
 				  const projector_type & projector,
 				  Args && ... args)
 {
-  using return_t = impl::composeHyperReducedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
@@ -94,16 +92,17 @@ template<
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename projector_type
-  >
-mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  impl::composeHyperReducedResidualProblemDiscTime_t<
+  typename projector_type,
+  typename return_t = impl::composeHyperReducedResidualProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, projector_type,
     ::pressio::ode::types::StepperOrder<order>,
     ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
     >
+  >
+mpl::enable_if_t<
+  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
+  return_t
   >
 createHyperReducedResidualProblem(const fom_system_type & fomSysObj,
 				  decoder_type & decoder,
@@ -111,14 +110,6 @@ createHyperReducedResidualProblem(const fom_system_type & fomSysObj,
 				  const fom_native_state & fomRef,
 				  const projector_type & projector)
 {
-  using return_t =
-    impl::composeHyperReducedResidualProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void, projector_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \

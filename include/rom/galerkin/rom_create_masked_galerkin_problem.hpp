@@ -59,12 +59,14 @@ template<
   typename fom_native_state,
   typename masker_type,
   typename projector_type,
-  typename ...Args
+  typename ...Args,
+  typename return_t = impl::composeMaskedVelocityProblemContTime_t<
+    stepper_tag, fom_system_type, decoder_type, rom_state_type,
+    masker_type, projector_type, Args...>
   >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composeMaskedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, masker_type, projector_type, Args...>
+    return_t
   >
 createMaskedVelocityProblem(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
@@ -74,10 +76,6 @@ createMaskedVelocityProblem(const fom_system_type & fomSysObj,
 			    const projector_type & projector,
 			    Args && ... args)
 {
-  using return_t = impl::composeMaskedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type,
-    masker_type, projector_type, Args...>;
-
   static_assert
     (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
      "The type deduced for the FOM nominal state passed to the create function is not \
@@ -98,16 +96,18 @@ template<
   typename rom_state_type,
   typename fom_native_state,
   typename masker_type,
-  typename projector_type
-  >
-mpl::enable_if_t<
-  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
-  impl::composeMaskedResidualProblemDiscTime_t<
-    pressio::ode::implicitmethods::Arbitrary,
+  typename projector_type,
+  typename return_t =
+    impl::composeMaskedResidualProblemDiscTime_t<
+      ::pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
     ::pressio::ode::types::StepperOrder<order>,
     ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
     >
+  >
+mpl::enable_if_t<
+  ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
+  return_t
   >
 createMaskedResidualProblem(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
@@ -116,14 +116,6 @@ createMaskedResidualProblem(const fom_system_type & fomSysObj,
 			    const masker_type & masker,
 			    const projector_type & projector)
 {
-  using return_t =
-    impl::composeMaskedResidualProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
-
   static_assert
   (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
