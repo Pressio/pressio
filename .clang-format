@@ -1,0 +1,23 @@
+BasedOnStyle: LLVM
+AlignTrailingComments: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+BraceWrapping:
+  AfterClass: true
+  AfterFunction: true
+  AfterStruct: true
+BreakBeforeBraces: Custom
+BreakBeforeTernaryOperators: false
+ColumnLimit: 0
+CompactNamespaces: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+DerivePointerAlignment: false
+FixNamespaceComments: false
+MaxEmptyLinesToKeep: 2
+PointerAlignment: Middle
+SortIncludes: false
+SortUsingDeclarations: false
+SpaceBeforeParens: Never
+SpacesBeforeTrailingComments: 0
+TabWidth: 8
+UseTab: Always
