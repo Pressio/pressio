@@ -51,15 +51,18 @@
 
 #include <iomanip>
 
-namespace pressio{ namespace utils{ namespace impl{
+namespace pressio { namespace utils { namespace impl {
 
 template <typename stream_t, typename scalar_t>
-void setStreamPrecision(stream_t & ss){
+void setStreamPrecision(stream_t & ss)
+{
   constexpr auto prec = std::is_same<scalar_t,
-				     double>::value ? 15 : 6;
+				     double>::value ?
+			  15 :
+			  6;
   ss << std::setprecision(prec);
 }
 
-}}} // end of namespace pressio::utils::impl
+}}}// end of namespace pressio::utils::impl
 
-#endif  // UTILS_UTILS_SET_STREAM_PRECISION_HPP_
+#endif// UTILS_UTILS_SET_STREAM_PRECISION_HPP_

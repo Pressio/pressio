@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_IMPL_ROM_COMPOSE_PROBLEM_HPP_
 #define ROM_LSPG_IMPL_ROM_COMPOSE_PROBLEM_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+namespace pressio { namespace rom { namespace lspg { namespace impl {
 
 /*
   =====================
@@ -68,21 +68,18 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
   template<stepper_tag, fom_type, decoder_t, romstate_t, udops_t>
 */
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeDefaultProblem =
   typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::Default, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::Default, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
+    ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+    ::pressio::rom::lspg::impl::composeUnsteady<
+      ::pressio::rom::lspg::impl::Default, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>,
+    ::pressio::rom::lspg::impl::composeSteady<
+      ::pressio::rom::lspg::impl::Default, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>>::type;
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeDefaultProblem_t = typename composeDefaultProblem<T1, Args...>::type;
 
 
@@ -100,21 +97,18 @@ using composeDefaultProblem_t = typename composeDefaultProblem<T1, Args...>::typ
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
 */
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composePreconditionedDefaultProblem =
   typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::Preconditioned, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::Preconditioned, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
+    ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+    ::pressio::rom::lspg::impl::composeUnsteady<
+      ::pressio::rom::lspg::impl::Preconditioned, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>,
+    ::pressio::rom::lspg::impl::composeSteady<
+      ::pressio::rom::lspg::impl::Preconditioned, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>>::type;
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composePreconditionedDefaultProblem_t =
   typename composePreconditionedDefaultProblem<T1, Args...>::type;
 
@@ -138,21 +132,18 @@ using composePreconditionedDefaultProblem_t =
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t>
 */
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeHyperReducedProblem =
   typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::HyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
+    ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+    ::pressio::rom::lspg::impl::composeUnsteady<
+      ::pressio::rom::lspg::impl::HyperReduced, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>,
+    ::pressio::rom::lspg::impl::composeSteady<
+      ::pressio::rom::lspg::impl::HyperReduced, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>>::type;
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeHyperReducedProblem_t =
   typename composeHyperReducedProblem<T1, Args...>::type;
 
@@ -171,21 +162,18 @@ using composeHyperReducedProblem_t =
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, precond_t>
 */
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composePreconditionedHyperReducedProblem =
   typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
+    ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+    ::pressio::rom::lspg::impl::composeUnsteady<
+      ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>,
+    ::pressio::rom::lspg::impl::composeSteady<
+      ::pressio::rom::lspg::impl::PreconditionedHyperReduced, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>>::type;
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composePreconditionedHyperReducedProblem_t =
   typename composePreconditionedHyperReducedProblem<T1, Args...>::type;
 
@@ -204,22 +192,19 @@ using composePreconditionedHyperReducedProblem_t =
   unsteady discrete-time api:
   template<stepper_tag, fom_type, decoder_t, romstate_t, masker_t>
 */
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeMaskedProblem =
   typename std::conditional<
-  ::pressio::ode::predicates::is_stepper_tag<T1>::value,
-  ::pressio::rom::lspg::impl::composeUnsteady<
-    ::pressio::rom::lspg::impl::Masked, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >,
-  ::pressio::rom::lspg::impl::composeSteady<
-    ::pressio::rom::lspg::impl::Masked, void, T1,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-    >
-  >::type;
+    ::pressio::ode::predicates::is_stepper_tag<T1>::value,
+    ::pressio::rom::lspg::impl::composeUnsteady<
+      ::pressio::rom::lspg::impl::Masked, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>,
+    ::pressio::rom::lspg::impl::composeSteady<
+      ::pressio::rom::lspg::impl::Masked, void, T1,
+      typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>>::type;
 
-template<typename T1, typename ...Args>
+template <typename T1, typename... Args>
 using composeMaskedProblem_t = typename composeMaskedProblem<T1, Args...>::type;
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_COMPOSE_PROBLEM_HPP_
+#endif// ROM_LSPG_IMPL_ROM_COMPOSE_PROBLEM_HPP_

@@ -12,9 +12,9 @@ namespace spdlog {
 class formatter
 {
 public:
-    virtual ~formatter() = default;
-    virtual void format(const details::log_msg &msg, memory_buf_t &dest) = 0;
-    virtual std::unique_ptr<formatter> clone() const = 0;
+  virtual ~formatter() = default;
+  virtual void format(const details::log_msg & msg, memory_buf_t & dest) = 0;
+  virtual std::unique_ptr<formatter> clone() const = 0;
 };
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_FORMATTER_HPP_
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_FORMATTER_HPP_

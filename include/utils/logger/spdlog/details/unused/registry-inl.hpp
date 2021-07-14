@@ -20,7 +20,7 @@
 #else
 #include "../sinks/ansicolor_sink.hpp"
 #endif
-#endif // SPDLOG_DISABLE_DEFAULT_LOGGER
+#endif// SPDLOG_DISABLE_DEFAULT_LOGGER
 
 // #include <chrono>
 // #include <functional>
@@ -310,6 +310,6 @@ namespace details {
 //     loggers_[logger_name] = std::move(new_logger);
 // }
 
-} // namespace details
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_REGISTRY_INL_HPP_
+}// namespace details
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_REGISTRY_INL_HPP_

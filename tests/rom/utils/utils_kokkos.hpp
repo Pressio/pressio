@@ -4,19 +4,20 @@
 
 #include "pressio_utils.hpp"
 
-namespace pressio{ namespace rom{ namespace test{ namespace kokkos{
+namespace pressio { namespace rom { namespace test { namespace kokkos {
 
 template <typename T = int>
 auto convertFromVVecToMultiVec(
-      const std::vector<std::vector<double>> & A0,
-      T nrows, T ncols)
-  -> pressio::containers::MultiVector<Eigen::MatrixXd>{
+  const std::vector<std::vector<double>> & A0,
+  T nrows, T ncols)
+  -> pressio::containers::MultiVector<Eigen::MatrixXd>
+{
 
   pressio::containers::MultiVector<Eigen::MatrixXd> ADW(nrows, ncols);
 
-  for (int i=0; i<nrows; i++){
-    for (int j=0; j<ncols; j++)
-      ADW(i,j) = A0[i][j];
+  for(int i = 0; i < nrows; i++) {
+    for(int j = 0; j < ncols; j++)
+      ADW(i, j) = A0[i][j];
   }
   return ADW;
 }
@@ -33,9 +34,9 @@ void readBasis(std::string filename,
   using view_h_t = typename phi_d_t::HostMirror;
   view_h_t phi_h("phi_h", numCell, romSize);
 
-  for (int i=0; i<numCell; i++){
-    for (int j=0; j<romSize; j++)
-      phi_h(i,j) = A0[i][j];
+  for(int i = 0; i < numCell; i++) {
+    for(int j = 0; j < romSize; j++)
+      phi_h(i, j) = A0[i][j];
   }
   // deep copy to device
   Kokkos::deep_copy(phi_d, phi_h);

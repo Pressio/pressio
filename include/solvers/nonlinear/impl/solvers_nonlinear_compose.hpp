@@ -62,7 +62,7 @@
 #include "./correction_mixins/solvers_rj_corrector.hpp"
 #include "solver.hpp"
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
@@ -72,39 +72,36 @@ namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-template<typename system_t, typename linear_solver_t>
+template <typename system_t, typename linear_solver_t>
 struct composeNewRaph
 {
   // Newton-Raphson requires r/j API
-  static_assert
-  (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-   ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
-   "To use NewtonRaphson, your system must meet the residual/jacobian API.");
+  static_assert(::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+		  ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
+		"To use NewtonRaphson, your system must meet the residual/jacobian API.");
 
   using scalar_t = typename system_t::scalar_type;
-  using state_t  = typename system_t::state_type;
+  using state_t = typename system_t::state_type;
   using r_t = typename system_t::residual_type;
   using j_t = typename system_t::jacobian_type;
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "Newton-Raphson solver: invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"Newton-Raphson solver: invalid state type");
 
   // check the solver_t passed is valid
-  static_assert
-  (::pressio::solvers::constraints::linear_solver_for_newton_raphson<
-   mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "Invalid linear solver type passed to NewtonRaphson");
+  static_assert(::pressio::solvers::constraints::linear_solver_for_newton_raphson<
+		  mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
+		"Invalid linear solver type passed to NewtonRaphson");
 
   using operators_t = ResidualJacobianOperators<r_t, j_t>;
   using corr_mixin = RJCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<NewtonRaphson, corr_mixin>;
 };
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeNewtonRaphson = composeNewRaph<system_t, Args...>;
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
 
 
@@ -116,22 +113,20 @@ using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>:
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-template<typename enable, typename system_t, typename ...Args>
+template <typename enable, typename system_t, typename... Args>
 struct composeGNQR
 {
-  static_assert
-  (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-   ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
-   "QR-based GaussNewton requires the system with the residual/jacobian API.");
+  static_assert(::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+		  ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
+		"QR-based GaussNewton requires the system with the residual/jacobian API.");
 };
 
-template<typename system_t, typename solver_t>
+template <typename system_t, typename solver_t>
 struct composeGNQR<
   mpl::enable_if_t<
     pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
-    >, system_t, solver_t
-  >
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value>,
+  system_t, solver_t>
 {
   // if we get here, system meets the r/j api, need to check if the
   // solver_t passed is valid for QR
@@ -139,24 +134,22 @@ struct composeGNQR<
   using state_t = typename system_t::state_type;
   using r_t = typename system_t::residual_type;
   using j_t = typename system_t::jacobian_type;
-  static_assert
-  (::pressio::solvers::constraints::qr_solver_for_gn_qr<
-   mpl::remove_cvref_t<solver_t>, state_t, j_t, r_t>::value,
-   "The solver type passed to compose a QR-based GN solver is not valid");
+  static_assert(::pressio::solvers::constraints::qr_solver_for_gn_qr<
+		  mpl::remove_cvref_t<solver_t>, state_t, j_t, r_t>::value,
+		"The solver type passed to compose a QR-based GN solver is not valid");
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"invalid state type");
 
   using operators_t = ResidualJacobianOperators<r_t, j_t>;
-  using corr_mixin  = QRCorrector<operators_t, state_t, solver_t>;
-  using type        = Solver<GaussNewtonQR, corr_mixin>;
+  using corr_mixin = QRCorrector<operators_t, state_t, solver_t>;
+  using type = Solver<GaussNewtonQR, corr_mixin>;
 };
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeGaussNewtonQR = composeGNQR<void, system_t, Args...>;
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, Args...>::type;
 
 
@@ -168,8 +161,9 @@ using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, Args...>:
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-template<typename system_t, typename tag, typename ... Args>
-struct compose{
+template <typename system_t, typename tag, typename... Args>
+struct compose
+{
   using type = void;
 };
 
@@ -177,43 +171,37 @@ struct compose{
 // ***
 // COMPOSE GN or LM with Neq and HG api
 // ***
-template<
+template <
   typename system_t,
   typename tag,
-  typename linear_solver_t
-  >
+  typename linear_solver_t>
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
     (pressio::solvers::constraints::system_hessian_gradient<system_t>::value or
      pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value) and
-    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
-    >,
-  linear_solver_t
-  >
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)>,
+  linear_solver_t>
 {
   using scalar_t = typename system_t::scalar_type;
   using state_t = typename system_t::state_type;
   using grad_t = state_t;
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"invalid state type");
 
-  static_assert
-  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
-   mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "A valid linear solver type must be passed to GN or LM with normal equations");
+  static_assert(::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
+		  mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
+		"A valid linear solver type must be passed to GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
   using hess_t = typename mpl::remove_cvref_t<linear_solver_t>::matrix_type;
 
   using operators_t =
     typename std::conditional<
-    std::is_same<tag, GaussNewton>::value,
-    HessianGradientOperatorsHGApi<hess_t,   grad_t>,
-    LMHessianGradientOperatorsHGApi<hess_t, grad_t>
-    >::type;
+      std::is_same<tag, GaussNewton>::value,
+      HessianGradientOperatorsHGApi<hess_t, grad_t>,
+      LMHessianGradientOperatorsHGApi<hess_t, grad_t>>::type;
 
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
@@ -223,21 +211,17 @@ struct compose<
 // ------------------------------------------------------------
 // COMPOSE GN or LM with Neq and r/j api, pressio ops and M=I
 // ------------------------------------------------------------
-template<
+template <
   typename system_t,
   typename tag,
-  typename linear_solver_t
-  >
+  typename linear_solver_t>
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
     (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-     ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value)
-    and
-    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
-    >,
-  linear_solver_t
-  >
+     ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value) and
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)>,
+  linear_solver_t>
 {
   //if we get here, system_t meets r/j api
   using scalar_t = typename system_t::scalar_type;
@@ -246,26 +230,22 @@ struct compose<
   using j_t = typename system_t::jacobian_type;
   using grad_t = state_t;
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"invalid state type");
 
-  static_assert
-  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
-   mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "A valid linear solver type must be passed to GN or LM with normal equations");
+  static_assert(::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
+		  mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
+		"A valid linear solver type must be passed to GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
   using hess_t = typename mpl::remove_cvref_t<linear_solver_t>::matrix_type;
 
   using operators_t =
     typename std::conditional<
-    std::is_same<tag, GaussNewton>::value,
-    HessianGradientOperatorsRJApiNoWeighting<hess_t, grad_t, r_t, j_t, void>,
-    LMHessianGradientOperatorsRJApi<
-      hess_t, grad_t, r_t, j_t, void, HessianGradientOperatorsRJApiNoWeighting
-      >
-    >::type;
+      std::is_same<tag, GaussNewton>::value,
+      HessianGradientOperatorsRJApiNoWeighting<hess_t, grad_t, r_t, j_t, void>,
+      LMHessianGradientOperatorsRJApi<
+	hess_t, grad_t, r_t, j_t, void, HessianGradientOperatorsRJApiNoWeighting>>::type;
 
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
@@ -274,56 +254,53 @@ struct compose<
 // ---------------------------------------------------------------------------
 // *** COMPOSE GN or LM with Neq and r/j api and optional ops and valid M  ***
 // ---------------------------------------------------------------------------
-template< typename weighting_functor_t, typename tag>
+template <typename weighting_functor_t, typename tag>
 struct composeOperators;
 
-template<>
+template <>
 struct composeOperators<void, GaussNewton>
 {
-  template<typename ...Args>
+  template <typename... Args>
   using type = HessianGradientOperatorsRJApiNoWeighting<Args...>;
 };
 
-template<typename weighting_functor_t>
+template <typename weighting_functor_t>
 struct composeOperators<weighting_functor_t, GaussNewton>
 {
-  template<typename ...Args>
+  template <typename... Args>
   using type = WeightedHessianGradientOperatorsRJApi<Args..., weighting_functor_t>;
 };
 
-template<>
+template <>
 struct composeOperators<void, LM>
 {
-  template<typename ...Args>
+  template <typename... Args>
   using type = LMHessianGradientOperatorsRJApi<
     Args..., HessianGradientOperatorsRJApiNoWeighting>;
 };
 
-template<typename weighting_functor_t>
+template <typename weighting_functor_t>
 struct composeOperators<weighting_functor_t, LM>
 {
-  template<typename ...Args>
+  template <typename... Args>
   using type = LMHessianGradientOperatorsRJApi<
     Args..., WeightedHessianGradientOperatorsRJApi, weighting_functor_t>;
 };
 
 
 // ------------------------
-template<
+template <
   typename system_t,
   typename tag,
   typename linear_solver_t,
-  typename extra_t
-  >
+  typename extra_t>
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
     (::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
      ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value) and
-    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)
-    >,
-  linear_solver_t, extra_t
-  >
+    (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value)>,
+  linear_solver_t, extra_t>
 {
   //if we get here, system_t meets r/j api
   using scalar_t = typename system_t::scalar_type;
@@ -332,14 +309,12 @@ struct compose<
   using j_t = typename system_t::jacobian_type;
   using grad_t = state_t;
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"invalid state type");
 
-  static_assert
-  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
-   mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "A valid linear solver type must be passed to GN or LM with normal equations");
+  static_assert(::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
+		  mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
+		"A valid linear solver type must be passed to GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
   using hess_t = typename mpl::remove_cvref_t<linear_solver_t>::matrix_type;
@@ -352,38 +327,36 @@ struct compose<
 
   using extra_nocvref_t = mpl::remove_cvref_t<extra_t>;
 
-  using ud_ops_t  =
+  using ud_ops_t =
     typename std::conditional<
-    ::pressio::solvers::constraints::ops_normal_equations_rj_api<
-      extra_nocvref_t, scalar_t, hess_t, grad_t, j_t, r_t>::value,
-    extra_t, void >::type;
+      ::pressio::solvers::constraints::ops_normal_equations_rj_api<
+	extra_nocvref_t, scalar_t, hess_t, grad_t, j_t, r_t>::value,
+      extra_t, void>::type;
 
   using weighting_functor_t =
     typename std::conditional<
-    (::pressio::solvers::constraints::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
-    extra_t, void >::type;
+      (::pressio::solvers::constraints::least_squares_weighting_operator<extra_nocvref_t, r_t, j_t>::value),
+      extra_t, void>::type;
 
   // the extra_t should be one of the two, cannot be both
-  static_assert
-  ( mpl::not_void<ud_ops_t>::value or mpl::not_void<weighting_functor_t>::value,
-    "Both ud_ops_t and weighting_functor_t are non-void, something is wrong.");
+  static_assert(mpl::not_void<ud_ops_t>::value or mpl::not_void<weighting_functor_t>::value,
+		"Both ud_ops_t and weighting_functor_t are non-void, something is wrong.");
 
   using operators_t =
     typename composeOperators<weighting_functor_t, tag>::template type<
-    hess_t, grad_t, r_t, j_t, ud_ops_t>;
+      hess_t, grad_t, r_t, j_t, ud_ops_t>;
 
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
 };
 
 
-template<
+template <
   typename system_t,
   typename tag,
   typename linear_solver_t,
   typename ud_ops_t,
-  typename weighting_functor_t
-  >
+  typename weighting_functor_t>
 struct compose<
   system_t, tag,
   mpl::enable_if_t<
@@ -391,10 +364,8 @@ struct compose<
      ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value) and
     (std::is_same<tag, GaussNewton>::value or std::is_same<tag, LM>::value) and
     !std::is_void<ud_ops_t>::value and
-    !std::is_void<weighting_functor_t>::value
-    >,
-  linear_solver_t, ud_ops_t, weighting_functor_t
-  >
+    !std::is_void<weighting_functor_t>::value>,
+  linear_solver_t, ud_ops_t, weighting_functor_t>
 {
   //if we get here, system_t meets r/j api
 
@@ -404,14 +375,12 @@ struct compose<
   using j_t = typename system_t::jacobian_type;
   using grad_t = state_t;
 
-  static_assert
-  (::pressio::solvers::constraints::implicit_state<state_t>::value,
-   "invalid state type");
+  static_assert(::pressio::solvers::constraints::implicit_state<state_t>::value,
+		"invalid state type");
 
-  static_assert
-  (::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
-   mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "A valid linear solver type must be passed to GN or LM with normal equations");
+  static_assert(::pressio::solvers::constraints::linear_solver_for_nonlinear_least_squares<
+		  mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
+		"A valid linear solver type must be passed to GN or LM with normal equations");
 
   // hessian_t is extracted from linear solver
   using hess_t = typename mpl::remove_cvref_t<linear_solver_t>::matrix_type;
@@ -419,19 +388,17 @@ struct compose<
   // if we get here, it means that:
   // - system meets r/j api
   // - we need to compose GN or LM with normal equations
-  static_assert
-  (::pressio::solvers::constraints::ops_normal_equations_rj_api<
-   mpl::remove_cvref_t<ud_ops_t>, scalar_t, hess_t, grad_t, j_t, r_t>::value,
-   "The ops type is not admissible for normal equations.");
+  static_assert(::pressio::solvers::constraints::ops_normal_equations_rj_api<
+		  mpl::remove_cvref_t<ud_ops_t>, scalar_t, hess_t, grad_t, j_t, r_t>::value,
+		"The ops type is not admissible for normal equations.");
 
-  static_assert
-  (::pressio::solvers::constraints::least_squares_weighting_operator<
-   mpl::remove_cvref_t<weighting_functor_t>, r_t, j_t>::value,
-   "The weighting_functor is not admissible");
+  static_assert(::pressio::solvers::constraints::least_squares_weighting_operator<
+		  mpl::remove_cvref_t<weighting_functor_t>, r_t, j_t>::value,
+		"The weighting_functor is not admissible");
 
   using operators_t =
     typename composeOperators<
-    weighting_functor_t, tag>::template type<hess_t, grad_t, r_t, j_t, ud_ops_t>;
+      weighting_functor_t, tag>::template type<hess_t, grad_t, r_t, j_t, ud_ops_t>;
 
   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
   using type = Solver<tag, corr_mixin>;
@@ -441,18 +408,15 @@ struct compose<
 // ------------------------------------------------------------
 // COMPOSE IRW GN with Neq and r/j api, pressio ops and M=I
 // ------------------------------------------------------------
-template<
+template <
   typename system_t,
-  typename linear_solver_t
-  >
+  typename linear_solver_t>
 struct compose<
   system_t, IrwGaussNewton,
   mpl::enable_if_t<
     ::pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-    ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
-    >,
-  linear_solver_t
-  >
+    ::pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value>,
+  linear_solver_t>
 {
   //if we get here, system_t meets r/j api
   using scalar_t = typename system_t::scalar_type;
@@ -467,25 +431,25 @@ struct compose<
 
 // ------------------------------------------------------------
 // ------------------------------------------------------------
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeGaussNewton = compose<system_t, GaussNewton, void, Args...>;
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeGaussNewton_t = typename composeGaussNewton<system_t, Args...>::type;
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeLM = compose<system_t, LM, void, Args...>;
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeLM_t = typename composeLM<system_t, Args...>::type;
 
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeLevenbergMarquardt = composeLM<system_t, Args...>;
-template<typename system_t, typename ... Args>
+template <typename system_t, typename... Args>
 using composeLevenbergMarquardt_t = composeLM_t<system_t, Args...>;
 
-template<typename system_t, typename lin_s_t>
+template <typename system_t, typename lin_s_t>
 using composeIrwGaussNewton = compose<system_t, IrwGaussNewton, void, lin_s_t>;
-template<typename system_t, typename lin_s_t>
+template <typename system_t, typename lin_s_t>
 using composeIrwGaussNewton_t = typename composeIrwGaussNewton<system_t, lin_s_t>::type;
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_SOLVERS_NONLINEAR_COMPOSE_HPP_

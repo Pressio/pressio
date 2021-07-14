@@ -49,60 +49,55 @@
 #ifndef OPS_PYBIND11_OPS_DEEP_COPY_HPP_
 #define OPS_PYBIND11_OPS_DEEP_COPY_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 //**************
 //*** RANK-1 ***
 //**************
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
-  >
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value and ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value>
 deep_copy(T1 & dest, const T2 & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  for (std::size_t i=0; i<dest.extent(0); ++i){
+  assert(dest.extent(0) == src.extent(0));
+  for(std::size_t i = 0; i < dest.extent(0); ++i) {
     dest(i) = src(i);
   }
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
-  >
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value>
 deep_copy(T1 & dest,
 	  const ::pressio::containers::expressions::SpanExpr<T2> & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  for (std::size_t i=0; i<dest.extent(0); ++i){
+  assert(dest.extent(0) == src.extent(0));
+  for(std::size_t i = 0; i < dest.extent(0); ++i) {
     dest(i) = src(i);
   }
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value
-  >
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T2>::value>
 deep_copy(::pressio::containers::expressions::SpanExpr<T1> & dest,
 	  const T2 & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  for (std::size_t i=0; i<dest.extent(0); ++i){
+  assert(dest.extent(0) == src.extent(0));
+  for(std::size_t i = 0; i < dest.extent(0); ++i) {
     dest(i) = src(i);
   }
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
   T1::traits::wrapped_package_identifier == ::pressio::containers::details::WrappedPackageIdentifier::Pybind and
-  T2::traits::wrapped_package_identifier == ::pressio::containers::details::WrappedPackageIdentifier::Pybind
-  >
+  T2::traits::wrapped_package_identifier == ::pressio::containers::details::WrappedPackageIdentifier::Pybind>
 deep_copy(::pressio::containers::expressions::SpanExpr<T1> & dest,
 	  const ::pressio::containers::expressions::SpanExpr<T2> & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  for (std::size_t i=0; i<dest.extent(0); ++i){
+  assert(dest.extent(0) == src.extent(0));
+  for(std::size_t i = 0; i < dest.extent(0); ++i) {
     dest(i) = src(i);
   }
 }
@@ -111,34 +106,30 @@ deep_copy(::pressio::containers::expressions::SpanExpr<T1> & dest,
 //**************
 //*** RANK-2 ***
 //**************
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value
-  >
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T1>::value and ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T2>::value>
 deep_copy(T1 & dest, const T2 & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  assert( dest.extent(1) == src.extent(1) );
-  for (std::size_t j=0; j<dest.extent(1); ++j){
-    for (std::size_t i=0; i<dest.extent(0); ++i){
-      dest(i,j) = src(i,j);
+  assert(dest.extent(0) == src.extent(0));
+  assert(dest.extent(1) == src.extent(1));
+  for(std::size_t j = 0; j < dest.extent(1); ++j) {
+    for(std::size_t i = 0; i < dest.extent(0); ++i) {
+      dest(i, j) = src(i, j);
     }
   }
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T2>::value
-  >
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T1>::value and ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T2>::value>
 deep_copy(T1 & dest, const T2 & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  assert( dest.extent(1) == src.extent(1) );
-  for (std::size_t i=0; i<dest.extent(0); ++i){
-    for (std::size_t j=0; j<dest.extent(1); ++j){
-      dest(i,j) = src(i,j);
+  assert(dest.extent(0) == src.extent(0));
+  assert(dest.extent(1) == src.extent(1));
+  for(std::size_t i = 0; i < dest.extent(0); ++i) {
+    for(std::size_t j = 0; j < dest.extent(1); ++j) {
+      dest(i, j) = src(i, j);
     }
   }
 }
@@ -146,22 +137,20 @@ deep_copy(T1 & dest, const T2 & src)
 //**************
 //*** RANK-3 ***
 //**************
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value
-  >
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T1>::value and ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T2>::value>
 deep_copy(T1 & dest, const T2 & src)
 {
-  assert( dest.extent(0) == src.extent(0) );
-  assert( dest.extent(1) == src.extent(1) );
-  assert( dest.extent(2) == src.extent(2) );
-  for (std::size_t j=0; j<dest.extent(1); ++j){
-    for (std::size_t i=0; i<dest.extent(0); ++i){
-      dest(i,j) = src(i,j);
+  assert(dest.extent(0) == src.extent(0));
+  assert(dest.extent(1) == src.extent(1));
+  assert(dest.extent(2) == src.extent(2));
+  for(std::size_t j = 0; j < dest.extent(1); ++j) {
+    for(std::size_t i = 0; i < dest.extent(0); ++i) {
+      dest(i, j) = src(i, j);
     }
   }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DEEP_COPY_HPP_
+#endif// OPS_PYBIND11_OPS_DEEP_COPY_HPP_

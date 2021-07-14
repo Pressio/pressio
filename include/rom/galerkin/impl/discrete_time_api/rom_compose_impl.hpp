@@ -63,9 +63,10 @@
 #include "./rom_galerkin_masked_residual_problem.hpp"
 #include "./rom_galerkin_hyper_reduced_residual_problem.hpp"
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace disctime{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace disctime {
 
-template<
+template <
   typename problem_tag,
   typename dummy,
   typename stepper_tag,
@@ -73,12 +74,12 @@ template<
   typename decoder_type,
   typename galerkin_state_type,
   typename galerkin_jacobian_type,
-  typename ...Args>
+  typename... Args>
 struct compose
 {
   static constexpr bool api_error =
     ::pressio::rom::why_not_discrete_time_system_with_user_provided_apply_jacobian<
-    fom_system_t, typename decoder_type::jacobian_type>::value;
+      fom_system_t, typename decoder_type::jacobian_type>::value;
   static_assert(api_error, "");
 
   using type = void;
@@ -87,25 +88,22 @@ struct compose
 /***
     default Galerkin
  ***/
-template<
+template <
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
   typename galerkin_jacobian_type,
-  typename ...Args
-  >
+  typename... Args>
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
     ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value
-    >,
+      fom_system_type, typename decoder_type::jacobian_type>::value>,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type, Args...>
 {
-  static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+  static_assert(std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+		"Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type,
@@ -115,7 +113,7 @@ struct compose<
 /***
     masked residual Galerkin
  ***/
-template<
+template <
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
@@ -123,20 +121,17 @@ template<
   typename galerkin_jacobian_type,
   typename masker_type,
   typename projector_type,
-  typename ...Args
-  >
+  typename... Args>
 struct compose<
   ::pressio::rom::galerkin::impl::MaskedResidual,
   mpl::enable_if_t<
     ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value
-    >,
+      fom_system_type, typename decoder_type::jacobian_type>::value>,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type,
   masker_type, projector_type, Args...>
 {
-  static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+  static_assert(std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+		"Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::MaskedResidualProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type, galerkin_jacobian_type,
@@ -146,27 +141,24 @@ struct compose<
 /***
     hyper-reduced residual Galerkin
  ***/
-template<
+template <
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
   typename galerkin_jacobian_type,
   typename projector_type,
-  typename ...Args
-  >
+  typename... Args>
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedResidual,
   mpl::enable_if_t<
     ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value
-    >,
+      fom_system_type, typename decoder_type::jacobian_type>::value>,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type,
   projector_type, Args...>
 {
-  static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
+  static_assert(std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+		"Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::HyperReducedResidualProblemDiscreteTimeApi<
     stepper_tag, fom_system_type, galerkin_state_type, galerkin_jacobian_type,
@@ -174,44 +166,41 @@ struct compose<
 };
 
 //-------------------------------------------------------
-} // end namespace pressio::rom::galerkin::impl::disctime
+}// end namespace pressio::rom::galerkin::impl::disctime
 //-------------------------------------------------------
 
 // default
-template<typename ...Args>
+template <typename... Args>
 using composeDefaultProblemDiscTime =
   impl::disctime::compose<
-  impl::Default, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >;
+    impl::Default, void,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template<typename ...Args>
+template <typename... Args>
 using composeDefaultProblemDiscTime_t =
   typename composeDefaultProblemDiscTime<Args...>::type;
 
 // masked residual
-template<typename ...Args>
+template <typename... Args>
 using composeMaskedResidualProblemDiscTime =
   impl::disctime::compose<
-  impl::MaskedResidual, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >;
+    impl::MaskedResidual, void,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template<typename ...Args>
+template <typename... Args>
 using composeMaskedResidualProblemDiscTime_t =
   typename composeMaskedResidualProblemDiscTime<Args...>::type;
 
 // hyperReduced residual
-template<typename ...Args>
+template <typename... Args>
 using composeHyperReducedResidualProblemDiscTime =
   impl::disctime::compose<
-  impl::HyperReducedResidual, void,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >;
+    impl::HyperReducedResidual, void,
+    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template<typename ...Args>
+template <typename... Args>
 using composeHyperReducedResidualProblemDiscTime_t =
   typename composeHyperReducedResidualProblemDiscTime<Args...>::type;
 
-}}}} // end namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_COMPOSE_IMPL_HPP_
+}}}}// end namespace pressio::rom::galerkin::impl
+#endif// ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_COMPOSE_IMPL_HPP_

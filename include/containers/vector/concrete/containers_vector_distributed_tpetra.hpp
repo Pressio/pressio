@@ -51,16 +51,14 @@
 
 #include <MatrixMarket_Tpetra.hpp>
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_tpetra<
-      wrapped_type>::value
-    >
-  >
+      wrapped_type>::value>>
 {
 public:
   using this_t = Vector<wrapped_type>;
@@ -77,16 +75,19 @@ public:
 
   explicit Vector(const wrapped_type & vecobj)
     // use the deep_copy cnstr
-    : data_(vecobj, Teuchos::Copy){}
+    : data_(vecobj, Teuchos::Copy)
+  {
+  }
 
   explicit Vector(wrapped_type && vecobj)
-    : data_(std::move(vecobj)){}
+    : data_(std::move(vecobj)) {}
 
   explicit Vector(Teuchos::RCP<const map_t> mapO)
-    : data_(mapO){}
+    : data_(mapO) {}
 
   // copy cnstr
-  Vector(Vector const & other) : data_(*other.data(), Teuchos::Copy){}
+  Vector(Vector const & other)
+    : data_(*other.data(), Teuchos::Copy) {}
 
   // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
@@ -110,25 +111,30 @@ public:
   //     (std::cout << std::setprecision(15), data_, tag, tag);
   // }
 
-  wrapped_type const * data() const{
+  wrapped_type const * data() const
+  {
     return &data_;
   }
 
-  wrapped_type * data(){
+  wrapped_type * data()
+  {
     return &data_;
   }
 
-  wrapped_type dataCp(){
+  wrapped_type dataCp()
+  {
     return data_;
   }
 
-  GO_t extent(std::size_t i) const{
-    assert(i==0);
+  GO_t extent(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.getGlobalLength();
   }
 
-  LO_t extentLocal(std::size_t i) const{
-    assert(i==0);
+  LO_t extentLocal(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.getLocalLength();
   }
 
@@ -137,4 +143,4 @@ private:
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_HPP_
+#endif// CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_HPP_

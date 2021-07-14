@@ -49,30 +49,27 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
-
-template<
-  typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type,
-  typename enable = void
-  >
-struct custom_ops_continuous_time
-  : std::false_type{};
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
 template <
   typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type
-  >
+  typename mat_type, typename rom_state_type, typename fom_state_type,
+  typename enable = void>
+struct custom_ops_continuous_time
+  : std::false_type
+{
+};
+
+template <
+  typename T,
+  typename mat_type, typename rom_state_type, typename fom_state_type>
 struct custom_ops_continuous_time<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::constraints::custom_ops_for_fom_state_reconstructor<
-      T, fom_state_type>::value
-      and
-    ::pressio::rom::constraints::custom_ops_for_linear_decoder<
-      T, mat_type, rom_state_type, fom_state_type>::value
-      >
-  > : std::true_type{};
+      T, fom_state_type>::value and ::pressio::rom::constraints::custom_ops_for_linear_decoder<T, mat_type, rom_state_type, fom_state_type>::value>> : std::true_type
+{
+};
 
-}}}} // namespace pressio::rom::constraints
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_
+}}}}// namespace pressio::rom::constraints
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_CUSTOM_OPS_CONTINUOUS_TIME_HPP_

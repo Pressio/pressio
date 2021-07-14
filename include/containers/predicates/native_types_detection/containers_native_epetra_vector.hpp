@@ -52,18 +52,19 @@
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_epetra : std::false_type {};
+struct is_vector_epetra : std::false_type
+{
+};
 
 template <typename T>
 struct is_vector_epetra<T,
-      typename
-      std::enable_if<
-	std::is_same<T,Epetra_Vector>::value
-	>::type
-      > : std::true_type{};
+			typename std::enable_if<
+			  std::is_same<T, Epetra_Vector>::value>::type> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EPETRA_VECTOR_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EPETRA_VECTOR_HPP_

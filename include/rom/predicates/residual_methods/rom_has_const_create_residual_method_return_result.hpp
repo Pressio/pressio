@@ -49,31 +49,29 @@
 #ifndef ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 #define ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <
   typename T,
   typename result_t,
-  typename = void
-  >
+  typename = void>
 struct has_const_create_residual_method_return_result
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <
   typename T,
-  typename result_t
-  >
+  typename result_t>
 struct has_const_create_residual_method_return_result<
   T, result_t,
   mpl::enable_if_t<
     std::is_same<
       result_t,
       decltype(
-	       std::declval<T const>().createResidual()
-	       )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().createResidual())>::value>> : std::true_type
+{
+};
 
 }}}
-#endif  // ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+#endif// ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_

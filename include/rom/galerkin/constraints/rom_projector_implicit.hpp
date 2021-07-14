@@ -49,34 +49,24 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_IMPLICIT_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_IMPLICIT_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
-template<
+template <
   class T, class fom_vel_t, class dmat_t, class result1_t, class result2_t,
   class enable = void>
-struct projector_implicit_stepping : std::false_type{};
+struct projector_implicit_stepping : std::false_type
+{
+};
 
-template<
-  class T, class fom_vel_t, class dmat_t, class result1_t, class result2_t
-  >
+template <
+  class T, class fom_vel_t, class dmat_t, class result1_t, class result2_t>
 struct projector_implicit_stepping<
   T, fom_vel_t, dmat_t, result1_t, result2_t,
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::constraints::fom_velocity<fom_vel_t>::value
-    and
-    ::pressio::rom::constraints::decoder_jacobian<dmat_t>::value
-    and
-    ::pressio::rom::galerkin::constraints::galerkin_residual<result1_t>::value
-    and
-    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result2_t>::value
-    and
-    ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
-      T, fom_vel_t, result1_t>::value
-    and
-    ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
-      T, dmat_t, result2_t>::value
-    >
-  > : std::true_type{};
+    ::pressio::rom::galerkin::constraints::fom_velocity<fom_vel_t>::value and ::pressio::rom::constraints::decoder_jacobian<dmat_t>::value and ::pressio::rom::galerkin::constraints::galerkin_residual<result1_t>::value and ::pressio::rom::galerkin::constraints::galerkin_jacobian<result2_t>::value and ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
+      T, fom_vel_t, result1_t>::value and ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<T, dmat_t, result2_t>::value>> : std::true_type
+{
+};
 
-}}}} // namespace pressio::rom
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_IMPLICIT_HPP_
+}}}}// namespace pressio::rom
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_IMPLICIT_HPP_

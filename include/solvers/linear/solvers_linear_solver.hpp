@@ -51,10 +51,10 @@
 
 #include "./impl/solvers_linear_solver_selector_impl.hpp"
 
-namespace pressio{ namespace solvers{ namespace linear {
+namespace pressio { namespace solvers { namespace linear {
 
-template <typename ... Args>
+template <typename... Args>
 using Solver = typename impl::LinearSolverSelector<Args...>::type;
 
 }}}//end namespace pressio::solvers::linear
-#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_
+#endif// SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_

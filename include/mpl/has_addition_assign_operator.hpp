@@ -49,21 +49,21 @@
 #ifndef MPL_HAS_ADDITION_ASSIGN_OPERATOR_HPP_
 #define MPL_HAS_ADDITION_ASSIGN_OPERATOR_HPP_
 
-namespace pressio{ namespace mpl{
+namespace pressio { namespace mpl {
 
-template<typename T, typename U=T, typename enable = void>
-struct has_addition_assign_op : std::false_type { };
+template <typename T, typename U = T, typename enable = void>
+struct has_addition_assign_op : std::false_type
+{
+};
 
-template<typename T, typename U>
+template <typename T, typename U>
 struct has_addition_assign_op<
-  T,U,
-  typename
-  std::enable_if<
+  T, U,
+  typename std::enable_if<
     !std::is_void<decltype(std::declval<T>() +=
-			   std::declval<U>())
-		  >::value
-    >::type
-  > : std::true_type{};
+			   std::declval<U>())>::value>::type> : std::true_type
+{
+};
 
-}} // namespace
-#endif  // MPL_HAS_ADDITION_ASSIGN_OPERATOR_HPP_
+}}// namespace
+#endif// MPL_HAS_ADDITION_ASSIGN_OPERATOR_HPP_

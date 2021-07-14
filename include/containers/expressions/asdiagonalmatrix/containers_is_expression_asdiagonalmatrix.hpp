@@ -49,30 +49,36 @@
 #ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
 #define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct asdiagonalmatrix_expression : std::false_type{};
+struct asdiagonalmatrix_expression : std::false_type
+{
+};
 
 template <typename T>
 struct asdiagonalmatrix_expression<
-  ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
-  > : std::true_type{};
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>> : std::true_type
+{
+};
 
 template <typename T>
 struct asdiagonalmatrix_expression<
-  const ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>
-  > : asdiagonalmatrix_expression<T>{};
+  const ::pressio::containers::expressions::AsDiagonalMatrixExpr<T>> : asdiagonalmatrix_expression<T>
+{
+};
 
 template <typename T>
 struct asdiagonalmatrix_expression<
-  ::pressio::containers::expressions::AsDiagonalMatrixExpr<const T>
-  > : std::true_type{};
+  ::pressio::containers::expressions::AsDiagonalMatrixExpr<const T>> : std::true_type
+{
+};
 
 template <typename T>
 struct asdiagonalmatrix_expression<
-  const ::pressio::containers::expressions::AsDiagonalMatrixExpr<const T>
-  > : std::true_type{};
+  const ::pressio::containers::expressions::AsDiagonalMatrixExpr<const T>> : std::true_type
+{
+};
 
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_
+}}}// namespace pressio::containers::predicates
+#endif// CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_IS_EXPRESSION_ASDIAGONALMATRIX_HPP_

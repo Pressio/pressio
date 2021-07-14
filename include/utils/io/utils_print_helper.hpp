@@ -54,27 +54,32 @@
 #endif
 #include <iostream>
 
-namespace pressio{ namespace utils{ namespace io{
+namespace pressio { namespace utils { namespace io {
 
-namespace impl{
+namespace impl {
 
 template <typename head_t>
-void print(std::ostream & ss, head_t && head){
+void print(std::ostream & ss, head_t && head)
+{
   ss << std::forward<head_t>(head);
 }
 
-template <typename head_t, typename ... tail_t>
-void print(std::ostream & ss, head_t && head, tail_t && ... args){
+template <typename head_t, typename... tail_t>
+void print(std::ostream & ss, head_t && head, tail_t &&... args)
+{
   ss << std::forward<head_t>(head) << " ";
   print(ss, std::forward<tail_t>(args)...);
 }
 
 template <typename T = int>
-T myRank(){
+T myRank()
+{
   T rank = 0;
 #if defined PRESSIO_ENABLE_TPL_MPI
-  int flag = 0; MPI_Initialized( &flag );
-  if (flag==1) MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int flag = 0;
+  MPI_Initialized(&flag);
+  if(flag == 1)
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
   return static_cast<T>(rank);
 }
@@ -82,10 +87,11 @@ T myRank(){
 }//end namepsace impl
 
 
-template <typename ... Args>
-void print_stdout(Args &&... args){
-  if(impl::myRank()==0)
-    impl::print(std::cout, std::forward<Args>(args)... );
+template <typename... Args>
+void print_stdout(Args &&... args)
+{
+  if(impl::myRank() == 0)
+    impl::print(std::cout, std::forward<Args>(args)...);
 }
 
 // // conditional on PRESSIO_ENABLE_DEBUG_PRINT being on
@@ -111,4 +117,4 @@ void print_stdout(Args &&... args){
 
 
 }}}//end namespace pressio::utils::io
-#endif  // UTILS_IO_UTILS_PRINT_HELPER_HPP_
+#endif// UTILS_IO_UTILS_PRINT_HELPER_HPP_

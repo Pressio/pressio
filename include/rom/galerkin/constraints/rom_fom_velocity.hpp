@@ -49,18 +49,20 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
-template<typename T, typename enable = void>
-struct fom_velocity : std::false_type{};
+template <typename T, typename enable = void>
+struct fom_velocity : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct fom_velocity<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::galerkin::constraints::fom_state<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::rom::galerkin::constraints::fom_state<T>::value>> : std::true_type
+{
+};
 
 }}}}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_FOM_VELOCITY_HPP_

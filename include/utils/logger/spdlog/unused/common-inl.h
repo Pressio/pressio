@@ -74,5 +74,5 @@
 //     SPDLOG_THROW(spdlog_ex(std::move(msg)));
 // }
 
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_COMMON_INL_H_
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_UNUSED_COMMON_INL_H_

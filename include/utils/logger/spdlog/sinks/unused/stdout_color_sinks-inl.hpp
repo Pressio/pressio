@@ -36,5 +36,5 @@ namespace spdlog {
 //     return Factory::template create<sinks::stderr_color_sink_st>(logger_name, mode);
 // }
 
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_STDOUT_COLOR_SINKS_INL_HPP_
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_SINKS_UNUSED_STDOUT_COLOR_SINKS_INL_HPP_

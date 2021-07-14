@@ -10,7 +10,7 @@
 #include "rom_data_type_eigen.hpp"
 #include "rom_data_type_kokkos.hpp"
 
-namespace{
+namespace {
 template <typename scalar_t>
 auto readSol(::pressio::ode::implicitmethods::Euler odeTag,
 	     const std::size_t fomSize, const scalar_t dt)
@@ -31,7 +31,7 @@ auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag,
 }//end namespace anonym
 
 
-namespace pressio{ namespace testing{ namespace wls{
+namespace pressio { namespace testing { namespace wls {
 
 template <
   typename fom_t,
@@ -40,21 +40,20 @@ template <
   typename hessian_matrix_structure_tag,
   typename basis_matrix_native_type,
   typename ode_tag,
-  typename rcpcomm_t
-  >
+  typename rcpcomm_t>
 std::string doRun(rcpcomm_t & Comm, int rank)
 {
-  using scalar_t	= typename fom_t::scalar_type;
-  using native_state_t  = typename fom_t::state_type;
-  using fom_state_t	= pressio::containers::Vector<native_state_t>;
-  using decoder_jac_t	= pressio::containers::MultiVector<basis_matrix_native_type>;
-  using wls_state_t	= typename rom_data_t::wls_state_t;
-  using wls_hessian_t	= typename rom_data_t::wls_hessian_t;
-  using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
+  using scalar_t = typename fom_t::scalar_type;
+  using native_state_t = typename fom_t::state_type;
+  using fom_state_t = pressio::containers::Vector<native_state_t>;
+  using decoder_jac_t = pressio::containers::MultiVector<basis_matrix_native_type>;
+  using wls_state_t = typename rom_data_t::wls_state_t;
+  using wls_hessian_t = typename rom_data_t::wls_hessian_t;
+  using decoder_t = pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
   // app object
   constexpr std::size_t fomSize = 20;
-  fom_t appObj({{5.0, 0.02, 0.02}}, fomSize,Comm);
+  fom_t appObj({{5.0, 0.02, 0.02}}, fomSize, Comm);
   constexpr scalar_t dt = 0.01;
   // wrap init cond with pressio container
   const fom_state_t fomStateInitCond(appObj.getInitialState());
@@ -64,12 +63,12 @@ std::string doRun(rcpcomm_t & Comm, int rank)
 
   constexpr pressio::rom::wls::rom_size_t romSize = 11;
   constexpr pressio::rom::wls::window_size_t numStepsInWindow = 5;
-  constexpr pressio::rom::wls::rom_size_t wlsSize = romSize*numStepsInWindow;
+  constexpr pressio::rom::wls::rom_size_t wlsSize = romSize * numStepsInWindow;
   constexpr scalar_t finalTime = 0.1;
-  constexpr pressio::rom::wls::window_size_t numWindows = (finalTime/dt)/numStepsInWindow;
+  constexpr pressio::rom::wls::window_size_t numWindows = (finalTime / dt) / numStepsInWindow;
 
   // create/read jacobian of the decoder
-  auto decoderObj = readBasis<decoder_t>(appObj,ode_tag(),romSize,fomSize,Comm);
+  auto decoderObj = readBasis<decoder_t>(appObj, ode_tag(), romSize, fomSize, Comm);
 
   // lin solver
   using linear_solver_t = typename rom_data_t::linear_solver_t;
@@ -78,11 +77,9 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   //*** WLS problem ***
   using precon_type = ::pressio::rom::wls::preconditioners::NoPreconditioner;
   using jacobians_update_tag = ::pressio::rom::wls::NonFrozenJacobian;
-  using policy_t     = pressio::rom::wls::HessianGradientSequentialPolicy
-    <fom_t, decoder_t, ode_tag, hessian_matrix_structure_tag, precon_type, jacobians_update_tag>;
+  using policy_t = pressio::rom::wls::HessianGradientSequentialPolicy<fom_t, decoder_t, ode_tag, hessian_matrix_structure_tag, precon_type, jacobians_update_tag>;
 
-  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi
-    <wls_state_t, decoder_t, wls_hessian_t, policy_t>;
+  using wls_system_t = pressio::rom::wls::SystemHessianAndGradientApi<wls_state_t, decoder_t, wls_hessian_t, policy_t>;
 
   // create policy and wls system
   int jacobianUpdateFrequency = 2;
@@ -93,7 +90,7 @@ std::string doRun(rcpcomm_t & Comm, int rank)
 			 fomNominalState, linearSolver);
 
   // create the wls state
-  wls_state_t  wlsState(wlsSize);
+  wls_state_t wlsState(wlsSize);
   pressio::ops::set_zero(wlsState);
 
   // NL solver
@@ -119,16 +116,16 @@ std::string doRun(rcpcomm_t & Comm, int rank)
   // -----------------
   // process solution
   // -----------------
-  const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow-1)*romSize, romSize);
+  const auto wlsCurrentState = pressio::containers::span(wlsState, (numStepsInWindow - 1) * romSize, romSize);
   fom_state_t yFinal(fomStateInitCond);
   pressio::ops::set_zero(yFinal);
   const auto fomStateReconstructor = wlsSystem.fomStateReconstructorCRef();
   fomStateReconstructor(wlsCurrentState, yFinal);
   const auto trueY = readSol(ode_tag(), fomSize, dt);
-  std::string checkStr = checkSol(appObj ,yFinal,trueY,rank);
+  std::string checkStr = checkSol(appObj, yFinal, trueY, rank);
   return checkStr;
 }
 
-}}} //end namespace pressio::testing::wls
+}}}//end namespace pressio::testing::wls
 #endif
 #endif

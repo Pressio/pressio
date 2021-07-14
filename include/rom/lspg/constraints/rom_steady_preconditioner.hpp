@@ -49,44 +49,35 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
+namespace pressio { namespace rom { namespace lspg { namespace constraints {
 
-template<
+template <
   typename T,
   typename state_t,
   typename operand1_t,
   typename operand2_t,
-  typename enable = void
-  >
-struct steady_preconditioner : std::false_type{};
+  typename enable = void>
+struct steady_preconditioner : std::false_type
+{
+};
 
-template<
+template <
   typename T,
   typename state_t,
   typename operand1_t,
-  typename operand2_t
-  >
+  typename operand2_t>
 struct steady_preconditioner<
   T, state_t, operand1_t, operand2_t,
   mpl::enable_if_t<
-    ::pressio::rom::lspg::constraints::fom_state<state_t>::value
-    and
-    ::pressio::rom::lspg::constraints::lspg_residual<operand1_t>::value
-    and
-    ::pressio::rom::lspg::constraints::lspg_jacobian<operand2_t>::value
-    and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
+    ::pressio::rom::lspg::constraints::fom_state<state_t>::value and ::pressio::rom::lspg::constraints::lspg_residual<operand1_t>::value and ::pressio::rom::lspg::constraints::lspg_jacobian<operand2_t>::value and ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
       T,
       typename ::pressio::containers::details::traits<state_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value
-    and
-    ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<
-      T,
-      typename ::pressio::containers::details::traits<state_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<operand2_t>::wrapped_t>::value
-    >
-  > : std::true_type{};
+      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value and ::pressio::rom::predicates::has_const_apply_preconditioner_method_accept_state_result_return_void<T,
+																							   typename ::pressio::containers::details::traits<state_t>::wrapped_t,
+																							   typename ::pressio::containers::details::traits<operand2_t>::wrapped_t>::value>> : std::true_type
+{
+};
 
 
 }}}}
-#endif  // ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_
+#endif// ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_

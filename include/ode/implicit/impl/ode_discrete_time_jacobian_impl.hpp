@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio { namespace ode { namespace impl {
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 /*
@@ -61,17 +61,17 @@ namespace pressio{ namespace ode{ namespace impl{
 */
 template <typename T, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_array_pybind<T>::value
->
+  ::pressio::containers::predicates::is_array_pybind<T>::value>
 discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::Euler)
 {
-  assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  assert(::pressio::ops::extent(jac, 0) == ::pressio::ops::extent(jac, 1));
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
-  for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+  for(auto i = 0; i < ::pressio::ops::extent(jac, 0); ++i)
+    jac(i, i) += cnp1;
 }
 
 /*
@@ -83,18 +83,17 @@ discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 */
 template <typename T, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_array_pybind<T>::value
->
+  ::pressio::containers::predicates::is_array_pybind<T>::value>
 discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::BDF2)
 {
-  assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  assert(::pressio::ops::extent(jac, 0) == ::pressio::ops::extent(jac, 1));
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
-  for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
-
+  for(auto i = 0; i < ::pressio::ops::extent(jac, 0); ++i)
+    jac(i, i) += cnp1;
 }
 #endif
 
@@ -109,14 +108,13 @@ discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
->
+  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::Euler)
 {
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cnp1);
 }
@@ -131,17 +129,17 @@ discrete_time_jacobian(jacobian_type & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value
->
+  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::Euler)
 {
-  assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  assert(::pressio::ops::extent(jac, 0) == ::pressio::ops::extent(jac, 1));
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
-  for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+  for(auto i = 0; i < ::pressio::ops::extent(jac, 0); ++i)
+    jac(i, i) += cnp1;
 }
 
 /*
@@ -154,14 +152,13 @@ discrete_time_jacobian(jacobian_type & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
-  >
+  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::BDF2)
 {
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
   using namespace ::pressio::ode::constants;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cnp1);
@@ -177,17 +174,17 @@ discrete_time_jacobian(jacobian_type & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value
->
+  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::BDF2)
 {
-  assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-  constexpr auto cnp1   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  assert(::pressio::ops::extent(jac, 0) == ::pressio::ops::extent(jac, 1));
+  constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
+  const auto cf = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
-  for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+  for(auto i = 0; i < ::pressio::ops::extent(jac, 0); ++i)
+    jac(i, i) += cnp1;
 }
 
 /*
@@ -200,15 +197,14 @@ discrete_time_jacobian(jacobian_type & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value
->
+  containers::predicates::is_sparse_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::CrankNicolson)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
-  constexpr auto cnp1  = cnst::c_np1_;
-  const auto cf	= cnst::c_fnp1_ * dt;
+  constexpr auto cnp1 = cnst::c_np1_;
+  const auto cf = cnst::c_fnp1_ * dt;
   ::pressio::ops::scale(jac, cf);
   ::pressio::ops::addToDiagonal(jac, cnp1);
 }
@@ -223,19 +219,19 @@ discrete_time_jacobian(jacobian_type & jac,
 */
 template <typename jacobian_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value
->
+  containers::predicates::is_dense_matrix_wrapper_eigen<jacobian_type>::value>
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
 		       ::pressio::ode::implicitmethods::CrankNicolson)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
-  constexpr auto cnp1  = cnst::c_np1_;
-  const auto cf	= cnst::c_fnp1_ * dt;
+  constexpr auto cnp1 = cnst::c_np1_;
+  const auto cf = cnst::c_fnp1_ * dt;
   ::pressio::ops::scale(jac, cf);
-  for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+  for(auto i = 0; i < ::pressio::ops::extent(jac, 0); ++i)
+    jac(i, i) += cnp1;
 }
 #endif
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_
+#endif// ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_

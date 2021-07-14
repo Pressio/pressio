@@ -51,12 +51,16 @@
 
 namespace pressio { namespace mpl {
 
-template<class T>
-struct not_void: std::true_type {};
+template <class T>
+struct not_void : std::true_type
+{
+};
 
-template<>
-struct not_void<void> : std::false_type {};
+template <>
+struct not_void<void> : std::false_type
+{
+};
 
-}} // end namespace pressio::mpl
+}}// end namespace pressio::mpl
 
-#endif  // MPL_NOT_VOID_HPP_
+#endif// MPL_NOT_VOID_HPP_

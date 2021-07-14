@@ -49,15 +49,13 @@
 #ifndef CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 #define CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class DenseMatrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value>>
 {
 public:
   using this_t = DenseMatrix<wrapped_type>;
@@ -65,19 +63,18 @@ public:
   using sc_t = typename traits::scalar_t;
   using LO_t = typename traits::local_ordinal_t;
   using GO_t = typename traits::global_ordinal_t;
-  using comm_t =  typename traits::communicator_t;
+  using comm_t = typename traits::communicator_t;
   using wrap_t = typename traits::wrapped_t;
   using row_map_t = typename traits::row_map_t;
 
 public:
-
   DenseMatrix() = delete;
 
   DenseMatrix(const row_map_t & rowMap, GO_t ncols)
-    : data_(rowMap, ncols){}
+    : data_(rowMap, ncols) {}
 
   explicit DenseMatrix(const wrap_t & objin)
-    : data_(objin){}
+    : data_(objin) {}
 
   // copy cnstr
   DenseMatrix(DenseMatrix const & other) = default;
@@ -93,35 +90,41 @@ public:
   ~DenseMatrix() = default;
 
 public:
-  sc_t & operator()(LO_t irow, GO_t icol){
-    assert(icol < this->globalCols() );
-    assert(irow < this->localRows() );
+  sc_t & operator()(LO_t irow, GO_t icol)
+  {
+    assert(icol < this->globalCols());
+    assert(irow < this->localRows());
     return data_[icol][irow];
   }
 
-  sc_t const & operator()(LO_t irow, GO_t icol)const{
-    assert(icol < this->globalCols() );
-    assert(irow < this->localRows() );
+  sc_t const & operator()(LO_t irow, GO_t icol) const
+  {
+    assert(icol < this->globalCols());
+    assert(irow < this->localRows());
     return data_[icol][irow];
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extent(std::size_t i) const{
-    assert(i<=1);
-    return (i==0) ? data_.GlobalLength() : data_.NumVectors();
+  GO_t extent(std::size_t i) const
+  {
+    assert(i <= 1);
+    return (i == 0) ? data_.GlobalLength() : data_.NumVectors();
   }
 
-  LO_t extentLocal(std::size_t i) const{
+  LO_t extentLocal(std::size_t i) const
+  {
     // each process owns all cols
-    assert(i<=1);
-    return (i==0) ? data_.MyLength() : data_.NumVectors();
+    assert(i <= 1);
+    return (i == 0) ? data_.MyLength() : data_.NumVectors();
   }
 
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   }
 
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   }
 
@@ -131,4 +134,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_
+#endif// CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_DISTRIBUTED_EPETRA_HPP_

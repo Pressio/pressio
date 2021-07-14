@@ -49,9 +49,9 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio { namespace ode { namespace implicitmethods { namespace impl {
 
-template<
+template <
   typename scalar_t,
   typename state_t,
   typename residual_t,
@@ -59,17 +59,16 @@ template<
   typename system_type,
   typename residual_policy_t,
   typename jacobian_policy_t,
-  bool policies_are_standard
-  >
+  bool policies_are_standard>
 class StepperBDF1
 {
 
 public:
   // these aliases are detected by solver
-  using scalar_type	= scalar_t;
-  using state_type	= state_t;
-  using residual_type	= residual_t;
-  using jacobian_type	= jacobian_t;
+  using scalar_type = scalar_t;
+  using state_type = state_t;
+  using residual_type = residual_t;
+  using jacobian_type = jacobian_t;
 
   using tag_name = ::pressio::ode::implicitmethods::Euler;
   static constexpr bool is_implicit = true;
@@ -79,9 +78,9 @@ public:
   using stencil_states_t = StencilStatesManager<state_t, numAuxStates>;
 
 private:
-  scalar_t rhsEvaluationTime_  = {};
+  scalar_t rhsEvaluationTime_ = {};
   scalar_t dt_ = {};
-  types::step_t stepNumber_  = {};
+  types::step_t stepNumber_ = {};
   std::reference_wrapper<const system_type> systemObj_;
   stencil_states_t stencilStates_;
   ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
@@ -89,9 +88,9 @@ private:
 
 public:
   StepperBDF1() = delete;
-  StepperBDF1(const StepperBDF1 & other)  = default;
+  StepperBDF1(const StepperBDF1 & other) = default;
   StepperBDF1 & operator=(const StepperBDF1 & other) = delete;
-  StepperBDF1(StepperBDF1 && other)  = default;
+  StepperBDF1(StepperBDF1 && other) = default;
   StepperBDF1 & operator=(StepperBDF1 && other) = delete;
   ~StepperBDF1() = default;
 
@@ -103,19 +102,20 @@ public:
       stencilStates_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
-  {}
+  {
+  }
 
-  template<
+  template <
     bool _policies_are_standard = policies_are_standard,
-    ::pressio::mpl::enable_if_t<_policies_are_standard, int > = 0
-    >
+    ::pressio::mpl::enable_if_t<_policies_are_standard, int> = 0>
   StepperBDF1(const state_type & state,
 	      const system_type & systemObj)
     : systemObj_{systemObj},
       stencilStates_{state},
       resPolicy_{},
       jacPolicy_{}
-  {}
+  {
+  }
 
 public:
   ::pressio::ode::types::stepper_order_t order() const
@@ -123,33 +123,32 @@ public:
     return order_value;
   }
 
-  template<typename solver_type, typename ...Args>
+  template <typename solver_type, typename... Args>
   void doStep(state_type & odeState,
 	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("bdf1 stepper: do step");
 
     auto dummyGuesser =
-      [](const types::step_t &, const scalar_t &, state_type &)
-      { /*no op*/ };
+      [](const types::step_t &, const scalar_t &, state_type &) { /*no op*/ };
 
     doStepImpl(odeState, currentTime, dt, stepNumber,
 	       dummyGuesser, solver,
 	       std::forward<Args>(args)...);
   }
 
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template <typename solver_type, typename guess_callback_t, typename... Args>
   void doStep(state_type & odeState,
 	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      guess_callback_t && guesserCb,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("bdf1 stepper: do step with callback to state guesser");
     doStepImpl(odeState, currentTime, dt, stepNumber,
@@ -168,31 +167,29 @@ public:
 
   void residual(const state_t & odeState, residual_t & R) const
   {
-    resPolicy_.get().template compute
-      <tag_name>(odeState, stencilStates_, systemObj_.get(),
-		 rhsEvaluationTime_, dt_, stepNumber_, R);
+    resPolicy_.get().template compute<tag_name>(odeState, stencilStates_, systemObj_.get(),
+						rhsEvaluationTime_, dt_, stepNumber_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    jacPolicy_.get().template compute<
-      tag_name>(odeState, stencilStates_, systemObj_.get(),
-                rhsEvaluationTime_, dt_, stepNumber_, J);
+    jacPolicy_.get().template compute<tag_name>(odeState, stencilStates_, systemObj_.get(),
+						rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template <typename solver_type, typename guess_callback_t, typename... Args>
   void doStepImpl(state_type & odeSolution,
 		  const scalar_t & currentTime,
 		  const scalar_t & dt,
 		  const types::step_t & stepNumber,
 		  guess_callback_t && guesserCb,
 		  solver_type & solver,
-		  Args&& ...args)
+		  Args &&... args)
   {
     static_assert(::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value,
-      "Invalid solver for BDF1 stepper");
+		    solver_type, decltype(*this), state_type>::value,
+		  "Invalid solver for BDF1 stepper");
 
     /*
       upon entering this, we are at time step = stepNumber.
@@ -215,11 +212,9 @@ private:
     // if provided, callback to provide a guess for the odeSolution
     guesserCb(stepNumber, rhsEvaluationTime_, odeSolution);
 
-    try{
+    try {
       solver.solve(*this, odeSolution, std::forward<Args>(args)...);
-    }
-    catch (::pressio::eh::nonlinear_solve_failure const & e)
-    {
+    } catch(::pressio::eh::nonlinear_solve_failure const & e) {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeSolution to that
       auto & rollBackState = stencilStates_.stateAt(ode::n());
@@ -232,4 +227,4 @@ private:
 };
 
 }}}}
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
+#endif// ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_

@@ -52,9 +52,9 @@
 #include "pressio_apps.hpp"
 #include <Epetra_Import.h>
 
-namespace pressio{ namespace rom{ namespace test{ 
+namespace pressio { namespace rom { namespace test {
 
-class Burgers1dEpetraIdentityMask //: public Burgers1dEpetra
+class Burgers1dEpetraIdentityMask//: public Burgers1dEpetra
 {
 public:
   using importer_t = Epetra_Import;
@@ -63,8 +63,8 @@ public:
   using state_type = typename ::pressio::apps::Burgers1dEpetra::state_type;
   using scalar_type = typename ::pressio::apps::Burgers1dEpetra::scalar_type;
 
-  Burgers1dEpetraIdentityMask(Epetra_MpiComm * comm, 
-    const Epetra_Map & dataMap)
+  Burgers1dEpetraIdentityMask(Epetra_MpiComm * comm,
+			      const Epetra_Map & dataMap)
   {
     createMaskMap(comm, dataMap);
     importer_ = std::make_shared<importer_t>(*maskMap_, dataMap);
@@ -81,14 +81,16 @@ public:
     return dest;
   }
 
-  Epetra_MultiVector createApplyMaskResult(const Epetra_MultiVector & src) const{
+  Epetra_MultiVector createApplyMaskResult(const Epetra_MultiVector & src) const
+  {
     Epetra_MultiVector dest(*maskMap_, src.NumVectors());
     dest.Import(src, *importer_, Insert);
     return dest;
   }
 
   template <typename T>
-  void applyMask(const T & src, double time, T & dest) const{
+  void applyMask(const T & src, double time, T & dest) const
+  {
     dest.Import(src, *importer_, Insert);
   }
 
@@ -102,8 +104,8 @@ private:
 
     // pick all elements
     std::vector<int> myGIDnc;
-    for (decltype(myN0) i=0; i<myN0; i++) {
-	   myGIDnc.emplace_back(myGID[i]);
+    for(decltype(myN0) i = 0; i < myN0; i++) {
+      myGIDnc.emplace_back(myGID[i]);
     }
     maskMap_ = std::make_shared<Epetra_Map>(-1, myGIDnc.size(),
 					    myGIDnc.data(), 0,
@@ -112,7 +114,8 @@ private:
   };
 
 private:
-  template<typename T> using rcp = std::shared_ptr<T>;
+  template <typename T>
+  using rcp = std::shared_ptr<T>;
 
   rcp<Epetra_Map> maskMap_;
   std::vector<int> myMaskGel_;

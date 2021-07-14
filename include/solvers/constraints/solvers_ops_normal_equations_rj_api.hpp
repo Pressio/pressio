@@ -49,7 +49,7 @@
 #ifndef SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
 #define SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
 
-namespace pressio{ namespace solvers{ namespace constraints {
+namespace pressio { namespace solvers { namespace constraints {
 
 template <
   typename T,
@@ -58,9 +58,10 @@ template <
   typename g_t,
   typename J_t,
   typename r_t,
-  typename enable = void
->
-struct ops_normal_equations_rj_api : std::false_type{};
+  typename enable = void>
+struct ops_normal_equations_rj_api : std::false_type
+{
+};
 
 template <
   typename T,
@@ -68,78 +69,55 @@ template <
   typename H_t,
   typename g_t,
   typename J_t,
-  typename r_t
->
+  typename r_t>
 struct ops_normal_equations_rj_api<
   T, sc_t, H_t, g_t, J_t, r_t,
   ::pressio::mpl::enable_if_t<
 
     // 1. need non-void product returning J^T J
     std::is_same<
-      decltype
-      (
-       std::declval< T const &>().template product<H_t>
-       (
-        std::declval< ::pressio::transpose >(),
-        std::declval< ::pressio::nontranspose >(),
-        std::declval< sc_t>(),
-        std::declval<
-          typename containers::details::traits<J_t>::wrapped_t const & >(),
-        std::declval<
-          typename containers::details::traits<J_t>::wrapped_t const & >()
-        )
-       ),
-      H_t
-      >::value
-    and
+      decltype(
+	std::declval<T const &>().template product<H_t>(
+	  std::declval<::pressio::transpose>(),
+	  std::declval<::pressio::nontranspose>(),
+	  std::declval<sc_t>(),
+	  std::declval<
+	    typename containers::details::traits<J_t>::wrapped_t const &>(),
+	  std::declval<
+	    typename containers::details::traits<J_t>::wrapped_t const &>())),
+      H_t>::value and
 
     // 2. need void product computing  J^T J
     std::is_void<
-      decltype
-      (
-       std::declval< T const &>().product
-       (
-        std::declval< ::pressio::transpose >(),
-        std::declval< ::pressio::nontranspose >(),
-        std::declval< sc_t>(),
-        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
-        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
-        std::declval< sc_t>(),
-        std::declval< H_t & >()
-        )
-       )
-      >::value
-    and
+      decltype(
+	std::declval<T const &>().product(
+	  std::declval<::pressio::transpose>(),
+	  std::declval<::pressio::nontranspose>(),
+	  std::declval<sc_t>(),
+	  std::declval<typename containers::details::traits<J_t>::wrapped_t const &>(),
+	  std::declval<typename containers::details::traits<J_t>::wrapped_t const &>(),
+	  std::declval<sc_t>(),
+	  std::declval<H_t &>()))>::value and
 
     // 3. need void product computing J^T r
     std::is_void<
-      decltype
-      (
-       std::declval< T const &>().product
-       (
-        std::declval< ::pressio::transpose >(),
-        std::declval< sc_t>(),
-        std::declval< typename containers::details::traits<J_t>::wrapped_t const & >(),
-        std::declval< typename containers::details::traits<r_t>::wrapped_t const & >(),
-        std::declval< sc_t>(),
-        std::declval< g_t & >()
-        )
-       )
-      >::value
-    and
+      decltype(
+	std::declval<T const &>().product(
+	  std::declval<::pressio::transpose>(),
+	  std::declval<sc_t>(),
+	  std::declval<typename containers::details::traits<J_t>::wrapped_t const &>(),
+	  std::declval<typename containers::details::traits<r_t>::wrapped_t const &>(),
+	  std::declval<sc_t>(),
+	  std::declval<g_t &>()))>::value and
 
     // 4. need norm2 method
     std::is_same<
-      decltype
-      (
-       std::declval< T const &>().norm2
-       (
-        std::declval< typename containers::details::traits<r_t>::wrapped_t const & >()
-        )
-       ), sc_t
-      >::value
-   >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().norm2(
+	  std::declval<typename containers::details::traits<r_t>::wrapped_t const &>())),
+      sc_t>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::solvers::constraints
-#endif  // SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_
+}}}// namespace pressio::solvers::constraints
+#endif// SOLVERS_CONSTRAINTS_SOLVERS_OPS_NORMAL_EQUATIONS_RJ_API_HPP_

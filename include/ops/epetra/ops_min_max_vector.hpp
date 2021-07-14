@@ -49,13 +49,12 @@
 #ifndef OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_
 #define OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t>
 max(const vec_type & a)
 {
   typename ::pressio::containers::details::traits<vec_type>::scalar_t result = {};
@@ -66,8 +65,7 @@ max(const vec_type & a)
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
-  typename ::pressio::containers::details::traits<vec_type>::scalar_t
-  >
+  typename ::pressio::containers::details::traits<vec_type>::scalar_t>
 min(const vec_type & a)
 {
   typename ::pressio::containers::details::traits<vec_type>::scalar_t result = {};
@@ -76,4 +74,4 @@ min(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_
+#endif// OPS_EPETRA_OPS_MIN_MAX_VECTOR_HPP_

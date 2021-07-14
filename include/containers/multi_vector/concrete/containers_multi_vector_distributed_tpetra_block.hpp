@@ -49,17 +49,14 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_multi_vector_tpetra_block<
-      wrapped_type
-      >::value
-    >
-  >
+      wrapped_type>::value>>
 {
 
 public:
@@ -80,15 +77,15 @@ public:
   MultiVector() = delete;
 
   MultiVector(const map_t & map, LO_t blockSize, LO_t numVectors)
-    : data_(map, blockSize, numVectors){}
+    : data_(map, blockSize, numVectors) {}
 
   // explicit MultiVector(wrap_t && other)
   //   : data_(std::move(other.data_)){}
 
   explicit MultiVector(const wrap_t & other)
-    : data_( *other.getMap(),
-	     other.getBlockSize(),
-	     other.getNumVectors())
+    : data_(*other.getMap(),
+	    other.getBlockSize(),
+	    other.getNumVectors())
   {
     // just a trick to copy data
     data_.update(::pressio::utils::constants<sc_t>::one(),
@@ -96,50 +93,58 @@ public:
   }
 
   // copy constructor (delegate to above)
-  MultiVector(const this_t & other) : MultiVector(*other.data())
-  {}
+  MultiVector(const this_t & other)
+    : MultiVector(*other.data())
+  {
+  }
 
   // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
   //   if(&other != this)
   //   {
   //     data_.update(::pressio::utils::constants<sc_t>::one(),
-		//    *other.data(), ::pressio::utils::constants<sc_t>::zero());
+  //    *other.data(), ::pressio::utils::constants<sc_t>::zero());
   //   }
   //   return *this;
   // }
 
   // move and move assign: use copy because move not working for tblock
-  MultiVector(MultiVector && other) : MultiVector(*other.data()){}
+  MultiVector(MultiVector && other)
+    : MultiVector(*other.data()) {}
 
   MultiVector & operator=(MultiVector && other)
   {
     this->data_.update(::pressio::utils::constants<sc_t>::one(),
-           *other.data(),
-           ::pressio::utils::constants<sc_t>::zero() );
+		       *other.data(),
+		       ::pressio::utils::constants<sc_t>::zero());
     return *this;
   }
 
   ~MultiVector() = default;
 
 public:
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   }
 
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   }
 
-  GO_t numVectors() const{
+  GO_t numVectors() const
+  {
     return data_.getNumVectors();
   }
 
-  GO_t numVectorsGlobal() const{
+  GO_t numVectorsGlobal() const
+  {
     return data_.getNumVectors();
   }
 
-  LO_t numVectorsLocal() const{
+  LO_t numVectorsLocal() const
+  {
     // it is the same because epetra multivectors
     // are distributed on data, but each process owns
     // a part of each vector
@@ -147,23 +152,26 @@ public:
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extent(std::size_t i) const{
-    assert(i<=1);
-    return (i==0) ? data_.getMap()->getGlobalNumElements() : data_.getNumVectors();
+  GO_t extent(std::size_t i) const
+  {
+    assert(i <= 1);
+    return (i == 0) ? data_.getMap()->getGlobalNumElements() : data_.getNumVectors();
   }
 
-  LO_t extentLocal(std::size_t i) const{
+  LO_t extentLocal(std::size_t i) const
+  {
     // each process owns all cols
-    assert(i<=1);
-    return (i==0) ? data_.getMap()->getNodeNumElements() : data_.getNumVectors();
+    assert(i <= 1);
+    return (i == 0) ? data_.getMap()->getNodeNumElements() : data_.getNumVectors();
   }
 
 private:
-  void needSync(){
-    if (data_.template need_sync<Kokkos::HostSpace>())
-      data_.template sync<Kokkos::HostSpace> ();
-    else if (data_.template need_sync<device_t>())
-      data_.template sync<device_t> ();
+  void needSync()
+  {
+    if(data_.template need_sync<Kokkos::HostSpace>())
+      data_.template sync<Kokkos::HostSpace>();
+    else if(data_.template need_sync<device_t>())
+      data_.template sync<device_t>();
   }
 
 private:
@@ -172,4 +180,4 @@ private:
 };//end class
 }}//end namespace pressio::containers
 
-#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_

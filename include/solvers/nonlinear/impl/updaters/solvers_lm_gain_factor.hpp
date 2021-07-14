@@ -49,13 +49,13 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_
 #define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
-template<typename state_t>
+template <typename state_t>
 class LMGainFactor
 {
   using scalar_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
-  state_t cDiagH_; // = h * diag(J^T J)
+  state_t cDiagH_;// = h * diag(J^T J)
   state_t trialState_;
 
 public:
@@ -74,42 +74,43 @@ public:
   }
 
 public:
-  void resetForNewCall(){
+  void resetForNewCall()
+  {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
     ::pressio::ops::fill(cDiagH_, zero);
     ::pressio::ops::fill(trialState_, zero);
   }
 
-  template<typename system_t, typename solver_mixin_t>
+  template <typename system_t, typename solver_mixin_t>
   scalar_t compute(const system_t & system,
 		   state_t & state,
 		   const scalar_t & mu,
 		   solver_mixin_t & solverObj)
   {
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto two = ::pressio::utils::constants<scalar_t>::two();
 
     const auto & correction = solverObj.correctionCRef();
-    const auto & g	    = solverObj.gradientCRef();
-    const auto & H	    = solverObj.hessianCRefBeforeLMDiagonalScaling();
+    const auto & g = solverObj.gradientCRef();
+    const auto & H = solverObj.hessianCRefBeforeLMDiagonalScaling();
 
     // denom
     const auto diagH = ::pressio::containers::diag(H);
     ::pressio::ops::elementwise_multiply(one, correction, diagH, zero, cDiagH_);
     const auto den1 = ::pressio::ops::dot(correction, cDiagH_);
     const auto den2 = ::pressio::ops::dot(correction, g);
-    const auto denom = (one/two)*(mu*den1 + den2);
+    const auto denom = (one / two) * (mu * den1 + den2);
 
     // numerator
     auto norm = solverObj.residualNormCurrentCorrectionStep();
-    const auto r2Old = norm*norm;
+    const auto r2Old = norm * norm;
     ::pressio::ops::update(trialState_, state, one, correction, one);
     solverObj.residualNorm(system, trialState_, norm);
 
-    return (r2Old - norm*norm) / denom;
+    return (r2Old - norm * norm) / denom;
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_LM_GAIN_FACTOR_HPP_

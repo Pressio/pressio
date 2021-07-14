@@ -49,38 +49,35 @@
 #ifndef ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_
 #define ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_
 
-namespace pressio{ namespace ode{ namespace predicates {
+namespace pressio { namespace ode { namespace predicates {
 
 template <
   typename T,
   typename state_type,
   typename time_type,
   typename velo_type,
-  typename = void
-  >
-struct has_const_velocity_method_accept_state_time_result_return_void 
-  : std::false_type{};
+  typename = void>
+struct has_const_velocity_method_accept_state_time_result_return_void
+  : std::false_type
+{
+};
 
 template <
   typename T,
   typename state_type,
   typename time_type,
-  typename velo_type
-  >
+  typename velo_type>
 struct has_const_velocity_method_accept_state_time_result_return_void<
   T, state_type, time_type, velo_type,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>().velocity(
-					  std::declval<state_type const&>(),
-					  std::declval<time_type const &>(),
-					  std::declval<velo_type &>()
-					  )
-	   )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().velocity(
+	  std::declval<state_type const &>(),
+	  std::declval<time_type const &>(),
+	  std::declval<velo_type &>()))>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_
+}}}// namespace pressio::ode::predicates
+#endif// ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_VELOCITY_METHOD_ACCEPT_STATE_TIME_RESULT_RETURN_VOID_HPP_

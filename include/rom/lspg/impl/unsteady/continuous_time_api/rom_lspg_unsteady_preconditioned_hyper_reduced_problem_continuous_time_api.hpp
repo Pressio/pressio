@@ -50,45 +50,46 @@
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
 
-template <typename ...Args>
+template <typename... Args>
 class PreconditionedHyperReducedProblemContinuousTimeApi
 {
 public:
   using this_t = PreconditionedHyperReducedProblemContinuousTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t		= typename traits::fom_system_t;
-  using scalar_t		= typename traits::scalar_t;
-  using fom_native_state_t	= typename traits::fom_native_state_t;
-  using fom_state_t		= typename traits::fom_state_t;
-  using fom_velocity_t		= typename traits::fom_velocity_t;
-  using lspg_state_t		= typename traits::lspg_state_t;
-  using lspg_native_state_t	= typename traits::lspg_native_state_t;
-  using decoder_t		= typename traits::decoder_t;
-  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
-  using fom_state_mngr_t	= typename traits::fom_states_manager_t;
-  using preconditioner_t	= typename traits::preconditioner_t;
-  using ud_ops_t		= typename traits::ud_ops_t;
-  using residual_policy_t	= typename traits::residual_policy_t;
-  using jacobian_policy_t	= typename traits::jacobian_policy_t;
-  using aux_stepper_t		= typename traits::aux_stepper_t;
-  using stepper_t		= typename traits::stepper_t;
+  using fom_system_t = typename traits::fom_system_t;
+  using scalar_t = typename traits::scalar_t;
+  using fom_native_state_t = typename traits::fom_native_state_t;
+  using fom_state_t = typename traits::fom_state_t;
+  using fom_velocity_t = typename traits::fom_velocity_t;
+  using lspg_state_t = typename traits::lspg_state_t;
+  using lspg_native_state_t = typename traits::lspg_native_state_t;
+  using decoder_t = typename traits::decoder_t;
+  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
+  using fom_state_mngr_t = typename traits::fom_states_manager_t;
+  using preconditioner_t = typename traits::preconditioner_t;
+  using ud_ops_t = typename traits::ud_ops_t;
+  using residual_policy_t = typename traits::residual_policy_t;
+  using jacobian_policy_t = typename traits::jacobian_policy_t;
+  using aux_stepper_t = typename traits::aux_stepper_t;
+  using stepper_t = typename traits::stepper_t;
 
-  using sample_to_stencil_t        = typename traits::sample_to_stencil_t;
+  using sample_to_stencil_t = typename traits::sample_to_stencil_t;
   using sample_to_stencil_native_t = typename traits::sample_to_stencil_native_t;
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t>;
   using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
-  fom_state_reconstr_t, fom_state_mngr_t>;
+						      fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = PrecHypRedPoliciesMixin<Bt, ud_ops_t, residual_policy_t, jacobian_policy_t, sample_to_stencil_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
 public:
-  stepper_t & stepperRef(){
+  stepper_t & stepperRef()
+  {
     return members_.stepperObj_;
   }
 
@@ -97,24 +98,21 @@ public:
     return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const
+  {
     return members_.fomStateReconstructor_;
   }
 
 public:
   PreconditionedHyperReducedProblemContinuousTimeApi() = delete;
 
-  PreconditionedHyperReducedProblemContinuousTimeApi
-  (const PreconditionedHyperReducedProblemContinuousTimeApi &) = default;
+  PreconditionedHyperReducedProblemContinuousTimeApi(const PreconditionedHyperReducedProblemContinuousTimeApi &) = default;
 
-  PreconditionedHyperReducedProblemContinuousTimeApi & operator=
-  (const PreconditionedHyperReducedProblemContinuousTimeApi &) = delete;
+  PreconditionedHyperReducedProblemContinuousTimeApi & operator=(const PreconditionedHyperReducedProblemContinuousTimeApi &) = delete;
 
-  PreconditionedHyperReducedProblemContinuousTimeApi
-  (PreconditionedHyperReducedProblemContinuousTimeApi &&) = default;
+  PreconditionedHyperReducedProblemContinuousTimeApi(PreconditionedHyperReducedProblemContinuousTimeApi &&) = default;
 
-  PreconditionedHyperReducedProblemContinuousTimeApi & operator=
-  (PreconditionedHyperReducedProblemContinuousTimeApi &&) = delete;
+  PreconditionedHyperReducedProblemContinuousTimeApi & operator=(PreconditionedHyperReducedProblemContinuousTimeApi &&) = delete;
 
   ~PreconditionedHyperReducedProblemContinuousTimeApi() = default;
 
@@ -123,8 +121,7 @@ public:
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and std::is_void<_sample_to_stencil_t>::value,
-      int > = 0
-    >
+      int> = 0>
   PreconditionedHyperReducedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
 						     decoder_t & decoder,
 						     const lspg_state_t & romStateIn,
@@ -132,15 +129,15 @@ public:
 						     const preconditioner_t & preconditionerObj)
     : members_(romStateIn, fomSystemObj, decoder,
 	       fomNominalStateNative, preconditionerObj)
-  {}
+  {
+  }
 
   template <
     typename _sample_to_stencil_t = sample_to_stencil_t,
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       std::is_void<_ud_ops_t>::value and mpl::not_void<_sample_to_stencil_t>::value,
-      int > = 0
-    >
+      int> = 0>
   PreconditionedHyperReducedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
 						     decoder_t & decoder,
 						     const lspg_state_t & romStateIn,
@@ -149,8 +146,9 @@ public:
 						     const _sample_to_stencil_t & sTosInfo)
     : members_(romStateIn, fomSystemObj, decoder,
 	       fomNominalStateNative, preconditionerObj, sTosInfo)
-  {}
+  {
+  }
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_PRECONDITIONED_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_

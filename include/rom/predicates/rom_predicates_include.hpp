@@ -75,4 +75,4 @@
 
 #include "./galerkin_projector/rom_has_const_apply_method_accept_operand_result_return_void.hpp"
 
-#endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_
+#endif// ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_

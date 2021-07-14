@@ -49,9 +49,9 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_ARBITRARY_PROJECTOR_HPP_
 #define ROM_GALERKIN_ROM_CREATE_ARBITRARY_PROJECTOR_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio { namespace rom { namespace galerkin {
 
-template<typename matrix_type>
+template <typename matrix_type>
 impl::ArbitraryProjector<mpl::remove_cvref_t<matrix_type>, void>
 createArbitraryProjector(matrix_type && matrix)
 {
@@ -61,7 +61,7 @@ createArbitraryProjector(matrix_type && matrix)
   return return_t(std::forward<matrix_type>(matrix));
 }
 
-template<typename matrix_type, typename ops_t>
+template <typename matrix_type, typename ops_t>
 impl::ArbitraryProjector<mpl::remove_cvref_t<matrix_type>, ops_t>
 createArbitraryProjector(matrix_type && matrix,
 			 const ops_t & udOps)
@@ -73,4 +73,4 @@ createArbitraryProjector(matrix_type && matrix,
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_CREATE_ARBITRARY_PROJECTOR_HPP_
+#endif// ROM_GALERKIN_ROM_CREATE_ARBITRARY_PROJECTOR_HPP_

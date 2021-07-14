@@ -17,7 +17,7 @@
 namespace spdlog {
 namespace details {
 
-template<typename T = bool>
+template <typename T = bool>
 class backtracer
 {
   mutable std::mutex mutex_;
@@ -27,21 +27,21 @@ class backtracer
 public:
   backtracer() = default;
 
-  backtracer(const backtracer &other)
+  backtracer(const backtracer & other)
   {
     std::lock_guard<std::mutex> lock(other.mutex_);
     enabled_ = other.enabled();
     messages_ = other.messages_;
   }
 
-  backtracer(backtracer &&other) SPDLOG_NOEXCEPT
+  backtracer(backtracer && other) SPDLOG_NOEXCEPT
   {
     std::lock_guard<std::mutex> lock(other.mutex_);
     enabled_ = other.enabled();
     messages_ = std::move(other.messages_);
   }
 
-  backtracer &operator=(backtracer other)
+  backtracer & operator=(backtracer other)
   {
     std::lock_guard<std::mutex> lock(mutex_);
     enabled_ = other.enabled();
@@ -67,7 +67,7 @@ public:
     return enabled_.load(std::memory_order_relaxed);
   }
 
-  void push_back(const log_msg &msg)
+  void push_back(const log_msg & msg)
   {
     std::lock_guard<std::mutex> lock{mutex_};
     messages_.push_back(log_msg_buffer{msg});
@@ -77,19 +77,18 @@ public:
   void foreach_pop(std::function<void(const details::log_msg &)> fun)
   {
     std::lock_guard<std::mutex> lock{mutex_};
-    while (!messages_.empty())
-      {
-        auto &front_msg = messages_.front();
-        fun(front_msg);
-        messages_.pop_front();
-      }
+    while(!messages_.empty()) {
+      auto & front_msg = messages_.front();
+      fun(front_msg);
+      messages_.pop_front();
+    }
   }
 };
 
-} // namespace details
-} // namespace spdlog
+}// namespace details
+}// namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "backtracer-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_BACKTRACER_HPP_

@@ -49,70 +49,56 @@
 #ifndef OPS_EIGEN_OPS_VECTOR_UPDATE_HPP_
 #define OPS_EIGEN_OPS_VECTOR_UPDATE_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename scalar_t>
+template <typename T, typename T1, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value>
 update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1>::value,
-     "vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = a*(*v.data()) + b*(*v1.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1>::value,
+		"vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = a * (*v.data()) + b * (*v1.data());
 }
 
-template<typename T, typename T1, typename scalar_t>
+template <typename T, typename T1, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value
-  >
-update(T & v, const T1 & v1, const scalar_t  b)
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value>
+update(T & v, const T1 & v1, const scalar_t b)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1>::value,
-     "vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = b*(*v1.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1>::value,
+		"vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = b * (*v1.data());
 }
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename scalar_t>
+template <typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
-  >
-update(T & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c)
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value>
+update(T & v, const scalar_t & a,
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2>::value,
-     "vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2>::value,
+		"vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = a * (*v.data()) + b * (*v1.data()) + c * (*v2.data());
 }
 
-template<typename T, typename T1, typename T2, typename scalar_t>
+template <typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value>
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c)
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2>::value,
-     "vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = b*(*v1.data()) + c*(*v2.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2>::value,
+		"vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = b * (*v1.data()) + c * (*v2.data());
 }
 
 
@@ -120,105 +106,83 @@ update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename scalar_t>
+template <typename T,
+	  typename T1,
+	  typename T2,
+	  typename T3,
+	  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value
-  >
-update(T  & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d)
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value>
+update(T & v, const scalar_t & a,
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c,
+       const T3 & v3, const scalar_t & d)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3>::value,
-     "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = a*(*v.data()) + b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2, T3>::value,
+		"vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = a * (*v.data()) + b * (*v1.data()) + c * (*v2.data()) + d * (*v3.data());
 }
 
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename scalar_t>
+template <typename T,
+	  typename T1,
+	  typename T2,
+	  typename T3,
+	  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value>
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d)
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c,
+       const T3 & v3, const scalar_t & d)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3>::value,
-     "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2, T3>::value,
+		"vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = b * (*v1.data()) + c * (*v2.data()) + d * (*v3.data());
 }
 
 //----------------------------------------------------------------------
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template< typename T,
-          typename T1,
-          typename T2,
-          typename T3,
-          typename T4,
-          typename scalar_t>
+template <typename T,
+	  typename T1,
+	  typename T2,
+	  typename T3,
+	  typename T4,
+	  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T4>::value
-  >
-update(T & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d,
-       const T4 & v4, const scalar_t &e)
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T4>::value>
+update(T & v, const scalar_t & a,
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c,
+       const T3 & v3, const scalar_t & d,
+       const T4 & v4, const scalar_t & e)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3,T4>::value,
-     "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = a*(*v.data()) + b*(*v1.data()) +
-    c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2, T3, T4>::value,
+		"vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = a * (*v.data()) + b * (*v1.data()) +
+		c * (*v2.data()) + d * (*v3.data()) + e * (*v4.data());
 }
 
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename T4,
-         typename scalar_t>
+template <typename T,
+	  typename T1,
+	  typename T2,
+	  typename T3,
+	  typename T4,
+	  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T4>::value
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T4>::value>
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d,
-       const T4 & v4, const scalar_t &e)
+       const T1 & v1, const scalar_t & b,
+       const T2 & v2, const scalar_t & c,
+       const T3 & v3, const scalar_t & d,
+       const T4 & v4, const scalar_t & e)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3,T4>::value,
-     "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  (*v.data()) = b*(*v1.data()) + c*(*v2.data()) + d*(*v3.data()) + e*(*v4.data());
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T, T1, T2, T3, T4>::value,
+		"vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
+  (*v.data()) = b * (*v1.data()) + c * (*v2.data()) + d * (*v3.data()) + e * (*v4.data());
 }
 
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_VECTOR_UPDATE_HPP_
+#endif// OPS_EIGEN_OPS_VECTOR_UPDATE_HPP_

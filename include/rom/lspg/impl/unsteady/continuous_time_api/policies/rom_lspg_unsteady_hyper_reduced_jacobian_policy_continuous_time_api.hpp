@@ -49,14 +49,13 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_JACOBIAN_POLICY_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_JACOBIAN_POLICY_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
 
-template<
+template <
   typename fom_states_manager_t,
   typename apply_jac_return_type,
   typename decoder_type,
-  typename sample_to_stencil_t
-  >
+  typename sample_to_stencil_t>
 class HypRedJacobianPolicyContinuousTimeApi
 {
 
@@ -78,7 +77,8 @@ public:
       decoderObj_(decoder),
       decoderJacobian_(decoder.jacobianCRef()),
       sTosInfo_(sTosInfo)
-  {}
+  {
+  }
 
 public:
   template <typename fom_system_t>
@@ -94,8 +94,7 @@ public:
     typename lspg_state_t,
     typename lspg_jac_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   void compute(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
@@ -118,13 +117,12 @@ private:
     typename lspg_state_t,
     typename lspg_jac_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   void compute_impl(const lspg_state_t & romState,
 		    lspg_jac_t & romJac,
 		    const fom_system_t & fomSystemObj,
-		    const scalar_t   & timeAtNextStep,
-		    const scalar_t   & dt,
+		    const scalar_t & timeAtNextStep,
+		    const scalar_t & dt,
 		    const ::pressio::ode::types::step_t & currentStepNumber) const
   {
     // here we assume that the current state has already been reconstructd
@@ -152,4 +150,4 @@ protected:
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_JACOBIAN_POLICY_CONTINUOUS_TIME_API_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_JACOBIAN_POLICY_CONTINUOUS_TIME_API_HPP_

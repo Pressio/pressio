@@ -51,22 +51,18 @@
 
 #include <Epetra_Import.h>
 
-namespace pressio{ namespace svd{
+namespace pressio { namespace svd {
 
-template<typename matrix_type,
-	 template <typename...> class lsv_type,
-	 template <typename...> class rsv_type,
-	 typename sval_type>
+template <typename matrix_type,
+	  template <typename...> class lsv_type,
+	  template <typename...> class rsv_type,
+	  typename sval_type>
 class Solver<matrix_type, lsv_type, rsv_type, sval_type,
-	     typename
-	     std::enable_if<
+	     typename std::enable_if<
 	       containers::predicates::is_multi_vector_epetra<
-		 typename containers::details::traits<matrix_type>::wrapped_t
-		 >::value
-	       >::type
-	     >
-  : public SolverBase< Solver<matrix_type, lsv_type,
-			      rsv_type, sval_type> >
+		 typename containers::details::traits<matrix_type>::wrapped_t>::value>::type>
+  : public SolverBase<Solver<matrix_type, lsv_type,
+			     rsv_type, sval_type>>
 {
 
 private:
@@ -81,10 +77,10 @@ public:
   ~Solver() = default;
 
 private:
-
-  template<svdType svd_enum_value>
-  ::pressio::mpl::enable_if_t< svd_enum_value==svdType::truncated >
-  computeImpl(matrix_type & A, int t, sc_t tol){
+  template <svdType svd_enum_value>
+  ::pressio::mpl::enable_if_t<svd_enum_value == svdType::truncated>
+  computeImpl(matrix_type & A, int t, sc_t tol)
+  {
     tol_ = tol;
     auto m = A.globalLength();
     auto n = A.globalNumVectors();
@@ -102,20 +98,20 @@ private:
     A2.data()->Import(*A.data(), importer, Insert);
 
     // store it into an Eigen matrix
-    containers::DenseMatrix<Eigen::MatrixXd> eA2W(m,n);
-    for (int i=0;i<m;i++)
-      for (int j=0;j<n;j++)
-    	eA2W(i,j) = A2(i,j);
+    containers::DenseMatrix<Eigen::MatrixXd> eA2W(m, n);
+    for(int i = 0; i < m; i++)
+      for(int j = 0; j < n; j++)
+	eA2W(i, j) = A2(i, j);
 
     // do svd with eigen
     Eigen::BDCSVD<Eigen::MatrixXd> eSVD;
-    eSVD.compute(*eA2W.data(), Eigen::ComputeFullU );//| Eigen::ComputeFullV );
+    eSVD.compute(*eA2W.data(), Eigen::ComputeFullU);//| Eigen::ComputeFullV );
 
     // store target t left singular vectors into replicated Epetra_Multivector
-    lsv_t locU(locMap,t);
-    for (int i=0;i<m;i++)
-      for (int j=0;j<t;j++)
-    	locU(i,j) = eSVD.matrixU()(i,j);
+    lsv_t locU(locMap, t);
+    for(int i = 0; i < m; i++)
+      for(int j = 0; j < t; j++)
+	locU(i, j) = eSVD.matrixU()(i, j);
 
     // import from local to distributed
     lsv_ = std::make_shared<lsv_t>(ArowMap, t);
@@ -125,24 +121,27 @@ private:
   }//end method
   //-----------------------------------------------------
 
-  const lsv_t & cRefLeftSingularVectorsImpl() const {
+  const lsv_t & cRefLeftSingularVectorsImpl() const
+  {
     return *lsv_;
   }//end method
   //-----------------------------------------------------
 
-  const rsv_t & cRefRightSingularVectorsImpl() const {
+  const rsv_t & cRefRightSingularVectorsImpl() const
+  {
     return *rsv_;
   }//end method
   //-----------------------------------------------------
 
-  const sval_t & singularValuesImpl() const{
+  const sval_t & singularValuesImpl() const
+  {
     return *sval_;
   }//end method
   //-----------------------------------------------------
 
 private:
-  friend SolverBase< Solver<matrix_type, lsv_type,
-			    rsv_type, sval_type> >;
+  friend SolverBase<Solver<matrix_type, lsv_type,
+			   rsv_type, sval_type>>;
 
 private:
   sc_t tol_ = {};
@@ -157,4 +156,4 @@ private:
 
 }//end namespace svd
 }//end namespace pressio
-#endif  // SVD_SVD_MULTI_VECTOR_EPETRA_HPP_
+#endif// SVD_SVD_MULTI_VECTOR_EPETRA_HPP_

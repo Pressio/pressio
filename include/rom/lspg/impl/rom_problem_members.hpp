@@ -49,20 +49,18 @@
 #ifndef ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 #define ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+namespace pressio { namespace rom { namespace lspg { namespace impl {
 
 template <
   typename T,
   bool def, bool masked, bool prec, bool hypred,
-  typename ... Args
-  >
+  typename... Args>
 struct PoliciesMixin;
 
 // specialize for default
 template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, true, false, false, false, ops_t, r_pol_t, j_pol_t
-  > : T
+  T, true, false, false, false, ops_t, r_pol_t, j_pol_t> : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -74,10 +72,9 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -85,12 +82,12 @@ struct PoliciesMixin<
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(T::fomStatesMngr_),
       jacobianPolicy_(T::fomStatesMngr_, decoder)
-  {}
+  {
+  }
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class _ops_t = ops_t,
-    mpl::enable_if_t<!std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<!std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -99,14 +96,14 @@ struct PoliciesMixin<
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, ops),
       residualPolicy_(T::fomStatesMngr_, ops),
       jacobianPolicy_(T::fomStatesMngr_, decoder, ops)
-  {}
+  {
+  }
 };
 
 // specialize for masked
 template <class T, class masker_t, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, false, true, false, false, masker_t, ops_t, r_pol_t, j_pol_t
-  > : T
+  T, false, true, false, false, masker_t, ops_t, r_pol_t, j_pol_t> : T
 {
 /* here we need to consider also the case where the masker is a pybind11:object
    that is passed in directly from python: in that scenario, masker_t is
@@ -128,11 +125,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class T5,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -149,9 +145,8 @@ struct PoliciesMixin<
 #endif
   {
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    static_assert
-      (std::is_same<T5, pybind11::object>::value,
-       "Maked policies mixin: masker object must be a pybind11::object");
+    static_assert(std::is_same<T5, pybind11::object>::value,
+		  "Maked policies mixin: masker object must be a pybind11::object");
 #endif
   }
 };
@@ -159,8 +154,7 @@ struct PoliciesMixin<
 // specialize for precond default
 template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, false, false, true, false, ops_t, r_pol_t, j_pol_t
-  > : T
+  T, false, false, true, false, ops_t, r_pol_t, j_pol_t> : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -172,11 +166,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class T5,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -185,14 +178,14 @@ struct PoliciesMixin<
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(preconditioner, T::fomStatesMngr_),
       jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder)
-  {}
+  {
+  }
 };
 
 // specialize for hyp-red with void stencil-to-sample mapping
 template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, void
-  > : T
+  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, void> : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -204,11 +197,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -216,16 +208,16 @@ struct PoliciesMixin<
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(T::fomStatesMngr_),
       jacobianPolicy_(T::fomStatesMngr_, decoder)
-  {}
+  {
+  }
 };
 
 // specialize for hyp-red with nonvoid stencil-to-sample mapping
 template <class T, class ops_t, class r_pol_t, class j_pol_t, class sTos_t>
 struct PoliciesMixin<
-  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, sTos_t
-  > : T
+  T, false, false, false, true, ops_t, r_pol_t, j_pol_t, sTos_t> : T
 {
-  sTos_t  meshToStencilMapper_;
+  sTos_t meshToStencilMapper_;
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
@@ -236,11 +228,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class T5,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -250,14 +241,14 @@ struct PoliciesMixin<
       meshToStencilMapper_(meshToStencilMapper),
       residualPolicy_(T::fomStatesMngr_, meshToStencilMapper_),
       jacobianPolicy_(T::fomStatesMngr_, decoder, meshToStencilMapper_)
-  {}
+  {
+  }
 };
 
 // specialize for preconditioned hyp-red with void stencil-to-sample mapping
 template <class T, class ops_t, class r_pol_t, class j_pol_t>
 struct PoliciesMixin<
-  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, void
-  > : T
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, void> : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
@@ -269,11 +260,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class T5,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -282,16 +272,16 @@ struct PoliciesMixin<
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       residualPolicy_(preconditioner, T::fomStatesMngr_),
       jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder)
-  {}
+  {
+  }
 };
 
 // specialize for preconditioned hyp-red with nonvoid stencil-to-sample mapping
 template <class T, class ops_t, class r_pol_t, class j_pol_t, class sTos_t>
 struct PoliciesMixin<
-  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, sTos_t
-  > : T
+  T, false, false, true, true, ops_t, r_pol_t, j_pol_t, sTos_t> : T
 {
-  sTos_t  meshToStencilMapper_;
+  sTos_t meshToStencilMapper_;
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
@@ -302,11 +292,10 @@ struct PoliciesMixin<
   PoliciesMixin & operator=(PoliciesMixin &&) = delete;
   ~PoliciesMixin() = default;
 
-  template<
+  template <
     class T1, class T2, class T3, class T4, class T5, class T6,
     class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
-    >
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
   PoliciesMixin(const T1 & romStateIn,
 		const T2 & fomObj,
 		T3 & decoder,
@@ -317,23 +306,24 @@ struct PoliciesMixin<
       meshToStencilMapper_(meshToStencilMapper),
       residualPolicy_(preconditioner, T::fomStatesMngr_, meshToStencilMapper_),
       jacobianPolicy_(preconditioner, T::fomStatesMngr_, decoder, meshToStencilMapper_)
-  {}
+  {
+  }
 };
 
 // aliases to make things easier
-template <class T, typename ...Args>
+template <class T, typename... Args>
 using DefaultPoliciesMixin = PoliciesMixin<T, true, false, false, false, Args...>;
 
-template <class T, typename ...Args>
+template <class T, typename... Args>
 using MaskedPoliciesMixin = PoliciesMixin<T, false, true, false, false, Args...>;
 
-template <class T, typename ...Args>
+template <class T, typename... Args>
 using PrecondPoliciesMixin = PoliciesMixin<T, false, false, true, false, Args...>;
 
-template <class T, typename ...Args>
+template <class T, typename... Args>
 using HypRedPoliciesMixin = PoliciesMixin<T, false, false, false, true, Args...>;
 
-template <class T, typename ...Args>
+template <class T, typename... Args>
 using PrecHypRedPoliciesMixin = PoliciesMixin<T, false, false, true, true, Args...>;
 
 //---------------------------------------------------
@@ -351,12 +341,13 @@ struct SystemMixin : T
   SystemMixin & operator=(SystemMixin &&) = delete;
   ~SystemMixin() = default;
 
-  template<typename...Args>
-  SystemMixin(Args && ...args)
+  template <typename... Args>
+  SystemMixin(Args &&... args)
     : T(std::forward<Args>(args)...),
       systemObj_(T::fomCRef(), T::residualPolicy_, T::jacobianPolicy_)
-  {}
+  {
+  }
 };
 
 }}}}
-#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#endif// ROM_LSPG_IMPL_ROM_PROBLEM_MEMBERS_HPP_

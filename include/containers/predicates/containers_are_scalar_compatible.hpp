@@ -49,9 +49,9 @@
 #ifndef CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
 #define CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
-template <typename ... Args>
+template <typename... Args>
 struct are_scalar_compatible;
 
 template <typename T1>
@@ -65,11 +65,10 @@ struct are_scalar_compatible<T1, T2>
 {
   static constexpr auto value = std::is_same<
     typename containers::details::traits<T1>::scalar_t,
-    typename containers::details::traits<T2>::scalar_t
-    >::value;
+    typename containers::details::traits<T2>::scalar_t>::value;
 };
 
-template <typename T1, typename T2, typename ... rest>
+template <typename T1, typename T2, typename... rest>
 struct are_scalar_compatible<T1, T2, rest...>
 {
   static constexpr auto value =
@@ -77,5 +76,5 @@ struct are_scalar_compatible<T1, T2, rest...>
     are_scalar_compatible<T2, rest...>::value;
 };
 
-}}} // namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_
+}}}// namespace pressio::containers::predicates
+#endif// CONTAINERS_PREDICATES_CONTAINERS_ARE_SCALAR_COMPATIBLE_HPP_

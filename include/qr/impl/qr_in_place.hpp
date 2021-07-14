@@ -49,39 +49,38 @@
 #ifndef QR_IMPL_QR_IN_PLACE_HPP_
 #define QR_IMPL_QR_IN_PLACE_HPP_
 
-namespace pressio{ namespace qr{ namespace impl{
+namespace pressio { namespace qr { namespace impl {
 
 /* specialize for R_type == void */
-template<
+template <
   typename matrix_type, typename algo,
-  template <typename...> class Q_type
-  >
+  template <typename...> class Q_type>
 class QRSolver<
   matrix_type, algo, true, void, Q_type,
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_multi_vector_wrapper<matrix_type>::value or
-    containers::predicates::is_dense_matrix_wrapper<matrix_type>::value
-    >
-  > : public details::traits< QRSolver<matrix_type, algo,
-				       true, void, Q_type>>::base_compute_t,
-      public details::traits< QRSolver<matrix_type, algo,
-				       true, void, Q_type>>::base_solve_t
+    containers::predicates::is_dense_matrix_wrapper<matrix_type>::value>> : public details::traits<QRSolver<matrix_type, algo,
+													    true, void, Q_type>>::base_compute_t,
+									    public details::traits<QRSolver<matrix_type, algo,
+													    true, void, Q_type>>::base_solve_t
 {
 
-  using this_t		= QRSolver<matrix_type, algo, true, void, Q_type>;
-  using traits_t	= details::traits<this_t>;
-  using base_compute_t	= typename traits_t::base_compute_t;
-  using base_solve_t	= typename traits_t::base_solve_t;
+  using this_t = QRSolver<matrix_type, algo, true, void, Q_type>;
+  using traits_t = details::traits<this_t>;
+  using base_compute_t = typename traits_t::base_compute_t;
+  using base_solve_t = typename traits_t::base_solve_t;
 
-  using impl_t	       = typename traits_t::impl_t;
+  using impl_t = typename traits_t::impl_t;
   impl_t myImpl_;
 
-  void computeThinImpl(matrix_type & A){
+  void computeThinImpl(matrix_type & A)
+  {
     myImpl_.computeThinInPlace(A);
   }
 
   template <typename vector_t>
-  void solveImpl(const vector_t & rhs, vector_t & y) const {
+  void solveImpl(const vector_t & rhs, vector_t & y) const
+  {
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
@@ -93,7 +92,6 @@ private:
   friend base_compute_t;
   friend base_solve_t;
 };
-
 
 
 // /* specialize for R_type != void */
@@ -150,5 +148,5 @@ private:
 // };
 
 
-}}} // end namespace pressio::qr::impl
-#endif  // QR_IMPL_QR_IN_PLACE_HPP_
+}}}// end namespace pressio::qr::impl
+#endif// QR_IMPL_QR_IN_PLACE_HPP_

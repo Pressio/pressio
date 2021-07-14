@@ -13,7 +13,7 @@
 #ifndef MPL_VARIADIC_NONE_OF_HPP_
 #define MPL_VARIADIC_NONE_OF_HPP_
 
-namespace pressio{ namespace mpl{ namespace variadic {
+namespace pressio { namespace mpl { namespace variadic {
 
 /**
  * \class none_of
@@ -24,23 +24,25 @@ namespace pressio{ namespace mpl{ namespace variadic {
 is true iff none of the elements in the sequence satisfy the predicate `Predicate`
  * \sa tinympl::none_of
  */
-template< template<class ... T> class Predicate, class ... Args>
+template <template <class... T> class Predicate, class... Args>
 struct none_of;
 
-template< template<class ... T> class Predicate, class Head, class ... Args>
+template <template <class... T> class Predicate, class Head, class... Args>
 struct none_of<Predicate, Head, Args...>
-  : std::conditional <
-  Predicate<Head>::type::value,
-  std::integral_constant<bool, false>,
-  typename none_of<Predicate, Args...>::type
-  >::type
-{};
+  : std::conditional<
+      Predicate<Head>::type::value,
+      std::integral_constant<bool, false>,
+      typename none_of<Predicate, Args...>::type>::type
+{
+};
 
-template< template<class ... T> class Predicate>
+template <template <class... T> class Predicate>
 struct none_of<Predicate>
-  : std::integral_constant<bool, true>{};
+  : std::integral_constant<bool, true>
+{
+};
 
 
-}}} // namespace pressio::mpl::variadic
+}}}// namespace pressio::mpl::variadic
 
-#endif  // MPL_VARIADIC_NONE_OF_HPP_
+#endif// MPL_VARIADIC_NONE_OF_HPP_

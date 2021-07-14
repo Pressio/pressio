@@ -49,18 +49,20 @@
 #ifndef ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 #define ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <typename T, typename enable = void>
-struct has_dense_matrix_typedef : std::false_type{};
+struct has_dense_matrix_typedef : std::false_type
+{
+};
 
 template <typename T>
 struct has_dense_matrix_typedef<
   T,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<typename T::dense_matrix_type>::value
-    >
-  > : std::true_type{};
+    !std::is_void<typename T::dense_matrix_type>::value>> : std::true_type
+{
+};
 
 }}}//end namespace pressio::rom::predicates
-#endif  // ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
+#endif// ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_

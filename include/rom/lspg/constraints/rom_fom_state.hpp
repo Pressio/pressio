@@ -49,18 +49,20 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_FOM_STATE_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_FOM_STATE_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
+namespace pressio { namespace rom { namespace lspg { namespace constraints {
 
-template<typename T, typename enable = void>
-struct fom_state : std::false_type{};
+template <typename T, typename enable = void>
+struct fom_state : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct fom_state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_vector_wrapper<T>::value>> : std::true_type
+{
+};
 
 }}}}
-#endif  // ROM_LSPG_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#endif// ROM_LSPG_CONSTRAINTS_ROM_FOM_STATE_HPP_

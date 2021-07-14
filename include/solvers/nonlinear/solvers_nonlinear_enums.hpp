@@ -49,27 +49,25 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+namespace pressio { namespace solvers { namespace nonlinear {
 
-enum class stop
-  {
-   whenCorrectionAbsoluteNormBelowTolerance, // this is the default
-   whenCorrectionRelativeNormBelowTolerance,
-   whenResidualAbsoluteNormBelowTolerance,
-   whenResidualRelativeNormBelowTolerance,
-   whenGradientAbsoluteNormBelowTolerance,
-   whenGradientRelativeNormBelowTolerance,
-   afterMaxIters
-  };
+enum class stop {
+  whenCorrectionAbsoluteNormBelowTolerance,// this is the default
+  whenCorrectionRelativeNormBelowTolerance,
+  whenResidualAbsoluteNormBelowTolerance,
+  whenResidualRelativeNormBelowTolerance,
+  whenGradientAbsoluteNormBelowTolerance,
+  whenGradientRelativeNormBelowTolerance,
+  afterMaxIters
+};
 
-enum class update
-  {
-   standard, // default
-   armijo,
-   LMSchedule1,
-   LMSchedule2,
-   custom
-  };
+enum class update {
+  standard,// default
+  armijo,
+  LMSchedule1,
+  LMSchedule2,
+  custom
+};
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_
+#endif// SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_ENUMS_HPP_

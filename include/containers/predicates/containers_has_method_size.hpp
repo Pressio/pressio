@@ -49,40 +49,38 @@
 #ifndef CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_SIZE_HPP_
 #define CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_SIZE_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename = void>
-struct has_method_size : std::false_type{};
+struct has_method_size : std::false_type
+{
+};
 
 template <typename T>
 struct has_method_size<
   T,
   mpl::enable_if_t<
     !std::is_void<
-      decltype
-      (
-       std::declval<T const &>().size()
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().size())>::value>> : std::true_type
+{
+};
 
 
 template <typename T, typename = void>
-struct has_method_size_with_arg : std::false_type{};
+struct has_method_size_with_arg : std::false_type
+{
+};
 
 template <typename T>
 struct has_method_size_with_arg<
   T,
   mpl::enable_if_t<
     !std::is_void<
-      decltype
-      (
-       std::declval<T const &>().size(int())
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().size(int()))>::value>> : std::true_type
+{
+};
 
-}}} //pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_SIZE_HPP_
+}}}//pressio::containers::predicates
+#endif// CONTAINERS_PREDICATES_CONTAINERS_HAS_METHOD_SIZE_HPP_

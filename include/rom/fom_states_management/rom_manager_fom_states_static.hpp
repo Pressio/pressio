@@ -49,15 +49,14 @@
 #ifndef ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
 #define ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio { namespace rom {
 
 template <
   typename tag,
   typename fom_state_type,
   typename reconstuctor_type,
   typename ud_ops_t,
-  std::size_t numstates = 1
-  >
+  std::size_t numstates = 1>
 class ManagerFomStates;
 
 // *****************************************
@@ -66,12 +65,10 @@ class ManagerFomStates;
 template <
   typename fom_state_type,
   typename reconstuctor_type,
-  typename ud_ops_t
-  >
+  typename ud_ops_t>
 class ManagerFomStates<
   ::pressio::rom::Steady,
-  fom_state_type, reconstuctor_type, ud_ops_t, 1
-  >
+  fom_state_type, reconstuctor_type, ud_ops_t, 1>
 {
 public:
   using data_type =
@@ -93,10 +90,9 @@ public:
     this->setContainersToZero();
   }
 
-  template<
+  template <
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
-    >
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
   ManagerFomStates(const reconstuctor_type & fomStateReconstr,
 		   const fom_state_type & fomState,
 		   const _ud_ops_t & udOps)
@@ -108,9 +104,9 @@ public:
   }
 
 public:
-  static constexpr std::size_t size(){ return data_type::size(); }
+  static constexpr std::size_t size() { return data_type::size(); }
 
-  fom_state_type const & currentFomState() const {return data_(0);}
+  fom_state_type const & currentFomState() const { return data_(0); }
 
   template <typename rom_state_t>
   void reconstructCurrentFomState(const rom_state_t & romStateIn)
@@ -120,23 +116,24 @@ public:
 
 private:
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
+  mpl::enable_if_t<std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
     ::pressio::ops::set_zero(data_(0));
   }
 
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
+  mpl::enable_if_t<!std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
     udOps_.get().set_zero(*data_(0).data());
   }
 
 private:
   typename std::conditional<
-  std::is_void<ud_ops_t>::value,
-  ::pressio::utils::impl::empty,
-  std::reference_wrapper<const ud_ops_t>
-  >::type udOps_;
+    std::is_void<ud_ops_t>::value,
+    ::pressio::utils::impl::empty,
+    std::reference_wrapper<const ud_ops_t>>::type udOps_;
 
   std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
   data_type data_;
@@ -150,19 +147,16 @@ template <
   typename fom_state_type,
   typename reconstuctor_type,
   typename ud_ops_t,
-  std::size_t numstates
-  >
+  std::size_t numstates>
 class ManagerFomStates<
   ::pressio::rom::UnsteadyExplicit, fom_state_type, reconstuctor_type,
-  ud_ops_t, numstates
-  >
+  ud_ops_t, numstates>
 {
-  static_assert
-  (numstates>=1, "ManagerFomStates cannot be empty.");
+  static_assert(numstates >= 1, "ManagerFomStates cannot be empty.");
 
 public:
-  using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type,
-								      numstates>;
+  using data_type = ::pressio::containers::IndexableStaticCollection<fom_state_type,
+								     numstates>;
   using value_type = fom_state_type;
 
   ManagerFomStates() = delete;
@@ -180,10 +174,9 @@ public:
     this->setContainersToZero();
   }
 
-  template<
+  template <
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
-    >
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
   ManagerFomStates(const reconstuctor_type & fomStateReconstr,
 		   const fom_state_type & fomState,
 		   const _ud_ops_t & udOps)
@@ -195,7 +188,7 @@ public:
   }
 
 public:
-  static constexpr std::size_t size(){ return data_type::size(); }
+  static constexpr std::size_t size() { return data_type::size(); }
 
   // for explicit time stepping it makese sense to have indexing
   // using "n, n-1, n-2", etc
@@ -205,21 +198,21 @@ public:
   //---------------------------------
   // n
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=1, fom_state_type const &>
-  fomStateAt(::pressio::ode::n) const {return data_(0);}
+  mpl::enable_if_t<_numstates >= 1, fom_state_type const &>
+    fomStateAt(::pressio::ode::n) const { return data_(0); }
 
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=1, fom_state_type const &>
-  operator()(::pressio::ode::n) const {return data_(0);}
+  mpl::enable_if_t<_numstates >= 1, fom_state_type const &>
+  operator()(::pressio::ode::n) const { return data_(0); }
 
   // n-1
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=2, fom_state_type const &>
-  fomStateAt(::pressio::ode::nMinusOne) const {return data_(1);}
+  mpl::enable_if_t<_numstates >= 2, fom_state_type const &>
+    fomStateAt(::pressio::ode::nMinusOne) const { return data_(1); }
 
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=2, fom_state_type const &>
-  operator()(::pressio::ode::nMinusOne) const {return data_(1);}
+  mpl::enable_if_t<_numstates >= 2, fom_state_type const &>
+  operator()(::pressio::ode::nMinusOne) const { return data_(1); }
 
   //-----------------------------
   // ** reconstruction methods **
@@ -233,7 +226,7 @@ public:
 
   // n
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=1 >
+  mpl::enable_if_t<_numstates >= 1>
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::n)
   {
@@ -241,7 +234,7 @@ public:
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=1 >
+  mpl::enable_if_t<_numstates >= 1>
   reconstructFomStateAt(const rom_state_t & romStateIn,
 			::pressio::ode::n tag)
   {
@@ -250,7 +243,7 @@ public:
 
   // n-1
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=2 >
+  mpl::enable_if_t<_numstates >= 2>
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::n)
   {
@@ -258,7 +251,7 @@ public:
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=2 >
+  mpl::enable_if_t<_numstates >= 2>
   reconstructFomStateAt(const rom_state_t & romStateIn,
 			::pressio::ode::n tag)
   {
@@ -267,25 +260,26 @@ public:
 
 private:
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
+  mpl::enable_if_t<std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
+    for(std::size_t i = 0; i < data_.size(); i++)
       ::pressio::ops::set_zero(data_(i));
   }
 
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
+  mpl::enable_if_t<!std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
+    for(std::size_t i = 0; i < data_.size(); i++)
       udOps_.get().set_zero(*data_(i).data());
   }
 
 private:
   typename std::conditional<
-  std::is_void<ud_ops_t>::value,
-  ::pressio::utils::impl::empty,
-  std::reference_wrapper<const ud_ops_t>
-  >::type udOps_;
+    std::is_void<ud_ops_t>::value,
+    ::pressio::utils::impl::empty,
+    std::reference_wrapper<const ud_ops_t>>::type udOps_;
 
   std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
   data_type data_;
@@ -299,19 +293,16 @@ template <
   typename fom_state_type,
   typename reconstuctor_type,
   typename ud_ops_t,
-  std::size_t numstates
-  >
+  std::size_t numstates>
 class ManagerFomStates<
   ::pressio::rom::UnsteadyImplicit, fom_state_type, reconstuctor_type,
-  ud_ops_t, numstates
-  >
+  ud_ops_t, numstates>
 {
-  static_assert
-  (numstates>=1, "ManagerFomStates cannot be empty.");
+  static_assert(numstates >= 1, "ManagerFomStates cannot be empty.");
 
 public:
-  using data_type  = ::pressio::containers::IndexableStaticCollection<fom_state_type,
-								      numstates>;
+  using data_type = ::pressio::containers::IndexableStaticCollection<fom_state_type,
+								     numstates>;
   using value_type = fom_state_type;
 
   ManagerFomStates() = delete;
@@ -329,10 +320,9 @@ public:
     this->setContainersToZero();
   }
 
-  template<
+  template <
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0
-    >
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
   ManagerFomStates(const reconstuctor_type & fomStateReconstr,
 		   const fom_state_type & fomState,
 		   const _ud_ops_t & udOps)
@@ -344,7 +334,7 @@ public:
   }
 
 public:
-  static constexpr std::size_t size(){ return data_type::size(); }
+  static constexpr std::size_t size() { return data_type::size(); }
 
   // for implicit time stepping it makese sense to
   // index using "n+1, n, n-1, n-2", etc
@@ -352,30 +342,30 @@ public:
   // ** methods to extract const ref to data **
   // n+1
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=1, fom_state_type const &>
-  fomStateAt(::pressio::ode::nPlusOne) const {return data_(0);}
+  mpl::enable_if_t<_numstates >= 1, fom_state_type const &>
+    fomStateAt(::pressio::ode::nPlusOne) const { return data_(0); }
 
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=1, fom_state_type const &>
-  operator()(::pressio::ode::nPlusOne) const {return data_(0);}
+  mpl::enable_if_t<_numstates >= 1, fom_state_type const &>
+  operator()(::pressio::ode::nPlusOne) const { return data_(0); }
 
   // n
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=2, fom_state_type const &>
-  fomStateAt(::pressio::ode::n) const {return data_(1);}
+  mpl::enable_if_t<_numstates >= 2, fom_state_type const &>
+    fomStateAt(::pressio::ode::n) const { return data_(1); }
 
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=2, fom_state_type const &>
-  operator()(::pressio::ode::n) const {return data_(1);}
+  mpl::enable_if_t<_numstates >= 2, fom_state_type const &>
+  operator()(::pressio::ode::n) const { return data_(1); }
 
   // n-1
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=3, fom_state_type const &>
-  fomStateAt(::pressio::ode::nMinusOne) const {return data_(2);}
+  mpl::enable_if_t<_numstates >= 3, fom_state_type const &>
+    fomStateAt(::pressio::ode::nMinusOne) const { return data_(2); }
 
   template <std::size_t _numstates = numstates>
-  mpl::enable_if_t<_numstates>=3, fom_state_type const &>
-  operator()(::pressio::ode::nMinusOne) const {return data_(2);}
+  mpl::enable_if_t<_numstates >= 3, fom_state_type const &>
+  operator()(::pressio::ode::nMinusOne) const { return data_(2); }
 
   //----------------------------------------
   // ** methods to reconstruct fom state **
@@ -389,7 +379,7 @@ public:
 
   // n+1
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=1 >
+  mpl::enable_if_t<_numstates >= 1>
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::nPlusOne)
   {
@@ -397,7 +387,7 @@ public:
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=1 >
+  mpl::enable_if_t<_numstates >= 1>
   reconstructFomStateAt(const rom_state_t & romStateIn,
 			::pressio::ode::nPlusOne tag)
   {
@@ -406,7 +396,7 @@ public:
 
   // n
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=2 >
+  mpl::enable_if_t<_numstates >= 2>
   reconstructAt(const rom_state_t & romStateIn,
 		::pressio::ode::n)
   {
@@ -414,7 +404,7 @@ public:
   }
 
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates>=2 >
+  mpl::enable_if_t<_numstates >= 2>
   reconstructFomStateAt(const rom_state_t & romStateIn,
 			::pressio::ode::n tag)
   {
@@ -430,7 +420,7 @@ public:
 
   // n==2 we have y_n+1, y_n
   template <typename rom_state_t, std::size_t _numstates = numstates>
-  mpl::enable_if_t< _numstates==2 >
+  mpl::enable_if_t<_numstates == 2>
   reconstructWithStencilUpdate(const rom_state_t & romStateIn)
   {
     /* when n == 2, it means I only have n+1 and n
@@ -443,9 +433,8 @@ public:
   template <
     typename rom_state_t,
     typename _ud_ops_t = ud_ops_t,
-    std::size_t _numstates = numstates
-    >
-  mpl::enable_if_t< _numstates==3 and std::is_void<_ud_ops_t>::value >
+    std::size_t _numstates = numstates>
+  mpl::enable_if_t<_numstates == 3 and std::is_void<_ud_ops_t>::value>
   reconstructWithStencilUpdate(const rom_state_t & romStateIn)
   {
     /*
@@ -459,9 +448,8 @@ public:
   template <
     typename rom_state_t,
     typename _ud_ops_t = ud_ops_t,
-    std::size_t _numstates = numstates
-    >
-  mpl::enable_if_t< _numstates==3 and !std::is_void<_ud_ops_t>::value >
+    std::size_t _numstates = numstates>
+  mpl::enable_if_t<_numstates == 3 and !std::is_void<_ud_ops_t>::value>
   reconstructWithStencilUpdate(const rom_state_t & romStateIn)
   {
     udOps_.get().deep_copy(*data_(2).data(), *data_(1).data());
@@ -472,9 +460,8 @@ public:
   template <
     typename rom_state_t,
     typename _ud_ops_t = ud_ops_t,
-    std::size_t _numstates = numstates
-    >
-  mpl::enable_if_t< _numstates==4 and std::is_void<_ud_ops_t>::value >
+    std::size_t _numstates = numstates>
+  mpl::enable_if_t<_numstates == 4 and std::is_void<_ud_ops_t>::value>
   reconstructWithStencilUpdate(const rom_state_t & romStateIn)
   {
     /*
@@ -489,9 +476,8 @@ public:
   template <
     typename rom_state_t,
     typename _ud_ops_t = ud_ops_t,
-    std::size_t _numstates = numstates
-    >
-  mpl::enable_if_t< _numstates==4 and !std::is_void<_ud_ops_t>::value >
+    std::size_t _numstates = numstates>
+  mpl::enable_if_t<_numstates == 4 and !std::is_void<_ud_ops_t>::value>
   reconstructWithStencilUpdate(const rom_state_t & romStateIn)
   {
     udOps_.get().deep_copy(*data_(3).data(), *data_(2).data());
@@ -501,44 +487,32 @@ public:
 
 private:
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
+  mpl::enable_if_t<std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
+    for(std::size_t i = 0; i < data_.size(); i++)
       ::pressio::ops::set_zero(data_(i));
   }
 
   template <typename _ud_ops_t = ud_ops_t>
-  mpl::enable_if_t< !std::is_void< _ud_ops_t>::value >
-  setContainersToZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
+  mpl::enable_if_t<!std::is_void<_ud_ops_t>::value>
+  setContainersToZero()
+  {
+    for(std::size_t i = 0; i < data_.size(); i++)
       udOps_.get().set_zero(*data_(i).data());
   }
 
 private:
   typename std::conditional<
-  std::is_void<ud_ops_t>::value,
-  ::pressio::utils::impl::empty,
-  std::reference_wrapper<const ud_ops_t>
-  >::type udOps_;
+    std::is_void<ud_ops_t>::value,
+    ::pressio::utils::impl::empty,
+    std::reference_wrapper<const ud_ops_t>>::type udOps_;
 
   std::reference_wrapper<const reconstuctor_type> fomStateReconstrObj_;
   data_type data_;
 };
 
 }}//end namespace pressio::rom
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // template <
@@ -714,4 +688,4 @@ private:
 //   // etc..
 //   data_type data_;
 // };
-#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_
+#endif// ROM_FOM_STATES_MANAGEMENT_ROM_MANAGER_FOM_STATES_STATIC_HPP_

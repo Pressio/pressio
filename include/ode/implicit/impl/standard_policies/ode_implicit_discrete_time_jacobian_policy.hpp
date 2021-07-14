@@ -49,18 +49,16 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
+namespace pressio { namespace ode { namespace implicitmethods { namespace policy {
 
-template<typename state_type, typename jacobian_type>
+template <typename state_type, typename jacobian_type>
 class JacobianStandardDiscreteTimePolicy
 {
-  static_assert
-  (::pressio::ode::constraints::implicit_state<state_type>::value,
-   "Invalid state type for standard jacobian policy");
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
+		"Invalid state type for standard jacobian policy");
 
-  static_assert
-  (::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value,
-   "Invalid jacobian type for standard jacobian policy");
+  static_assert(::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value,
+		"Invalid jacobian type for standard jacobian policy");
 
 public:
   JacobianStandardDiscreteTimePolicy() = default;
@@ -74,9 +72,9 @@ public:
   template <typename system_type>
   jacobian_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+		    system_type>::value,
+		  "system type must meet the discrete time api");
 
     jacobian_type JJ(system.createDiscreteTimeJacobian());
     return JJ;
@@ -89,25 +87,24 @@ public:
     typename ode_tag,
     typename stencil_data_type,
     typename system_type,
-    typename scalar_type
-    >
-  mpl::enable_if_t<stencil_data_type::size()==1>
+    typename scalar_type>
+  mpl::enable_if_t<stencil_data_type::size() == 1>
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
 	  const scalar_type & rhsEvaluationTime,
 	  const scalar_type & dt,
-	  const types::step_t &  step,
+	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+		    system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilDataManager.stateAt(ode::n());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, *J.data(),
 					 *odeCurrentState.data(),
-					 *yn.data() );
+					 *yn.data());
   }
 
   //-------------------------------
@@ -115,9 +112,8 @@ public:
   //-------------------------------
   template <
     typename ode_tag, typename stencil_data_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<stencil_data_type::size()==2>
+    typename system_type, typename scalar_type>
+  mpl::enable_if_t<stencil_data_type::size() == 2>
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
@@ -126,15 +122,15 @@ public:
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+		    system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilDataManager.stateAt(ode::n());
     const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, *J.data(),
 					 *odeCurrentState.data(),
-					 (*yn.data() ), (*ynm1.data()) );
+					 (*yn.data()), (*ynm1.data()));
   }
 
   //-------------------------------
@@ -142,9 +138,8 @@ public:
   //-------------------------------
   template <
     typename ode_tag, typename stencil_data_type,
-    typename system_type, typename scalar_type
-    >
-  mpl::enable_if_t<stencil_data_type::size()==3>
+    typename system_type, typename scalar_type>
+  mpl::enable_if_t<stencil_data_type::size() == 3>
   compute(const state_type & odeCurrentState,
 	  const stencil_data_type & stencilDataManager,
 	  const system_type & system,
@@ -153,9 +148,9 @@ public:
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<
+		    system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilDataManager.stateAt(ode::n());
     const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
@@ -165,9 +160,9 @@ public:
 					 *odeCurrentState.data(),
 					 (*yn.data()),
 					 (*ynm1.data()),
-					 (*ynm2.data()) );
+					 (*ynm2.data()));
   }
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_
+#endif// ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_

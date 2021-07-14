@@ -49,25 +49,29 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
-template<typename tag>
-struct _num_fom_states_needed{
+template <typename tag>
+struct _num_fom_states_needed
+{
   static constexpr std::size_t value = 1;
 };
 
-template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::Euler>{
+template <>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::Euler>
+{
   static constexpr std::size_t value = 1;
 };
 
-template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF2>{
+template <>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF2>
+{
   static constexpr std::size_t value = 1;
 };
 
-template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::CrankNicolson>{
+template <>
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::CrankNicolson>
+{
   static constexpr std::size_t value = 2;
 };
 
@@ -76,23 +80,21 @@ template <
   typename fom_system_type,
   typename rom_state_type,
   typename decoder_type,
-  typename ud_ops_type
-  >
+  typename ud_ops_type>
 struct CommonTraitsContinuousTimeApi
 {
-  using fom_system_t	= fom_system_type;
-  using scalar_t	= typename fom_system_t::scalar_type;
+  using fom_system_t = fom_system_type;
+  using scalar_t = typename fom_system_t::scalar_type;
 
   // rom state and native type
-  using galerkin_state_t	= rom_state_type;
-  using galerkin_native_state_t	=
+  using galerkin_state_t = rom_state_type;
+  using galerkin_native_state_t =
     typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
   // ---------------------
   // verify decoder
-  static_assert
-  (::pressio::rom::constraints::decoder<decoder_type, galerkin_state_t>::value,
-   "A valid decoder type must be passed to define a Galerkin problem");
+  static_assert(::pressio::rom::constraints::decoder<decoder_type, galerkin_state_t>::value,
+		"A valid decoder type must be passed to define a Galerkin problem");
   using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
@@ -101,26 +103,24 @@ struct CommonTraitsContinuousTimeApi
   // ensure it is consistent with the (native) fom_state_type from the app
   using fom_state_t = typename decoder_type::fom_state_type;
   using fom_native_state_t = typename fom_system_type::state_type;
-  static_assert
-  (std::is_same<
-   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
-   fom_native_state_t>::value,
-   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+  static_assert(std::is_same<
+		  typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+		  fom_native_state_t>::value,
+		"The fom state type detected in the fom class must match the fom state type used in the decoder");
 
   // ---------------------
   // now we don't allow fom state and fom velocity to have different types
   // but need to make sure this assumption is consistent with fom class
   using fom_velocity_t = fom_state_t;
   using fom_native_velocity_t = typename fom_system_type::velocity_type;
-  static_assert
-  (std::is_same<fom_native_state_t, fom_native_velocity_t>::value,
-   "Currently, the fom velocity type must be the same as the state type.");
+  static_assert(std::is_same<fom_native_state_t, fom_native_velocity_t>::value,
+		"Currently, the fom velocity type must be the same as the state type.");
 
   // ---------------------
   // fom state reconstructor type
   using fom_state_reconstr_t =
     typename ::pressio::rom::impl::FomStateReconHelper<
-    ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
+      ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // ---------------------------------------------------------------
   /* the fom states manager
@@ -149,9 +149,9 @@ struct CommonTraitsContinuousTimeApi
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::containers::predicates::is_tensor_wrapper_pybind<galerkin_state_t>::value;
 #else
-  false;
+    false;
 #endif
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
+#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_

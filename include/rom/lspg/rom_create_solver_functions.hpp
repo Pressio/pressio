@@ -51,7 +51,7 @@
 
 #include "./impl/rom_view_problem_system.hpp"
 
-namespace pressio{ namespace rom{ namespace lspg{
+namespace pressio { namespace rom { namespace lspg {
 
 /* why using this over just instantiating a solver directly?
    (1) we can limit the solver types admissible for a galerkin problem
@@ -68,39 +68,32 @@ namespace pressio{ namespace rom{ namespace lspg{
 /* ========================
     Gauss-Newton normal-eq
    ========================*/
-template<typename rom_problem_t, typename ...Args>
-auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
-->
-  decltype(::pressio::solvers::nonlinear::createGaussNewton
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
+template <typename rom_problem_t, typename... Args>
+auto createGaussNewtonSolver(rom_problem_t & problem, Args &&... args)
+  -> decltype(::pressio::solvers::nonlinear::createGaussNewton(impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createGaussNewton
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
+  return ::pressio::solvers::nonlinear::createGaussNewton(impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
 /* ========================
 	Gauss-Newton QR
    ========================*/
-template<typename rom_problem_t, typename ...Args>
-auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
-->  decltype(::pressio::solvers::nonlinear::createGaussNewtonQR
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
+template <typename rom_problem_t, typename... Args>
+auto createGaussNewtonQRSolver(rom_problem_t & problem, Args &&... args)
+  -> decltype(::pressio::solvers::nonlinear::createGaussNewtonQR(impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createGaussNewtonQR
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
+  return ::pressio::solvers::nonlinear::createGaussNewtonQR(impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
 /* ========================
       LevenbergMarquardt
    ========================*/
-template<typename rom_problem_t, typename ...Args>
-auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args && ... args)
-->  decltype(::pressio::solvers::nonlinear::createLevenbergMarquardt
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
+template <typename rom_problem_t, typename... Args>
+auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args &&... args)
+  -> decltype(::pressio::solvers::nonlinear::createLevenbergMarquardt(impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createLevenbergMarquardt
-    (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
+  return ::pressio::solvers::nonlinear::createLevenbergMarquardt(impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif  // ROM_LSPG_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
+#endif// ROM_LSPG_ROM_CREATE_SOLVER_FUNCTIONS_HPP_

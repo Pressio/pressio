@@ -49,19 +49,16 @@
 #ifndef OPS_TPETRA_OPS_DOT_HPP_
 #define OPS_TPETRA_OPS_DOT_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value,
-  typename ::pressio::containers::details::traits<T1>::scalar_t
-  >
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value,
+  typename ::pressio::containers::details::traits<T1>::scalar_t>
 dot(const T1 & a, const T2 & b)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
-     "not scalar compatible");
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T1, T2>::value,
+		"not scalar compatible");
 
   assert(a.extent(0) == b.extent(0));
   return a.data()->dot(*b.data());
@@ -69,14 +66,12 @@ dot(const T1 & a, const T2 & b)
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value
-  >
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra<T2>::value>
 dot(const T1 & a, const T2 & b,
     typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
-  result = dot(a,b);
+  result = dot(a, b);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_OPS_DOT_HPP_
+#endif// OPS_TPETRA_OPS_DOT_HPP_

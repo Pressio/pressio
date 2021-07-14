@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_WEIGHTING_IRWLS_HPP_
 #define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_WEIGHTING_IRWLS_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 template <class r_t, class J_t>
 class IrwWeightingOperator
@@ -70,10 +70,9 @@ public:
   template <
     typename system_t,
     mpl::enable_if_t<
-    pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
-    int > = 0
-    >
+      pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
+	pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
+      int> = 0>
   IrwWeightingOperator(const system_t & system)
     : w_(system.createResidual())
   {
@@ -117,7 +116,8 @@ private:
   void computeExponent()
   {
     constexpr auto two = ::pressio::utils::constants<sc_t>::two();
-    if (p_==two) throw std::runtime_error("irwls does not support using p=2!");
+    if(p_ == two)
+      throw std::runtime_error("irwls does not support using p=2!");
     exponent_ = (p_ - two);
   }
 
@@ -128,14 +128,13 @@ private:
     // when exponent < 0
 
     constexpr auto two = ::pressio::utils::constants<sc_t>::two();
-    if (p_ > two){
+    if(p_ > two) {
       ::pressio::ops::abs_pow(w_, err, exponent_);
-    }
-    else{
+    } else {
       ::pressio::ops::abs_pow(w_, err, exponent_, 0.00001);
     }
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_WEIGHTING_IRWLS_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_WEIGHTING_IRWLS_HPP_

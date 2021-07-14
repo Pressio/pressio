@@ -49,13 +49,15 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_RESIDUAL_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_RESIDUAL_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
-template<typename T>
-struct residual : ::pressio::rom::galerkin::constraints::implicit_state<T>{};
+template <typename T>
+struct residual : ::pressio::rom::galerkin::constraints::implicit_state<T>
+{
+};
 
-template<typename T>
+template <typename T>
 using galerkin_residual = residual<T>;
 
 }}}}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_RESIDUAL_HPP_
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_RESIDUAL_HPP_

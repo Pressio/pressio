@@ -51,16 +51,18 @@
 
 #include "Eigen/Dense"
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dense_static_matrix_eigen : std::false_type {};
+struct is_dense_static_matrix_eigen : std::false_type
+{
+};
 
 /* T is a dense STATIC eigen matrix if
  * T is not an eigen vector
  * rows and cols are not = Eigen:Dynamic
  */
-template<typename T>
+template <typename T>
 struct is_dense_static_matrix_eigen<
   T,
   mpl::enable_if_t<
@@ -71,25 +73,25 @@ struct is_dense_static_matrix_eigen<
 	typename T::Scalar,
 	T::RowsAtCompileTime,
 	T::ColsAtCompileTime,
-	T::Options
-	>
-      >::value and
+	T::Options>>::value and
     T::RowsAtCompileTime != Eigen::Dynamic and
-    T::ColsAtCompileTime != Eigen::Dynamic
-    >
-  > : std::true_type{};
+    T::ColsAtCompileTime != Eigen::Dynamic>> : std::true_type
+{
+};
 //----------------------------------------------------------------------
 
 
 template <typename T, typename enable = void>
-struct is_dense_dynamic_matrix_eigen : std::false_type {};
+struct is_dense_dynamic_matrix_eigen : std::false_type
+{
+};
 
 /* T is a dense DYNAMIC eigen matrix if
  * is not an eigen vector
  * is not a static dense matrix
  * both # rows and cols are dynamic
 */
-template<typename T>
+template <typename T>
 struct is_dense_dynamic_matrix_eigen<
   T,
   mpl::enable_if_t<
@@ -100,11 +102,9 @@ struct is_dense_dynamic_matrix_eigen<
       Eigen::Matrix<
 	typename T::Scalar,
 	Eigen::Dynamic, Eigen::Dynamic,
-	T::Options
-	>
-      >::value
-    >
-  > : std::true_type{};
+	T::Options>>::value>> : std::true_type
+{
+};
 
 
 /* T is a dense DYNAMIC eigen matrix if
@@ -112,7 +112,7 @@ struct is_dense_dynamic_matrix_eigen<
  * is not a static dense matrix
  * # of rows is static but cols are dynamic
 */
-template<typename T>
+template <typename T>
 struct is_dense_dynamic_matrix_eigen<
   T,
   mpl::enable_if_t<
@@ -123,12 +123,10 @@ struct is_dense_dynamic_matrix_eigen<
       Eigen::Matrix<
 	typename T::Scalar,
 	T::RowsAtCompileTime,
-	Eigen::Dynamic, T::Options
-	>
-      >::value and
-    T::RowsAtCompileTime != Eigen::Dynamic
-    >
-  > : std::true_type{};
+	Eigen::Dynamic, T::Options>>::value and
+    T::RowsAtCompileTime != Eigen::Dynamic>> : std::true_type
+{
+};
 
 
 /* T is a dense DYNAMIC eigen matrix if
@@ -136,7 +134,7 @@ struct is_dense_dynamic_matrix_eigen<
  * is not a static dense matrix
  * # of rows is dynamic but cols are static
 */
-template<typename T>
+template <typename T>
 struct is_dense_dynamic_matrix_eigen<
   T,
   mpl::enable_if_t<
@@ -148,41 +146,43 @@ struct is_dense_dynamic_matrix_eigen<
 	typename T::Scalar,
 	Eigen::Dynamic,
 	T::ColsAtCompileTime,
-	T::Options
-	>
-      >::value and
-    T::ColsAtCompileTime != Eigen::Dynamic
-    >
-  > : std::true_type{};
+	T::Options>>::value and
+    T::ColsAtCompileTime != Eigen::Dynamic>> : std::true_type
+{
+};
 
 
 //----------------------------------------------------------------------
 template <typename T, typename enable = void>
-struct is_dense_row_major_matrix_eigen : std::false_type {};
+struct is_dense_row_major_matrix_eigen : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct is_dense_row_major_matrix_eigen<
   T,
   mpl::enable_if_t<
     (is_dense_static_matrix_eigen<T>::value or
-    is_dense_dynamic_matrix_eigen<T>::value) and
-    int(T::IsRowMajor)==1
-    >
-  > : std::true_type{};
+     is_dense_dynamic_matrix_eigen<T>::value) and
+    int(T::IsRowMajor) == 1>> : std::true_type
+{
+};
 
 
 //----------------------------------------------------------------------
 template <typename T, typename enable = void>
-struct is_dense_matrix_eigen : std::false_type {};
+struct is_dense_matrix_eigen : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct is_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
     is_dense_static_matrix_eigen<T>::value or
-    is_dense_dynamic_matrix_eigen<T>::value
-    >
-  > : std::true_type{};
+    is_dense_dynamic_matrix_eigen<T>::value>> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_DENSE_MATRIX_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_DENSE_MATRIX_HPP_

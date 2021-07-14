@@ -49,30 +49,28 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 template <
   typename fom_system_type,
   typename rom_state_type,
   typename decoder_type,
-  typename ...Args
-  >
+  typename... Args>
 struct CommonTraitsDiscreteTimeApi
 {
-  using fom_system_t		= fom_system_type;
-  using scalar_t		= typename fom_system_t::scalar_type;
+  using fom_system_t = fom_system_type;
+  using scalar_t = typename fom_system_t::scalar_type;
 
   // rom types
-  using galerkin_state_t	= rom_state_type;
-  using galerkin_native_state_t	=
+  using galerkin_state_t = rom_state_type;
+  using galerkin_native_state_t =
     typename ::pressio::containers::details::traits<galerkin_state_t>::wrapped_t;
 
   // ---------------------
   // verify decoder
-  static_assert
-  (::pressio::rom::constraints::decoder<decoder_type, galerkin_state_t>::value,
-   "A valid decoder type must be passed to define a Galerkin problem");
-  using decoder_t     = decoder_type;
+  static_assert(::pressio::rom::constraints::decoder<decoder_type, galerkin_state_t>::value,
+		"A valid decoder type must be passed to define a Galerkin problem");
+  using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
   // ---------------------
@@ -80,20 +78,18 @@ struct CommonTraitsDiscreteTimeApi
   // ensure it is consistent with the (native) fom_state_type from the app
   using fom_state_t = typename decoder_type::fom_state_type;
   using fom_native_state_t = typename fom_system_type::state_type;
-  static_assert
-  (std::is_same<
-   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
-   fom_native_state_t>::value,
-   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+  static_assert(std::is_same<
+		  typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+		  fom_native_state_t>::value,
+		"The fom state type detected in the fom class must match the fom state type used in the decoder");
 
   // ---------------------
   // for now we don't allow state and residual to have different types
   // but need to make sure this assumption is consistent with fom class
-  using fom_residual_t		= fom_state_t;
+  using fom_residual_t = fom_state_t;
   using fom_native_residual_t = typename fom_system_type::discrete_time_residual_type;
-  static_assert
-  (std::is_same<fom_native_state_t, fom_native_residual_t>::value,
-   "Currently, the fom discrete time residual type must be the same as the state type.");
+  static_assert(std::is_same<fom_native_state_t, fom_native_residual_t>::value,
+		"Currently, the fom discrete time residual type must be the same as the state type.");
 
   // ---------------------
   /* fom_apply_jacobian_t is type of J*decoder_jac_t where
@@ -117,8 +113,8 @@ struct CommonTraitsDiscreteTimeApi
   using ic1 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::ode::predicates::IsStepperOrderSetter, Args...>;
   using order_setter = ::pressio::mpl::variadic::at_or_t<void, ic1::value, Args...>;
-  static_assert( !std::is_void<order_setter>::value,
-  		 "To use Galerkin with residual api, you need to set the order of the stepper \n \
+  static_assert(!std::is_void<order_setter>::value,
+		"To use Galerkin with residual api, you need to set the order of the stepper \n \
 at compile time by passing to a template argument as follows: \n \
 ::pressio::ode::types::StepperOrder<your_order_value>.");
   // store
@@ -130,8 +126,8 @@ at compile time by passing to a template argument as follows: \n \
   using ic2 = ::pressio::mpl::variadic::find_if_unary_pred_t<
     ::pressio::ode::predicates::IsStepperTotalNumStatesSetter, Args...>;
   using tot_n_setter = ::pressio::mpl::variadic::at_or_t<void, ic2::value, Args...>;
-  static_assert( !std::is_void<tot_n_setter>::value,
-  		 "\nTo use Galerkin with residual api, you need to set the \
+  static_assert(!std::is_void<tot_n_setter>::value,
+		"\nTo use Galerkin with residual api, you need to set the \
 total number of states needed for the stepper at compile time by passing \
 to a template argument as follows: \n \
 ::pressio::ode::types::StepperTotalNumberOfStates<your_order_value>. \n \
@@ -151,9 +147,9 @@ basically the size of the stpper stencil.");
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::containers::predicates::is_tensor_wrapper_pybind<galerkin_state_t>::value;
 #else
-  false;
+    false;
 #endif
 };
 
 }}}}//end  namespace
-#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_
+#endif// ROM_GALERKIN_IMPL_DISCRETE_TIME_API_TRAITS_ROM_GALERKIN_COMMON_TRAITS_HPP_

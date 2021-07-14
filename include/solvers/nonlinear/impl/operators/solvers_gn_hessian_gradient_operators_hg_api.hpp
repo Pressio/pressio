@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
 #define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 template <typename h_t, typename g_t>
 class HessianGradientOperatorsHGApi
@@ -67,39 +67,41 @@ public:
   ~HessianGradientOperatorsHGApi() = default;
 
   template <
-   typename system_t, typename state_t,
+    typename system_t, typename state_t,
     mpl::enable_if_t<
       pressio::solvers::constraints::system_hessian_gradient<system_t>::value or
-      pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value,
-      int
-     > = 0
-  >
+	pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value,
+      int> = 0>
   HessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
-    : g_( system.createGradient() ),
-      H_( system.createHessian() )
+    : g_(system.createGradient()),
+      H_(system.createHessian())
   {
     ::pressio::ops::set_zero(g_);
     ::pressio::ops::set_zero(H_);
   }
 
 public:
-  void resetForNewCall()		{ /* no op */ }
-  h_t & hessianRef()			{ return H_; }
-  g_t & gradientRef()			{ return g_; }
-  const h_t & hessianCRef() const	{ return H_; }
-  const g_t & gradientCRef() const	{ return g_; }
+  void resetForNewCall()
+  { /* no op */
+  }
+  h_t & hessianRef() { return H_; }
+  g_t & gradientRef() { return g_; }
+  const h_t & hessianCRef() const { return H_; }
+  const g_t & gradientCRef() const { return g_; }
 
-  sc_t getParameter(std::string key) const {
+  sc_t getParameter(std::string key) const
+  {
     throw std::runtime_error("GN HessGrad operators does not have parameters");
     return {};
   }
 
   template <typename T>
-  void setParameter(std::string key, T value) {
+  void setParameter(std::string key, T value)
+  {
     throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
-  template< typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   void residualNorm(const system_t & system,
 		    const state_t & state,
 		    sc_t & residualNorm) const
@@ -107,16 +109,15 @@ public:
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_hessian_gradient<system_t>::value
-    >
+    pressio::solvers::constraints::system_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
-    if (recomputeSystemJacobian){
+    if(recomputeSystemJacobian) {
       sys.hessian(state, H_);
     }
 
@@ -128,10 +129,9 @@ public:
     ::pressio::ops::scale(g_, ::pressio::utils::constants<sc_t>::negOne());
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value
-    >
+    pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
@@ -147,4 +147,4 @@ public:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_GN_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_

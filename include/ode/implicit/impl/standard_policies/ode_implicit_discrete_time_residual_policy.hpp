@@ -49,18 +49,16 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
+namespace pressio { namespace ode { namespace implicitmethods { namespace policy {
 
-template<typename state_type, typename residual_type>
+template <typename state_type, typename residual_type>
 class ResidualStandardDiscreteTimePolicy
 {
-  static_assert
-  (::pressio::ode::constraints::implicit_state<state_type>::value,
-   "Invalid state type for standard residual policy");
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
+		"Invalid state type for standard residual policy");
 
-  static_assert
-  (::pressio::ode::constraints::implicit_residual<residual_type>::value,
-   "Invalid residual type for standard residual policy");
+  static_assert(::pressio::ode::constraints::implicit_residual<residual_type>::value,
+		"Invalid residual type for standard residual policy");
 
 public:
   ResidualStandardDiscreteTimePolicy() = default;
@@ -74,9 +72,8 @@ public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the discrete time api");
 
     residual_type R(system.createDiscreteTimeResidual());
     return R;
@@ -86,7 +83,7 @@ public:
   // 1 aux state needed
   //-------------------------------
   template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< stencil_states_type::size()==1 >
+  mpl::enable_if_t<stencil_states_type::size() == 1>
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
@@ -95,18 +92,16 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilStatesManager.stateAt(ode::n());
 
-    try{
+    try {
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data());
-    }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    } catch(::pressio::eh::discrete_time_residual_failure_unrecoverable const & e) {
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
@@ -115,7 +110,7 @@ public:
   // 2 aux states needed
   //-------------------------------
   template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< stencil_states_type::size()==2 >
+  mpl::enable_if_t<stencil_states_type::size() == 2>
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
@@ -124,19 +119,17 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilStatesManager.stateAt(ode::n());
     const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
 
-    try{
+    try {
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data(), *ynm1.data());
-    }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    } catch(::pressio::eh::discrete_time_residual_failure_unrecoverable const & e) {
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
@@ -145,7 +138,7 @@ public:
   // 3 aux states needed
   //-------------------------------
   template <class ode_tag, class stencil_states_type, class system_type, class scalar_type>
-  mpl::enable_if_t< stencil_states_type::size()==3 >
+  mpl::enable_if_t<stencil_states_type::size() == 3>
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
@@ -154,26 +147,24 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
+    static_assert(::pressio::ode::constraints::discrete_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the discrete time api");
 
     const auto & yn = stencilStatesManager.stateAt(ode::n());
     const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
     const auto & ynm2 = stencilStatesManager.stateAt(ode::nMinusTwo());
 
-    try{
+    try {
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, *R.data(),
 					   *predictedState.data(),
 					   *yn.data(),
 					   *ynm1.data(),
 					   *ynm2.data());
-    }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    } catch(::pressio::eh::discrete_time_residual_failure_unrecoverable const & e) {
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_
+#endif// ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_

@@ -57,51 +57,57 @@
 #include <Teuchos_FancyOStream.hpp>
 #include <Tpetra_Core.hpp>
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
-class Burgers1dTpetra{
+class Burgers1dTpetra
+{
 protected:
-  using map_t		= Tpetra::Map<>;
-  using nativeVec	= Tpetra::Vector<>;
+  using map_t = Tpetra::Map<>;
+  using nativeVec = Tpetra::Vector<>;
 
-  using go_t		= typename map_t::global_ordinal_type;
-  using lo_t		= typename map_t::local_ordinal_type;
+  using go_t = typename map_t::global_ordinal_type;
+  using lo_t = typename map_t::local_ordinal_type;
 
-  using tcomm_t		= Teuchos::MpiComm<int>;
-  using rcpcomm_t	= Teuchos::RCP<const tcomm_t>;
-  using rcpmap_t	= Teuchos::RCP<const map_t>;
+  using tcomm_t = Teuchos::MpiComm<int>;
+  using rcpcomm_t = Teuchos::RCP<const tcomm_t>;
+  using rcpmap_t = Teuchos::RCP<const map_t>;
 
-  template<typename T> using stdrcp = std::shared_ptr<T>;
+  template <typename T>
+  using stdrcp = std::shared_ptr<T>;
   using crs_graph_type = Tpetra::CrsGraph<>;
 
 public:
   /* these types exposed because need to be detected */
-  using scalar_type	= double;
-  using state_type	= nativeVec;
-  using velocity_type	= state_type;
-  using jacobian_type	= Tpetra::CrsMatrix<>;
+  using scalar_type = double;
+  using state_type = nativeVec;
+  using velocity_type = state_type;
+  using jacobian_type = Tpetra::CrsMatrix<>;
 
 public:
   Burgers1dTpetra(std::vector<scalar_type> params,
 		  int Ncell,
 		  rcpcomm_t comm)
-    : mu_{params}, Ncell_{Ncell}, comm_{comm}{
-      this->setup();
-    }
+    : mu_{params}, Ncell_{Ncell}, comm_{comm}
+  {
+    this->setup();
+  }
 
   Burgers1dTpetra() = delete;
   ~Burgers1dTpetra() = default;
 
 public:
-  rcpmap_t getDataMap(){
+  rcpmap_t getDataMap()
+  {
     return dataMap_;
   };
 
-  state_type const & getInitialState() const{
+  state_type const & getInitialState() const
+  {
     return *U0_;
   };
 
-  velocity_type createVelocity() const{
+  velocity_type createVelocity() const
+  {
     velocity_type R(dataMap_);
     return R;
   }
@@ -109,7 +115,7 @@ public:
   // computes: A = Jac B where B is dense
   Tpetra::MultiVector<> createApplyJacobianResult(const Tpetra::MultiVector<> & B) const
   {
-    Tpetra::MultiVector<> C( dataMap_, B.getNumVectors() );
+    Tpetra::MultiVector<> C(dataMap_, B.getNumVectors());
     return C;
   }
 
@@ -122,33 +128,33 @@ public:
 
     double valueFromLeft = 0.0;
     constexpr int tag_ = 1;
-    if( myRank_ < totRanks_ - 1 ){
-      MPI_Send( &u_v[NumMyElem_-1], 1, MPI_DOUBLE,
-		myRank_+1, tag_, *comm_->getRawMpiComm() );
+    if(myRank_ < totRanks_ - 1) {
+      MPI_Send(&u_v[NumMyElem_ - 1], 1, MPI_DOUBLE,
+	       myRank_ + 1, tag_, *comm_->getRawMpiComm());
     }
-    if( myRank_ > 0 ){
+    if(myRank_ > 0) {
       MPI_Status status;
       MPI_Recv(&valueFromLeft, 1, MPI_DOUBLE,
-	       myRank_-1, tag_,
+	       myRank_ - 1, tag_,
 	       *comm_->getRawMpiComm(), &status);
     }
 
-    lo_t i=0;
+    lo_t i = 0;
     scalar_type uim1;
-    for (auto const & it : myGel_){
+    for(auto const & it : myGel_) {
       uim1 = valueFromLeft;
-      if (it==0)
-	uim1 = mu_[0]; // left boundary condition
-      if (i>0)
-	uim1 = u_v[i-1];
+      if(it == 0)
+	uim1 = mu_[0];// left boundary condition
+      if(i > 0)
+	uim1 = u_v[i - 1];
 
-      rhs_v[i] = ( 0.5*(uim1*uim1 - u_v[i]*u_v[i]) )/dx_;
+      rhs_v[i] = (0.5 * (uim1 * uim1 - u_v[i] * u_v[i])) / dx_;
       i++;
     }
 
     auto xgrid_v = xGrid_->getDataNonConst();
-    for (i=0; i<NumMyElem_; ++i){
-      rhs_v[i] += mu_[1]*exp(mu_[2] * xgrid_v[i]);
+    for(i = 0; i < NumMyElem_; ++i) {
+      rhs_v[i] += mu_[1] * exp(mu_[2] * xgrid_v[i]);
     }
   }
 
@@ -164,13 +170,14 @@ public:
   }
 
 protected:
-  void setup(){
+  void setup()
+  {
     using Teuchos::rcpFromRef;
     using Teuchos::FancyOStream;
     wrappedCout_ = getFancyOStream(rcpFromRef(std::cout));
 
-    myRank_ =  comm_->getRank();
-    totRanks_ =  comm_->getSize();
+    myRank_ = comm_->getRank();
+    totRanks_ = comm_->getSize();
 
     // distribute cells
     dataMap_ = Teuchos::rcp(new map_t(Ncell_, 0, comm_));
@@ -181,20 +188,20 @@ protected:
     std::iota(myGel_.begin(), myGel_.end(), minGId);
     //dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
-    if (myRank_==1){
-      for (auto it : myGel_)
+    if(myRank_ == 1) {
+      for(auto it : myGel_)
 	std::cout << it << std::endl;
     }
 
-    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0/dx_;
+    dx_ = (xR_ - xL_) / static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0 / dx_;
 
     // grid
     xGrid_ = std::make_shared<nativeVec>(dataMap_);
     auto xGridv = xGrid_->getDataNonConst();
-    lo_t i=0;
-    for (auto const & it : myGel_){
-      xGridv[i] = dx_*it + dx_*0.5;
+    lo_t i = 0;
+    for(auto const & it : myGel_) {
+      xGridv[i] = dx_ * it + dx_ * 0.5;
       i++;
     };
     //xGrid_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
@@ -226,29 +233,30 @@ protected:
 
     using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
-    std::array<scalar_type,1> va1;
-    std::array<go_t,1> ci1;
-    std::array<scalar_type,2> va2;
-    std::array<go_t,2> ci2;
+    std::array<scalar_type, 1> va1;
+    std::array<go_t, 1> ci1;
+    std::array<scalar_type, 2> va2;
+    std::array<go_t, 2> ci2;
 
-    for (lo_t i=0; i<NumMyElem_; i++){
+    for(lo_t i = 0; i < NumMyElem_; i++) {
       auto thisGID = myGel_[i];
-      if (thisGID==0){
+      if(thisGID == 0) {
 	va1[0] = -dxInv_ * u_v[0];
 	ci1[0] = 0;
-	jac.replaceGlobalValues(thisGID, tarr_it(ci1.data(),1),
-				tarr_dt(va1.data(),1) );
-      }
-      else{
-	ci2[0] = thisGID-1;
+	jac.replaceGlobalValues(thisGID, tarr_it(ci1.data(), 1),
+				tarr_dt(va1.data(), 1));
+      } else {
+	ci2[0] = thisGID - 1;
 	ci2[1] = thisGID;
 
-	if (i==0) va2[0] = dxInv_ * buffer;
-	if (i>0) va2[0] = dxInv_ * u_v[i-1];
+	if(i == 0)
+	  va2[0] = dxInv_ * buffer;
+	if(i > 0)
+	  va2[0] = dxInv_ * u_v[i - 1];
 
 	va2[1] = -dxInv_ * u_v[i];
-	jac.replaceGlobalValues(thisGID, tarr_it(ci2.data(),2),
-				tarr_dt(va2.data(),2) );
+	jac.replaceGlobalValues(thisGID, tarr_it(ci2.data(), 2),
+				tarr_dt(va2.data(), 2));
       }
     }
 
@@ -259,18 +267,17 @@ protected:
   {
     // using tarr_dt = Teuchos::ArrayView<scalar_type>;
     using tarr_it = Teuchos::ArrayView<go_t>;
-    std::array<go_t,1> ci1;
-    std::array<go_t,2> ci2;
-    for (lo_t i=0; i<NumMyElem_; i++){
+    std::array<go_t, 1> ci1;
+    std::array<go_t, 2> ci2;
+    for(lo_t i = 0; i < NumMyElem_; i++) {
       auto thisGID = myGel_[i];
-      if (thisGID==0){
+      if(thisGID == 0) {
 	ci1[0] = 0;
-	graph.insertGlobalIndices(thisGID, tarr_it(ci1.data(),1));
-      }
-      else{
-	ci2[0] = thisGID-1;
+	graph.insertGlobalIndices(thisGID, tarr_it(ci1.data(), 1));
+      } else {
+	ci2[0] = thisGID - 1;
 	ci2[1] = thisGID;
-	graph.insertGlobalIndices(thisGID, tarr_it(ci2.data(),2));
+	graph.insertGlobalIndices(thisGID, tarr_it(ci2.data(), 2));
       }
     }
     graph.fillComplete();
@@ -282,29 +289,29 @@ protected:
 
     // to populate the jacobian each process needs the last grid
     // point solution from the previous process
-    scalar_type buffer {0.0};
+    scalar_type buffer{0.0};
     MPI_Status st;
     constexpr int tag_ = 1;
-    if (myRank_ < totRanks_-1){
-      MPI_Send(&u_v[NumMyElem_-1], 1, MPI_DOUBLE,
-	       myRank_+1, tag_, *comm_->getRawMpiComm());
+    if(myRank_ < totRanks_ - 1) {
+      MPI_Send(&u_v[NumMyElem_ - 1], 1, MPI_DOUBLE,
+	       myRank_ + 1, tag_, *comm_->getRawMpiComm());
     }
-    if (myRank_ >= 1){
-      MPI_Recv(&buffer, 1, MPI_DOUBLE, myRank_-1, tag_,
+    if(myRank_ >= 1) {
+      MPI_Recv(&buffer, 1, MPI_DOUBLE, myRank_ - 1, tag_,
 	       *comm_->getRawMpiComm(), &st);
     }
     return buffer;
   }
 
 protected:
-  std::vector<scalar_type> mu_; // parameters
-  const scalar_type xL_ = 0.0; //left side of domain
-  const scalar_type xR_ = 100.0; // right side of domain
-  int Ncell_{}; // # of cells
-  scalar_type dx_{}; // cell size
-  scalar_type dxInv_{}; // inv of cell size
+  std::vector<scalar_type> mu_;// parameters
+  const scalar_type xL_ = 0.0;//left side of domain
+  const scalar_type xR_ = 100.0;// right side of domain
+  int Ncell_{};// # of cells
+  scalar_type dx_{};// cell size
+  scalar_type dxInv_{};// inv of cell size
   const int nonZrPerRow_ = 2;
-  stdrcp<nativeVec> xGrid_{}; // mesh points coordinates
+  stdrcp<nativeVec> xGrid_{};// mesh points coordinates
 
   Teuchos::RCP<Teuchos::FancyOStream> wrappedCout_;
   rcpcomm_t comm_{};
@@ -315,11 +322,11 @@ protected:
   lo_t NumMyElem_{};
   std::vector<go_t> myGel_{};
 
-  mutable stdrcp<nativeVec> U_{}; // state vector
-  mutable stdrcp<nativeVec> U0_{}; // initial state vector
+  mutable stdrcp<nativeVec> U_{};// state vector
+  mutable stdrcp<nativeVec> U0_{};// initial state vector
   stdrcp<jacobian_type> Jac_{};
 
 };//end class
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_TPETRA_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_APPS_BURGERS1D_TPETRA_HPP_

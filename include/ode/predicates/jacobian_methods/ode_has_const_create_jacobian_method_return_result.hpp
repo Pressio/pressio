@@ -49,20 +49,20 @@
 #ifndef ODE_PREDICATES_JACOBIAN_METHODS_ODE_HAS_CONST_CREATE_JACOBIAN_METHOD_RETURN_RESULT_HPP_
 #define ODE_PREDICATES_JACOBIAN_METHODS_ODE_HAS_CONST_CREATE_JACOBIAN_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace ode{ namespace predicates {
-  
-template <
-  typename T,
-  typename jacobian_t,
-  typename = void
-  >
-struct has_const_create_jacobian_method_return_result
-  : std::false_type{};
+namespace pressio { namespace ode { namespace predicates {
 
 template <
   typename T,
-  typename jacobian_t
-  >
+  typename jacobian_t,
+  typename = void>
+struct has_const_create_jacobian_method_return_result
+  : std::false_type
+{
+};
+
+template <
+  typename T,
+  typename jacobian_t>
 struct has_const_create_jacobian_method_return_result<
   T, jacobian_t,
   mpl::enable_if_t<
@@ -70,11 +70,9 @@ struct has_const_create_jacobian_method_return_result<
     std::is_same<
       jacobian_t,
       decltype(
-         std::declval<T const>().createJacobian()
-         )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().createJacobian())>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_JACOBIAN_METHODS_ODE_HAS_CONST_CREATE_JACOBIAN_METHOD_RETURN_RESULT_HPP_
+}}}// namespace pressio::ode::predicates
+#endif// ODE_PREDICATES_JACOBIAN_METHODS_ODE_HAS_CONST_CREATE_JACOBIAN_METHOD_RETURN_RESULT_HPP_

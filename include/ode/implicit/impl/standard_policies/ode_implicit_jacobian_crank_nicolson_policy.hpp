@@ -49,18 +49,16 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
+namespace pressio { namespace ode { namespace implicitmethods { namespace policy {
 
-template<typename state_type, typename jacobian_type>
+template <typename state_type, typename jacobian_type>
 class JacobianStandardPolicyCrankNicolson
 {
-  static_assert
-  (::pressio::ode::constraints::implicit_state<state_type>::value,
-   "Invalid state type for standard jacobian policy");
+  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
+		"Invalid state type for standard jacobian policy");
 
-  static_assert
-  (::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value,
-   "Invalid jacobian type for standard jacobian policy");
+  static_assert(::pressio::ode::constraints::implicit_jacobian<jacobian_type>::value,
+		"Invalid jacobian type for standard jacobian policy");
 
 public:
   JacobianStandardPolicyCrankNicolson() = default;
@@ -74,9 +72,8 @@ public:
   template <typename system_type>
   jacobian_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the continuous time api");
+    static_assert(::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the continuous time api");
 
     jacobian_type JJ(system.createJacobian());
     return JJ;
@@ -86,11 +83,9 @@ public:
     typename ode_tag,
     typename stencil_states_type,
     typename system_type,
-    typename scalar_type
-    >
+    typename scalar_type>
   mpl::enable_if_t<
-    std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
-    >
+    std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value>
   compute(const state_type & odeCurrentState,
 	  const stencil_states_type & stencilStates,
 	  const system_type & system,
@@ -99,14 +94,12 @@ public:
 	  const types::step_t & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
-       <system_type>::value,
-       "system type must meet the continuous time api");
-    system.jacobian( *odeCurrentState.data(), t_np1, *J.data());
+    static_assert(::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
+		  "system type must meet the continuous time api");
+    system.jacobian(*odeCurrentState.data(), t_np1, *J.data());
     ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
   }
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
+#endif// ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_

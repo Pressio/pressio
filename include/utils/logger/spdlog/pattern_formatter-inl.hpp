@@ -34,31 +34,26 @@ namespace details {
 class scoped_padder
 {
 public:
-  scoped_padder(size_t wrapped_size, const padding_info &padinfo, memory_buf_t &dest)
-    : padinfo_(padinfo)
-    , dest_(dest)
+  scoped_padder(size_t wrapped_size, const padding_info & padinfo, memory_buf_t & dest)
+    : padinfo_(padinfo), dest_(dest)
   {
     remaining_pad_ = static_cast<long>(padinfo.width_) - static_cast<long>(wrapped_size);
-    if (remaining_pad_ <= 0)
-      {
-	return;
-      }
+    if(remaining_pad_ <= 0) {
+      return;
+    }
 
-    if (padinfo_.side_ == padding_info::pad_side::left)
-      {
-	pad_it(remaining_pad_);
-	remaining_pad_ = 0;
-      }
-    else if (padinfo_.side_ == padding_info::pad_side::center)
-      {
-	auto half_pad = remaining_pad_ / 2;
-	auto reminder = remaining_pad_ & 1;
-	pad_it(half_pad);
-	remaining_pad_ = half_pad + reminder; // for the right side
-      }
+    if(padinfo_.side_ == padding_info::pad_side::left) {
+      pad_it(remaining_pad_);
+      remaining_pad_ = 0;
+    } else if(padinfo_.side_ == padding_info::pad_side::center) {
+      auto half_pad = remaining_pad_ / 2;
+      auto reminder = remaining_pad_ & 1;
+      pad_it(half_pad);
+      remaining_pad_ = half_pad + reminder;// for the right side
+    }
   }
 
-  template<typename T>
+  template <typename T>
   static unsigned int count_digits(T n)
   {
     return fmt_helper::count_digits(n);
@@ -66,15 +61,12 @@ public:
 
   ~scoped_padder()
   {
-    if (remaining_pad_ >= 0)
-      {
-	pad_it(remaining_pad_);
-      }
-    else if (padinfo_.truncate_)
-      {
-	long new_size = static_cast<long>(dest_.size()) + remaining_pad_;
-	dest_.resize(static_cast<size_t>(new_size));
-      }
+    if(remaining_pad_ >= 0) {
+      pad_it(remaining_pad_);
+    } else if(padinfo_.truncate_) {
+      long new_size = static_cast<long>(dest_.size()) + remaining_pad_;
+      dest_.resize(static_cast<size_t>(new_size));
+    }
   }
 
 private:
@@ -83,8 +75,8 @@ private:
     fmt_helper::append_string_view(string_view_t(spaces_.data(), static_cast<size_t>(count)), dest_);
   }
 
-  const padding_info &padinfo_;
-  memory_buf_t &dest_;
+  const padding_info & padinfo_;
+  memory_buf_t & dest_;
   long remaining_pad_;
   string_view_t spaces_{"                                                                ", 64};
 };
@@ -93,22 +85,23 @@ struct null_scoped_padder
 {
   null_scoped_padder(size_t /*wrapped_size*/, const padding_info & /*padinfo*/, memory_buf_t & /*dest*/) {}
 
-  template<typename T>
+  template <typename T>
   static unsigned int count_digits(T /* number */)
   {
     return 0;
   }
 };
 
-template<typename ScopedPadder>
+template <typename ScopedPadder>
 class name_formatter final : public flag_formatter
 {
 public:
   explicit name_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
+  {
+  }
 
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
   {
     ScopedPadder p(msg.logger_name.size(), padinfo_, dest);
     fmt_helper::append_string_view(msg.logger_name, dest);
@@ -116,32 +109,34 @@ public:
 };
 
 // log level appender
-template<typename ScopedPadder>
+template <typename ScopedPadder>
 class level_formatter final : public flag_formatter
 {
 public:
   explicit level_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
-
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
   {
-    string_view_t &level_name = level::to_string_view(msg.level);
+  }
+
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
+  {
+    string_view_t & level_name = level::to_string_view(msg.level);
     ScopedPadder p(level_name.size(), padinfo_, dest);
     fmt_helper::append_string_view(level_name, dest);
   }
 };
 
 // short log level appender
-template<typename ScopedPadder>
+template <typename ScopedPadder>
 class short_level_formatter final : public flag_formatter
 {
 public:
   explicit short_level_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
+  {
+  }
 
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
   {
     string_view_t level_name{level::to_short_c_str(msg.level)};
     ScopedPadder p(level_name.size(), padinfo_, dest);
@@ -714,7 +709,7 @@ public:
   {
     str_ += ch;
   }
-  void format(const details::log_msg &, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg &, const std::tm &, memory_buf_t & dest) override
   {
     fmt_helper::append_string_view(str_, dest);
   }
@@ -729,9 +724,10 @@ class color_start_formatter final : public flag_formatter
 public:
   explicit color_start_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
+  {
+  }
 
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
   {
     msg.color_range_start = dest.size();
   }
@@ -742,9 +738,10 @@ class color_stop_formatter final : public flag_formatter
 public:
   explicit color_stop_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
+  {
+  }
 
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
   {
     msg.color_range_end = dest.size();
   }
@@ -805,26 +802,26 @@ public:
 //   }
 // };
 
-template<typename ScopedPadder>
+template <typename ScopedPadder>
 class short_filename_formatter final : public flag_formatter
 {
 public:
   explicit short_filename_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
-
-  static const char *basename(const char *filename)
   {
-    const char *rv = std::strrchr(filename, os::folder_sep);
+  }
+
+  static const char * basename(const char * filename)
+  {
+    const char * rv = std::strrchr(filename, os::folder_sep);
     return rv != nullptr ? rv + 1 : filename;
   }
 
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
   {
-    if (msg.source.empty())
-      {
-	return;
-      }
+    if(msg.source.empty()) {
+      return;
+    }
     auto filename = basename(msg.source.filename);
     size_t text_size = padinfo_.enabled() ? std::char_traits<char>::length(filename) : 0;
     ScopedPadder p(text_size, padinfo_, dest);
@@ -832,20 +829,20 @@ public:
   }
 };
 
-template<typename ScopedPadder>
+template <typename ScopedPadder>
 class source_linenum_formatter final : public flag_formatter
 {
 public:
   explicit source_linenum_formatter(padding_info padinfo)
     : flag_formatter(padinfo)
-  {}
-
-  void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override
   {
-    if (msg.source.empty())
-      {
-	return;
-      }
+  }
+
+  void format(const details::log_msg & msg, const std::tm &, memory_buf_t & dest) override
+  {
+    if(msg.source.empty()) {
+      return;
+    }
 
     auto field_size = ScopedPadder::count_digits(msg.source.line);
     ScopedPadder p(field_size, padinfo_, dest);
@@ -908,9 +905,10 @@ public:
 class full_formatter final : public flag_formatter
 {
 public:
-  explicit full_formatter(padding_info padinfo) : flag_formatter(padinfo){}
+  explicit full_formatter(padding_info padinfo)
+    : flag_formatter(padinfo) {}
 
-  void format(const details::log_msg &msg, const std::tm &tm_time, memory_buf_t &dest) override
+  void format(const details::log_msg & msg, const std::tm & tm_time, memory_buf_t & dest) override
   {
     using std::chrono::duration_cast;
     using std::chrono::milliseconds;
@@ -920,30 +918,29 @@ public:
     auto duration = msg.time.time_since_epoch();
     auto secs = duration_cast<seconds>(duration);
 
-    if (cache_timestamp_ != secs || cached_datetime_.size() == 0)
-      {
-        cached_datetime_.clear();
-        cached_datetime_.push_back('[');
-        fmt_helper::append_int(tm_time.tm_year + 1900, cached_datetime_);
-        cached_datetime_.push_back('-');
+    if(cache_timestamp_ != secs || cached_datetime_.size() == 0) {
+      cached_datetime_.clear();
+      cached_datetime_.push_back('[');
+      fmt_helper::append_int(tm_time.tm_year + 1900, cached_datetime_);
+      cached_datetime_.push_back('-');
 
-        fmt_helper::pad2(tm_time.tm_mon + 1, cached_datetime_);
-        cached_datetime_.push_back('-');
+      fmt_helper::pad2(tm_time.tm_mon + 1, cached_datetime_);
+      cached_datetime_.push_back('-');
 
-        fmt_helper::pad2(tm_time.tm_mday, cached_datetime_);
-        cached_datetime_.push_back(' ');
+      fmt_helper::pad2(tm_time.tm_mday, cached_datetime_);
+      cached_datetime_.push_back(' ');
 
-        fmt_helper::pad2(tm_time.tm_hour, cached_datetime_);
-        cached_datetime_.push_back(':');
+      fmt_helper::pad2(tm_time.tm_hour, cached_datetime_);
+      cached_datetime_.push_back(':');
 
-        fmt_helper::pad2(tm_time.tm_min, cached_datetime_);
-        cached_datetime_.push_back(':');
+      fmt_helper::pad2(tm_time.tm_min, cached_datetime_);
+      cached_datetime_.push_back(':');
 
-        fmt_helper::pad2(tm_time.tm_sec, cached_datetime_);
-        cached_datetime_.push_back('.');
+      fmt_helper::pad2(tm_time.tm_sec, cached_datetime_);
+      cached_datetime_.push_back('.');
 
-        cache_timestamp_ = secs;
-      }
+      cache_timestamp_ = secs;
+    }
     dest.append(cached_datetime_.begin(), cached_datetime_.end());
 
     auto millis = fmt_helper::time_fraction<milliseconds>(msg.time);
@@ -970,10 +967,9 @@ public:
     dest.push_back(' ');
 
     // add source location if present
-    if (!msg.source.empty())
-    {
+    if(!msg.source.empty()) {
       dest.push_back('[');
-      const char *filename = details::short_filename_formatter<details::null_scoped_padder>::basename(msg.source.filename);
+      const char * filename = details::short_filename_formatter<details::null_scoped_padder>::basename(msg.source.filename);
       fmt_helper::append_string_view(filename, dest);
       dest.push_back(':');
       fmt_helper::append_int(msg.source.line, dest);
@@ -996,35 +992,26 @@ private:
   memory_buf_t cached_datetime_;
 };
 
-} // namespace details
+}// namespace details
 
 
-
-inline pattern_formatter::pattern_formatter
-(
- std::string pattern, pattern_time_type time_type, std::string eol, custom_flags custom_user_flags)
-    : pattern_(std::move(pattern))
-    , eol_(std::move(eol))
-    , pattern_time_type_(time_type)
-    , last_log_secs_(0)
-    , custom_handlers_(std::move(custom_user_flags))
+inline pattern_formatter::pattern_formatter(
+  std::string pattern, pattern_time_type time_type, std::string eol, custom_flags custom_user_flags)
+  : pattern_(std::move(pattern)), eol_(std::move(eol)), pattern_time_type_(time_type), last_log_secs_(0), custom_handlers_(std::move(custom_user_flags))
 {
-    std::memset(&cached_tm_, 0, sizeof(cached_tm_));
-    compile_pattern_(pattern_);
+  std::memset(&cached_tm_, 0, sizeof(cached_tm_));
+  compile_pattern_(pattern_);
 }
 
 // use by default full formatter for if pattern is not given
 inline pattern_formatter::pattern_formatter(pattern_time_type time_type, std::string eol)
-  : pattern_("%+")
-  , eol_(std::move(eol))
-  , pattern_time_type_(time_type)
-  , last_log_secs_(0)
+  : pattern_("%+"), eol_(std::move(eol)), pattern_time_type_(time_type), last_log_secs_(0)
 {
   std::memset(&cached_tm_, 0, sizeof(cached_tm_));
   formatters_.push_back(details::make_unique<details::full_formatter>(details::padding_info{}));
 }
 
-template<typename Padder>
+template <typename Padder>
 inline void pattern_formatter::handle_flag_(char flag, details::padding_info padding)
 {
   // // process custom flags
@@ -1292,53 +1279,43 @@ inline void pattern_formatter::handle_flag_(char flag, details::padding_info pad
 //   return details::padding_info{std::min<size_t>(width, max_width), side, truncate};
 // }
 
-inline void pattern_formatter::compile_pattern_(const std::string &pattern)
+inline void pattern_formatter::compile_pattern_(const std::string & pattern)
 {
   auto end = pattern.end();
   std::unique_ptr<details::aggregate_formatter> user_chars;
   formatters_.clear();
-  for (auto it = pattern.begin(); it != end; ++it)
-    {
-      if (*it == '%')
-        {
-	  if (user_chars) // append user chars found so far
-            {
-	      formatters_.push_back(std::move(user_chars));
-            }
+  for(auto it = pattern.begin(); it != end; ++it) {
+    if(*it == '%') {
+      if(user_chars)// append user chars found so far
+      {
+	formatters_.push_back(std::move(user_chars));
+      }
 
-	  auto padding = handle_padspec_(++it, end);
+      auto padding = handle_padspec_(++it, end);
 
-	  if (it != end)
-            {
-	      if (padding.enabled())
-                {
-		  handle_flag_<details::scoped_padder>(*it, padding);
-                }
-	      else
-                {
-		  handle_flag_<details::null_scoped_padder>(*it, padding);
-                }
-            }
-	  else
-            {
-	      break;
-            }
-        }
-      else // chars not following the % sign should be displayed as is
-        {
-	  if (!user_chars)
-            {
-	      user_chars = details::make_unique<details::aggregate_formatter>();
-            }
-	  user_chars->add_ch(*it);
-        }
-    }
-  if (user_chars) // append raw chars found so far
+      if(it != end) {
+	if(padding.enabled()) {
+	  handle_flag_<details::scoped_padder>(*it, padding);
+	} else {
+	  handle_flag_<details::null_scoped_padder>(*it, padding);
+	}
+      } else {
+	break;
+      }
+    } else// chars not following the % sign should be displayed as is
     {
-      formatters_.push_back(std::move(user_chars));
+      if(!user_chars) {
+	user_chars = details::make_unique<details::aggregate_formatter>();
+      }
+      user_chars->add_ch(*it);
     }
+  }
+  if(user_chars)// append raw chars found so far
+  {
+    formatters_.push_back(std::move(user_chars));
+  }
 }
 
-} // namespace spdlog
+}// namespace spdlog
 
-#endif  // UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_
+#endif// UTILS_LOGGER_SPDLOG_PATTERN_FORMATTER_INL_HPP_

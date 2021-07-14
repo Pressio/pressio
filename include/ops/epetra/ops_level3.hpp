@@ -49,7 +49,7 @@
 #ifndef OPS_EPETRA_OPS_LEVEL3_HPP_
 #define OPS_EPETRA_OPS_LEVEL3_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 /*
  * for epetra:
@@ -60,13 +60,9 @@ namespace pressio{ namespace ops{
 
 
 template <
-  typename A_type, typename B_type, typename scalar_type, typename C_type
-  >
+  typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<B_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<B_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -91,24 +87,20 @@ product(::pressio::transpose modeA,
   auto const & Bdata = *B.data();
   auto tmp = ::pressio::utils::constants<scalar_type>::zero();
   // compute dot between every column of A with every col of B
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++){
-    for (std::size_t j=0; j<(std::size_t)numVecsB; j++){
-      C(i,j) = beta*C(i,j);
-      Adata(i)->Dot( *(Bdata(j)), &tmp );
-      C(i,j) += alpha*tmp;
+  for(std::size_t i = 0; i < (std::size_t)numVecsA; i++) {
+    for(std::size_t j = 0; j < (std::size_t)numVecsB; j++) {
+      C(i, j) = beta * C(i, j);
+      Adata(i)->Dot(*(Bdata(j)), &tmp);
+      C(i, j) += alpha * tmp;
     }
   }
 }
 
 template <
-  typename C_type, typename A_type, typename B_type, typename scalar_type
-  >
+  typename C_type, typename A_type, typename B_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<B_type>::value and
-  ::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value,
-  C_type
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<B_type>::value and ::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<C_type>::value,
+  C_type>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -129,12 +121,9 @@ product(::pressio::transpose modeA,
  * special case A==B
 **********************************/
 template <
-  typename A_type, typename scalar_type, typename C_type
-  >
+  typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -157,32 +146,27 @@ product(::pressio::transpose modeA,
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
-    C(i,i) = beta*C(i,i);
-    Adata(i)->Dot( *(Adata(i)), &tmp );
-    C(i,i) += alpha*tmp;
+  for(std::size_t i = 0; i < (std::size_t)numVecsA; i++) {
+    C(i, i) = beta * C(i, i);
+    Adata(i)->Dot(*(Adata(i)), &tmp);
+    C(i, i) += alpha * tmp;
 
-    for (std::size_t j=i+1; j<(std::size_t)numVecsA; j++)
-    {
-      C(i,j) = beta*C(i,j);
-      C(j,i) = beta*C(j,i);
+    for(std::size_t j = i + 1; j < (std::size_t)numVecsA; j++) {
+      C(i, j) = beta * C(i, j);
+      C(j, i) = beta * C(j, i);
 
-      Adata(i)->Dot( *(Adata(j)), &tmp );
-      C(i,j) += alpha*tmp;
-      C(j,i) += alpha*tmp;
+      Adata(i)->Dot(*(Adata(j)), &tmp);
+      C(i, j) += alpha * tmp;
+      C(j, i) += alpha * tmp;
     }
   }
 }
 
 template <
-  typename C_type, typename A_type, typename scalar_type
-  >
+  typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value,
-  C_type
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value,
+  C_type>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -198,4 +182,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_LEVEL3_HPP_
+#endif// OPS_EPETRA_OPS_LEVEL3_HPP_

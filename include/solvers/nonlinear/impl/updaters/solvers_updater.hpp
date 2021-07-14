@@ -49,12 +49,12 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 struct BaseUpdater
 {
-  using apply_function_type = void (*)(BaseUpdater*, const void*, void*, void*);
-  using reset_function_type = void (*)(BaseUpdater*);
+  using apply_function_type = void (*)(BaseUpdater *, const void *, void *, void *);
+  using reset_function_type = void (*)(BaseUpdater *);
   apply_function_type applyFnc_;
   reset_function_type resetFnc_;
 
@@ -92,9 +92,9 @@ private:
   pressio::utils::instance_or_reference_wrapper<functor_t> F_;
 
 public:
-  template<class T>
+  template <class T>
   Updater(T && Fin)
-    : F_(std::forward<T>(Fin)){}
+    : F_(std::forward<T>(Fin)) {}
 
   Updater() = delete;
   Updater(Updater const &) = default;
@@ -103,10 +103,11 @@ public:
   Updater & operator=(Updater &&) = default;
   ~Updater() = default;
 
-  functor_type & get(){
+  functor_type & get()
+  {
     return F_.get();
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_BASE_UPDATER_HPP_

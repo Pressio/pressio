@@ -49,21 +49,21 @@
 #ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_HESSIAN_METHOD_RETURN_RESULT_HPP_
 #define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_HESSIAN_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace solvers{ namespace predicates {
+namespace pressio { namespace solvers { namespace predicates {
 
-template<typename T, typename h_t, typename enable = void>
-struct has_const_create_hessian_method_return_result : std::false_type{};
+template <typename T, typename h_t, typename enable = void>
+struct has_const_create_hessian_method_return_result : std::false_type
+{
+};
 
-template<typename T, typename h_t>
-struct has_const_create_hessian_method_return_result
-<T, h_t,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_same<
-     h_t,
-     decltype( std::declval<T const>().createHessian() )
-     >::value
-   >
- > : std::true_type{};
+template <typename T, typename h_t>
+struct has_const_create_hessian_method_return_result<T, h_t,
+						     ::pressio::mpl::enable_if_t<
+						       ::pressio::mpl::is_same<
+							 h_t,
+							 decltype(std::declval<T const>().createHessian())>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::solvers::predicates
-#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_HESSIAN_METHOD_RETURN_RESULT_HPP_
+}}}// namespace pressio::solvers::predicates
+#endif// SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_HESSIAN_METHOD_RETURN_RESULT_HPP_

@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
 #define ROM_GALERKIN_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio { namespace rom { namespace galerkin {
 
 /* these functions make it easier for the users because
    they pass a rom problem and don't need to extract from
@@ -64,7 +64,7 @@ namespace pressio{ namespace rom{ namespace galerkin{
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // explicit with collector
-template<class rom_problem_type, class state_t, class time_t, class collector_t>
+template <class rom_problem_type, class state_t, class time_t, class collector_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
@@ -76,12 +76,11 @@ solveNSteps(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateView, t0, dt, num_steps, collector);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, num_steps, collector);
 }
 
 // explicit wihtout collector
-template<class rom_problem_type, class state_t, class time_t>
+template <class rom_problem_type, class state_t, class time_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
@@ -91,15 +90,13 @@ solveNSteps(rom_problem_type & problem,
   // here we want to view the state since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
-  ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), stateView, t0, dt, num_steps);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, num_steps);
 }
 
 // implicit with collector
-template<
+template <
   class rom_problem_type, class state_t, class time_t,
-  class collector_t, class solver_t
-  >
+  class collector_t, class solver_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
@@ -112,12 +109,11 @@ solveNSteps(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateView, t0, dt, num_steps, collector, solver);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, num_steps, collector, solver);
 }
 
 // implicit without collector
-template<class rom_problem_type, class state_t, class time_t, class solver_t>
+template <class rom_problem_type, class state_t, class time_t, class solver_t>
 mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
@@ -128,42 +124,35 @@ solveNSteps(rom_problem_type & problem,
   // here we want to view the state since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
-  ::pressio::ode::advanceNSteps
-      (problem.stepperRef(), stateView, t0, dt, num_steps, solver);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, num_steps, solver);
 }
 
 #else
 
-template<typename rom_problem_type, typename ...Args>
-void solveNSteps
-(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void solveNSteps(rom_problem_type & problem, Args &&... args)
 {
-  ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), std::forward<Args>(args)...);
 }
 #endif
 
 /*--------------------------------------------
   solve to target time
   -------------------------------------------- */
-template<typename rom_problem_type, typename ...Args>
-void solveToTargetTime
-(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void solveToTargetTime(rom_problem_type & problem, Args &&... args)
 {
-  ::pressio::ode::advanceToTargetTime
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceToTargetTime(problem.stepperRef(), std::forward<Args>(args)...);
 }
 
 /*--------------------------------------------
   solve to target time with step recovery
   -------------------------------------------- */
-template<typename rom_problem_type, typename ...Args>
-void solveToTargetTimeWithTimeStepRecovery
-(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void solveToTargetTimeWithTimeStepRecovery(rom_problem_type & problem, Args &&... args)
 {
-  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery(problem.stepperRef(), std::forward<Args>(args)...);
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
+#endif// ROM_GALERKIN_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_

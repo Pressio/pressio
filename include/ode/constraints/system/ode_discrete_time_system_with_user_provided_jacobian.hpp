@@ -50,49 +50,40 @@
 #ifndef ODE_CONSTRAINTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_JACOBIAN_HPP_
 #define ODE_CONSTRAINTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_JACOBIAN_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio { namespace ode { namespace constraints {
 
-template<typename T, typename enable = void>
-struct discrete_time_system_with_user_provided_jacobian : std::false_type{};
+template <typename T, typename enable = void>
+struct discrete_time_system_with_user_provided_jacobian : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct discrete_time_system_with_user_provided_jacobian<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
-    ::pressio::ode::predicates::has_state_typedef<T>::value and
-    ::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value and
-    ::pressio::ode::predicates::has_discrete_time_jacobian_typedef<T>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value and ::pressio::ode::predicates::has_state_typedef<T>::value and ::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value and ::pressio::ode::predicates::has_discrete_time_jacobian_typedef<T>::value and
     //
-    // time-discrete residual 
+    // time-discrete residual
     ::pressio::ode::predicates::has_const_create_discrete_time_residual_method_return_result<
-        T, typename T::discrete_time_residual_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-        T, 1, types::step_t, 
-        typename T::scalar_type, 
-        typename T::state_type, 
-        typename T::discrete_time_residual_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-        T, 2, types::step_t, 
-        typename T::scalar_type, 
-        typename T::state_type, 
-        typename T::discrete_time_residual_type>::value and
-    // 
+      T, typename T::discrete_time_residual_type>::value and ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<T, 1, types::step_t,
+																						 typename T::scalar_type,
+																						 typename T::state_type,
+																						 typename T::discrete_time_residual_type>::value and ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<T, 2, types::step_t,
+																																											 typename T::scalar_type,
+																																											 typename T::state_type,
+																																											 typename T::discrete_time_residual_type>::value and
+    //
     // time-discrete jacobian
     ::pressio::ode::predicates::has_const_create_discrete_time_jacobian_method_return_result<
-        T, typename T::discrete_time_jacobian_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_jacobian_method_accept_step_time_dt_result_n_states_return_void<
-        T, 1, types::step_t, 
-        typename T::scalar_type, 
-        typename T::state_type, 
-        typename T::discrete_time_jacobian_type>::value and 
-    ::pressio::ode::predicates::has_const_discrete_time_jacobian_method_accept_step_time_dt_result_n_states_return_void<
-        T, 2, types::step_t, 
-        typename T::scalar_type, 
-        typename T::state_type, 
-        typename T::discrete_time_jacobian_type>::value 
-    >
-  > : std::true_type{};
+      T, typename T::discrete_time_jacobian_type>::value and ::pressio::ode::predicates::has_const_discrete_time_jacobian_method_accept_step_time_dt_result_n_states_return_void<T, 1, types::step_t,
+																						 typename T::scalar_type,
+																						 typename T::state_type,
+																						 typename T::discrete_time_jacobian_type>::value and ::pressio::ode::predicates::has_const_discrete_time_jacobian_method_accept_step_time_dt_result_n_states_return_void<T, 2, types::step_t,
+																																											 typename T::scalar_type,
+																																											 typename T::state_type,
+																																											 typename T::discrete_time_jacobian_type>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::ode::constraints
-#endif  // ODE_CONSTRAINTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_JACOBIAN_HPP_
+}}}// namespace pressio::ode::constraints
+#endif// ODE_CONSTRAINTS_SYSTEM_ODE_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_JACOBIAN_HPP_

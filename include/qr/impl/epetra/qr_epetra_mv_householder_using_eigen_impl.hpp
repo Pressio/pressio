@@ -53,9 +53,9 @@
 #include <Eigen/SparseQR>
 #include <Epetra_Import.h>
 
-namespace pressio{ namespace qr{ namespace impl{
+namespace pressio { namespace qr { namespace impl {
 
-template<typename matrix_t, typename R_t, template <typename...> class Q_type>
+template <typename matrix_t, typename R_t, template <typename...> class Q_type>
 class EpetraMVHouseholderUsingEigen
 {
 
@@ -63,33 +63,35 @@ class EpetraMVHouseholderUsingEigen
   using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
   using Q_t = Q_type<MV>;
 
-  using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= containers::DenseMatrix<eig_dyn_mat>;
-  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
-  help_impl_t myImpl_	= {};
+  using eig_dyn_mat = Eigen::MatrixXd;
+  using eig_mat_w = containers::DenseMatrix<eig_dyn_mat>;
+  using help_impl_t = QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
+  help_impl_t myImpl_ = {};
 
 public:
   EpetraMVHouseholderUsingEigen() = default;
   ~EpetraMVHouseholderUsingEigen() = default;
 
-  template < typename vector_in_t, typename vector_out_t>
+  template <typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto beta = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const{
+  void doLinSolve(const vector_t & rhs, vector_t & y) const
+  {
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & QFactor() const {
+  const Q_t & QFactor() const
+  {
     return *this->Qmat_;
   }
 
-  template < typename vector_in_t, typename vector_out_t>
+  template <typename vector_in_t, typename vector_out_t>
   void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
   {
     myImpl_.applyRTranspose(vecIn, y);
@@ -97,8 +99,8 @@ public:
 
   void computeThinOutOfPlace(const matrix_t & A)
   {
-    auto rows = ::pressio::ops::extent(A,0);
-    auto cols = ::pressio::ops::extent(A,1);
+    auto rows = ::pressio::ops::extent(A, 0);
+    auto cols = ::pressio::ops::extent(A, 1);
     auto & ArowMap = A.data()->Map();
 
     // convert it to replicated eptra matrix
@@ -108,10 +110,10 @@ public:
     A2.data()->Import(*A.data(), importer, Insert);
 
     // store it into an Eigen matrix
-    eig_mat_w eA2W(rows,cols);
-    for (int i=0;i<rows;i++)
-      for (int j=0;j<cols;j++)
-    	eA2W(i,j) = A2(i,j);
+    eig_mat_w eA2W(rows, cols);
+    for(int i = 0; i < rows; i++)
+      for(int j = 0; j < cols; j++)
+	eA2W(i, j) = A2(i, j);
 
     myImpl_.computeThinOutOfPlace(eA2W);
 
@@ -125,10 +127,10 @@ public:
 
     // store Q into replicated Epetra_Multivector
     const auto & Q2 = *(myImpl_.QFactor().data());
-    Q_t locQ(locMap,Q2.cols());
-    for (int i=0;i<Q2.rows();i++)
-      for (int j=0;j<Q2.cols();j++)
-    	locQ(i,j) = Q2(i,j);
+    Q_t locQ(locMap, Q2.cols());
+    for(int i = 0; i < Q2.rows(); i++)
+      for(int j = 0; j < Q2.cols(); j++)
+	locQ(i, j) = Q2(i, j);
 
     // import from local to distributed
     Qmat_ = std::make_shared<Q_t>(ArowMap, Q2.cols());
@@ -137,13 +139,12 @@ public:
   }
 
 private:
-
   // todo: these must be moved somewhere else
-  mutable std::shared_ptr<Q_t> Qmat_	= nullptr;
-  mutable std::shared_ptr<R_t> Rmat_	= nullptr;
+  mutable std::shared_ptr<Q_t> Qmat_ = nullptr;
+  mutable std::shared_ptr<R_t> Rmat_ = nullptr;
 
 };//end class
 
 
-}}} // end namespace pressio::qr::impl
-#endif  // QR_IMPL_EPETRA_QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
+}}}// end namespace pressio::qr::impl
+#endif// QR_IMPL_EPETRA_QR_EPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_

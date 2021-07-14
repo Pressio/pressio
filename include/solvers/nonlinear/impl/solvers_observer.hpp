@@ -49,11 +49,11 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 struct BaseObserver
 {
-  using apply_function_type = void (*)(BaseObserver*, int, const void*);
+  using apply_function_type = void (*)(BaseObserver *, int, const void *);
   apply_function_type applyFnc_;
 
   BaseObserver() = default;
@@ -80,7 +80,8 @@ private:
   pressio::utils::instance_or_reference_wrapper<functor_t> F_;
 
 public:
-  Observer(functor_t Fin) : F_(Fin){}
+  Observer(functor_t Fin)
+    : F_(Fin) {}
 
   Observer() = delete;
   Observer(Observer const &) = default;
@@ -89,21 +90,22 @@ public:
   Observer & operator=(Observer &&) = default;
   ~Observer() = default;
 
-  functor_t get() const{
+  functor_t get() const
+  {
     return F_.get();
   }
 };
 
-template<typename T>
-void applyObserver(BaseObserver* observer,
+template <typename T>
+void applyObserver(BaseObserver * observer,
 		   int step,
 		   const void * state_as_void)
 {
   using state_t = typename T::state_type;
-  const auto* p = static_cast<T*>(observer);
-  const auto* state = reinterpret_cast<const state_t*>(state_as_void);
+  const auto * p = static_cast<T *>(observer);
+  const auto * state = reinterpret_cast<const state_t *>(state_as_void);
   p->get()(step, *state);
 }
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_OBSERVERS_SOLVERS_BASE_OBSERVER_HPP_

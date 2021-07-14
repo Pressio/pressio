@@ -51,7 +51,7 @@
 
 #include <exception>
 
-namespace pressio{ namespace eh{
+namespace pressio { namespace eh {
 
 class time_step_failure
   : public std::exception
@@ -68,13 +68,15 @@ public:
   ~time_step_failure() = default;
 
   explicit time_step_failure(std::string append)
-    : append_{append}{
+    : append_{append}
+  {
     myerr_ += append_;
   }
 
-  virtual const char * what () const noexcept{
+  virtual const char * what() const noexcept
+  {
     return myerr_.c_str();
-   }
+  }
 };
 
 
@@ -93,13 +95,15 @@ public:
   ~velocity_failure_unrecoverable() = default;
 
   explicit velocity_failure_unrecoverable(std::string append)
-    : append_{append}{
+    : append_{append}
+  {
     myerr_ += append_;
   }
 
-  virtual const char * what () const noexcept{
+  virtual const char * what() const noexcept
+  {
     return myerr_.c_str();
-   }
+  }
 };
 
 
@@ -118,14 +122,16 @@ public:
   ~discrete_time_residual_failure_unrecoverable() = default;
 
   explicit discrete_time_residual_failure_unrecoverable(std::string append)
-    : append_{append}{
+    : append_{append}
+  {
     myerr_ += append_;
   }
 
-  virtual const char * what () const noexcept{
+  virtual const char * what() const noexcept
+  {
     return myerr_.c_str();
-   }
+  }
 };
 
 }}//end namespace pressio::eh
-#endif  // ODE_ODE_EXCEPTIONS_HPP_
+#endif// ODE_ODE_EXCEPTIONS_HPP_

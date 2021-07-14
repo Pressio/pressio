@@ -19,4 +19,4 @@
 // #else
 // #include <fmt/ostream.h>
 // #endif
-#endif  // UTILS_LOGGER_FMT_OSTR_HPP_
+#endif// UTILS_LOGGER_FMT_OSTR_HPP_

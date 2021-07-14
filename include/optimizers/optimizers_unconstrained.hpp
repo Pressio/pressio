@@ -53,31 +53,32 @@
 #include "ROL_RandomVector.hpp"
 #include "ROL_StdObjective.hpp"
 
-namespace pressio{ namespace optimizers{
+namespace pressio { namespace optimizers {
 
-namespace impl{
+namespace impl {
 
-template<typename scalar_type, typename system_type>
+template <typename scalar_type, typename system_type>
 class RolObjectiveWrapper : public ROL::Objective<scalar_type>
 {
   using state_type = typename system_type::state_type;
   const system_type & wrappedObj_;
 
 public:
-  RolObjectiveWrapper(const system_type & wrappedObj) : wrappedObj_(wrappedObj){}
+  RolObjectiveWrapper(const system_type & wrappedObj)
+    : wrappedObj_(wrappedObj) {}
 
-  scalar_type value(const ROL::Vector<scalar_type> &x, scalar_type &tol)
+  scalar_type value(const ROL::Vector<scalar_type> & x, scalar_type & tol)
   {
-    const state_type & ex = static_cast<const state_type&>(x);
+    const state_type & ex = static_cast<const state_type &>(x);
     return wrappedObj_(ex);
   }
 
-  void gradient( ROL::Vector<scalar_type> &g,
-		 const ROL::Vector<scalar_type> &x,
-		 scalar_type &tol )
+  void gradient(ROL::Vector<scalar_type> & g,
+		const ROL::Vector<scalar_type> & x,
+		scalar_type & tol)
   {
-    const state_type & x2 = static_cast<const state_type&>(x);
-    state_type	     & g2 = static_cast<state_type&>(g);
+    const state_type & x2 = static_cast<const state_type &>(x);
+    state_type & g2 = static_cast<state_type &>(g);
     wrappedObj_.gradient(x2, g2);
   }
 };
@@ -87,7 +88,7 @@ template <typename system_type>
 class UnconstrainedRol
 {
   using scalar_t = typename system_type::scalar_type;
-  using state_t  = typename system_type::state_type;
+  using state_t = typename system_type::state_type;
 
   ROL::ParameterList rolParList_;
   const ::pressio::optimizers::Parameters<scalar_t> & params_;
@@ -109,19 +110,19 @@ public:
     // make ptr from reference, does not make any new allocation
     auto x = ROL::makePtrFromRef(optState);
 
-    ROL::OptimizationProblem<scalar_t> problem( obj, x);
+    ROL::OptimizationProblem<scalar_t> problem(obj, x);
     problem.check(std::cout);
-    ROL::OptimizationSolver<scalar_t> solver( problem, rolParList_ );
+    ROL::OptimizationSolver<scalar_t> solver(problem, rolParList_);
     solver.solve(std::cout);
   }
 };
 
-} //end namespace impl
+}//end namespace impl
 
 
-template <typename ...Args>
+template <typename... Args>
 using Unconstrained = impl::UnconstrainedRol<Args...>;
 
 
 }}//end namespace pressio::optimizers
-#endif  // OPTIMIZERS_OPTIMIZERS_UNCONSTRAINED_HPP_
+#endif// OPTIMIZERS_OPTIMIZERS_UNCONSTRAINED_HPP_

@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_SPARSE_MATRIX_CONTAINERS_SPARSE_MATRIX_TRAITS_HPP_
 #define CONTAINERS_SPARSE_MATRIX_CONTAINERS_SPARSE_MATRIX_TRAITS_HPP_
 
-namespace pressio{ namespace containers{ namespace details{
+namespace pressio { namespace containers { namespace details {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 //***********************************
@@ -59,33 +59,31 @@ template <typename wrapped_type>
 struct traits<
   SparseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_sparse_matrix_eigen<wrapped_type>::value
-    >
-  >
+    containers::predicates::is_sparse_matrix_eigen<wrapped_type>::value>>
   : public containers_shared_traits<wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<true>
 {
   static constexpr WrappedMatrixIdentifier
-  wrapped_matrix_identifier = WrappedMatrixIdentifier::SparseEigen;
+    wrapped_matrix_identifier = WrappedMatrixIdentifier::SparseEigen;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
-  using size_t    = ordinal_t;
+  using size_t = ordinal_t;
   //  ordinal has to be integral and signed
-  static_assert( std::is_integral<ordinal_t>::value &&
-  		 std::is_signed<ordinal_t>::value,
-  "ordinal type for indexing eigen sparse matrix has to be signed");
+  static_assert(std::is_integral<ordinal_t>::value &&
+		  std::is_signed<ordinal_t>::value,
+		"ordinal type for indexing eigen sparse matrix has to be signed");
 
   static constexpr bool is_row_major = wrapped_type::IsRowMajor;
   static constexpr bool is_col_major = !is_row_major;
 };
-#endif //PRESSIO_ENABLE_TPL_EIGEN
+#endif//PRESSIO_ENABLE_TPL_EIGEN
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_SPARSE_MATRIX_CONTAINERS_SPARSE_MATRIX_TRAITS_HPP_
+#endif// CONTAINERS_SPARSE_MATRIX_CONTAINERS_SPARSE_MATRIX_TRAITS_HPP_

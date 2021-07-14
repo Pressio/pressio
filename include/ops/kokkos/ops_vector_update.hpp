@@ -51,25 +51,23 @@
 
 #include <KokkosBlas1_axpby.hpp>
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
-namespace impl{
-template <typename scalar_type, typename T1, typename ...Args>
+namespace impl {
+template <typename scalar_type, typename T1, typename... Args>
 struct _doUpdateAdmissibleOperands
 {
   /* make sure we don't pass const objects to be modified.
      In kokkos it is legal to modify const views, not for pressio wrappers. */
-  static_assert
-    (!std::is_const<T1>::value,
-     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
-  static_assert
-    (containers::predicates::are_scalar_compatible<T1, Args...>::value and
-     std::is_same<
-     typename pressio::containers::details::traits<T1>::scalar_t,
-     scalar_type>::value, "Types are not scalar compatible");
-  static_assert
-    (::pressio::containers::predicates::have_matching_execution_space<T1,Args...>::value,
-     "operands need to have same execution space" );
+  static_assert(!std::is_const<T1>::value,
+		"ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert(containers::predicates::are_scalar_compatible<T1, Args...>::value and
+		  std::is_same<
+		    typename pressio::containers::details::traits<T1>::scalar_t,
+		    scalar_type>::value,
+		"Types are not scalar compatible");
+  static_assert(::pressio::containers::predicates::have_matching_execution_space<T1, Args...>::value,
+		"operands need to have same execution space");
 
   static constexpr auto value = true;
 };
@@ -79,26 +77,22 @@ struct _doUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T1, typename T2, typename scalar_t>
+template <typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
-  >
-update(T1 & v,	 const scalar_t & a,
-	  const T2 & v1, const scalar_t & b)
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+update(T1 & v, const scalar_t & a,
+       const T2 & v1, const scalar_t & b)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2>::value, "");
   ::KokkosBlas::axpby(b, *v1.data(), a, *v.data());
 }
 
-template<typename T1, typename T2, typename scalar_t>
+template <typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
-  >
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
 update(T1 & v, const T2 & v1, const scalar_t & b)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2>::value, "");
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   ::KokkosBlas::axpby(b, *v1.data(), zero, *v.data());
 }
@@ -106,17 +100,14 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T1, typename T2, typename T3, typename scalar_t>
+template <typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value
-  >
-update(T1 & v,	 const scalar_t &a,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c)
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value>
+update(T1 & v, const scalar_t & a,
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2,T3>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<view_t, scalar_t>;
@@ -124,17 +115,14 @@ update(T1 & v,	 const scalar_t &a,
   Kokkos::parallel_for(v.extent(0), F);
 }
 
-template<typename T1, typename T2, typename T3, typename scalar_t>
+template <typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value
-  >
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value>
 update(T1 & v,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c)
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t,T1,T2,T3>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateTwoTermsFunctor<view_t, scalar_t>;
@@ -146,22 +134,17 @@ update(T1 & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template<
+template <
   typename T1, typename T2, typename T3, typename T4,
-  typename scalar_t
-  >
+  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value
-  >
-update(T1 & v,	 const scalar_t &a,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c,
-	  const T4 & v3, const scalar_t &d)
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value>
+update(T1 & v, const scalar_t & a,
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c,
+       const T4 & v3, const scalar_t & d)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2,T3,T4>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3, T4>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
@@ -169,22 +152,17 @@ update(T1 & v,	 const scalar_t &a,
   Kokkos::parallel_for(v.extent(0), F);
 }
 
-template<
+template <
   typename T1, typename T2, typename T3, typename T4,
-  typename scalar_t
-  >
+  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value
-  >
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value>
 update(T1 & v,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c,
-	  const T4 & v3, const scalar_t &d)
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c,
+       const T4 & v3, const scalar_t & d)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2,T3,T4>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3, T4>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateThreeTermsFunctor<view_t, scalar_t>;
@@ -196,23 +174,18 @@ update(T1 & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template<
+template <
   typename T1, typename T2, typename T3, typename T4, typename T5,
-  typename scalar_t
-  >
+  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value
-  >
-update(T1 & v,	const scalar_t &a,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c,
-	  const T4 & v3, const scalar_t &d,
-	  const T5 & v4, const scalar_t &e)
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value>
+update(T1 & v, const scalar_t & a,
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c,
+       const T4 & v3, const scalar_t & d,
+       const T5 & v4, const scalar_t & e)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1,T2,T3,T4,T5>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3, T4, T5>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
@@ -220,23 +193,18 @@ update(T1 & v,	const scalar_t &a,
   Kokkos::parallel_for(v.extent(0), F);
 }
 
-template<
+template <
   typename T1, typename T2, typename T3, typename T4, typename T5,
-  typename scalar_t
-  >
+  typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value
-  >
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T3>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T4>::value>
 update(T1 & v,
-	  const T2 & v1, const scalar_t &b,
-	  const T3 & v2, const scalar_t &c,
-	  const T4 & v3, const scalar_t &d,
-	  const T5 & v4, const scalar_t &e)
+       const T2 & v1, const scalar_t & b,
+       const T3 & v2, const scalar_t & c,
+       const T4 & v3, const scalar_t & d,
+       const T5 & v4, const scalar_t & e)
 {
-  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t,T1,T2,T3,T4,T5>::value,"");
+  static_assert(impl::_doUpdateAdmissibleOperands<scalar_t, T1, T2, T3, T4, T5>::value, "");
 
   using view_t = typename ::pressio::containers::details::traits<T1>::wrapped_t;
   using fnctr_t = ::pressio::ops::impl::DoUpdateFourTermsFunctor<view_t, scalar_t>;
@@ -245,4 +213,4 @@ update(T1 & v,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_VECTOR_UPDATE_HPP_
+#endif// OPS_KOKKOS_OPS_VECTOR_UPDATE_HPP_

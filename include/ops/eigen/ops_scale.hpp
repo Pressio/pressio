@@ -49,16 +49,15 @@
 #ifndef OPS_EIGEN_OPS_SCALE_HPP_
 #define OPS_EIGEN_OPS_SCALE_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value
-  >
+  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value>
 scale(T & o, typename T::traits::scalar_t value)
 {
   (*o.data()) *= value;
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_SCALE_HPP_
+#endif// OPS_EIGEN_OPS_SCALE_HPP_

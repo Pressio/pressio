@@ -8,7 +8,8 @@
 
 
 struct epetraVectorGlobSize15Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   std::shared_ptr<Epetra_MpiComm> comm_;
@@ -19,25 +20,27 @@ public:
   std::shared_ptr<Epetra_Map> contigMap_;
   std::shared_ptr<Epetra_Vector> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
 
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
     x_ = std::make_shared<Epetra_Vector>(*contigMap_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 //-----------------------------------------------------------
 
 
 struct epetraMultiVectorR9C4VecS9Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   int rank_;
@@ -50,12 +53,13 @@ public:
   std::shared_ptr<Epetra_MultiVector> mv_;
   std::shared_ptr<Epetra_Vector> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
 
     numGlobalEntries_ = numProc_ * localSize_;
     dataMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
@@ -63,7 +67,7 @@ public:
     x_ = std::make_shared<Epetra_Vector>(*dataMap_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 
 #endif /* CONTAINERS_FIXTURES_EPETRA_ONLY_FIXTURES_HPP_ */

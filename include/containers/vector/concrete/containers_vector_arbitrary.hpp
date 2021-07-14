@@ -49,92 +49,91 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_admissible_as_vector_arbitrary<wrapped_type>::value>>
 {
 
 public:
   using this_t = Vector<wrapped_type>;
   using traits = details::traits<this_t>;
   using size_t = typename traits::size_t;
-  using sc_t   = typename traits::scalar_t;
+  using sc_t = typename traits::scalar_t;
 
 public:
-  template<
+  template <
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
       std::is_default_constructible<_wrapped_type>::value,
-      int > = 0
-  >
+      int> = 0>
   Vector(){};
 
-  template<
+  template <
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
       std::is_constructible<_wrapped_type, size_t>::value,
-      int > = 0
-  >
-  explicit Vector(size_t szIn) : data_(szIn){};
+      int> = 0>
+  explicit Vector(size_t szIn)
+    : data_(szIn){};
 
 
   explicit Vector(const wrapped_type & vecobj)
-    : data_(vecobj){}
+    : data_(vecobj) {}
 
   Vector(Vector const & other)
-    : data_(*other.data()){}
+    : data_(*other.data()) {}
 
 public:
-  wrapped_type const * data() const{
+  wrapped_type const * data() const
+  {
     return &data_;
   }
 
-  wrapped_type * data(){
+  wrapped_type * data()
+  {
     return &data_;
   }
 
-  template<typename _wrapped_type = wrapped_type>
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value,
-    size_t
-    >
+    size_t>
   extent(size_t k) const
   {
-    assert(k == (size_t) 0);
+    assert(k == (size_t)0);
     return data_.extent(k);
   }
 
-  template<typename _wrapped_type = wrapped_type>
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     ::pressio::containers::predicates::has_method_size<_wrapped_type>::value,
-    size_t
-    >
+    size_t>
   extent(size_t k) const
   {
     return data_.size();
   }
 
-  sc_t & operator()(size_t i){
+  sc_t & operator()(size_t i)
+  {
     assert(i < this->extent(0));
     return data_[i];
   };
-  sc_t const & operator()(size_t i) const{
+  sc_t const & operator()(size_t i) const
+  {
     assert(i < this->extent(0));
     return data_[i];
   };
 
-  [[deprecated("Use operator() instead.")]]
-  sc_t & operator[](size_t i){
+  [[deprecated("Use operator() instead.")]] sc_t & operator[](size_t i)
+  {
     return (*this)(i);
   };
-  [[deprecated("Use operator() instead.")]]
-  sc_t const & operator[](size_t i) const{
+  [[deprecated("Use operator() instead.")]] sc_t const & operator[](size_t i) const
+  {
     return (*this)(i);
   };
 
@@ -143,4 +142,4 @@ private:
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_
+#endif// CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_ARBITRARY_HPP_

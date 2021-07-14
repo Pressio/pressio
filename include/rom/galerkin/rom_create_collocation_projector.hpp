@@ -49,9 +49,9 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_COLLOCATION_PROJECTOR_HPP_
 #define ROM_GALERKIN_ROM_CREATE_COLLOCATION_PROJECTOR_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio { namespace rom { namespace galerkin {
 
-template<typename decoder_type, typename collocator_t>
+template <typename decoder_type, typename collocator_t>
 impl::ArbitraryProjector<typename decoder_type::jacobian_type, void>
 createCollocationProjector(const decoder_type & decoder,
 			   collocator_t && collocator)
@@ -69,7 +69,7 @@ createCollocationProjector(const decoder_type & decoder,
   return return_t(std::move(matrix));
 }
 
-template<typename decoder_type, typename collocator_t, typename ops_t>
+template <typename decoder_type, typename collocator_t, typename ops_t>
 impl::ArbitraryProjector<typename decoder_type::jacobian_type, ops_t>
 createCollocationProjector(const decoder_type & decoder,
 			   collocator_t && collocator,
@@ -89,4 +89,4 @@ createCollocationProjector(const decoder_type & decoder,
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_CREATE_COLLOCATION_PROJECTOR_HPP_
+#endif// ROM_GALERKIN_ROM_CREATE_COLLOCATION_PROJECTOR_HPP_

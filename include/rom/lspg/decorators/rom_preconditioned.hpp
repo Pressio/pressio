@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
 #define ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace decorator{
+namespace pressio { namespace rom { namespace lspg { namespace decorator {
 
 template <typename preconditioner_t, typename preconditionable_policy>
 class Preconditioned : public preconditionable_policy
@@ -68,14 +68,16 @@ public:
 
   Preconditioned(const preconditionable_policy & obj)
     : preconditionable_policy(obj)
-  {}
+  {
+  }
 
-  template <typename ... Args>
+  template <typename... Args>
   Preconditioned(const preconditioner_t & preconditionerIn,
-                               Args && ... args)
+		 Args &&... args)
     : preconditionable_policy(std::forward<Args>(args)...),
       preconditionerObj_(preconditionerIn)
-  {}
+  {
+  }
 
 public:
   template <typename fom_system_t>
@@ -92,8 +94,7 @@ public:
     typename prev_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename state_t
-    >
+    typename state_t>
   void compute(const state_t & currentState,
 	       const prev_states_t & prevStates,
 	       const fom_system_t & systemObj,
@@ -104,7 +105,7 @@ public:
   {
     preconditionable_policy::template compute<
       stepper_tag>(currentState, prevStates, systemObj,
-        time, dt, step, unpreconditionedField);
+		   time, dt, step, unpreconditionedField);
 
     const auto & yFom = fomStatesMngr_(::pressio::ode::nPlusOne());
     preconditionerObj_.get().applyPreconditioner(*yFom.data(), time,
@@ -116,8 +117,7 @@ public:
   //-------------------------------
   template <
     typename lspg_state_t,
-    typename fom_t
-  >
+    typename fom_t>
   void compute(const lspg_state_t & currentState,
 	       data_type & unpreconditionedField,
 	       const fom_t & systemObj) const
@@ -127,8 +127,7 @@ public:
     preconditionerObj_.get().applyPreconditioner(*yFom.data(),
 						 *unpreconditionedField.data());
   }
-
 };
 
-}}}} //end namespace pressio::rom::lspg::decorator
-#endif  // ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_
+}}}}//end namespace pressio::rom::lspg::decorator
+#endif// ROM_LSPG_DECORATORS_ROM_PRECONDITIONED_HPP_

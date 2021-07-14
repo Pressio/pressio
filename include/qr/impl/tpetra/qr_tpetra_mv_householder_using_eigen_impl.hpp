@@ -54,9 +54,9 @@
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
 
-namespace pressio{ namespace qr{ namespace impl{
+namespace pressio { namespace qr { namespace impl {
 
-template<typename matrix_t, typename R_t, template <typename...> class Q_type>
+template <typename matrix_t, typename R_t, template <typename...> class Q_type>
 class TpetraMVHouseholderUsingEigen
 {
 
@@ -69,29 +69,31 @@ class TpetraMVHouseholderUsingEigen
   using hexsp = typename containers::details::traits<matrix_t>::host_exec_space_t;
 
   using Q_t = Q_type<MV>;
-  using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_mat_w	= containers::DenseMatrix<eig_dyn_mat>;
-  using help_impl_t	= QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
-  help_impl_t myImpl_	= {};
+  using eig_dyn_mat = Eigen::MatrixXd;
+  using eig_mat_w = containers::DenseMatrix<eig_dyn_mat>;
+  using help_impl_t = QRHouseholderDenseEigenMatrixWrapper<eig_mat_w, R_t, Q_type>;
+  help_impl_t myImpl_ = {};
 
 public:
   TpetraMVHouseholderUsingEigen() = default;
   ~TpetraMVHouseholderUsingEigen() = default;
 
-  template < typename vector_in_t, typename vector_out_t>
+  template <typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto beta = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
   template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const{
+  void doLinSolve(const vector_t & rhs, vector_t & y) const
+  {
     myImpl_.template doLinSolve<vector_t>(rhs, y);
   }
 
-  const Q_t & QFactor() const {
+  const Q_t & QFactor() const
+  {
     return *this->Qmat_;
   }
 
@@ -99,16 +101,16 @@ public:
   {
     auto & A = const_cast<matrix_t &>(Ain);
 
-    auto rows = ::pressio::ops::extent(A,0);
-    auto cols = ::pressio::ops::extent(A,1);
+    auto rows = ::pressio::ops::extent(A, 0);
+    auto cols = ::pressio::ops::extent(A, 1);
     auto ArowMap = A.data()->getMap();
-    Teuchos::RCP<const Teuchos::Comm<int> > comm =
-      Teuchos::rcp (new Teuchos::MpiComm<int> (MPI_COMM_SELF));
+    Teuchos::RCP<const Teuchos::Comm<int>> comm =
+      Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_SELF));
 
     // convert it to replicated eptra matrix
     using local_map_t = Tpetra::Map<LO_t, GO_t, node_t>;
     using rcp_local_map_t = Teuchos::RCP<const local_map_t>;
-    rcp_local_map_t rcp_local_map = Teuchos::rcp( new local_map_t(rows, 0, comm) );
+    rcp_local_map_t rcp_local_map = Teuchos::rcp(new local_map_t(rows, 0, comm));
 
     using import_t = Tpetra::Import<LO_t, GO_t, node_t>;
     import_t importer(ArowMap, rcp_local_map);
@@ -116,11 +118,11 @@ public:
     A2.data()->doImport(*A.data(), importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix
-    containers::DenseMatrix<Eigen::MatrixXd> eA2W(rows,cols);
-    for (int j=0;j<cols;j++){
+    containers::DenseMatrix<Eigen::MatrixXd> eA2W(rows, cols);
+    for(int j = 0; j < cols; j++) {
       auto colData = A2.data()->getData(j);
-      for (int i=0;i<rows;i++)
-    	eA2W(i,j) = colData[i];
+      for(int i = 0; i < rows; i++)
+	eA2W(i, j) = colData[i];
     }
 
     myImpl_.computeThinOutOfPlace(eA2W);
@@ -136,7 +138,7 @@ public:
 
     // store Q into replicated Tpetra::Multivector
     const auto & Q2 = *(myImpl_.QFactor().data());
-    Q_t locQ( rcp_local_map, Q2.cols() );
+    Q_t locQ(rcp_local_map, Q2.cols());
     auto trilD = locQ.data();
     trilD->template sync<Kokkos::HostSpace>();
 
@@ -144,9 +146,9 @@ public:
     auto c0 = Kokkos::subview(v2d, Kokkos::ALL(), 0);
     // //we are going to change the host view
     trilD->template modify<Kokkos::HostSpace>();
-    for (int i=0;i<Q2.rows();i++)
-      for (int j=0;j<Q2.cols();j++)
-    	v2d(i,j) = Q2(i,j);
+    for(int i = 0; i < Q2.rows(); i++)
+      for(int j = 0; j < Q2.cols(); j++)
+	v2d(i, j) = Q2(i, j);
 
     // import from local to distributed
     Qmat_ = std::make_shared<Q_t>(ArowMap, Q2.cols());
@@ -156,10 +158,10 @@ public:
 
 private:
   // todo: these must be moved somewhere else
-  mutable std::shared_ptr<Q_t> Qmat_	= nullptr;
-  mutable std::shared_ptr<R_t> Rmat_	= nullptr;
+  mutable std::shared_ptr<Q_t> Qmat_ = nullptr;
+  mutable std::shared_ptr<R_t> Rmat_ = nullptr;
 
 };//end class
 
-}}} // end namespace pressio::qr::impl
-#endif  // QR_IMPL_TPETRA_QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_
+}}}// end namespace pressio::qr::impl
+#endif// QR_IMPL_TPETRA_QR_TPETRA_MV_HOUSEHOLDER_USING_EIGEN_IMPL_HPP_

@@ -49,27 +49,27 @@
 #ifndef SVD_SVD_CONFIGDEFS_HPP_
 #define SVD_SVD_CONFIGDEFS_HPP_
 
-namespace pressio{ namespace svd{
-  
+namespace pressio { namespace svd {
+
 // put here definitions
-enum class svdType{ 
+enum class svdType {
   // /*FULL SVD
   //   The matrix U'n is thus m×m, Σn is m×n diagonal, and V is n×n.
   // */
-  // full, 
+  // full,
 
-  // /*THIN SVD: Only the n column vectors of U corresponding to the 
-  //   row vectors of V* are calculated. The remaining column 
-  //   vectors of U are not calculated. This is significantly 
-  //   quicker and more economical than the full SVD if n << m. 
+  // /*THIN SVD: Only the n column vectors of U corresponding to the
+  //   row vectors of V* are calculated. The remaining column
+  //   vectors of U are not calculated. This is significantly
+  //   quicker and more economical than the full SVD if n << m.
   //   The matrix U'n is thus m×n, Σn is n×n diagonal, and V is n×n.
   // */
   // thin,
 
-  // /*Only the r column vectors of U and r row vectors of V* 
-  //   corresponding to the non-zero singular values Σr are calculated. 
-  //   The remaining vectors of U and V* are not calculated. 
-  //   This is quicker and more economical than the thin SVD if r << n. 
+  // /*Only the r column vectors of U and r row vectors of V*
+  //   corresponding to the non-zero singular values Σr are calculated.
+  //   The remaining vectors of U and V* are not calculated.
+  //   This is quicker and more economical than the thin SVD if r << n.
   //   The matrix Ur is thus m×r, Σr is r×r diagonal, and Vr* is r×n.*/
   // compact,
 
@@ -80,8 +80,8 @@ enum class svdType{
     and more economical than the compact SVD if t≪r. The matrix Ut 
     is thus m×t, Σt is t×t diagonal, and Vt* is t×n.*/
   truncated
-  
+
 };
 
-}} // end namespace pressio::svd
-#endif  // SVD_SVD_CONFIGDEFS_HPP_
+}}// end namespace pressio::svd
+#endif// SVD_SVD_CONFIGDEFS_HPP_

@@ -49,34 +49,29 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+namespace pressio { namespace ops { namespace predicates {
 
 template <
   typename T, typename x_t, typename y_t, typename a_t,
-  typename = void
-  >
+  typename = void>
 struct has_method_axpy
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <
-  typename T, typename x_t, typename y_t, typename a_t
-  >
+  typename T, typename x_t, typename y_t, typename a_t>
 struct has_method_axpy<
   T, x_t, y_t, a_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval< T const &>().axpy
-       (
-	std::declval< a_t >(),
-	std::declval< x_t const & >(),
-	std::declval< y_t & >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().axpy(
+	  std::declval<a_t>(),
+	  std::declval<x_t const &>(),
+	  std::declval<y_t &>()))>::value>> : std::true_type
+{
+};
 
-}}} //pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_
+}}}//pressio::ops::predicates
+#endif// OPS_PREDICATES_OPS_HAS_METHOD_AXPY_HPP_

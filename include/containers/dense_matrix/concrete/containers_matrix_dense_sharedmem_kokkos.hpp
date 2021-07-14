@@ -49,21 +49,19 @@
 #ifndef CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_KOKKOS_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class DenseMatrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value
-    >
-  >
+    containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value>>
 {
 public:
   using this_t = DenseMatrix<wrapped_type>;
   using traits = details::traits<this_t>;
   using sc_t = typename traits::scalar_t;
-  using ord_t = typename  traits::ordinal_t;
+  using ord_t = typename traits::ordinal_t;
   using wrap_t = typename traits::wrapped_t;
 
   // Views have "view semantics." copy constructor and
@@ -84,16 +82,18 @@ public:
   }
 
   explicit DenseMatrix(wrap_t && src)
-    : data_(std::move(src)){}
+    : data_(std::move(src)) {}
 
   DenseMatrix(const std::string & label,
-              size_t e1, size_t e2)
+	      size_t e1, size_t e2)
     : data_{label, e1, e2}
-  {}
+  {
+  }
 
   DenseMatrix(size_t e1, size_t e2)
     : data_{"dummyLabel", e1, e2}
-  {}
+  {
+  }
 
   DenseMatrix(const DenseMatrix & other)
     : data_{other.data_.label(),
@@ -108,50 +108,56 @@ public:
 
   // move cnstr and assign
   DenseMatrix(DenseMatrix && other) = default;
-  DenseMatrix & operator=(DenseMatrix && other)= default;
+  DenseMatrix & operator=(DenseMatrix && other) = default;
 
   // destructor
   ~DenseMatrix() = default;
 
 
 public:
-  template< typename _wrapped_type = wrapped_type >
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
-  operator () (ord_t i, ord_t j){
-    assert(i < this->extent(0) );
-    assert(j < this->extent(1) );
-    return data_(i,j);
+  operator()(ord_t i, ord_t j)
+  {
+    assert(i < this->extent(0));
+    assert(j < this->extent(1));
+    return data_(i, j);
   };
 
-  template< typename _wrapped_type = wrapped_type >
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
-  operator () (ord_t i, ord_t j) const{
-    assert(i < this->extent(0) );
-    assert(j < this->extent(1) );
+  operator()(ord_t i, ord_t j) const
+  {
+    assert(i < this->extent(0));
+    assert(j < this->extent(1));
     return data_(i, j);
   };
 
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   }
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   }
 
-  wrap_t dataCp(){
+  wrap_t dataCp()
+  {
     return data_;
   }
 
-  ord_t extent(ord_t i) const {
-    assert(i==0 or i==1);
+  ord_t extent(ord_t i) const
+  {
+    assert(i == 0 or i == 1);
     return data_.extent(i);
   }
 
@@ -161,4 +167,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_KOKKOS_HPP_
+#endif// CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_KOKKOS_HPP_

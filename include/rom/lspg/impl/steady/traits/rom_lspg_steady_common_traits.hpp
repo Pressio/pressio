@@ -49,32 +49,29 @@
 #ifndef ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
 #define ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace steady {
 
 template <
   typename fom_system_type,
   typename lspg_state_type,
-  typename decoder_type
-  >
+  typename decoder_type>
 struct CommonTraits
 {
-  static_assert
-  (::pressio::rom::lspg::constraints::state<lspg_state_type>::value,
-   "The lspg_state_type is not a valid rom state");
+  static_assert(::pressio::rom::lspg::constraints::state<lspg_state_type>::value,
+		"The lspg_state_type is not a valid rom state");
 
-  using fom_system_t	      = fom_system_type;
-  using scalar_t              = typename fom_system_t::scalar_type;
+  using fom_system_t = fom_system_type;
+  using scalar_t = typename fom_system_t::scalar_type;
 
   // lspg state types
-  using lspg_state_t	    = lspg_state_type;
+  using lspg_state_t = lspg_state_type;
   using lspg_native_state_t = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   // ---------------------
   // check for valid decoder
-  static_assert
-  (::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
-   "A valid decoder type must be passed to define a LSPG problem");
-  using decoder_t     = decoder_type;
+  static_assert(::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
+		"A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
   // ---------------------
@@ -82,22 +79,20 @@ struct CommonTraits
   // ensure it is consistent with the (native) fom_state_type from the app
   using fom_state_t = typename decoder_type::fom_state_type;
   using fom_native_state_t = typename fom_system_type::state_type;
-  static_assert
-  (std::is_same<
-   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
-   fom_native_state_t>::value,
-   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+  static_assert(std::is_same<
+		  typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+		  fom_native_state_t>::value,
+		"The fom state type detected in the fom class must match the fom state type used in the decoder");
 
   // ---------------------
   // for now we don't allow state and residual to have different types
   // but need to make sure this assumption is consistent with fom class
-  using fom_residual_t		= fom_state_t;
+  using fom_residual_t = fom_state_t;
   using fom_native_residual_t = typename fom_system_type::residual_type;
-  static_assert
-  (std::is_same<
-   typename ::pressio::containers::details::traits<fom_residual_t>::wrapped_t,
-   fom_native_residual_t>::value,
-   "Currently, the fom discrete time residual type must be the same as the state type.");
+  static_assert(std::is_same<
+		  typename ::pressio::containers::details::traits<fom_residual_t>::wrapped_t,
+		  fom_native_residual_t>::value,
+		"Currently, the fom discrete time residual type must be the same as the state type.");
 
   // ---------------------
   /* for steady lspg, the lspg residual is literally the rhs (aka velocity fo us) */
@@ -109,7 +104,7 @@ struct CommonTraits
    * For now, set lspg_jacobian_t to be of same type as decoder_jac_t
    * not a bad assumption since all matrices are left-applied to decoder_jac_t
    */
-  using lspg_jacobian_t	= decoder_jac_t;
+  using lspg_jacobian_t = decoder_jac_t;
 
   // ---------------------
   // fro now, later on this needs to be detected from args
@@ -130,9 +125,9 @@ struct CommonTraits
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::containers::predicates::is_tensor_wrapper_pybind<lspg_state_t>::value;
 #else
-  false;
+    false;
 #endif
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_
+#endif// ROM_LSPG_IMPL_STEADY_TRAITS_ROM_LSPG_STEADY_COMMON_TRAITS_HPP_

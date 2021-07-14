@@ -49,20 +49,18 @@
 #ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
 #define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio { namespace rom { namespace impl {
 
 template <typename jacobian_matrix_type, typename fom_state_t, typename ops_t>
 struct LinearDecoderWithCustomOps
 {
-  static_assert
-  (::pressio::rom::constraints::decoder_jacobian<jacobian_matrix_type>::value,
-   "Invalid decoder's jacobian type");
-  static_assert
-  (::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
-   "Invalid fom_state type passed to decoder");
+  static_assert(::pressio::rom::constraints::decoder_jacobian<jacobian_matrix_type>::value,
+		"Invalid decoder's jacobian type");
+  static_assert(::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
+		"Invalid fom_state type passed to decoder");
 
   // these aliases must be here because ROM classes detect them
-  using jacobian_type  = jacobian_matrix_type;
+  using jacobian_type = jacobian_matrix_type;
   using fom_state_type = fom_state_t;
 
 private:
@@ -84,7 +82,7 @@ public:
      By templating this constructor we enable universal references
      so that it is forwarded accordingly.
    */
-  template<typename T>
+  template <typename T>
   LinearDecoderWithCustomOps(T && matIn,
 			     const ops_t & udOps)
     : jacobianOfDecoder_(std::forward<T>(matIn)),
@@ -106,24 +104,25 @@ public:
   void applyMapping(const gen_coords_t & operand,
 		    fom_state_type & result) const
   {
-    static_assert
-      (::pressio::containers::predicates::are_scalar_compatible<
-       gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
+    static_assert(::pressio::containers::predicates::are_scalar_compatible<
+		    gen_coords_t, fom_state_type>::value,
+		  "Types are not scalar compatible");
     using scalar_t = typename ::pressio::containers::details::traits<
       fom_state_type>::scalar_t;
 
     constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
     udOps_.get().product(::pressio::nontranspose(), one,
 			 *jacobianOfDecoder_.data(),
 			 operand, zero, *result.data());
   }
 
-  const jacobian_type & jacobianCRef() const{
+  const jacobian_type & jacobianCRef() const
+  {
     return jacobianOfDecoder_;
   }
 
-  template<typename gen_coords_t>
+  template <typename gen_coords_t>
   void updateJacobian(const gen_coords_t & genCoordinates)
   {
     //no op
@@ -131,4 +130,4 @@ public:
 };
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_
+#endif// ROM_DECODER_IMPL_ROM_LINEAR_DECODER_CUSTOM_OPS_HPP_

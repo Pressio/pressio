@@ -49,7 +49,7 @@
 #ifndef ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
 #define ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio { namespace ode {
 
 // base case
 template <typename stepper_tag>
@@ -91,5 +91,5 @@ struct requiredNumberOfStates<::pressio::ode::explicitmethods::RungeKutta4>
   static constexpr std::size_t value = 1;
 };
 
-}} //end namespace pressio::ode
-#endif  // ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_
+}}//end namespace pressio::ode
+#endif// ODE_ODE_REQUIRED_NUMBER_OF_STATES_HPP_

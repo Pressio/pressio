@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 template <typename state_t>
 class ArmijoUpdater
@@ -57,7 +57,7 @@ class ArmijoUpdater
   using sc_t = typename ::pressio::containers::details::traits<state_t>::scalar_t;
 
   state_t trialState_;
-  const sc_t beta_  = 0.0001;
+  const sc_t beta_ = 0.0001;
 
 public:
   ArmijoUpdater() = delete;
@@ -75,9 +75,11 @@ public:
   }
 
 public:
-  void reset(){ /* no op */ }
+  void reset()
+  { /* no op */
+  }
 
-  template<typename system_t, typename solver_mixin_t>
+  template <typename system_t, typename solver_mixin_t>
   void operator()(const system_t & system,
 		  state_t & state,
 		  solver_mixin_t & solver)
@@ -101,18 +103,17 @@ public:
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 
-    const auto & p_k   = solver.correctionCRef();
-    const auto & g_k   = solver.gradientCRef();
-    auto fx_k    = solver.residualNormCurrentCorrectionStep();
+    const auto & p_k = solver.correctionCRef();
+    const auto & g_k = solver.gradientCRef();
+    auto fx_k = solver.residualNormCurrentCorrectionStep();
     fx_k = std::pow(fx_k, ::pressio::utils::constants<sc_t>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("starting backtracking");
     sc_t ftrial = {};
     bool done = false;
-    while (not done)
-    {
-      if (std::abs(alpha) <= 1e-12){
+    while(not done) {
+      if(std::abs(alpha) <= 1e-12) {
 	PRESSIOLOG_DEBUG("alpha = {:6e}, too small, exiting line search", alpha);
 	done = true;
       }
@@ -131,20 +132,21 @@ public:
       const auto lhs = ftrial - fx_k;
       PRESSIOLOG_DEBUG("alpha = {:5f}: (f_trial-f) = {:6e}, rhs = {:6e}", alpha, lhs, rhs);
 
-      if (lhs <= rhs){
+      if(lhs <= rhs) {
 	PRESSIOLOG_DEBUG("condition satisfied: f_trial-f <= rhs, exiting");
 	done = true;
       }
 
       // exit when abs(fytrail-fy) < eps, leave eps = 1e-14 for now
       // change later with some machine epsilon
-      if (std::abs(lhs) <= 1e-14){
+      if(std::abs(lhs) <= 1e-14) {
 	PRESSIOLOG_DEBUG("obj. function change too small, terminating");
 	done = true;
       }
 
       /* convectional way to backtrack:alpha_l+1 = 0.5 * alpha_l */
-      if (!done) alpha *= 0.5;
+      if(!done)
+	alpha *= 0.5;
     }//while
 
     // solution update: state = state + alpha*p_k
@@ -153,4 +155,4 @@ public:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_ARMIJO_UPDATER_HPP_

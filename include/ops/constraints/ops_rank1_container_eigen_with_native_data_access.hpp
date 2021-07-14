@@ -49,18 +49,20 @@
 #ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
 #define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
 
-namespace pressio{ namespace ops{ namespace constraints{
+namespace pressio { namespace ops { namespace constraints {
 
 template <typename T, typename = void>
-struct rank1_container_eigen_with_native_data_access : std::false_type{};
+struct rank1_container_eigen_with_native_data_access : std::false_type
+{
+};
 
 template <typename T>
 struct rank1_container_eigen_with_native_data_access<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
-    >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value>> : std::true_type
+{
+};
 
 template <typename T>
 struct rank1_container_eigen_with_native_data_access<
@@ -68,12 +70,11 @@ struct rank1_container_eigen_with_native_data_access<
   mpl::enable_if_t<
     (::pressio::containers::predicates::diag_expression<T>::value or
      ::pressio::containers::predicates::span_expression<T>::value or
-     ::pressio::containers::predicates::subspan_expression<T>::value)
-    and
+     ::pressio::containers::predicates::subspan_expression<T>::value) and
     T::traits::wrapped_package_identifier ==
-    ::pressio::containers::details::WrappedPackageIdentifier::Eigen
-    >
-  > : std::true_type{};
+      ::pressio::containers::details::WrappedPackageIdentifier::Eigen>> : std::true_type
+{
+};
 
 }}}
-#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_
+#endif// OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_EIGEN_WITH_NATIVE_DATA_ACCESS_HPP_

@@ -55,11 +55,12 @@
 #include "KokkosSparse_spmv.hpp"
 #include <array>
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
-struct Burgers1dKokkos{
+struct Burgers1dKokkos
+{
 
-  using sc_t	= double;
+  using sc_t = double;
   using params_t = std::array<sc_t, 3>;
   using ui_t = unsigned int;
 
@@ -77,40 +78,40 @@ struct Burgers1dKokkos{
   // }
   using execution_space = Kokkos::DefaultExecutionSpace;
 
-  using k1dLl_d = Kokkos::View<sc_t*, kll, execution_space>;
+  using k1dLl_d = Kokkos::View<sc_t *, kll, execution_space>;
   using k1dLl_h = k1dLl_d::host_mirror_type;
   // host and device should have same layout
   using h_layout1 = typename k1dLl_h::traits::array_layout;
   using d_layout1 = typename k1dLl_d::traits::array_layout;
-  static_assert( std::is_same<h_layout1, d_layout1>::value,
-		 "Layout for d and h (mirrorw) 1d view is not the same");
+  static_assert(std::is_same<h_layout1, d_layout1>::value,
+		"Layout for d and h (mirrorw) 1d view is not the same");
 
-  using k2dLl_d = Kokkos::View<sc_t**, kll, execution_space>;
+  using k2dLl_d = Kokkos::View<sc_t **, kll, execution_space>;
   using k2dLl_h = k2dLl_d::host_mirror_type;
   // host and device have same layout
   using h_layout2 = typename k2dLl_h::traits::array_layout;
   using d_layout2 = typename k2dLl_d::traits::array_layout;
-  static_assert( std::is_same<h_layout2, d_layout2>::value,
-		 "Layout for d and h (mirrorw) 2d view is not the same");
+  static_assert(std::is_same<h_layout2, d_layout2>::value,
+		"Layout for d and h (mirrorw) 2d view is not the same");
 
   using ord_t = int;
   using crs_mat = KokkosSparse::CrsMatrix<sc_t, ord_t, execution_space, void, int>;
 
-  using state_type_d	= k1dLl_d;
-  using state_type_h	= k1dLl_h;
-  using velocity_type_d	= state_type_d;
-  using velocity_type_h	= state_type_h;
+  using state_type_d = k1dLl_d;
+  using state_type_h = k1dLl_h;
+  using velocity_type_d = state_type_d;
+  using velocity_type_h = state_type_h;
   using mv_d = k2dLl_d;
   using mv_h = k2dLl_h;
 
-  using scalar_type	= sc_t;
-  using state_type	= state_type_d;
-  using velocity_type	= state_type_d;
-  using jacobian_type   = crs_mat;
+  using scalar_type = sc_t;
+  using state_type = state_type_d;
+  using velocity_type = state_type_d;
+  using jacobian_type = crs_mat;
 
 public:
   explicit Burgers1dKokkos(params_t params,
-			   ui_t Ncell=1000)
+			   ui_t Ncell = 1000)
     : mu_(params), Ncell_(Ncell),
       x_d_{"xd", Ncell_},
       x_h_{"xd", Ncell_},
@@ -124,17 +125,19 @@ public:
   ~Burgers1dKokkos() = default;
 
 public:
-  state_type const getInitialState() const {
+  state_type const getInitialState() const
+  {
     return U_d_;
   };
 
   mv_d createApplyJacobianResult(const mv_d & B) const
   {
-    mv_d A("AA", Ncell_, B.extent(1) );
+    mv_d A("AA", Ncell_, B.extent(1));
     return A;
   }
 
-  velocity_type createVelocity() const{
+  velocity_type createVelocity() const
+  {
     velocity_type RR("RR", Ncell_);
     return RR;
   }
@@ -152,42 +155,42 @@ public:
   {
     const int numRows = Ncell_;
     const int numCols = Ncell_;
-    const int numEnt = (Ncell_-1)*2 + 1;
+    const int numEnt = (Ncell_ - 1) * 2 + 1;
 
     // state_type_h u_h = Kokkos::create_mirror_view(u);
-    typename jacobian_type::row_map_type::non_const_type ptr ("ptr", numRows+1);
+    typename jacobian_type::row_map_type::non_const_type ptr("ptr", numRows + 1);
     {
-      typename jacobian_type::row_map_type::HostMirror ptr_h = Kokkos::create_mirror_view (ptr);
+      typename jacobian_type::row_map_type::HostMirror ptr_h = Kokkos::create_mirror_view(ptr);
       ptr_h[0] = 0;
-      for (int lclRow = 0; lclRow < numRows; ++lclRow) {
-	auto nElPerRow = (lclRow==0) ? 1 : 2;
-	ptr_h[lclRow+1] = ptr_h[lclRow] + nElPerRow; // 1 entry in row 0, 2 in all others
+      for(int lclRow = 0; lclRow < numRows; ++lclRow) {
+	auto nElPerRow = (lclRow == 0) ? 1 : 2;
+	ptr_h[lclRow + 1] = ptr_h[lclRow] + nElPerRow;// 1 entry in row 0, 2 in all others
       }
-      Kokkos::deep_copy (ptr, ptr_h);
+      Kokkos::deep_copy(ptr, ptr_h);
     }
 
-    typename jacobian_type::index_type::non_const_type ind ("ind", numEnt);
+    typename jacobian_type::index_type::non_const_type ind("ind", numEnt);
     {
-      typename jacobian_type::index_type::HostMirror ind_h = Kokkos::create_mirror_view (ind);
+      typename jacobian_type::index_type::HostMirror ind_h = Kokkos::create_mirror_view(ind);
       ind_h[0] = 0;
       int k = 0;
-      for (int lclRow = 1; lclRow < numRows; ++lclRow) {
-	ind_h[++k] = lclRow-1;
+      for(int lclRow = 1; lclRow < numRows; ++lclRow) {
+	ind_h[++k] = lclRow - 1;
 	ind_h[++k] = lclRow;
       }
-      Kokkos::deep_copy (ind, ind_h);
+      Kokkos::deep_copy(ind, ind_h);
     }
 
-    typename jacobian_type::values_type val ("val", numEnt);
+    typename jacobian_type::values_type val("val", numEnt);
     {
-      typename jacobian_type::values_type::HostMirror val_h = Kokkos::create_mirror_view (val);
- //      val_h[0] = -dxInv_*u_h(0);
- //      int k = 0;
- //      for (int lclRow = 1; lclRow < numRows; ++lclRow) {
-	// val_h[++k] = dxInv_*u_h[lclRow-1];
-	// val_h[++k] = -dxInv_*u_h[lclRow];
- //      }
-      Kokkos::deep_copy (val, val_h);
+      typename jacobian_type::values_type::HostMirror val_h = Kokkos::create_mirror_view(val);
+      //      val_h[0] = -dxInv_*u_h(0);
+      //      int k = 0;
+      //      for (int lclRow = 1; lclRow < numRows; ++lclRow) {
+      // val_h[++k] = dxInv_*u_h[lclRow-1];
+      // val_h[++k] = -dxInv_*u_h[lclRow];
+      //      }
+      Kokkos::deep_copy(val, val_h);
     }
 
     jacobian_type JJ("JJ", numRows, numCols, numEnt, val, ptr, ind);
@@ -196,8 +199,8 @@ public:
   }
 
   void jacobian(const state_type & u,
-    const scalar_type t,
-    jacobian_type & jac) const
+		const scalar_type t,
+		jacobian_type & jac) const
   {
     // here the Jacobian is passed in as an argument.
     // to recompute it, use parallel for
@@ -213,17 +216,17 @@ public:
 
     using func_t = JacobianFunctor<state_type, jacobian_type, sc_t>;
     func_t F(Ncell_, dxInv_, u, jac);
-    Kokkos::parallel_for( policy_type(0, Ncell_), F);
+    Kokkos::parallel_for(policy_type(0, Ncell_), F);
     //Kokkos::parallel_for(Ncell_, F);
   }
 
   void applyJacobian(const state_type & y,
-         const mv_d & B,
-         scalar_type t,
-         mv_d & A) const
+		     const mv_d & B,
+		     scalar_type t,
+		     mv_d & A) const
   {
     auto JJ = createJacobian();
-    jacobian(y,t,JJ);
+    jacobian(y, t, JJ);
     constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto one = ::pressio::utils::constants<sc_t>::one();
 
@@ -234,12 +237,12 @@ public:
 private:
   void setup()
   {
-    dx_ = (xR_ - xL_)/static_cast<sc_t>(Ncell_);
-    dxInv_ = 1.0/dx_;
+    dx_ = (xR_ - xL_) / static_cast<sc_t>(Ncell_);
+    dxInv_ = 1.0 / dx_;
 
     // grid
-    for (ui_t i=0; i<Ncell_; ++i){
-      x_h_(i) = dx_*i + dx_*0.5;
+    for(ui_t i = 0; i < Ncell_; ++i) {
+      x_h_(i) = dx_ * i + dx_ * 0.5;
       U_h_(i) = 1.0;
     }
     Kokkos::deep_copy(x_d_, x_h_);
@@ -274,5 +277,5 @@ private:
 
 };//end class
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_KOKKOS_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_APPS_BURGERS1D_KOKKOS_HPP_

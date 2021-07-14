@@ -49,13 +49,12 @@
 #ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 #define SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
 
-namespace pressio{ namespace solvers{ namespace constraints {
+namespace pressio { namespace solvers { namespace constraints {
 
 template <typename T, typename state_type, typename enable = void>
 struct linear_solver_for_newton_raphson : std::false_type
 {
-  static_assert
-  (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
+  static_assert(!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
 };
 
 template <typename T, typename state_type>
@@ -67,18 +66,14 @@ struct linear_solver_for_newton_raphson<
     !std::is_void<typename T::matrix_type>::value and
     // has a solve method
     std::is_void<
-      decltype
-      (
-       std::declval<T>().solve
-       (
-        std::declval<typename T::matrix_type const &>(), // A
-        std::declval<state_type const &>(), // b
-        std::declval<state_type &>() // x
-        )
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T>().solve(
+	  std::declval<typename T::matrix_type const &>(),// A
+	  std::declval<state_type const &>(),// b
+	  std::declval<state_type &>()// x
+	  ))>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::solvers::constraints
-#endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_
+}}}// namespace pressio::solvers::constraints
+#endif// SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NEWTON_RAPHSON_HPP_

@@ -49,21 +49,21 @@
 #ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 #define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace solvers{ namespace predicates {
+namespace pressio { namespace solvers { namespace predicates {
 
-template<typename T, typename res_t, typename enable = void>
-struct has_const_create_residual_method_return_result : std::false_type{};
+template <typename T, typename res_t, typename enable = void>
+struct has_const_create_residual_method_return_result : std::false_type
+{
+};
 
-template<typename T, typename res_t>
-struct has_const_create_residual_method_return_result
-<T, res_t,
- ::pressio::mpl::enable_if_t<
-   ::pressio::mpl::is_same<
-     res_t,
-     decltype( std::declval<T const>().createResidual() )
-     >::value
-   >
- > : std::true_type{};
+template <typename T, typename res_t>
+struct has_const_create_residual_method_return_result<T, res_t,
+						      ::pressio::mpl::enable_if_t<
+							::pressio::mpl::is_same<
+							  res_t,
+							  decltype(std::declval<T const>().createResidual())>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::solvers::predicates
-#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_
+}}}// namespace pressio::solvers::predicates
+#endif// SOLVERS_PREDICATES_SOLVERS_HAS_CONST_CREATE_RESIDUAL_METHOD_RETURN_RESULT_HPP_

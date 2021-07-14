@@ -51,17 +51,19 @@
 
 #include "Eigen/Sparse"
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_sparse_matrix_eigen : std::false_type {};
+struct is_sparse_matrix_eigen : std::false_type
+{
+};
 
 /*
  * T is an eigen sparse matrix if is
  * not an eigen vector
  * is same type as sparse matrix
 */
-template<typename T>
+template <typename T>
 struct is_sparse_matrix_eigen<
   T,
   mpl::enable_if_t<
@@ -70,25 +72,25 @@ struct is_sparse_matrix_eigen<
       T,
       Eigen::SparseMatrix<
 	typename T::Scalar, T::Options,
-	typename T::StorageIndex
-	>
-      >::value
-    >
-  > : std::true_type{};
+	typename T::StorageIndex>>::value>> : std::true_type
+{
+};
 
 //----------------------------------------------------------------------
 
 template <typename T1, typename T2, typename enable = void>
-struct sparse_sharedmem_eigen_same_storage : std::false_type{};
+struct sparse_sharedmem_eigen_same_storage : std::false_type
+{
+};
 
 template <typename T1, typename T2>
 struct sparse_sharedmem_eigen_same_storage<
   T1, T2,
   mpl::enable_if_t<
     (T1::is_row_major && T2::is_row_major) ||
-    (T1::is_col_major && T2::is_col_major)
-    >
-  > : std::true_type{};
+    (T1::is_col_major && T2::is_col_major)>> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_SPARSE_MATRIX_HPP_

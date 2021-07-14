@@ -49,34 +49,34 @@
 #ifndef MPL_VARIADIC_FIND_IF_TERNARY_PRED_HPP_
 #define MPL_VARIADIC_FIND_IF_TERNARY_PRED_HPP_
 
-namespace pressio{ namespace mpl{ namespace variadic {
+namespace pressio { namespace mpl { namespace variadic {
 
-template<
+template <
   typename T1, typename T2,
-  template<class ...> class Predicate,
-  class ... Args2>
+  template <class...> class Predicate,
+  class... Args2>
 struct find_if_ternary_pred;
 
-template<
+template <
   typename T1, typename T2,
-  template<class ...> class Predicate>
+  template <class...> class Predicate>
 struct find_if_ternary_pred<T1, T2, Predicate>
   : std::integral_constant<std::size_t, 0>
-{};
+{
+};
 
-template<
+template <
   typename T1, typename T2,
-  template<class ...T> class Predicate,
-  class Head, class ... Tail>
+  template <class... T> class Predicate,
+  class Head, class... Tail>
 struct find_if_ternary_pred<T1, T2, Predicate, Head, Tail...>
-  : std::conditional <
-  Predicate<Head, T1, T2>::type::value,
-  std::integral_constant<std::size_t, 0>,
-  std::integral_constant <
-    std::size_t, 1 + find_if_ternary_pred<T1,T2, Predicate, Tail...>::type::value
-    >
-  >::type
-{};
+  : std::conditional<
+      Predicate<Head, T1, T2>::type::value,
+      std::integral_constant<std::size_t, 0>,
+      std::integral_constant<
+	std::size_t, 1 + find_if_ternary_pred<T1, T2, Predicate, Tail...>::type::value>>::type
+{
+};
 
 template <
   typename T1, typename T2,
@@ -86,6 +86,6 @@ using find_if_ternary_pred_t = typename find_if_ternary_pred<T1, T2,
 							     Predicate,
 							     Args...>::type;
 
-}}} // namespace
+}}}// namespace
 
-#endif  // MPL_VARIADIC_FIND_IF_TERNARY_PRED_HPP_
+#endif// MPL_VARIADIC_FIND_IF_TERNARY_PRED_HPP_

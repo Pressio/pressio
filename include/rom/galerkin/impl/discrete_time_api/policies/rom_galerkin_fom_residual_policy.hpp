@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_RESIDUAL_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_RESIDUAL_POLICY_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 template <typename fom_states_manager_t, typename fom_residual_type>
 class FomResidualPolicyDiscreteTimeApi
@@ -75,15 +75,17 @@ public:
   FomResidualPolicyDiscreteTimeApi & operator=(FomResidualPolicyDiscreteTimeApi &&) = delete;
   ~FomResidualPolicyDiscreteTimeApi() = default;
 
-  template<typename fom_system_t>
+  template <typename fom_system_t>
   FomResidualPolicyDiscreteTimeApi(const fom_system_t & fomSystemObj,
-				fom_states_manager_t & fomStatesMngr)
+				   fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr),
       fomResidual_(fomSystemObj.createDiscreteTimeResidual())
-  {}
+  {
+  }
 
 public:
-  const fom_residual_type & get() const{
+  const fom_residual_type & get() const
+  {
     return fomResidual_;
   }
 
@@ -92,9 +94,8 @@ public:
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
-  mpl::enable_if_t< galerkin_stencil_states_t::size()==1 >
+    typename scalar_t>
+  mpl::enable_if_t<galerkin_stencil_states_t::size() == 1>
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
@@ -105,7 +106,7 @@ public:
     this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn = fomStatesMngr_(::pressio::ode::n());
     fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
 				      *fomResidual_.data(), *ynp1.data(), *yn.data());
   }
@@ -115,9 +116,8 @@ public:
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
-  mpl::enable_if_t< galerkin_stencil_states_t::size()==2 >
+    typename scalar_t>
+  mpl::enable_if_t<galerkin_stencil_states_t::size() == 2>
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
@@ -128,7 +128,7 @@ public:
     this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
     fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep,
@@ -153,7 +153,7 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != currentStepNumber){
+    if(storedStep_ != currentStepNumber) {
       fomStatesMngr_.get().reconstructWithStencilUpdate(galerkinStencilStates(ode::n()));
       storedStep_ = currentStepNumber;
     }
@@ -161,4 +161,4 @@ private:
 };
 
 }}}}//end namespace
-#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_RESIDUAL_POLICY_HPP_
+#endif// ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_RESIDUAL_POLICY_HPP_

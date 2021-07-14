@@ -49,19 +49,18 @@
 #ifndef OPS_PYBIND11_OPS_SET_ZERO_HPP_
 #define OPS_PYBIND11_OPS_SET_ZERO_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
-template<typename T>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_tensor_wrapper_pybind<T>::value
-  >
+  ::pressio::containers::predicates::is_tensor_wrapper_pybind<T>::value>
 set_zero(T & v)
 {
-  using traits	 = ::pressio::containers::details::traits<T>;
+  using traits = ::pressio::containers::details::traits<T>;
   using scalar_t = typename traits::scalar_t;
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
   ::pressio::ops::fill(v, zero);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_SET_ZERO_HPP_
+#endif// OPS_PYBIND11_OPS_SET_ZERO_HPP_

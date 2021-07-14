@@ -49,21 +49,20 @@
 #ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
 #define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace steady {
 
-template<
+template <
   typename scalar_t,
   typename fom_system_type,
   typename lspg_state_type,
   typename lspg_residual_type,
   typename lspg_jacobian_type,
   typename residual_policy_type,
-  typename jacobian_policy_type
-  >
+  typename jacobian_policy_type>
 class System
 {
 
-  std::reference_wrapper<const fom_system_type>	     fomSystemObj_;
+  std::reference_wrapper<const fom_system_type> fomSystemObj_;
   std::reference_wrapper<const residual_policy_type> residualEvaluator_;
   std::reference_wrapper<const jacobian_policy_type> jacobianEvaluator_;
   mutable lspg_residual_type R_;
@@ -71,10 +70,10 @@ class System
 
 public:
   // these need to be public because are detected by solver
-  using scalar_type	= scalar_t;
-  using state_type	= lspg_state_type;
-  using residual_type	= lspg_residual_type;
-  using jacobian_type	= lspg_jacobian_type;
+  using scalar_type = scalar_t;
+  using state_type = lspg_state_type;
+  using residual_type = lspg_residual_type;
+  using jacobian_type = lspg_jacobian_type;
 
 public:
   System() = delete;
@@ -92,7 +91,8 @@ public:
       jacobianEvaluator_(jacPolicyObj),
       R_(residualEvaluator_.get().create(fomSystemObj_.get())),
       J_(jacobianEvaluator_.get().create(fomSystemObj_.get()))
-    {}
+  {
+  }
 
 public:
   lspg_residual_type createResidual() const
@@ -122,19 +122,19 @@ public:
     // scalar_type normR = {};
     this->residual(romState, R_);
     const auto normR = ::pressio::ops::norm2(R_);
-    return normR*normR;
+    return normR * normR;
   }
 
-  void gradient( const state_type & romState, state_type & g) const
+  void gradient(const state_type & romState, state_type & g) const
   {
     // scalar_type normR = {};
     this->residual(romState, R_);//, ::pressio::Norm::L2, normR);
     this->jacobian(romState, J_);
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto beta = ::pressio::utils::constants<scalar_type>::zero();
     constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();
     ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
   }
 };//end class
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_
+#endif// ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_SYSTEM_HPP_

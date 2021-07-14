@@ -98,4 +98,4 @@
 #include "constraints/system/ode_continuous_time_system_with_user_provided_jacobian.hpp"
 #include "constraints/system/ode_discrete_time_system_with_user_provided_jacobian.hpp"
 
-#endif  // ODE_PRESSIO_ODE_COMMON_HPP_
+#endif// ODE_PRESSIO_ODE_COMMON_HPP_

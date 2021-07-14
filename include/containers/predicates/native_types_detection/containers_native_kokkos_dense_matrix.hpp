@@ -51,50 +51,56 @@
 
 #include <KokkosSparse_CrsMatrix.hpp>
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 // T is a static kokkos view if T:
 // - is a view with rank==2
 // - the number of runtime determined dimensions == 0
 template <typename T, typename enable = void>
-struct is_static_dense_matrix_kokkos : std::false_type {};
+struct is_static_dense_matrix_kokkos : std::false_type
+{
+};
 
 template <typename T>
 struct is_static_dense_matrix_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     Kokkos::is_view<T>::value &&
-    T::traits::rank==2 &&
-    T::traits::rank_dynamic==0
-    >
-  > : std::true_type{};
+    T::traits::rank == 2 &&
+    T::traits::rank_dynamic == 0>> : std::true_type
+{
+};
 
 // -------------------------------------------------
 template <typename T, typename enable = void>
-struct is_dynamic_dense_matrix_kokkos : std::false_type {};
+struct is_dynamic_dense_matrix_kokkos : std::false_type
+{
+};
 
 template <typename T>
 struct is_dynamic_dense_matrix_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     Kokkos::is_view<T>::value &&
-    T::traits::rank==2 &&
-    T::traits::rank_dynamic!=0
-    >
-  > : std::true_type{};
+    T::traits::rank == 2 &&
+    T::traits::rank_dynamic != 0>> : std::true_type
+{
+};
 
 // -------------------------------------------------
 template <typename T, typename enable = void>
-struct is_dense_matrix_kokkos : std::false_type {};
+struct is_dense_matrix_kokkos : std::false_type
+{
+};
 
 template <typename T>
 struct is_dense_matrix_kokkos<
   T,
   ::pressio::mpl::enable_if_t<
     is_static_dense_matrix_kokkos<T>::value or
-    is_dynamic_dense_matrix_kokkos<T>::value
-    >
-  > : std::true_type{};
+    is_dynamic_dense_matrix_kokkos<T>::value>> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_DENSE_MATRIX_HPP_

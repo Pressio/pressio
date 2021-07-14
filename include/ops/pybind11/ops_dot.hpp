@@ -49,35 +49,32 @@
 #ifndef OPS_PYBIND11_OPS_DOT_HPP_
 #define OPS_PYBIND11_OPS_DOT_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
-  >
+  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value>
 dot(const T0 & a,
     const T1 & b,
     typename T0::traits::scalar_t & result)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "vectors are not scalar compatible");
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0, T1>::value,
+		"vectors are not scalar compatible");
   using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
 
   assert(a.extent(0) == b.extent(0));
   result = static_cast<sc_t>(0);
-  for (std::size_t i=0; i<a.extent(0); ++i){
-    result += a(i)*b(i);
+  for(std::size_t i = 0; i < a.extent(0); ++i) {
+    result += a(i) * b(i);
   }
 }
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value,
-  typename ::pressio::containers::details::traits<T0>::scalar_t
-  >
+    containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value,
+  typename ::pressio::containers::details::traits<T0>::scalar_t>
 dot(const T0 & a, const T1 & b)
 {
   using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
@@ -87,4 +84,4 @@ dot(const T0 & a, const T1 & b)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DOT_HPP_
+#endif// OPS_PYBIND11_OPS_DOT_HPP_

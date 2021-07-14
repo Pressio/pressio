@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_LM_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
 #define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_LM_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 template <typename h_t, typename g_t>
 class LMHessianGradientOperatorsHGApi
@@ -73,13 +73,11 @@ public:
   ~LMHessianGradientOperatorsHGApi() = default;
 
   template <
-   typename system_t, typename state_t,
+    typename system_t, typename state_t,
     mpl::enable_if_t<
       pressio::solvers::constraints::system_hessian_gradient<system_t>::value or
-      pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value,
-      int
-     > = 0
-  >
+	pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value,
+      int> = 0>
   LMHessianGradientOperatorsHGApi(const system_t & system,
 				  const state_t & state)
     : HGOpHGApi_(system, state),
@@ -89,23 +87,25 @@ public:
   }
 
 public:
-  void resetForNewCall(){
+  void resetForNewCall()
+  {
     dampParam_ = pressio::utils::constants<sc_t>::one();
   }
 
-  h_t & hessianRef()			{ return lmH_; }
-  g_t & gradientRef()			{ return HGOpHGApi_.gradientRef(); }
-  const h_t & hessianCRef() const	{ return lmH_; }
-  const g_t & gradientCRef() const	{ return HGOpHGApi_.gradientCRef(); }
+  h_t & hessianRef() { return lmH_; }
+  g_t & gradientRef() { return HGOpHGApi_.gradientRef(); }
+  const h_t & hessianCRef() const { return lmH_; }
+  const g_t & gradientCRef() const { return HGOpHGApi_.gradientCRef(); }
 
-  const h_t & hessianCRefBeforeLMDiagonalScaling() const {
+  const h_t & hessianCRefBeforeLMDiagonalScaling() const
+  {
     return HGOpHGApi_.hessianCRef();
   }
 
-  void setLMDampParam(sc_t parIn){ dampParam_ = parIn; }
-  sc_t lmDampParam() const{ return dampParam_; }
+  void setLMDampParam(sc_t parIn) { dampParam_ = parIn; }
+  sc_t lmDampParam() const { return dampParam_; }
 
-  template< typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   void residualNorm(const system_t & system,
 		    const state_t & state,
 		    sc_t & residualNorm) const
@@ -113,10 +113,9 @@ public:
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_hessian_gradient<system_t>::value
-    >
+    pressio::solvers::constraints::system_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
@@ -124,15 +123,14 @@ public:
   {
     HGOpHGApi_.computeOperators(sys, state,
 				residualNorm, recomputeSystemJacobian);
-    if (recomputeSystemJacobian){
+    if(recomputeSystemJacobian) {
       computeLMHessian();
     }
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value
-    >
+    pressio::solvers::constraints::system_fused_hessian_gradient<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
@@ -140,7 +138,7 @@ public:
   {
     HGOpHGApi_.computeOperators(sys, state,
 				residualNorm, recomputeSystemJacobian);
-    if (recomputeSystemJacobian){
+    if(recomputeSystemJacobian) {
       computeLMHessian();
     }
   }
@@ -152,12 +150,12 @@ private:
     const auto & H = HGOpHGApi_.hessianCRef();
     ::pressio::ops::deep_copy(lmH_, H);
 
-    const auto diagH   = ::pressio::containers::diag(H);
+    const auto diagH = ::pressio::containers::diag(H);
     auto diaglmH = ::pressio::containers::diag(lmH_);
-    constexpr auto one  = pressio::utils::constants<sc_t>::one();
+    constexpr auto one = pressio::utils::constants<sc_t>::one();
     ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_LM_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_LM_HESSIAN_GRADIENT_OPERATORS_HG_API_HPP_

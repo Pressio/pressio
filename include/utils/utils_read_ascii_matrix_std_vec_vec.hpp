@@ -53,7 +53,7 @@
 #include <fstream>
 #include <cassert>
 
-namespace pressio{ namespace utils{
+namespace pressio { namespace utils {
 
 // template just to avoid having a cc file
 template <typename T = int32_t, typename sc_t = double>
@@ -61,16 +61,14 @@ void readAsciiMatrixStdVecVec(std::string filename,
 			      std::vector<std::vector<sc_t>> & A0,
 			      T ncols)
 {
-  assert( A0.empty() );
+  assert(A0.empty());
   std::ifstream source;
-  source.open( filename, std::ios_base::in);
+  source.open(filename, std::ios_base::in);
   std::string line, colv;
   std::vector<sc_t> tmpv(ncols);
-  while (std::getline(source, line) )
-  {
+  while(std::getline(source, line)) {
     std::istringstream in(line);
-    for (T i=0; i<ncols; i++)
-    {
+    for(T i = 0; i < ncols; i++) {
       in >> colv;
       tmpv[i] = atof(colv.c_str());
     }
@@ -81,4 +79,4 @@ void readAsciiMatrixStdVecVec(std::string filename,
 
 }}// end namespace pressio::utils
 
-#endif  // UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_
+#endif// UTILS_UTILS_READ_ASCII_MATRIX_STD_VEC_VEC_HPP_

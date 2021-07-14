@@ -49,11 +49,17 @@
 #ifndef OPS_OPS_FWD_HPP_
 #define OPS_OPS_FWD_HPP_
 
-namespace pressio{
+namespace pressio {
 
-struct transpose{};
-struct nontranspose{};
-enum class Norm{Undefined, L1, L2};
+struct transpose
+{
+};
+struct nontranspose
+{
+};
+enum class Norm { Undefined,
+		  L1,
+		  L2 };
 }
 
-#endif  // OPS_OPS_FWD_HPP_
+#endif// OPS_OPS_FWD_HPP_

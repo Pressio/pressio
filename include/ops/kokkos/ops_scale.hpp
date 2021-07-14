@@ -51,12 +51,11 @@
 
 #include <KokkosBlas1_scal.hpp>
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T>::value
-  >
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T>::value>
 scale(T & o,
       typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
@@ -75,12 +74,11 @@ scale(T & o,
      We don't want the code above to work.
      Similarly for vector and mv.
    */
-  static_assert
-    (!std::is_const<T>::value,
-     "ops:scale: cannot scale a const-qualified wrapper of a Kokkos view");
+  static_assert(!std::is_const<T>::value,
+		"ops:scale: cannot scale a const-qualified wrapper of a Kokkos view");
 
-  ::KokkosBlas::scal( *o.data(), value, *o.data() );
+  ::KokkosBlas::scal(*o.data(), value, *o.data());
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_KOKKOS_OPS_SCALE_HPP_
+#endif// OPS_KOKKOS_OPS_SCALE_HPP_

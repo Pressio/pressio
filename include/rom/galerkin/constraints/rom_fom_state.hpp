@@ -49,30 +49,32 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
-template<typename T, typename enable = void>
-struct fom_state : std::false_type{};
+template <typename T, typename enable = void>
+struct fom_state : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct fom_state<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value>> : std::true_type
+{
+};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
+template <typename T>
 struct fom_state<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value or
-    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value>> : std::true_type
+{
+};
 #endif
 
 }}}}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_

@@ -48,11 +48,11 @@
 #ifndef ROM_WLS_ROM_WLS_TYPES_HPP_
 #define ROM_WLS_ROM_WLS_TYPES_HPP_
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio { namespace rom { namespace wls {
 
 using window_size_t = int32_t;
-using rom_size_t    = int32_t;
+using rom_size_t = int32_t;
 
-}}} //ending namespace pressio::rom::wls
+}}}//ending namespace pressio::rom::wls
 
-#endif  // ROM_WLS_ROM_WLS_TYPES_HPP_
+#endif// ROM_WLS_ROM_WLS_TYPES_HPP_

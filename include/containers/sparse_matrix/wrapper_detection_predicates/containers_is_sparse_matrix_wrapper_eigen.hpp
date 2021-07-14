@@ -49,17 +49,20 @@
 #ifndef CONTAINERS_SPARSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EIGEN_HPP_
 #define CONTAINERS_SPARSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EIGEN_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_sparse_matrix_wrapper_eigen : std::false_type {};
+struct is_sparse_matrix_wrapper_eigen : std::false_type
+{
+};
 
 template <typename T>
 struct is_sparse_matrix_wrapper_eigen<
-	SparseMatrix<T>,
-   mpl::enable_if_t<is_sparse_matrix_eigen<T>::value>
-  >
-  : std::true_type{};
+  SparseMatrix<T>,
+  mpl::enable_if_t<is_sparse_matrix_eigen<T>::value>>
+  : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_SPARSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EIGEN_HPP_
+#endif// CONTAINERS_SPARSE_MATRIX_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_SPARSE_MATRIX_WRAPPER_EIGEN_HPP_

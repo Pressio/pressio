@@ -49,16 +49,14 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_epetra<
-      wrapped_type>::value
-    >
-  >
+      wrapped_type>::value>>
 {
 
 public:
@@ -74,8 +72,10 @@ public:
   Vector() = delete;
 
   // cnstrs
-  explicit Vector(const map_t & mapobj) : data_(mapobj){}
-  explicit Vector(const wrapped_type & vecobj) : data_(vecobj){}
+  explicit Vector(const map_t & mapobj)
+    : data_(mapobj) {}
+  explicit Vector(const wrapped_type & vecobj)
+    : data_(vecobj) {}
 
   // copy cnstr
   Vector(Vector const & other) = default;
@@ -91,48 +91,53 @@ public:
   ~Vector() = default;
 
 public:
-  wrapped_type const * data() const{
+  wrapped_type const * data() const
+  {
     return &data_;
   }
 
-  wrapped_type * data(){
+  wrapped_type * data()
+  {
     return &data_;
   }
 
-  sc_t & operator()(LO_t i){
+  sc_t & operator()(LO_t i)
+  {
     assert(i < this->extentLocal(0));
     return data_[i];
   };
-  sc_t const & operator()(LO_t i) const{
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
-
-  [[deprecated("Use operator() instead.")]]
-  sc_t & operator[](LO_t i){
-    assert(i < this->extentLocal(0));
-    return data_[i];
-  };
-  [[deprecated("Use operator() instead.")]]
-  sc_t const & operator[](LO_t i) const{
+  sc_t const & operator()(LO_t i) const
+  {
     assert(i < this->extentLocal(0));
     return data_[i];
   };
 
-  GO_t extent(std::size_t i) const{
-    assert(i==0);
+  [[deprecated("Use operator() instead.")]] sc_t & operator[](LO_t i)
+  {
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
+  [[deprecated("Use operator() instead.")]] sc_t const & operator[](LO_t i) const
+  {
+    assert(i < this->extentLocal(0));
+    return data_[i];
+  };
+
+  GO_t extent(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.GlobalLength();
   }
 
-  LO_t extentLocal(std::size_t i) const{
-    assert(i==0);
+  LO_t extentLocal(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.MyLength();
   }
 
 private:
   wrapped_type data_ = {};
-
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_
+#endif// CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_EPETRA_HPP_

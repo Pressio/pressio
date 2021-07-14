@@ -49,13 +49,12 @@
 #ifndef ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
 #define ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio { namespace rom { namespace impl {
 
 template <
   typename scalar_type,
   typename fom_state_type,
-  typename decoder_type
-  >
+  typename decoder_type>
 struct FomStateReconstructorPressioOps
 {
   using native_fom_state_t = typename fom_state_type::traits::wrapped_t;
@@ -72,8 +71,7 @@ struct FomStateReconstructorPressioOps
     : fomNominalState_(fomNominalState),
       decoderObj_(decoder)
   {
-    PRESSIOLOG_DEBUG
-      ("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState,0));
+    PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState, 0));
   }
 
   FomStateReconstructorPressioOps(const native_fom_state_t & fomNominalState,
@@ -81,14 +79,13 @@ struct FomStateReconstructorPressioOps
     : fomNominalState_(fomNominalState),
       decoderObj_(decoder)
   {
-    PRESSIOLOG_DEBUG
-      ("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState_,0));
+    PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState_, 0));
   }
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <typename rom_state_t>
   void operator()(const rom_state_t & romState,
-		  fom_state_type    & fomState) const
+		  fom_state_type & fomState) const
   {
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
@@ -108,7 +105,7 @@ struct FomStateReconstructorPressioOps
      If we only passed the native array wihtout the template, we would not know
      the propper rank of the fom state.
   */
-  template<typename rom_state_t>
+  template <typename rom_state_t>
   native_fom_state_t evaluate(const typename rom_state_t::traits::wrapped_t & romStateIn) const
   {
     rom_state_t romView(romStateIn, ::pressio::view());
@@ -121,7 +118,7 @@ struct FomStateReconstructorPressioOps
 #else
   template <typename rom_state_t>
   void operator()(const rom_state_t & romState,
-		  fom_state_type    & fomState) const
+		  fom_state_type & fomState) const
   {
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
@@ -135,20 +132,20 @@ struct FomStateReconstructorPressioOps
   {
     auto fomState(fomNominalState_.get());
     ::pressio::ops::set_zero(fomState);
-    this->operator()(romState,fomState);
+    this->operator()(romState, fomState);
     return fomState;
   }
 #endif
 
 private:
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  const fom_state_type fomNominalState_	= {};
+  const fom_state_type fomNominalState_ = {};
 #else
-  std::reference_wrapper<const fom_state_type> fomNominalState_	= {};
+  std::reference_wrapper<const fom_state_type> fomNominalState_ = {};
 #endif
 
   std::reference_wrapper<const decoder_type> decoderObj_ = {};
 };
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_
+#endif// ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_PRESSIO_OPS_HPP_

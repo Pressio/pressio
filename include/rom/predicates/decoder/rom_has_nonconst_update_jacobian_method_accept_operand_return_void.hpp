@@ -49,23 +49,22 @@
 #ifndef ROM_PREDICATES_DECODER_ROM_HAS_NONCONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
 #define ROM_PREDICATES_DECODER_ROM_HAS_NONCONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <typename T, typename rom_state_t, typename = void>
-struct has_nonconst_update_jacobian_method_accept_operand_return_void : std::false_type{};
+struct has_nonconst_update_jacobian_method_accept_operand_return_void : std::false_type
+{
+};
 
 template <typename T, typename rom_state_t>
 struct has_nonconst_update_jacobian_method_accept_operand_return_void<
   T, rom_state_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval<T &>().updateJacobian(std::declval<rom_state_t const &>())
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T &>().updateJacobian(std::declval<rom_state_t const &>()))>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::rom::predicates
-#endif  // ROM_PREDICATES_DECODER_ROM_HAS_NONCONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
+}}}// namespace pressio::rom::predicates
+#endif// ROM_PREDICATES_DECODER_ROM_HAS_NONCONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_

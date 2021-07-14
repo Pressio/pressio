@@ -50,10 +50,14 @@
 #define ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
 
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio { namespace rom { namespace wls {
 
-struct FrozenJacobian{};
-struct NonFrozenJacobian{};
+struct FrozenJacobian
+{
+};
+struct NonFrozenJacobian
+{
+};
 
-}}} // end namespace pressio::rom::wls
-#endif  // ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_
+}}}// end namespace pressio::rom::wls
+#endif// ROM_WLS_ROM_WLS_JACOBIAN_UPDATING_TAG_HPP_

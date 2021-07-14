@@ -49,27 +49,24 @@
 #ifndef ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_DISCRETE_TIME_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
 #define ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_DISCRETE_TIME_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <class T, class operand_t, class = void>
 struct has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <class T, class operand_t>
 struct has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
   T, operand_t,
   ::pressio::mpl::enable_if_t<
     mpl::not_void<
-      decltype
-      (
-       std::declval<T const>().createApplyDiscreteTimeJacobianResult
-       (
-	std::declval<operand_t const & >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const>().createApplyDiscreteTimeJacobianResult(
+	  std::declval<operand_t const &>()))>::value>> : std::true_type
+{
+};
 
 }}}
-#endif  // ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_DISCRETE_TIME_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_
+#endif// ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_CREATE_APPLY_DISCRETE_TIME_JACOBIAN_RESULT_METHOD_ACCEPT_OPERAND_RETURN_RESULT_HPP_

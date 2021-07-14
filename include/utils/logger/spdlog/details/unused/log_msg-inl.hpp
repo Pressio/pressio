@@ -34,6 +34,6 @@ namespace details {
 //     : log_msg(os::now(), source_loc{}, a_logger_name, lvl, msg)
 // {}
 
-} // namespace details
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_INL_HPP_
+}// namespace details
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_INL_HPP_

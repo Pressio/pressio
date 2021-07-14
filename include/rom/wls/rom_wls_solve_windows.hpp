@@ -49,14 +49,13 @@
 #ifndef ROM_WLS_ROM_WLS_ADVANCE_ONE_WINDOW_HPP_
 #define ROM_WLS_ROM_WLS_ADVANCE_ONE_WINDOW_HPP_
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio { namespace rom { namespace wls {
 
 template <
   typename wls_system_t,
   typename wls_state_type,
   typename solverType,
-  typename scalar_type
-  >
+  typename scalar_type>
 void advanceOneWindow(wls_system_t & wlsSystem,
 		      wls_state_type & wlsState,
 		      solverType & solver,
@@ -68,8 +67,8 @@ void advanceOneWindow(wls_system_t & wlsSystem,
   const auto timeStencilSize = wlsSystem.timeStencilSize();
 
   //const auto activeWindowIndex_ = windowIndex;
-  const auto windowStartTime_	= windowIndex*dt*numStepsInWindow;
-  const auto step_s_		= windowIndex*numStepsInWindow;
+  const auto windowStartTime_ = windowIndex * dt * numStepsInWindow;
+  const auto step_s_ = windowIndex * numStepsInWindow;
   wlsSystem.setTimeStepSize(dt);
   wlsSystem.setWindowStartTime(windowStartTime_);
   wlsSystem.setStepS(step_s_);
@@ -77,9 +76,9 @@ void advanceOneWindow(wls_system_t & wlsSystem,
   auto & wlsStateIC = wlsSystem.wlsStateInitConditionRef();
 
   // set initial guess over window (needed to avoid bad initial guesses that yield NaN)
-  for (window_size_t i = 0; i < numStepsInWindow; i++){
-    auto wlsViewAssign = ::pressio::containers::span(wlsState, i*romSize, romSize);
-    auto wlsViewCopy = ::pressio::containers::span(wlsStateIC, (timeStencilSize - 1)*romSize, romSize);
+  for(window_size_t i = 0; i < numStepsInWindow; i++) {
+    auto wlsViewAssign = ::pressio::containers::span(wlsState, i * romSize, romSize);
+    auto wlsViewCopy = ::pressio::containers::span(wlsStateIC, (timeStencilSize - 1) * romSize, romSize);
     ::pressio::ops::deep_copy(wlsViewAssign, wlsViewCopy);
   }
 
@@ -89,21 +88,19 @@ void advanceOneWindow(wls_system_t & wlsSystem,
   // Loop to update the the wlsStateIC vector.
   // If we add multistep explicit methods, need to add things here.
   const auto start = std::max(0, timeStencilSize - numStepsInWindow);
-  for (window_size_t i = 0; i < start; ++i)
-    {
-      auto wlsTmpState	      = ::pressio::containers::span(wlsStateIC, i*romSize,     romSize);
-      const auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC, (i+1)*romSize, romSize);
-      ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
-    }
+  for(window_size_t i = 0; i < start; ++i) {
+    auto wlsTmpState = ::pressio::containers::span(wlsStateIC, i * romSize, romSize);
+    const auto wlsTmpState2 = ::pressio::containers::span(wlsStateIC, (i + 1) * romSize, romSize);
+    ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
+  }
 
-  for (window_size_t i = start ; i < timeStencilSize; ++i)
-    {
-      auto wlsTmpState  = ::pressio::containers::span(wlsStateIC, i*romSize, romSize);
-      const auto wlsTmpState2 = ::pressio::containers::span(wlsState,
-							    (numStepsInWindow-timeStencilSize+i)*romSize,
-							    romSize);
-      ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
-    }
+  for(window_size_t i = start; i < timeStencilSize; ++i) {
+    auto wlsTmpState = ::pressio::containers::span(wlsStateIC, i * romSize, romSize);
+    const auto wlsTmpState2 = ::pressio::containers::span(wlsState,
+							  (numStepsInWindow - timeStencilSize + i) * romSize,
+							  romSize);
+    ::pressio::ops::deep_copy(wlsTmpState, wlsTmpState2);
+  }
 
   PRESSIOLOG_INFO("Wls: completed window ", windowIndex);
 }// end advanceOneWindow
@@ -113,8 +110,7 @@ template <
   typename wls_system_t,
   typename wls_state_type,
   typename solverType,
-  typename scalar_type
-  >
+  typename scalar_type>
 void solveWindowsSequentially(wls_system_t & wlsSystem,
 			      typename wls_state_type::traits::wrapped_t & wlsStateIn,
 			      solverType & solver,
@@ -125,7 +121,7 @@ void solveWindowsSequentially(wls_system_t & wlsSystem,
   // which is numpy array owned by the user inside their Python code.
   wls_state_type stateView(wlsStateIn, ::pressio::view());
 
-  for (auto iWind = 0; iWind < numWindows; iWind++){
+  for(auto iWind = 0; iWind < numWindows; iWind++) {
     ::pressio::rom::wls::advanceOneWindow(wlsSystem, stateView, solver, iWind, dt);
   }
 }
@@ -136,15 +132,14 @@ template <
   typename wls_system_t,
   typename wls_state_type,
   typename solverType,
-  typename scalar_type
-  >
+  typename scalar_type>
 void solveWindowsSequentially(wls_system_t & wlsSystem,
 			      wls_state_type & wlsState,
 			      solverType & solver,
 			      const window_size_t & numWindows,
 			      scalar_type dt)
 {
-  for (auto iWind = 0; iWind < numWindows; iWind++){
+  for(auto iWind = 0; iWind < numWindows; iWind++) {
     ::pressio::rom::wls::advanceOneWindow(wlsSystem, wlsState, solver, iWind, dt);
   }
 }
@@ -152,4 +147,4 @@ void solveWindowsSequentially(wls_system_t & wlsSystem,
 #endif
 
 }}}
-#endif  // ROM_WLS_ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_
+#endif// ROM_WLS_ROM_WLS_HESSIAN_GRADIENT_SYSTEM_API_HPP_

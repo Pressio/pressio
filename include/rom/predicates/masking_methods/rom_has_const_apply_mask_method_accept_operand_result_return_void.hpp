@@ -49,36 +49,32 @@
 #ifndef ROM_PREDICATES_MASKING_METHODS_ROM_HAS_CONST_APPLY_MASK_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 #define ROM_PREDICATES_MASKING_METHODS_ROM_HAS_CONST_APPLY_MASK_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <
   typename T,
   typename operand_type,
   typename result_t,
-  typename = void
-  >
+  typename = void>
 struct has_const_apply_mask_method_accept_operand_result_return_void
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <
   typename T,
   typename operand_type,
-  typename result_t
-  >
+  typename result_t>
 struct has_const_apply_mask_method_accept_operand_result_return_void<
   T, operand_type, result_t,
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval<T const>().applyMask
-	       (
-		std::declval<operand_type const &>(),
-		std::declval<result_t &>()
-		)
-	       )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().applyMask(
+	  std::declval<operand_type const &>(),
+	  std::declval<result_t &>()))>::value>> : std::true_type
+{
+};
 
 }}}
-#endif  // ROM_PREDICATES_MASKING_METHODS_ROM_HAS_CONST_APPLY_MASK_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
+#endif// ROM_PREDICATES_MASKING_METHODS_ROM_HAS_CONST_APPLY_MASK_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_

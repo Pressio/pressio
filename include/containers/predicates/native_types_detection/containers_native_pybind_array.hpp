@@ -49,14 +49,16 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/functional.h>
 
 template <typename T, typename enable = void>
-struct is_cstyle_array_pybind11 : std::false_type {};
+struct is_cstyle_array_pybind11 : std::false_type
+{
+};
 
 template <typename T>
 struct is_cstyle_array_pybind11<
@@ -66,15 +68,15 @@ struct is_cstyle_array_pybind11<
       T,
       pybind11::array_t<
 	typename T::value_type,
-	pybind11::array::c_style
-	>
-      >::value
-    >
-  > : std::true_type{};
+	pybind11::array::c_style>>::value>> : std::true_type
+{
+};
 //----------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_fstyle_array_pybind11 : std::false_type {};
+struct is_fstyle_array_pybind11 : std::false_type
+{
+};
 
 template <typename T>
 struct is_fstyle_array_pybind11<
@@ -84,24 +86,24 @@ struct is_fstyle_array_pybind11<
       T,
       pybind11::array_t<
 	typename T::value_type,
-	pybind11::array::f_style
-	>
-      >::value
-    >
-  > : std::true_type{};
+	pybind11::array::f_style>>::value>> : std::true_type
+{
+};
 //----------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_array_pybind11 : std::false_type {};
+struct is_array_pybind11 : std::false_type
+{
+};
 
 template <typename T>
 struct is_array_pybind11<
   T,
   ::pressio::mpl::enable_if_t<
     is_cstyle_array_pybind11<T>::value or
-    is_fstyle_array_pybind11<T>::value
-    >
-  > : std::true_type{};
+    is_fstyle_array_pybind11<T>::value>> : std::true_type
+{
+};
 //----------------------------------------------
 
 template <typename T>
@@ -114,4 +116,4 @@ template <typename T>
 using is_fstyle_array_pybind = is_fstyle_array_pybind11<T>;
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
