@@ -49,42 +49,36 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
+namespace pressio { namespace rom { namespace lspg { namespace impl {
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void _lspgUnsteadyNTimes(rom_problem_type & problem, Args &&... args)
 {
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+  static_assert(::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+		"The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceNSteps
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceNSteps(problem.stepperRef(), std::forward<Args>(args)...);
 }
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void _lspgUnsteadyToTime(rom_problem_type & problem, Args &&... args)
 {
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+  static_assert(::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+		"The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceToTargetTime
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceToTargetTime(problem.stepperRef(), std::forward<Args>(args)...);
 }
 
-template<typename rom_problem_type, typename ...Args>
-void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
+template <typename rom_problem_type, typename... Args>
+void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args &&... args)
 {
-  static_assert
-    (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
-     "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
+  static_assert(::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
+		"The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
-    (problem.stepperRef(), std::forward<Args>(args)...);
+  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery(problem.stepperRef(), std::forward<Args>(args)...);
 }
 
 }// end namespace lspg::impl
 
 }}}//end namespace pressio::rom::lspg::impl
-#endif  // ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_ROM_UNSTEADY_PROBLEM_SOLVE_FUNCTIONS_IMPL_HPP_

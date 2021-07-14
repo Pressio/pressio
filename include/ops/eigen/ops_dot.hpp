@@ -49,21 +49,18 @@
 #ifndef OPS_EIGEN_OPS_DOT_HPP_
 #define OPS_EIGEN_OPS_DOT_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 // return void
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value>
 dot(const T0 & vecA,
     const T1 & vecB,
     typename T0::traits::scalar_t & result)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "types are not scalar compatible");
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0, T1>::value,
+		"types are not scalar compatible");
   assert(::pressio::ops::extent(vecA, 0) == ::pressio::ops::extent(vecB, 0));
   result = vecA.data()->dot(*vecB.data());
 }
@@ -71,15 +68,12 @@ dot(const T0 & vecA,
 // return result
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value,
-  typename T0::traits::scalar_t
-  >
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value,
+  typename T0::traits::scalar_t>
 dot(const T0 & vecA, const T1 & vecB)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "types are not scalar compatible");
+  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0, T1>::value,
+		"types are not scalar compatible");
   using sc_t = typename T0::traits::scalar_t;
   sc_t result = {};
   dot(vecA, vecB, result);
@@ -87,4 +81,4 @@ dot(const T0 & vecA, const T1 & vecB)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_DOT_HPP_
+#endif// OPS_EIGEN_OPS_DOT_HPP_

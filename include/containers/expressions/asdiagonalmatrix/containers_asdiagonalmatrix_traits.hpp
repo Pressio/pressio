@@ -49,35 +49,30 @@
 #ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_TRAITS_HPP_
 #define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_TRAITS_HPP_
 
-namespace pressio{ namespace containers{ namespace details{
+namespace pressio { namespace containers { namespace details {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<v_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<v_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Eigen, true, 2
-  >,
+      typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_t  = typename traits<v_type>::scalar_t;
+  using scalar_t = typename traits<v_type>::scalar_t;
   using ordinal_t = typename traits<v_type>::ordinal_t;
-  using size_t    = ordinal_t;
+  using size_t = ordinal_t;
 
   // conditiona ref type because native expression returns by value when object is const
   using reference_t = typename std::conditional<
-    std::is_const<v_type>::value, scalar_t, scalar_t &
-  >::type;
+    std::is_const<v_type>::value, scalar_t, scalar_t &>::type;
 
   using const_reference_t = typename std::conditional<
-    std::is_const<v_type>::value, scalar_t, scalar_t const &
-    >::type;
+    std::is_const<v_type>::value, scalar_t, scalar_t const &>::type;
 };
 #endif
 
@@ -86,19 +81,16 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<v_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<v_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Pybind, true, 2
-  >,
+      typename details::traits<v_type>::wrapped_t, WrappedPackageIdentifier::Pybind, true, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
-  using scalar_t  = typename traits<v_type>::scalar_t;
+  static constexpr bool is_dynamic = !is_static;
+  using scalar_t = typename traits<v_type>::scalar_t;
   using ordinal_t = typename traits<v_type>::ordinal_t;
-  using size_t    = ordinal_t;
+  using size_t = ordinal_t;
 
   // conditional ref type because native expression returns by value when object is const
   using reference_t = typename traits<v_type>::reference_t;
@@ -111,19 +103,16 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_tpetra<v_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_vector_wrapper_tpetra<v_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<v_type>::wrapped_t,
-  WrappedPackageIdentifier::Trilinos, true, 2
-  >,
+      typename details::traits<v_type>::wrapped_t,
+      WrappedPackageIdentifier::Trilinos, true, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_t  = typename traits<v_type>::scalar_t;
-  using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
+  using scalar_t = typename traits<v_type>::scalar_t;
+  using local_ordinal_t = typename traits<v_type>::local_ordinal_t;
   using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
   using size_t = typename traits<v_type>::size_t;
 };
@@ -132,21 +121,18 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<v_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<v_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<v_type>::wrapped_t,
-  WrappedPackageIdentifier::Trilinos,
-  true, 2
-  >,
+      typename details::traits<v_type>::wrapped_t,
+      WrappedPackageIdentifier::Trilinos,
+      true, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
   using wrapped_t = typename traits<v_type>::wrapped_t;
-  using scalar_t  = typename traits<v_type>::scalar_t;
-  using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
+  using scalar_t = typename traits<v_type>::scalar_t;
+  using local_ordinal_t = typename traits<v_type>::local_ordinal_t;
   using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
   using size_t = typename traits<v_type>::size_t;
 };
@@ -155,24 +141,21 @@ template <typename v_type>
 struct traits<
   ::pressio::containers::expressions::AsDiagonalMatrixExpr<v_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_epetra<v_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_vector_wrapper_epetra<v_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<v_type>::wrapped_t,
-  WrappedPackageIdentifier::Trilinos, true, 2
-  >,
+      typename details::traits<v_type>::wrapped_t,
+      WrappedPackageIdentifier::Trilinos, true, 2>,
     public matrix_shared_traits<false>
 {
 
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_t  = typename traits<v_type>::scalar_t;
-  using local_ordinal_t  = typename traits<v_type>::local_ordinal_t;
+  using scalar_t = typename traits<v_type>::scalar_t;
+  using local_ordinal_t = typename traits<v_type>::local_ordinal_t;
   using global_ordinal_t = typename traits<v_type>::global_ordinal_t;
   using size_t = typename traits<v_type>::size_t;
 };
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_TRAITS_HPP_
+#endif// CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_TRAITS_HPP_

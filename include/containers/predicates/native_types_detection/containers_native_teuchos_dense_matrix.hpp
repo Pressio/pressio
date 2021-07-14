@@ -55,10 +55,12 @@
 #include <Tpetra_CrsMatrix_decl.hpp>
 #include "Teuchos_SerialDenseMatrix.hpp"
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dense_matrix_teuchos : std::false_type {};
+struct is_dense_matrix_teuchos : std::false_type
+{
+};
 
 template <typename T>
 struct is_dense_matrix_teuchos<
@@ -66,24 +68,25 @@ struct is_dense_matrix_teuchos<
   typename std::enable_if<
     std::is_same<
       T,
-      Teuchos::SerialDenseMatrix<typename T::ordinalType, typename T::scalarType>
-      >::value
-    >::type
-  > : std::true_type{};
+      Teuchos::SerialDenseMatrix<typename T::ordinalType, typename T::scalarType>>::value>::type> : std::true_type
+{
+};
 //-------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_dense_matrix_teuchos_rcp : std::false_type {};
+struct is_dense_matrix_teuchos_rcp : std::false_type
+{
+};
 
 template <typename T>
 struct is_dense_matrix_teuchos_rcp<
   T,
   typename std::enable_if<
     is_teuchos_rcp<T>::value and
-    is_dense_matrix_teuchos<typename T::element_type>::value
-    >::type
-  > : std::true_type{};
+    is_dense_matrix_teuchos<typename T::element_type>::value>::type> : std::true_type
+{
+};
 
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_

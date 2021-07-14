@@ -51,13 +51,13 @@
 
 #include <memory>
 
-namespace pressio{ namespace utils{
+namespace pressio { namespace utils {
 
-template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args)
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args &&... args)
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
 }}// end namespace pressio::utils
-#endif  // UTILS_UTILS_MAKE_UNIQUE_HPP_
+#endif// UTILS_UTILS_MAKE_UNIQUE_HPP_

@@ -52,23 +52,26 @@
 #include "apps_burgers1d_epetra.hpp"
 #include <Epetra_Import.h>
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
-class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra{
-  using base_t	   = Burgers1dEpetra;
+class Burgers1dEpetraReducedNoMask : public Burgers1dEpetra
+{
+  using base_t = Burgers1dEpetra;
   using importer_t = Epetra_Import;
 
 public:
   Burgers1dEpetraReducedNoMask(std::vector<scalar_type> params,
-			int Ncell, Epetra_MpiComm * comm)
-    : base_t(params, Ncell, comm){
+			       int Ncell, Epetra_MpiComm * comm)
+    : base_t(params, Ncell, comm)
+  {
     this->setup();
   }
 
   ~Burgers1dEpetraReducedNoMask() = default;
 
 public:
-  velocity_type createVelocity() const{
+  velocity_type createVelocity() const
+  {
     // velocity_type R(*dataMap_);
     // base_t::velocity(u, t, R);
     velocity_type dest(*maskMap_);
@@ -77,8 +80,9 @@ public:
   }
 
   // return Jac * B
-  Epetra_MultiVector 
-  createApplyJacobianResult(const Epetra_MultiVector & B) const{
+  Epetra_MultiVector
+  createApplyJacobianResult(const Epetra_MultiVector & B) const
+  {
     // Epetra_MultiVector Cfull( Jac_->RangeMap(), B.NumVectors() );
     // base_t::applyJacobian(y, B, t, Cfull);
     Epetra_MultiVector C(*maskMap_, B.NumVectors());
@@ -88,7 +92,7 @@ public:
 
   void velocity(const state_type & u,
 		const scalar_type t,
-    velocity_type & rhs) const
+		velocity_type & rhs) const
   {
     velocity_type R(*dataMap_);
     base_t::velocity(u, t, R);
@@ -99,15 +103,17 @@ public:
   void applyJacobian(const state_type & y,
 		     const Epetra_MultiVector & B,
 		     scalar_type t,
-		     Epetra_MultiVector & A) const{
-    Epetra_MultiVector Cfull( Jac_->RangeMap(), B.NumVectors() );
+		     Epetra_MultiVector & A) const
+  {
+    Epetra_MultiVector Cfull(Jac_->RangeMap(), B.NumVectors());
     base_t::applyJacobian(y, B, t, Cfull);
     A.Import(Cfull, *importer_, Insert);
   }
 
 
 private:
-  void setup(){
+  void setup()
+  {
     base_t::setup();
     // create a map to mimic the mask
     createMaskMap();
@@ -115,7 +121,8 @@ private:
     importer_ = std::make_shared<importer_t>(*maskMap_, *dataMap_);
   };
 
-  void createMaskMap(){
+  void createMaskMap()
+  {
     // get # of my elements for the full map
     auto myN0 = dataMap_->NumMyElements();
     // get my global IDs
@@ -123,8 +130,8 @@ private:
 
     // pick some elements
     std::vector<int> myGIDnc;
-    for (decltype(myN0) i=0; i<myN0; i++) {
-      if ( i<=8 or (i>=11 and i<=18) or i>=21 )
+    for(decltype(myN0) i = 0; i < myN0; i++) {
+      if(i <= 8 or (i >= 11 and i <= 18) or i >= 21)
 	myGIDnc.emplace_back(myGID[i]);
     }
 
@@ -140,5 +147,5 @@ private:
   rcp<importer_t> importer_;
 };
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_APPS_BURGERS1D_EPETRA_REDUCED_NO_MASK_HPP_

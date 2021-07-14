@@ -49,34 +49,38 @@
 #ifndef QR_BASE_QR_SOLVE_BASE_HPP_
 #define QR_BASE_QR_SOLVE_BASE_HPP_
 
-namespace pressio{ namespace qr{
+namespace pressio { namespace qr {
 
-template<typename derived_t>
+template <typename derived_t>
 class QRSolveBase
   : private utils::details::CrtpBase<
-  QRSolveBase<derived_t> >
+      QRSolveBase<derived_t>>
 {
 
   using this_t = QRSolveBase<derived_t>;
 
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template<typename DummyType> struct dummy{using type = DummyType;};
+  template <typename DummyType>
+  struct dummy
+  {
+    using type = DummyType;
+  };
   friend typename dummy<derived_t>::type;
 
   friend utils::details::CrtpBase<this_t>;
 
 public:
   template <typename vec_t>
-  ::pressio::mpl::enable_if_t< containers::predicates::is_vector_wrapper<vec_t>::value >
-  solve(const vec_t & rhs, vec_t & y)const {
+  ::pressio::mpl::enable_if_t<containers::predicates::is_vector_wrapper<vec_t>::value>
+  solve(const vec_t & rhs, vec_t & y) const
+  {
     this->underlying().solveImpl(rhs, y);
   }
 
 private:
   QRSolveBase() = default;
   ~QRSolveBase() = default;
-
 };
 
 }}//end namespace pressio::qr
-#endif  // QR_BASE_QR_SOLVE_BASE_HPP_
+#endif// QR_BASE_QR_SOLVE_BASE_HPP_

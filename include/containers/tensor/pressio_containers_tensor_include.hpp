@@ -59,4 +59,4 @@
 
 #include "./wrapper_predicates/containers_is_tensor_wrapper.hpp"
 
-#endif  // CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_
+#endif// CONTAINERS_TENSOR_PRESSIO_CONTAINERS_TENSOR_INCLUDE_HPP_

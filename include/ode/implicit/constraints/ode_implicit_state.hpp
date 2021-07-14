@@ -49,23 +49,27 @@
 #ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_STATE_HPP_
 #define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_STATE_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio { namespace ode { namespace constraints {
 
-template<typename T, typename enable = void>
-struct implicit_state : std::false_type{};
+template <typename T, typename enable = void>
+struct implicit_state : std::false_type
+{
+};
 
-template<typename T>
+template <typename T>
 struct implicit_state<
   T,
   mpl::enable_if_t<
-    containers::predicates::is_vector_wrapper<T>::value
-    >
-  > : std::true_type{};
+    containers::predicates::is_vector_wrapper<T>::value>> : std::true_type
+{
+};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
-struct implicit_state<::pressio::containers::Tensor<1, T>> : std::true_type{};
+template <typename T>
+struct implicit_state<::pressio::containers::Tensor<1, T>> : std::true_type
+{
+};
 #endif
 
-}}} // namespace pressio::ode::constraints
-#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_STATE_HPP_
+}}}// namespace pressio::ode::constraints
+#endif// ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_STATE_HPP_

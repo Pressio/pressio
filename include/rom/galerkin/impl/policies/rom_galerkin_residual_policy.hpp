@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_RESIDUAL_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_RESIDUAL_POLICY_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 template <typename galerkin_residual_type, typename projection_policy_t>
 class ResidualPolicy : private projection_policy_t
@@ -64,10 +64,10 @@ public:
   ResidualPolicy & operator=(ResidualPolicy &&) = delete;
   ~ResidualPolicy() = default;
 
-  template<typename ...Args>
-  ResidualPolicy(std::size_t romSize, Args && ...args)
+  template <typename... Args>
+  ResidualPolicy(std::size_t romSize, Args &&... args)
     : projection_policy_t(std::forward<Args>(args)...),
-      romSize_(romSize){}
+      romSize_(romSize) {}
 
 public:
   template <typename fom_system_t>
@@ -83,11 +83,9 @@ public:
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   mpl::enable_if_t<
-    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
-    >
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value>
   compute(const galerkin_state_t & galerkinState,
 	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -99,9 +97,8 @@ public:
     projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
 				 timeAtNextStep, ::pressio::ode::nPlusOne());
 
-    ::pressio::ode::impl::discrete_time_residual
-	(galerkinState, galerkinResidual,
-	 galerkinStencilStates, dt, stepper_tag());
+    ::pressio::ode::impl::discrete_time_residual(galerkinState, galerkinResidual,
+						 galerkinStencilStates, dt, stepper_tag());
   }
 
   template <
@@ -110,12 +107,9 @@ public:
     typename galerkin_stencil_states_t,
     typename stencil_velocities_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
-    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
-    >
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value>
   compute(const galerkin_state_t & galerkinState,
 	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -127,10 +121,10 @@ public:
   {
 
     // if the step changed, I need to compute f(y_n, t_n)
-    if (stepTracker_ != currentStepNumber){
+    if(stepTracker_ != currentStepNumber) {
       auto & f_n = galerkinStencilVelocities(::pressio::ode::n());
       auto & galState_n = galerkinStencilStates(::pressio::ode::n());
-      const auto tn = t_np1-dt;
+      const auto tn = t_np1 - dt;
       projection_policy_t::compute(f_n, galState_n, fomSystemObj,
 				   tn, ::pressio::ode::n());
     }
@@ -141,10 +135,9 @@ public:
 				 t_np1, ::pressio::ode::nPlusOne());
 
     // compute discrete time residual
-    ::pressio::ode::impl::discrete_time_residual
-	(galerkinState, galerkinResidual,
-	 galerkinStencilStates, galerkinStencilVelocities,
-	 dt, stepper_tag());
+    ::pressio::ode::impl::discrete_time_residual(galerkinState, galerkinResidual,
+						 galerkinStencilStates, galerkinStencilVelocities,
+						 dt, stepper_tag());
   }
 
   template <
@@ -152,11 +145,9 @@ public:
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   mpl::enable_if_t<
-    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value
-  >
+    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value>
   compute(const galerkin_state_t & galerkinState,
 	  const galerkin_stencil_states_t & galerkinStencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -175,4 +166,4 @@ private:
 };
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_RESIDUAL_POLICY_HPP_
+#endif// ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_RESIDUAL_POLICY_HPP_

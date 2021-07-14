@@ -49,11 +49,13 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_SET_ZERO_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_SET_ZERO_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+namespace pressio { namespace ops { namespace predicates {
 
 template <typename T, typename target_t, typename enable = void>
 struct has_method_set_zero
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <typename T, typename target_t>
 struct has_method_set_zero<
@@ -61,14 +63,10 @@ struct has_method_set_zero<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	       std::declval< T const &>().set_zero
-	       (
-		std::declval<target_t &>()
-		)
-	       )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const &>().set_zero(
+	  std::declval<target_t &>()))>::value>> : std::true_type
+{
+};
 
-}}} //pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_SET_ZERO_HPP_
+}}}//pressio::ops::predicates
+#endif// OPS_PREDICATES_OPS_HAS_METHOD_SET_ZERO_HPP_

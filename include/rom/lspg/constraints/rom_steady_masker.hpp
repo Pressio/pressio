@@ -49,21 +49,21 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_STEADY_MASKER_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_STEADY_MASKER_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{namespace constraints {
+namespace pressio { namespace rom { namespace lspg { namespace constraints {
 
-template<
+template <
   typename T,
   typename operand1_t,
   typename operand2_t,
-  typename enable = void
-  >
-struct steady_masker : std::false_type{};
+  typename enable = void>
+struct steady_masker : std::false_type
+{
+};
 
-template<
+template <
   typename T,
   typename operand1_t,
-  typename operand2_t
-  >
+  typename operand2_t>
 struct steady_masker<
   T, operand1_t, operand2_t,
   mpl::enable_if_t<
@@ -75,12 +75,12 @@ struct steady_masker<
       T, operand2_t, operand2_t>::value and
     // applyMask for operand1_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_result_return_void<
-      T, operand1_t, operand1_t >::value and
+      T, operand1_t, operand1_t>::value and
     // applyMask for operand2_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_result_return_void<
-      T, operand2_t, operand2_t >::value
-    >
-  > : std::true_type{};
+      T, operand2_t, operand2_t>::value>> : std::true_type
+{
+};
 
 // template <typename T>
 // struct find_discrepancies_with_continuous_time_system_with_user_provided_apply_jacobian_maskable_api
@@ -111,5 +111,5 @@ struct steady_masker<
 //   static constexpr bool value = true;
 // };
 
-}}}} 
-#endif  // ROM_LSPG_CONSTRAINTS_ROM_STEADY_MASKER_HPP_
+}}}}
+#endif// ROM_LSPG_CONSTRAINTS_ROM_STEADY_MASKER_HPP_

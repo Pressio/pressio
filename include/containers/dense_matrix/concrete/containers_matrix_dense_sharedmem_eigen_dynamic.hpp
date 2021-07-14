@@ -49,15 +49,13 @@
 #ifndef CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 #define CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class DenseMatrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_dense_dynamic_matrix_eigen<wrapped_type>::value
-    >
-  >
+    containers::predicates::is_dense_dynamic_matrix_eigen<wrapped_type>::value>>
 {
 public:
   using derived_t = DenseMatrix<wrapped_type>;
@@ -69,14 +67,17 @@ public:
 public:
   DenseMatrix() = default;
 
-  explicit DenseMatrix(const wrap_t & other) : data_(other){}
+  explicit DenseMatrix(const wrap_t & other)
+    : data_(other) {}
 
-  DenseMatrix(ord_t nrows, ord_t ncols) : data_(nrows, ncols)
+  DenseMatrix(ord_t nrows, ord_t ncols)
+    : data_(nrows, ncols)
   {
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  DenseMatrix(wrap_t && other) : data_(std::move(other)){}
+  DenseMatrix(wrap_t && other)
+    : data_(std::move(other)) {}
 
   // copy cnstr
   DenseMatrix(DenseMatrix const & other) = default;
@@ -91,35 +92,39 @@ public:
   ~DenseMatrix() = default;
 
 public:
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   };
 
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   };
 
-  sc_t & operator() (ord_t row, ord_t col){
-    assert(row < this->extent(0) );
-    assert(col < this->extent(1) );
-    return data_(row,col);
+  sc_t & operator()(ord_t row, ord_t col)
+  {
+    assert(row < this->extent(0));
+    assert(col < this->extent(1));
+    return data_(row, col);
   }
 
-  sc_t const & operator() (ord_t row, ord_t col) const{
-    assert(row < this->extent(0) );
-    assert(col < this->extent(1) );
-    return data_(row,col);
+  sc_t const & operator()(ord_t row, ord_t col) const
+  {
+    assert(row < this->extent(0));
+    assert(col < this->extent(1));
+    return data_(row, col);
   }
 
-  ord_t extent(ord_t i) const {
-    assert(i==0 or i==1);
-    return (i==0) ? data_.rows() : data_.cols();
+  ord_t extent(ord_t i) const
+  {
+    assert(i == 0 or i == 1);
+    return (i == 0) ? data_.rows() : data_.cols();
   }
 
 private:
   wrap_t data_ = {};
-
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_
+#endif// CONTAINERS_DENSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_DENSE_SHAREDMEM_EIGEN_DYNAMIC_HPP_

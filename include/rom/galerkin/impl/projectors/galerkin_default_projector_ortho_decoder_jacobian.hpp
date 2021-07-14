@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
 #define ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 /* default projector works for the non-hyperreduced case.
    It is supposed to compute "phi^T * operand" where :
@@ -85,15 +85,14 @@ struct DefaultProjector
 
   DefaultProjector(const decoder_type & decoder,
 		   const ud_ops_type & udOps)
-    : decoderJacobian_(decoder.jacobianCRef()), udOps_{udOps}{}
+    : decoderJacobian_(decoder.jacobianCRef()), udOps_{udOps} {}
 
-  template<typename operand_t, typename result_t>
+  template <typename operand_t, typename result_t>
   mpl::enable_if_t<
     ::pressio::containers::details::traits<operand_t>::rank == 1 and
     ::pressio::containers::details::traits<result_t>::rank == 1 and
     (::pressio::rom::galerkin::constraints::velocity<result_t>::value or
-     ::pressio::rom::galerkin::constraints::residual<result_t>::value)
-    >
+     ::pressio::rom::galerkin::constraints::residual<result_t>::value)>
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
@@ -103,11 +102,10 @@ struct DefaultProjector
 			 cnst::zero(), result);
   }
 
-  template<typename result_t>
+  template <typename result_t>
   mpl::enable_if_t<
     ::pressio::containers::details::traits<result_t>::rank == 1 and
-    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value
-    >
+    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value>
   apply(const dec_jac_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
@@ -138,9 +136,9 @@ struct DefaultProjector<decoder_type, void>
   ~DefaultProjector() = default;
 
   DefaultProjector(const decoder_type & decoder)
-    : decoderJacobian_(decoder.jacobianCRef()){}
+    : decoderJacobian_(decoder.jacobianCRef()) {}
 
-  template<typename operand_t, typename result_t>
+  template <typename operand_t, typename result_t>
   mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank == 1>
   apply(const operand_t & operand, result_t & result) const
   {
@@ -151,7 +149,7 @@ struct DefaultProjector<decoder_type, void>
 			    cnst::zero(), result);
   }
 
-  template<typename operand_t, typename result_t>
+  template <typename operand_t, typename result_t>
   mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank >= 2>
   apply(const operand_t & operand, result_t & result) const
   {
@@ -178,4 +176,4 @@ private:
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_
+#endif// ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_DEFAULT_PROJECTOR_ORTHO_DECODER_JACOBIAN_HPP_

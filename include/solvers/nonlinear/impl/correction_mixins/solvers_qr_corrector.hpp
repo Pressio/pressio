@@ -49,9 +49,9 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_QR_CORRECTOR_HPP_
 #define SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_QR_CORRECTOR_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
-template<class T, class state_type, class qr_solver_t>
+template <class T, class state_type, class qr_solver_t>
 class QRCorrector : public T
 {
 public:
@@ -94,7 +94,8 @@ public:
 	      qrs_t && solverObj)
     : QRCorrector(system, state_type(state),
 		  std::forward<qrs_t>(solverObj))
-  {}
+  {
+  }
 
   QRCorrector(QRCorrector const &) = default;
   QRCorrector & operator=(QRCorrector const &) = default;
@@ -125,7 +126,7 @@ public:
     // solve: R correction = Q^T Residual
     solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
+    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne());
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);
@@ -133,31 +134,36 @@ public:
 
   bool hasGradientComputation() const { return true; }
 
-  void resetForNewCall(){
+  void resetForNewCall()
+  {
     T::resetForNewCall();
   }
 
-  const state_t & correctionCRef() const{
+  const state_t & correctionCRef() const
+  {
     return correction_;
   }
 
-  const state_t & gradientCRef() const{
+  const state_t & gradientCRef() const
+  {
     return g_;
   }
 
-  const sc_t & correctionNormCurrentCorrectionStep() const{
+  const sc_t & correctionNormCurrentCorrectionStep() const
+  {
     return correctionNormCurrCorrStep_;
   }
 
-  const sc_t & gradientNormCurrentCorrectionStep() const{
+  const sc_t & gradientNormCurrentCorrectionStep() const
+  {
     return gradientNormCurrCorrStep_;
   }
 
-  const sc_t & residualNormCurrentCorrectionStep() const{
+  const sc_t & residualNormCurrentCorrectionStep() const
+  {
     return residNormCurrCorrStep_;
   }
-
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_QR_CORRECTOR_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_QR_CORRECTOR_HPP_

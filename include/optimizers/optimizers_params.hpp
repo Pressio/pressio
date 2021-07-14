@@ -53,47 +53,56 @@
 #include "ROL_ParameterList.hpp"
 #endif
 
-namespace pressio{ namespace optimizers{
+namespace pressio { namespace optimizers {
 
 template <typename scalar_type>
-class Parameters{
+class Parameters
+{
 
 private:
   ::pressio::optimizers::stepMethod chosenStepMethod_ = default_step_method;
-  int maxIters_			       = 100;
-  scalar_type gradientOptimalityTol_   = 1e-10;
-  scalar_type stepOptimalityTol_       = 1e-12;
+  int maxIters_ = 100;
+  scalar_type gradientOptimalityTol_ = 1e-10;
+  scalar_type stepOptimalityTol_ = 1e-12;
   //  int metricsVerbosity_	       = {}/* default value */;
 
 public:
-  void setStepMethod(::pressio::optimizers::stepMethod stepMethodIn){
+  void setStepMethod(::pressio::optimizers::stepMethod stepMethodIn)
+  {
     chosenStepMethod_ = stepMethodIn;
   }
-  ::pressio::optimizers::stepMethod getStepMethod() const{
+  ::pressio::optimizers::stepMethod getStepMethod() const
+  {
     return chosenStepMethod_;
   }
 
-  void setMaxIterations(int maxIter){
+  void setMaxIterations(int maxIter)
+  {
     // maximum number of optimization iterations.
     maxIters_ = maxIter;
   }
-  int maxIterations() const{
+  int maxIterations() const
+  {
     return maxIters_;
   }
 
-  void setGradientNormOptimalityTolerance(scalar_type newTol){
+  void setGradientNormOptimalityTolerance(scalar_type newTol)
+  {
     /* minimum objective gradient magnitude at which to terminate */
     gradientOptimalityTol_ = newTol;
   }
-  scalar_type getGradientNormOptimalityTolerance() const{
+  scalar_type getGradientNormOptimalityTolerance() const
+  {
     return gradientOptimalityTol_;
   }
 
-  void setStepNormOptimalityTolerance(scalar_type newTol){
+  void setStepNormOptimalityTolerance(scalar_type newTol)
+  {
     /* norm of the step at which to terminate*/
     stepOptimalityTol_ = newTol;
   }
-  scalar_type getStepNormOptimalityTolerance() const{
+  scalar_type getStepNormOptimalityTolerance() const
+  {
     return stepOptimalityTol_;
   }
 
@@ -118,27 +127,23 @@ void convertToRolParameterList(const Parameters<scalar_type> & params,
   rolParList.sublist("Status Test").set("Step Tolerance", params.getStepNormOptimalityTolerance());
 
   const auto e = params.getStepMethod();
-  switch (e)
-    {
-    case ::pressio::optimizers::stepMethod::lineSearch:
-      {
-	rolParList.sublist("Step").set("Type","Line Search");
-	rolParList.sublist("Step").sublist("Line Search").set("Subproblem Solver","Truncated CG");
-	break;
-      }
-    case ::pressio::optimizers::stepMethod::trustRegion:
-      {
-	rolParList.sublist("Step").set("Type","Trust Region");
-	rolParList.sublist("Step").sublist("Trust Region").set("Subproblem Solver","Truncated CG");
-	break;
-      }
-    default:
-      {
-	break;
-      }
-    };
+  switch(e) {
+  case ::pressio::optimizers::stepMethod::lineSearch: {
+    rolParList.sublist("Step").set("Type", "Line Search");
+    rolParList.sublist("Step").sublist("Line Search").set("Subproblem Solver", "Truncated CG");
+    break;
+  }
+  case ::pressio::optimizers::stepMethod::trustRegion: {
+    rolParList.sublist("Step").set("Type", "Trust Region");
+    rolParList.sublist("Step").sublist("Trust Region").set("Subproblem Solver", "Truncated CG");
+    break;
+  }
+  default: {
+    break;
+  }
+  };
 }
 #endif
 
 }}//end namespace pressio::optimizers
-#endif  // OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_
+#endif// OPTIMIZERS_OPTIMIZERS_PARAMS_HPP_

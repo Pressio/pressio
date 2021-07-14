@@ -18,7 +18,8 @@
  */
 
 struct tpetraVectorGlobSize15Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using NT = Tpetra::Vector<>::node_type;
@@ -38,25 +39,27 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   std::shared_ptr<vec_t> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_));
+					comm_));
     x_ = std::make_shared<vec_t>(contigMap_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 //-----------------------------------------------------------
 
 
 struct tpetraMultiVectorGlobSize15Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using NT = Tpetra::Vector<>::node_type;
@@ -77,25 +80,27 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   std::shared_ptr<mvec_t> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_));
+					comm_));
     x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 //-----------------------------------------------------------
 
 
 struct tpetraMultiVectorGlobSize9Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -114,24 +119,26 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   std::shared_ptr<mvec_t> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 //-----------------------------------------------------------
 
 
 struct tpetraMultiVectorR9C4VecS9Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -152,25 +159,27 @@ public:
   std::shared_ptr<mvec_t> mv_;
   std::shared_ptr<vec_t> x_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
     numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
     mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
     x_ = std::make_shared<vec_t>(contigMap_);
   }
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 //-----------------------------------------------------------
 
 
 struct tpetraSparseMatR7MultiVectorR7C4Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -195,20 +204,22 @@ public:
   const int numVecs_ = 4;
   std::shared_ptr<mvec_t> mv_;
 
-  virtual void SetUp(){
+  virtual void SetUp()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
+    EXPECT_EQ(numProc_, 3);
     numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
 
     A_ = std::make_shared<mat_t>(contigMap_, 4);
     mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
   }
 
-  void fillCrsMatrix(){
+  void fillCrsMatrix()
+  {
 
     // 1 0 2 0 0 3 0
     // 1 0 1 0 1 1 0
@@ -222,40 +233,47 @@ public:
 
     using tarr_dt = Teuchos::ArrayView<ST>;
     using tarr_it = Teuchos::ArrayView<GO>;
-    std::array<ST,4> va;
-    std::array<GO,4> ci;
-    if (rank_==0){
+    std::array<ST, 4> va;
+    std::array<GO, 4> ci;
+    if(rank_ == 0) {
       //row 0
-      va = {{1., 2., 3.}};  ci = {{0, 2, 5}};
-      A_->insertGlobalValues( 0, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
+      va = {{1., 2., 3.}};
+      ci = {{0, 2, 5}};
+      A_->insertGlobalValues(0, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3));
       //row 1
-      va = {{1.,1.,1.,1.}};  ci = {{0,2,4,5}};
-      A_->insertGlobalValues(1, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4) );
+      va = {{1., 1., 1., 1.}};
+      ci = {{0, 2, 4, 5}};
+      A_->insertGlobalValues(1, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4));
       //row 2
-      va = {{1.,2.,1.}};  ci = {{2,3,4}};
-      A_->insertGlobalValues(2, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
+      va = {{1., 2., 1.}};
+      ci = {{2, 3, 4}};
+      A_->insertGlobalValues(2, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3));
     }
 
-    if (rank_==1){
+    if(rank_ == 1) {
       //row 3
-      va = {{1.,2.,1,3.}};  ci = {{0,4,5,6}};
-      A_->insertGlobalValues(3, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4) );
+      va = {{1., 2., 1, 3.}};
+      ci = {{0, 4, 5, 6}};
+      A_->insertGlobalValues(3, tarr_it(ci.data(), 4), tarr_dt(va.data(), 4));
       //row 4
-      va = {{1.,1.}};  ci = {{2,3}};
-      A_->insertGlobalValues(4, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
+      va = {{1., 1.}};
+      ci = {{2, 3}};
+      A_->insertGlobalValues(4, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3));
     }
 
-    if (rank_==2){
+    if(rank_ == 2) {
       //row 5
-      va = {{3.,3.,1}};  ci = {{2,3,5}};
-      A_->insertGlobalValues(5, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
+      va = {{3., 3., 1}};
+      ci = {{2, 3, 5}};
+      A_->insertGlobalValues(5, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3));
       //row 6
-      va = {{3,1.}};  ci = {{3,5}};
-      A_->insertGlobalValues(6, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3) );
+      va = {{3, 1.}};
+      ci = {{3, 5}};
+      A_->insertGlobalValues(6, tarr_it(ci.data(), 3), tarr_dt(va.data(), 3));
     }
   }//end fill
 
-  virtual void TearDown(){}
+  virtual void TearDown() {}
 };
 
 #endif

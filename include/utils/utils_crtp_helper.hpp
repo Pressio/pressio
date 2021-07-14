@@ -49,20 +49,23 @@
 #ifndef UTILS_UTILS_CRTP_HELPER_HPP_
 #define UTILS_UTILS_CRTP_HELPER_HPP_
 
-namespace pressio{ namespace utils{ namespace details {
+namespace pressio { namespace utils { namespace details {
 
 template <typename T, typename enable = void>
 struct CrtpBase;
 
 template <typename T,
-	  template<typename, typename...> class crtpType,
-	  typename ... Args>
-struct CrtpBase< crtpType<T, Args...>>{
-  T & underlying() {
-    return static_cast<T&>(*this);
+	  template <typename, typename...> class crtpType,
+	  typename... Args>
+struct CrtpBase<crtpType<T, Args...>>
+{
+  T & underlying()
+  {
+    return static_cast<T &>(*this);
   }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
+  T const & underlying() const
+  {
+    return static_cast<T const &>(*this);
   }
 
 private:
@@ -75,13 +78,16 @@ private:
 template <typename T,
 	  int a,
 	  int b,
-	  template<typename, int, int> class crtpType>
-struct CrtpBase< crtpType<T, a, b> >{
-  T & underlying() {
-    return static_cast<T&>(*this);
+	  template <typename, int, int> class crtpType>
+struct CrtpBase<crtpType<T, a, b>>
+{
+  T & underlying()
+  {
+    return static_cast<T &>(*this);
   }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
+  T const & underlying() const
+  {
+    return static_cast<T const &>(*this);
   }
 
 private:
@@ -93,13 +99,16 @@ private:
 
 template <typename T,
 	  int a,
-	  template<typename, int> class crtpType>
-struct CrtpBase< crtpType<T, a> >{
-  T & underlying() {
-    return static_cast<T&>(*this);
+	  template <typename, int> class crtpType>
+struct CrtpBase<crtpType<T, a>>
+{
+  T & underlying()
+  {
+    return static_cast<T &>(*this);
   }
-  T const & underlying() const {
-    return static_cast<T const&>(*this);
+  T const & underlying() const
+  {
+    return static_cast<T const &>(*this);
   }
 
 private:
@@ -109,6 +118,6 @@ private:
 };//end class
 
 
-}}} // end namespace pressio::utils::details
+}}}// end namespace pressio::utils::details
 
-#endif  // UTILS_UTILS_CRTP_HELPER_HPP_
+#endif// UTILS_UTILS_CRTP_HELPER_HPP_

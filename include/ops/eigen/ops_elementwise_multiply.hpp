@@ -49,28 +49,24 @@
 #ifndef OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_
 #define OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
-  >
-elementwise_multiply
-(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
- const T & x,
- const T1 & z,
- typename ::pressio::containers::details::traits<T>::scalar_t beta,
- T2 & y)
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value>
+elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+		     const T & x,
+		     const T1 & z,
+		     typename ::pressio::containers::details::traits<T>::scalar_t beta,
+		     T2 & y)
 {
-  assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
-  assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
+  assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(z, 0));
+  assert(::pressio::ops::extent(z, 0) == ::pressio::ops::extent(y, 0));
   (*y.data()) = beta * (*y.data()) + alpha * x.data()->cwiseProduct(*z.data());
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif// OPS_EIGEN_OPS_ELEMENTWISE_MULTIPLY_HPP_

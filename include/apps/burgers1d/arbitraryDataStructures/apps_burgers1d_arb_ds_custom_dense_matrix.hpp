@@ -49,57 +49,67 @@
 #ifndef APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_DENSE_MATRIX_HPP_
 #define APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_DENSE_MATRIX_HPP_
 
-namespace pressio{ namespace apps{ namespace arbds{
+namespace pressio { namespace apps { namespace arbds {
 
 template <typename scalar_t>
 class DenseMatrix
 {
 public:
   using value_type = scalar_t;
-  using size_type  = std::size_t;
+  using size_type = std::size_t;
   using index_type = size_type;
 
-  using data_type  = std::vector<std::vector<scalar_t>>;
+  using data_type = std::vector<std::vector<scalar_t>>;
+
 public:
   // DenseMatrix() = default;
 
   DenseMatrix(index_type nRows, index_type nCols)
-    : data_(nRows), numRows_{nRows}, numCols_{nCols}{
-      for (auto & it : data_) it.resize(nCols);
-    }
-
-  void resize(index_type newRows, index_type newCols){
-    data_.resize(newRows);
-    for (auto & it : data_) it.resize(newCols);
+    : data_(nRows), numRows_{nRows}, numCols_{nCols}
+  {
+    for(auto & it : data_)
+      it.resize(nCols);
   }
 
-  index_type extent(index_type k) const{
+  void resize(index_type newRows, index_type newCols)
+  {
+    data_.resize(newRows);
+    for(auto & it : data_)
+      it.resize(newCols);
+  }
+
+  index_type extent(index_type k) const
+  {
     assert(k <= 1);
     assert(data_.empty() == false);
 
-    return (k==0) ? numRows_ : numCols_;
+    return (k == 0) ? numRows_ : numCols_;
   }
 
-  value_type & operator()(index_type i, index_type j){
+  value_type & operator()(index_type i, index_type j)
+  {
     return data_[i][j];
   }
-  value_type const & operator()(index_type i, index_type j) const{
+  value_type const & operator()(index_type i, index_type j) const
+  {
     return data_[i][j];
   }
 
-  data_type * data(){
+  data_type * data()
+  {
     return &data_;
   }
-  data_type const * data() const{
+  data_type const * data() const
+  {
     return &data_;
   }
 
 private:
   data_type data_;
-  size_type numRows_ {};
-  size_type numCols_ {};
+  size_type numRows_{};
+  size_type numCols_{};
 
 };//end class
 
-}}} //namespace pressio::apps::arbds
-#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_DENSE_MATRIX_HPP_
+}}}//namespace pressio::apps::arbds
+#endif// APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_DENSE_MATRIX_HPP_

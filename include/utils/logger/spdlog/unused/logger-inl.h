@@ -254,5 +254,5 @@ namespace spdlog {
 //     }
 // }
 
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_UNUSED_LOGGER_INL_H_

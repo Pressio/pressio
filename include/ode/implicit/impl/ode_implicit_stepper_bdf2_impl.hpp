@@ -49,9 +49,9 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio { namespace ode { namespace implicitmethods {
 
-template<
+template <
   typename scalar_t,
   typename state_t,
   typename residual_t,
@@ -60,15 +60,14 @@ template<
   typename aux_stepper_t,
   typename residual_policy_t,
   typename jacobian_policy_t,
-  bool policies_are_standard
-  >
+  bool policies_are_standard>
 class StepperBDF2
 {
 
 public:
   // these need to be here because are detected by solver
   using scalar_type = scalar_t;
-  using state_type  = state_t;
+  using state_type = state_t;
   using residual_type = residual_t;
   using jacobian_type = jacobian_t;
 
@@ -83,9 +82,9 @@ private:
   // auxiliary stepper
   aux_stepper_t & auxStepper_;
 
-  scalar_t rhsEvaluationTime_  = {};
+  scalar_t rhsEvaluationTime_ = {};
   scalar_t dt_ = {};
-  types::step_t stepNumber_  = {};
+  types::step_t stepNumber_ = {};
   std::reference_wrapper<const system_type> systemObj_;
   stencil_states_t stencilStates_;
 
@@ -98,9 +97,9 @@ private:
 
 public:
   StepperBDF2() = delete;
-  StepperBDF2(const StepperBDF2 & other)  = default;
+  StepperBDF2(const StepperBDF2 & other) = default;
   StepperBDF2 & operator=(const StepperBDF2 & other) = delete;
-  StepperBDF2(StepperBDF2 && other)  = default;
+  StepperBDF2(StepperBDF2 && other) = default;
   StepperBDF2 & operator=(StepperBDF2 && other) = delete;
   ~StepperBDF2() = default;
 
@@ -115,12 +114,12 @@ public:
       recoveryState_{state},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
-  {}
+  {
+  }
 
   template <
     bool _policies_are_standard = policies_are_standard,
-    ::pressio::mpl::enable_if_t<_policies_are_standard, int> = 0
-    >
+    ::pressio::mpl::enable_if_t<_policies_are_standard, int> = 0>
   StepperBDF2(const state_type & state,
 	      const system_type & systemObj,
 	      aux_stepper_t & auxStepper)
@@ -130,7 +129,8 @@ public:
       recoveryState_{state},
       resPolicy_{},
       jacPolicy_{}
-  {}
+  {
+  }
 
 public:
   ::pressio::ode::types::stepper_order_t order() const
@@ -138,32 +138,31 @@ public:
     return order_value;
   }
 
-  template<typename solver_type, typename ...Args>
+  template <typename solver_type, typename... Args>
   void doStep(state_type & odeState,
 	      const scalar_t & currentTime,
 	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("bdf2 stepper: do step");
 
     auto dummyGuesser =
-      [](const types::step_t &, const scalar_t &, state_type &)
-      { /*no op*/ };
+      [](const types::step_t &, const scalar_t &, state_type &) { /*no op*/ };
 
     doStepImpl(odeState, currentTime, dt, stepNumber,
 	       solver, dummyGuesser, std::forward<Args>(args)...);
   }
 
-  template<typename solver_type, typename guess_callback_t, class ...Args>
+  template <typename solver_type, typename guess_callback_t, class... Args>
   void doStep(state_type & odeState,
-	      const scalar_t &  currentTime,
-	      const scalar_t &  dt,
+	      const scalar_t & currentTime,
+	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      guess_callback_t && guesserCb,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("bdf2 stepper: do step with callback to state guesser");
     doStepImpl(odeState, currentTime, dt, stepNumber,
@@ -182,32 +181,30 @@ public:
 
   void residual(const state_t & odeState, residual_t & R) const
   {
-    resPolicy_.get().template compute
-      <tag_name>(odeState,  stencilStates_,
-		 systemObj_.get(),
-		 rhsEvaluationTime_, dt_, stepNumber_, R);
+    resPolicy_.get().template compute<tag_name>(odeState, stencilStates_,
+						systemObj_.get(),
+						rhsEvaluationTime_, dt_, stepNumber_, R);
   }
 
   void jacobian(const state_t & odeState, jacobian_t & J) const
   {
-    jacPolicy_.get().template compute<
-      tag_name>(odeState, stencilStates_, systemObj_.get(),
-                rhsEvaluationTime_, dt_, stepNumber_, J);
+    jacPolicy_.get().template compute<tag_name>(odeState, stencilStates_, systemObj_.get(),
+						rhsEvaluationTime_, dt_, stepNumber_, J);
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template <typename solver_type, typename guess_callback_t, typename... Args>
   void doStepImpl(state_type & odeState,
 		  const scalar_t & currentTime,
 		  const scalar_t & dt,
 		  const types::step_t & stepNumber,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb,
-		  Args&& ...args)
+		  Args &&... args)
   {
     static_assert(::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value,
-      "Invalid solver for BDF2 stepper");
+		    solver_type, decltype(*this), state_type>::value,
+		  "Invalid solver for BDF2 stepper");
 
     /*
       upon entering this, we are at time step = stepNumber.
@@ -224,7 +221,7 @@ private:
     stepNumber_ = stepNumber;
 
     // first step, use auxiliary stepper
-    if (stepNumber == 1){
+    if(stepNumber == 1) {
       // step ==1 means that we are going from y_0 to y_1
       // stencilStates_(0) now holds y_0
       ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::n()), odeState);
@@ -232,8 +229,7 @@ private:
       auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver,
 			 std::forward<Args>(args)...);
     }
-    if (stepNumber >= 2)
-    {
+    if(stepNumber >= 2) {
       /*
 	at step == 2 we are going from t_1 to t_2, so
 	 we want to compute:
@@ -254,28 +250,26 @@ private:
 	and so on...
       */
 
-      auto & odeState_n   = stencilStates_.stateAt(ode::n());
+      auto & odeState_n = stencilStates_.stateAt(ode::n());
       auto & odeState_nm1 = stencilStates_.stateAt(ode::nMinusOne());
       ::pressio::ops::deep_copy(recoveryState_, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState_n);
       ::pressio::ops::deep_copy(odeState_n, odeState);
 
-      try{
+      try {
 	guesserCb(stepNumber, rhsEvaluationTime_, odeState);
 	solver.solve(*this, odeState, std::forward<Args>(args)...);
-      }
-      catch (::pressio::eh::nonlinear_solve_failure const & e)
-	{
-	  ::pressio::ops::deep_copy(odeState, odeState_n);
-	  ::pressio::ops::deep_copy(odeState_n, odeState_nm1);
-	  ::pressio::ops::deep_copy(odeState_nm1, recoveryState_);
+      } catch(::pressio::eh::nonlinear_solve_failure const & e) {
+	::pressio::ops::deep_copy(odeState, odeState_n);
+	::pressio::ops::deep_copy(odeState_n, odeState_nm1);
+	::pressio::ops::deep_copy(odeState_nm1, recoveryState_);
 
-	  // now throw
-	  throw ::pressio::eh::time_step_failure();
-	}
+	// now throw
+	throw ::pressio::eh::time_step_failure();
+      }
     }
   }
 };
 
-}}} // end namespace pressio::ode::implicitmethods
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
+}}}// end namespace pressio::ode::implicitmethods
+#endif// ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_

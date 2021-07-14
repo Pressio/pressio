@@ -49,13 +49,12 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
 
 template <
   typename residual_type,
   typename fom_states_manager_t,
-  typename sample_to_stencil_t
-  >
+  typename sample_to_stencil_t>
 class HypRedResidualPolicyContinuousTimeApi
 {
 
@@ -74,13 +73,14 @@ public:
 					const sample_to_stencil_t & sTosInfo)
     : fomStatesMngr_(fomStatesMngr),
       sTosInfo_(sTosInfo)
-  {}
+  {
+  }
 
 public:
   template <typename fom_system_t>
   residual_type create(const fom_system_t & fomObj) const
   {
-    return residual_type( fomObj.createVelocity() );
+    return residual_type(fomObj.createVelocity());
   }
 
   template <
@@ -88,8 +88,7 @@ public:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   void compute(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
@@ -100,7 +99,7 @@ public:
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
     // is of the same extent as the romR
-    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR,0));
+    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR, 0));
 
     this->compute_impl<stepper_tag>(romState, romR, stencilStates,
 				    fomSystemObj, timeAtNextStep, dt, currentStepNumber);
@@ -112,11 +111,9 @@ public:
     typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename stencil_velocities_t
-    >
+    typename stencil_velocities_t>
   mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
-    >
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value>
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -127,11 +124,10 @@ public:
 	  residual_type & romR) const
   {
 
-    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR,0));
+    assert(::pressio::ops::extent(sTosInfo_.get(), 0) == ::pressio::ops::extent(romR, 0));
 
-    this->compute_cn_impl<stepper_tag>
-      (romState, romR, stencilStates, fomSystemObj,
-       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
+    this->compute_cn_impl<stepper_tag>(romState, romR, stencilStates, fomSystemObj,
+				       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
   }
 
 private:
@@ -140,12 +136,11 @@ private:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-  >
+    typename scalar_t>
   void compute_impl(const lspg_state_t & romState,
 		    residual_type & romR,
 		    const stencil_states_t & stencilStates,
-		    const fom_system_t  & fomSystemObj,
+		    const fom_system_t & fomSystemObj,
 		    const scalar_t & timeAtNextStep,
 		    const scalar_t & dt,
 		    const ::pressio::ode::types::step_t & currentStepNumber) const
@@ -161,7 +156,7 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != currentStepNumber){
+    if(storedStep_ != currentStepNumber) {
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = currentStepNumber;
     }
@@ -169,8 +164,7 @@ private:
     const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
     fomSystemObj.velocity(*fomState.data(), timeAtNextStep, *romR.data());
 
-    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
-	<stepper_tag>(fomStatesMngr_.get(), romR, dt, sTosInfo_.get());
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual<stepper_tag>(fomStatesMngr_.get(), romR, dt, sTosInfo_.get());
   }
 
   template <
@@ -179,8 +173,7 @@ private:
     typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename stencil_velocities_t
-  >
+    typename stencil_velocities_t>
   void compute_cn_impl(const lspg_state_t & romState,
 		       residual_type & romR,
 		       const stencil_states_t & stencilStates,
@@ -195,12 +188,12 @@ private:
 
     fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    if (storedStep_ != currentStepNumber){
+    if(storedStep_ != currentStepNumber) {
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = currentStepNumber;
 
       // if the step changed, I need to compute f(y_n, t_n)
-      const auto tn = t_np1-dt;
+      const auto tn = t_np1 - dt;
       auto & f_n = stencilVelocities(::pressio::ode::n());
       const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
       fomSystemObj.velocity(*fomState_n.data(), tn, *f_n.data());
@@ -211,8 +204,7 @@ private:
     const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     fomSystemObj.velocity(*fomState_np1.data(), t_np1, *f_np1.data());
 
-    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
-	<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt, sTosInfo_.get());
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt, sTosInfo_.get());
   }
 
 
@@ -228,4 +220,4 @@ protected:
 };
 
 }}}}}
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_HYPER_REDUCED_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_

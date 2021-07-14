@@ -49,14 +49,14 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
+namespace pressio { namespace rom { namespace lspg { namespace constraints {
 
 // a type T is a valid lspg residual if it is a valid fom state
-template<typename T>
+template <typename T>
 using residual = ::pressio::rom::lspg::constraints::fom_state<T>;
 
-template<typename T>
+template <typename T>
 using lspg_residual = residual<T>;
 
 }}}}
-#endif  // ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_
+#endif// ROM_LSPG_CONSTRAINTS_ROM_LSPG_RESIDUAL_HPP_

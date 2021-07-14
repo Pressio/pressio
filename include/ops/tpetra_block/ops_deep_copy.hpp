@@ -49,19 +49,18 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_
 #define OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
-template<typename T>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
-  >
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
 deep_copy(T & dest, const T & src)
 {
-	using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-	dest.data()->update(::pressio::utils::constants<sc_t>::one(),
-		 *src.data(),
-		 ::pressio::utils::constants<sc_t>::zero() );
+  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
+  dest.data()->update(::pressio::utils::constants<sc_t>::one(),
+		      *src.data(),
+		      ::pressio::utils::constants<sc_t>::zero());
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_
+#endif// OPS_TPETRA_BLOCK_OPS_DEEP_COPY_HPP_

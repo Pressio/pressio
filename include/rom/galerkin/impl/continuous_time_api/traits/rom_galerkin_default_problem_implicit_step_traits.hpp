@@ -49,15 +49,15 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio { namespace rom {
 
 //fwd declare problem class
-namespace galerkin{ namespace impl{
-template <typename ...>
+namespace galerkin { namespace impl {
+template <typename...>
 class DefaultProblemImplicitStepContinuousTimeApi;
 }}// end namespace pressio::rom::galerkin::impl
 
-namespace details{
+namespace details {
 
 template <
   typename stepper_tag,
@@ -66,38 +66,34 @@ template <
   typename rom_residual_type,
   typename rom_jacobian_type,
   typename decoder_type,
-  typename ud_ops_type
-  >
+  typename ud_ops_type>
 struct traits<
   ::pressio::rom::galerkin::impl::DefaultProblemImplicitStepContinuousTimeApi<
     stepper_tag, fom_system_type,
     rom_state_type, rom_residual_type, rom_jacobian_type,
-    decoder_type, ud_ops_type
-    >
-  >
+    decoder_type, ud_ops_type>>
 {
-  static_assert
-  (mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
-   "Default Galerkin with continuous-time API cannot be run with Arbitrary stepper. \
+  static_assert(mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+		"Default Galerkin with continuous-time API cannot be run with Arbitrary stepper. \
 To use the arbitrary stepper, you need to use the discrete-time API.");
 
   using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
-  using fom_system_t		= typename common_types_t::fom_system_t;
-  using scalar_t		= typename common_types_t::scalar_t;
-  using fom_state_t		= typename common_types_t::fom_state_t;
-  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
-  using fom_velocity_t		= typename common_types_t::fom_velocity_t;
-  using galerkin_state_t	= typename common_types_t::galerkin_state_t;
-  using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;
-  using decoder_t		= typename common_types_t::decoder_t;
-  using decoder_jac_t		= typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-  using ud_ops_t		= ud_ops_type;
-  using galerkin_residual_t	= rom_residual_type;
-  using galerkin_jacobian_t	= rom_jacobian_type;
+  using fom_system_t = typename common_types_t::fom_system_t;
+  using scalar_t = typename common_types_t::scalar_t;
+  using fom_state_t = typename common_types_t::fom_state_t;
+  using fom_native_state_t = typename common_types_t::fom_native_state_t;
+  using fom_velocity_t = typename common_types_t::fom_velocity_t;
+  using galerkin_state_t = typename common_types_t::galerkin_state_t;
+  using galerkin_native_state_t = typename common_types_t::galerkin_native_state_t;
+  using decoder_t = typename common_types_t::decoder_t;
+  using decoder_jac_t = typename common_types_t::decoder_jac_t;
+  using fom_state_reconstr_t = typename common_types_t::fom_state_reconstr_t;
+  using fom_states_manager_t = typename common_types_t::fom_states_manager_t;
+  using ud_ops_t = ud_ops_type;
+  using galerkin_residual_t = rom_residual_type;
+  using galerkin_jacobian_t = rom_jacobian_type;
   static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
   // for default galerkin, projector is just decoderJac^T
@@ -105,34 +101,31 @@ To use the arbitrary stepper, you need to use the discrete-time API.");
 
   using residual_policy_t =
     ::pressio::rom::galerkin::impl::ResidualPolicy<
-    galerkin_residual_t,
-    ::pressio::rom::galerkin::impl::Projected<
-      projector_t,
-      ::pressio::rom::galerkin::impl::FomVelocityPolicy<
-	fom_states_manager_t, fom_velocity_t>
-      >
-    >;
+      galerkin_residual_t,
+      ::pressio::rom::galerkin::impl::Projected<
+	projector_t,
+	::pressio::rom::galerkin::impl::FomVelocityPolicy<
+	  fom_states_manager_t, fom_velocity_t>>>;
 
   using jacobian_policy_t =
     ::pressio::rom::galerkin::impl::JacobianPolicy<
-    galerkin_jacobian_t,
-    ::pressio::rom::galerkin::impl::Projected<
-      projector_t,
-      ::pressio::rom::galerkin::impl::FomApplyJacobianPolicy<
-	fom_states_manager_t, decoder_jac_t, decoder_t>
-      >
-    >;
+      galerkin_jacobian_t,
+      ::pressio::rom::galerkin::impl::Projected<
+	projector_t,
+	::pressio::rom::galerkin::impl::FomApplyJacobianPolicy<
+	  fom_states_manager_t, decoder_jac_t, decoder_t>>>;
 
   using aux_stepper_t =
     typename ::pressio::rom::impl::auxiliaryStepperHelper<
-    stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
-    fom_system_type, residual_policy_t, jacobian_policy_t>::type;
+      stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
+      fom_system_type, residual_policy_t, jacobian_policy_t>::type;
 
   using stepper_t =
     ::pressio::ode::ImplicitStepper<
-    stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
-    fom_system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
+      stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
+      fom_system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
 };
 
-}}}//end  namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
+}
+}}//end  namespace pressio::rom::galerkin::impl
+#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_DEFAULT_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_

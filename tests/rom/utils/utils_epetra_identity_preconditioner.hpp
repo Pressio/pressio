@@ -51,45 +51,45 @@
 
 #include "pressio_apps.hpp"
 
-namespace pressio{ namespace rom{ namespace test{ 
+namespace pressio { namespace rom { namespace test {
 
 class EpetraIdentityPreconditioner
 {
   using scalar_type = typename ::pressio::apps::Burgers1dEpetra::scalar_type;
-  using state_type  = typename ::pressio::apps::Burgers1dEpetra::state_type;
+  using state_type = typename ::pressio::apps::Burgers1dEpetra::state_type;
   using velocity_type = typename ::pressio::apps::Burgers1dEpetra::velocity_type;
 
 public:
   void applyPreconditioner(const state_type & yState,
-            const scalar_type & time,
-            velocity_type & rhs) const 
+			   const scalar_type & time,
+			   velocity_type & rhs) const
   {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
 
   void applyPreconditioner(const state_type & yState,
-            const scalar_type & time,
-            Epetra_MultiVector & C) const 
+			   const scalar_type & time,
+			   Epetra_MultiVector & C) const
   {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
 
   void applyPreconditioner(const state_type & yState,
-            velocity_type & rhs) const 
+			   velocity_type & rhs) const
   {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
 
   void applyPreconditioner(const state_type & yState,
-            Epetra_MultiVector & C) const 
+			   Epetra_MultiVector & C) const
   {
     // do nothing, preconditioner is identity
     std::cout << "identiy precond" << std::endl;
   }
 };
 
-}}} 
+}}}
 #endif

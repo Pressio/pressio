@@ -51,10 +51,10 @@
 
 #include "./impl/rom_wls_hessian_and_gradient_sequential_policy_helper_impl.hpp"
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio { namespace rom { namespace wls {
 
-template<typename ...Args>
+template <typename... Args>
 using HessianGradientSequentialPolicy = typename impl::HessGradSeqPolHelper<Args...>::type;
 
-}}} // end namespace pressio::rom::wls
-#endif  // ROM_WLS_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_
+}}}// end namespace pressio::rom::wls
+#endif// ROM_WLS_ROM_WLS_HESSIAN_AND_GRADIENT_SEQUENTIAL_POLICY_HPP_

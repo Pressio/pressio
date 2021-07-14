@@ -49,18 +49,17 @@
 #ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
 #define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
-  >
+  typename ::pressio::containers::details::traits<T>::scalar_t>
 norm1(const T & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   sc_t result = ::pressio::utils::constants<sc_t>::zero();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
+  for(decltype(a.extent(0)) i = 0; i < a.extent(0); i++) {
     result += std::abs(a(i));
   }
   return result;
@@ -69,17 +68,16 @@ norm1(const T & a)
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
-  >
+  typename ::pressio::containers::details::traits<T>::scalar_t>
 norm2(const T & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   auto result = ::pressio::utils::constants<sc_t>::zero();
-  for (std::size_t i=0; i<a.extent(0); i++){
-    result += a(i)*a(i);
+  for(std::size_t i = 0; i < a.extent(0); i++) {
+    result += a(i) * a(i);
   }
   return std::sqrt(result);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif// OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_

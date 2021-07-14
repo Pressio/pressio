@@ -89,4 +89,4 @@
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper_arbitrary.hpp"
 #include "./wrapper_detection_predicates/containers_is_multi_vector_wrapper.hpp"
 
-#endif  // CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_PRESSIO_CONTAINERS_MULTI_VECTOR_INCLUDE_HPP_

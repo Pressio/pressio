@@ -49,14 +49,26 @@
 #ifndef ODE_ODE_STENCIL_TAGS_HPP_
 #define ODE_ODE_STENCIL_TAGS_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio { namespace ode {
 
-class nPlusOne{};
-class n{};
-class nMinusOne{};
-class nMinusTwo{};
-class nMinusThree{};
-class nMinusFour{};
+class nPlusOne
+{
+};
+class n
+{
+};
+class nMinusOne
+{
+};
+class nMinusTwo
+{
+};
+class nMinusThree
+{
+};
+class nMinusFour
+{
+};
 
-}} // end namespace pressio::ode
-#endif  // ODE_ODE_STENCIL_TAGS_HPP_
+}}// end namespace pressio::ode
+#endif// ODE_ODE_STENCIL_TAGS_HPP_

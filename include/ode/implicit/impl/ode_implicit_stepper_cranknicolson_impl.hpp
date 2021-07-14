@@ -49,9 +49,9 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio { namespace ode { namespace implicitmethods {
 
-template<
+template <
   typename scalar_t,
   typename state_t,
   typename residual_t,
@@ -59,15 +59,14 @@ template<
   typename system_type,
   typename residual_policy_t,
   typename jacobian_policy_t,
-  bool policies_are_standard
-  >
+  bool policies_are_standard>
 class StepperCrankNicolson
 {
 
 public:
   // these need to be here because are detected by solver
   using scalar_type = scalar_t;
-  using state_type  = state_t;
+  using state_type = state_t;
   using residual_type = residual_t;
   using jacobian_type = jacobian_t;
 
@@ -79,9 +78,9 @@ public:
   using stencil_velocities_t = StencilVelocitiesManager<residual_t, 2>;
 
 private:
-  scalar_t t_np1_  = {};
+  scalar_t t_np1_ = {};
   scalar_t dt_ = {};
-  types::step_t stepNumber_  = {};
+  types::step_t stepNumber_ = {};
   std::reference_wrapper<const system_type> systemObj_;
 
   // state object to ensure the strong guarantee for handling excpetions
@@ -98,9 +97,9 @@ private:
 
 public:
   StepperCrankNicolson() = delete;
-  StepperCrankNicolson(const StepperCrankNicolson & other)  = default;
+  StepperCrankNicolson(const StepperCrankNicolson & other) = default;
   StepperCrankNicolson & operator=(const StepperCrankNicolson & other) = delete;
-  StepperCrankNicolson(StepperCrankNicolson && other)  = default;
+  StepperCrankNicolson(StepperCrankNicolson && other) = default;
   StepperCrankNicolson & operator=(StepperCrankNicolson && other) = delete;
   ~StepperCrankNicolson() = default;
 
@@ -114,12 +113,12 @@ public:
       jacPolicy_{jacPolicyObj},
       stencilStates_(state),
       stencilVelocities_(resPolicy_.get().create(systemObj))
-  {}
+  {
+  }
 
   template <
     bool _policies_are_standard = policies_are_standard,
-    ::pressio::mpl::enable_if_t<_policies_are_standard, int > = 0
-    >
+    ::pressio::mpl::enable_if_t<_policies_are_standard, int> = 0>
   StepperCrankNicolson(const state_type & state,
 		       const system_type & systemObj)
     : systemObj_{systemObj},
@@ -128,82 +127,85 @@ public:
       jacPolicy_{},
       stencilStates_(state),
       stencilVelocities_(resPolicy_.get().create(systemObj))
-  {}
+  {
+  }
 
 public:
-  ::pressio::ode::types::stepper_order_t order() const{
+  ::pressio::ode::types::stepper_order_t order() const
+  {
     return order_value;
   }
 
-  template<typename solver_type, typename ...Args>
+  template <typename solver_type, typename... Args>
   void doStep(state_type & odeState,
-	      const scalar_t &  currentTime,
-	      const scalar_t &  dt,
+	      const scalar_t & currentTime,
+	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("crankNicolson stepper: do step");
 
     auto dummyGuesser =
-      [](const types::step_t &, const scalar_t &, state_type &)
-      { /*no op*/ };
+      [](const types::step_t &, const scalar_t &, state_type &) { /*no op*/ };
 
     doStepImpl(odeState, currentTime, dt, stepNumber,
 	       solver, dummyGuesser, std::forward<Args>(args)...);
   }
 
   // overload for when we have a guesser callback
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template <typename solver_type, typename guess_callback_t, typename... Args>
   void doStep(state_type & odeState,
-	      const scalar_t &  currentTime,
-	      const scalar_t &  dt,
+	      const scalar_t & currentTime,
+	      const scalar_t & dt,
 	      const types::step_t & stepNumber,
 	      guess_callback_t && guesserCb,
 	      solver_type & solver,
-	      Args&& ...args)
+	      Args &&... args)
   {
     PRESSIOLOG_DEBUG("crankNicolson stepper: do step with callback to state guesser");
     doStepImpl(odeState, currentTime, dt, stepNumber,
 	       solver, guesserCb, std::forward<Args>(args)...);
   }
 
-  residual_t createResidual() const{
+  residual_t createResidual() const
+  {
     return resPolicy_.get().create(systemObj_.get());
   }
 
-  jacobian_t createJacobian() const{
+  jacobian_t createJacobian() const
+  {
     return jacPolicy_.get().create(systemObj_.get());
   }
 
-  void residual(const state_t & odeState, residual_t & R) const{
-    resPolicy_.get().template compute
-      <tag_name>(odeState, stencilStates_,
-		 systemObj_.get(), t_np1_,
-		 dt_, stepNumber_,
-		 stencilVelocities_, R);
+  void residual(const state_t & odeState, residual_t & R) const
+  {
+    resPolicy_.get().template compute<tag_name>(odeState, stencilStates_,
+						systemObj_.get(), t_np1_,
+						dt_, stepNumber_,
+						stencilVelocities_, R);
   }
 
-  void jacobian(const state_t & odeState, jacobian_t & J) const{
-    jacPolicy_.get().template compute<
-      tag_name>(odeState, stencilStates_,
-		systemObj_.get(), t_np1_,
-		dt_, stepNumber_, J);
+  void jacobian(const state_t & odeState, jacobian_t & J) const
+  {
+    jacPolicy_.get().template compute<tag_name>(odeState, stencilStates_,
+						systemObj_.get(), t_np1_,
+						dt_, stepNumber_, J);
   }
 
 private:
-  template<typename solver_type, typename guess_callback_t, typename ...Args>
+  template <typename solver_type, typename guess_callback_t, typename... Args>
   void doStepImpl(state_type & odeSolution,
-		  const scalar_t &  currentTime,
-		  const scalar_t &  dt,
+		  const scalar_t & currentTime,
+		  const scalar_t & dt,
 		  const types::step_t & stepNumber,
 		  solver_type & solver,
 		  guess_callback_t && guesserCb,
-		  Args&& ...args)
+		  Args &&... args)
   {
     static_assert(::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
-      solver_type, decltype(*this), state_type>::value,
-      "Invalid solver for CrankNicolson stepper");
+		    solver_type, decltype(*this), state_type>::value,
+		  "Invalid solver for CrankNicolson stepper");
 
     /*
       upon entering this, we are at time step = stepNumber.
@@ -227,15 +229,13 @@ private:
     // if provided, callback to provide a guess for the odeSolution
     guesserCb(stepNumber, t_np1_, odeSolution);
 
-    try{
+    try {
       solver.solve(*this, odeSolution, std::forward<Args>(args)...);
 
       // auto & fn   = stencilStates_.rhsAt(ode::n());
       // auto & fnp1 = stencilStates_.rhsAt(ode::nPlusOne());
       // //::pressio::ops::deep_copy(fn, fnp1);
-    }
-    catch (::pressio::eh::nonlinear_solve_failure const & e)
-    {
+    } catch(::pressio::eh::nonlinear_solve_failure const & e) {
       auto & rollBackState = stencilStates_.stateAt(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);
       throw ::pressio::eh::time_step_failure();
@@ -243,5 +243,5 @@ private:
   }
 };
 
-}}} // end namespace pressio::ode::implicitmethods
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
+}}}// end namespace pressio::ode::implicitmethods
+#endif// ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_

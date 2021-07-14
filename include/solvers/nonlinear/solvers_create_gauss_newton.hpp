@@ -51,34 +51,32 @@
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
-namespace pressio{ namespace solvers{ namespace nonlinear{
+namespace pressio { namespace solvers { namespace nonlinear {
 
 //***** GN with NEQ *******
-template<typename system_t, typename state_t, typename ...Args>
+template <typename system_t, typename state_t, typename... Args>
 auto createGaussNewton(const system_t & system,
 		       const state_t & state,
-		       Args && ... args)
+		       Args &&... args)
   -> impl::composeGaussNewton_t<system_t, Args...>
 {
-  return impl::composeGaussNewton_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
+  return impl::composeGaussNewton_t<system_t, Args...>(system, state, std::forward<Args>(args)...);
 }
 
 //***** GN with QR *******
-template<typename system_t, typename state_t, typename ...Args>
+template <typename system_t, typename state_t, typename... Args>
 auto createGaussNewtonQR(const system_t & system,
 			 const state_t & state,
-			 Args && ...args)
+			 Args &&... args)
   -> impl::composeGaussNewtonQR_t<system_t, Args...>
 {
-  return impl::composeGaussNewtonQR_t<system_t, Args...>
-    (system, state, std::forward<Args>(args)...);
+  return impl::composeGaussNewtonQR_t<system_t, Args...>(system, state, std::forward<Args>(args)...);
 }
 
 
 //***** IRWGN *******
-namespace experimental{
-template<typename system_t, typename state_t, typename linear_solver_t>
+namespace experimental {
+template <typename system_t, typename state_t, typename linear_solver_t>
 auto createIRWGaussNewton(const system_t & system,
 			  const state_t & state,
 			  linear_solver_t && linSolver)
@@ -96,4 +94,4 @@ auto createIRWGaussNewton(const system_t & system,
 }// end namespace experimental
 
 }}}
-#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_
+#endif// SOLVERS_NONLINEAR_SOLVERS_CREATE_GAUSS_NEWTON_HPP_

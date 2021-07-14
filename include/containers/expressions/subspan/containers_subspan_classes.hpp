@@ -49,16 +49,14 @@
 #ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_CLASSES_HPP_
 #define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_CLASSES_HPP_
 
-namespace pressio{ namespace containers{ namespace expressions{
+namespace pressio { namespace containers { namespace expressions {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_t>
 struct SubspanExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value>>
 {
 
   using this_t = SubspanExpr<matrix_t>;
@@ -95,19 +93,19 @@ public:
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
     : matObj_(matObjIn),
-    rowStart_(std::get<0>(rowRangeIn)),
-    colStart_(std::get<0>(colRangeIn)),
-    endRow_(std::get<1>(rowRangeIn)-1),
-    endCol_(std::get<1>(colRangeIn)-1),
-    numRows_(endRow_ - rowStart_ + 1),
-    numCols_(endCol_ - colStart_ + 1),
-    nativeExprObj_(matObj_.get().data()->block(rowStart_, colStart_,
-					       numRows_, numCols_))
+      rowStart_(std::get<0>(rowRangeIn)),
+      colStart_(std::get<0>(colRangeIn)),
+      endRow_(std::get<1>(rowRangeIn) - 1),
+      endCol_(std::get<1>(colRangeIn) - 1),
+      numRows_(endRow_ - rowStart_ + 1),
+      numCols_(endCol_ - colStart_ + 1),
+      nativeExprObj_(matObj_.get().data()->block(rowStart_, colStart_,
+						 numRows_, numCols_))
   {
-    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
-    assert( (int)std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
-    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
-    assert( (int)std::get<1>(colRangeIn) <= matObjIn.extent(1) );
+    assert(rowStart_ >= 0 and rowStart_ < matObjIn.extent(0));
+    assert((int)std::get<1>(rowRangeIn) <= matObjIn.extent(0));
+    assert(colStart_ >= 0 and colStart_ < matObjIn.extent(1));
+    assert((int)std::get<1>(colRangeIn) <= matObjIn.extent(1));
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
     // so the indices of the last row and col included are:
@@ -116,15 +114,18 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+  size_t extent(size_t i) const
+  {
+    return (i == 0) ? numRows_ : numCols_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -149,9 +150,7 @@ template <typename matrix_t>
 struct SubspanExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value>>
 {
 
   using this_t = SubspanExpr<matrix_t>;
@@ -188,20 +187,20 @@ public:
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
     : matObj_(matObjIn),
-    rowStart_(std::get<0>(rowRangeIn)),
-    colStart_(std::get<0>(colRangeIn)),
-    endRow_(std::get<1>(rowRangeIn)-1),
-    endCol_(std::get<1>(colRangeIn)-1),
-    numRows_(endRow_ - rowStart_ + 1),
-    numCols_(endCol_ - colStart_ + 1),
-    nativeExprObj_(Kokkos::subview(*matObj_.get().data(),
-                   std::make_pair(rowStart_, rowStart_+numRows_),
-                   std::make_pair(colStart_, colStart_+numCols_)))
+      rowStart_(std::get<0>(rowRangeIn)),
+      colStart_(std::get<0>(colRangeIn)),
+      endRow_(std::get<1>(rowRangeIn) - 1),
+      endCol_(std::get<1>(colRangeIn) - 1),
+      numRows_(endRow_ - rowStart_ + 1),
+      numCols_(endCol_ - colStart_ + 1),
+      nativeExprObj_(Kokkos::subview(*matObj_.get().data(),
+				     std::make_pair(rowStart_, rowStart_ + numRows_),
+				     std::make_pair(colStart_, colStart_ + numCols_)))
   {
-    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
-    assert( std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
-    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
-    assert( std::get<1>(colRangeIn) <= matObjIn.extent(1) );
+    assert(rowStart_ >= 0 and rowStart_ < matObjIn.extent(0));
+    assert(std::get<1>(rowRangeIn) <= matObjIn.extent(0));
+    assert(colStart_ >= 0 and colStart_ < matObjIn.extent(1));
+    assert(std::get<1>(colRangeIn) <= matObjIn.extent(1));
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
     // so the indices of the last row and col included are:
@@ -210,15 +209,18 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+  size_t extent(size_t i) const
+  {
+    return (i == 0) ? numRows_ : numCols_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -237,12 +239,11 @@ public:
     which works because for kokkos we can assign a const view.
     but we do NOT wwant this since aw is const.
    */
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
+      std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    ref_t>
   operator()(const size_t & i, const size_t & j)
   {
     assert(i < numRows_);
@@ -250,11 +251,10 @@ public:
     return nativeExprObj_(i, j);
   }
 
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    const_ref_t
-    >
+    const_ref_t>
   operator()(const size_t & i, const size_t & j) const
   {
     assert(i < numRows_);
@@ -269,9 +269,7 @@ template <typename matrix_t>
 struct SubspanExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value>>
 {
 
   using this_t = SubspanExpr<matrix_t>;
@@ -304,17 +302,17 @@ public:
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
     : matObj_(matObjIn),
-    rowStart_(std::get<0>(rowRangeIn)),
-    colStart_(std::get<0>(colRangeIn)),
-    endRow_(std::get<1>(rowRangeIn)-1),
-    endCol_(std::get<1>(colRangeIn)-1),
-    numRows_(endRow_ - rowStart_ + 1),
-    numCols_(endCol_ - colStart_ + 1)
+      rowStart_(std::get<0>(rowRangeIn)),
+      colStart_(std::get<0>(colRangeIn)),
+      endRow_(std::get<1>(rowRangeIn) - 1),
+      endCol_(std::get<1>(colRangeIn) - 1),
+      numRows_(endRow_ - rowStart_ + 1),
+      numCols_(endCol_ - colStart_ + 1)
   {
-    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
-    assert( (int)std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
-    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
-    assert( (int)std::get<1>(colRangeIn) <= matObjIn.extent(1) );
+    assert(rowStart_ >= 0 and rowStart_ < matObjIn.extent(0));
+    assert((int)std::get<1>(rowRangeIn) <= matObjIn.extent(0));
+    assert(colStart_ >= 0 and colStart_ < matObjIn.extent(1));
+    assert((int)std::get<1>(colRangeIn) <= matObjIn.extent(1));
 
     // here the ranges are exclusive of the last index (like Kokkos and Python)
     // so the indices of the last row and col included are:
@@ -323,31 +321,31 @@ public:
   }
 
 public:
-  size_t extent(size_t i) const{
-    return (i==0) ? numRows_ : numCols_;
+  size_t extent(size_t i) const
+  {
+    return (i == 0) ? numRows_ : numCols_;
   }
 
   // non-const subscripting
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
-    ref_t
-    >
+    ref_t>
   operator()(const ord_t & i, const ord_t & j)
   {
     assert(i < numRows_);
     assert(j < numCols_);
-    return matObj_(rowStart_+i, colStart_+j);
+    return matObj_(rowStart_ + i, colStart_ + j);
   }
 
   const_ref_t operator()(const ord_t & i, const ord_t & j) const
   {
     assert(i < numRows_);
     assert(j < numCols_);
-    return matObj_(rowStart_+i, colStart_+j);
+    return matObj_(rowStart_ + i, colStart_ + j);
   }
 };
 #endif
 
-}}} //end namespace pressio::containers::expressions
-#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_CLASSES_HPP_
+}}}//end namespace pressio::containers::expressions
+#endif// CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_CLASSES_HPP_

@@ -53,26 +53,28 @@
 #include "Eigen/SparseCore"
 #include <iostream>
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
-class Burgers1dEigen{
+class Burgers1dEigen
+{
   using eigVec = Eigen::VectorXd;
 
   using ui_t = unsigned int;
 
 public:
-  using scalar_type	= double;
-  using state_type	= eigVec;
-  using velocity_type	= eigVec;
+  using scalar_type = double;
+  using state_type = eigVec;
+  using velocity_type = eigVec;
 
   using eig_sp_mat = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
-  using jacobian_type	= eig_sp_mat;
+  using jacobian_type = eig_sp_mat;
 
   typedef Eigen::Triplet<scalar_type> Tr;
 
 public:
-  explicit Burgers1dEigen(eigVec params, ui_t Ncell=1000)
-    : mu_(params), Ncell_(Ncell){
+  explicit Burgers1dEigen(eigVec params, ui_t Ncell = 1000)
+    : mu_(params), Ncell_(Ncell)
+  {
     this->setup();
   }
 
@@ -80,37 +82,41 @@ public:
   ~Burgers1dEigen() = default;
 
 public:
-  state_type const & getInitialState() const {
+  state_type const & getInitialState() const
+  {
     return U0_;
   };
 
-  velocity_type createVelocity() const{
+  velocity_type createVelocity() const
+  {
     velocity_type RR(Ncell_);
     return RR;
   }
 
-  jacobian_type createJacobian() const{
+  jacobian_type createJacobian() const
+  {
     jacobian_type JJ(Ncell_, Ncell_);
     // this->jacobian(u, t, JJ);
     return JJ;
   }
 
   // computes: A = Jac B where B is a Eigen::MatrixXd
-  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const{
-    Eigen::MatrixXd A( Ncell_, B.cols() );
+  Eigen::MatrixXd createApplyJacobianResult(const Eigen::MatrixXd & B) const
+  {
+    Eigen::MatrixXd A(Ncell_, B.cols());
     return A;
   }
 
   void velocity(const state_type & u,
-  		const scalar_type /* t */,
-    velocity_type & rhs) const
+		const scalar_type /* t */,
+		velocity_type & rhs) const
   {
-    rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
-    for (ui_t i=1; i<Ncell_; ++i){
-      rhs(i) = 0.5 * dxInv_ * (u(i-1)*u(i-1) - u(i)*u(i));
+    rhs(0) = 0.5 * dxInv_ * (mu_(0) * mu_(0) - u(0) * u(0));
+    for(ui_t i = 1; i < Ncell_; ++i) {
+      rhs(i) = 0.5 * dxInv_ * (u(i - 1) * u(i - 1) - u(i) * u(i));
     }
-    for (ui_t i=0; i<Ncell_; ++i){
-      rhs(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
+    for(ui_t i = 0; i < Ncell_; ++i) {
+      rhs(i) += mu_(1) * exp(mu_(2) * xGrid_(i));
     }
   }
 
@@ -130,51 +136,52 @@ public:
 
   void jacobian(const state_type & u,
 		const scalar_type /*t*/,
-    jacobian_type & jac) const
+		jacobian_type & jac) const
   {
     //evaluate jacobian
-    if (jac.rows() == 0 || jac.cols()==0 ){
+    if(jac.rows() == 0 || jac.cols() == 0) {
       jac.resize(u.size(), u.size());
     }
     tripletList.clear();
-    tripletList.push_back( Tr( 0, 0, -dxInv_*u(0)) );
-    for (ui_t i=1; i<Ncell_; ++i){
-      tripletList.push_back( Tr( i, i-1, dxInv_ * u(i-1) ) );
-      tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
+    tripletList.push_back(Tr(0, 0, -dxInv_ * u(0)));
+    for(ui_t i = 1; i < Ncell_; ++i) {
+      tripletList.push_back(Tr(i, i - 1, dxInv_ * u(i - 1)));
+      tripletList.push_back(Tr(i, i, -dxInv_ * u(i)));
     }
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
 
 private:
-  void setup(){
-    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0/dx_;
+  void setup()
+  {
+    dx_ = (xR_ - xL_) / static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0 / dx_;
 
     // grid
     xGrid_.resize(Ncell_);
-    for (ui_t i=0; i<Ncell_; ++i)
-      xGrid_(i) = dx_*i + dx_*0.5;
+    for(ui_t i = 0; i < Ncell_; ++i)
+      xGrid_(i) = dx_ * i + dx_ * 0.5;
 
     // init condition
     U_.resize(Ncell_);
-    for (ui_t i=0; i<Ncell_; ++i)
+    for(ui_t i = 0; i < Ncell_; ++i)
       U_(i) = 1.0;
     U0_ = U_;
   };
 
 private:
-  eigVec mu_; // parameters
-  const scalar_type xL_ = 0.0; //left side of domain
-  const scalar_type xR_ = 100.0; // right side of domain
-  ui_t Ncell_; // # of cells
-  scalar_type dx_; // cell size
-  scalar_type dxInv_; // inv of cell size
-  eigVec xGrid_; // mesh points coordinates
+  eigVec mu_;// parameters
+  const scalar_type xL_ = 0.0;//left side of domain
+  const scalar_type xR_ = 100.0;// right side of domain
+  ui_t Ncell_;// # of cells
+  scalar_type dx_;// cell size
+  scalar_type dxInv_;// inv of cell size
+  eigVec xGrid_;// mesh points coordinates
   mutable std::vector<Tr> tripletList;
-  mutable state_type U_; // state vector
-  mutable state_type U0_; // initial state vector
+  mutable state_type U_;// state vector
+  mutable state_type U0_;// initial state vector
 
 };//end class
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_HPP_

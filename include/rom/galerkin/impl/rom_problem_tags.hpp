@@ -49,13 +49,23 @@
 #ifndef ROM_GALERKIN_IMPL_ROM_PROBLEM_TAGS_HPP_
 #define ROM_GALERKIN_IMPL_ROM_PROBLEM_TAGS_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
-struct Default{};
-struct HyperReducedVelocity{};
-struct MaskedVelocity{};
-struct MaskedResidual{};
-struct HyperReducedResidual{};
+struct Default
+{
+};
+struct HyperReducedVelocity
+{
+};
+struct MaskedVelocity
+{
+};
+struct MaskedResidual
+{
+};
+struct HyperReducedResidual
+{
+};
 
 }}}}
-#endif  // ROM_GALERKIN_IMPL_ROM_PROBLEM_TAGS_HPP_
+#endif// ROM_GALERKIN_IMPL_ROM_PROBLEM_TAGS_HPP_

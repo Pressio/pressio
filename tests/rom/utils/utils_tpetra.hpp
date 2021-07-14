@@ -5,7 +5,7 @@
 #include "pressio_utils.hpp"
 #include <Tpetra_Core.hpp>
 
-namespace pressio{ namespace rom{ namespace test{ namespace tpetra{
+namespace pressio { namespace rom { namespace test { namespace tpetra {
 
 template <typename rcpcomm_t, typename rcpmap_t>
 auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
@@ -24,9 +24,9 @@ auto convertFromVVecToMultiVec(const std::vector<std::vector<double>> & A0,
   myGel.resize(nMyElem);
   std::iota(myGel.begin(), myGel.end(), minGId);
 
-  for (decltype(nMyElem) i=0; i<nMyElem; i++){
+  for(decltype(nMyElem) i = 0; i < nMyElem; i++) {
     int gi = myGel[i];
-    for (int j=0; j<ncols; j++)
+    for(int j = 0; j < ncols; j++)
       AD.replaceGlobalValue(gi, j, A0[gi][j]);
   }
 
@@ -39,7 +39,7 @@ auto readBasis(std::string filename,
 	       int romSize, int numCell,
 	       comm_t Comm,
 	       const map_t rowMap)
-  ->pressio::containers::MultiVector<Tpetra::MultiVector<>>
+  -> pressio::containers::MultiVector<Tpetra::MultiVector<>>
 {
   std::vector<std::vector<double>> A0;
   ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);

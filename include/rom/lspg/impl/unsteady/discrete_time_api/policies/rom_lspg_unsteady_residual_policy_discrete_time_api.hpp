@@ -49,13 +49,12 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_DISCRETE_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
 
 template <
   typename residual_type,
   typename fom_states_manager_t,
-  typename ud_ops_type = void
-  >
+  typename ud_ops_type = void>
 class ResidualPolicyDiscreteTimeApi
 {
 
@@ -73,20 +72,19 @@ public:
   // 1. void ops
   template <
     typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
-    >
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int> = 0>
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr)
-    : fomStatesMngr_(fomStatesMngr){}
+    : fomStatesMngr_(fomStatesMngr) {}
 
   // 2. nonvoid ops
   template <
     typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value, int > = 0
-    >
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
   ResidualPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
 				const _ud_ops_t & udOps)
     : fomStatesMngr_(fomStatesMngr), udOps_(&udOps)
-  {}
+  {
+  }
 
 public:
   template <typename fom_system_t>
@@ -101,8 +99,7 @@ public:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
+    typename scalar_t>
   void compute(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
@@ -132,7 +129,7 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if (storedStep_ != step){
+    if(storedStep_ != step) {
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = step;
     }
@@ -143,41 +140,8 @@ private:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t
-    >
-  mpl::enable_if_t< stencil_states_t::size()==1 >
-  compute_impl(const lspg_state_t & romState,
-	       const stencil_states_t & stencilStates,
-	       const fom_system_t  & fomSystemObj,
-	       const scalar_t & timeAtNextStep,
-	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
-	       residual_type & romR) const
-  {
-    doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
-
-    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
-
-    try{
-      fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
-					*romR.data(),
-					*ynp1.data(),
-					*yn.data());
-    }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
-    }
-  }
-
-  // we have here n = 2 prev rom states
-  template <
-    typename lspg_state_t,
-    typename stencil_states_t,
-    typename fom_system_t,
-    typename scalar_t
-    >
-  mpl::enable_if_t< stencil_states_t::size()==2 >
+    typename scalar_t>
+  mpl::enable_if_t<stencil_states_t::size() == 1>
   compute_impl(const lspg_state_t & romState,
 	       const stencil_states_t & stencilStates,
 	       const fom_system_t & fomSystemObj,
@@ -189,18 +153,47 @@ private:
     doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn = fomStatesMngr_(::pressio::ode::n());
+
+    try {
+      fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
+					*romR.data(),
+					*ynp1.data(),
+					*yn.data());
+    } catch(::pressio::eh::discrete_time_residual_failure_unrecoverable const & e) {
+      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+    }
+  }
+
+  // we have here n = 2 prev rom states
+  template <
+    typename lspg_state_t,
+    typename stencil_states_t,
+    typename fom_system_t,
+    typename scalar_t>
+  mpl::enable_if_t<stencil_states_t::size() == 2>
+  compute_impl(const lspg_state_t & romState,
+	       const stencil_states_t & stencilStates,
+	       const fom_system_t & fomSystemObj,
+	       const scalar_t & timeAtNextStep,
+	       const scalar_t & dt,
+	       const ::pressio::ode::types::step_t & currentStepNumber,
+	       residual_type & romR) const
+  {
+    doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
-    try{
+    try {
       fomSystemObj.discreteTimeResidual(currentStepNumber, timeAtNextStep, dt,
 					*romR.data(),
 					*ynp1.data(),
 					*yn.data(),
 					*ynm1.data());
 
-    }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    } catch(::pressio::eh::discrete_time_residual_failure_unrecoverable const & e) {
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
@@ -217,4 +210,4 @@ protected:
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_DISCRETE_TIME_API_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_DISCRETE_TIME_API_HPP_

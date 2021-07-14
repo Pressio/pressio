@@ -49,130 +49,110 @@
 #ifndef ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
 #define ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio { namespace ode { namespace constraints {
 
-template<
+template <
   typename T,
   typename time_type,
   typename state_type,
-  typename enable = void
-  >
-struct collector_callable_with_step_time_pressio_container_return_void : std::false_type{};
+  typename enable = void>
+struct collector_callable_with_step_time_pressio_container_return_void : std::false_type
+{
+};
 
 
-template<
+template <
   typename T,
   typename time_type,
-  typename state_type
-  >
+  typename state_type>
 struct collector_callable_with_step_time_pressio_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_wrapper<state_type>::value and
     std::is_void<
-      decltype
-      (
-       std::declval<T>()
-       (
-       std::declval<::pressio::ode::types::step_t>(),
-       std::declval<time_type>(),
-       std::declval<const state_type &>()
-       )
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T>()(
+	  std::declval<::pressio::ode::types::step_t>(),
+	  std::declval<time_type>(),
+	  std::declval<const state_type &>()))>::value>> : std::true_type
+{
+};
 
 
-template<
+template <
   typename T,
   typename time_type,
   typename state_type,
-  typename enable = void
-  >
+  typename enable = void>
 struct collector_callable_with_step_time_native_container_return_void
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 
-template<
+template <
   typename T,
   typename time_type,
-  typename state_type
-  >
+  typename state_type>
 struct collector_callable_with_step_time_native_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_wrapper<state_type>::value and
     std::is_void<
-      decltype
-      (
-       std::declval<T>()
-       (
-         std::declval<::pressio::ode::types::step_t>(),
-         std::declval<time_type>(),
-         std::declval<
-           const typename ::pressio::containers::details::traits<state_type>::wrapped_t &
-         >()
-       )
-      )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T>()(
+	  std::declval<::pressio::ode::types::step_t>(),
+	  std::declval<time_type>(),
+	  std::declval<
+	    const typename ::pressio::containers::details::traits<state_type>::wrapped_t &>()))>::value>> : std::true_type
+{
+};
 
 
-template<
+template <
   typename T,
   typename time_type,
-  typename state_type
-  >
+  typename state_type>
 struct collector_callable_with_step_time_native_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_wrapper<state_type>::value == false and
     std::is_void<
-      decltype
-      (
-       std::declval<T>()
-       (
-        std::declval<::pressio::ode::types::step_t>(),
-        std::declval<time_type>(),
-        std::declval<const state_type &>()
-       )
-      )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T>()(
+	  std::declval<::pressio::ode::types::step_t>(),
+	  std::declval<time_type>(),
+	  std::declval<const state_type &>()))>::value>> : std::true_type
+{
+};
 
 
-template<
+template <
   typename collector_type,
   typename time_type,
-  typename state_type
-  >
+  typename state_type>
 struct collector
 {
   static constexpr auto collector_accepting_native_container =
     ::pressio::ode::constraints::collector_callable_with_step_time_native_container_return_void<
-    collector_type, time_type, state_type>::value;
+      collector_type, time_type, state_type>::value;
 
   static constexpr auto collector_accepting_pressio_container =
     ::pressio::ode::constraints::collector_callable_with_step_time_pressio_container_return_void<
-    collector_type, time_type, state_type>::value;
+      collector_type, time_type, state_type>::value;
 
   // force user to only use one or the other for now
-  static constexpr auto both_are_true = (collector_accepting_native_container
-					 and collector_accepting_pressio_container);
-  static_assert( both_are_true == false,
-		 "Currently, the collector/observer passed to ode must \
+  static constexpr auto both_are_true = (collector_accepting_native_container and collector_accepting_pressio_container);
+  static_assert(both_are_true == false,
+		"Currently, the collector/observer passed to ode must \
 either accept a native container or a pressio container wrapper. \
 You cannot have two methods to cover both cases nor you can have a \
 collector class that has the operator () templated on the state, \
 because that would lead to this error too. ");
 
   // value is true if either one is true
-  static constexpr auto value = collector_accepting_native_container
-    or collector_accepting_pressio_container;
+  static constexpr auto value = collector_accepting_native_container or collector_accepting_pressio_container;
 };
 
-}}} // namespace pressio::ode::meta
-#endif  // ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_
+}}}// namespace pressio::ode::meta
+#endif// ODE_CONSTRAINTS_ODE_COLLECTOR_HPP_

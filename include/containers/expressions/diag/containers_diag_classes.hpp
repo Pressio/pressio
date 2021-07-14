@@ -49,16 +49,14 @@
 #ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_CLASSES_HPP_
 #define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_CLASSES_HPP_
 
-namespace pressio{ namespace containers{ namespace expressions{
+namespace pressio { namespace containers { namespace expressions {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_t>
 struct DiagExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_t>::value>>
 {
   using this_t = DiagExpr<matrix_t>;
   using traits = typename details::traits<this_t>;
@@ -98,20 +96,24 @@ public:
     assert(numRows_ == numCols_);
   }
 
-  size_t extent() const{
+  size_t extent() const
+  {
     return extent_;
   }
 
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -134,18 +136,16 @@ template <typename matrix_t>
 struct DiagExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_t>::value>>
 {
-  using this_t		= DiagExpr<matrix_t>;
-  using traits	= typename details::traits<this_t>;
-  using sc_t		= typename traits::scalar_t;
-  using size_t		= typename traits::size_t;
-  using ref_t		= typename traits::reference_t;
-  using const_ref_t	= typename traits::const_reference_t;
-  using native_expr_t	= typename traits::native_expr_t;
-  using data_return_t	= typename traits::data_return_t;
+  using this_t = DiagExpr<matrix_t>;
+  using traits = typename details::traits<this_t>;
+  using sc_t = typename traits::scalar_t;
+  using size_t = typename traits::size_t;
+  using ref_t = typename traits::reference_t;
+  using const_ref_t = typename traits::const_reference_t;
+  using native_expr_t = typename traits::native_expr_t;
+  using data_return_t = typename traits::data_return_t;
   using const_data_return_t = typename traits::const_data_return_t;
 
 private:
@@ -155,9 +155,8 @@ private:
 
   using natexpr_layout = typename native_expr_t::traits::array_layout;
   // for now leave this assert, then remove later
-  static_assert
-  (std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
-   "The layout for the native type of the diagonal kokkos expression does not \
+  static_assert(std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
+		"The layout for the native type of the diagonal kokkos expression does not \
 match the strided layout expected");
 
 public:
@@ -170,10 +169,8 @@ public:
 
   DiagExpr(matrix_t & M)
     : matObj_(M),
-      nativeExprObj_
-      (M.data()->data(),
-       natexpr_layout( M.extent(0), M.data()->stride(0)+M.data()->stride(1) )
-       ),
+      nativeExprObj_(M.data()->data(),
+		     natexpr_layout(M.extent(0), M.data()->stride(0) + M.data()->stride(1))),
       extent_(M.extent(0))
   {
     // make sure the diagonal is taken on a square matrix
@@ -181,20 +178,24 @@ public:
   }
 
 public:
-  size_t extent() const{
+  size_t extent() const
+  {
     return extent_;
   }
 
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -202,12 +203,11 @@ public:
   /*
     need to be careful with non-const subscripting, see span for details
   */
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
+      std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    ref_t>
   operator()(size_t i)
   {
     assert(i < (size_t)extent_);
@@ -215,11 +215,10 @@ public:
   }
 
   // const subscripting
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    const_ref_t
-    >
+    const_ref_t>
   operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
@@ -234,9 +233,7 @@ template <typename matrix_t>
 struct DiagExpr<
   matrix_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_t>::value>>
 {
   using this_t = DiagExpr<matrix_t>;
   using traits = typename details::traits<this_t>;
@@ -266,35 +263,36 @@ public:
   }
 
 public:
-  size_t extent() const{
+  size_t extent() const
+  {
     return extent_;
   }
 
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
   // non-const subscripting
-  template<typename _matrix_t = matrix_t>
+  template <typename _matrix_t = matrix_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
-    ref_t
-    >
+    ref_t>
   operator()(size_t i)
   {
     assert(i < (size_t)extent_);
-    return matObj_.get()(i,i);
+    return matObj_.get()(i, i);
   }
 
   // const subscripting
   const_ref_t operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
-    return matObj_.get()(i,i);
+    return matObj_.get()(i, i);
   }
 };
 #endif
 
-}}} //end namespace pressio::containers::expressions
-#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_CLASSES_HPP_
+}}}//end namespace pressio::containers::expressions
+#endif// CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_CLASSES_HPP_

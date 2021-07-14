@@ -96,4 +96,4 @@
 
 #include "./wrapper_predicates/containers_is_vector_wrapper.hpp"
 
-#endif  // CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_
+#endif// CONTAINERS_VECTOR_PRESSIO_CONTAINERS_VECTOR_INCLUDE_HPP_

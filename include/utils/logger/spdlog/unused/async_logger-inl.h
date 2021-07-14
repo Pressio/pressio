@@ -91,4 +91,4 @@
 //     cloned->name_ = std::move(new_name);
 //     return cloned;
 // }
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_ASYNC_LOGGER_INL_H_
+#endif// UTILS_LOGGER_SPDLOG_UNUSED_ASYNC_LOGGER_INL_H_

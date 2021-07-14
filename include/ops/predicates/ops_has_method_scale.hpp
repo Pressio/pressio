@@ -49,36 +49,31 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+namespace pressio { namespace ops { namespace predicates {
 
 template <
   typename T,
   typename arg_t,
   typename scalar_t,
-  typename = void
-  >
-struct has_method_scale : std::false_type{};
+  typename = void>
+struct has_method_scale : std::false_type
+{
+};
 
 template <
   typename T,
   typename arg_t,
-  typename sc_t
-  >
+  typename sc_t>
 struct has_method_scale<
   T, arg_t, sc_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval<T const &>().scale
-       (
-	std::declval< arg_t & >(),
-	std::declval< const sc_t >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().scale(
+	  std::declval<arg_t &>(),
+	  std::declval<const sc_t>()))>::value>> : std::true_type
+{
+};
 
-}}} //pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_
+}}}//pressio::ops::predicates
+#endif// OPS_PREDICATES_OPS_HAS_METHOD_SCALE_HPP_

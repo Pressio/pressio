@@ -19,7 +19,7 @@
 //   int numGlobalEntries_;
 //   Epetra_Map * dataMap_;
 //   Epetra_MultiVector * x_;
-  
+
 //   virtual void SetUp()
 //   {
 //     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -41,4 +41,3 @@
 
 
 #endif /* CONTAINERS_FIXTURES_GENERAL_FIXTURES_HPP_ */
-

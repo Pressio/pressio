@@ -33,7 +33,7 @@ public:
   using log_levels = std::unordered_map<std::string, level::level_enum>;
 
   registry(const registry &) = delete;
-  registry &operator=(const registry &) = delete;
+  registry & operator=(const registry &) = delete;
 
 public:
   void register_logger(std::shared_ptr<logger> new_logger)
@@ -47,10 +47,9 @@ public:
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     new_logger->set_formatter(formatter_->clone());
 
-    if (err_handler_)
-      {
-        new_logger->set_error_handler(err_handler_);
-      }
+    if(err_handler_) {
+      new_logger->set_error_handler(err_handler_);
+    }
 
     // set new level according to previously configured level or default level
     auto it = log_levels_.find(new_logger->name());
@@ -59,18 +58,16 @@ public:
 
     new_logger->flush_on(flush_level_);
 
-    if (backtrace_n_messages_ > 0)
-      {
-        new_logger->enable_backtrace(backtrace_n_messages_);
-      }
+    if(backtrace_n_messages_ > 0) {
+      new_logger->enable_backtrace(backtrace_n_messages_);
+    }
 
-    if (automatic_registration_)
-      {
-        register_logger_(std::move(new_logger));
-      }
+    if(automatic_registration_) {
+      register_logger_(std::move(new_logger));
+    }
   }
 
-  std::shared_ptr<logger> get(const std::string &logger_name)
+  std::shared_ptr<logger> get(const std::string & logger_name)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     auto found = loggers_.find(logger_name);
@@ -87,7 +84,7 @@ public:
   // To be used directly by the spdlog default api (e.g. spdlog::info)
   // This make the default API faster, but cannot be used concurrently with set_default_logger().
   // e.g do not call set_default_logger() from one thread while calling spdlog::info() from another.
-  logger *get_default_raw()
+  logger * get_default_raw()
   {
     return default_logger_.get();
   }
@@ -98,14 +95,12 @@ public:
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     // remove previous default logger from the map
-    if (default_logger_ != nullptr)
-      {
-        loggers_.erase(default_logger_->name());
-      }
-    if (new_default_logger != nullptr)
-      {
-        loggers_[new_default_logger->name()] = new_default_logger;
-      }
+    if(default_logger_ != nullptr) {
+      loggers_.erase(default_logger_->name());
+    }
+    if(new_default_logger != nullptr) {
+      loggers_[new_default_logger->name()] = new_default_logger;
+    }
     default_logger_ = std::move(new_default_logger);
   }
 
@@ -126,10 +121,9 @@ public:
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     formatter_ = std::move(formatter);
-    for (auto &l : loggers_)
-      {
-        l.second->set_formatter(formatter_->clone());
-      }
+    for(auto & l : loggers_) {
+      l.second->set_formatter(formatter_->clone());
+    }
   }
 
   void enable_backtrace(size_t n_messages)
@@ -137,39 +131,35 @@ public:
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     backtrace_n_messages_ = n_messages;
 
-    for (auto &l : loggers_)
-      {
-        l.second->enable_backtrace(n_messages);
-      }
+    for(auto & l : loggers_) {
+      l.second->enable_backtrace(n_messages);
+    }
   }
 
   void disable_backtrace()
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     backtrace_n_messages_ = 0;
-    for (auto &l : loggers_)
-      {
-        l.second->disable_backtrace();
-      }
+    for(auto & l : loggers_) {
+      l.second->disable_backtrace();
+    }
   }
 
   void set_level(level::level_enum log_level)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
-    for (auto &l : loggers_)
-      {
-        l.second->set_level(log_level);
-      }
+    for(auto & l : loggers_) {
+      l.second->set_level(log_level);
+    }
     global_log_level_ = log_level;
   }
 
   void flush_on(level::level_enum log_level)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
-    for (auto &l : loggers_)
-      {
-        l.second->flush_on(log_level);
-      }
+    for(auto & l : loggers_) {
+      l.second->flush_on(log_level);
+    }
     flush_level_ = log_level;
   }
 
@@ -180,42 +170,38 @@ public:
     periodic_flusher_ = details::make_unique<periodic_worker>(clbk, interval);
   }
 
-  void set_error_handler(void (*handler)(const std::string &msg))
+  void set_error_handler(void (*handler)(const std::string & msg))
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
-    for (auto &l : loggers_)
-      {
-        l.second->set_error_handler(handler);
-      }
+    for(auto & l : loggers_) {
+      l.second->set_error_handler(handler);
+    }
     err_handler_ = handler;
   }
 
-  void apply_all(const std::function<void(const std::shared_ptr<logger>)> &fun)
+  void apply_all(const std::function<void(const std::shared_ptr<logger>)> & fun)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
-    for (auto &l : loggers_)
-      {
-        fun(l.second);
-      }
+    for(auto & l : loggers_) {
+      fun(l.second);
+    }
   }
 
   void flush_all()
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
-    for (auto &l : loggers_)
-      {
-        l.second->flush();
-      }
+    for(auto & l : loggers_) {
+      l.second->flush();
+    }
   }
 
-  void drop(const std::string &logger_name)
+  void drop(const std::string & logger_name)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     loggers_.erase(logger_name);
-    if (default_logger_ && default_logger_->name() == logger_name)
-      {
-	default_logger_.reset();
-      }
+    if(default_logger_ && default_logger_->name() == logger_name) {
+      default_logger_.reset();
+    }
   }
 
   void drop_all()
@@ -252,28 +238,24 @@ public:
     automatic_registration_ = automatic_registration;
   }
 
-  void set_levels(log_levels levels, level::level_enum *global_level)
+  void set_levels(log_levels levels, level::level_enum * global_level)
   {
     std::lock_guard<std::mutex> lock(logger_map_mutex_);
     log_levels_ = std::move(levels);
     auto global_level_requested = global_level != nullptr;
     global_log_level_ = global_level_requested ? *global_level : global_log_level_;
 
-    for (auto &logger : loggers_)
-      {
-	auto logger_entry = log_levels_.find(logger.first);
-	if (logger_entry != log_levels_.end())
-	  {
-	    logger.second->set_level(logger_entry->second);
-	  }
-	else if (global_level_requested)
-	  {
-	    logger.second->set_level(*global_level);
-	  }
+    for(auto & logger : loggers_) {
+      auto logger_entry = log_levels_.find(logger.first);
+      if(logger_entry != log_levels_.end()) {
+	logger.second->set_level(logger_entry->second);
+      } else if(global_level_requested) {
+	logger.second->set_level(*global_level);
       }
+    }
   }
 
-  static registry &instance()
+  static registry & instance()
   {
     static registry s_instance;
     return s_instance;
@@ -291,20 +273,19 @@ private:
     auto color_sink = std::make_shared<sinks::ansicolor_stdout_sink_mt>();
 #endif
 
-    const char *default_logger_name = "";
+    const char * default_logger_name = "";
     default_logger_ = std::make_shared<spdlog::logger>(default_logger_name, std::move(color_sink));
     loggers_[default_logger_name] = default_logger_;
-#endif // SPDLOG_DISABLE_DEFAULT_LOGGER
+#endif// SPDLOG_DISABLE_DEFAULT_LOGGER
   }
 
   ~registry() = default;
 
-  void throw_if_exists_(const std::string &logger_name)
+  void throw_if_exists_(const std::string & logger_name)
   {
-    if (loggers_.find(logger_name) != loggers_.end())
-      {
-        throw_spdlog_ex("logger with name '" + logger_name + "' already exists");
-      }
+    if(loggers_.find(logger_name) != loggers_.end()) {
+      throw_spdlog_ex("logger with name '" + logger_name + "' already exists");
+    }
   }
 
   void register_logger_(std::shared_ptr<logger> new_logger)
@@ -324,7 +305,7 @@ private:
   std::unique_ptr<formatter> formatter_;
   spdlog::level::level_enum global_log_level_ = level::info;
   level::level_enum flush_level_ = level::off;
-  void (*err_handler_)(const std::string &msg);
+  void (*err_handler_)(const std::string & msg);
   std::shared_ptr<thread_pool> tp_;
   std::unique_ptr<periodic_worker> periodic_flusher_;
   std::shared_ptr<logger> default_logger_;
@@ -332,10 +313,10 @@ private:
   size_t backtrace_n_messages_ = 0;
 };
 
-} // namespace details
-} // namespace spdlog
+}// namespace details
+}// namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "registry-inl.hpp"
 // #endif
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_REGISTRY_HPP_
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_REGISTRY_HPP_

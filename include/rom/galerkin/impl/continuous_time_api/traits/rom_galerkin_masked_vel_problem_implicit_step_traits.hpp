@@ -49,15 +49,15 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_MASKED_VEL_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_MASKED_VEL_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
 
-namespace pressio{ namespace rom{
+namespace pressio { namespace rom {
 
 //fwd declare problem class
-namespace galerkin{ namespace impl{
-template <typename ...>
+namespace galerkin { namespace impl {
+template <typename...>
 class MaskedVeloProblemImplicitStepContinuousTimeApi;
 }}// end namespace pressio::rom::galerkin::impl
 
-namespace details{
+namespace details {
 
 template <
   typename stepper_tag,
@@ -68,31 +68,28 @@ template <
   typename decoder_type,
   typename masker_type,
   typename projector_type,
-  typename ud_ops_type
-  >
+  typename ud_ops_type>
 struct traits<
   ::pressio::rom::galerkin::impl::MaskedVeloProblemImplicitStepContinuousTimeApi<
     stepper_tag, fom_system_type,
     rom_state_type, rom_residual_type, rom_jacobian_type,
-    decoder_type, masker_type, projector_type, ud_ops_type
-    >
-  >
+    decoder_type, masker_type, projector_type, ud_ops_type>>
 {
   using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     stepper_tag, fom_system_type, rom_state_type, decoder_type, ud_ops_type>;
 
-  using fom_system_t		= typename common_types_t::fom_system_t;
-  using scalar_t		= typename common_types_t::scalar_t;
-  using fom_native_state_t	= typename common_types_t::fom_native_state_t;
-  using fom_state_t		= typename common_types_t::fom_state_t;
-  using fom_velocity_t		= typename common_types_t::fom_velocity_t;
-  using galerkin_state_t	= typename common_types_t::galerkin_state_t;
-  using galerkin_native_state_t	= typename common_types_t::galerkin_native_state_t;
-  using decoder_t		= typename common_types_t::decoder_t;
-  using decoder_jac_t		= typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-  using ud_ops_t		= ud_ops_type;
+  using fom_system_t = typename common_types_t::fom_system_t;
+  using scalar_t = typename common_types_t::scalar_t;
+  using fom_native_state_t = typename common_types_t::fom_native_state_t;
+  using fom_state_t = typename common_types_t::fom_state_t;
+  using fom_velocity_t = typename common_types_t::fom_velocity_t;
+  using galerkin_state_t = typename common_types_t::galerkin_state_t;
+  using galerkin_native_state_t = typename common_types_t::galerkin_native_state_t;
+  using decoder_t = typename common_types_t::decoder_t;
+  using decoder_jac_t = typename common_types_t::decoder_jac_t;
+  using fom_state_reconstr_t = typename common_types_t::fom_state_reconstr_t;
+  using fom_states_manager_t = typename common_types_t::fom_states_manager_t;
+  using ud_ops_t = ud_ops_type;
   static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
 
   using galerkin_residual_t = rom_residual_type;
@@ -100,52 +97,43 @@ struct traits<
   using projector_t = projector_type;
   using masker_t = masker_type;
 
-  static_assert
-  (::pressio::rom::galerkin::constraints::projector_implicit_stepping
-   <projector_type, fom_velocity_t, decoder_jac_t, galerkin_residual_t, galerkin_jacobian_t>::value,
-   "Invalid projector passed to Galerkin");
+  static_assert(::pressio::rom::galerkin::constraints::projector_implicit_stepping<projector_type, fom_velocity_t, decoder_jac_t, galerkin_residual_t, galerkin_jacobian_t>::value,
+		"Invalid projector passed to Galerkin");
 
-  static_assert
-  (::pressio::rom::galerkin::constraints::masker_implicit_stepping
-   <masker_t, scalar_t, fom_velocity_t, decoder_jac_t>::value,
-   "Invalid masker passed to masked Galerkin with implicit time stepping");
+  static_assert(::pressio::rom::galerkin::constraints::masker_implicit_stepping<masker_t, scalar_t, fom_velocity_t, decoder_jac_t>::value,
+		"Invalid masker passed to masked Galerkin with implicit time stepping");
 
   using residual_policy_t =
     ::pressio::rom::galerkin::impl::ResidualPolicy<
-    galerkin_residual_t,
-    ::pressio::rom::galerkin::impl::Projected<
-      projector_t,
-      ::pressio::rom::galerkin::impl::Masked<
-	masker_t,
-	::pressio::rom::galerkin::impl::FomVelocityPolicy<
-	  fom_states_manager_t, fom_velocity_t>
-	>
-      >
-    >;
+      galerkin_residual_t,
+      ::pressio::rom::galerkin::impl::Projected<
+	projector_t,
+	::pressio::rom::galerkin::impl::Masked<
+	  masker_t,
+	  ::pressio::rom::galerkin::impl::FomVelocityPolicy<
+	    fom_states_manager_t, fom_velocity_t>>>>;
 
   using jacobian_policy_t =
     ::pressio::rom::galerkin::impl::JacobianPolicy<
-    galerkin_jacobian_t,
-    ::pressio::rom::galerkin::impl::Projected<
-      projector_t,
-      ::pressio::rom::galerkin::impl::Masked<
-	masker_t,
-	::pressio::rom::galerkin::impl::FomApplyJacobianPolicy<
-	  fom_states_manager_t, decoder_jac_t, decoder_t>
-	>
-      >
-    >;
+      galerkin_jacobian_t,
+      ::pressio::rom::galerkin::impl::Projected<
+	projector_t,
+	::pressio::rom::galerkin::impl::Masked<
+	  masker_t,
+	  ::pressio::rom::galerkin::impl::FomApplyJacobianPolicy<
+	    fom_states_manager_t, decoder_jac_t, decoder_t>>>>;
 
   using aux_stepper_t =
     typename ::pressio::rom::impl::auxiliaryStepperHelper<
-    stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
-    fom_system_type, residual_policy_t, jacobian_policy_t>::type;
+      stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
+      fom_system_type, residual_policy_t, jacobian_policy_t>::type;
 
   using stepper_t =
     ::pressio::ode::ImplicitStepper<
-    stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
-    fom_system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
+      stepper_tag, galerkin_state_t, galerkin_residual_t, galerkin_jacobian_t,
+      fom_system_type, aux_stepper_t, residual_policy_t, jacobian_policy_t>;
 };
 
-}}}//end  namespace pressio::rom::details
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_MASKED_VEL_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_
+}
+}}//end  namespace pressio::rom::details
+#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_TRAITS_ROM_GALERKIN_MASKED_VEL_PROBLEM_IMPLICIT_STEP_TRAITS_HPP_

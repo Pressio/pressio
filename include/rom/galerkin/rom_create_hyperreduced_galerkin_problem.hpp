@@ -49,35 +49,32 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_HYPERREDUCED_GALERKIN_PROBLEM_HPP_
 #define ROM_GALERKIN_ROM_CREATE_HYPERREDUCED_GALERKIN_PROBLEM_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio { namespace rom { namespace galerkin {
 
-template<
+template <
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
   typename projector_type,
-  typename ...Args
-  >
+  typename... Args>
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
   impl::composeHyperReducedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>
-  >
+    stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>>
 createHyperReducedVelocityProblem(const fom_system_type & fomSysObj,
 				  decoder_type & decoder,
 				  const rom_state_type & stateIn,
 				  const fom_native_state & fomRef,
 				  const projector_type & projector,
-				  Args && ... args)
+				  Args &&... args)
 {
   using return_t = impl::composeHyperReducedVelocityProblemContTime_t<
     stepper_tag, fom_system_type, decoder_type, rom_state_type, projector_type, Args...>;
 
-  static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+		"The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef,
@@ -87,24 +84,21 @@ compatible with the FOM state type detected from adapter class");
 // Note that here the user does NOT specify the galerkin jacobian type
 // so pressio has some rules behind the scenes to select the jacobian type
 // based on the galerkin state
-template<
+template <
   std::size_t order,
   std::size_t totNumStates,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename projector_type
-  >
+  typename projector_type>
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeHyperReducedResidualProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, projector_type,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >
-  >
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>>
 createHyperReducedResidualProblem(const fom_system_type & fomSysObj,
 				  decoder_type & decoder,
 				  const rom_state_type & stateIn,
@@ -114,18 +108,16 @@ createHyperReducedResidualProblem(const fom_system_type & fomSysObj,
   using return_t =
     impl::composeHyperReducedResidualProblemDiscTime_t<
       ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void, projector_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
+      fom_system_type, decoder_type, rom_state_type, void, projector_type,
+      ::pressio::ode::types::StepperOrder<order>,
+      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>;
 
-  static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+		"The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef, projector);
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_CREATE_HYPERREDUCED_GALERKIN_PROBLEM_HPP_
+#endif// ROM_GALERKIN_ROM_CREATE_HYPERREDUCED_GALERKIN_PROBLEM_HPP_

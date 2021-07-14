@@ -55,11 +55,11 @@
 #include "solvers_lm_schedule1.hpp"
 #include "solvers_lm_schedule2.hpp"
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
-template<typename T>
-void applyUpdater(BaseUpdater* updater,
-		  const void* system_as_void,
+template <typename T>
+void applyUpdater(BaseUpdater * updater,
+		  const void * system_as_void,
 		  void * state_as_void,
 		  void * solver_as_void)
 {
@@ -67,140 +67,134 @@ void applyUpdater(BaseUpdater* updater,
   using state_t = typename T::state_type;
   using solver_t = typename T::solver_type;
 
-  auto* p = static_cast<T*>(updater);
-  auto* sys = reinterpret_cast<const system_t*>(system_as_void);
-  auto* state = reinterpret_cast<state_t*>(state_as_void);
-  auto* solver = reinterpret_cast<solver_t*>(solver_as_void);
+  auto * p = static_cast<T *>(updater);
+  auto * sys = reinterpret_cast<const system_t *>(system_as_void);
+  auto * state = reinterpret_cast<state_t *>(state_as_void);
+  auto * solver = reinterpret_cast<solver_t *>(solver_as_void);
   p->get()(*sys, *state, *solver);
 }
 
-template<typename T>
-void resetUpdater(BaseUpdater* updater)
+template <typename T>
+void resetUpdater(BaseUpdater * updater)
 {
-  auto* p = static_cast<T*>(updater);
+  auto * p = static_cast<T *>(updater);
   p->get().reset();
 }
 
 /*
   GaussNewton only admits: standard, armijo
 */
-template<class solver_t, class system_t, typename state_t>
+template <class solver_t, class system_t, typename state_t>
 mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, GaussNewton>::value or
-  std::is_same<typename solver_t::solver_tag, GaussNewtonQR>::value,
-  std::unique_ptr<BaseUpdater>
-  >
+    std::is_same<typename solver_t::solver_tag, GaussNewtonQR>::value,
+  std::unique_ptr<BaseUpdater>>
 createUpdater(const state_t & state,
 	      ::pressio::solvers::nonlinear::update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
 
-  switch (updateE)
-    {
-    case update::standard:{
-      using f_t = DefaultUpdater;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(f_t{});
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  switch(updateE) {
+  case update::standard: {
+    using f_t = DefaultUpdater;
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(f_t{});
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    case update::armijo:{
-      using f_t = ArmijoUpdater<state_t>;
-      f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(std::move(F));
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  case update::armijo: {
+    using f_t = ArmijoUpdater<state_t>;
+    f_t F(state);
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(std::move(F));
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    default:
-      throw std::runtime_error("Invalid update enum for GaussNewton");
-      return nullptr;
-    }
+  default:
+    throw std::runtime_error("Invalid update enum for GaussNewton");
+    return nullptr;
+  }
 }
 
 /*
    Levenberg-Mqrquardt: standard, LM1, LM2
 */
-template<typename solver_t, typename system_t, typename state_t>
+template <typename solver_t, typename system_t, typename state_t>
 mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, LevenbergMarquardt>::value,
-  std::unique_ptr<impl::BaseUpdater>
-  >
+  std::unique_ptr<impl::BaseUpdater>>
 createUpdater(const state_t & state,
 	      ::pressio::solvers::nonlinear::update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
 
-  switch (updateE)
-    {
-    case update::standard:{
-      using f_t = DefaultUpdater;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(f_t{});
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  switch(updateE) {
+  case update::standard: {
+    using f_t = DefaultUpdater;
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(f_t{});
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    case update::LMSchedule1:{
-      using f_t = LMSchedule1Updater<state_t>;
-      f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(std::move(F));
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  case update::LMSchedule1: {
+    using f_t = LMSchedule1Updater<state_t>;
+    f_t F(state);
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(std::move(F));
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    case update::LMSchedule2:{
-      using f_t = LMSchedule2Updater<state_t>;
-      f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(std::move(F));
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  case update::LMSchedule2: {
+    using f_t = LMSchedule2Updater<state_t>;
+    f_t F(state);
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(std::move(F));
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    default:
-      throw std::runtime_error("Invalid update enum for LevenbergMarquardt");
-      return nullptr;
-    }
+  default:
+    throw std::runtime_error("Invalid update enum for LevenbergMarquardt");
+    return nullptr;
+  }
 }
 
 /*
    Newton-Raphson admits: standard
 */
-template<typename solver_t, typename system_t, typename state_t>
+template <typename solver_t, typename system_t, typename state_t>
 mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, NewtonRaphson>::value,
-  std::unique_ptr<impl::BaseUpdater>
-  >
+  std::unique_ptr<impl::BaseUpdater>>
 createUpdater(const state_t & state,
 	      ::pressio::solvers::nonlinear::update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
 
-  switch (updateE)
-    {
-    case update::standard:{
-      using f_t = DefaultUpdater;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
-      res_t result = pressio::utils::make_unique<u_t>(f_t{});
-      result->applyFnc_ = applyUpdater<u_t>;
-      result->resetFnc_ = resetUpdater<u_t>;
-      return result;
-    }
+  switch(updateE) {
+  case update::standard: {
+    using f_t = DefaultUpdater;
+    using u_t = Updater<system_t, state_t, solver_t, f_t>;
+    res_t result = pressio::utils::make_unique<u_t>(f_t{});
+    result->applyFnc_ = applyUpdater<u_t>;
+    result->resetFnc_ = resetUpdater<u_t>;
+    return result;
+  }
 
-    default:
-      throw std::runtime_error("Invalid update enum for NewtonRaphson");
-      return nullptr;
-    }
+  default:
+    throw std::runtime_error("Invalid update enum for NewtonRaphson");
+    return nullptr;
+  }
 }
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_CREATE_UPDATER_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_CREATE_UPDATER_HPP_

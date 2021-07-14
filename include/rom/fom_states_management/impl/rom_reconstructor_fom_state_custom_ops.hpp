@@ -49,14 +49,13 @@
 #ifndef ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
 #define ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
 
-namespace pressio{ namespace rom{ namespace impl{
+namespace pressio { namespace rom { namespace impl {
 
 template <
   typename scalar_type,
   typename fom_state_type,
   typename decoder_type,
-  typename ops_type
-  >
+  typename ops_type>
 struct FomStateReconstructorCustomOps
 {
   FomStateReconstructorCustomOps() = delete;
@@ -72,12 +71,12 @@ struct FomStateReconstructorCustomOps
     : fomNominalState_(fomStateIn), decoderObj_(decoder), udOps_{udOps}
   {
     PRESSIOLOG_DEBUG("cnstr: fomNominalState extent = {}",
-		     ::pressio::ops::extent(fomStateIn,0));
+		     ::pressio::ops::extent(fomStateIn, 0));
   }
 
   template <typename rom_state_t>
   void operator()(const rom_state_t & romState,
-		  fom_state_type    & fomState) const
+		  fom_state_type & fomState) const
   {
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
@@ -88,10 +87,11 @@ struct FomStateReconstructorCustomOps
   }
 
   template <typename rom_state_t>
-  fom_state_type operator()(const rom_state_t & romState) const{
+  fom_state_type operator()(const rom_state_t & romState) const
+  {
     auto fomState(fomNominalState_.get());
     udOps_.get().set_zero(*fomState.data());
-    this->template operator()(romState,fomState);
+    this->template operator()(romState, fomState);
     return fomState;
   }
 
@@ -103,4 +103,4 @@ private:
 };//end class
 
 }}}//end namespace pressio::rom::impl
-#endif  // ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_
+#endif// ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_CUSTOM_OPS_HPP_

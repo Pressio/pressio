@@ -49,45 +49,37 @@
 #ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
 #define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace constraints {
+namespace pressio { namespace ode { namespace constraints {
 
-template<
+template <
   typename T,
   typename scalar_t, typename state_t, typename velocity_t, typename system_t,
-  typename enable = void
-  >
+  typename enable = void>
 struct explicit_velocity_policy
-  : std::false_type{};
+  : std::false_type
+{
+};
 
-template<
+template <
   typename T,
-  typename scalar_t, typename state_t, typename velocity_t, typename system_t
-  >
+  typename scalar_t, typename state_t, typename velocity_t, typename system_t>
 struct explicit_velocity_policy<
   T, scalar_t, state_t, velocity_t, system_t,
   mpl::enable_if_t<
     std::is_same<
-      decltype
-      (
-       std::declval<T const>().create(std::declval<system_t const &>())
-       ),
-      velocity_t
-      >::value
-    and
+      decltype(
+	std::declval<T const>().create(std::declval<system_t const &>())),
+      velocity_t>::value and
     std::is_void<
-      decltype
-      (
-       std::declval<T const>().template compute
-       (
-      	std::declval<state_t const &>(), // state
-      	std::declval<velocity_t &>(),	 // velocity
-      	std::declval<system_t const &>(),// system object
-      	std::declval<scalar_t const &>() // time
-      	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const>().template compute(
+	  std::declval<state_t const &>(),// state
+	  std::declval<velocity_t &>(),// velocity
+	  std::declval<system_t const &>(),// system object
+	  std::declval<scalar_t const &>()// time
+	  ))>::value>> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::constraints
-#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_
+#endif// ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICIT_VELOCITY_POLICY_HPP_

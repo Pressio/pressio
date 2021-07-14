@@ -49,17 +49,17 @@
 #ifndef OPS_EPETRA_OPS_SET_ZERO_HPP_
 #define OPS_EPETRA_OPS_SET_ZERO_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<T>::value
-  >
-set_zero(T & v){
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<T>::value>
+set_zero(T & v)
+{
   using value_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  v.data()->PutScalar( ::pressio::utils::constants<value_t>::zero() );
+  v.data()->PutScalar(::pressio::utils::constants<value_t>::zero());
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_SET_ZERO_HPP_
+#endif// OPS_EPETRA_OPS_SET_ZERO_HPP_

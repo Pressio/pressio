@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_
 
-namespace pressio{ namespace containers{ namespace details{
+namespace pressio { namespace containers { namespace details {
 
 /********************************
 an arbitrary multi vector is one
@@ -59,52 +59,47 @@ template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>
+      wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>
 {
 
-  using scalar_t  = typename wrapped_type::value_type;
-  using value_t   = typename wrapped_type::value_type;
-  using size_t   = typename wrapped_type::size_type;
+  using scalar_t = typename wrapped_type::value_type;
+  using value_t = typename wrapped_type::value_type;
+  using size_t = typename wrapped_type::size_type;
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Arbitrary;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 //*******************************
 // for eigen dynamic multivector
 //*******************************
-template<typename wrapped_type>
+template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
-    ::pressio::mpl::enable_if_t<
-      ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
-    >
-  >
+  ::pressio::mpl::enable_if_t<
+    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Eigen, true, 2
-  >
+      wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Eigen;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic= true;
+  static constexpr bool is_dynamic = true;
 
-  using scalar_t  = typename wrapped_type::Scalar;
+  using scalar_t = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
-  using size_t    = ordinal_t;
+  using size_t = ordinal_t;
 };
 #endif
 
@@ -112,18 +107,16 @@ struct traits<
 //*******************************
 // for epetra multivector
 //*******************************
-template<typename wrapped_type>
+template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_multi_vector_epetra<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_multi_vector_epetra<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
+      wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Epetra;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
@@ -132,10 +125,10 @@ struct traits<
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
-  using size_t    = global_ordinal_t;
+  using size_t = global_ordinal_t;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   using data_map_t = Epetra_BlockMap;
   using communicator_t = Epetra_Comm;
@@ -144,31 +137,29 @@ struct traits<
 //*******************************
 // for tpetra multivector
 //*******************************
-template<typename wrapped_type>
+template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_multi_vector_tpetra<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_multi_vector_tpetra<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
+      wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Tpetra;
 
   using scalar_t = typename wrapped_type::impl_scalar_type;
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;
+  using size_t = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -194,31 +185,29 @@ struct traits<
 //*******************************
 // for block tpetra multivector
 //*******************************
-template<typename wrapped_type>
+template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_multi_vector_tpetra_block<wrapped_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_multi_vector_tpetra_block<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
+      wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>
 {
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::TpetraBlock;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::TpetraBlock;
 
   using scalar_t = typename wrapped_type::impl_scalar_type;
   using local_ordinal_t = typename wrapped_type::local_ordinal_type;
   using global_ordinal_t = typename wrapped_type::global_ordinal_type;
   using data_map_t = typename wrapped_type::map_type;
-  using size_t    = global_ordinal_t;
+  using size_t = global_ordinal_t;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -247,40 +236,37 @@ struct traits<
 template <typename wrapped_type>
 struct traits<
   MultiVector<wrapped_type>,
-    ::pressio::mpl::enable_if_t<
-      containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
-      >
-  >
+  ::pressio::mpl::enable_if_t<
+    containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value>>
   : public containers_shared_traits<
-  wrapped_type, WrappedPackageIdentifier::Kokkos,
-  true, //true because kokkos is for shared mem
-  2
-  >
+      wrapped_type, WrappedPackageIdentifier::Kokkos,
+      true,//true because kokkos is for shared mem
+      2>
 {
 
   static constexpr WrappedMultiVectorIdentifier
-  wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Kokkos;
+    wrapped_multi_vector_identifier = WrappedMultiVectorIdentifier::Kokkos;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
   using data_cp_return_t = wrapped_type;
 
   // static view if the number of runtime determined dimensions == 0
-  static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_static = wrapped_type::traits::rank_dynamic == 0;
+  static constexpr bool is_dynamic = !is_static;
 
-  using scalar_t	  = typename wrapped_type::traits::value_type;
-  using layout		  = typename wrapped_type::traits::array_layout;
-  using ordinal_t	  = typename wrapped_type::traits::size_type;
-  using size_t		  = ordinal_t;
-  using execution_space	  = typename wrapped_type::traits::execution_space;
-  using memory_space	  = typename wrapped_type::traits::memory_space;
-  using device_type	  = typename wrapped_type::traits::device_type;
-  using memory_traits	  = typename wrapped_type::traits::memory_traits;
+  using scalar_t = typename wrapped_type::traits::value_type;
+  using layout = typename wrapped_type::traits::array_layout;
+  using ordinal_t = typename wrapped_type::traits::size_type;
+  using size_t = ordinal_t;
+  using execution_space = typename wrapped_type::traits::execution_space;
+  using memory_space = typename wrapped_type::traits::memory_space;
+  using device_type = typename wrapped_type::traits::device_type;
+  using memory_traits = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
-  using host_mirror_t     = typename wrapped_type::host_mirror_type;
+  using host_mirror_t = typename wrapped_type::host_mirror_type;
 };
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_CONTAINERS_MULTI_VECTOR_TRAITS_HPP_

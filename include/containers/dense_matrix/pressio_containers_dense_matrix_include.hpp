@@ -94,4 +94,4 @@
 #include "./wrapper_predicates/containers_is_dense_matrix_wrapper_arbitrary.hpp"
 #include "./wrapper_predicates/containers_is_dense_matrix_wrapper.hpp"
 
-#endif  // CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_
+#endif// CONTAINERS_DENSE_MATRIX_PRESSIO_CONTAINERS_DENSE_MATRIX_INCLUDE_HPP_

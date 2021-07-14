@@ -49,33 +49,27 @@
 #ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_FUNCTION_HPP_
 #define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_FUNCTION_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
-template <typename T, typename ... Args>
+template <typename T, typename... Args>
 mpl::enable_if_t<
-  (::pressio::containers::predicates::is_vector_wrapper<T>::value
-   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==1))
-  and (0 < sizeof...(Args)),
-  typename details::traits<T>::span_const_ret_t
-  >
-span(const T & vecObj, Args&& ... args)
+  (::pressio::containers::predicates::is_vector_wrapper<T>::value or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank == 1)) and (0 < sizeof...(Args)),
+  typename details::traits<T>::span_const_ret_t>
+span(const T & vecObj, Args &&... args)
 {
   using return_t = typename details::traits<T>::span_const_ret_t;
-  return return_t(vecObj, std::forward<Args>(args)... );
+  return return_t(vecObj, std::forward<Args>(args)...);
 }
 
-template <typename T, typename ... Args>
+template <typename T, typename... Args>
 mpl::enable_if_t<
-  (::pressio::containers::predicates::is_vector_wrapper<T>::value
-   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==1))
-  and (0 < sizeof...(Args)),
-  typename details::traits<T>::span_ret_t
-  >
-span(T & vecObj, Args&& ... args)
+  (::pressio::containers::predicates::is_vector_wrapper<T>::value or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank == 1)) and (0 < sizeof...(Args)),
+  typename details::traits<T>::span_ret_t>
+span(T & vecObj, Args &&... args)
 {
   using return_t = typename details::traits<T>::span_ret_t;
-  return return_t(vecObj, std::forward<Args>(args)... );
+  return return_t(vecObj, std::forward<Args>(args)...);
 }
 
-}} //end namespace pressio::containers
-#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_FUNCTION_HPP_
+}}//end namespace pressio::containers
+#endif// CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_FUNCTION_HPP_

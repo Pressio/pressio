@@ -49,21 +49,22 @@
 #ifndef ROM_PREDICATES_DECODER_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_
 #define ROM_PREDICATES_DECODER_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+namespace pressio { namespace rom { namespace predicates {
 
 template <typename T, typename jacobian_t, typename = void>
-struct has_const_get_reference_to_jacobian : std::false_type{};
+struct has_const_get_reference_to_jacobian : std::false_type
+{
+};
 
 template <typename T, typename jacobian_t>
 struct has_const_get_reference_to_jacobian<
   T, jacobian_t,
   mpl::enable_if_t<
     mpl::is_same<
-      decltype( std::declval<T const &>().jacobianCRef() ),
-      const jacobian_t &
-      >::value
-    >
-  > : std::true_type{};
+      decltype(std::declval<T const &>().jacobianCRef()),
+      const jacobian_t &>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::rom::predicates
-#endif  // ROM_PREDICATES_DECODER_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_
+}}}// namespace pressio::rom::predicates
+#endif// ROM_PREDICATES_DECODER_ROM_HAS_CONST_GET_REFERENCE_TO_JACOBIAN_HPP_

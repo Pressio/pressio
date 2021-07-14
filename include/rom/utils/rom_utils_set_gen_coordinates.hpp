@@ -49,7 +49,7 @@
 #ifndef ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_
 #define ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_
 
-namespace pressio{ namespace rom{ namespace utils{
+namespace pressio { namespace rom { namespace utils {
 
 template <
   typename scalar_t,
@@ -64,15 +64,15 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
 				       rom_state_t & romState)
 {
   /* Compute the ROM coefficients from optimal L^2 projection of yFOM */
-  using hessian_t	= typename linear_solver_t::matrix_type;
-  constexpr auto zero   = ::pressio::utils::constants<scalar_t>::zero();
-  constexpr auto one    = ::pressio::utils::constants<scalar_t>::one();
+  using hessian_t = typename linear_solver_t::matrix_type;
+  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto negOne = ::pressio::utils::constants<scalar_t>::negOne();
 
-  const auto romSize = ::pressio::ops::extent(romState,0);
+  const auto romSize = ::pressio::ops::extent(romState, 0);
 
   //compute hessian for phi^T phi
-  hessian_t H(romSize,romSize);
+  hessian_t H(romSize, romSize);
   ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(), one, phi, zero, H);
 
   //create a vector to store fomState - fomNominalState
@@ -88,5 +88,5 @@ void set_gen_coordinates_L2_projection(linear_solver_t & linearSolver,
   linearSolver.solveAllowMatOverwrite(H, r, romState);
 }
 
-}}} //end namespace pressio::rom::utils
-#endif  // ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_
+}}}//end namespace pressio::rom::utils
+#endif// ROM_UTILS_ROM_UTILS_SET_GEN_COORDINATES_HPP_

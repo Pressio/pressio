@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 
 /*
@@ -72,44 +72,36 @@ namespace pressio{ namespace containers{ namespace predicates {
 template <typename T, typename enable = void>
 struct is_admissible_as_multi_vector_arbitrary : std::false_type
 {
-  static_assert
-  (!containers::predicates::is_wrapper<T>::value,
-   "You cannot wrap a pressio container as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_wrapper<T>::value,
+		"You cannot wrap a pressio container as a pressio::containers::MultiVector<>.");
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   // an Eigen row major matrix is admissible for an arbitrary
-  static_assert
-  (!containers::predicates::is_dense_row_major_matrix_eigen<T>::value,
-   "You cannot wrap a row-major Eigen matrix as a pressio::containers::MultiVector<>. \
+  static_assert(!containers::predicates::is_dense_row_major_matrix_eigen<T>::value,
+		"You cannot wrap a row-major Eigen matrix as a pressio::containers::MultiVector<>. \
    MultiVectors must be column-major.");
 
-  static_assert
-  (!containers::predicates::is_sparse_matrix_eigen<T>::value,
-   "You cannot wrap an Eigen sparse matrix as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_sparse_matrix_eigen<T>::value,
+		"You cannot wrap an Eigen sparse matrix as a pressio::containers::MultiVector<>.");
 
-  static_assert
-  (!containers::predicates::is_vector_eigen<T>::value,
-   "You cannot wrap an Eigen vector as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_vector_eigen<T>::value,
+		"You cannot wrap an Eigen vector as a pressio::containers::MultiVector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  static_assert
-  (!containers::predicates::is_vector_epetra<T>::value,
-   "You cannot wrap an Epetra vector as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_vector_epetra<T>::value,
+		"You cannot wrap an Epetra vector as a pressio::containers::MultiVector<>.");
 
-  static_assert
-  (!containers::predicates::is_vector_tpetra_block<T>::value,
-   "You cannot wrap a Tpetra block vector as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_vector_tpetra_block<T>::value,
+		"You cannot wrap a Tpetra block vector as a pressio::containers::MultiVector<>.");
 
-  static_assert
-  (!containers::predicates::is_vector_tpetra<T>::value,
-   "You cannot wrap a Tpetra vector as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_vector_tpetra<T>::value,
+		"You cannot wrap a Tpetra vector as a pressio::containers::MultiVector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  static_assert
-  (!containers::predicates::is_vector_kokkos<T>::value,
-   "You cannot wrap a Kokkos 1d view as a pressio::containers::MultiVector<>.");
+  static_assert(!containers::predicates::is_vector_kokkos<T>::value,
+		"You cannot wrap a Kokkos 1d view as a pressio::containers::MultiVector<>.");
 #endif
 };
 
@@ -117,35 +109,28 @@ template <typename T>
 struct is_admissible_as_multi_vector_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<T>::value
-    and !containers::predicates::is_wrapper<T>::value
-    //
+    !std::is_void<T>::value and !containers::predicates::is_wrapper<T>::value
+//
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-    and !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
-    and !containers::predicates::is_dense_row_major_matrix_eigen<T>::value
-    and !containers::predicates::is_sparse_matrix_eigen<T>::value
-    and !containers::predicates::is_vector_eigen<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value and !containers::predicates::is_dense_row_major_matrix_eigen<T>::value and !containers::predicates::is_sparse_matrix_eigen<T>::value and !containers::predicates::is_vector_eigen<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !containers::predicates::is_array_pybind<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-    and !containers::predicates::is_multi_vector_epetra<T>::value
-    and !containers::predicates::is_vector_epetra<T>::value
+    and !containers::predicates::is_multi_vector_epetra<T>::value and !containers::predicates::is_vector_epetra<T>::value
     //
-    and !containers::predicates::is_multi_vector_tpetra_block<T>::value
-    and !containers::predicates::is_vector_tpetra_block<T>::value
+    and !containers::predicates::is_multi_vector_tpetra_block<T>::value and !containers::predicates::is_vector_tpetra_block<T>::value
     //
-    and !containers::predicates::is_multi_vector_tpetra<T>::value
-    and !containers::predicates::is_vector_tpetra<T>::value
+    and !containers::predicates::is_multi_vector_tpetra<T>::value and !containers::predicates::is_vector_tpetra<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
-    and !containers::predicates::is_vector_kokkos<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value and !containers::predicates::is_vector_kokkos<T>::value
 #endif
-    >
-  > : std::true_type{};
+    >> : std::true_type
+{
+};
 
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_HPP_
+#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_MULTI_VECTOR_HPP_

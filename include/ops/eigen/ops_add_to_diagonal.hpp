@@ -49,12 +49,11 @@
 #ifndef OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
 #define OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T>::value
-  >
+  ::pressio::containers::predicates::is_sparse_matrix_wrapper_eigen<T>::value>
 addToDiagonal(T & o,
 	      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
@@ -67,4 +66,4 @@ addToDiagonal(T & o,
 
 
 }}//end namespace pressio::ops
-#endif  // OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
+#endif// OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_

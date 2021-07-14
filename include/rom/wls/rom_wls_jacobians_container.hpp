@@ -51,13 +51,13 @@
 
 #include "./impl/rom_wls_jacobians_container_impl.hpp"
 
-namespace pressio{ namespace rom{ namespace wls{
+namespace pressio { namespace rom { namespace wls {
 
-template<typename ... Args>
+template <typename... Args>
 using FrozenJacobiansContainer = ::pressio::rom::wls::impl::FrozenJacobiansContainer<Args...>;
 
-template<typename ... Args>
+template <typename... Args>
 using NonFrozenJacobiansContainer = ::pressio::rom::wls::impl::NonFrozenJacobiansContainer<Args...>;
 
-}}} // end namespace pressio::rom::wls
-#endif  // ROM_WLS_ROM_WLS_JACOBIANS_CONTAINER_HPP_
+}}}// end namespace pressio::rom::wls
+#endif// ROM_WLS_ROM_WLS_JACOBIANS_CONTAINER_HPP_

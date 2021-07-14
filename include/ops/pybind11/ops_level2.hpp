@@ -49,18 +49,17 @@
 #ifndef OPS_PYBIND11_OPS_LEVEL2_HPP_
 #define OPS_PYBIND11_OPS_LEVEL2_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 /*
  * y = beta * y + alpha*A*x
  * where y,A,x are tensor wrappers
 */
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value and
   containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value
->
+  containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value>
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -68,24 +67,23 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 
-  assert( y.extent(0) == A.extent(0) );
-  assert( x.extent(0) == A.extent(1) );
+  assert(y.extent(0) == A.extent(0));
+  assert(x.extent(0) == A.extent(1));
   const auto & A_native = *A.data();
   const auto & x_native = *x.data();
   auto & y_native = *y.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
-  constexpr auto transA	    = izero;
+  constexpr auto izero = ::pressio::utils::constants<int>::zero();
+  constexpr auto ione = ::pressio::utils::constants<int>::one();
+  constexpr auto transA = izero;
   constexpr auto overWritey = ione;
   pyblas_.attr("dgemv")(alpha, A_native, x_native, beta, y_native,
 			izero, ione, izero, ione, transA, overWritey);
@@ -95,12 +93,11 @@ product(::pressio::nontranspose mode,
  * y = beta * y + alpha*A^T*x
  * where y,A,x are tensor wrappers
 */
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value and
   containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value
-  >
+  containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value>
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -108,24 +105,23 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
 
   // NOTE: need to check if doing this import is expensive,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
   pybind11::object pyblas_ = pybind11::module::import("scipy.linalg.blas");
 
-  assert( y.extent(0) == A.extent(1) );
-  assert( x.extent(0) == A.extent(0) );
+  assert(y.extent(0) == A.extent(1));
+  assert(x.extent(0) == A.extent(0));
   const auto & AE = *A.data();
   const auto & xE = *x.data();
   auto & yE = *y.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
-  constexpr auto transA	    = ione;
+  constexpr auto izero = ::pressio::utils::constants<int>::zero();
+  constexpr auto ione = ::pressio::utils::constants<int>::one();
+  constexpr auto transA = ione;
   constexpr auto overWritey = ione;
   pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE,
 			izero, ione, izero, ione, transA, overWritey);
@@ -137,11 +133,10 @@ product(::pressio::transpose mode,
  * where y,A are tensor wrappers
  * x is span expression
 */
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<y_type>::value and
-  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value
->
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value>
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -149,22 +144,21 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
 
-  assert( y.extent(0) == A.extent(0) );
-  assert( x.extent(0) == A.extent(1) );
+  assert(y.extent(0) == A.extent(0));
+  assert(x.extent(0) == A.extent(1));
 
   const auto nArows = A.extent(0);
   const auto nAcols = A.extent(1);
 
-  for (std::size_t i=0; i<nArows; ++i){
-    y(i) = beta*y(i);
+  for(std::size_t i = 0; i < nArows; ++i) {
+    y(i) = beta * y(i);
   }
-  for (std::size_t j=0; j<nAcols; ++j){
-    for (std::size_t i=0; i<nArows; ++i){
-      y(i) += alpha * A(i,j) * x(j);
+  for(std::size_t j = 0; j < nAcols; ++j) {
+    for(std::size_t i = 0; i < nArows; ++i) {
+      y(i) += alpha * A(i, j) * x(j);
     }
   }
 }
@@ -174,11 +168,10 @@ product(::pressio::nontranspose mode,
  * where A,x are tensor wrappers
  * y is span expression
 */
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template <typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<x_type>::value and
-  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value
->
+  containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<A_type>::value>
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -186,19 +179,18 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	pressio::containers::expressions::SpanExpr<y_type> & y)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+		"Types are not scalar compatible");
 
-  assert( y.extent(0) == A.extent(1) );
-  assert( x.extent(0) == A.extent(0) );
-  for (std::size_t i=0; i<A.extent(1); i++){
+  assert(y.extent(0) == A.extent(1));
+  assert(x.extent(0) == A.extent(0));
+  for(std::size_t i = 0; i < A.extent(1); i++) {
     y(i) = beta * y(i);
-    for (std::size_t j=0; j<x.extent(0); j++){
-      y(i) += alpha * A(j,i) * x(j);
+    for(std::size_t j = 0; j < x.extent(0); j++) {
+      y(i) += alpha * A(j, i) * x(j);
     }
   }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_LEVEL2_HPP_
+#endif// OPS_PYBIND11_OPS_LEVEL2_HPP_

@@ -49,43 +49,45 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_JACOBIAN_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
+namespace pressio { namespace rom { namespace galerkin { namespace constraints {
 
-template<typename T, typename enable = void>
-struct jacobian : std::false_type{};
+template <typename T, typename enable = void>
+struct jacobian : std::false_type
+{
+};
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename T>
+template <typename T>
 struct jacobian<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
-    >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value>> : std::true_type
+{
+};
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename T>
+template <typename T>
 struct jacobian<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value>> : std::true_type
+{
+};
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template<typename T>
+template <typename T>
 struct jacobian<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
-   >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value>> : std::true_type
+{
+};
 #endif
 
-template<typename T>
+template <typename T>
 using galerkin_jacobian = jacobian<T>;
 
-}}}} // namespace pressio::ode::constraints
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_JACOBIAN_HPP_
+}}}}// namespace pressio::ode::constraints
+#endif// ROM_GALERKIN_CONSTRAINTS_ROM_GALERKIN_JACOBIAN_HPP_

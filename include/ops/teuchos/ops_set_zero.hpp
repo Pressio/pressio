@@ -49,17 +49,17 @@
 #ifndef OPS_TEUCHOS_OPS_SET_ZERO_HPP_
 #define OPS_TEUCHOS_OPS_SET_ZERO_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
-  >
-set_zero(T & v){
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value>
+set_zero(T & v)
+{
   using value_type = typename ::pressio::containers::details::traits<T>::scalar_t;
   constexpr auto zero = ::pressio::utils::constants<value_type>::zero();
   v.data()->putScalar(zero);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TEUCHOS_OPS_SET_ZERO_HPP_
+#endif// OPS_TEUCHOS_OPS_SET_ZERO_HPP_

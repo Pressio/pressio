@@ -49,25 +49,24 @@
 #ifndef ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 #define ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
 
-namespace pressio{ namespace rom{ namespace constraints {
+namespace pressio { namespace rom { namespace constraints {
 
-template<
+template <
   typename T,
   typename mat_type, typename rom_state_type, typename fom_state_type,
-  typename enable = void
-  >
+  typename enable = void>
 struct custom_ops_for_linear_decoder
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 
 template <
-  typename T, typename mat_type, typename rom_state_type, typename fom_state_type
-  >
+  typename T, typename mat_type, typename rom_state_type, typename fom_state_type>
 struct custom_ops_for_linear_decoder<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::constraints::decoder_jacobian<mat_type>::value 
-    and
+    ::pressio::rom::constraints::decoder_jacobian<mat_type>::value and
     // check that ops support phi * romState
     ::pressio::ops::predicates::has_void_method_product_mat_vec<
       T,
@@ -75,8 +74,7 @@ struct custom_ops_for_linear_decoder<
       typename ::pressio::containers::details::traits<mat_type>::scalar_t,
       typename ::pressio::containers::details::traits<mat_type>::wrapped_t,
       rom_state_type,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
-      >::value 
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t>::value
     // and
     // check that ops support phi * span(romState)
     // ::pressio::ops::predicates::has_void_method_product_mat_vec<
@@ -87,8 +85,9 @@ struct custom_ops_for_linear_decoder<
     //   typename ::pressio::containers::details::traits<rom_state_type>::span_const_ret_t,
     //   typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
     //   >::value
-    >
-  > : std::true_type{};
+    >> : std::true_type
+{
+};
 
-}}} // namespace pressio::rom::constraints
-#endif  // ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_
+}}}// namespace pressio::rom::constraints
+#endif// ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_LINEAR_DECODER_HPP_

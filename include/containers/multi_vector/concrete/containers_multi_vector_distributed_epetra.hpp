@@ -49,16 +49,14 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_EPETRA_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_EPETRA_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_multi_vector_epetra<
-      wrapped_type>::value
-    >
-  >
+      wrapped_type>::value>>
 {
 
 public:
@@ -75,10 +73,10 @@ public:
   MultiVector() = delete;
 
   MultiVector(const map_t & mapobj, GO_t numVectors)
-    : data_(mapobj, numVectors){}
+    : data_(mapobj, numVectors) {}
 
   explicit MultiVector(const wrap_t & other)
-    : data_(other){}
+    : data_(other) {}
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
@@ -92,35 +90,42 @@ public:
   ~MultiVector() = default;
 
 public:
-  sc_t & operator()(LO_t irow, GO_t icol){
+  sc_t & operator()(LO_t irow, GO_t icol)
+  {
     assert(irow < data_.MyLength());
     assert(icol < data_.NumVectors());
     return data_[icol][irow];
   }
 
-  sc_t const & operator()(LO_t irow, GO_t icol)const{
+  sc_t const & operator()(LO_t irow, GO_t icol) const
+  {
     assert(irow < data_.MyLength());
     assert(icol < data_.NumVectors());
     return data_[icol][irow];
   }
 
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   }
 
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   }
 
-  GO_t numVectors() const{
+  GO_t numVectors() const
+  {
     return data_.NumVectors();
   }
 
-  GO_t numVectorsGlobal() const{
+  GO_t numVectorsGlobal() const
+  {
     return data_.NumVectors();
   }
 
-  LO_t numVectorsLocal() const{
+  LO_t numVectorsLocal() const
+  {
     // it is the same because epetra multivectors
     // are distributed on data, but each process owns
     // a part of each vector
@@ -128,15 +133,17 @@ public:
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extent(std::size_t i) const{
-    assert(i<=1);
-    return (i==0) ? data_.GlobalLength() : data_.NumVectors();
+  GO_t extent(std::size_t i) const
+  {
+    assert(i <= 1);
+    return (i == 0) ? data_.GlobalLength() : data_.NumVectors();
   }
 
-  LO_t extentLocal(std::size_t i) const{
+  LO_t extentLocal(std::size_t i) const
+  {
     // each process owns all cols
-    assert(i<=1);
-    return (i==0) ? data_.MyLength() : data_.NumVectors();
+    assert(i <= 1);
+    return (i == 0) ? data_.MyLength() : data_.NumVectors();
   }
 
 private:
@@ -146,4 +153,4 @@ private:
 
 }}//end namespace pressio::containers
 
-#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_EPETRA_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_EPETRA_HPP_

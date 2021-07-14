@@ -49,38 +49,35 @@
 #ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
 #define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
 
-namespace pressio{ namespace solvers{ namespace predicates {
+namespace pressio { namespace solvers { namespace predicates {
 
 template <
   typename T,
   typename state_t,
   typename res_t,
-  typename = void
-  >
+  typename = void>
 struct has_const_residual_method_accept_state_result_return_void
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <
   typename T,
   typename state_t,
-  typename res_t
-  >
+  typename res_t>
 struct has_const_residual_method_accept_state_result_return_void<
-  T, state_t, res_t,  
+  T, state_t, res_t,
   mpl::enable_if_t<
     std::is_void<
       decltype(
-         std::declval<T const>().residual
-            (
-              std::declval<state_t const &>(),
-              std::declval<res_t &>()
-              // ::pressio::Norm::Undefined,
-              // std::declval<norm_t &>()
-            )
-         )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().residual(
+	  std::declval<state_t const &>(),
+	  std::declval<res_t &>()
+	  // ::pressio::Norm::Undefined,
+	  // std::declval<norm_t &>()
+	  ))>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::solvers::predicates
-#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+}}}// namespace pressio::solvers::predicates
+#endif// SOLVERS_PREDICATES_SOLVERS_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_

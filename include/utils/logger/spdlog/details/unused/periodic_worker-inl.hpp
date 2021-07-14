@@ -46,6 +46,6 @@ namespace details {
 //     }
 // }
 
-} // namespace details
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_
+}// namespace details
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_PERIODIC_WORKER_INL_HPP_

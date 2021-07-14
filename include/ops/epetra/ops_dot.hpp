@@ -49,12 +49,11 @@
 #ifndef OPS_EPETRA_OPS_DOT_HPP_
 #define OPS_EPETRA_OPS_DOT_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value
-  >
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value>
 dot(const vec_type & a,
     const vec_type & b,
     typename vec_type::traits::scalar_t & result)
@@ -66,8 +65,7 @@ dot(const vec_type & a,
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_epetra<vec_type>::value,
-  typename vec_type::traits::scalar_t
-  >
+  typename vec_type::traits::scalar_t>
 dot(const vec_type & a, const vec_type & b)
 {
   using sc_t = typename vec_type::traits::scalar_t;
@@ -77,4 +75,4 @@ dot(const vec_type & a, const vec_type & b)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_EPETRA_OPS_DOT_HPP_
+#endif// OPS_EPETRA_OPS_DOT_HPP_

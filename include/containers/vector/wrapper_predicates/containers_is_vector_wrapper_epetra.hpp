@@ -49,19 +49,24 @@
 #ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EPETRA_HPP_
 #define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EPETRA_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_wrapper_epetra : std::false_type {};
+struct is_vector_wrapper_epetra : std::false_type
+{
+};
 
 template <typename T>
 struct is_vector_wrapper_epetra<
-  Vector<T>, mpl::enable_if_t<is_vector_epetra<T>::value>
-  > : std::true_type{};
+  Vector<T>, mpl::enable_if_t<is_vector_epetra<T>::value>> : std::true_type
+{
+};
 
 template <typename T>
 struct is_vector_wrapper_epetra<const Vector<T>>
-  : is_vector_wrapper_epetra<Vector<T>>{};
+  : is_vector_wrapper_epetra<Vector<T>>
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EPETRA_HPP_
+#endif// CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_EPETRA_HPP_

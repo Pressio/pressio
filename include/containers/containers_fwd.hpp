@@ -49,47 +49,80 @@
 #ifndef CONTAINERS_CONTAINERS_FWD_HPP_
 #define CONTAINERS_CONTAINERS_FWD_HPP_
 
-namespace pressio{
+namespace pressio {
 
-struct view{};
-struct matrixFull{};
-struct matrixUpperTriangular{};
-struct matrixLowerTriangular{};
+struct view
+{
+};
+struct matrixFull
+{
+};
+struct matrixUpperTriangular
+{
+};
+struct matrixLowerTriangular
+{
+};
 
-namespace containers{
+namespace containers {
 
 namespace details {
-template<class T, class enable = void> struct traits;
-template<class T> struct traits<const T> : traits<T> {};
+template <class T, class enable = void>
+struct traits;
+template <class T>
+struct traits<const T> : traits<T>
+{
+};
 }//end namespace pressio::containers::details
 
-template <class wrapped_type, class Enable = void> class Vector;
-template <class wrapped_type, class Enable = void> class MultiVector;
-template <class wrapped_type, class Enable = void> class DenseMatrix;
-template <class wrapped_type, class Enable = void> class SparseMatrix;
-template <int rank, class wrapped_type, class Enable = void> class Tensor;
+template <class wrapped_type, class Enable = void>
+class Vector;
+template <class wrapped_type, class Enable = void>
+class MultiVector;
+template <class wrapped_type, class Enable = void>
+class DenseMatrix;
+template <class wrapped_type, class Enable = void>
+class SparseMatrix;
+template <int rank, class wrapped_type, class Enable = void>
+class Tensor;
 
-namespace predicates{
+namespace predicates {
 template <typename T, typename enable = void>
-struct is_wrapper : std::false_type {};
+struct is_wrapper : std::false_type
+{
+};
 
-template<class T, class enable = void>
-struct sharedmem_vector_wrapper : std::false_type{};
+template <class T, class enable = void>
+struct sharedmem_vector_wrapper : std::false_type
+{
+};
 
-template<class T, class enable = void>
-struct sharedmem_host_accessible_vector_wrapper : std::false_type{};
+template <class T, class enable = void>
+struct sharedmem_host_accessible_vector_wrapper : std::false_type
+{
+};
 
-template<typename T, typename enable = void>
-struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type{};
+template <typename T, typename enable = void>
+struct sharedmem_host_accessible_dense_matrix_wrapper : std::false_type
+{
+};
 }//end namespace pressio::containers::predicates
 
-namespace expressions{
-template <class derived_type> class BaseExpr{};
-template <class T, class enable = void> struct SubspanExpr;
-template <class T, class enable = void> struct SpanExpr;
-template <class T, class enable = void> struct DiagExpr;
-template <class T, class enable = void> struct AsDiagonalMatrixExpr;
+namespace expressions {
+template <class derived_type>
+class BaseExpr
+{
+};
+template <class T, class enable = void>
+struct SubspanExpr;
+template <class T, class enable = void>
+struct SpanExpr;
+template <class T, class enable = void>
+struct DiagExpr;
+template <class T, class enable = void>
+struct AsDiagonalMatrixExpr;
 }//end namespace pressio::containers::expresssions
 
-}} // end namespace pressio::containers
-#endif  // CONTAINERS_CONTAINERS_FWD_HPP_
+}
+}// end namespace pressio::containers
+#endif// CONTAINERS_CONTAINERS_FWD_HPP_

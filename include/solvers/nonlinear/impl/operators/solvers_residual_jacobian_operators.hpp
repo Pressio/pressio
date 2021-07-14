@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
 #define SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 template <typename r_t, typename j_t>
 class ResidualJacobianOperators
@@ -79,108 +79,106 @@ public:
     typename system_t, typename state_t,
     mpl::enable_if_t<
       pressio::solvers::constraints::system_residual_jacobian<system_t>::value or
-      pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
-      int
-     > = 0
-  >
+	pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value,
+      int> = 0>
   ResidualJacobianOperators(const system_t & system,
 			    const state_t & state)
-    : r_( system.createResidual() ),
-      J_( system.createJacobian() ),
-      auxR_( system.createResidual() )
+    : r_(system.createResidual()),
+      J_(system.createJacobian()),
+      auxR_(system.createResidual())
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(J_);
   }
 
 public:
-  void resetForNewCall()	{ /* no op */ }
-  r_t & residualRef()		{ return r_; }
-  j_t & jacobianRef()		{ return J_; }
+  void resetForNewCall()
+  { /* no op */
+  }
+  r_t & residualRef() { return r_; }
+  j_t & jacobianRef() { return J_; }
   const r_t & residualCRef() const { return r_; }
   const j_t & jacobianCRef() const { return J_; }
 
   template <typename T>
-  void setParameter(std::string key, T value) {
+  void setParameter(std::string key, T value)
+  {
     throw std::runtime_error("ResidualJacobian operators do not have parameters");
   }
 
-  sc_t getParameter(std::string key) const {
+  sc_t getParameter(std::string key) const
+  {
     throw std::runtime_error("ResidualJacobian operators do not have parameters");
     return {};
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
-  >
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
-		   bool recomputeSystemJacobian=true)
+		   bool recomputeSystemJacobian = true)
   {
 
     sys.residual(state, r_);
     residualNorm = ::pressio::ops::norm2(r_);
 
-    if (std::isnan(residualNorm)){
+    if(std::isnan(residualNorm)) {
       throw ::pressio::eh::residual_has_nans();
     }
 
-    if  (recomputeSystemJacobian){
+    if(recomputeSystemJacobian) {
       sys.jacobian(state, J_);
     }
   }
 
-  template<typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
-    >
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value>
   computeOperators(const system_t & sys,
 		   const state_t & state,
 		   sc_t & residualNorm,
-		   bool recomputeSystemJacobian=true)
+		   bool recomputeSystemJacobian = true)
   {
     sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
     residualNorm = ::pressio::ops::norm2(r_);
 
-    if (std::isnan(residualNorm)){
+    if(std::isnan(residualNorm)) {
       throw ::pressio::eh::residual_has_nans();
     }
   }
 
-  template< typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_residual_jacobian<system_t>::value
-    >
+    pressio::solvers::constraints::system_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system,
-         const state_t & state,
-         sc_t & residualNorm) const
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     system.residual(state, auxR_);
     residualNorm = ::pressio::ops::norm2(auxR_);
 
-    if (std::isnan(residualNorm)){
+    if(std::isnan(residualNorm)) {
       throw ::pressio::eh::residual_has_nans();
     }
   }
 
-  template< typename system_t, typename state_t>
+  template <typename system_t, typename state_t>
   mpl::enable_if_t<
-    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value
-    >
+    pressio::solvers::constraints::system_fused_residual_jacobian<system_t>::value>
   residualNorm(const system_t & system,
-         const state_t & state,
-         sc_t & residualNorm) const
+	       const state_t & state,
+	       sc_t & residualNorm) const
   {
     system.residualAndJacobian(state, auxR_, J_, false);
     residualNorm = ::pressio::ops::norm2(auxR_);
 
-    if (std::isnan(residualNorm)){
+    if(std::isnan(residualNorm)) {
       throw ::pressio::eh::residual_has_nans();
     }
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_OPERATORS_SOLVERS_RESIDUAL_JACOBIAN_OPERATORS_HPP_

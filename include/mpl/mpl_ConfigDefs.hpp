@@ -57,4 +57,4 @@
 #include <cstddef>
 #include <tuple>
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+#endif// MPL_MPL_CONFIGDEFS_HPP_

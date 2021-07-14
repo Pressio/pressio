@@ -49,26 +49,23 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_tpetra_block<
-      wrapped_type
-      >::value
-    >
-  >
+      wrapped_type>::value>>
 {
 public:
-  using this_t	= Vector<wrapped_type>;
-  using traits	= details::traits<this_t>;
-  using sc_t	= typename details::traits<this_t>::scalar_t;
-  using LO_t	= typename details::traits<this_t>::local_ordinal_t;
-  using GO_t	= typename details::traits<this_t>::global_ordinal_t;
-  using device_t= typename details::traits<this_t>::device_t;
-  using map_t	= typename details::traits<this_t>::data_map_t;
+  using this_t = Vector<wrapped_type>;
+  using traits = details::traits<this_t>;
+  using sc_t = typename details::traits<this_t>::scalar_t;
+  using LO_t = typename details::traits<this_t>::local_ordinal_t;
+  using GO_t = typename details::traits<this_t>::global_ordinal_t;
+  using device_t = typename details::traits<this_t>::device_t;
+  using map_t = typename details::traits<this_t>::data_map_t;
 
 public:
   Vector() = delete;
@@ -79,23 +76,24 @@ public:
   // just construct the vecrtor using map and block size.
 
   explicit Vector(const wrapped_type & vecobj)
-    : data_( *vecobj.getMap(), vecobj.getBlockSize())
+    : data_(*vecobj.getMap(), vecobj.getBlockSize())
   {
     // just a trick to copy data
     data_.update(::pressio::utils::constants<sc_t>::one(),
-     vecobj,
-     ::pressio::utils::constants<sc_t>::zero());
+		 vecobj,
+		 ::pressio::utils::constants<sc_t>::zero());
   }
 
   explicit Vector(wrapped_type && vecobj)
-    : Vector(vecobj){}
+    : Vector(vecobj) {}
 
   explicit Vector(const map_t & mapO, LO_t blockSize)
-    : data_(mapO, blockSize){}
+    : data_(mapO, blockSize) {}
 
 
   // copy cnstr delegating (for now) to the one above
-  Vector(Vector const & other) : Vector(*other.data()){}
+  Vector(Vector const & other)
+    : Vector(*other.data()) {}
 
   // delete copy assign to force usage of ops::deep_copy
   Vector & operator=(const Vector & other) = delete;
@@ -115,47 +113,52 @@ public:
     for now let's not implement move for tpetra block wrapper.
   */
   // move cnstr
-  Vector(Vector && other) : Vector(*other.data()){}
+  Vector(Vector && other)
+    : Vector(*other.data()) {}
   //   : data_(other.data_, Teuchos::Copy){}
 
   // move assignment
   Vector & operator=(Vector && other)
   {
     this->data_.update(::pressio::utils::constants<sc_t>::one(),
-           *other.data(),
-           ::pressio::utils::constants<sc_t>::zero() );
+		       *other.data(),
+		       ::pressio::utils::constants<sc_t>::zero());
     return *this;
   }
 
   ~Vector() = default;
 
 public:
-  wrapped_type const * data() const{
+  wrapped_type const * data() const
+  {
     return &data_;
   }
 
-  wrapped_type * data(){
+  wrapped_type * data()
+  {
     return &data_;
   }
 
-  wrapped_type dataCp(){
+  wrapped_type dataCp()
+  {
     return data_;
   }
 
-  GO_t extent(std::size_t i) const{
-    assert(i==0);
+  GO_t extent(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.getMap()->getGlobalNumElements();
   }
 
-  LO_t extentLocal(std::size_t i) const{
-    assert(i==0);
+  LO_t extentLocal(std::size_t i) const
+  {
+    assert(i == 0);
     return data_.getMap()->getNodeNumElements();
   }
 
 private:
   wrapped_type data_ = {};
-
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_
+#endif// CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_DISTRIBUTED_TPETRA_BLOCK_HPP_

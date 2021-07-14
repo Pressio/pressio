@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 template <class fom_states_manager_t, class fom_apply_jac_type, class decoder_type>
 class FomApplyJacobianPolicy
@@ -70,19 +70,20 @@ public:
   FomApplyJacobianPolicy & operator=(FomApplyJacobianPolicy &&) = delete;
   ~FomApplyJacobianPolicy() = default;
 
-  template<typename fom_system_t>
+  template <typename fom_system_t>
   FomApplyJacobianPolicy(const fom_system_t & fomSystemObj,
 			 fom_states_manager_t & fomStatesMngr,
 			 const decoder_type & decoder)
     : fomStatesMngr_(fomStatesMngr),
       phi_(decoder.jacobianCRef()),
       fomApplyJac_(fomSystemObj.createApplyJacobianResult(*phi_.get().data()))
-  {}
+  {
+  }
 
 public:
-  template<class galerkin_state_t, typename fom_system_t, typename scalar_t>
+  template <class galerkin_state_t, typename fom_system_t, typename scalar_t>
   void compute(const galerkin_state_t & galerkinState,
-	       const fom_system_t  & fomSystemObj,
+	       const fom_system_t & fomSystemObj,
 	       const scalar_t & evaluationTime) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -106,8 +107,8 @@ public:
 #endif
   }
 
-  const fom_apply_jac_type & get() const{ return fomApplyJac_; }
+  const fom_apply_jac_type & get() const { return fomApplyJac_; }
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
-#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
+#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_

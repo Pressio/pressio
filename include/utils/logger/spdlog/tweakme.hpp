@@ -115,4 +115,4 @@
 //
 // #define SPDLOG_FUNCTION __PRETTY_FUNCTION__
 ///////////////////////////////////////////////////////////////////////////////
-#endif  // UTILS_LOGGER_SPDLOG_TWEAKME_HPP_
+#endif// UTILS_LOGGER_SPDLOG_TWEAKME_HPP_

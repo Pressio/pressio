@@ -49,22 +49,20 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value
-    >
-  >
+    containers::predicates::is_admissible_as_multi_vector_kokkos<wrapped_type>::value>>
 {
 public:
   using this_t = MultiVector<wrapped_type>;
   using traits = details::traits<this_t>;
   using mytraits = typename details::traits<this_t>;
   using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename  mytraits::ordinal_t;
+  using ord_t = typename mytraits::ordinal_t;
   using wrap_t = typename mytraits::wrapped_t;
 
   // Views have "view semantics." copy constructor and
@@ -77,15 +75,16 @@ public:
   MultiVector() = default;
 
   explicit MultiVector(const wrap_t & src)
-    : data_{src.label(), src.extent(0), src.extent(1)}{
+    : data_{src.label(), src.extent(0), src.extent(1)}
+  {
     Kokkos::deep_copy(data_, src);
   }
 
   MultiVector(wrap_t && src)
-    : data_(std::move(src)){}
+    : data_(std::move(src)) {}
 
   MultiVector(const std::string & label, size_t e1, size_t e2)
-    : data_{label, e1, e2}{}
+    : data_{label, e1, e2} {}
 
   // copy constr
   MultiVector(const MultiVector & other)
@@ -113,50 +112,58 @@ public:
   ~MultiVector() = default;
 
 public:
-  wrap_t const * data() const{
+  wrap_t const * data() const
+  {
     return &data_;
   }
-  wrap_t * data(){
+  wrap_t * data()
+  {
     return &data_;
   }
 
-  wrap_t dataCp(){
+  wrap_t dataCp()
+  {
     return data_;
   }
 
-  template< typename _wrapped_type = wrapped_type >
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
     sc_t &>
-  operator () (ord_t i, ord_t j){
-    assert(i < this->extent(0));
-    assert(j < this->extent(1));
-    return data_(i,j);
-  };
-
-  template< typename _wrapped_type = wrapped_type >
-  mpl::enable_if_t<
-    // todo: not entirely correct because this would work also
-    // for UMV space, needs to be fixed
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
-    sc_t const &>
-  operator () (ord_t i, ord_t j) const{
+  operator()(ord_t i, ord_t j)
+  {
     assert(i < this->extent(0));
     assert(j < this->extent(1));
     return data_(i, j);
   };
 
-  ord_t extent(ord_t i) const {
+  template <typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: not entirely correct because this would work also
+    // for UMV space, needs to be fixed
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    sc_t const &>
+  operator()(ord_t i, ord_t j) const
+  {
+    assert(i < this->extent(0));
+    assert(j < this->extent(1));
+    return data_(i, j);
+  };
+
+  ord_t extent(ord_t i) const
+  {
     return data_.extent(i);
   }
 
-  ord_t numVectors() const{
+  ord_t numVectors() const
+  {
     return data_.extent(1);
   }
 
-  ord_t length() const{
+  ord_t length() const
+  {
     return data_.extent(0);
   }
 
@@ -165,4 +172,4 @@ private:
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_KOKKOS_HPP_

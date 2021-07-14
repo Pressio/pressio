@@ -49,20 +49,21 @@
 #ifndef CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
 #define CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct has_communicator_typedef : std::false_type{};
+struct has_communicator_typedef : std::false_type
+{
+};
 
 template <typename T>
 struct has_communicator_typedef<
   T,
   typename std::enable_if<
     !std::is_void<
-      typename T::communicator_type
-      >::value
-    >::type
-  > : std::true_type{};
+      typename T::communicator_type>::value>::type> : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_
+#endif// CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_

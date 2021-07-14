@@ -51,16 +51,16 @@
 
 #include "apps_burgers1d_arb_ds.hpp"
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
 class Burgers1dArbDsContinuousTimeApiAdapter
 {
-  using int_t     = typename Burgers1dArbDs::int_t;
+  using int_t = typename Burgers1dArbDs::int_t;
 
 public:
-  using scalar_type	  = typename Burgers1dArbDs::scalar_type;
-  using state_type	  = typename Burgers1dArbDs::state_type;
-  using velocity_type    = typename Burgers1dArbDs::velocity_type;
+  using scalar_type = typename Burgers1dArbDs::scalar_type;
+  using state_type = typename Burgers1dArbDs::state_type;
+  using velocity_type = typename Burgers1dArbDs::velocity_type;
   using jacobian_type = typename Burgers1dArbDs::jacobian_type;
   using dense_matrix_type = arbds::DenseMatrix<scalar_type>;
 
@@ -69,22 +69,24 @@ public:
   Burgers1dArbDsContinuousTimeApiAdapter(const Burgers1dArbDs & appObj)
     : appObj_{appObj},
       f_{appObj.meshSize()},
-      JJ_{appObj.meshSize(), appObj.meshSize()}{}
+      JJ_{appObj.meshSize(), appObj.meshSize()} {}
 
 public:
-  velocity_type createVelocity() const{
+  velocity_type createVelocity() const
+  {
     return f_;
   }
 
   // computes: A = Jac B
-  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const{
-    dense_matrix_type A( appObj_.meshSize(), B.extent(1) );
+  dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
+  {
+    dense_matrix_type A(appObj_.meshSize(), B.extent(1));
     return A;
   }
 
   void velocity(const state_type & u,
-  		const scalar_type & t,
-  		velocity_type & f) const
+		const scalar_type & t,
+		velocity_type & f) const
   {
     appObj_.velocity(u, t, f);
   }
@@ -97,11 +99,11 @@ public:
   {
     appObj_.jacobian(y, t, JJ_);
 
-    for (int_t i=0; i<A.extent(0); ++i){
-      for (int_t j=0; j<A.extent(1); ++j){
-	A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
-	for (int_t k=0; k<JJ_.extent(1); ++k){
-	  A(i,j) += JJ_(i,k) * B(k,j);
+    for(int_t i = 0; i < A.extent(0); ++i) {
+      for(int_t j = 0; j < A.extent(1); ++j) {
+	A(i, j) = ::pressio::utils::constants<scalar_type>::zero();
+	for(int_t k = 0; k < JJ_.extent(1); ++k) {
+	  A(i, j) += JJ_(i, k) * B(k, j);
 	}
       }
     }
@@ -114,5 +116,5 @@ private:
 
 };//end class
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CONTINUOUS_TIME_API_ADAPTER_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CONTINUOUS_TIME_API_ADAPTER_HPP_

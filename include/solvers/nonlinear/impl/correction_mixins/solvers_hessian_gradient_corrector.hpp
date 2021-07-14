@@ -49,9 +49,9 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_HPP_
 #define SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
-template<typename T, typename state_type, typename lin_solver_t>
+template <typename T, typename state_type, typename lin_solver_t>
 class HessianGradientCorrector : public T
 {
 public:
@@ -69,11 +69,11 @@ private:
 public:
   HessianGradientCorrector() = delete;
 
-  template <typename system_t, typename lsT, typename ...Args>
+  template <typename system_t, typename lsT, typename... Args>
   HessianGradientCorrector(const system_t & system,
 			   const state_type & state,
 			   lsT && solverIn,
-			   Args && ... args)
+			   Args &&... args)
     : T(system, state, std::forward<Args>(args)...),
       correction_(state),
       solverObj_(std::forward<lsT>(solverIn))
@@ -82,16 +82,17 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-  template <typename system_t, typename lsT, typename ...Args>
+  template <typename system_t, typename lsT, typename... Args>
   HessianGradientCorrector(const system_t & system,
 			   const state_wrapped_t & state,
 			   lsT && solverIn,
-			   Args && ... args)
+			   Args &&... args)
     : HessianGradientCorrector(system,
 			       state_type(state) /*needs a wrapped object*/,
 			       std::forward<lsT>(solverIn),
 			       std::forward<Args>(args)...)
-  {}
+  {
+  }
 
   HessianGradientCorrector(HessianGradientCorrector const &) = default;
   HessianGradientCorrector & operator=(HessianGradientCorrector const &) = default;
@@ -118,30 +119,36 @@ public:
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g);
   }
 
-  bool hasGradientComputation() const {
+  bool hasGradientComputation() const
+  {
     return true;
   }
 
-  void resetForNewCall(){
+  void resetForNewCall()
+  {
     T::resetForNewCall();
   }
 
-  const state_type & correctionCRef() const{
+  const state_type & correctionCRef() const
+  {
     return correction_;
   }
 
-  const sc_t & correctionNormCurrentCorrectionStep() const{
+  const sc_t & correctionNormCurrentCorrectionStep() const
+  {
     return correctionNormCurrCorrStep_;
   }
 
-  const sc_t & gradientNormCurrentCorrectionStep() const{
+  const sc_t & gradientNormCurrentCorrectionStep() const
+  {
     return gradientNormCurrCorrStep_;
   }
 
-  const sc_t & residualNormCurrentCorrectionStep() const{
+  const sc_t & residualNormCurrentCorrectionStep() const
+  {
     return residNormCurrCorrStep_;
   }
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_HESSIAN_GRADIENT_CORRECTOR_HPP_

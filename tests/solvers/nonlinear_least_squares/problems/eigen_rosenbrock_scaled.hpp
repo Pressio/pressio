@@ -8,25 +8,25 @@
 
 #include "pressio_solvers.hpp"
 
-namespace pressio{ namespace solvers{ namespace test{
+namespace pressio { namespace solvers { namespace test {
 
 struct EigenRosenbrockscaledImpl
 {
-  using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
-  using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
+  using eig_dyn_mat = Eigen::MatrixXd;
+  using eig_dyn_vec = Eigen::VectorXd;
+  using jacobian_w_t = pressio::containers::DenseMatrix<eig_dyn_mat>;
+  using state_w_t = pressio::containers::Vector<eig_dyn_vec>;
 
   using scalar_type = double;
-  using state_type	= state_w_t;
-  using residual_type	= state_type;
-  using jacobian_type	= jacobian_w_t;
+  using state_type = state_w_t;
+  using residual_type = state_type;
+  using jacobian_type = jacobian_w_t;
 
-  static constexpr int nf = 6; // num functions
-  static constexpr int nv = 4; // num variables
+  static constexpr int nf = 6;// num functions
+  static constexpr int nv = 4;// num variables
 
-  residual_type createResidual() const{return residual_type(nf);}
-  jacobian_type createJacobian() const{return jacobian_type(nf, nv);}
+  residual_type createResidual() const { return residual_type(nf); }
+  jacobian_type createJacobian() const { return jacobian_type(nf, nv); }
 
   // void residualNorm(const state_type & state,
   // 		    pressio::Norm normKind,
@@ -38,23 +38,23 @@ struct EigenRosenbrockscaledImpl
   //   residual(state, R, normKind, resNorm);
   // }
 
-  void residual(const state_type& x, residual_type & res) const
+  void residual(const state_type & x, residual_type & res) const
   {
     auto x1 = x(0);
     auto x2 = x(1);
     auto x3 = x(2);
     auto x4 = x(3);
-    res(0) = 10.*SCALE1*(x4 - x3*x3);
-    res(1) = 10.*SCALE2*(x3 - x2*x2);
-    res(2) = 10.*SCALE3*(x2 - x1*x1);
-    res(3) = (1.-x1);
-    res(4) = (1.-x2);
-    res(5) = (1.-x3);
+    res(0) = 10. * SCALE1 * (x4 - x3 * x3);
+    res(1) = 10. * SCALE2 * (x3 - x2 * x2);
+    res(2) = 10. * SCALE3 * (x2 - x1 * x1);
+    res(3) = (1. - x1);
+    res(4) = (1. - x2);
+    res(5) = (1. - x3);
     // if (normKind == pressio::Norm::L2) normResidual = res.data()->norm();
     // if (normKind == pressio::Norm::L1) normResidual = res.data()->lpNorm<1>();
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const 
+  void jacobian(const state_type & x, jacobian_type & jac) const
   {
     auto x1 = x(0);
     auto x2 = x(1);
@@ -62,45 +62,46 @@ struct EigenRosenbrockscaledImpl
     auto & JJ = *jac.data();
     JJ.setZero();
 
-    JJ(0,2) = -20.*SCALE1*x3;
-    JJ(0,3) = 10.*SCALE1;
-    JJ(1,1) = -20.*SCALE2*x2;
-    JJ(1,2) = 10.*SCALE2;
-    JJ(2,0) = -20.*SCALE3*x1;
-    JJ(2,1) = 10.*SCALE3;
-    JJ(3,0) = -1.;
-    JJ(4,1) = -1.;
-    JJ(5,2) = -1.;
+    JJ(0, 2) = -20. * SCALE1 * x3;
+    JJ(0, 3) = 10. * SCALE1;
+    JJ(1, 1) = -20. * SCALE2 * x2;
+    JJ(1, 2) = 10. * SCALE2;
+    JJ(2, 0) = -20. * SCALE3 * x1;
+    JJ(2, 1) = 10. * SCALE3;
+    JJ(3, 0) = -1.;
+    JJ(4, 1) = -1.;
+    JJ(5, 2) = -1.;
   }
-
 };
 
 using EigenRosenbrockscaled = EigenRosenbrockscaledImpl;
 
-      struct EigenRosenbrockscaledHessGradApi
+struct EigenRosenbrockscaledHessGradApi
 {
-  using eig_dyn_mat	= Eigen::MatrixXd;
-  using eig_dyn_vec	= Eigen::VectorXd;
-  using jacobian_w_t	= pressio::containers::DenseMatrix<eig_dyn_mat>;
-  using state_w_t	= pressio::containers::Vector<eig_dyn_vec>;
+  using eig_dyn_mat = Eigen::MatrixXd;
+  using eig_dyn_vec = Eigen::VectorXd;
+  using jacobian_w_t = pressio::containers::DenseMatrix<eig_dyn_mat>;
+  using state_w_t = pressio::containers::Vector<eig_dyn_vec>;
 
-  using scalar_type	= double;
-  using state_type	= state_w_t;
-  using hessian_type	= pressio::containers::DenseMatrix<eig_dyn_mat>;
-  using gradient_type	= state_type;
+  using scalar_type = double;
+  using state_type = state_w_t;
+  using hessian_type = pressio::containers::DenseMatrix<eig_dyn_mat>;
+  using gradient_type = state_type;
 
-  static constexpr int nf = 6; // num functions
-  static constexpr int nv = 4; // num variables
+  static constexpr int nf = 6;// num functions
+  static constexpr int nv = 4;// num variables
 
   EigenRosenbrockscaledImpl rosImpl;
 
 public:
-  hessian_type createHessian() const{
+  hessian_type createHessian() const
+  {
     // this only constructs empty object
     return hessian_type(nv, nv);
   }
 
-  gradient_type createGradient() const{
+  gradient_type createGradient() const
+  {
     // this only constructs empty object
     return gradient_type(nv);
   }
@@ -111,8 +112,10 @@ public:
   {
     auto R = rosImpl.createResidual();
     rosImpl.residual(state, R);//, normKind, normResidual);
-    if (normKind == pressio::Norm::L2) normResidual = R.data()->norm();
-    if (normKind == pressio::Norm::L1) normResidual = R.data()->lpNorm<1>();    
+    if(normKind == pressio::Norm::L2)
+      normResidual = R.data()->norm();
+    if(normKind == pressio::Norm::L1)
+      normResidual = R.data()->lpNorm<1>();
   }
 
   void hessianAndGradient(const state_type & x,
@@ -120,7 +123,7 @@ public:
 			  gradient_type & grad,
 			  pressio::Norm normType,
 			  scalar_type & residualNorm,
-        bool recomputeJacobian) const
+			  bool recomputeJacobian) const
   {
     auto J = rosImpl.createJacobian();
     rosImpl.jacobian(x, J);
@@ -131,10 +134,12 @@ public:
 
     *grad.data() = J.data()->transpose() * (*R.data());
 
-    if (normType == ::pressio::Norm::L2) residualNorm = R.data()->norm();
-    if (normType == ::pressio::Norm::L1) residualNorm = R.data()->lpNorm<1>();
+    if(normType == ::pressio::Norm::L2)
+      residualNorm = R.data()->norm();
+    if(normType == ::pressio::Norm::L1)
+      residualNorm = R.data()->lpNorm<1>();
   }
 };
 
-}}} //end namespace pressio::solvers::test
+}}}//end namespace pressio::solvers::test
 #endif

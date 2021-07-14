@@ -49,32 +49,29 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
 #define ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{
+namespace pressio { namespace rom { namespace galerkin {
 
-template<
+template <
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename ...Args
-  >
+  typename... Args>
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
-  impl::composeDefaultProblemContTime_t<stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>
-  >
+  impl::composeDefaultProblemContTime_t<stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>>
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
 		     const fom_native_state & fomRef,
-		     Args && ... args)
+		     Args &&... args)
 {
   using return_t = impl::composeDefaultProblemContTime_t<
     stepper_tag, fom_system_type, decoder_type, rom_state_type, Args...>;
 
-  static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+		"The type deduced for the FOM nominal state passed to the create function is not \
 // compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn,
@@ -82,24 +79,21 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 }
 
 // Note that here the user specifies the galerkin jacobian type
-template<
+template <
   typename rom_jacobian_type,
   std::size_t order,
   std::size_t totNumStates,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
-  typename fom_native_state
-  >
+  typename fom_native_state>
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >
-  >
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>>
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
@@ -108,14 +102,12 @@ createDefaultProblem(const fom_system_type & fomSysObj,
   using return_t =
     impl::composeDefaultProblemDiscTime_t<
       ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
+      fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
+      ::pressio::ode::types::StepperOrder<order>,
+      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>;
 
-  static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+		"The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef);
@@ -124,23 +116,20 @@ compatible with the FOM state type detected from adapter class");
 // Note that here the user does NOT specify the galerkin jacobian type
 // so pressio has some rules behind the scenes to select the jacobian type
 // based on the galerkin state
-template<
+template <
   std::size_t order,
   std::size_t totNumStates,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
-  typename fom_native_state
-  >
+  typename fom_native_state>
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >
-  >
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>>
 createDefaultProblem(const fom_system_type & fomSysObj,
 		     decoder_type & decoder,
 		     const rom_state_type & stateIn,
@@ -149,18 +138,16 @@ createDefaultProblem(const fom_system_type & fomSysObj,
   using return_t =
     impl::composeDefaultProblemDiscTime_t<
       ::pressio::ode::implicitmethods::Arbitrary,
-    fom_system_type, decoder_type, rom_state_type, void,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
-    >;
+      fom_system_type, decoder_type, rom_state_type, void,
+      ::pressio::ode::types::StepperOrder<order>,
+      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>;
 
-  static_assert
-  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-   "The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+		"The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef);
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif  // ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
+#endif// ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_

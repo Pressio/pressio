@@ -10,18 +10,19 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_Time.h"
 
-namespace pressio{ namespace rom{ namespace test{
+namespace pressio { namespace rom { namespace test {
 
-class EpetraSkeleton{
+class EpetraSkeleton
+{
 protected:
-  using nativeVec	= Epetra_Vector;
+  using nativeVec = Epetra_Vector;
 
-/* these types exposed because need to be detected */
+  /* these types exposed because need to be detected */
 public:
-  using scalar_type	= double;
-  using state_type	= Epetra_Vector;
-  using velocity_type	= state_type;
-  using jacobian_type	= Epetra_CrsMatrix;
+  using scalar_type = double;
+  using state_type = Epetra_Vector;
+  using velocity_type = state_type;
+  using jacobian_type = Epetra_CrsMatrix;
   using dense_matrix_type = Epetra_MultiVector;
 
 public:
@@ -44,5 +45,5 @@ public:
 
 };//end class
 
-}}} //namespace pressio::rom::test
+}}}//namespace pressio::rom::test
 #endif

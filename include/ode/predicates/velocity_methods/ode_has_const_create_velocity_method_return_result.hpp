@@ -50,11 +50,13 @@
 #ifndef ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_CREATE_VELOCITY_METHOD_RETURN_RESULT_HPP_
 #define ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_CREATE_VELOCITY_METHOD_RETURN_RESULT_HPP_
 
-namespace pressio{ namespace ode{ namespace predicates {
+namespace pressio { namespace ode { namespace predicates {
 
 template <typename T, typename velo_type, typename = void>
 struct has_const_create_velocity_method_return_result
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 template <typename T, typename velo_type>
 struct has_const_create_velocity_method_return_result<
@@ -64,11 +66,9 @@ struct has_const_create_velocity_method_return_result<
     mpl::is_same<
       velo_type,
       decltype(
-	       std::declval<T const>().createVelocity()
-	       )
-      >::value
-    >
-  > : std::true_type{};
+	std::declval<T const>().createVelocity())>::value>> : std::true_type
+{
+};
 
-}}} // namespace pressio::ode::predicates
-#endif  // ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_CREATE_VELOCITY_METHOD_RETURN_RESULT_HPP_
+}}}// namespace pressio::ode::predicates
+#endif// ODE_PREDICATES_VELOCITY_METHODS_ODE_HAS_CONST_CREATE_VELOCITY_METHOD_RETURN_RESULT_HPP_

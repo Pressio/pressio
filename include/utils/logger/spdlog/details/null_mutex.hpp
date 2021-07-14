@@ -27,7 +27,8 @@ struct null_atomic_int
 
   explicit null_atomic_int(int new_value)
     : value(new_value)
-  {}
+  {
+  }
 
   int load(std::memory_order = std::memory_order_relaxed) const
   {
@@ -42,10 +43,10 @@ struct null_atomic_int
   int exchange(int new_value, std::memory_order = std::memory_order_relaxed)
   {
     std::swap(new_value, value);
-    return new_value; // return value before the call
+    return new_value;// return value before the call
   }
 };
 
-} // namespace details
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_
+}// namespace details
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_DETAILS_NULL_MUTEX_HPP_

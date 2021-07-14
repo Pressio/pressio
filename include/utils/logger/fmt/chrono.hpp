@@ -20,4 +20,4 @@
 // #include <fmt/chrono.h>
 // #endif
 
-#endif  // UTILS_LOGGER_FMT_CHRONO_HPP_
+#endif// UTILS_LOGGER_FMT_CHRONO_HPP_

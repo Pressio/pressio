@@ -51,16 +51,16 @@
 
 #include "apps_burgers1d_arb_ds.hpp"
 
-namespace pressio{ namespace apps{
+namespace pressio { namespace apps {
 
 class Burgers1dArbDsDiscreteTimeApiAdapter
 {
-  using int_t		  = typename Burgers1dArbDs::int_t;
+  using int_t = typename Burgers1dArbDs::int_t;
 
 public:
-  using scalar_type	  = typename Burgers1dArbDs::scalar_type;
-  using state_type	  = typename Burgers1dArbDs::state_type;
-  using discrete_time_residual_type	 = state_type;
+  using scalar_type = typename Burgers1dArbDs::scalar_type;
+  using state_type = typename Burgers1dArbDs::state_type;
+  using discrete_time_residual_type = state_type;
   using dense_matrix_type = arbds::DenseMatrix<scalar_type>;
 
   Burgers1dArbDsDiscreteTimeApiAdapter() = delete;
@@ -68,13 +68,13 @@ public:
   Burgers1dArbDsDiscreteTimeApiAdapter(const Burgers1dArbDs & appObj)
     : appObj_{appObj},
       f_{appObj.meshSize()},
-      JJ_{appObj.meshSize(), appObj.meshSize()}{}
+      JJ_{appObj.meshSize(), appObj.meshSize()} {}
 
 public:
   discrete_time_residual_type createDiscreteTimeResidual() const
   {
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
-    discrete_time_residual_type R( appObj_.meshSize() );
+    discrete_time_residual_type R(appObj_.meshSize());
     // for (int_t i=0; i<R.extent(0); ++i)
     //   R(i) = ::pressio::utils::constants<scalar_type>::zero();
     return R;
@@ -92,23 +92,23 @@ public:
     return A;
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t, typename... Args>
   void discreteTimeResidual(const step_t & step,
-  			    const scalar_type & time,
-  			    const scalar_type & dt,
-  			    discrete_time_residual_type & R,
-  			    Args && ... states) const
+			    const scalar_type & time,
+			    const scalar_type & dt,
+			    discrete_time_residual_type & R,
+			    Args &&... states) const
   {
-    timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)... );
+    timeDiscreteResidualImpl(step, time, dt, R, std::forward<Args>(states)...);
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t, typename... Args>
   void applyDiscreteTimeJacobian(const step_t & step,
-  				 const scalar_type & time,
-  				 const scalar_type & dt,
-  				 const dense_matrix_type & B,
-  				 dense_matrix_type & A,
-  				 Args && ... states) const
+				 const scalar_type & time,
+				 const scalar_type & dt,
+				 const dense_matrix_type & B,
+				 dense_matrix_type & A,
+				 Args &&... states) const
   {
     applyTimeDiscreteJacobianImpl(step, time, dt, B, A, std::forward<Args>(states)...);
   }
@@ -124,7 +124,7 @@ private:
 				const state_type & ynm1) const
   {
     appObj_.velocity(yn, time, f_);
-    for (int_t i=0; i<f_.extent(0); ++i)
+    for(int_t i = 0; i < f_.extent(0); ++i)
       R(i) = yn(i) - ynm1(i) - dt * f_(i);
   }
 
@@ -142,20 +142,20 @@ private:
     appObj_.jacobian(yn, time, JJ_);
 
     // compute time discrete Jacobian
-    for (int_t i=0; i<JJ_.extent(0); ++i){
-      for (int_t j=0; j<JJ_.extent(1); ++j){
-	JJ_(i,j) *= -dt;
-	if (i==j)
-	  JJ_(i,j) += ::pressio::utils::constants<scalar_type>::one();
+    for(int_t i = 0; i < JJ_.extent(0); ++i) {
+      for(int_t j = 0; j < JJ_.extent(1); ++j) {
+	JJ_(i, j) *= -dt;
+	if(i == j)
+	  JJ_(i, j) += ::pressio::utils::constants<scalar_type>::one();
       }
     }
 
     // compute A = JJ * B
-    for (int_t i=0; i<A.extent(0); ++i){
-      for (int_t j=0; j<A.extent(1); ++j){
-	A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
-	for (int_t k=0; k<JJ_.extent(1); ++k){
-	  A(i,j) += JJ_(i,k) * B(k,j);
+    for(int_t i = 0; i < A.extent(0); ++i) {
+      for(int_t j = 0; j < A.extent(1); ++j) {
+	A(i, j) = ::pressio::utils::constants<scalar_type>::zero();
+	for(int_t k = 0; k < JJ_.extent(1); ++k) {
+	  A(i, j) += JJ_(i, k) * B(k, j);
 	}
       }
     }
@@ -168,5 +168,5 @@ private:
 
 };//end class
 
-}} //namespace pressio::apps
-#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_DISCRETE_TIME_API_ADAPTER_HPP_
+}}//namespace pressio::apps
+#endif// APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_DISCRETE_TIME_API_ADAPTER_HPP_

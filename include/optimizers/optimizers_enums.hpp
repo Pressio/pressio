@@ -49,13 +49,14 @@
 #ifndef OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_
 #define OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_
 
-namespace pressio{ namespace optimizers{
+namespace pressio { namespace optimizers {
 
-enum class stepMethod
-  {
-   undefined, lineSearch, trustRegion
-  };
+enum class stepMethod {
+  undefined,
+  lineSearch,
+  trustRegion
+};
 
 constexpr auto default_step_method = stepMethod::lineSearch;
 }}//end namespace pressio::optimizers
-#endif  // OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_
+#endif// OPTIMIZERS_OPTIMIZERS_ENUMS_HPP_

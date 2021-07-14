@@ -55,17 +55,16 @@
 #include <Teuchos_SerialQRDenseSolver.hpp>
 #endif
 
-namespace pressio{ namespace qr{ namespace impl{
+namespace pressio { namespace qr { namespace impl {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template< typename vector_type, typename R_type>
+template <typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<R_type>::value
->
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<vector_type>::value and ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<R_type>::value>
 solve(const vector_type & rhs,
-	   const R_type & Rmatrix,
-	   vector_type & y){
+      const R_type & Rmatrix,
+      vector_type & y)
+{
   auto nat_rhs = rhs.data();
   auto nat_y = y.data();
   auto nat_R = Rmatrix.data();
@@ -75,66 +74,63 @@ solve(const vector_type & rhs,
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type, typename R_type>
+template <typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
->
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value>
 solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
-  using ord_t	 = typename R_type::element_type::ordinalType;
-  using sc_t	 = typename R_type::element_type::scalarType;
-  using wrapv_t	 = typename containers::details::traits<vector_type>::wrapped_t;
+  using ord_t = typename R_type::element_type::ordinalType;
+  using sc_t = typename R_type::element_type::scalarType;
+  using wrapv_t = typename containers::details::traits<vector_type>::wrapped_t;
   using solver_t = Teuchos::SerialDenseSolver<ord_t, sc_t>;
 
   solver_t My_Solver;
   My_Solver.setMatrix(Rmatrix);
-  My_Solver.setVectors( Teuchos::rcp( y.data(), false ),
-			Teuchos::rcp( const_cast<wrapv_t*>(rhs.data()), false ) );
+  My_Solver.setVectors(Teuchos::rcp(y.data(), false),
+		       Teuchos::rcp(const_cast<wrapv_t *>(rhs.data()), false));
 
   int info = My_Solver.factor();
-  if (info != 0)
+  if(info != 0)
     std::cout << "SerialDenseSolver::factor() returned : "
 	      << info << std::endl;
 
   info = My_Solver.solve();
-  if (info != 0)
+  if(info != 0)
     std::cout << "SerialDenseSolver::solve() returned : "
 	      << info << std::endl;
 }
 #endif
 
 #if defined(PRESSIO_ENABLE_TPL_TRILINOS)
-template<typename vector_type, typename R_type>
+template <typename vector_type, typename R_type>
 ::pressio::mpl::enable_if_t<
   !::pressio::containers::predicates::is_vector_wrapper_teuchos<vector_type>::value and
-  ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value
->
+  ::pressio::containers::predicates::is_dense_matrix_teuchos_rcp<R_type>::value>
 solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   // todo: maybe here we should use directly backward substitution but it does
   // not seem to be available directly from teuchos
 
-  using ord_t	  = typename R_type::element_type::ordinalType;
-  using sc_t	  = typename R_type::element_type::scalarType;
+  using ord_t = typename R_type::element_type::ordinalType;
+  using sc_t = typename R_type::element_type::scalarType;
   using tservec_t = Teuchos::SerialDenseVector<ord_t, sc_t>;
 
-  auto vecSize = ::pressio::ops::extent(rhs,0);
-  tservec_t rhsTV(Teuchos::View, const_cast<sc_t*>(rhs.data()->data()), vecSize);
+  auto vecSize = ::pressio::ops::extent(rhs, 0);
+  tservec_t rhsTV(Teuchos::View, const_cast<sc_t *>(rhs.data()->data()), vecSize);
   tservec_t yTV(Teuchos::View, y.data()->data(), vecSize);
 
   Teuchos::SerialQRDenseSolver<ord_t, sc_t> My_Solver;
   My_Solver.setMatrix(Rmatrix);
-  My_Solver.setVectors( Teuchos::rcp(&yTV, false), Teuchos::rcp(&rhsTV, false) );
+  My_Solver.setVectors(Teuchos::rcp(&yTV, false), Teuchos::rcp(&rhsTV, false));
   int info = My_Solver.factor();
-  if (info != 0)
+  if(info != 0)
     std::cout << "SerialDenseSolver::factor() returned : " << info << std::endl;
 
   info = My_Solver.solve();
-  if (info != 0)
+  if(info != 0)
     std::cout << "SerialDenseSolver::solve() returned : " << info << std::endl;
 }
 #endif
 
 }}}//end namespace pressio::qr::impl
-#endif  // QR_IMPL_QR_RFACTOR_SOLVE_IMPL_HPP_
+#endif// QR_IMPL_QR_RFACTOR_SOLVE_IMPL_HPP_

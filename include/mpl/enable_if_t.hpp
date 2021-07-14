@@ -49,15 +49,15 @@
 #ifndef MPL_ENABLE_IF_T_HPP_
 #define MPL_ENABLE_IF_T_HPP_
 
-namespace pressio{ namespace mpl{
+namespace pressio { namespace mpl {
 
 /*This allows allows for a shorter syntax:
     enable_if_t<a_condition, MyType>
   as opposed to:
     typename enable_if<a_certain_condition, MyType>::type
 */
-template<bool condition, typename T = void>
-using enable_if_t = typename std::enable_if<condition,T>::type;
+template <bool condition, typename T = void>
+using enable_if_t = typename std::enable_if<condition, T>::type;
 
-}} // namespace pressio::mpl
-#endif  // MPL_ENABLE_IF_T_HPP_
+}}// namespace pressio::mpl
+#endif// MPL_ENABLE_IF_T_HPP_

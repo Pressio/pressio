@@ -49,14 +49,16 @@
 #ifndef OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_
 #define OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_
 
-namespace pressio{ namespace ops{ namespace predicates {
+namespace pressio { namespace ops { namespace predicates {
 
 template <
   typename T,
   typename mode_t, typename scalar_t, typename mat_t, typename vec_t, typename result_t,
   typename enable = void>
 struct has_void_method_product_mat_vec
-  : std::false_type{};
+  : std::false_type
+{
+};
 
 
 template <typename T, typename scalar_t, typename mat_t, typename vec_t, typename result_t>
@@ -64,21 +66,16 @@ struct has_void_method_product_mat_vec<
   T, ::pressio::transpose, scalar_t, mat_t, vec_t, result_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval< T const &>().product
-       (
-	std::declval< ::pressio::transpose >(),
-	std::declval< scalar_t>(),
-	std::declval< mat_t const & >(),
-	std::declval< vec_t const & >(),
-	std::declval< scalar_t>(),
-	std::declval< result_t & >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().product(
+	  std::declval<::pressio::transpose>(),
+	  std::declval<scalar_t>(),
+	  std::declval<mat_t const &>(),
+	  std::declval<vec_t const &>(),
+	  std::declval<scalar_t>(),
+	  std::declval<result_t &>()))>::value>> : std::true_type
+{
+};
 
 
 template <typename T, typename scalar_t, typename mat_t, typename vec_t, typename result_t>
@@ -86,21 +83,16 @@ struct has_void_method_product_mat_vec<
   T, ::pressio::nontranspose, scalar_t, mat_t, vec_t, result_t,
   mpl::enable_if_t<
     std::is_void<
-      decltype
-      (
-       std::declval< T const &>().product
-       (
-	std::declval< ::pressio::nontranspose >(),
-	std::declval< scalar_t>(),
-	std::declval< mat_t const & >(),
-	std::declval< vec_t const & >(),
-	std::declval< scalar_t>(),
-	std::declval< result_t & >()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+      decltype(
+	std::declval<T const &>().product(
+	  std::declval<::pressio::nontranspose>(),
+	  std::declval<scalar_t>(),
+	  std::declval<mat_t const &>(),
+	  std::declval<vec_t const &>(),
+	  std::declval<scalar_t>(),
+	  std::declval<result_t &>()))>::value>> : std::true_type
+{
+};
 
-}}} //pressio::ops::predicates
-#endif  // OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_
+}}}//pressio::ops::predicates
+#endif// OPS_PREDICATES_OPS_HAS_VOID_METHOD_PRODUCT_MAT_VEC_HPP_

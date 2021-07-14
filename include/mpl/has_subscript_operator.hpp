@@ -49,28 +49,27 @@
 #ifndef MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
 #define MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
 
-namespace pressio{ namespace mpl{
+namespace pressio { namespace mpl {
 
-template<typename T,
-	 typename ord_t,
-	 typename enable = void>
-struct has_subscript_op : std::false_type{};
+template <typename T,
+	  typename ord_t,
+	  typename enable = void>
+struct has_subscript_op : std::false_type
+{
+};
 
-template<typename T,
-	 typename ord_t>
+template <typename T,
+	  typename ord_t>
 struct has_subscript_op<T,
 			ord_t,
-			typename
-			std::enable_if<
+			typename std::enable_if<
 			  !std::is_void<decltype(
-						 std::declval<T>()[std::declval<ord_t>()]
-						 )
-					>::value
-			  >::type
-			> : std::true_type { };
-  // void_t<
-  // decltype(std::declval<T>()[std::declval<ord_t>()])
-  //   >
+			    std::declval<T>()[std::declval<ord_t>()])>::value>::type> : std::true_type
+{
+};
+// void_t<
+// decltype(std::declval<T>()[std::declval<ord_t>()])
+//   >
 
-}} // namespace
-#endif  // MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+}}// namespace
+#endif// MPL_HAS_SUBSCRIPT_OPERATOR_HPP_

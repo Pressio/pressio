@@ -12,5 +12,5 @@ namespace sinks {
 class sink;
 }
 
-} // namespace spdlog
-#endif  // UTILS_LOGGER_SPDLOG_UNUSED_FWD_H_
+}// namespace spdlog
+#endif// UTILS_LOGGER_SPDLOG_UNUSED_FWD_H_

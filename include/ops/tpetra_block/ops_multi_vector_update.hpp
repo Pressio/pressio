@@ -49,26 +49,24 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
 #define OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 //----------------------------------------------------------------------
 //  overloads for computing: MV = a * MV + b * MV1
 // where MV is an tpetra multivector wrapper
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template <typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
-  >
-update(T & mv, const scalar_t &a,
-	       const T & mv1, const scalar_t &b)
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value>
+update(T & mv, const scalar_t & a,
+       const T & mv1, const scalar_t & b)
 {
   mv.data()->update(b, *mv1.data(), a);
 }
 
-template<typename T, typename scalar_t>
+template <typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<T>::value>
 update(T & mv, const T & mv1, const scalar_t & b)
 {
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
@@ -76,4 +74,4 @@ update(T & mv, const T & mv1, const scalar_t & b)
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_
+#endif// OPS_TPETRA_BLOCK_OPS_MULTI_VECTOR_UPDATE_HPP_

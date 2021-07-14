@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
 
-namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
+namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
 
 class DefaultUpdater
 {
@@ -62,9 +62,9 @@ public:
   ~DefaultUpdater() = default;
 
 public:
-  void reset(){}
+  void reset() {}
 
-  template<typename system_t, typename state_t, typename solver_mixin_t>
+  template <typename system_t, typename state_t, typename solver_mixin_t>
   void operator()(const system_t & sys,
 		  state_t & state,
 		  solver_mixin_t & solver)
@@ -79,4 +79,4 @@ public:
 };
 
 }}}}
-#endif  // SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_
+#endif// SOLVERS_NONLINEAR_IMPL_UPDATERS_SOLVERS_DEFAULT_UPDATER_HPP_

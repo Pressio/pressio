@@ -49,34 +49,31 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
+namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
 
 template <
   typename stepper_tag,
   typename fom_system_type,
   typename lspg_state_type,
   typename decoder_type,
-  typename ud_ops_type
-  >
+  typename ud_ops_type>
 struct CommonTraitsContinuousTimeApi
 {
-  static_assert
-  (::pressio::rom::lspg::constraints::rom_state<lspg_state_type>::value,
-   "The lspg_state_type is not a valid rom state");
+  static_assert(::pressio::rom::lspg::constraints::rom_state<lspg_state_type>::value,
+		"The lspg_state_type is not a valid rom state");
 
-  using fom_system_t	      = fom_system_type;
-  using scalar_t              = typename fom_system_t::scalar_type;
+  using fom_system_t = fom_system_type;
+  using scalar_t = typename fom_system_t::scalar_type;
 
   // lspg state types
-  using lspg_state_t	    = lspg_state_type;
+  using lspg_state_t = lspg_state_type;
   using lspg_native_state_t = typename ::pressio::containers::details::traits<lspg_state_t>::wrapped_t;
 
   // ---------------------
   // verify decoder type
-  static_assert
-  (::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
-   "A valid decoder type must be passed to define a LSPG problem");
-  using decoder_t     = decoder_type;
+  static_assert(::pressio::rom::constraints::decoder<decoder_type, lspg_state_t>::value,
+		"A valid decoder type must be passed to define a LSPG problem");
+  using decoder_t = decoder_type;
   using decoder_jac_t = typename decoder_type::jacobian_type;
 
   // ---------------------
@@ -84,20 +81,18 @@ struct CommonTraitsContinuousTimeApi
   // ensure it is consistent with the (native) fom_state_type from the app
   using fom_state_t = typename decoder_type::fom_state_type;
   using fom_native_state_t = typename fom_system_type::state_type;
-  static_assert
-  (std::is_same<
-   typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
-   fom_native_state_t>::value,
-   "The fom state type detected in the fom class must match the fom state type used in the decoder");
+  static_assert(std::is_same<
+		  typename ::pressio::containers::details::traits<fom_state_t>::wrapped_t,
+		  fom_native_state_t>::value,
+		"The fom state type detected in the fom class must match the fom state type used in the decoder");
 
   // ---------------------
   // for now we don't allow state and velocity to have different types
   // but need to make sure this assumption is consistent with fom class
   using fom_velocity_t = fom_state_t;
   using fom_native_velocity_t = typename fom_system_type::velocity_type;
-  static_assert
-  (std::is_same<fom_native_state_t, fom_native_velocity_t>::value,
-   "Currently, the fom velocity type must be the same as the state type.");
+  static_assert(std::is_same<fom_native_state_t, fom_native_velocity_t>::value,
+		"Currently, the fom velocity type must be the same as the state type.");
 
   // ---------------------
   /* the lspg_residual_t is type to represent R(romState)
@@ -112,13 +107,13 @@ struct CommonTraitsContinuousTimeApi
    * For now, set lspg_jacobian_t to be of same type as decoder_jac_t
    * not a bad assumption since all matrices are left-applied to decoder_jac_t
    */
-  using lspg_jacobian_t	= decoder_jac_t;
+  using lspg_jacobian_t = decoder_jac_t;
 
   // ---------------------
   // fom state reconstructor type
   using fom_state_reconstr_t =
     typename ::pressio::rom::impl::FomStateReconHelper<
-    ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
+      ud_ops_type>::template type<scalar_t, fom_state_t, decoder_t>;
 
   // total num of fom states (i.e. stencil size plus the state at current step)
   static constexpr auto numstates =
@@ -135,9 +130,9 @@ struct CommonTraitsContinuousTimeApi
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::containers::predicates::is_tensor_wrapper_pybind<lspg_state_t>::value;
 #else
-  false;
+    false;
 #endif
 };
 
 }}}}}//end  namespace pressio::rom::lspg::unstedy::impl
-#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_
+#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_TRAITS_ROM_LSPG_UNSTEADY_COMMON_TRAITS_CONTINUOUS_TIME_API_HPP_

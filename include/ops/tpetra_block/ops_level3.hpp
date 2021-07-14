@@ -49,7 +49,7 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_
 #define OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio { namespace ops {
 
 
 /*
@@ -63,13 +63,9 @@ namespace pressio{ namespace ops{
  * specialize for op(A) = A^T and op(B) = B
  *-------------------------------------------------------------------*/
 template <
-  typename A_type, typename B_type, typename scalar_type, typename C_type
-  >
+  typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -78,9 +74,8 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+		"Types are not scalar compatible");
 
   // get a tpetra multivector that views the data
   const auto Amvv = A.data()->getMultiVectorView();
@@ -91,37 +86,30 @@ product(::pressio::transpose modeA,
   assert((std::size_t)C.extent(0) == (std::size_t)numVecsA);
   assert((std::size_t)C.extent(1) == (std::size_t)numVecsB);
 
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
+  for(std::size_t i = 0; i < (std::size_t)numVecsA; i++) {
     // colI is a Teuchos::RCP<Vector<...>>
     auto colI = Amvv.getVector(i);
-    for (std::size_t j=0; j<(std::size_t)numVecsB; j++)
-    {
+    for(std::size_t j = 0; j < (std::size_t)numVecsB; j++) {
       auto colJ = Bmvv.getVector(j);
-      C(i,j) = beta*C(i,j) + alpha*colI->dot(*colJ);
+      C(i, j) = beta * C(i, j) + alpha * colI->dot(*colJ);
     }
   }
 }
 
 template <
-  typename C_type, typename A_type, typename B_type, typename scalar_type
-  >
+  typename C_type, typename A_type, typename B_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
-  !::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value,
-  C_type
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+    !::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value,
+  C_type>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
 	const A_type & A,
 	const B_type & B)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+		"Types are not scalar compatible");
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
 
   const auto numVecsA = A.numVectors();
@@ -136,10 +124,8 @@ product(::pressio::transpose modeA,
 // **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
-  !::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value and
+  !::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<C_type>::value>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -148,7 +134,7 @@ product(::pressio::transpose modeA,
 	C_type & C)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-  		"Types are not scalar compatible");
+		"Types are not scalar compatible");
 
   // get a tpetra multivector that views the data
   const auto Amvv = A.data()->getMultiVectorView();
@@ -161,25 +147,21 @@ product(::pressio::transpose modeA,
 
   // A dot A = A^T*A, which yields a symmetric matrix
   // only need to compute half and fill remaining entries accordingly
-  for (std::size_t i=0; i<(std::size_t)numVecsA; i++)
-  {
+  for(std::size_t i = 0; i < (std::size_t)numVecsA; i++) {
     // colI is a Teuchos::RCP<Vector<...>>
     auto colI = Amvv.getVector(i);
-    for (std::size_t j=i; j<(std::size_t)numVecsA; j++)
-    {
+    for(std::size_t j = i; j < (std::size_t)numVecsA; j++) {
       auto colJ = Amvv.getVector(j);
-      tmp = alpha*colI->dot(*colJ);
-      C(i,j) = beta*C(i,j) + tmp;
-      C(j,i) = beta*C(j,i) + tmp;
+      tmp = alpha * colI->dot(*colJ);
+      C(i, j) = beta * C(i, j) + tmp;
+      C(j, i) = beta * C(j, i) + tmp;
     }
   }
 }
 
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -188,14 +170,14 @@ product(::pressio::transpose modeA,
 	C_type & C)
 {
   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-  		"Types are not scalar compatible");
+		"Types are not scalar compatible");
 
   // check traits of the block mv
   using tpetra_mvb_t = typename ::pressio::containers::details::traits<A_type>::wrapped_t;
 
   // from the mvb type we can get the underlying regular tpetra::mv and map
-  using tpetra_mv_t  = typename tpetra_mvb_t::mv_type;
-  using map_t	     = typename tpetra_mv_t::map_type;
+  using tpetra_mv_t = typename tpetra_mvb_t::mv_type;
+  using map_t = typename tpetra_mv_t::map_type;
 
   // tpetra multivector that views the tpetra block data
   const auto mvView = A.data()->getMultiVectorView();
@@ -203,7 +185,7 @@ product(::pressio::transpose modeA,
   const auto indexBase = mvView.getMap()->getIndexBase();
   const auto comm = mvView.getMap()->getComm();
   // C should be symmetric
-  assert( (std::size_t)C.extent(0) == (std::size_t)C.extent(1) );
+  assert((std::size_t)C.extent(0) == (std::size_t)C.extent(1));
   const auto n = C.extent(0);
   Teuchos::RCP<const map_t> replMap(new map_t(n, indexBase, comm, Tpetra::LocallyReplicated));
   // create multivector that views the Kokkos matrix result
@@ -217,18 +199,16 @@ product(::pressio::transpose modeA,
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<A_type>::value and
-  (::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value or
-   ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value),
-  C_type
-  >
+    (::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value or
+     ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value),
+  C_type>
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());
@@ -242,10 +222,7 @@ product(::pressio::transpose modeA,
 //-------------------------------------------
 template <typename T, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<C_type>::value and
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
-  >
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<B_type>::value and ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra_block<C_type>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -254,17 +231,16 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert
-    (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
-     "Types are not scalar compatible");
+  static_assert(containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
+		"Types are not scalar compatible");
 
-  assert( C.extent(0) == A.extent(0) );
-  assert( C.extent(1) == B.extent(1) );
-  assert( A.extent(1) == B.extent(0) );
+  assert(C.extent(0) == A.extent(0));
+  assert(C.extent(1) == B.extent(1));
+  assert(A.extent(1) == B.extent(0));
 
-  auto Ctpb = *C.data(); //mv
-  auto Atpb = *(A.pressioObj()->data()); //v
-  auto Btpb = *B.data(); //mv
+  auto Ctpb = *C.data();//mv
+  auto Atpb = *(A.pressioObj()->data());//v
+  auto Btpb = *B.data();//mv
 
   auto Ctp = Ctpb.getMultiVectorView();
   using Atpb_t = mpl::remove_cvref_t<decltype(Atpb)>;
@@ -275,4 +251,4 @@ product(::pressio::nontranspose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_
+#endif// OPS_TPETRA_BLOCK_OPS_LEVEL3_HPP_

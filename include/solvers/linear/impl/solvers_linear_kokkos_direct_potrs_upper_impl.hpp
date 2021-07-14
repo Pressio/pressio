@@ -59,29 +59,28 @@
 #include <cusolverDn.h>
 #endif
 
-namespace pressio { namespace solvers { namespace linear{ namespace impl{
+namespace pressio { namespace solvers { namespace linear { namespace impl {
 
-template<typename MatrixT>
+template <typename MatrixT>
 class KokkosDirect<::pressio::solvers::linear::direct::potrsU, MatrixT>
 {
 public:
-  static_assert
-    ( ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
-      ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
-      "Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
+  static_assert(::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<MatrixT>::value or
+		  ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<MatrixT>::value,
+		"Kokkos direct dense solver expects either (a) dense matrix wrapper or a (b) multi-vector wrapper, both wrapping a rank=2 Kokkos View");
 
-  using solver_tag	= ::pressio::solvers::linear::direct::potrsU;
-  using solver_traits   = linear::details::traits<solver_tag>;
-  using this_t          = KokkosDirect<solver_tag, MatrixT>;
-  using matrix_type	= MatrixT;
-  using native_mat_t    = typename containers::details::traits<MatrixT>::wrapped_t;
-  using scalar_t        = typename containers::details::traits<MatrixT>::scalar_t;
-  using exe_space       = typename containers::details::traits<MatrixT>::execution_space;
+  using solver_tag = ::pressio::solvers::linear::direct::potrsU;
+  using solver_traits = linear::details::traits<solver_tag>;
+  using this_t = KokkosDirect<solver_tag, MatrixT>;
+  using matrix_type = MatrixT;
+  using native_mat_t = typename containers::details::traits<MatrixT>::wrapped_t;
+  using scalar_t = typename containers::details::traits<MatrixT>::scalar_t;
+  using exe_space = typename containers::details::traits<MatrixT>::execution_space;
 
-  static_assert( solver_traits::kokkos_enabled == true,
-  		 "the native solver must suppport kokkos to use in KokkosDirect");
-  static_assert( solver_traits::direct == true,
-  		 "the native solver must be direct to use in KokkosDirect");
+  static_assert(solver_traits::kokkos_enabled == true,
+		"the native solver must suppport kokkos to use in KokkosDirect");
+  static_assert(solver_traits::direct == true,
+		"the native solver must be direct to use in KokkosDirect");
 
 public:
   KokkosDirect() = default;
@@ -102,21 +101,16 @@ public:
   mpl::enable_if_t<
     mpl::is_same<
       typename ::pressio::containers::details::traits<_MatrixT>::layout,
-      Kokkos::LayoutLeft >::value and
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
-    ::pressio::containers::details::traits<T>::has_host_execution_space and
+      Kokkos::LayoutLeft>::value and ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and ::pressio::containers::details::traits<T>::has_host_execution_space and
     mpl::is_same<
-     typename containers::details::traits<T>::execution_space,
-     typename containers::details::traits<_MatrixT>::execution_space
-     >::value
-  >
-  solve(const _MatrixT & A, const T& b, T & y)
+      typename containers::details::traits<T>::execution_space,
+      typename containers::details::traits<_MatrixT>::execution_space>::value>
+  solve(const _MatrixT & A, const T & b, T & y)
   {
     const auto Aext0 = ::pressio::ops::extent(A, 0);
     const auto Aext1 = ::pressio::ops::extent(A, 1);
-    if (Aext0 != ::pressio::ops::extent(auxMat_, 0) or 
-        Aext1 != ::pressio::ops::extent(auxMat_, 1))
-    {
+    if(Aext0 != ::pressio::ops::extent(auxMat_, 0) or
+       Aext1 != ::pressio::ops::extent(auxMat_, 1)) {
       Kokkos::resize(*auxMat_.data(), Aext0, Aext1);
     }
 
@@ -134,26 +128,22 @@ public:
    */
   template <typename _MatrixT = MatrixT, typename T>
   mpl::enable_if_t<
-    mpl::is_same< typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft >::value and
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and
-    ::pressio::containers::details::traits<T>::has_host_execution_space and
+    mpl::is_same<typename ::pressio::containers::details::traits<_MatrixT>::layout, Kokkos::LayoutLeft>::value and ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value and ::pressio::containers::details::traits<T>::has_host_execution_space and
     mpl::is_same<
-     typename containers::details::traits<T>::execution_space,
-     typename containers::details::traits<_MatrixT>::execution_space
-     >::value
-  >
-  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
+      typename containers::details::traits<T>::execution_space,
+      typename containers::details::traits<_MatrixT>::execution_space>::value>
+  solveAllowMatOverwrite(_MatrixT & A, const T & b, T & y)
   {
-    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(b,0) );
-    assert(::pressio::ops::extent(A,1) == ::pressio::ops::extent(y,0) );
+    assert(::pressio::ops::extent(A, 0) == ::pressio::ops::extent(b, 0));
+    assert(::pressio::ops::extent(A, 1) == ::pressio::ops::extent(y, 0));
     // potrs is for symmetric pos def
-    assert(::pressio::ops::extent(A,0) == ::pressio::ops::extent(A,1) );
+    assert(::pressio::ops::extent(A, 0) == ::pressio::ops::extent(A, 1));
 
     // only one rhs because this is only enabled if T is a vector wrapper
     constexpr int nRhs = 1;
 
     // just use n, since rows == cols
-    const auto n = ::pressio::ops::extent(A,0);
+    const auto n = ::pressio::ops::extent(A, 0);
 
     // Cholesky factorization
     int info = 0;
@@ -165,7 +155,7 @@ public:
     Kokkos::deep_copy(*y.data(), *b.data());
 
     lpk_.POTRS(uplo_, n, nRhs, A.data()->data(), n,
-	       y.data()->data(), ::pressio::ops::extent(y,0), &info);
+	       y.data()->data(), ::pressio::ops::extent(y, 0), &info);
     assert(info == 0);
   }
 #endif
@@ -178,5 +168,5 @@ public:
 #endif
 };
 
-}}}} // end namespace pressio::solvers::linear::impl
-#endif  // SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_IMPL_HPP_
+}}}}// end namespace pressio::solvers::linear::impl
+#endif// SOLVERS_LINEAR_IMPL_SOLVERS_LINEAR_KOKKOS_DIRECT_POTRS_UPPER_IMPL_HPP_

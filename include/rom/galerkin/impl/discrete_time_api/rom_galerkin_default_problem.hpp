@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_HPP_
 
-namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+namespace pressio { namespace rom { namespace galerkin { namespace impl {
 
 template <typename... Args>
 class DefaultProblemDiscreteTimeApi
@@ -59,43 +59,45 @@ public:
   using this_t = DefaultProblemDiscreteTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t		= typename traits::fom_system_t;
-  using scalar_t		= typename traits::scalar_t;
-  using fom_native_state_t	= typename traits::fom_native_state_t;
-  using fom_state_t		= typename traits::fom_state_t;
-  using galerkin_state_t	= typename traits::galerkin_state_t;
-  using galerkin_native_state_t	= typename traits::galerkin_native_state_t;
-  using galerkin_residual_t	= typename traits::galerkin_residual_t;
-  using galerkin_jacobian_t	= typename traits::galerkin_jacobian_t;
-  using rom_state_t		= typename traits::galerkin_state_t;
-  using decoder_t		= typename traits::decoder_t;
-  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename traits::fom_states_manager_t;
-  using ud_ops_t		= typename traits::ud_ops_t;
-  using projector_t		= typename traits::projector_t;
-  using residual_policy_t	= typename traits::residual_policy_t;
-  using jacobian_policy_t	= typename traits::jacobian_policy_t;
-  using stepper_t		= typename traits::stepper_t;
+  using fom_system_t = typename traits::fom_system_t;
+  using scalar_t = typename traits::scalar_t;
+  using fom_native_state_t = typename traits::fom_native_state_t;
+  using fom_state_t = typename traits::fom_state_t;
+  using galerkin_state_t = typename traits::galerkin_state_t;
+  using galerkin_native_state_t = typename traits::galerkin_native_state_t;
+  using galerkin_residual_t = typename traits::galerkin_residual_t;
+  using galerkin_jacobian_t = typename traits::galerkin_jacobian_t;
+  using rom_state_t = typename traits::galerkin_state_t;
+  using decoder_t = typename traits::decoder_t;
+  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t = typename traits::fom_states_manager_t;
+  using ud_ops_t = typename traits::ud_ops_t;
+  using projector_t = typename traits::projector_t;
+  using residual_policy_t = typename traits::residual_policy_t;
+  using jacobian_policy_t = typename traits::jacobian_policy_t;
+  using stepper_t = typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
-  using At  = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt  = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
-						       fom_state_reconstr_t,
-						       fom_states_manager_t>;
-  using Ct  = ProjectorMixin<Bt, ud_ops_t, projector_t>;
-  using Dt  = DefaultImplicitPoliciesMixin<Ct, residual_policy_t, jacobian_policy_t>;
+  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
+						      fom_state_reconstr_t,
+						      fom_states_manager_t>;
+  using Ct = ProjectorMixin<Bt, ud_ops_t, projector_t>;
+  using Dt = DefaultImplicitPoliciesMixin<Ct, residual_policy_t, jacobian_policy_t>;
   using m_t = ::pressio::rom::impl::ImplicitStepperMixin<Dt, void, stepper_t>;
   m_t members_;
 
 public:
-  stepper_t & stepperRef(){ return members_.stepperObj_; }
+  stepper_t & stepperRef() { return members_.stepperObj_; }
 
-  const fom_native_state_t & currentFomStateCRef() const{
+  const fom_native_state_t & currentFomStateCRef() const
+  {
     return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const
+  {
     return members_.fomStateReconstructor_;
   }
 
@@ -111,23 +113,23 @@ public:
 				const decoder_t & decoder,
 				const rom_state_t & romStateIn,
 				const fom_native_state_t & fomNominalStateNative)
-    : members_(romStateIn, fomObj, decoder, fomNominalStateNative){}
+    : members_(romStateIn, fomObj, decoder, fomNominalStateNative) {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
     typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t< _binding_sentinel and std::is_void<_ud_ops_t>::value,
-      int > = 0
-    >
+    ::pressio::mpl::enable_if_t<_binding_sentinel and std::is_void<_ud_ops_t>::value,
+				int> = 0>
   DefaultProblemDiscreteTimeApi(pybind11::object fomObjPython,
 				decoder_t & decoder,
 				const galerkin_native_state_t & romStateIn,
 				const fom_native_state_t fomNominalStateIn)
     : members_(galerkin_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)
-  {}
+  {
+  }
 #endif
 };
 
 }}}}//end namespace
-#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_HPP_
+#endif// ROM_GALERKIN_IMPL_DISCRETE_TIME_API_ROM_GALERKIN_DEFAULT_PROBLEM_HPP_

@@ -49,21 +49,19 @@
 #ifndef CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_
 #define CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_
 
-namespace pressio{ namespace containers{
+namespace pressio { namespace containers {
 
 template <typename wrapped_type>
 class Vector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_vector_kokkos<wrapped_type>::value
-    >
-  >
+    containers::predicates::is_vector_kokkos<wrapped_type>::value>>
 {
 public:
   using this_t = Vector<wrapped_type>;
   using traits = details::traits<this_t>;
   using sc_t = typename traits::scalar_t;
-  using ord_t = typename  traits::ordinal_t;
+  using ord_t = typename traits::ordinal_t;
   using ref_t = typename traits::reference_t;
   using const_ref_t = typename traits::const_reference_t;
 
@@ -83,11 +81,14 @@ public:
     Kokkos::deep_copy(data_, src);
   }
 
-  Vector(wrapped_type && src) : data_(std::move(src)){}
+  Vector(wrapped_type && src)
+    : data_(std::move(src)) {}
 
-  Vector(const std::string & label, ord_t e1) : data_{label, e1}{}
+  Vector(const std::string & label, ord_t e1)
+    : data_{label, e1} {}
 
-  Vector(const ord_t e1) : data_{"empty", e1}{}
+  Vector(const ord_t e1)
+    : data_{"empty", e1} {}
 
   /* copy constructor and asign implement value semantics.
      Hence, when we copyConstruct a kokkos wrapper
@@ -101,7 +102,8 @@ public:
 	a(0) == 0.5 // should be true
   */
   Vector(const Vector & other)
-    : data_{other.data_.label(), other.data_.extent(0)}{
+    : data_{other.data_.label(), other.data_.extent(0)}
+  {
     Kokkos::deep_copy(data_, other.data_);
   }
 
@@ -114,7 +116,7 @@ public:
   //   Kokkos::deep_copy(data_, other.data_);
   // }
 
-  Vector & operator=(Vector && other)= default;
+  Vector & operator=(Vector && other) = default;
   //   assert(this->extent(0) == other.extent(0));
   //   Kokkos::deep_copy(data_, *other.data());
   //   return *this;
@@ -124,16 +126,17 @@ public:
   ~Vector() = default;
 
 public:
-  wrapped_type const * data() const{
+  wrapped_type const * data() const
+  {
     return &data_;
   }
-  wrapped_type * data(){
+  wrapped_type * data()
+  {
     return &data_;
   }
 
-  template<typename _wrapped_type = wrapped_type>
-  [[deprecated("Use operator() instead.")]]
-  mpl::enable_if_t<
+  template <typename _wrapped_type = wrapped_type>
+  [[deprecated("Use operator() instead.")]] mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
@@ -144,9 +147,8 @@ public:
     return data_(i);
   };
 
-  template<typename _wrapped_type = wrapped_type>
-  [[deprecated("Use operator() instead.")]]
-  mpl::enable_if_t<
+  template <typename _wrapped_type = wrapped_type>
+  [[deprecated("Use operator() instead.")]] mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
@@ -157,7 +159,7 @@ public:
     return data_(i);
   };
 
-  template<typename _wrapped_type = wrapped_type>
+  template <typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
     // todo: this is not entirely correct because this would work also
     // for UMV space, needs to be fixed
@@ -169,10 +171,10 @@ public:
     return data_(i);
   };
 
-  template<typename _wrapped_type = wrapped_type>
-    mpl::enable_if_t<
-      // todo: this is not entirely correct because this would work also
-      // for UMV space, needs to be fixed
+  template <typename _wrapped_type = wrapped_type>
+  mpl::enable_if_t<
+    // todo: this is not entirely correct because this would work also
+    // for UMV space, needs to be fixed
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     sc_t const &>
   operator()(ord_t i) const
@@ -181,19 +183,20 @@ public:
     return data_(i);
   };
 
-  bool empty() const{
-    return data_.extent(0)==0 ? true : false;
+  bool empty() const
+  {
+    return data_.extent(0) == 0 ? true : false;
   }
 
-  ord_t extent(ord_t i) const {
-    assert( i == 0 );
+  ord_t extent(ord_t i) const
+  {
+    assert(i == 0);
     return data_.extent(i);
   }
 
 private:
   wrapped_type data_ = {};
-
 };
 
 }}//end namespace pressio::containers
-#endif  // CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_
+#endif// CONTAINERS_VECTOR_CONCRETE_CONTAINERS_VECTOR_SHAREDMEM_KOKKOS_HPP_

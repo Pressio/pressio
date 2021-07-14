@@ -49,57 +49,50 @@
 #ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_
 #define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_
 
-namespace pressio{ namespace containers{ namespace details{
+namespace pressio { namespace containers { namespace details {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<matrix_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<matrix_type>::wrapped_t,
-  WrappedPackageIdentifier::Eigen, true, 2>,
-  public matrix_shared_traits<details::traits<matrix_type>::is_sparse>
+      typename details::traits<matrix_type>::wrapped_t,
+      WrappedPackageIdentifier::Eigen, true, 2>,
+    public matrix_shared_traits<details::traits<matrix_type>::is_sparse>
 {
   static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
+  using scalar_t = typename traits<matrix_type>::scalar_t;
   using ordinal_t = typename traits<matrix_type>::ordinal_t;
-  using size_t    = ordinal_t;
+  using size_t = ordinal_t;
 
   // the reference type is conditionnal because the native expression
   // returns by value when object is const
   using reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t &
-  >::type;
+    std::is_const<matrix_type>::value, scalar_t, scalar_t &>::type;
 
   using const_reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t const &
-  >::type;
+    std::is_const<matrix_type>::value, scalar_t, scalar_t const &>::type;
 
   // type of the native expression
   using _native_expr_t = decltype(
-    std::declval<wrapped_t>().block( std::declval<size_t>(),
-				     std::declval<size_t>(),
-                                     std::declval<size_t>(),
-				     std::declval<size_t>() )
-    );
+    std::declval<wrapped_t>().block(std::declval<size_t>(),
+				    std::declval<size_t>(),
+				    std::declval<size_t>(),
+				    std::declval<size_t>()));
   using _const_native_expr_t = decltype(
-    std::declval<const wrapped_t>().block( std::declval<size_t>(),
-					   std::declval<size_t>(),
-                                           std::declval<size_t>(),
-					   std::declval<size_t>() )
-    );
+    std::declval<const wrapped_t>().block(std::declval<size_t>(),
+					  std::declval<size_t>(),
+					  std::declval<size_t>(),
+					  std::declval<size_t>()));
   using native_expr_t = typename std::conditional<
     std::is_const<matrix_type>::value,
     _const_native_expr_t,
-    _native_expr_t
-  >::type;
+    _native_expr_t>::type;
 
   using const_data_return_t = native_expr_t const *;
   using data_return_t = native_expr_t *;
@@ -111,51 +104,43 @@ template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<matrix_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<matrix_type>::wrapped_t, WrappedPackageIdentifier::Kokkos,
-  true, //true because kokkos is for shared mem
-  2
-  >,
-  public matrix_shared_traits<false>
+      typename details::traits<matrix_type>::wrapped_t, WrappedPackageIdentifier::Kokkos,
+      true,//true because kokkos is for shared mem
+      2>,
+    public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_t	= typename traits<matrix_type>::scalar_t;
+  using scalar_t = typename traits<matrix_type>::scalar_t;
   using execution_space = typename traits<matrix_type>::execution_space;
-  using memory_space	= typename traits<matrix_type>::memory_space;
-  using device_t	= typename traits<matrix_type>::device_t;
-  using device_type	= typename traits<matrix_type>::device_t;
-  using ordinal_t	= typename traits<matrix_type>::ordinal_t;
-  using size_t		= ordinal_t;
-  using pair_t		= std::pair<size_t, size_t>;
-  using reference_t	  = scalar_t &;
+  using memory_space = typename traits<matrix_type>::memory_space;
+  using device_t = typename traits<matrix_type>::device_t;
+  using device_type = typename traits<matrix_type>::device_t;
+  using ordinal_t = typename traits<matrix_type>::ordinal_t;
+  using size_t = ordinal_t;
+  using pair_t = std::pair<size_t, size_t>;
+  using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
 
-  using _native_expr_t = decltype
-    (
-     Kokkos::subview(std::declval<wrapped_t>(),
-		     std::declval<pair_t>(),
-		     std::declval<pair_t>())
-    );
-  using _const_native_expr_t = decltype
-    (
-     Kokkos::subview(std::declval<const wrapped_t>(),
-		     std::declval<pair_t>(),
-		     std::declval<pair_t>())
-     );
+  using _native_expr_t = decltype(
+    Kokkos::subview(std::declval<wrapped_t>(),
+		    std::declval<pair_t>(),
+		    std::declval<pair_t>()));
+  using _const_native_expr_t = decltype(
+    Kokkos::subview(std::declval<const wrapped_t>(),
+		    std::declval<pair_t>(),
+		    std::declval<pair_t>()));
   using native_expr_t = typename std::conditional<
     std::is_const<matrix_type>::value,
     _const_native_expr_t,
-    _native_expr_t
-  >::type;
+    _native_expr_t>::type;
 
   using const_data_return_t = native_expr_t const *;
-  using data_return_t	    = native_expr_t *;
+  using data_return_t = native_expr_t *;
 };
 #endif
 
@@ -164,25 +149,23 @@ template <typename matrix_type>
 struct traits<
   ::pressio::containers::expressions::SubspanExpr<matrix_type>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_type>::value
-    >
-  >
+    ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<matrix_type>::value>>
   : public containers_shared_traits<
-  typename details::traits<matrix_type>::wrapped_t,
-  WrappedPackageIdentifier::Pybind, true, 2>,
-  public matrix_shared_traits<false>
+      typename details::traits<matrix_type>::wrapped_t,
+      WrappedPackageIdentifier::Pybind, true, 2>,
+    public matrix_shared_traits<false>
 {
   static constexpr bool is_static = true;
-  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_dynamic = !is_static;
 
   using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
+  using scalar_t = typename traits<matrix_type>::scalar_t;
   using ordinal_t = typename traits<matrix_type>::ordinal_t;
-  using size_t    = ordinal_t;
-  using reference_t =  scalar_t &;
+  using size_t = ordinal_t;
+  using reference_t = scalar_t &;
   using const_reference_t = scalar_t const &;
 };
 #endif
 
 }}}//end namespace pressio::containers::details
-#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_
+#endif// CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_TRAITS_HPP_

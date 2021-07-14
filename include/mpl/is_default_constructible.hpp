@@ -51,10 +51,12 @@
 
 namespace pressio { namespace mpl {
 
-template<typename T>
+template <typename T>
 struct is_default_constructible
-: std::is_default_constructible<T> {};
+  : std::is_default_constructible<T>
+{
+};
 
-}} // end namespace pressio::mpl
+}}// end namespace pressio::mpl
 
-#endif  // MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_
+#endif// MPL_IS_DEFAULT_CONSTRUCTIBLE_HPP_

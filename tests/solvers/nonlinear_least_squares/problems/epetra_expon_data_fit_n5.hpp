@@ -13,7 +13,7 @@
  * http://ftp.mcs.anl.gov/pub/MINPACK-2/tprobs/dedffj.f
  */
 
-namespace pressio{ namespace solvers{ namespace test{
+namespace pressio { namespace solvers { namespace test {
 
 struct EpetraExpDataFitN5
 {
@@ -23,24 +23,24 @@ struct EpetraExpDataFitN5
   template <typename T>
   using shptr = std::shared_ptr<T>;
 
-  using state_type    = pressio::containers::Vector<Eigen::VectorXd>;
+  using state_type = pressio::containers::Vector<Eigen::VectorXd>;
   using residual_type = pressio::containers::Vector<Epetra_Vector>;
-  using vecw_type  = pressio::containers::Vector<Epetra_Vector>;
+  using vecw_type = pressio::containers::Vector<Epetra_Vector>;
   using jacobian_type = pressio::containers::MultiVector<Epetra_MultiVector>;
-  using scalar_type   = double;
+  using scalar_type = double;
 
   shptr<Epetra_MpiComm> comm_ = {};
-  int rank_		      = {};
-  int numProc_		      = {};
+  int rank_ = {};
+  int numProc_ = {};
 
-  shptr<Epetra_Map> rowMap_   = {};
-  int NumMyElem_	      = {}; // num of my elements
-  std::vector<int> myGel_     = {}; // my global elements
+  shptr<Epetra_Map> rowMap_ = {};
+  int NumMyElem_ = {};// num of my elements
+  std::vector<int> myGel_ = {};// my global elements
 
-  shptr<residual_type> R_     = {};
-  shptr<jacobian_type> J_     = {};
-  shptr<vecw_type> tt_    = {}; // store the t value for the data
-  shptr<vecw_type> yy_    = {}; // store the y values
+  shptr<residual_type> R_ = {};
+  shptr<jacobian_type> J_ = {};
+  shptr<vecw_type> tt_ = {};// store the t value for the data
+  shptr<vecw_type> yy_ = {};// store the y values
 
   const std::vector<double> trueS = {0.37541005210628,
 				     1.9358469126255,
@@ -48,40 +48,43 @@ struct EpetraExpDataFitN5
 				     0.012867534639885,
 				     0.022122699662032};
 
-  void storeTimes(){
-    int i=0;
-    for (auto const & it : myGel_){
+  void storeTimes()
+  {
+    int i = 0;
+    for(auto const & it : myGel_) {
       (*tt_)(i) = 10. * static_cast<scalar_type>(it);
       i++;
     };
   }
 
-  void storeYValues(){
+  void storeYValues()
+  {
     const std::vector<double> allYs = {8.44e-1, 9.08e-1, 9.32e-1,
-  				       9.36e-1, 9.25e-1, 9.08e-1,
-  				       8.81e-1, 8.5e-1, 8.18e-1,
-  				       7.84e-1, 7.51e-1, 7.18e-1,
-  				       6.85e-1, 6.58e-1, 6.28e-1,
-  				       6.03e-1, 5.8e-1, 5.58e-1,
-  				       5.38e-1, 5.22e-1, 5.06e-1,
-  				       4.9e-1, 4.78e-1, 4.67e-1,
-  				       4.57e-1, 4.48e-1, 4.38e-1,
-  				       4.31e-1, 4.24e-1, 4.2e-1,
-  				       4.14e-1, 4.11e-1, 4.06e-1};
+				       9.36e-1, 9.25e-1, 9.08e-1,
+				       8.81e-1, 8.5e-1, 8.18e-1,
+				       7.84e-1, 7.51e-1, 7.18e-1,
+				       6.85e-1, 6.58e-1, 6.28e-1,
+				       6.03e-1, 5.8e-1, 5.58e-1,
+				       5.38e-1, 5.22e-1, 5.06e-1,
+				       4.9e-1, 4.78e-1, 4.67e-1,
+				       4.57e-1, 4.48e-1, 4.38e-1,
+				       4.31e-1, 4.24e-1, 4.2e-1,
+				       4.14e-1, 4.11e-1, 4.06e-1};
 
-    int i=0;
-    for (auto const & it : myGel_){
+    int i = 0;
+    for(auto const & it : myGel_) {
       (*yy_)(i) = allYs[it];
       i++;
     };
   }
 
-  EpetraExpDataFitN5(){
+  EpetraExpDataFitN5()
+  {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
     rank_ = comm_->MyPID();
     numProc_ = comm_->NumProc();
-    assert(numProc_==2 or numProc_==3);
+    assert(numProc_ == 2 or numProc_ == 3);
 
     // create map
     rowMap_ = std::make_shared<Epetra_Map>(numEq_, 0, *comm_);
@@ -98,36 +101,36 @@ struct EpetraExpDataFitN5
     storeYValues();
   }//setUp
 
-  inline scalar_type model(const state_type & x, scalar_type t)const{
-    return x(0) + x(1) * exp(-t*x(3)) + x(2)*exp(-t*x(4));
+  inline scalar_type model(const state_type & x, scalar_type t) const
+  {
+    return x(0) + x(1) * exp(-t * x(3)) + x(2) * exp(-t * x(4));
   }
 
-  residual_type createResidual() const{ return *R_; }
-  jacobian_type createJacobian() const{ return *J_; }
+  residual_type createResidual() const { return *R_; }
+  jacobian_type createJacobian() const { return *J_; }
 
-  void residual(const state_type& x, residual_type & R) const 
+  void residual(const state_type & x, residual_type & R) const
   {
-    for (auto i=0; i< NumMyElem_; i++){
+    for(auto i = 0; i < NumMyElem_; i++) {
       R(i) = (*yy_)(i) - this->model(x, (*tt_)(i));
     };
     // if (normKind == pressio::Norm::L2) R.data()->Norm2(&normResidual);
     // if (normKind == pressio::Norm::L1) R.data()->Norm1(&normResidual);
   }
 
-  void jacobian(const state_type & x, jacobian_type & jac) const{
-    for (int i=0; i<NumMyElem_; i++)
-      {
-	scalar_type t = (*tt_)(i);
-	jac(i,0) = -1.0;
-	jac(i,1) = -exp(-t*x(3));
-	jac(i,2) = -exp(-t*x(4));
-	jac(i,3) = x(1)*exp(-t*x(3))*t;
-	jac(i,4) = x(2)*exp(-t*x(4))*t;
-      }
+  void jacobian(const state_type & x, jacobian_type & jac) const
+  {
+    for(int i = 0; i < NumMyElem_; i++) {
+      scalar_type t = (*tt_)(i);
+      jac(i, 0) = -1.0;
+      jac(i, 1) = -exp(-t * x(3));
+      jac(i, 2) = -exp(-t * x(4));
+      jac(i, 3) = x(1) * exp(-t * x(3)) * t;
+      jac(i, 4) = x(2) * exp(-t * x(4)) * t;
+    }
     //jac.data()->Print(std::cout);
   }//end jacobian
-
 };
 
-}}} //end namespace pressio::solvers::test
+}}}//end namespace pressio::solvers::test
 #endif

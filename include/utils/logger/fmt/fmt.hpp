@@ -26,4 +26,4 @@
 /* #include <fmt/core.h> */
 /* #include <fmt/format.h> */
 /* #endif */
-#endif  // UTILS_LOGGER_FMT_FMT_HPP_
+#endif// UTILS_LOGGER_FMT_FMT_HPP_

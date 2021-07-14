@@ -49,16 +49,14 @@
 #ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
 #define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
 
-namespace pressio{ namespace containers{ namespace expressions{
+namespace pressio { namespace containers { namespace expressions {
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename vector_t>
 struct SpanExpr<
   vector_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<vector_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<vector_t>::value>>
 {
   using this_t = SpanExpr<vector_t>;
   using traits = typename details::traits<this_t>;
@@ -98,32 +96,35 @@ public:
       extent_(extentIn),
       nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
   SpanExpr(vector_t & objIn,
 	   std::pair<ord_t, ord_t> indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
-      extent_(std::get<1>(indexRange)-startIndex_),
+      extent_(std::get<1>(indexRange) - startIndex_),
       nativeExprObj_(vecObj_.get().data()->segment(startIndex_, extent_))
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
 public:
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -146,9 +147,7 @@ template <typename vector_t>
 struct SpanExpr<
   vector_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<vector_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<vector_t>::value>>
 {
   using this_t = SpanExpr<vector_t>;
   using traits = typename details::traits<this_t>;
@@ -184,38 +183,39 @@ public:
     : vecObj_(objIn),
       startIndex_(startIndexIn),
       extent_(extentIn),
-      nativeExprObj_
-      (Kokkos::subview(*vecObj_.get().data(),
-		       std::make_pair(startIndex_, startIndex_+extent_)))
+      nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
+				     std::make_pair(startIndex_, startIndex_ + extent_)))
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
   SpanExpr(vector_t & objIn,
 	   pair_t indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
-      extent_(std::get<1>(indexRange)-startIndex_),
-      nativeExprObj_
-      (Kokkos::subview(*vecObj_.get().data(),
-		       std::make_pair(startIndex_, startIndex_+extent_)))
+      extent_(std::get<1>(indexRange) - startIndex_),
+      nativeExprObj_(Kokkos::subview(*vecObj_.get().data(),
+				     std::make_pair(startIndex_, startIndex_ + extent_)))
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
 public:
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
-  const_data_return_t data() const{
+  const_data_return_t data() const
+  {
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  data_return_t data()
+  {
     return &nativeExprObj_;
   }
 
@@ -234,12 +234,11 @@ public:
     which works because for kokkos we can assign a const view.
     but we do NOT wwant this since aw is const.
    */
-  template<typename _vector_t = vector_t>
+  template <typename _vector_t = vector_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
-    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    ref_t
-    >
+      std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
+    ref_t>
   operator()(size_t i)
   {
     assert(i < extent_);
@@ -247,11 +246,10 @@ public:
   }
 
   // const subscripting
-  template<typename _vector_t = vector_t>
+  template <typename _vector_t = vector_t>
   mpl::enable_if_t<
     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-    const_ref_t
-    >
+    const_ref_t>
   operator()(size_t i) const
   {
     assert(i < extent_);
@@ -287,9 +285,7 @@ template <typename vector_t>
 struct SpanExpr<
   vector_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<vector_t>::value
-    >
-  >
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<vector_t>::value>>
 {
   using this_t = SpanExpr<vector_t>;
   using traits = typename details::traits<this_t>;
@@ -320,46 +316,46 @@ public:
       startIndex_(startIndexIn),
       extent_(extentIn)
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
   SpanExpr(vector_t & objIn,
 	   pair_t indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
-      extent_(std::get<1>(indexRange)-startIndex_)
+      extent_(std::get<1>(indexRange) - startIndex_)
   {
-    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-    assert( extent_ <= objIn.extent(0) );
+    assert(startIndex_ >= 0 and startIndex_ < objIn.extent(0));
+    assert(extent_ <= objIn.extent(0));
   }
 
 public:
-  size_t extent(size_t i) const{
-    assert(i==0);
+  size_t extent(size_t i) const
+  {
+    assert(i == 0);
     return extent_;
   }
 
   // non-const subscripting
-  template<typename _vector_t = vector_t>
+  template <typename _vector_t = vector_t>
   mpl::enable_if_t<
     !std::is_const<typename std::remove_reference<_vector_t>::type>::value,
-    ref_t
-    >
+    ref_t>
   operator()(size_t i)
   {
     assert(i < (size_t)extent_);
-    return vecObj_.get()(startIndex_+i);
+    return vecObj_.get()(startIndex_ + i);
   }
 
   // const subscripting
   const_ref_t operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
-    return vecObj_.get()(startIndex_+i);
+    return vecObj_.get()(startIndex_ + i);
   }
 };
 #endif
 
-}}} //end namespace pressio::containers::expressions
-#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_
+}}}//end namespace pressio::containers::expressions
+#endif// CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_

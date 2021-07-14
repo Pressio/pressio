@@ -49,33 +49,40 @@
 #ifndef CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_EIGEN_HPP_
 #define CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_EIGEN_HPP_
 
-namespace pressio{ namespace containers{ namespace predicates {
+namespace pressio { namespace containers { namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dynamic_multi_vector_wrapper_eigen : std::false_type {};
+struct is_dynamic_multi_vector_wrapper_eigen : std::false_type
+{
+};
 
 template <typename T>
 struct is_dynamic_multi_vector_wrapper_eigen<
   MultiVector<T>,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value
-    >
-  > : std::true_type{};
+    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value>> : std::true_type
+{
+};
 
 template <typename T>
 struct is_dynamic_multi_vector_wrapper_eigen<const MultiVector<T>>
-  : is_dynamic_multi_vector_wrapper_eigen<MultiVector<T>>{};
+  : is_dynamic_multi_vector_wrapper_eigen<MultiVector<T>>
+{
+};
 
 //-----------------------------------------------------------
 template <typename T, typename enable = void>
-struct is_multi_vector_wrapper_eigen : std::false_type {};
+struct is_multi_vector_wrapper_eigen : std::false_type
+{
+};
 
 template <typename T>
 struct is_multi_vector_wrapper_eigen<
   T,
-  mpl::enable_if_t< is_dynamic_multi_vector_wrapper_eigen<T>::value >
-  >
-  : std::true_type{};
+  mpl::enable_if_t<is_dynamic_multi_vector_wrapper_eigen<T>::value>>
+  : std::true_type
+{
+};
 
 }}}//end namespace pressio::containers::predicates
-#endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_EIGEN_HPP_
+#endif// CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_EIGEN_HPP_
