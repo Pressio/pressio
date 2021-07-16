@@ -54,14 +54,14 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename scalar_t>
+template<typename T, typename T1, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T>::rank == 1 and
   ::pressio::traits<T1>::rank == 1 
   >
-update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
+update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1>::value,
@@ -72,14 +72,14 @@ update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
   }
 }
 
-template<typename T, typename T1, typename scalar_t>
+template<typename T, typename T1, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T>::rank == 1 and
   ::pressio::traits<T1>::rank == 1
   >
-update(T & v, const T1 & v1, const scalar_t  b)
+update(T & v, const T1 & v1, const ScalarType  b)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1>::value,
@@ -94,7 +94,7 @@ update(T & v, const T1 & v1, const scalar_t  b)
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -103,9 +103,9 @@ template<typename T, typename T1, typename T2, typename scalar_t>
   ::pressio::traits<T1>::rank == 1 and 
   ::pressio::traits<T2>::rank == 1 
   >
-update(T & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c)
+update(T & v, const ScalarType &a,
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
@@ -117,7 +117,7 @@ update(T & v, const scalar_t &a,
   }
 }
 
-template<typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -127,8 +127,8 @@ template<typename T, typename T1, typename T2, typename scalar_t>
   ::pressio::traits<T2>::rank == 1 
   >
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c)
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
@@ -149,7 +149,7 @@ template<typename T,
          typename T1,
          typename T2,
          typename T3,
-         typename scalar_t>
+         typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -160,10 +160,10 @@ template<typename T,
   ::pressio::traits<T2>::rank == 1 and 
   ::pressio::traits<T3>::rank == 1 
   >
-update(T  & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d)
+update(T  & v, const ScalarType &a,
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c,
+       const T3 & v3, const ScalarType &d)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
@@ -179,7 +179,7 @@ template<typename T,
          typename T1,
          typename T2,
          typename T3,
-         typename scalar_t>
+         typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -191,9 +191,9 @@ template<typename T,
   ::pressio::traits<T3>::rank == 1 
   >
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d)
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c,
+       const T3 & v3, const ScalarType &d)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
@@ -214,7 +214,7 @@ template< typename T,
           typename T2,
           typename T3,
           typename T4,
-          typename scalar_t>
+          typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -227,11 +227,11 @@ template< typename T,
   ::pressio::traits<T3>::rank == 1 and 
   ::pressio::traits<T4>::rank == 1 
   >
-update(T & v, const scalar_t &a,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d,
-       const T4 & v4, const scalar_t &e)
+update(T & v, const ScalarType &a,
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c,
+       const T3 & v3, const ScalarType &d,
+       const T4 & v4, const ScalarType &e)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
@@ -248,7 +248,7 @@ template<typename T,
          typename T2,
          typename T3,
          typename T4,
-         typename scalar_t>
+         typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
@@ -262,10 +262,10 @@ template<typename T,
   ::pressio::traits<T4>::rank == 1 
   >
 update(T & v,
-       const T1 & v1, const scalar_t &b,
-       const T2 & v2, const scalar_t &c,
-       const T3 & v3, const scalar_t &d,
-       const T4 & v4, const scalar_t &e)
+       const T1 & v1, const ScalarType &b,
+       const T2 & v2, const ScalarType &c,
+       const T3 & v3, const ScalarType &d,
+       const T4 & v4, const ScalarType &e)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,

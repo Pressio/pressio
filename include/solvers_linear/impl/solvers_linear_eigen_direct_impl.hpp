@@ -51,15 +51,15 @@
 
 namespace pressio { namespace linearsolvers{ namespace impl{
 
-template<typename solver_tag, typename MatrixT>
+template<typename TagType, typename MatrixType>
 class EigenDirect
 {
 
 public:
-  using matrix_type	= MatrixT;
-  using scalar_type        = typename MatrixT::Scalar;
-  using this_type          = EigenDirect<solver_tag, MatrixT>;
-  using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
+  using matrix_type	= MatrixType;
+  using scalar_type        = typename MatrixType::Scalar;
+  using this_type          = EigenDirect<TagType, MatrixType>;
+  using solver_traits   = ::pressio::linearsolvers::traits<TagType>;
   using native_solver_type = typename solver_traits::template eigen_solver_type<matrix_type>;
 
   static_assert
@@ -71,7 +71,7 @@ public:
     "the native eigen solver must be direct to use in EigenDirect");
 
 public:
-  void resetLinearSystem(const MatrixT& A) {
+  void resetLinearSystem(const MatrixType& A) {
     mysolver_.compute(A);
   }
 
@@ -81,13 +81,13 @@ public:
   }
 
   template <typename T>
-  void solve(const MatrixT & A, const T& b, T & y) {
+  void solve(const MatrixType & A, const T& b, T & y) {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }
 
   template <typename T>
-  void solveAllowMatOverwrite(MatrixT & A, const T& b, T & y) {
+  void solveAllowMatOverwrite(MatrixType & A, const T& b, T & y) {
     this->resetLinearSystem(A);
     this->solve(b, y);
   }

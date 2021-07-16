@@ -52,12 +52,12 @@
 namespace pressio{ namespace expressions{  namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T>
+template <typename VectorType>
 struct asdiagmatrix_traits<
-  AsDiagonalMatrixExpr<T>,
+  AsDiagonalMatrixExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<T>::type
+      typename std::remove_cv<VectorType>::type
     >::value
     >
   >
@@ -66,17 +66,17 @@ struct asdiagmatrix_traits<
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_type  = typename traits<T>::scalar_type;
-  using ordinal_type = typename traits<T>::ordinal_type;
+  using scalar_type  = typename traits<VectorType>::scalar_type;
+  using ordinal_type = typename traits<VectorType>::ordinal_type;
   using size_type    = ordinal_type;
 
   // conditiona ref type because native expression returns by value when object is const
   using reference_type = typename std::conditional<
-    std::is_const<T>::value, scalar_type, scalar_type &
+    std::is_const<VectorType>::value, scalar_type, scalar_type &
   >::type;
 
   using const_reference_type = typename std::conditional<
-    std::is_const<T>::value, scalar_type, scalar_type const &
+    std::is_const<VectorType>::value, scalar_type, scalar_type const &
     >::type;
 };
 #endif
@@ -84,9 +84,9 @@ struct asdiagmatrix_traits<
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename T>
 // struct traits<
-//   ::pressio::expressions::AsDiagonalMatrixExpr<T>,
+//   ::pressio::expressions::AsDiagonalMatrixExpr<VectorType>,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank1_tensor_pybind<T>::value
+//     ::pressio::is_rank1_tensor_pybind<VectorType>::value
 //     >
 //   >
 //   : public containers_shared_traits<PackageIdentifier::Pybind, true, 2>,
@@ -94,23 +94,23 @@ struct asdiagmatrix_traits<
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;
-//   using scalar_t  = typename traits<T>::scalar_t;
-//   using ordinal_t = typename traits<T>::ordinal_t;
+//   using scalar_t  = typename traits<VectorType>::scalar_t;
+//   using ordinal_t = typename traits<VectorType>::ordinal_t;
 //   using size_t    = ordinal_t;
 
 //   // conditional ref type because native expression returns by value when object is const
-//   using reference_t = typename traits<T>::reference_t;
-//   using const_reference_t = typename traits<T>::const_reference_t;
+//   using reference_t = typename traits<VectorType>::reference_t;
+//   using const_reference_t = typename traits<VectorType>::const_reference_t;
 // };
 // #endif
 
 // #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // template <typename T>
 // struct traits<
-//   ::pressio::expressions::AsDiagonalMatrixExpr<T>,
+//   ::pressio::expressions::AsDiagonalMatrixExpr<VectorType>,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_vector_tpetra<
-//     typename std::remove_cv<T>::type
+//     typename std::remove_cv<VectorType>::type
 //     >::value
 //     >
 //   >
@@ -119,18 +119,18 @@ struct asdiagmatrix_traits<
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
-//   using scalar_t  = typename traits<T>::scalar_t;
-//   using local_ordinal_t  = typename traits<T>::local_ordinal_t;
-//   using global_ordinal_t = typename traits<T>::global_ordinal_t;
-//   using size_t = typename traits<T>::size_t;
+//   using scalar_t  = typename traits<VectorType>::scalar_t;
+//   using local_ordinal_t  = typename traits<VectorType>::local_ordinal_t;
+//   using global_ordinal_t = typename traits<VectorType>::global_ordinal_t;
+//   using size_t = typename traits<VectorType>::size_t;
 // };
 
 // template <typename T>
 // struct traits<
-//   ::pressio::expressions::AsDiagonalMatrixExpr<T>,
+//   ::pressio::expressions::AsDiagonalMatrixExpr<VectorType>,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_vector_tpetra_block<
-//     typename std::remove_cv<T>::type
+//     typename std::remove_cv<VectorType>::type
 //     >::value
 //     >
 //   >
@@ -139,19 +139,19 @@ struct asdiagmatrix_traits<
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
-//   using wrapped_t = typename traits<T>::wrapped_t;
-//   using scalar_t  = typename traits<T>::scalar_t;
-//   using local_ordinal_t  = typename traits<T>::local_ordinal_t;
-//   using global_ordinal_t = typename traits<T>::global_ordinal_t;
-//   using size_t = typename traits<T>::size_t;
+//   using wrapped_t = typename traits<VectorType>::wrapped_t;
+//   using scalar_t  = typename traits<VectorType>::scalar_t;
+//   using local_ordinal_t  = typename traits<VectorType>::local_ordinal_t;
+//   using global_ordinal_t = typename traits<VectorType>::global_ordinal_t;
+//   using size_t = typename traits<VectorType>::size_t;
 // };
 
 // template <typename T>
 // struct traits<
-//   ::pressio::expressions::AsDiagonalMatrixExpr<T>,
+//   ::pressio::expressions::AsDiagonalMatrixExpr<VectorType>,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_vector_epetra<
-//     typename std::remove_cv<T>::type
+//     typename std::remove_cv<VectorType>::type
 //     >::value
 //     >
 //   >
@@ -161,10 +161,10 @@ struct asdiagmatrix_traits<
 
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
-//   using scalar_t  = typename traits<T>::scalar_t;
-//   using local_ordinal_t  = typename traits<T>::local_ordinal_t;
-//   using global_ordinal_t = typename traits<T>::global_ordinal_t;
-//   using size_t = typename traits<T>::size_t;
+//   using scalar_t  = typename traits<VectorType>::scalar_t;
+//   using local_ordinal_t  = typename traits<VectorType>::local_ordinal_t;
+//   using global_ordinal_t = typename traits<VectorType>::global_ordinal_t;
+//   using size_t = typename traits<VectorType>::size_t;
 // };
 // #endif
 

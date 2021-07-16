@@ -51,16 +51,16 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
 
-template <typename T, typename state_type, typename enable = void>
+template <typename T, typename StateType, typename enable = void>
 struct linear_solver_for_newton_raphson : std::false_type
 {
   static_assert
   (!std::is_const<T>::value, "The linear solver type cannot be cv-qualified");
 };
 
-template <typename T, typename state_type>
+template <typename T, typename StateType>
 struct linear_solver_for_newton_raphson<
-  T, state_type,
+  T, StateType,
   ::pressio::mpl::enable_if_t<
     ::pressio::has_matrix_typedef<T>::value and
     // the matrix_type is not void
@@ -72,8 +72,8 @@ struct linear_solver_for_newton_raphson<
        std::declval<T>().solve
        (
         std::declval<typename T::matrix_type const &>(), // A
-        std::declval<state_type const &>(), // b
-        std::declval<state_type &>() // x
+        std::declval<StateType const &>(), // b
+        std::declval<StateType &>() // x
         )
        )
       >::value

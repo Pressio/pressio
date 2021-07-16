@@ -54,8 +54,8 @@
 
 namespace pressio{ namespace linearsolvers{
 
-template<typename tag, typename matrix_type, typename ... rest>
-using Solver = typename impl::Selector<tag, matrix_type, rest...>::type;
+template<typename TagType, typename MatrixType, typename ... Rest>
+using Solver = typename impl::Selector<TagType, MatrixType, Rest...>::type;
 
 }}
 #endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_SOLVER_HPP_

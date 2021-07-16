@@ -63,24 +63,24 @@ struct BaseObserver
   BaseObserver & operator=(BaseObserver &&) = default;
   virtual ~BaseObserver() = default;
 
-  template <class state_t>
-  void operator()(int step, const state_t & state)
+  template <class StateType>
+  void operator()(int step, const StateType & state)
   {
     (*applyFnc_)(this, step, &state);
   }
 };
 
-template <class state_t, class functor_t>
+template <class StateType, class FunctorType>
 class Observer : public BaseObserver
 {
 public:
-  using state_type = state_t;
+  using state_type = StateType;
 
 private:
-  pressio::utils::instance_or_reference_wrapper<functor_t> F_;
+  pressio::utils::instance_or_reference_wrapper<FunctorType> F_;
 
 public:
-  Observer(functor_t Fin) : F_(Fin){}
+  Observer(FunctorType Fin) : F_(Fin){}
 
   Observer() = delete;
   Observer(Observer const &) = default;
@@ -89,7 +89,7 @@ public:
   Observer & operator=(Observer &&) = default;
   ~Observer() = default;
 
-  functor_t get() const{
+  FunctorType get() const{
     return F_.get();
   }
 };

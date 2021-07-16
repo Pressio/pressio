@@ -59,7 +59,7 @@ namespace pressio{ namespace ops{
 //-------------------------------
 // specialize for op(A) = A
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
@@ -72,10 +72,10 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   !::pressio::is_expression<y_type>::value
   >
 product(::pressio::nontranspose mode,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const ScalarType beta,
 	y_type & y)
 {
   static_assert
@@ -87,7 +87,7 @@ product(::pressio::nontranspose mode,
   y = beta * y + alpha * A * x;
 }
 
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
@@ -100,10 +100,10 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   ::pressio::is_expression<y_type>::value
   >
 product(::pressio::nontranspose mode,
-  const scalar_type alpha,
+  const ScalarType alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
+  const ScalarType beta,
   y_type & y)
 {
   static_assert
@@ -116,7 +116,7 @@ product(::pressio::nontranspose mode,
 }
 
 
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
@@ -129,10 +129,10 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   !::pressio::is_expression<y_type>::value
   >
 product(::pressio::nontranspose mode,
-  const scalar_type alpha,
+  const ScalarType alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
+  const ScalarType beta,
   y_type & y)
 {
   static_assert
@@ -148,7 +148,7 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
@@ -161,10 +161,10 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   !::pressio::is_expression<y_type>::value
   >
 product(::pressio::transpose mode,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
 	const x_type & x,
-	const scalar_type beta,
+	const ScalarType beta,
 	y_type & y)
 {
   static_assert
@@ -176,7 +176,7 @@ product(::pressio::transpose mode,
   y = beta * y + alpha * A.transpose() * x;
 }
 
-template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
@@ -189,10 +189,10 @@ template < typename A_type, typename x_type, typename scalar_type, typename y_ty
   !::pressio::is_expression<y_type>::value
   >
 product(::pressio::transpose mode,
-  const scalar_type alpha,
+  const ScalarType alpha,
   const A_type & A,
   const x_type & x,
-  const scalar_type beta,
+  const ScalarType beta,
   y_type & y)
 {
   static_assert

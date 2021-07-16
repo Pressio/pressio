@@ -51,19 +51,19 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<class T, class stateType, class qrSolverType>
+template<class T, class StateType, class QRSolverType>
 class QRCorrector : public T
 {
 public:
   using typename T::scalar_type;
-  using state_type = stateType;
+  using state_type = StateType;
 
 private:
   state_type correction_ = {};
   state_type QTResid_ = {};
   state_type g_ = {};
 
-  ::pressio::utils::instance_or_reference_wrapper<qrSolverType> solverObj_;
+  ::pressio::utils::instance_or_reference_wrapper<QRSolverType> solverObj_;
   scalar_type residNormCurrCorrStep_ = {};
   scalar_type gradientNormCurrCorrStep_ = {};
   scalar_type correctionNormCurrCorrStep_ = {};

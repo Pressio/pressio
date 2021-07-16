@@ -52,17 +52,17 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename vector_t>
+template <typename VectorType>
 struct SpanExpr<
-  vector_t,
+  VectorType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<vector_t>::type
+      typename std::remove_cv<VectorType>::type
       >::value
     >
   >
 {
-  using this_t = SpanExpr<vector_t>;
+  using this_t = SpanExpr<VectorType>;
   using mytraits = span_traits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using ord_t = typename mytraits::ordinal_type;
@@ -76,7 +76,7 @@ struct SpanExpr<
   using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
-  std::reference_wrapper<vector_t> vecObj_;
+  std::reference_wrapper<VectorType> vecObj_;
   ord_t startIndex_;
   ord_t extent_ = {};
   native_expr_t nativeExprObj_;
@@ -92,7 +92,7 @@ public:
 
   ~SpanExpr() = default;
 
-  SpanExpr(vector_t & objIn,
+  SpanExpr(VectorType & objIn,
 	   const ord_t startIndexIn,
 	   const ord_t extentIn)
     : vecObj_(objIn),
@@ -104,7 +104,7 @@ public:
     assert( extent_ <= objIn.size() );
   }
 
-  SpanExpr(vector_t & objIn,
+  SpanExpr(VectorType & objIn,
 	   std::pair<ord_t, ord_t> indexRange)
     : vecObj_(objIn),
       startIndex_(std::get<0>(indexRange)),
@@ -146,17 +146,17 @@ public:
 
 
 // #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename vector_t>
+// template <typename VectorType>
 // struct SpanExpr<
-//   vector_t,
+//   VectorType,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_vector_kokkos<
-//       typename std::remove_cv<vector_t>::type
+//       typename std::remove_cv<VectorType>::type
 //       >::value
 //     >
 //   >
 // {
-//   using this_t = SpanExpr<vector_t>;
+//   using this_t = SpanExpr<VectorType>;
 //   using mytraits = traits<this_t>;
 //   using sc_t = typename mytraits::scalar_t;
 //   using ord_t = typename mytraits::ordinal_t;
@@ -171,7 +171,7 @@ public:
 //   using const_data_return_t = typename mytraits::const_data_return_t;
 
 // private:
-//   std::reference_wrapper<vector_t> vecObj_;
+//   std::reference_wrapper<VectorType> vecObj_;
 //   size_t startIndex_;
 //   size_t extent_ = {};
 //   native_expr_t nativeExprObj_;
@@ -184,7 +184,7 @@ public:
 //   SpanExpr & operator=(SpanExpr && other) = delete;
 //   ~SpanExpr() = default;
 
-//   SpanExpr(vector_t & objIn,
+//   SpanExpr(VectorType & objIn,
 // 	   const size_t startIndexIn,
 // 	   const size_t extentIn)
 //     : vecObj_(objIn),
@@ -197,7 +197,7 @@ public:
 //     assert( extent_ <= objIn.extent(0) );
 //   }
 
-//   SpanExpr(vector_t & objIn,
+//   SpanExpr(VectorType & objIn,
 // 	   pair_t indexRange)
 //     : vecObj_(objIn),
 //       startIndex_(std::get<0>(indexRange)),
@@ -238,9 +238,9 @@ public:
 //     which works because for kokkos we can assign a const view.
 //     but we do NOT wwant this since aw is const.
 //    */
-//   template<typename _vector_t = vector_t>
+//   template<typename _VectorType = VectorType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_vector_t>::type>::value and
+//     !std::is_const<typename std::remove_reference<_VectorType>::type>::value and
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     ref_t
 //     >
@@ -251,7 +251,7 @@ public:
 //   }
 
 //   // const subscripting
-//   template<typename _vector_t = vector_t>
+//   template<typename _VectorType = VectorType>
 //   mpl::enable_if_t<
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     const_ref_t
@@ -266,15 +266,15 @@ public:
 
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename vector_t>
+// template <typename VectorType>
 // struct SpanExpr<
-//   vector_t,
+//   VectorType,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank1_tensor_pybind<vector_t>::value
+//     ::pressio::containers::predicates::is_rank1_tensor_pybind<VectorType>::value
 //     >
 //   >
 // {
-//   using this_t = SpanExpr<vector_t>;
+//   using this_t = SpanExpr<VectorType>;
 //   using traits = traits<this_t>;
 //   using sc_t = typename traits::scalar_t;
 //   using ord_t = typename traits::ordinal_t;
@@ -284,7 +284,7 @@ public:
 //   using pair_t = std::pair<std::size_t, std::size_t>;
 
 // private:
-//   std::reference_wrapper<vector_t> vecObj_;
+//   std::reference_wrapper<VectorType> vecObj_;
 //   size_t startIndex_;
 //   size_t extent_ = {};
 
@@ -296,7 +296,7 @@ public:
 //   SpanExpr & operator=(SpanExpr && other) = delete;
 //   ~SpanExpr() = default;
 
-//   SpanExpr(vector_t & objIn,
+//   SpanExpr(VectorType & objIn,
 // 	   const size_t startIndexIn,
 // 	   const size_t extentIn)
 //     : vecObj_(objIn),
@@ -307,7 +307,7 @@ public:
 //     assert( extent_ <= objIn.extent(0) );
 //   }
 
-//   SpanExpr(vector_t & objIn,
+//   SpanExpr(VectorType & objIn,
 // 	   pair_t indexRange)
 //     : vecObj_(objIn),
 //       startIndex_(std::get<0>(indexRange)),
@@ -324,9 +324,9 @@ public:
 //   }
 
 //   // non-const subscripting
-//   template<typename _vector_t = vector_t>
+//   template<typename _VectorType = VectorType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_vector_t>::type>::value,
+//     !std::is_const<typename std::remove_reference<_VectorType>::type>::value,
 //     ref_t
 //     >
 //   operator()(size_t i)

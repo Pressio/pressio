@@ -55,25 +55,25 @@ namespace pressio{ namespace ops{
 //  overloads for computing: MV = a * MV + b * MV1
 // where MV is an eigen multivector wrapper
 //----------------------------------------------------------------------
-template<typename T, typename scalar_t>
+template<typename T, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   is_multi_vector_eigen<T>::value
 >
 update(T & mv, 
-       const scalar_t &a,
+       const ScalarType &a,
        const T & mv1, 
-       const scalar_t &b)
+       const ScalarType &b)
 {
   assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
   assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
   mv = a * mv + b * mv1;
 }
 
-template<typename T, typename scalar_t>
+template<typename T, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value
 >
-update(T & mv, const T & mv1, const scalar_t & b)
+update(T & mv, const T & mv1, const ScalarType & b)
 {
   assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
   assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
@@ -83,15 +83,15 @@ update(T & mv, const T & mv1, const scalar_t & b)
 //----------------------------------------------------------------------
 //  overload for: MV = a * MV + b * MV1 + c * MV2
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
   ::pressio::is_multi_vector_eigen<T2>::value
   >
-update(T & mv, const scalar_t &a,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c)
+update(T & mv, const ScalarType &a,
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
@@ -99,15 +99,15 @@ update(T & mv, const scalar_t &a,
   mv = a*mv + b*mv1 + c*mv2;
 }
 
-template<typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
   ::pressio::is_multi_vector_eigen<T2>::value
   >
 update(T & mv,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c)
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
@@ -118,17 +118,17 @@ update(T & mv,
 //----------------------------------------------------------------------
 //  overload for: MV = a * MV + b * MV1 + c * MV2 + d * MV3
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
   ::pressio::is_multi_vector_eigen<T2>::value and
   ::pressio::is_multi_vector_eigen<T3>::value
   >
-update(T & mv, const scalar_t &a,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c,
-       const T3 & mv3, const scalar_t &d)
+update(T & mv, const ScalarType &a,
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c,
+       const T3 & mv3, const ScalarType &d)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
@@ -136,7 +136,7 @@ update(T & mv, const scalar_t &a,
   mv = a*mv + b*mv1 + c*mv2 + d*mv3;
 }
 
-template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
@@ -144,9 +144,9 @@ template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
   ::pressio::is_multi_vector_eigen<T3>::value
   >
 update(T & mv,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c,
-       const T3 & mv3, const scalar_t &d)
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c,
+       const T3 & mv3, const ScalarType &d)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
@@ -157,7 +157,7 @@ update(T & mv,
 //----------------------------------------------------------------------
 //  overload for: MV = a * MV + b * MV1 + c * MV2 + d * MV3 + e*MV4
 //----------------------------------------------------------------------
-template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename T4, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
@@ -165,11 +165,11 @@ template<typename T, typename T1, typename T2, typename T3, typename T4, typenam
   ::pressio::is_multi_vector_eigen<T3>::value and
   ::pressio::is_multi_vector_eigen<T4>::value
   >
-update(T & mv, const scalar_t &a,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c,
-       const T3 & mv3, const scalar_t &d,
-       const T4 & mv4, const scalar_t &e)
+update(T & mv, const ScalarType &a,
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c,
+       const T3 & mv3, const ScalarType &d,
+       const T4 & mv4, const ScalarType &e)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
@@ -177,7 +177,7 @@ update(T & mv, const scalar_t &a,
   mv = a*mv + b*mv1 + c*mv2 + d*mv3 + e*mv4;
 }
 
-template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename T4, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_eigen<T>::value and
   ::pressio::is_multi_vector_eigen<T1>::value and
@@ -186,10 +186,10 @@ template<typename T, typename T1, typename T2, typename T3, typename T4, typenam
     ::pressio::is_multi_vector_eigen<T4>::value
   >
 update(T & mv,
-       const T1 & mv1, const scalar_t &b,
-       const T2 & mv2, const scalar_t &c,
-       const T3 & mv3, const scalar_t &d,
-       const T4 & mv4, const scalar_t &e)
+       const T1 & mv1, const ScalarType &b,
+       const T2 & mv2, const ScalarType &c,
+       const T3 & mv3, const ScalarType &d,
+       const T4 & mv4, const ScalarType &e)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T4>::value,

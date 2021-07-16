@@ -58,7 +58,7 @@ namespace pressio{ namespace ops{
 //-------------------------------------------
 // specialize for op(A) = A^T and op(B) = B
 //-------------------------------------------
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template <typename A_type, typename B_type, typename ScalarType, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<A_type>::value and
   ::pressio::is_dense_matrix_eigen<B_type>::value and
@@ -66,10 +66,10 @@ template <typename A_type, typename B_type, typename scalar_type, typename C_typ
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
 	const B_type & B,
-	const scalar_type beta,
+	const ScalarType beta,
 	C_type & C)
 {
   static_assert
@@ -82,17 +82,17 @@ product(::pressio::transpose modeA,
   C = beta * C + alpha * A.transpose() * B;
 }
 
-// template < typename A_type, typename B_type, typename scalar_type, typename C_type>
+// template < typename A_type, typename B_type, typename ScalarType, typename C_type>
 // ::pressio::mpl::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
 //   >
 // product(::pressio::transpose,
 // 	::pressio::nontranspose,
-// 	const scalar_type alpha,
+// 	const ScalarType alpha,
 // 	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
 // 	const B_type & B,
-// 	const scalar_type beta,
+// 	const ScalarType beta,
 // 	C_type & C)
 // {
 //   static_assert
@@ -114,7 +114,7 @@ product(::pressio::transpose modeA,
 //-------------------------------------------
 // specialize for op(A) = A and op(B) = B
 //-------------------------------------------
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template <typename A_type, typename B_type, typename ScalarType, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<A_type>::value and
   ::pressio::is_dense_matrix_eigen<B_type>::value and
@@ -122,10 +122,10 @@ template <typename A_type, typename B_type, typename scalar_type, typename C_typ
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
 	const B_type & B,
-	const scalar_type beta,
+	const ScalarType beta,
 	C_type & C)
 {
   static_assert
@@ -138,17 +138,17 @@ product(::pressio::nontranspose modeA,
   C = beta * C + alpha * A * B;
 }
 
-// template < typename A_type, typename B_type, typename scalar_type, typename C_type>
+// template < typename A_type, typename B_type, typename ScalarType, typename C_type>
 // ::pressio::mpl::enable_if_t<
 //   ::pressio::is_dense_matrix_eigen<B_type>::value and
 //   ::pressio::is_dense_matrix_eigen<C_type>::value
 //   >
 // product(::pressio::nontranspose,
 // 	::pressio::nontranspose,
-// 	const scalar_type alpha,
+// 	const ScalarType alpha,
 // 	const ::pressio::containers::experimental::MultiVectorSet<A_type> & A,
 // 	const B_type & B,
-// 	const scalar_type beta,
+// 	const ScalarType beta,
 // 	C_type & C)
 // {
 //   static_assert
@@ -170,16 +170,16 @@ product(::pressio::nontranspose modeA,
 /***********************************
 * special case A==B and op(A) = transpose
 **********************************/
-template <typename A_type, typename scalar_type, typename C_type>
+template <typename A_type, typename ScalarType, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<A_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
-	const scalar_type beta,
+	const ScalarType beta,
 	C_type & C)
 {
   static_assert
@@ -191,7 +191,7 @@ product(::pressio::transpose modeA,
   C = beta * C + alpha * A.transpose() * A;
 }
 
-template <typename C_type, typename A_type, typename scalar_type>
+template <typename C_type, typename A_type, typename ScalarType>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<A_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value,
@@ -199,14 +199,14 @@ template <typename C_type, typename A_type, typename scalar_type>
   >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A)
 {
   static_assert
     (::pressio::are_scalar_compatible<A_type, C_type>::value,
      "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+  constexpr auto zero = ::pressio::utils::constants<ScalarType>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;
@@ -216,7 +216,7 @@ product(::pressio::transpose modeA,
 // C = beta * C + alpha*A*B
 // specialize for when A = asDiagonalMatrix expression
 //-------------------------------------------
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template <typename A_type, typename B_type, typename ScalarType, typename C_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_dense_matrix_eigen<B_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value and 
@@ -225,10 +225,10 @@ template <typename A_type, typename B_type, typename scalar_type, typename C_typ
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
-	const scalar_type alpha,
+	const ScalarType alpha,
 	const A_type & A,
 	const B_type & B,
-	const scalar_type beta,
+	const ScalarType beta,
 	C_type & C)
 {
   static_assert

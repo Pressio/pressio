@@ -52,51 +52,50 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename matrix_type>
+template <typename MatrixType>
 struct subspan_traits<
-  SubspanExpr<matrix_type>,
+  SubspanExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<
-     typename std::remove_cv<matrix_type>::type
+     typename std::remove_cv<MatrixType>::type
     >::value
     >
   >
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
-  public matrix_shared_traits<traits<matrix_type>::is_sparse>
+  public matrix_shared_traits<traits<MatrixType>::is_sparse>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
-  // using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_type  = typename traits<matrix_type>::scalar_type;
-  using ordinal_type = typename traits<matrix_type>::ordinal_type;
+  using scalar_type  = typename traits<MatrixType>::scalar_type;
+  using ordinal_type = typename traits<MatrixType>::ordinal_type;
   using size_type    = ordinal_type;
 
   // the reference type is conditionnal because the native expression
   // returns by value when object is const
   using reference_type = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_type, scalar_type &
+    std::is_const<MatrixType>::value, scalar_type, scalar_type &
   >::type;
 
   using const_reference_type = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_type, scalar_type const &
+    std::is_const<MatrixType>::value, scalar_type, scalar_type const &
   >::type;
 
   // type of the native expression
   using _native_expr_type = decltype(
-    std::declval<matrix_type>().block( std::declval<size_type>(),
+    std::declval<MatrixType>().block( std::declval<size_type>(),
 				     std::declval<size_type>(),
                                      std::declval<size_type>(),
 				     std::declval<size_type>() )
     );
   using _const_native_expr_type = decltype(
-    std::declval<const matrix_type>().block( std::declval<size_type>(),
+    std::declval<const MatrixType>().block( std::declval<size_type>(),
 					   std::declval<size_type>(),
                                            std::declval<size_type>(),
 					   std::declval<size_type>() )
     );
   using native_expr_type = typename std::conditional<
-    std::is_const<matrix_type>::value,
+    std::is_const<MatrixType>::value,
     _const_native_expr_type,
     _native_expr_type
   >::type;

@@ -51,14 +51,14 @@
 
 namespace pressio { namespace linearsolvers{ namespace impl{
 
-template<typename derived_t>
+template<typename DerivedType>
 struct IterativeBase
 {
   using iteration_type = unsigned int;
 
   /** Get the number of iterations performed. */
   iteration_type numIterationsExecuted() const {
-    return static_cast<const derived_t &>(*this).numIterationsExecuted();
+    return static_cast<const DerivedType &>(*this).numIterationsExecuted();
   }
 
   /** Get the maximum number of iterations. */

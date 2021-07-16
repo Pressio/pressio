@@ -52,12 +52,12 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename matrix_type>
+template <typename MatrixType>
 struct diag_traits<
-  DiagExpr<matrix_type>,
+  DiagExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<
-    typename std::remove_cv<matrix_type>::type
+    typename std::remove_cv<MatrixType>::type
     >::value
     >
   >
@@ -67,26 +67,26 @@ struct diag_traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type  = typename traits<matrix_type>::scalar_type;
-  using ordinal_type = typename traits<matrix_type>::ordinal_type;
+  using scalar_type  = typename traits<MatrixType>::scalar_type;
+  using ordinal_type = typename traits<MatrixType>::ordinal_type;
   using size_type    = ordinal_type;
 
   // the reference type is conditional because the native expression
   // returns by value when object is const
   using reference_type =  typename std::conditional<
-      std::is_const<matrix_type>::value, scalar_type , scalar_type &
+      std::is_const<MatrixType>::value, scalar_type , scalar_type &
       >::type;
 
   using const_reference_type = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_type, scalar_type const &
+    std::is_const<MatrixType>::value, scalar_type, scalar_type const &
   >::type;
 
   // type of the native expression
-  using _native_expr_type = decltype(std::declval<matrix_type>().diagonal( ) );
-  using _const_native_expr_type=decltype(std::declval<const matrix_type>().diagonal());
+  using _native_expr_type = decltype(std::declval<MatrixType>().diagonal( ) );
+  using _const_native_expr_type=decltype(std::declval<const MatrixType>().diagonal());
 
   using native_expr_type = typename std::conditional<
-    std::is_const<matrix_type>::value,
+    std::is_const<MatrixType>::value,
     _const_native_expr_type,
     _native_expr_type
   >::type;
@@ -97,12 +97,12 @@ struct diag_traits<
 #endif
 
 // #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename matrix_type>
+// template <typename MatrixType>
 // struct traits<
-//   ::pressio::expressions::DiagExpr<matrix_type>,
+//   ::pressio::expressions::DiagExpr<MatrixType>,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_dense_matrix_kokkos<
-//     typename std::remove_cv<matrix_type>::type
+//     typename std::remove_cv<MatrixType>::type
 //     >::value
 //     >
 //   >
@@ -112,12 +112,12 @@ struct diag_traits<
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;
 
-//   using scalar_t	= typename traits<matrix_type>::scalar_t;
-//   using execution_space = typename traits<matrix_type>::execution_space;
-//   using memory_space	= typename traits<matrix_type>::memory_space;
-//   using device_t	= typename traits<matrix_type>::device_t;
-//   using device_type	= typename traits<matrix_type>::device_t;
-//   using ordinal_t	= typename traits<matrix_type>::ordinal_t;
+//   using scalar_t	= typename traits<MatrixType>::scalar_t;
+//   using execution_space = typename traits<MatrixType>::execution_space;
+//   using memory_space	= typename traits<MatrixType>::memory_space;
+//   using device_t	= typename traits<MatrixType>::device_t;
+//   using device_type	= typename traits<MatrixType>::device_t;
+//   using ordinal_t	= typename traits<MatrixType>::ordinal_t;
 //   using size_t		= ordinal_t;
 //   using reference_t	  = scalar_t &;
 //   using const_reference_t = scalar_t const &;
@@ -125,7 +125,7 @@ struct diag_traits<
 //   using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
 //   using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
 //   using native_expr_t = typename std::conditional<
-//     std::is_const<matrix_type>::value,
+//     std::is_const<MatrixType>::value,
 //     _const_native_expr_t,
 //     _native_expr_t
 //   >::type;
@@ -136,11 +136,11 @@ struct diag_traits<
 // #endif
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename matrix_type>
+// template <typename MatrixType>
 // struct traits<
-//   ::pressio::expressions::DiagExpr<matrix_type>,
+//   ::pressio::expressions::DiagExpr<MatrixType>,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank2_tensor_pybind<matrix_type>::value
+//     ::pressio::is_rank2_tensor_pybind<MatrixType>::value
 //     >
 //   >
 //   : public containers_shared_traits<PackageIdentifier::Pybind, true, 1>
@@ -148,8 +148,8 @@ struct diag_traits<
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;
 
-//   using scalar_t  = typename traits<matrix_type>::scalar_t;
-//   using ordinal_t = typename traits<matrix_type>::ordinal_t;
+//   using scalar_t  = typename traits<MatrixType>::scalar_t;
+//   using ordinal_t = typename traits<MatrixType>::ordinal_t;
 //   using size_t    = ordinal_t;
 //   using reference_t =  scalar_t &;
 //   using const_reference_t = scalar_t const &;

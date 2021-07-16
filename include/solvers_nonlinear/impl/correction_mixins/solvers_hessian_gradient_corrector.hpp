@@ -51,16 +51,16 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename T, typename stateType, typename linSolverT>
+template<typename T, typename StateType, typename LinSolverType>
 class HessianGradientCorrector : public T
 {
 public:
   using typename T::scalar_type;
-  using state_type = stateType;
+  using state_type = StateType;
 
 private:
   state_type correction_ = {};
-  ::pressio::utils::instance_or_reference_wrapper<linSolverT> solverObj_;
+  ::pressio::utils::instance_or_reference_wrapper<LinSolverType> solverObj_;
   scalar_type residNormCurrCorrStep_ = {};
   scalar_type gradientNormCurrCorrStep_ = {};
   scalar_type correctionNormCurrCorrStep_ = {};

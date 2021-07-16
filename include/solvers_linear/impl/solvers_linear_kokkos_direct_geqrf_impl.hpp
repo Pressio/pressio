@@ -62,17 +62,17 @@
 
 namespace pressio { namespace linearsolvers{ namespace impl{
 
-template<typename SolverT, typename MatrixT, typename enable = void>
+template<typename SolverT, typename MatrixType, typename enable = void>
 class KokkosDirect;
 
-template<typename MatrixT>
-class KokkosDirect<::pressio::linearsolvers::direct::geqrf, MatrixT>
+template<typename MatrixType>
+class KokkosDirect<::pressio::linearsolvers::direct::geqrf, MatrixType>
 {
 public:
   using solver_tag	= ::pressio::linearsolvers::direct::geqrf;
-  using this_type          = KokkosDirect<solver_tag, MatrixT>;
-  using matrix_type	= MatrixT;
-  using scalar_type        = typename MatrixT::value_type;
+  using this_type          = KokkosDirect<solver_tag, MatrixType>;
+  using matrix_type	= MatrixType;
+  using scalar_type        = typename MatrixType::value_type;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
@@ -103,16 +103,16 @@ public:
    * the matrix has layout left (i.e. column major)
    * T is a kokkos vector
    * T has host execution space
-   * T and MatrixT have same execution space
+   * T and MatrixType have same execution space
    */
-  template <typename _MatrixT = MatrixT, typename T>
+  template <typename _MatrixType = MatrixType, typename T>
   mpl::enable_if_t<
-    mpl::is_same<typename _MatrixT::traits::array_layout, Kokkos::LayoutLeft>::value 
+    mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::containers::predicates::is_vector_kokkos<T>::value 
     /*and ::pressio::containers::details::traits<T>::has_host_execution_space and*/
-    and mpl::is_same<typename T::traits::execution_space, typename _MatrixT::traits::execution_space>::value
+    and mpl::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
   >
-  solve(const _MatrixT & A, const T& b, T & y)
+  solve(const _MatrixType & A, const T& b, T & y)
   {
     const auto Aext0 = A.extent(0);
     const auto Aext1 = A.extent(1);
@@ -129,16 +129,16 @@ public:
    * the matrix has layout left (i.e. column major)
    * T is a kokkos vector 
    * T has host execution space
-   * T and MatrixT have same execution space
+   * T and MatrixType have same execution space
    */
-  template <typename _MatrixT = MatrixT, typename T>
+  template <typename _MatrixType = MatrixType, typename T>
   mpl::enable_if_t<
-    mpl::is_same<typename _MatrixT::traits::array_layout, Kokkos::LayoutLeft>::value 
+    mpl::is_same<typename _MatrixType::traits::array_layout, Kokkos::LayoutLeft>::value 
     and ::pressio::containers::predicates::is_vector_kokkos<T>::value 
     /*::pressio::containers::details::traits<T>::has_host_execution_space and*/
-    and mpl::is_same<typename T::traits::execution_space, typename _MatrixT::traits::execution_space>::value
+    and mpl::is_same<typename T::traits::execution_space, typename _MatrixType::traits::execution_space>::value
   >
-  solveAllowMatOverwrite(_MatrixT & A, const T& b, T & y)
+  solveAllowMatOverwrite(_MatrixType & A, const T& b, T & y)
   {
     // gerts is for square matrices
     assert(A.extent(0) == A.extent(1));
@@ -216,7 +216,7 @@ private:
   std::vector<scalar_type> work_ = {0};
   std::vector<scalar_type> tau_ = {};
 
-  MatrixT auxMat_ = {};
+  MatrixType auxMat_ = {};
 #endif
 
 #if defined PRESSIO_ENABLE_TPL_KOKKOS and defined KOKKOS_ENABLE_CUDA

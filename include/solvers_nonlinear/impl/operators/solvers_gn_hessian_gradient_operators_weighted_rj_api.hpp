@@ -51,10 +51,10 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <class r_t, class j_t, class T, class operand_t, class result_t>
+template <class ResidualType, class JacobianType, class T, class OperandType, class ResultType>
 void _applyWeightingHelper(const T & functorM,
-		      const operand_t & operand,
-		      result_t & result,
+		      const OperandType & operand,
+		      ResultType & result,
 		      bool is_irwls,
 		      int callCount)
 {
@@ -66,19 +66,17 @@ void _applyWeightingHelper(const T & functorM,
   }
 };
 
-template <class r_t, class j_t, class T, class operand_t, class result_t>
-void _applyWeightingHelper(const T & functorM,
-		      const operand_t & operand,
-		      result_t & result)
+template <class ResidualType, class JacobianType, class T, class OperandType, class ResultType>
+void _applyWeightingHelper(const T & functorM, const OperandType & operand, ResultType & result)
 {
   functorM(operand, result);
 };
 
 template <
-  typename h_t,
-  typename g_t,
-  typename r_t,
-  typename j_t,
+  typename HessianType,
+  typename GradientType,
+  typename ResidualType,
+  typename JacobianType,
   typename scalarType,
   typename weighting_functor_t = void
   >
@@ -92,18 +90,18 @@ private:
   static constexpr auto pnT = ::pressio::nontranspose();
 
   int callCount_ = 0;
-  mutable r_t r_;
-  mutable r_t Mr_;
-  j_t J_;
-  j_t MJ_;
-  g_t g_;
-  h_t H_;
+  mutable ResidualType r_;
+  mutable ResidualType Mr_;
+  JacobianType J_;
+  JacobianType MJ_;
+  GradientType g_;
+  HessianType H_;
   ::pressio::utils::instance_or_reference_wrapper<weighting_functor_t> functorM_;
 
   static constexpr auto is_irwls =
     std::is_same<
     weighting_functor_t,
-    ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<r_t, j_t, scalar_type>
+    ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType, scalar_type>
     >::value;
 
 public:
@@ -132,7 +130,7 @@ public:
     J_(system.createJacobian()),
     MJ_(::pressio::ops::clone(J_)),
     g_(::pressio::ops::clone(state)),
-    H_(::pressio::ops::product<h_t>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_)),
+    H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_)),
     functorM_(std::forward<_weigh_t>(functorM))
   {
     ::pressio::ops::set_zero(r_);
@@ -152,7 +150,7 @@ public:
 //       (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
 //        ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value)
 //       and std::is_same<_weigh_t,
-// 		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<r_t, j_t>
+// 		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType>
 // 		       >::value
 //       , int > = 0
 //     >
@@ -164,7 +162,7 @@ public:
 //     J_(system.createJacobian()),
 //     MJ_(::pressio::ops::clone(J_)),
 //     g_(::pressio::ops::clone(state)),
-//     H_(::pressio::ops::product<h_t>(pT, pnT,::pressio::utils::constants<scalar_type>::one(), J_)),
+//     H_(::pressio::ops::product<HessianType>(pT, pnT,::pressio::utils::constants<scalar_type>::one(), J_)),
 //     functorM_(std::move(_weigh_t(system)))
 //   {
 //     this->set_p(pValue);
@@ -182,10 +180,10 @@ public:
     callCount_ = 0;
   }
 
-  h_t & hessianRef()		   { return H_; }
-  g_t & gradientRef()		   { return g_; }
-  const h_t & hessianCRef() const  { return H_; }
-  const g_t & gradientCRef() const { return g_; }
+  HessianType & hessianRef()		   { return H_; }
+  GradientType & gradientRef()		   { return g_; }
+  const HessianType & hessianCRef() const  { return H_; }
+  const GradientType & gradientCRef() const { return g_; }
 
   template<bool _is_irwls = is_irwls>
   mpl::enable_if_t<_is_irwls> set_p(scalar_type pIn)
@@ -219,7 +217,7 @@ public:
     // compute r from system object
     system.residual(state, r_);
     // apply M
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
 
     residualNorm = this->_computeNorm();
 
@@ -229,7 +227,7 @@ public:
 
     if (recomputeSystemJacobian){
       system.jacobian(state, J_);
-      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
       _computeHessian();
     }
 
@@ -248,7 +246,7 @@ public:
     callCount_++;
 
     system.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, Mr_, is_irwls, callCount_);
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
@@ -256,7 +254,7 @@ public:
     }
 
     if (recomputeSystemJacobian){
-      _applyWeightingHelper<r_t,j_t>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
+      _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), J_, MJ_, is_irwls, callCount_);
       _computeHessian();
     }
 
@@ -272,7 +270,7 @@ public:
 	       scalar_type & residualNorm) const
   {
     system.residual(state, r_);
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, Mr_);
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
@@ -290,7 +288,7 @@ public:
   {
     // here we query system to recompute r_ only (that is why we pass false)
     system.residualAndJacobian(state, r_, J_, false);
-    _applyWeightingHelper<r_t,j_t>(functorM_.get(), r_, Mr_);
+    _applyWeightingHelper<ResidualType,JacobianType>(functorM_.get(), r_, Mr_);
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){

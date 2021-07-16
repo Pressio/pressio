@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename h_t, typename g_t, typename scalarType>
+template <typename HessianType, typename GradientType, typename ScalarType>
 class HessianGradientOperatorsHGApi
 {
 public:
-  using scalar_type = scalarType;
+  using scalar_type = ScalarType;
 
 private:  
-  g_t g_;
-  h_t H_;
+  GradientType g_;
+  HessianType H_;
 
 public:
   HessianGradientOperatorsHGApi() = delete;
@@ -87,10 +87,10 @@ public:
 
 public:
   void resetForNewCall()		{ /* no op */ }
-  h_t & hessianRef()			{ return H_; }
-  g_t & gradientRef()			{ return g_; }
-  const h_t & hessianCRef() const	{ return H_; }
-  const g_t & gradientCRef() const	{ return g_; }
+  HessianType & hessianRef()			{ return H_; }
+  GradientType & gradientRef()			{ return g_; }
+  const HessianType & hessianCRef() const	{ return H_; }
+  const GradientType & gradientCRef() const	{ return g_; }
 
   scalar_type getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");

@@ -53,13 +53,13 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template<typename system_t, typename state_t, typename ...Args>
-auto createLevenbergMarquardt(const system_t & system,
-			      const state_t & state,
+template<typename SystemType, typename StateType, typename ...Args>
+auto createLevenbergMarquardt(const SystemType & system,
+			      const StateType & state,
 			      Args && ...args)
-  -> impl::composeLevenbergMarquardt_t<system_t, Args...>
+  -> impl::composeLevenbergMarquardt_t<SystemType, Args...>
 {
-  return impl::composeLevenbergMarquardt_t<system_t, Args...>
+  return impl::composeLevenbergMarquardt_t<SystemType, Args...>
   ( system, state, std::forward<Args>(args)...);
 }
 

@@ -174,7 +174,7 @@ struct is_expression_eigen<
   T,
   mpl::enable_if_t<
     (is_expression<T>::value and
-     traits<T>::package_identifier == ::pressio::PackageIdentifier::Eigen)
+     ::pressio::traits<T>::package_identifier == ::pressio::PackageIdentifier::Eigen)
     >
   > : std::true_type{};
 #endif

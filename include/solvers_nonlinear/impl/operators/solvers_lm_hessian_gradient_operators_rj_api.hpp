@@ -52,28 +52,28 @@
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <
-  typename h_t,
-  typename g_t,
-  typename r_t,
-  typename j_t,
-  typename scalarType,
+  typename HessianType,
+  typename GradientType,
+  typename ResidualType,
+  typename JacobianType,
+  typename ScalarType,
   template<typename ...> class hgRJApi_t,
   typename ...Args
   >
 class LMHessianGradientOperatorsRJApi
 {
 public:
-  using scalar_type = scalarType;
+  using scalar_type = ScalarType;
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
   // HGOpRJApi_ contains H = J^T J, and g = J^T r
-  hgRJApi_t<h_t, g_t, r_t, j_t, scalar_type, Args...>  HGOpRJApi_;
+  hgRJApi_t<HessianType, GradientType, ResidualType, JacobianType, scalar_type, Args...>  HGOpRJApi_;
 
   // lmH contains H + lm*diag(H)
-  h_t lmH_;
+  HessianType lmH_;
 
   // damping factor for LM
   scalar_type dampParam_ = pressio::utils::constants<scalar_type>::one();
@@ -124,12 +124,12 @@ public:
   }
 
 public:
-  h_t & hessianRef()		   { return lmH_; }
-  g_t & gradientRef()		   { return HGOpRJApi_.gradientRef(); }
-  const h_t & hessianCRef() const  { return lmH_; }
-  const g_t & gradientCRef() const { return HGOpRJApi_.gradientCRef(); }
+  HessianType & hessianRef()		   { return lmH_; }
+  GradientType & gradientRef()		   { return HGOpRJApi_.gradientRef(); }
+  const HessianType & hessianCRef() const  { return lmH_; }
+  const GradientType & gradientCRef() const { return HGOpRJApi_.gradientCRef(); }
 
-  const h_t & hessianCRefBeforeLMDiagonalScaling() const {
+  const HessianType & hessianCRefBeforeLMDiagonalScaling() const {
     return HGOpRJApi_.hessianCRef();
   }
 

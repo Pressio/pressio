@@ -52,18 +52,18 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename matrix_t>
+template <typename MatrixType>
 struct SubspanExpr<
-  matrix_t,
+  MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<
-      typename std::remove_cv<matrix_t>::type
+      typename std::remove_cv<MatrixType>::type
     >::value
     >
   >
 {
 
-  using this_t = SubspanExpr<matrix_t>;
+  using this_t = SubspanExpr<MatrixType>;
   using mytraits = subspan_traits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using ord_t = typename mytraits::ordinal_type;
@@ -76,7 +76,7 @@ struct SubspanExpr<
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  std::reference_wrapper<matrix_t> matObj_;
+  std::reference_wrapper<MatrixType> matObj_;
   ord_t rowStart_;
   ord_t colStart_;
   ord_t endRow_;
@@ -93,7 +93,7 @@ public:
   SubspanExpr & operator=(SubspanExpr && other) = delete;
   ~SubspanExpr() = default;
 
-  SubspanExpr(matrix_t & matObjIn,
+  SubspanExpr(MatrixType & matObjIn,
 	      const pair_t rowRangeIn,
 	      const pair_t colRangeIn)
     : matObj_(matObjIn),
@@ -147,18 +147,18 @@ public:
 
 
 // #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename matrix_t>
+// template <typename MatrixType>
 // struct SubspanExpr<
-//   matrix_t,
+//   MatrixType,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_dense_matrix_kokkos<
-//      typename std::remove_cv<matrix_t>::type
+//      typename std::remove_cv<MatrixType>::type
 //     >::value
 //     >
 //   >
 // {
 
-//   using this_t = SubspanExpr<matrix_t>;
+//   using this_t = SubspanExpr<MatrixType>;
 //   using mytraits = traits<this_t>;
 //   using sc_t = typename mytraits::scalar_t;
 //   using ord_t = typename mytraits::ordinal_t;
@@ -171,7 +171,7 @@ public:
 //   using const_data_return_t = typename mytraits::const_data_return_t;
 
 // private:
-//   std::reference_wrapper<matrix_t> matObj_;
+//   std::reference_wrapper<MatrixType> matObj_;
 //   std::size_t rowStart_;
 //   std::size_t colStart_;
 //   std::size_t endRow_;
@@ -188,7 +188,7 @@ public:
 //   SubspanExpr & operator=(SubspanExpr && other) = delete;
 //   ~SubspanExpr() = default;
 
-//   SubspanExpr(matrix_t & matObjIn,
+//   SubspanExpr(MatrixType & matObjIn,
 // 	      const pair_t rowRangeIn,
 // 	      const pair_t colRangeIn)
 //     : matObj_(matObjIn),
@@ -241,9 +241,9 @@ public:
 //     which works because for kokkos we can assign a const view.
 //     but we do NOT wwant this since aw is const.
 //    */
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value and
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     ref_t
 //     >
@@ -254,7 +254,7 @@ public:
 //     return nativeExprObj_(i, j);
 //   }
 
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     const_ref_t
@@ -269,16 +269,16 @@ public:
 // #endif
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename matrix_t>
+// template <typename MatrixType>
 // struct SubspanExpr<
-//   matrix_t,
+//   MatrixType,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank2_tensor_pybind<matrix_t>::value
+//     ::pressio::is_rank2_tensor_pybind<MatrixType>::value
 //     >
 //   >
 // {
 
-//   using this_t = SubspanExpr<matrix_t>;
+//   using this_t = SubspanExpr<MatrixType>;
 //   using traits = typename details::traits<this_t>;
 //   using sc_t = typename traits::scalar_t;
 //   using ord_t = typename traits::ordinal_t;
@@ -288,7 +288,7 @@ public:
 //   using pair_t = std::pair<std::size_t, std::size_t>;
 
 // private:
-//   std::reference_wrapper<matrix_t> matObj_;
+//   std::reference_wrapper<MatrixType> matObj_;
 //   ord_t rowStart_;
 //   ord_t colStart_;
 //   ord_t endRow_;
@@ -304,7 +304,7 @@ public:
 //   SubspanExpr & operator=(SubspanExpr && other) = delete;
 //   ~SubspanExpr() = default;
 
-//   SubspanExpr(matrix_t & matObjIn,
+//   SubspanExpr(MatrixType & matObjIn,
 // 	      const pair_t rowRangeIn,
 // 	      const pair_t colRangeIn)
 //     : matObj_(matObjIn),
@@ -332,9 +332,9 @@ public:
 //   }
 
 //   // non-const subscripting
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value,
 //     ref_t
 //     >
 //   operator()(const ord_t & i, const ord_t & j)

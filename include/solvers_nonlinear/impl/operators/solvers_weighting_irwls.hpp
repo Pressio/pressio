@@ -51,14 +51,14 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <class residual_type, class jacob_type, class scalarType>
+template <class ResidualType, class JacobType, class ScalarType>
 class IrwWeightingOperator
 {
 public:
-  using scalar_type = scalarType;
+  using scalar_type = ScalarType;
 
 private:
-  mutable residual_type w_;
+  mutable ResidualType w_;
   scalar_type p_ = ::pressio::utils::constants<scalar_type>::one();
   scalar_type exponent_ = {};
 
@@ -92,7 +92,7 @@ public:
     this->computeExponent();
   }
 
-  void operator()(const residual_type & rIn, residual_type & Wr) const
+  void operator()(const ResidualType & rIn, ResidualType & Wr) const
   {
     this->computeWeights(rIn);
     constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
@@ -100,7 +100,7 @@ public:
     ::pressio::ops::elementwise_multiply(one, w_, rIn, zero, Wr);
   }
 
-  void operator()(const jacob_type & Jin, jacob_type & WJ) const
+  void operator()(const JacobType & Jin, JacobType & WJ) const
   {
     // don't compute weights here since they have been computed above
 
@@ -124,7 +124,7 @@ private:
     exponent_ = (p_ - two);
   }
 
-  void computeWeights(const residual_type & err) const
+  void computeWeights(const ResidualType & err) const
   {
     // compute w = |e|^(p-2)
     // use a small epsilong to guard against diving by zero

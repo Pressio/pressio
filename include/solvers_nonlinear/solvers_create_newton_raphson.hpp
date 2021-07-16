@@ -53,13 +53,13 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template<typename system_t, typename state_t, typename ...Args>
-auto createNewtonRaphson(const system_t & system,
-			 const state_t & state,
+template<typename SystemType, typename StateType, typename ...Args>
+auto createNewtonRaphson(const SystemType & system,
+			 const StateType & state,
 			 Args && ...args)
-  -> impl::composeNewtonRaphson_t<system_t, Args...>
+  -> impl::composeNewtonRaphson_t<SystemType, Args...>
 {
-  return impl::composeNewtonRaphson_t<system_t, Args...>
+  return impl::composeNewtonRaphson_t<SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 

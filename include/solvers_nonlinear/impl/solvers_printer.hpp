@@ -51,16 +51,16 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename step_t, typename sc_t>
+template <typename StepType, typename ScalarType>
 void _printMetrics(bool printGradient,
-		   step_t iStep,
+		   StepType iStep,
 		   bool stripLabels,
-		   const sc_t & absCorrectionNorm,
-		   const sc_t & relCorrectionNorm,
-		   const sc_t & absResNorm,
-		   const sc_t & relResNorm,
-		   const sc_t & absGNorm,
-		   const sc_t & relGNorm)
+		   const ScalarType & absCorrectionNorm,
+		   const ScalarType & relCorrectionNorm,
+		   const ScalarType & absResNorm,
+		   const ScalarType & relResNorm,
+		   const ScalarType & absGNorm,
+		   const ScalarType & relGNorm)
 {
 
   if (printGradient)
@@ -91,15 +91,15 @@ void _printMetrics(bool printGradient,
   }
 }
 
-template <typename step_t, typename sc_t>
-void printMetrics(step_t iStep,
+template <typename StepType, typename ScalarType>
+void printMetrics(StepType iStep,
 		  bool stripLabels,
-		  const sc_t & absCorrectionNorm,
-		  const sc_t & relCorrectionNorm,
-		  const sc_t & absResNorm,
-		  const sc_t & relResNorm,
-		  const sc_t & absGNorm,
-		  const sc_t & relGNorm)
+		  const ScalarType & absCorrectionNorm,
+		  const ScalarType & relCorrectionNorm,
+		  const ScalarType & absResNorm,
+		  const ScalarType & relResNorm,
+		  const ScalarType & absGNorm,
+		  const ScalarType & relGNorm)
 {
   _printMetrics(true, iStep, stripLabels,
 		absCorrectionNorm, relCorrectionNorm,
@@ -107,17 +107,17 @@ void printMetrics(step_t iStep,
 		absGNorm, relGNorm);
 }
 
-template <typename step_t, typename sc_t>
-void printMetrics(step_t iStep,
+template <typename StepType, typename ScalarType>
+void printMetrics(StepType iStep,
 		  bool stripLabels,
-		  const sc_t & absCorrectionNorm,
-		  const sc_t & relCorrectionNorm,
-		  const sc_t & absResNorm,
-		  const sc_t & relResNorm)
+		  const ScalarType & absCorrectionNorm,
+		  const ScalarType & relCorrectionNorm,
+		  const ScalarType & absResNorm,
+		  const ScalarType & relResNorm)
 {
   _printMetrics(false, iStep, stripLabels,
 		absCorrectionNorm, relCorrectionNorm,
-		absResNorm, relResNorm, sc_t(), sc_t());
+		absResNorm, relResNorm, ScalarType(), ScalarType());
 }
 
 }}}

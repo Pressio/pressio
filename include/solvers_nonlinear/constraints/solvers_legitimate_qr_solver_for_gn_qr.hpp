@@ -53,9 +53,9 @@ namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
 
 template <
 	typename T, 
-	typename state_type,
-	typename J_type, 
-	typename r_type,
+	typename StateType,
+	typename MatrixType, 
+	typename RType,
 	typename enable = void
 	>
 struct qr_solver_for_gn_qr
@@ -63,12 +63,12 @@ struct qr_solver_for_gn_qr
 
 template <
 	typename T, 
-	typename state_type,
-	typename J_type, 
-	typename r_type
+	typename StateType,
+	typename MatrixType, 
+	typename RType
 	>
 struct qr_solver_for_gn_qr<
-  T, state_type, J_type, r_type,
+  T, StateType, MatrixType, RType,
   ::pressio::mpl::enable_if_t<
   	// 1.
   	// must have computeThin 
@@ -77,7 +77,7 @@ struct qr_solver_for_gn_qr<
 	  (
 	   std::declval<T>().computeThin
 	   (
-	    std::declval<J_type const &>()
+	    std::declval<MatrixType const &>()
 	    )
 	   )
 	  >::value and
@@ -88,8 +88,8 @@ struct qr_solver_for_gn_qr<
 	  (
 	   std::declval<T const>().applyQTranspose
 	   (
-	    std::declval<r_type const &>(),
-	    std::declval<state_type &>()
+	    std::declval<RType const &>(),
+	    std::declval<StateType &>()
 	    )
 	   )
 	  >::value and
@@ -100,8 +100,8 @@ struct qr_solver_for_gn_qr<
 	  (
 	   std::declval<T const>().applyRTranspose
 	   (
-	    std::declval<state_type const &>(),
-	    std::declval<state_type &>()
+	    std::declval<StateType const &>(),
+	    std::declval<StateType &>()
 	    )
 	   )
 	  >::value and
@@ -112,8 +112,8 @@ struct qr_solver_for_gn_qr<
 	  (
 	   std::declval<T const>().solve
 	   (
-	    std::declval<state_type const &>(),
-	    std::declval<state_type &>()
+	    std::declval<StateType const &>(),
+	    std::declval<StateType &>()
 	    )
 	   )
 	  >::value

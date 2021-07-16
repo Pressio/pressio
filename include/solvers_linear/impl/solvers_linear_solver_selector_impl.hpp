@@ -63,52 +63,52 @@
 namespace pressio{ namespace linearsolvers{ namespace impl{
 
 
-template<typename tag, typename MatrixT, typename enable = void>
+template<typename TagType, typename MatrixType, typename enable = void>
 struct Selector{
   using type = void;
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<typename tag, typename MatrixT>
+template<typename TagType, typename MatrixType>
 struct Selector<
-  tag, MatrixT,
+  TagType, MatrixType,
   mpl::enable_if_t<
-    ::pressio::linearsolvers::traits<tag>::iterative and
-    (::pressio::is_dense_matrix_eigen<MatrixT>::value or
-     ::pressio::is_sparse_matrix_eigen<MatrixT>::value)
+    ::pressio::linearsolvers::traits<TagType>::iterative and
+    (::pressio::is_dense_matrix_eigen<MatrixType>::value or
+     ::pressio::is_sparse_matrix_eigen<MatrixType>::value)
     >
   >
 {
-  using solver_traits = ::pressio::linearsolvers::traits<tag>;
-  using type = ::pressio::linearsolvers::impl::EigenIterative<tag, MatrixT>;
+  using solver_traits = ::pressio::linearsolvers::traits<TagType>;
+  using type = ::pressio::linearsolvers::impl::EigenIterative<TagType, MatrixType>;
 };
 
-template<typename tag, typename MatrixT>
+template<typename TagType, typename MatrixType>
 struct Selector<
-  tag, MatrixT,
+  TagType, MatrixType,
   mpl::enable_if_t<
-    ::pressio::linearsolvers::traits<tag>::direct and
-    (::pressio::is_dense_matrix_eigen<MatrixT>::value or
-     ::pressio::is_sparse_matrix_eigen<MatrixT>::value)>
+    ::pressio::linearsolvers::traits<TagType>::direct and
+    (::pressio::is_dense_matrix_eigen<MatrixType>::value or
+     ::pressio::is_sparse_matrix_eigen<MatrixType>::value)>
   >
 {
-  using solver_traits = ::pressio::linearsolvers::traits<tag>;
-  using type = ::pressio::linearsolvers::impl::EigenDirect<tag, MatrixT>;
+  using solver_traits = ::pressio::linearsolvers::traits<TagType>;
+  using type = ::pressio::linearsolvers::impl::EigenDirect<TagType, MatrixType>;
 };
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template<typename tag, typename MatrixT>
+template<typename TagType, typename MatrixType>
 struct Selector<
-  tag, MatrixT,
+  TagType, MatrixType,
   mpl::enable_if_t<
-    ::pressio::linearsolvers::traits<tag>::direct and
-    (::pressio::is_dense_matrix_kokkos<MatrixT>::value)
+    ::pressio::linearsolvers::traits<TagType>::direct and
+    (::pressio::is_dense_matrix_kokkos<MatrixType>::value)
     >
   >
 {
-  using solver_traits   = ::pressio::linearsolvers::traits<tag>;
-  using type = ::pressio::linearsolvers::impl::KokkosDirect<tag, MatrixT>;
+  using solver_traits   = ::pressio::linearsolvers::traits<TagType>;
+  using type = ::pressio::linearsolvers::impl::KokkosDirect<TagType, MatrixType>;
 };
 #endif
 

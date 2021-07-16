@@ -52,13 +52,13 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #if defined PRESSIO_ENABLE_TPL_EIGEN or defined PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T>
+template <typename VectorType>
 struct AsDiagonalMatrixExpr<
-  T,
+  VectorType,
   ::pressio::mpl::enable_if_t<
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
     ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<T>::type
+      typename std::remove_cv<VectorType>::type
      >::value
 #endif
 #if defined PRESSIO_ENABLE_TPL_EIGEN and defined PRESSIO_ENABLE_TPL_PYBIND11
@@ -66,13 +66,13 @@ struct AsDiagonalMatrixExpr<
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::is_rank1_tensor_pybind<
-     typename std::remove_cv<T>::type
+     typename std::remove_cv<VectorType>::type
      >::value
 #endif
     >
   >
 {
-  using this_t = AsDiagonalMatrixExpr<T>;
+  using this_t = AsDiagonalMatrixExpr<VectorType>;
   using mytraits = asdiagmatrix_traits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using size_t = typename mytraits::size_type;
@@ -80,7 +80,7 @@ struct AsDiagonalMatrixExpr<
   using const_ref_t = typename mytraits::const_reference_type;
 
 private:
-  std::reference_wrapper<T> vecObj_;
+  std::reference_wrapper<VectorType> vecObj_;
   size_t extent_ = {};
 
 public:
@@ -91,7 +91,7 @@ public:
   AsDiagonalMatrixExpr & operator=(AsDiagonalMatrixExpr && other) = delete;
   ~AsDiagonalMatrixExpr() = default;
 
-  AsDiagonalMatrixExpr(T & objIn)
+  AsDiagonalMatrixExpr(VectorType & objIn)
     : vecObj_(objIn),
       extent_(objIn.size())
   {}
@@ -102,10 +102,10 @@ public:
     return extent_;
   }
 
-  const T * pressioObj() const{
+  const VectorType * pressioObj() const{
     return &vecObj_.get();
   }
-  T * pressioObj(){
+  VectorType * pressioObj(){
     return &vecObj_.get();
   }
 
@@ -128,20 +128,20 @@ public:
 // struct AsDiagonalMatrixExpr<
 //   T,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_vector_tpetra<typename std::remove_cv<T>::type>::value or
-//     ::pressio::is_vector_epetra<typename std::remove_cv<T>::type>::value or
-//     ::pressio::is_vector_tpetra_block<typename std::remove_cv<T>::type>::value
+//     ::pressio::is_vector_tpetra<typename std::remove_cv<VectorType>::type>::value or
+//     ::pressio::is_vector_epetra<typename std::remove_cv<VectorType>::type>::value or
+//     ::pressio::is_vector_tpetra_block<typename std::remove_cv<VectorType>::type>::value
 //     >
 //   >
 // {
-//   using this_t = AsDiagonalMatrixExpr<T>;
+//   using this_t = AsDiagonalMatrixExpr<VectorType>;
 //   using traits = typename details::traits<this_t>;
 //   using sc_t = typename traits::scalar_t;
 //   using lo_t = typename traits::local_ordinal_t;
 //   using go_t = typename traits::global_ordinal_t;
 
 // private:
-//   std::reference_wrapper<T> vecObj_;
+//   std::reference_wrapper<VectorType> vecObj_;
 //   go_t extent_ = {};
 //   lo_t extentLocal_ = {};
 
@@ -197,10 +197,10 @@ public:
 //     return extentLocal_;
 //   }
 
-//   const T * pressioObj() const{
+//   const VectorType * pressioObj() const{
 //     return &vecObj_.get();
 //   }
-//   T * pressioObj(){
+//   VectorType * pressioObj(){
 //     return &vecObj_.get();
 //   }
 // };

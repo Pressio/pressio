@@ -51,17 +51,17 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename h_t, typename g_t, typename scalarType>
+template <typename HessianType, typename GradientType, typename scalarType>
 class LMHessianGradientOperatorsHGApi
 {
 public:
   using scalar_type = scalarType;
 
 private:
-  HessianGradientOperatorsHGApi<h_t, g_t, scalar_type> HGOpHGApi_;
+  HessianGradientOperatorsHGApi<HessianType, GradientType, scalar_type> HGOpHGApi_;
 
   // lmH contains H + lm*diag(H)
-  h_t lmH_;
+  HessianType lmH_;
 
   // damping factor for LM
   scalar_type dampParam_ = pressio::utils::constants<scalar_type>::one();
@@ -95,12 +95,12 @@ public:
     dampParam_ = pressio::utils::constants<scalar_type>::one();
   }
 
-  h_t & hessianRef()			{ return lmH_; }
-  g_t & gradientRef()			{ return HGOpHGApi_.gradientRef(); }
-  const h_t & hessianCRef() const	{ return lmH_; }
-  const g_t & gradientCRef() const	{ return HGOpHGApi_.gradientCRef(); }
+  HessianType & hessianRef()			{ return lmH_; }
+  GradientType & gradientRef()			{ return HGOpHGApi_.gradientRef(); }
+  const HessianType & hessianCRef() const	{ return lmH_; }
+  const GradientType & gradientCRef() const	{ return HGOpHGApi_.gradientCRef(); }
 
-  const h_t & hessianCRefBeforeLMDiagonalScaling() const {
+  const HessianType & hessianCRefBeforeLMDiagonalScaling() const {
     return HGOpHGApi_.hessianCRef();
   }
 

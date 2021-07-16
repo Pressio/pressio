@@ -51,23 +51,23 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename r_t, typename j_t, typename scalarType>
+template <typename ResidualType, typename JacobianType, typename ScalarType>
 class ResidualJacobianOperators
 {
 public:
-  using scalar_type = scalarType;
+  using scalar_type = ScalarType;
     
 private:
-  r_t r_;
+  ResidualType r_;
 
   // J_ is mutable because when we have the fused_res_jac api, to compute the
   // residualNorm (which is a const method), we call
   // residualAndJacobian without recomputing J_ but J_ still needs to be passed
-  mutable j_t J_;
+  mutable JacobianType J_;
 
   // auxR_ is used for residualNorm method so that we don't modify the real operator r_
   // which must be the same once computeOperators is called.
-  mutable r_t auxR_;
+  mutable ResidualType auxR_;
 
 public:
   ResidualJacobianOperators() = delete;
@@ -97,10 +97,10 @@ public:
 
 public:
   void resetForNewCall()	{ /* no op */ }
-  r_t & residualRef()		{ return r_; }
-  j_t & jacobianRef()		{ return J_; }
-  const r_t & residualCRef() const { return r_; }
-  const j_t & jacobianCRef() const { return J_; }
+  ResidualType & residualRef()		{ return r_; }
+  JacobianType & jacobianRef()		{ return J_; }
+  const ResidualType & residualCRef() const { return r_; }
+  const JacobianType & jacobianCRef() const { return J_; }
 
   template <typename T>
   void setParameter(std::string key, T value) {

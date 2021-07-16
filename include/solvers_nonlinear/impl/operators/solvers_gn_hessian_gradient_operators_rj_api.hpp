@@ -52,10 +52,10 @@
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <
-  typename h_t,
-  typename g_t,
-  typename r_t,
-  typename j_t,
+  typename HessianType,
+  typename GradientType,
+  typename ResidualType,
+  typename JacobianType,
   typename scalarType
   >
 class HessianGradientOperatorsRJApiNoWeighting
@@ -67,10 +67,10 @@ private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
-  mutable r_t r_;
-  mutable j_t J_;
-  g_t g_;
-  h_t H_;
+  mutable ResidualType r_;
+  mutable JacobianType J_;
+  GradientType g_;
+  HessianType H_;
 
 public:
   HessianGradientOperatorsRJApiNoWeighting() = delete;
@@ -94,7 +94,7 @@ public:
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(::pressio::ops::clone(state)),
-      H_(::pressio::ops::product<h_t>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_))
+      H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_))
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(J_);
@@ -104,10 +104,10 @@ public:
 
 public:
   void resetForNewCall()    { /* no op */ }
-  h_t & hessianRef()     { return H_; }
-  g_t & gradientRef()    { return g_; }
-  const h_t & hessianCRef() const  { return H_; }
-  const g_t & gradientCRef() const { return g_; }
+  HessianType & hessianRef()     { return H_; }
+  GradientType & gradientRef()    { return g_; }
+  const HessianType & hessianCRef() const  { return H_; }
+  const GradientType & gradientCRef() const { return g_; }
 
   scalar_type getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");

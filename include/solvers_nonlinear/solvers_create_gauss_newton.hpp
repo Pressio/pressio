@@ -54,37 +54,37 @@
 namespace pressio{ namespace nonlinearsolvers{
 
 //***** GN with NEQ *******
-template<typename system_t, typename state_t, typename ...Args>
-auto createGaussNewton(const system_t & system,
-		       const state_t & state,
+template<typename SystemType, typename StateType, typename ...Args>
+auto createGaussNewton(const SystemType & system,
+		       const StateType & state,
 		       Args && ... args)
-  -> impl::composeGaussNewton_t<system_t, Args...>
+  -> impl::composeGaussNewton_t<SystemType, Args...>
 {
-  return impl::composeGaussNewton_t<system_t, Args...>
+  return impl::composeGaussNewton_t<SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 
 //***** GN with QR *******
-template<typename system_t, typename state_t, typename ...Args>
-auto createGaussNewtonQR(const system_t & system,
-			 const state_t & state,
+template<typename SystemType, typename StateType, typename ...Args>
+auto createGaussNewtonQR(const SystemType & system,
+			 const StateType & state,
 			 Args && ...args)
-  -> impl::composeGaussNewtonQR_t<system_t, Args...>
+  -> impl::composeGaussNewtonQR_t<SystemType, Args...>
 {
-  return impl::composeGaussNewtonQR_t<system_t, Args...>
+  return impl::composeGaussNewtonQR_t<SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 
 
 //***** IRWGN *******
 namespace experimental{
-template<typename system_t, typename state_t, typename linear_solver_t>
-auto createIRWGaussNewton(const system_t & system,
-			  const state_t & state,
+template<typename SystemType, typename StateType, typename linear_solver_t>
+auto createIRWGaussNewton(const SystemType & system,
+			  const StateType & state,
 			  linear_solver_t && linSolver)
-  -> impl::composeIrwGaussNewton_t<system_t, linear_solver_t>
+  -> impl::composeIrwGaussNewton_t<SystemType, linear_solver_t>
 {
-  using c_t = impl::composeIrwGaussNewton<system_t, linear_solver_t>;
+  using c_t = impl::composeIrwGaussNewton<SystemType, linear_solver_t>;
   using w_t = typename c_t::weighting_t;
   using return_t = typename c_t::type;
 

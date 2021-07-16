@@ -52,13 +52,13 @@
 namespace pressio{
 
 template<
-  PackageIdentifier packId,
+  PackageIdentifier PackId,
   bool _is_shared_mem,
   int _rank
   >
 struct containers_shared_traits
 {
-  static constexpr PackageIdentifier package_identifier = packId;
+  static constexpr PackageIdentifier package_identifier = PackId;
   static constexpr bool is_shared_mem	= _is_shared_mem;
   static constexpr bool is_distributed	= !is_shared_mem;
   static constexpr int rank = _rank;

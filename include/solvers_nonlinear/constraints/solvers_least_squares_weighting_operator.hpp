@@ -53,23 +53,23 @@ namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
 
 template <
   typename T,
-  typename r_t,
-  typename j_t,
+  typename RType,
+  typename JType,
   typename enable = void
 >
 struct least_squares_weighting_operator : std::false_type{};
 
-template <typename T, typename r_t, typename j_t>
+template <typename T, typename RType, typename JType>
 struct least_squares_weighting_operator<
-  T, r_t, j_t,
+  T, RType, JType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
       decltype
       (
        std::declval<T const>()
        (
-  std::declval<r_t const &>(),
-  std::declval<r_t &>()
+  std::declval<RType const &>(),
+  std::declval<RType &>()
   )
        )
       >::value
@@ -79,8 +79,8 @@ struct least_squares_weighting_operator<
       (
        std::declval<T const>()
        (
-  std::declval<j_t const &>(),
-  std::declval<j_t &>()
+  std::declval<JType const &>(),
+  std::declval<JType &>()
   )
        )
       >::value

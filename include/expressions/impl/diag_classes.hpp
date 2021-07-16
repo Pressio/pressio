@@ -52,17 +52,17 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename matrix_t>
+template <typename MatrixType>
 struct DiagExpr<
-  matrix_t,
+  MatrixType,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<
-     typename std::remove_cv<matrix_t>::type
+     typename std::remove_cv<MatrixType>::type
     >::value
     >
   >
 {
-  using this_t = DiagExpr<matrix_t>;
+  using this_t = DiagExpr<MatrixType>;
   using mytraits = diag_traits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using size_t = typename mytraits::size_type;
@@ -74,7 +74,7 @@ struct DiagExpr<
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
-  std::reference_wrapper<matrix_t> matObj_;
+  std::reference_wrapper<MatrixType> matObj_;
   native_expr_t nativeExprObj_;
   size_t numRows_ = {};
   size_t numCols_ = {};
@@ -90,7 +90,7 @@ public:
   DiagExpr & operator=(DiagExpr && other) = delete;
   ~DiagExpr() = default;
 
-  DiagExpr(matrix_t & matObjIn)
+  DiagExpr(MatrixType & matObjIn)
     : matObj_(matObjIn),
       nativeExprObj_(matObj_.get().diagonal()),
       numRows_(matObj_.get().rows()),
@@ -133,17 +133,17 @@ public:
 
 
 // #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename matrix_t>
+// template <typename MatrixType>
 // struct DiagExpr<
-//   matrix_t,
+//   MatrixType,
 //   ::pressio::mpl::enable_if_t<
 //     ::pressio::is_dense_matrix_kokkos<
-//     typename std::remove_cv<matrix_t>::type
+//     typename std::remove_cv<MatrixType>::type
 //     >::value
 //     >
 //   >
 // {
-//   using this_t		= DiagExpr<matrix_t>;
+//   using this_t		= DiagExpr<MatrixType>;
 //   using mytraits	= traits<this_t>;
 //   using sc_t		= typename mytraits::scalar_t;
 //   using size_t		= typename mytraits::size_t;
@@ -154,7 +154,7 @@ public:
 //   using const_data_return_t = typename mytraits::const_data_return_t;
 
 // private:
-//   std::reference_wrapper<matrix_t> matObj_;
+//   std::reference_wrapper<MatrixType> matObj_;
 //   native_expr_t nativeExprObj_;
 //   size_t extent_ = {};
 
@@ -172,7 +172,7 @@ public:
 //   DiagExpr & operator=(DiagExpr && other) = delete;
 //   ~DiagExpr() = default;
 
-//   DiagExpr(matrix_t & M)
+//   DiagExpr(MatrixType & M)
 //     : matObj_(M),
 //       nativeExprObj_
 //       (M.data(), natexpr_layout(M.extent(0), M.stride(0)+M.stride(1))),
@@ -204,9 +204,9 @@ public:
 //   /*
 //     need to be careful with non-const subscripting, see span for details
 //   */
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value and
+//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value and
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     ref_t
 //     >
@@ -217,7 +217,7 @@ public:
 //   }
 
 //   // const subscripting
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
 //     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
 //     const_ref_t
@@ -232,15 +232,15 @@ public:
 
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename matrix_t>
+// template <typename MatrixType>
 // struct DiagExpr<
-//   matrix_t,
+//   MatrixType,
 //   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank2_tensor_pybind<matrix_t>::value
+//     ::pressio::is_rank2_tensor_pybind<MatrixType>::value
 //     >
 //   >
 // {
-//   using this_t = DiagExpr<matrix_t>;
+//   using this_t = DiagExpr<MatrixType>;
 //   using traits = typename traits<this_t>;
 //   using sc_t = typename traits::scalar_t;
 //   using size_t = typename traits::size_t;
@@ -249,7 +249,7 @@ public:
 //   using pair_t = std::pair<std::size_t, std::size_t>;
 
 // private:
-//   std::reference_wrapper<matrix_t> matObj_;
+//   std::reference_wrapper<MatrixType> matObj_;
 //   size_t extent_ = {};
 
 // public:
@@ -260,7 +260,7 @@ public:
 //   DiagExpr & operator=(DiagExpr && other) = delete;
 //   ~DiagExpr() = default;
 
-//   DiagExpr(matrix_t & matObjIn)
+//   DiagExpr(MatrixType & matObjIn)
 //     : matObj_(matObjIn),
 //       extent_(matObjIn.extent(0))
 //   {
@@ -278,9 +278,9 @@ public:
 //   }
 
 //   // non-const subscripting
-//   template<typename _matrix_t = matrix_t>
+//   template<typename _MatrixType = MatrixType>
 //   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_matrix_t>::type>::value,
+//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value,
 //     ref_t
 //     >
 //   operator()(size_t i)

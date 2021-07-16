@@ -85,25 +85,25 @@ struct has_stepper_ref_method<
 // -------------------------------------------
 
 
-template<typename solvertag, typename T>
+template<typename TagType, typename T>
 class Solver
   : public T,
-    public IterativeBase<Solver<solvertag, T>>
+    public IterativeBase<Solver<TagType, T>>
 {
 public:
   using sc_type		 = typename T::scalar_type;
-  using solver_tag	 = solvertag;
+  using solver_tag	 = TagType;
   using this_type		 = Solver<solver_tag, T>;
   using state_type		 = typename T::state_type;
   using iterative_base_type = IterativeBase<this_type>;
   friend iterative_base_type;
-  using typename iterative_base_type::iteration_t;
+  using typename iterative_base_type::iteration_type;
 
 private:
   const sc_type defaultTol_  = static_cast<sc_type>(0.000001);
 
-  iteration_t iStep_ = {};
-  iteration_t jacobianUpdateFreq_ = 1;
+  iteration_type iStep_ = {};
+  iteration_type jacobianUpdateFreq_ = 1;
 
   //0: CorrectionAbsoluteNorm
   //1: CorrectionRelativeNorm
@@ -149,9 +149,9 @@ public:
   Solver & operator=(Solver &&) = delete;
   ~Solver() = default;
 
-  template <typename system_t, typename state_type, typename ...Args>
-  Solver(const system_t & system,
-	 const state_type & state,
+  template <typename SystemType, typename StateType, typename ...Args>
+  Solver(const SystemType & system,
+	 const StateType & state,
 	 stop stoppingE,
 	 update updatingE,
 	 Args &&... args)
@@ -162,9 +162,9 @@ public:
     tolerances_.fill(defaultTol_);
   }
 
-  template <typename system_t, typename state_type, typename ...Args>
-  Solver(const system_t & system,
-	 const state_type & state,
+  template <typename SystemType, typename StateType, typename ...Args>
+  Solver(const SystemType & system,
+	 const StateType & state,
 	 Args &&... args)
     : Solver(system, state,
 	     stop::whenCorrectionAbsoluteNormBelowTolerance,
@@ -207,7 +207,7 @@ public:
     jacobianUpdateFreq_ = newFreq;
   }
 
-  iteration_t numIterationsExecuted() const {
+  iteration_type numIterationsExecuted() const {
     return iStep_;
   }
 
@@ -230,12 +230,12 @@ public:
     return stoppingE_;
   }
 
-  template<class functor_t>
-  void setObserver(const functor_t & obsF)
+  template<class FunctorType>
+  void setObserver(const FunctorType & obsF)
   {
     PRESSIOLOG_INFO("nonlinsolver: creating observer");
 
-    using o_t = Observer<state_type, const functor_t &>;
+    using o_t = Observer<state_type, const FunctorType &>;
     observer_ = pressio::utils::make_unique<o_t>(obsF);
     observer_->applyFnc_ = applyObserver<o_t>;
   }
@@ -262,21 +262,21 @@ public:
 
 
   // *** solve ***
-  template<typename system_t>
-  void solve(const system_t & system, state_type & state)
+  template<typename SystemType>
+  void solve(const SystemType & system, state_type & state)
   {
     // before we solve, we check if we need to recreate the updater
     // for example, this is the case if the system object changes
     if (recreateUpdater(system)){
       PRESSIOLOG_INFO("nonlinsolver: create updater");
-      updater_ = createUpdater<this_type, system_t>(state, updatingE_);
+      updater_ = createUpdater<this_type, SystemType>(state, updatingE_);
     }
     this->solveImpl(system, state, *updater_);
   }
 
 #if not defined PRESSIO_ENABLE_TPL_PYBIND11
-  template<class system_t, class custom_updater_t>
-  void solve(const system_t & system,
+  template<class SystemType, class custom_updater_t>
+  void solve(const SystemType & system,
 	     state_type & state,
 	     custom_updater_t && updater)
   {
@@ -289,8 +289,8 @@ public:
     using u_t =
       mpl::conditional_t<
 	std::is_lvalue_reference<custom_updater_t&&>::value,
-      Updater<system_t, state_type, this_type, custom_updater_t&>,
-      Updater<system_t, state_type, this_type, custom_updater_t>
+      Updater<SystemType, state_type, this_type, custom_updater_t&>,
+      Updater<SystemType, state_type, this_type, custom_updater_t>
       >;
     updater_ = pressio::utils::make_unique<u_t>(std::forward<custom_updater_t>(updater));
     updater_->applyFnc_ = applyUpdater<u_t>;
@@ -303,11 +303,11 @@ public:
 //   // this overload is needed when calling the solver from Python directly,
 //   // For example, this happens when doing steady LSPG since
 //   // the state vector is owned by the Python code
-//   template<typename system_t, typename _state_type = state_type>
+//   template<typename SystemType, typename _state_type = state_type>
 //   mpl::enable_if_t<
 //     ::pressio::is_array_pybind<_state_type>::value
 //     >
-//   solve(const system_t & system, _state_type & state)
+//   solve(const SystemType & system, _state_type & state)
 //   {
 //     // here we want to view the state since we want to modify its data,
 //     // which is numpy array owned by the user inside their Python code.
@@ -316,15 +316,15 @@ public:
 
 //     if (recreateUpdater(system)){
 //       PRESSIOLOG_INFO("nonlinsolver: create updater");
-//       updater_ = createUpdater<this_type, system_t>(stateView, updatingE_);
+//       updater_ = createUpdater<this_type, SystemType>(stateView, updatingE_);
 //     }
 //     this->solveImpl(system, stateView, *updater_);
 //   }
 // #endif
 
 private:
-  template<typename system_t>
-  bool recreateUpdater(const system_t & system)
+  template<typename SystemType>
+  bool recreateUpdater(const SystemType & system)
   {
     if( (sizeOfSystemObj_ != sizeof(system)) or (sizeOfSystemObj_ == 0)){
       sizeOfSystemObj_ = sizeof(system);
@@ -339,10 +339,10 @@ private:
     }
   }
 
-  template<class system_t, class state_type, class updater_t>
-  void solveImpl(const system_t & system,
-		 state_type & state,
-		 updater_t & updater)
+  template<class SystemType, class StateType, class UpdaterType>
+  void solveImpl(const SystemType & system,
+		 StateType & state,
+		 UpdaterType & updater)
   {
     PRESSIOLOG_INFO("nonlinsolver: solve");
 
@@ -424,7 +424,7 @@ private:
   }
 
   // stopping check
-  bool stopLoop(const iteration_t & iStep) const
+  bool stopLoop(const iteration_type & iStep) const
   {
     switch (stoppingE_)
       {

@@ -52,12 +52,12 @@
 namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T>
+template <typename VectorType>
 struct span_traits<
-  SpanExpr<T>,
+  SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<T>::type
+      typename std::remove_cv<VectorType>::type
      >::value
     >
   >
@@ -66,35 +66,35 @@ struct span_traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
-  using scalar_type  = typename traits<T>::scalar_type;
-  using ordinal_type = typename traits<T>::ordinal_type;
+  using scalar_type  = typename traits<VectorType>::scalar_type;
+  using ordinal_type = typename traits<VectorType>::ordinal_type;
   using size_type    = ordinal_type;
 
   // the reference type is conditionnal because the native expression
   // returns by value when object is const
   using reference_type = typename std::conditional<
-    std::is_const<T>::value, scalar_type, scalar_type &
+    std::is_const<VectorType>::value, scalar_type, scalar_type &
   >::type;
 
   using const_reference_type = typename std::conditional<
-    std::is_const<T>::value, scalar_type, scalar_type const &
+    std::is_const<VectorType>::value, scalar_type, scalar_type const &
     >::type;
 
   // type of the native expression
   using _native_expr_type =
     decltype
     (
-     std::declval<T>().segment(size_t(), size_t())
+     std::declval<VectorType>().segment(size_t(), size_t())
      );
 
   using _const_native_expr_type =
     decltype
     (
-     std::declval<const T>().segment(size_t(), size_t())
+     std::declval<const VectorType>().segment(size_t(), size_t())
      );
 
   using native_expr_type = typename std::conditional<
-    std::is_const<T>::value,
+    std::is_const<VectorType>::value,
     _const_native_expr_type,
     _native_expr_type
     >::type;
