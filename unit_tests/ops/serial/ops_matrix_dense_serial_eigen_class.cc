@@ -3,19 +3,17 @@
 #include "pressio_ops.hpp"
 
 using nat_t = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-using mymat_t = pressio::containers::DenseMatrix<nat_t>;
 
-TEST(ops_matrix_dense_eigen_dynamic_class,
-     sizeResize)
+TEST(ops_matrix_dense_eigen_dynamic_class, sizeResize)
 {
-  mymat_t m1;
-  EXPECT_EQ( m1.extent(0), 0 );
-  EXPECT_EQ( m1.extent(1), 0 );
+  nat_t m1;
+  EXPECT_EQ( pressio::ops::extent(m1,0), 0 );
+  EXPECT_EQ( pressio::ops::extent(m1,1), 0 );
   pressio::ops::resize(m1, 11, 45);
-  EXPECT_NE( m1.extent(0), 0 );
-  EXPECT_NE( m1.extent(1), 0 );
-  EXPECT_EQ( m1.extent(0), 11 );
-  EXPECT_EQ( m1.extent(1), 45 );
+  EXPECT_NE( pressio::ops::extent(m1,0), 0 );
+  EXPECT_NE( pressio::ops::extent(m1,1), 0 );
+  EXPECT_EQ( pressio::ops::extent(m1,0), 11 );
+  EXPECT_EQ( pressio::ops::extent(m1,1), 45 );
 }
 
 

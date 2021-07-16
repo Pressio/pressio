@@ -1,6 +1,6 @@
 
 # to include google test fixtures
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../containers/fixtures)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../containers/fixtures)
 
 add_subdirectory(serial)
 

@@ -51,25 +51,23 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-/* overload for R_type == void, in_place = false */
-template<typename matrix_type, typename algo, template <typename...> class Q_type>
+/* R_type == void, in_place = false */
+template<typename matrix_type, typename algo>
 class QRSolver<
-  matrix_type, algo, false, void, Q_type,
+  matrix_type, algo, false, void,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_multi_vector_wrapper<matrix_type>::value or
-    containers::predicates::is_dense_matrix_wrapper<matrix_type>::value
+    ::pressio::traits<matrix_type>::rank == 2
     >
-  > : public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_compute_t,
-      public details::traits< QRSolver<matrix_type, algo, false, void, Q_type>>::base_solve_t
+  > : public details::traits< QRSolver<matrix_type, algo, false, void>>::base_compute_t,
+      public details::traits< QRSolver<matrix_type, algo, false, void>>::base_solve_t
 {
 
-  using this_t	       = QRSolver<matrix_type, algo, false, void, Q_type>;
-  using traits_t       = details::traits<this_t>;
-  using base_compute_t = typename traits_t::base_compute_t;
-  using base_solve_t   = typename traits_t::base_solve_t;
-  using Q_t	       = typename traits_t::Q_t;
-
-  using impl_t	       = typename traits_t::impl_t;
+  using this_t	       = QRSolver<matrix_type, algo, false, void>;
+  using qr_traits      = details::traits<this_t>;
+  using base_compute_t = typename qr_traits::base_compute_t;
+  using base_solve_t   = typename qr_traits::base_solve_t;
+  using Q_t	           = typename qr_traits::Q_t;
+  using impl_t	       = typename qr_traits::impl_t;
   impl_t myImpl_;
 
 public:

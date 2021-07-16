@@ -57,25 +57,27 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+  is_multi_vector_eigen<T>::value
 >
-update(T & mv, const scalar_t &a,
-       const T & mv1, const scalar_t &b)
+update(T & mv, 
+       const scalar_t &a,
+       const T & mv1, 
+       const scalar_t &b)
 {
   assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
   assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
-  *mv.data() = a * (*mv.data()) + b * (*mv1.data());
+  mv = a * mv + b * mv1;
 }
 
 template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+  ::pressio::is_multi_vector_eigen<T>::value
 >
 update(T & mv, const T & mv1, const scalar_t & b)
 {
   assert( ::pressio::ops::extent(mv, 0) == ::pressio::ops::extent(mv1, 0) );
   assert( ::pressio::ops::extent(mv, 1) == ::pressio::ops::extent(mv1, 1) );
-  *mv.data() = b * (*mv1.data());
+  mv = b * mv1;
 }
 
 //----------------------------------------------------------------------
@@ -83,34 +85,34 @@ update(T & mv, const T & mv1, const scalar_t & b)
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value
   >
 update(T & mv, const scalar_t &a,
        const T1 & mv1, const scalar_t &b,
        const T2 & mv2, const scalar_t &c)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2>::value,
      "types T,T1,T2 are not scalar compatible");
-  (*mv.data()) = a*(*mv.data()) + b*(*mv1.data()) + c*(*mv2.data());
+  mv = a*mv + b*mv1 + c*mv2;
 }
 
 template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value
   >
 update(T & mv,
        const T1 & mv1, const scalar_t &b,
        const T2 & mv2, const scalar_t &c)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2>::value,
      "types T,T1,T2 are not scalar compatible");
-  (*mv.data()) = b*(*mv1.data()) + c*(*mv2.data());
+  mv = b*mv1 + c*mv2;
 }
 
 //----------------------------------------------------------------------
@@ -118,10 +120,10 @@ update(T & mv,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T3>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value and
+  ::pressio::is_multi_vector_eigen<T3>::value
   >
 update(T & mv, const scalar_t &a,
        const T1 & mv1, const scalar_t &b,
@@ -129,17 +131,17 @@ update(T & mv, const scalar_t &a,
        const T3 & mv3, const scalar_t &d)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
      "types are not scalar compatible");
-  (*mv.data()) = a*(*mv.data()) + b*(*mv1.data()) + c*(*mv2.data()) + d*(*mv3.data());
+  mv = a*mv + b*mv1 + c*mv2 + d*mv3;
 }
 
 template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T3>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value and
+  ::pressio::is_multi_vector_eigen<T3>::value
   >
 update(T & mv,
        const T1 & mv1, const scalar_t &b,
@@ -147,9 +149,9 @@ update(T & mv,
        const T3 & mv3, const scalar_t &d)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2>::value,
      "types are not scalar compatible");
-  (*mv.data()) = b*(*mv1.data()) + c*(*mv2.data()) + d*(*mv3.data());
+  mv = b*mv1 + c*mv2 + d*mv3;
 }
 
 //----------------------------------------------------------------------
@@ -157,11 +159,11 @@ update(T & mv,
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T3>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T4>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value and
+  ::pressio::is_multi_vector_eigen<T3>::value and
+  ::pressio::is_multi_vector_eigen<T4>::value
   >
 update(T & mv, const scalar_t &a,
        const T1 & mv1, const scalar_t &b,
@@ -170,19 +172,18 @@ update(T & mv, const scalar_t &a,
        const T4 & mv4, const scalar_t &e)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T3,T4>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
      "types are not scalar compatible");
-  (*mv.data()) = a*(*mv.data()) + b*(*mv1.data()) +
-    c*(*mv2.data()) + d*(*mv3.data()) + e*(*mv4.data());
+  mv = a*mv + b*mv1 + c*mv2 + d*mv3 + e*mv4;
 }
 
 template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T1>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T2>::value and
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T3>::value and
-    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T4>::value
+  ::pressio::is_multi_vector_eigen<T>::value and
+  ::pressio::is_multi_vector_eigen<T1>::value and
+  ::pressio::is_multi_vector_eigen<T2>::value and
+  ::pressio::is_multi_vector_eigen<T3>::value and
+    ::pressio::is_multi_vector_eigen<T4>::value
   >
 update(T & mv,
        const T1 & mv1, const scalar_t &b,
@@ -191,10 +192,9 @@ update(T & mv,
        const T4 & mv4, const scalar_t &e)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T,T1,T2,T4>::value,
+    (::pressio::are_scalar_compatible<T,T1,T2,T4>::value,
      "types are not scalar compatible");
-  (*mv.data()) = b*(*mv1.data()) + c*(*mv2.data()) +
-    d*(*mv3.data()) + e*(*mv4.data());
+  mv = b*mv1 + c*mv2 + d*mv3 + e*mv4;
 }
 
 }}//end namespace pressio::ops

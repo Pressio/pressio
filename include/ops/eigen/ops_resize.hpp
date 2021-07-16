@@ -53,29 +53,29 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+  ::pressio::is_vector_eigen<T>::value
   >
-resize(T & o, typename ::pressio::containers::details::traits<T>::size_t newSz)
+resize(T & o, typename traits<T>::size_t newSize)
 {
   static_assert(
-  	::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<T>::value,
-  	"You cannot resize a static wrapper Eigen.");
+    ::pressio::is_dynamic_vector_eigen<T>::value,
+    "You cannot resize a static wrapper Eigen.");
 
-  o.data()->resize(newSz);
+  o.resize(newSize);
 }
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value
+  ::pressio::is_dense_matrix_eigen<T>::value or
+  ::pressio::is_sparse_matrix_eigen<T>::value
   >
-resize(T & o,
-       typename ::pressio::containers::details::traits<T>::size_t nR,
-       typename ::pressio::containers::details::traits<T>::size_t nC)
+resize(T & o, const typename traits<T>::size_t newRows, const typename traits<T>::size_t newCols)
 {
   static_assert(
-  	::pressio::containers::predicates::is_dynamic_dense_matrix_wrapper_eigen<T>::value,
-  	"You cannot resize a static wrapper Eigen.");
-  o.data()->resize(nR, nC);
+    ::pressio::is_dense_dynamic_matrix_eigen<T>::value,
+    "You cannot resize a static wrapper Eigen.");
+
+  o.resize(newRows, newCols);
 }
 
 }}//end namespace pressio::ops

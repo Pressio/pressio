@@ -54,86 +54,96 @@ namespace pressio{ namespace ops{
 // x^exponent
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value
+  traits<T>::rank==1 and 
+  traits<T>::package_identifier == PackageIdentifier::Eigen 
   >
 pow(T & x,
-    const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
+    const typename ::pressio::traits<T>::scalar_t & exponent)
 {
-  using ord_t = typename ::pressio::containers::details::traits<T>::ordinal_t;
-  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i)
+  using ord_t = typename ::pressio::traits<T>::ordinal_t;
+  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
     x(i) = std::pow(x(i), exponent);
+  }
 }
 
 // y= x^exponent
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
+  traits<T1>::rank==1 and traits<T2>::rank==1 
+  and traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  and traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 pow(T1 & y,
     const T2 & x,
-    const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent)
+    const typename ::pressio::traits<T1>::scalar_t & exponent)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+    (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
-  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i)
+  for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
     y(i) = std::pow(x(i), exponent);
+  }
 }
 
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
+  traits<T1>::rank==1 and traits<T2>::rank==1 
+  and traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  and traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent)
+	const typename ::pressio::traits<T1>::scalar_t & exponent)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+    (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
+  using sc_t = typename ::pressio::traits<T1>::scalar_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  if (exponent < ::pressio::utils::constants<sc_t>::zero()){
     throw std::runtime_error("This overload only supports exponent > 0");
+  }
 
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = std::pow(std::abs(x(i)), exponent);
+  }
 }
 
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
+  traits<T1>::rank==1 and traits<T2>::rank==1 
+  and traits<T1>::package_identifier == PackageIdentifier::Eigen 
+  and traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent,
-	const typename ::pressio::containers::details::traits<T1>::scalar_t & eps)
+	const typename ::pressio::traits<T1>::scalar_t & exponent,
+	const typename ::pressio::traits<T1>::scalar_t & eps)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+    (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
+  using sc_t = typename ::pressio::traits<T1>::scalar_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+  if (exponent > ::pressio::utils::constants<sc_t>::zero()){
     throw std::runtime_error("This overload only supports exponent < 0");
+  }
 
   constexpr auto one = ::pressio::utils::constants<sc_t>::one();
-  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = one/std::max(eps, std::pow(std::abs(x(i)), -exponent));
+  }
 }
 
 }}//end namespace pressio::ops

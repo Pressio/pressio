@@ -3,15 +3,10 @@
 #include "pressio_solvers.hpp"
 
 struct ValidSystemA {
-  using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = pressio::containers::SparseMatrix<matrix_n_t>;
-  using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = pressio::containers::Vector<vector_n_t>;
-
   using scalar_type     = double;
-  using state_type	= vector_w_t;
-  using hessian_type	= matrix_w_t;
-  using gradient_type	= vector_w_t;
+  using state_type	= Eigen::VectorXd;
+  using hessian_type	= Eigen::SparseMatrix<double>;
+  using gradient_type	= Eigen::VectorXd;
 
   hessian_type createHessian() const;
   gradient_type createGradient() const;
@@ -30,15 +25,10 @@ struct ValidSystemA {
 };
 
 struct ValidSystemB {
-  using matrix_n_t = Eigen::SparseMatrix<double>;
-  using matrix_w_t = pressio::containers::SparseMatrix<matrix_n_t>;
-  using vector_n_t = Eigen::VectorXd;
-  using vector_w_t = pressio::containers::Vector<vector_n_t>;
-
   using scalar_type     = double;
-  using state_type	= vector_w_t;
-  using hessian_type	= matrix_w_t;
-  using gradient_type	= vector_w_t;
+  using state_type	= Eigen::VectorXd;
+  using hessian_type	= Eigen::SparseMatrix<double>;
+  using gradient_type	= Eigen::VectorXd;
 
   hessian_type createHessian() const;
   gradient_type createGradient() const;
@@ -57,14 +47,14 @@ struct ValidSystemB {
 TEST(solvers_meta, system_admissible_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemA;
-  static_assert(solvers::constraints::system_hessian_gradient<system_t>::value, "");
-  static_assert(!solvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
+  static_assert(nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value, "");
+  static_assert(!nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
 }
 
 
 TEST(solvers_meta, system_admissible_fused_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemB;
-  static_assert(!solvers::constraints::system_hessian_gradient<system_t>::value, "");
-  static_assert(solvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
+  static_assert(!nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value, "");
+  static_assert(nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
 }

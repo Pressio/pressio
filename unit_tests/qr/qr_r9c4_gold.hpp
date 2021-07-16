@@ -34,8 +34,8 @@ struct qrGoldr9c4Sol{
 
   template <typename vec_t>
   void checkYForRsolve(const vec_t & y){
-    EXPECT_EQ(y.extent(0), 4);
-    for (auto i=0; i<y.extent(0); i++)
+    EXPECT_EQ(y.size(), 4);
+    for (auto i=0; i<y.size(); i++)
       EXPECT_NEAR( std::abs(trueYForRSolve_[i]),
 		   std::abs(y(i)), 1e-12 );
   }

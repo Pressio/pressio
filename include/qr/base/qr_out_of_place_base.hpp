@@ -54,8 +54,7 @@ namespace pressio{ namespace qr{
 
 template<typename derived_t, typename matrix_t, typename Q_t>
 class QROutOfPlaceBase
-  : private utils::details::CrtpBase<
-  QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
+  : private utils::details::CrtpBase<QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
 {
 
   using this_t = QROutOfPlaceBase<derived_t, matrix_t, Q_t>;
@@ -77,8 +76,8 @@ public:
 
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_vector_wrapper<vec_in_t>::value and
-    containers::predicates::is_vector_wrapper<vec_out_t>::value and
+    ::pressio::traits<vec_in_t>::rank ==1 and
+    ::pressio::traits<vec_out_t>::rank ==1 and
     meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
   >
   applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
@@ -87,14 +86,13 @@ public:
 
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_vector_wrapper<vec_in_t>::value and
-    containers::predicates::is_vector_wrapper<vec_out_t>::value
+    ::pressio::traits<vec_in_t>::rank ==1 and
+    ::pressio::traits<vec_out_t>::rank ==1
   >
   applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyRTransposeImpl(vecIn, vecOut);
   }
 
-private:
   QROutOfPlaceBase() = default;
   ~QROutOfPlaceBase() = default;
 

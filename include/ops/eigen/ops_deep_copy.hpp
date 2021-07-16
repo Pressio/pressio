@@ -53,12 +53,14 @@ namespace pressio{ namespace ops{
 
 template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T2>::value
+  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  !::pressio::is_expression_eigen<T1>::value and
+  !::pressio::is_expression_eigen<T2>::value 
   >
 deep_copy(T2 & dest, const T1 & src)
 {
-  *dest.data() = *src.data();
+	dest = src;
 }
 
 }}//end namespace pressio::ops

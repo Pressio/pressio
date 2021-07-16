@@ -51,28 +51,49 @@
 
 namespace pressio{ namespace ops{
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
-    int
-    > = 0
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_vector_eigen<T>::value or
+  ::pressio::is_dense_matrix_eigen<T>::value or
+  ::pressio::is_sparse_matrix_eigen<T>::value,
+  typename traits<T>::scalar_t
   >
-typename vec_type::traits::scalar_t max(const vec_type & a)
+max(const T & obj)
 {
-  return a.data()->maxCoeff();
+  return obj.maxCoeff();
 }
 
-template <
-  typename vec_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
-    int
-    > = 0
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_eigen<T>::value,
+  typename traits<T>::scalar_t
   >
-typename vec_type::traits::scalar_t min(const vec_type & a)
+max(const T & obj)
 {
-  return a.data()->minCoeff();
+  return obj.data()->maxCoeff();
+}
+
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_vector_eigen<T>::value or
+  ::pressio::is_dense_matrix_eigen<T>::value or
+  ::pressio::is_sparse_matrix_eigen<T>::value,
+  typename traits<T>::scalar_t
+  >
+min(const T & obj)
+{
+  return obj.minCoeff();
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_eigen<T>::value,
+  typename traits<T>::scalar_t
+  >
+min(const T & obj)
+{
+  return obj.data()->minCoeff();
 }
 
 }}//end namespace pressio::ops

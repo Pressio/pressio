@@ -56,20 +56,28 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
+  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T>::rank == 1 and
+  ::pressio::traits<T1>::rank == 1 and
+  ::pressio::traits<T2>::rank == 1 
   >
 elementwise_multiply
-(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+(typename ::pressio::traits<T>::scalar_t alpha,
  const T & x,
  const T1 & z,
- typename ::pressio::containers::details::traits<T>::scalar_t beta,
+ typename ::pressio::traits<T>::scalar_t beta,
  T2 & y)
 {
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
-  (*y.data()) = beta * (*y.data()) + alpha * x.data()->cwiseProduct(*z.data());
+
+  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  for (ord_t i=0; i< ::pressio::ops::extent(y, 0); ++i){
+    y(i) = beta*y(i) + alpha*x(i)*z(i);
+  }
+  // (*y.data()) = beta * (*y.data()) + alpha * x.data()->cwiseProduct(*z.data());
 }
 
 }}//end namespace pressio::ops

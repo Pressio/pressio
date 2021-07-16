@@ -6,29 +6,20 @@ TEST(ops_matrix_matrix_product, eigenDenseDense){
   using namespace pressio;
 
   using nat_t = Eigen::MatrixXd;
-  using myA_t = containers::DenseMatrix<nat_t>;
-  nat_t a(3,4);
-  a << 1.,2.,3.,4., 4.,3.,2.,1., 1.,2.,3.,4.;
-  myA_t A(a);
-  //  std::cout << *A.data() << "\n";
+  nat_t A(3,4);
+  A << 1.,2.,3.,4., 4.,3.,2.,1., 1.,2.,3.,4.;
 
   using nat2_t = Eigen::MatrixXd;
-  using myB_t = containers::DenseMatrix<nat2_t>;
-  nat2_t b(4,2); b << 1.,2.,3.,3.,4.,4.,2.,2.;
-  myB_t B(b);
-  //  std::cout << *B.data();
+  nat2_t B(4,2); 
+  B << 1.,2.,3.,3.,4.,4.,2.,2.;
 
-  static_assert(
-   containers::predicates::is_dense_matrix_wrapper_eigen<myA_t>::value,"");
-  
-
-  containers::DenseMatrix<Eigen::Matrix<double,3,2>> C2;
+  Eigen::Matrix<double,3,2> C;
 
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();
   constexpr auto alpha = ::pressio::utils::constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), 
-    ::pressio::nontranspose(), alpha, A, B, beta, C2);
-  EXPECT_DOUBLE_EQ( C2(0,0), 27.0);
-  EXPECT_DOUBLE_EQ( C2(1,0), 23.0);
+    ::pressio::nontranspose(), alpha, A, B, beta, C);
+  EXPECT_DOUBLE_EQ( C(0,0), 27.0);
+  EXPECT_DOUBLE_EQ( C(1,0), 23.0);
 
 }//end TEST

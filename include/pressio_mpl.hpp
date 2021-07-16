@@ -50,7 +50,6 @@
 #define PRESSIO_MPL_HPP_
 
 #include "./mpl/mpl_ConfigDefs.hpp"
-
 #include "./mpl/mpl_non_variadic.hpp"
 #include "./mpl/mpl_variadic.hpp"
 

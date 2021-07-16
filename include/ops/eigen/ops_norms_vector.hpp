@@ -51,34 +51,37 @@
 
 namespace pressio{ namespace ops{
 
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
-  typename vec_type::traits::scalar_t
+  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T>::rank == 1,
+  typename traits<T>::scalar_t
   >
-norm1(const vec_type & a)
+norm1(const T & a)
 {
-  using ordinal_t = typename vec_type::traits::ordinal_t;
-  using sc_t = typename vec_type::traits::scalar_t;
+  using ordinal_t = typename traits<T>::ordinal_t;
+  using sc_t = typename traits<T>::scalar_t;
   sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++)
+  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
     result += std::abs(a(i));
+  }
   return result;
 }
 
-
-template <typename vec_type>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<vec_type>::value,
-  typename vec_type::traits::scalar_t
+  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T>::rank == 1,
+  typename traits<T>::scalar_t
   >
-norm2(const vec_type & a)
+norm2(const T & a)
 {
-  using ordinal_t = typename vec_type::traits::ordinal_t;
-  using sc_t = typename vec_type::traits::scalar_t;
+  using ordinal_t = typename traits<T>::ordinal_t;
+  using sc_t = typename traits<T>::scalar_t;
   sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++)
+  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
     result += a(i)*a(i);
+  }
   return std::sqrt(result);
 }
 

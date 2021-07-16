@@ -7,7 +7,7 @@ namespace{
   void testAddition(matrix_t A, vec_t v, vec_t v2)
   {
     {
-      auto diagvals = pressio::containers::diag(A);
+      auto diagvals = pressio::expressions::diag(A);
       ::pressio::ops::update(diagvals,1.,v,2.);
       EXPECT_DOUBLE_EQ( diagvals(0), 3.2 );
       EXPECT_DOUBLE_EQ( diagvals(1), 10.2 );
@@ -37,7 +37,7 @@ namespace{
   void testDot(matrix_t A, vec_t v)
   {
     {
-      auto diagvals = pressio::containers::diag(A);
+      auto diagvals = pressio::expressions::diag(A);
       auto result = ::pressio::ops::dot(diagvals,v);
       EXPECT_NEAR( result, 111.2,1e-10);
       result = 0;
@@ -51,7 +51,7 @@ namespace{
   void testProduct(matrix_t A, vec_t result)
   {
     {
-      auto diagvals = pressio::containers::diag(A);
+      auto diagvals = pressio::expressions::diag(A);
       ::pressio::ops::product(::pressio::nontranspose(),
                               1.,A,diagvals,0.,result);
       EXPECT_NEAR( result(0), 111.44,1e-10);
@@ -66,8 +66,6 @@ namespace{
       EXPECT_NEAR( result(3), 444.8,1e-10);
     }
   }
-
-
 };
 
 
@@ -78,16 +76,10 @@ TEST(containers_matrix_serial_eigen_diag_ops, diag)
   using eigmat_t_float = Eigen::Matrix<float,-1,-1>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
-  using myM_t_float = pressio::containers::DenseMatrix<eigmat_t_float>;
-  using myV_t = pressio::containers::Vector<eigvec_t>;
-
-
-  myM_t A(4,4);
-  myM_t_float Af(4,4);
-
-  myV_t v1(4);
-  myV_t v2(4);
+  eigmat_t A(4,4);
+  eigmat_t_float Af(4,4);
+  eigvec_t v1(4);
+  eigvec_t v2(4);
 
   A(0,0) = 1.2;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
   A(1,0) = 5.;  A(1,1) = 6.2;  A(1,2) = 7.;  A(1,3) = 8.;
@@ -116,14 +108,9 @@ TEST(containers_matrix_serial_eigen_diag_ops, diagRowMajor)
   using eigmat_t = Eigen::Matrix<double,-1,-1,Eigen::RowMajor>;
   using eigvec_t = Eigen::Matrix<double, -1, 1>;
 
-  using myM_t = pressio::containers::DenseMatrix<eigmat_t>;
-  using myV_t = pressio::containers::Vector<eigvec_t>;
-
-
-  myM_t A(4,4);
-
-  myV_t v1(4);
-  myV_t v2(4);
+  eigmat_t A(4,4);
+  eigvec_t v1(4);
+  eigvec_t v2(4);
 
   A(0,0) = 1.2;  A(0,1) = 2.;  A(0,2) = 3.;  A(0,3) = 4.;
   A(1,0) = 5.;  A(1,1) = 6.2;  A(1,2) = 7.;  A(1,3) = 8.;

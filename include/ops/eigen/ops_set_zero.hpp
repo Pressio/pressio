@@ -53,11 +53,43 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value
+  ::pressio::is_vector_eigen<T>::value or
+  ::pressio::is_dense_matrix_eigen<T>::value or
+  ::pressio::is_sparse_matrix_eigen<T>::value
+  >
+set_zero(T & o)
+{
+	o.setZero();
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_eigen<T>::value and 
+  traits<T>::rank == 1
   >
 set_zero(T & v)
 {
-  v.data()->setZero();
+	using sc_t = typename traits<T>::scalar_t;
+	using size_t = typename traits<T>::size_t;
+	for (size_t i=0; i< v.extent(0); ++i){
+		v(i) = static_cast<sc_t>(0);
+	}
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_eigen<T>::value and 
+  traits<T>::rank == 2
+  >
+set_zero(T & v)
+{
+	using sc_t = typename traits<T>::scalar_t;
+	using size_t = typename traits<T>::size_t;
+	for (size_t i=0; i< v.extent(0); ++i){
+	  for (size_t j=0; j< v.extent(1); ++j){
+		v(i,j) = static_cast<sc_t>(0);
+	  }
+	}
 }
 
 }}//end namespace pressio::ops

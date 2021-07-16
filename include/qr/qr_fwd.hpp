@@ -67,87 +67,72 @@ class QRSolveBase;
 
 namespace impl{
 
+// #if defined PRESSIO_ENABLE_TPL_TRILINOS
+// #ifdef PRESSIO_ENABLE_TPL_EIGEN
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   template <typename...> class Q_type = containers::MultiVector>
+// class EpetraMVHouseholderUsingEigen;
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   template <typename...> class Q_type = containers::MultiVector>
+// class TpetraMVHouseholderUsingEigen;
+// #endif
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   typename wrap_Q_type,
+//   template <typename...> class Q_type = containers::MultiVector,
+//   typename enable = void>
+// class EpetraMVTSQR;
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   typename wrap_Q_type,
+//   template <typename...> class Q_type = containers::MultiVector,
+//   typename enable = void>
+// class TpetraMVTSQR;
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   typename wrap_Q_type,
+//   template <typename...> class Q_type = containers::MultiVector,
+//   typename enable = void>
+// class TpetraBlockMVTSQR;
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   typename wrap_Q_type = void,
+//   template <typename...> class Q_type = containers::MultiVector,
+//   typename enable = void>
+// class ModGramSchmidtMVEpetra;
+
+// template<
+//   typename matrix_t,
+//   typename R_t,
+//   typename wrap_Q_type = void,
+//   template <typename...> class Q_type = containers::MultiVector,
+//   typename enable = void>
+// class ModGramSchmidtMVTpetra;
+// #endif //PRESSIO_ENABLE_TPL_TRILINOS
+
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<
-  typename matrix_type,
-  typename R_t = void,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable= void>
-class QRHouseholderDenseEigenMatrixWrapper;
-
-template<
-  typename matrix_type,
-  typename R_t = void,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable= void>
-class QRHouseholderEigenMultiVectorWrapper;
+template<typename matrix_type, class Q_type, typename R_t = void, typename enable= void>
+class QRHouseholderDenseEigenMatrix;
 #endif
-
-
-#if defined PRESSIO_ENABLE_TPL_TRILINOS
-#ifdef PRESSIO_ENABLE_TPL_EIGEN
-template<
-  typename matrix_t,
-  typename R_t,
-  template <typename...> class Q_type = containers::MultiVector>
-class EpetraMVHouseholderUsingEigen;
-
-template<
-  typename matrix_t,
-  typename R_t,
-  template <typename...> class Q_type = containers::MultiVector>
-class TpetraMVHouseholderUsingEigen;
-#endif
-
-template<
-  typename matrix_t,
-  typename R_t,
-  typename wrap_Q_type,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable = void>
-class EpetraMVTSQR;
-
-template<
-  typename matrix_t,
-  typename R_t,
-  typename wrap_Q_type,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable = void>
-class TpetraMVTSQR;
-
-template<
-  typename matrix_t,
-  typename R_t,
-  typename wrap_Q_type,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable = void>
-class TpetraBlockMVTSQR;
-
-template<
-  typename matrix_t,
-  typename R_t,
-  typename wrap_Q_type = void,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable = void>
-class ModGramSchmidtMVEpetra;
-
-template<
-  typename matrix_t,
-  typename R_t,
-  typename wrap_Q_type = void,
-  template <typename...> class Q_type = containers::MultiVector,
-  typename enable = void>
-class ModGramSchmidtMVTpetra;
-
-#endif //PRESSIO_ENABLE_TPL_TRILINOS
-
 
 template<
   typename matrix_type,
   typename algorithm,
   bool in_place,
   typename R_type,
-  template <typename...> class Q_type,
   typename enable = void>
 class QRSolver;
 
@@ -157,21 +142,17 @@ class QRSolver;
 template<
   typename matrix_type,
   typename algorithm,
-  bool in_place = false,
-  template <typename...> class Q_type = ::pressio::containers::MultiVector,
-  typename enable = void
+  bool in_place = false
   >
-using QRSolver = impl::QRSolver<matrix_type, algorithm, in_place, void, Q_type>;
+using QRSolver = impl::QRSolver<matrix_type, algorithm, in_place, void>;
 
 template<
   typename matrix_type,
   typename algorithm,
   typename R_type,
-  bool in_place = false,
-  template <typename...> class Q_type = ::pressio::containers::MultiVector,
-  typename enable = void
+  bool in_place = false
   >
-using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type, Q_type>;
+using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type>;
 
 
 }}//end namespace pressio::qr

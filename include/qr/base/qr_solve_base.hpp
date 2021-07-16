@@ -53,8 +53,7 @@ namespace pressio{ namespace qr{
 
 template<typename derived_t>
 class QRSolveBase
-  : private utils::details::CrtpBase<
-  QRSolveBase<derived_t> >
+  : private utils::details::CrtpBase<QRSolveBase<derived_t> >
 {
 
   using this_t = QRSolveBase<derived_t>;
@@ -67,12 +66,13 @@ class QRSolveBase
 
 public:
   template <typename vec_t>
-  ::pressio::mpl::enable_if_t< containers::predicates::is_vector_wrapper<vec_t>::value >
+  ::pressio::mpl::enable_if_t<
+   ::pressio::traits<vec_t>::rank ==1 
+  >
   solve(const vec_t & rhs, vec_t & y)const {
     this->underlying().solveImpl(rhs, y);
   }
 
-private:
   QRSolveBase() = default;
   ~QRSolveBase() = default;
 

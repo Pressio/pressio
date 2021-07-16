@@ -51,36 +51,39 @@
 
 namespace pressio{ namespace ops{
 
-// return void
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value
+  ::pressio::traits<T0>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T0>::rank == 1 and
+  ::pressio::traits<T1>::rank == 1 
   >
 dot(const T0 & vecA,
     const T1 & vecB,
-    typename T0::traits::scalar_t & result)
+    typename ::pressio::traits<T0>::scalar_t & result)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
+    (::pressio::are_scalar_compatible<T0,T1>::value,
      "types are not scalar compatible");
   assert(::pressio::ops::extent(vecA, 0) == ::pressio::ops::extent(vecB, 0));
-  result = vecA.data()->dot(*vecB.data());
+
+  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  for (ord_t i=0; i< ::pressio::ops::extent(vecA, 0); ++i){
+    result += vecA(i)*vecB(i);
+  }
 }
 
-// return result
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T0>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value,
-  typename T0::traits::scalar_t
+  ::pressio::traits<T0>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<T0>::rank == 1 and
+  ::pressio::traits<T1>::rank == 1,
+  typename ::pressio::traits<T0>::scalar_t
   >
 dot(const T0 & vecA, const T1 & vecB)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "types are not scalar compatible");
-  using sc_t = typename T0::traits::scalar_t;
+  using sc_t = typename ::pressio::traits<T0>::scalar_t;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;

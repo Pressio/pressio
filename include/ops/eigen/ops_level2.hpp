@@ -61,9 +61,15 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<x_type>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<y_type>::value
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<A_type>::rank == 2 and
+  ::pressio::traits<x_type>::rank == 1 and
+  ::pressio::traits<y_type>::rank == 1 and
+  !::pressio::is_expression<A_type>::value and 
+  !::pressio::is_expression<x_type>::value and 
+  !::pressio::is_expression<y_type>::value
   >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
@@ -73,26 +79,86 @@ product(::pressio::nontranspose mode,
 	y_type & y)
 {
   static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
-  const auto & AE = *A.data();
-  const auto & xE = *x.data();
-  auto & yE = *y.data();
-
-  yE = beta * yE + alpha * AE * xE;
+  y = beta * y + alpha * A * x;
 }
+
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<A_type>::rank == 2 and
+  ::pressio::traits<x_type>::rank == 1 and
+  ::pressio::traits<y_type>::rank == 1 and
+  !::pressio::is_expression<A_type>::value and 
+  !::pressio::is_expression<x_type>::value and 
+  ::pressio::is_expression<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+  const scalar_type alpha,
+  const A_type & A,
+  const x_type & x,
+  const scalar_type beta,
+  y_type & y)
+{
+  static_assert
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
+  (*y.data()) = beta * (*y.data()) + alpha * A * x;
+}
+
+
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<A_type>::rank == 2 and
+  ::pressio::traits<x_type>::rank == 1 and
+  ::pressio::traits<y_type>::rank == 1 and
+  !::pressio::is_expression<A_type>::value and 
+  ::pressio::is_expression<x_type>::value and 
+  !::pressio::is_expression<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+  const scalar_type alpha,
+  const A_type & A,
+  const x_type & x,
+  const scalar_type beta,
+  y_type & y)
+{
+  static_assert
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
+  y = beta * y + alpha * A * (*x.data());
+}
+
 
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
 template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<x_type>::value and
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<y_type>::value
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<A_type>::rank == 2 and
+  ::pressio::traits<x_type>::rank == 1 and
+  ::pressio::traits<y_type>::rank == 1 and
+  !::pressio::is_expression<A_type>::value and 
+  !::pressio::is_expression<x_type>::value and 
+  !::pressio::is_expression<y_type>::value
   >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
@@ -102,16 +168,40 @@ product(::pressio::transpose mode,
 	y_type & y)
 {
   static_assert
-    (containers::predicates::are_scalar_compatible<A_type, x_type, y_type>::value,
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
+  y = beta * y + alpha * A.transpose() * x;
+}
 
-  auto & yE	  = *y.data();
-  const auto & xE = *x.data();
-  const auto & AE = *A.data();
-  yE = beta * yE + alpha * AE.transpose() * xE;
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::traits<A_type>::rank == 2 and
+  ::pressio::traits<x_type>::rank == 1 and
+  ::pressio::traits<y_type>::rank == 1 and
+  !::pressio::is_expression<A_type>::value and 
+  ::pressio::is_expression<x_type>::value and 
+  !::pressio::is_expression<y_type>::value
+  >
+product(::pressio::transpose mode,
+  const scalar_type alpha,
+  const A_type & A,
+  const x_type & x,
+  const scalar_type beta,
+  y_type & y)
+{
+  static_assert
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
+  y = beta * y + alpha * A.transpose() * (*x.data());
 }
 
 }}//end namespace pressio::ops

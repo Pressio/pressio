@@ -60,7 +60,6 @@
 #cmakedefine PRESSIO_ENABLE_TPL_LAPACK
 #cmakedefine PRESSIO_ENABLE_TPL_MPI
 
-
 // macros for catching compiler
 #if defined( __INTEL_COMPILER )
 #define PRESSIO_COMPILER_INTEL __INTEL_COMPILER
