@@ -66,46 +66,13 @@ void _applyWeightingHelper(const T & functorM,
   }
 };
 
-// template <class r_t, class j_t, class T, class operand_t, class result_t>
-// mpl::enable_if_t<
-//   ::pressio::nonlinearsolvers::constraints::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
-//   >
-// _applyWeightingHelper(const T & functorM,
-// 		      const operand_t & operand,
-// 		      result_t & result,
-// 		      bool is_irwls,
-// 		      int callCount)
-// {
-//   if(is_irwls && callCount > 1)
-//   {
-//     functorM(*operand.data(), *result.data());
-//   }else{
-//     functorM(*operand.data(), *result.data());
-//   }
-// };
-
 template <class r_t, class j_t, class T, class operand_t, class result_t>
-// mpl::enable_if_t<
-//   ::pressio::nonlinearsolvers::constraints::least_squares_weighting_operator_accepting_wrappers<T,r_t,j_t>::value
-//   >
 void _applyWeightingHelper(const T & functorM,
 		      const operand_t & operand,
 		      result_t & result)
 {
   functorM(operand, result);
 };
-
-// template <class r_t, class j_t, class T, class operand_t, class result_t>
-// mpl::enable_if_t<
-//   ::pressio::nonlinearsolvers::constraints::least_squares_weighting_operator_accepting_native<T,r_t,j_t>::value
-//   >
-// _applyWeightingHelper(const T & functorM,
-// 		      const operand_t & operand,
-// 		      result_t & result)
-// {
-//   functorM(*operand.data(), *result.data());
-// };
-
 
 template <
   typename h_t,
@@ -176,39 +143,39 @@ public:
     ::pressio::ops::set_zero(H_);
   }
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  template <
-    typename system_t,
-    typename state_t,
-    typename _weigh_t = weighting_functor_t,
-    mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value)
-      and std::is_same<_weigh_t,
-		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<r_t, j_t>
-		       >::value
-      , int > = 0
-    >
-  WeightedHessianGradientOperatorsRJApi(const system_t & system,
-					const state_t & state,
-					scalar_t pValue)
-  : r_(system.createResidual()),
-    Mr_(::pressio::ops::clone(r_)),
-    J_(system.createJacobian()),
-    MJ_(::pressio::ops::clone(J_)),
-    g_(::pressio::ops::clone(state)),
-    H_(::pressio::ops::product<h_t>(pT, pnT,::pressio::utils::constants<scalar_t>::one(), J_)),
-    functorM_(std::move(_weigh_t(system)))
-  {
-    this->set_p(pValue);
-    ::pressio::ops::set_zero(r_);
-    ::pressio::ops::set_zero(Mr_);
-    ::pressio::ops::set_zero(J_);
-    ::pressio::ops::set_zero(MJ_);
-    ::pressio::ops::set_zero(g_);
-    ::pressio::ops::set_zero(H_);
-  }
-#endif
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+//   template <
+//     typename system_t,
+//     typename state_t,
+//     typename _weigh_t = weighting_functor_t,
+//     mpl::enable_if_t<
+//       (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
+//        ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value)
+//       and std::is_same<_weigh_t,
+// 		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<r_t, j_t>
+// 		       >::value
+//       , int > = 0
+//     >
+//   WeightedHessianGradientOperatorsRJApi(const system_t & system,
+// 					const state_t & state,
+// 					scalar_t pValue)
+//   : r_(system.createResidual()),
+//     Mr_(::pressio::ops::clone(r_)),
+//     J_(system.createJacobian()),
+//     MJ_(::pressio::ops::clone(J_)),
+//     g_(::pressio::ops::clone(state)),
+//     H_(::pressio::ops::product<h_t>(pT, pnT,::pressio::utils::constants<scalar_t>::one(), J_)),
+//     functorM_(std::move(_weigh_t(system)))
+//   {
+//     this->set_p(pValue);
+//     ::pressio::ops::set_zero(r_);
+//     ::pressio::ops::set_zero(Mr_);
+//     ::pressio::ops::set_zero(J_);
+//     ::pressio::ops::set_zero(MJ_);
+//     ::pressio::ops::set_zero(g_);
+//     ::pressio::ops::set_zero(H_);
+//   }
+// #endif
 
 public:
   void resetForNewCall() {

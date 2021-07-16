@@ -133,7 +133,7 @@ public:
     systemObj.residual(state, r_);
 
     // compute norm of r_
-    residualNorm = this->_computeNormR();
+    residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
       throw ::pressio::eh::residual_has_nans();
@@ -161,7 +161,7 @@ public:
     systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
 
     // compute  norm of r_
-    residualNorm = this->_computeNormR();
+    residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
       throw ::pressio::eh::residual_has_nans();
@@ -185,7 +185,7 @@ public:
 	       scalar_t & residualNorm) const
   {
     systemObj.residual(state, r_);
-    residualNorm = this->_computeNormR();
+    residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
       throw ::pressio::eh::residual_has_nans();
@@ -201,7 +201,7 @@ public:
 	       scalar_t & residualNorm) const
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
-    residualNorm = this->_computeNormR();
+    residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
       throw ::pressio::eh::residual_has_nans();
@@ -209,11 +209,6 @@ public:
   }
 
 private:
-  scalar_t _computeNormR() const
-  {
-    return ::pressio::ops::norm2(r_);
-  }
-
   void _computeHessian()
   {
     constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();

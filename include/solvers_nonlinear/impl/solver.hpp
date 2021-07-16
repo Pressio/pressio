@@ -172,31 +172,31 @@ public:
 	     std::forward<Args>(args)...)
   {}
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  /*  here we use this trick just to simplify code for
-      pressio4py so that users can pass a ROM problem directly.
-      But this is only supposed to be enabled when
-      doing bindings for pressio4py */
-  template <
-    typename rom_problem_t, typename state_t, typename ...Args,
-    mpl::enable_if_t<has_system_ref_method<rom_problem_t>::value, int> = 0
-    >
-  Solver(rom_problem_t & problem,
-	 const state_t & state,
-	 Args && ...args)
-    : Solver(problem.systemRef(),state,std::forward<Args>(args)...)
-  {}
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+//   /*  here we use this trick just to simplify code for
+//       pressio4py so that users can pass a ROM problem directly.
+//       But this is only supposed to be enabled when
+//       doing bindings for pressio4py */
+//   template <
+//     typename rom_problem_t, typename state_t, typename ...Args,
+//     mpl::enable_if_t<has_system_ref_method<rom_problem_t>::value, int> = 0
+//     >
+//   Solver(rom_problem_t & problem,
+// 	 const state_t & state,
+// 	 Args && ...args)
+//     : Solver(problem.systemRef(),state,std::forward<Args>(args)...)
+//   {}
 
-  template <
-    typename rom_problem_t, typename state_t, typename ...Args,
-    mpl::enable_if_t<has_stepper_ref_method<rom_problem_t>::value, int> = 0
-    >
-  Solver(rom_problem_t & problem,
-	 const state_t & state,
-	 Args && ...args)
-    : Solver(problem.stepperRef(),state,std::forward<Args>(args)...)
-  {}
-#endif
+//   template <
+//     typename rom_problem_t, typename state_t, typename ...Args,
+//     mpl::enable_if_t<has_stepper_ref_method<rom_problem_t>::value, int> = 0
+//     >
+//   Solver(rom_problem_t & problem,
+// 	 const state_t & state,
+// 	 Args && ...args)
+//     : Solver(problem.stepperRef(),state,std::forward<Args>(args)...)
+//   {}
+// #endif
 
 public:
   void printStrippedMetrics(){
