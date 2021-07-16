@@ -54,23 +54,6 @@
 #include "pressio_type_traits.hpp"
 #include "pressio_expressions.hpp"
 
-// // predicates
-// #include "ops/predicates/ops_has_method_deep_copy.hpp"
-// #include "ops/predicates/ops_has_method_set_zero.hpp"
-// #include "ops/predicates/ops_has_method_axpy.hpp"
-// #include "ops/predicates/ops_has_method_norm1.hpp"
-// #include "ops/predicates/ops_has_method_norm2.hpp"
-// #include "ops/predicates/ops_has_void_method_product_mat_mat.hpp"
-// #include "ops/predicates/ops_has_nonvoid_method_product_mat_mat.hpp"
-// #include "ops/predicates/ops_has_void_method_product_mat_vec.hpp"
-// #include "ops/predicates/ops_has_method_add_to_diagonal.hpp"
-// #include "ops/predicates/ops_has_method_scale.hpp"
-// #include "ops/predicates/ops_has_method_update_one_term.hpp"
-// #include "ops/predicates/ops_has_method_update_two_terms.hpp"
-// #include "ops/predicates/ops_has_method_update_three_terms.hpp"
-// #include "ops/predicates/ops_has_method_update_four_terms.hpp"
-// #include "ops/ops_sharedmem_host_subscriptable_rank1_container.hpp"
-// #include "ops/ops_sharedmem_host_subscriptable_rank2_container.hpp"
 // #include "ops/ops_matching_extents_impl.hpp"
 
 namespace pressio{
@@ -96,7 +79,6 @@ enum class Norm{Undefined, L1, L2};
 #include "ops/eigen/ops_norms_vector.hpp"
 #include "ops/eigen/ops_dot.hpp"
 #include "ops/eigen/ops_vector_update.hpp"
-// #include "ops/eigen/ops_multi_vector_update.hpp"
 #include "ops/eigen/ops_pow.hpp"
 #include "ops/eigen/ops_elementwise_multiply.hpp"
 #endif

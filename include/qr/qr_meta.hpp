@@ -63,7 +63,6 @@ struct is_legitimate_r_type<T,
 	   >
       > : std::true_type{};
 
-
 template <typename T, typename Q_T, typename enable = void>
 struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 
