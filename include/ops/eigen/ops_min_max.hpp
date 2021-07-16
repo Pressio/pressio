@@ -56,7 +56,7 @@ template <typename T>
   ::pressio::is_vector_eigen<T>::value or
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 max(const T & obj)
 {
@@ -66,7 +66,7 @@ max(const T & obj)
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_expression_eigen<T>::value,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 max(const T & obj)
 {
@@ -79,7 +79,7 @@ template <typename T>
   ::pressio::is_vector_eigen<T>::value or
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 min(const T & obj)
 {
@@ -89,7 +89,7 @@ min(const T & obj)
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_expression_eigen<T>::value,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 min(const T & obj)
 {

@@ -66,17 +66,17 @@ struct asdiagmatrix_traits<
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_t  = typename traits<T>::scalar_t;
-  using ordinal_t = typename traits<T>::ordinal_t;
-  using size_t    = ordinal_t;
+  using scalar_type  = typename traits<T>::scalar_type;
+  using ordinal_type = typename traits<T>::ordinal_type;
+  using size_type    = ordinal_type;
 
   // conditiona ref type because native expression returns by value when object is const
-  using reference_t = typename std::conditional<
-    std::is_const<T>::value, scalar_t, scalar_t &
+  using reference_type = typename std::conditional<
+    std::is_const<T>::value, scalar_type, scalar_type &
   >::type;
 
-  using const_reference_t = typename std::conditional<
-    std::is_const<T>::value, scalar_t, scalar_t const &
+  using const_reference_type = typename std::conditional<
+    std::is_const<T>::value, scalar_type, scalar_type const &
     >::type;
 };
 #endif

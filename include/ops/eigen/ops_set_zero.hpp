@@ -69,8 +69,8 @@ template <typename T>
   >
 set_zero(T & v)
 {
-	using sc_t = typename traits<T>::scalar_t;
-	using size_t = typename traits<T>::size_t;
+	using sc_t = typename traits<T>::scalar_type;
+	using size_t = typename traits<T>::size_type;
 	for (size_t i=0; i< v.extent(0); ++i){
 		v(i) = static_cast<sc_t>(0);
 	}
@@ -83,8 +83,8 @@ template <typename T>
   >
 set_zero(T & v)
 {
-	using sc_t = typename traits<T>::scalar_t;
-	using size_t = typename traits<T>::size_t;
+	using sc_t = typename traits<T>::scalar_type;
+	using size_t = typename traits<T>::size_type;
 	for (size_t i=0; i< v.extent(0); ++i){
 	  for (size_t j=0; j< v.extent(1); ++j){
 		v(i,j) = static_cast<sc_t>(0);

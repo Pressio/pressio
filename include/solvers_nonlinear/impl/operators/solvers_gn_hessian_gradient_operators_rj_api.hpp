@@ -56,12 +56,12 @@ template <
   typename g_t,
   typename r_t,
   typename j_t,
-  typename scalar_type
+  typename scalarType
   >
 class HessianGradientOperatorsRJApiNoWeighting
 {
 public:
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
@@ -94,7 +94,7 @@ public:
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(::pressio::ops::clone(state)),
-      H_(::pressio::ops::product<h_t>(pT, pnT, ::pressio::utils::constants<scalar_t>::one(), J_))
+      H_(::pressio::ops::product<h_t>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_))
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(J_);
@@ -109,7 +109,7 @@ public:
   const h_t & hessianCRef() const  { return H_; }
   const g_t & gradientCRef() const { return g_; }
 
-  scalar_t getParameter(std::string key) const {
+  scalar_type getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");
     return {};
   }
@@ -126,7 +126,7 @@ public:
   >
   computeOperators(const system_t & systemObj,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     // compute r_
@@ -155,7 +155,7 @@ public:
     >
   computeOperators(const system_t & systemObj,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     systemObj.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
@@ -182,7 +182,7 @@ public:
     >
   residualNorm(const system_t & systemObj,
 	       const state_t & state,
-	       scalar_t & residualNorm) const
+	       scalar_type & residualNorm) const
   {
     systemObj.residual(state, r_);
     residualNorm = ::pressio::ops::norm2(r_);
@@ -198,7 +198,7 @@ public:
     >
   residualNorm(const system_t & systemObj,
 	       const state_t & state,
-	       scalar_t & residualNorm) const
+	       scalar_type & residualNorm) const
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
     residualNorm = ::pressio::ops::norm2(r_);
@@ -211,19 +211,19 @@ public:
 private:
   void _computeHessian()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::product(pT, pnT, alpha, J_, beta, H_);
   }
 
   void _computeGradient()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
     // compute gradient (g_ = J^T r)
     ::pressio::ops::product(pT, alpha, J_, r_, beta, g_);
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_t>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
   }
 };
 

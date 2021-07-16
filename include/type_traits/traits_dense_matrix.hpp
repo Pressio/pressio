@@ -66,19 +66,14 @@ struct traits<
     public matrix_shared_traits<false>
 {
 
-  static constexpr MatrixIdentifier
-  matrix_identifier = MatrixIdentifier::DenseEigen;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-
+  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseEigen;
   static constexpr bool is_static = ( T::RowsAtCompileTime != Eigen::Dynamic &&
                                       T::ColsAtCompileTime != Eigen::Dynamic );
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t  = typename T::Scalar;
-  using ordinal_t = typename T::StorageIndex;
-  using size_t    = ordinal_t;
+  using scalar_type  = typename T::Scalar;
+  using ordinal_type = typename T::StorageIndex;
+  using size_type = ordinal_type;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
@@ -97,18 +92,13 @@ struct traits<
     public matrix_shared_traits<false>
 {
 
-  static constexpr MatrixIdentifier
-  matrix_identifier = MatrixIdentifier::DenseTeuchosSerial;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-
+  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseTeuchosSerial;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename T::scalarType;
-  using ordinal_t = typename T::ordinalType;
-  using size_t    = ordinal_t;
+  using scalar_type = typename T::scalarType;
+  using ordinal_type = typename T::ordinalType;
+  using size_type = ordinal_type;
 };
 #endif
 
@@ -127,26 +117,21 @@ struct traits<
   public matrix_shared_traits<false>
 {
 
-  static constexpr MatrixIdentifier
-      matrix_identifier = MatrixIdentifier::DenseKokkos;
+  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
+  static constexpr bool is_static = T::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
 
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-
-  using scalar_t	  = typename T::traits::value_type;
-  using layout		  = typename T::traits::array_layout;
-  using ordinal_t	  = typename T::traits::size_type;
-  using size_t		  = ordinal_t;
+  using scalar_type	  = typename T::traits::value_type;
+  using layout_type	  = typename T::traits::array_layout;
+  using ordinal_type  = typename T::traits::size_type;
+  using size_type = ordinal_type;
 
   using execution_space   = typename T::traits::execution_space;
   using memory_space	  = typename T::traits::memory_space;
-  using device_t	  = typename T::traits::device_type;
+  using device_type	  = typename T::traits::device_type;
   using memory_traits	  = typename T::traits::memory_traits;
   using host_mirror_space = typename T::traits::host_mirror_space;
   using host_mirror_t     = typename T::host_mirror_type;
-
-  static constexpr bool is_static = T::traits::rank_dynamic==0;
-  static constexpr bool is_dynamic  = !is_static;
 
   static constexpr bool has_host_execution_space =
     (false

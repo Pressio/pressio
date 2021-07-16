@@ -70,9 +70,9 @@ class KokkosDirect<::pressio::linearsolvers::direct::geqrf, MatrixT>
 {
 public:
   using solver_tag	= ::pressio::linearsolvers::direct::geqrf;
-  using this_t          = KokkosDirect<solver_tag, MatrixT>;
+  using this_type          = KokkosDirect<solver_tag, MatrixT>;
   using matrix_type	= MatrixT;
-  using scalar_t        = typename MatrixT::value_type;
+  using scalar_type        = typename MatrixT::value_type;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
@@ -192,7 +192,7 @@ public:
     //std::cout << " info-ormqr " << info << std::endl;
 
     // solver R y = Q^T b
-    constexpr scalar_t alpha = ::pressio::utils::constants<scalar_t>::one();
+    constexpr scalar_type alpha = ::pressio::utils::constants<scalar_type>::one();
     blas_.TRSM(Teuchos::ESide::LEFT_SIDE,
     	       Teuchos::EUplo::UPPER_TRI,
     	       Teuchos::ETransp::NO_TRANS,
@@ -205,16 +205,16 @@ public:
 
 private:
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  Teuchos::LAPACK<int, scalar_t> lpk_;
-  Teuchos::BLAS<int, scalar_t> blas_;
+  Teuchos::LAPACK<int, scalar_type> lpk_;
+  Teuchos::BLAS<int, scalar_type> blas_;
 
   // lwork is used for the geqrf, but if you read the doc,
   // if lwork == -1, then geqrf does a query of what is needed.
   // more details are shown in the code above on how we use lwork
   int lwork_ = -1;
 
-  std::vector<scalar_t> work_ = {0};
-  std::vector<scalar_t> tau_ = {};
+  std::vector<scalar_type> work_ = {0};
+  std::vector<scalar_type> tau_ = {};
 
   MatrixT auxMat_ = {};
 #endif

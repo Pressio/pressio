@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename h_t, typename g_t, typename scalar_type>
+template <typename h_t, typename g_t, typename scalarType>
 class HessianGradientOperatorsHGApi
 {
 public:
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
 private:  
   g_t g_;
@@ -92,7 +92,7 @@ public:
   const h_t & hessianCRef() const	{ return H_; }
   const g_t & gradientCRef() const	{ return g_; }
 
-  scalar_t getParameter(std::string key) const {
+  scalar_type getParameter(std::string key) const {
     throw std::runtime_error("GN HessGrad operators does not have parameters");
     return {};
   }
@@ -105,7 +105,7 @@ public:
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system,
 		    const state_t & state,
-		    scalar_t & residualNorm) const
+		    scalar_type & residualNorm) const
   {
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
@@ -116,7 +116,7 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     if (recomputeSystemJacobian){
@@ -128,7 +128,7 @@ public:
 		 recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_t>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
   }
 
   template<typename system_t, typename state_t>
@@ -137,7 +137,7 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
     sys.hessianAndGradient(state, H_, g_,
@@ -145,7 +145,7 @@ public:
 			   residualNorm, recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_t>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
   }
 };
 

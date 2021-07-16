@@ -51,29 +51,29 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<class T, class state_type, class qr_solver_t>
+template<class T, class stateType, class qrSolverType>
 class QRCorrector : public T
 {
 public:
-  using typename T::scalar_t;
-  using state_t = state_type;
+  using typename T::scalar_type;
+  using state_type = stateType;
 
 private:
-  state_t correction_ = {};
-  state_t QTResid_ = {};
-  state_t g_ = {};
+  state_type correction_ = {};
+  state_type QTResid_ = {};
+  state_type g_ = {};
 
-  ::pressio::utils::instance_or_reference_wrapper<qr_solver_t> solverObj_;
-  scalar_t residNormCurrCorrStep_ = {};
-  scalar_t gradientNormCurrCorrStep_ = {};
-  scalar_t correctionNormCurrCorrStep_ = {};
+  ::pressio::utils::instance_or_reference_wrapper<qrSolverType> solverObj_;
+  scalar_type residNormCurrCorrStep_ = {};
+  scalar_type gradientNormCurrCorrStep_ = {};
+  scalar_type correctionNormCurrCorrStep_ = {};
 
 public:
   QRCorrector() = delete;
 
   template <typename system_t, typename qrs_t>
   QRCorrector(const system_t & system,
-	      const state_t & state,
+	      const state_type & state,
 	      qrs_t && solverObj)
     : T(system, state),
       correction_(::pressio::ops::clone(state)),
@@ -81,7 +81,7 @@ public:
       g_(::pressio::ops::clone(state)),
       solverObj_(std::forward<qrs_t>(solverObj))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
     ::pressio::ops::fill(QTResid_, zero);
     ::pressio::ops::fill(g_, zero);
@@ -104,7 +104,7 @@ public:
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys,
-			 state_t & state,
+			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {
     PRESSIOLOG_DEBUG("QR-based correction");
@@ -124,7 +124,7 @@ public:
     // solve: R correction = Q^T Residual
     solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::constants<scalar_t>::negOne() );
+    pressio::ops::scale(correction_, utils::constants<scalar_type>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);
@@ -136,23 +136,23 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & correctionCRef() const{
+  const state_type & correctionCRef() const{
     return correction_;
   }
 
-  const state_t & gradientCRef() const{
+  const state_type & gradientCRef() const{
     return g_;
   }
 
-  const scalar_t & correctionNormCurrentCorrectionStep() const{
+  const scalar_type & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const scalar_t & gradientNormCurrentCorrectionStep() const{
+  const scalar_type & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const scalar_t & residualNormCurrentCorrectionStep() const{
+  const scalar_type & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 

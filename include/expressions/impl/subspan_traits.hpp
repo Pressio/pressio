@@ -68,41 +68,41 @@ struct subspan_traits<
   static constexpr bool is_dynamic  = !is_static;
 
   // using wrapped_t = typename traits<matrix_type>::wrapped_t;
-  using scalar_t  = typename traits<matrix_type>::scalar_t;
-  using ordinal_t = typename traits<matrix_type>::ordinal_t;
-  using size_t    = ordinal_t;
+  using scalar_type  = typename traits<matrix_type>::scalar_type;
+  using ordinal_type = typename traits<matrix_type>::ordinal_type;
+  using size_type    = ordinal_type;
 
   // the reference type is conditionnal because the native expression
   // returns by value when object is const
-  using reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t &
+  using reference_type = typename std::conditional<
+    std::is_const<matrix_type>::value, scalar_type, scalar_type &
   >::type;
 
-  using const_reference_t = typename std::conditional<
-    std::is_const<matrix_type>::value, scalar_t, scalar_t const &
+  using const_reference_type = typename std::conditional<
+    std::is_const<matrix_type>::value, scalar_type, scalar_type const &
   >::type;
 
   // type of the native expression
-  using _native_expr_t = decltype(
-    std::declval<matrix_type>().block( std::declval<size_t>(),
-				     std::declval<size_t>(),
-                                     std::declval<size_t>(),
-				     std::declval<size_t>() )
+  using _native_expr_type = decltype(
+    std::declval<matrix_type>().block( std::declval<size_type>(),
+				     std::declval<size_type>(),
+                                     std::declval<size_type>(),
+				     std::declval<size_type>() )
     );
-  using _const_native_expr_t = decltype(
-    std::declval<const matrix_type>().block( std::declval<size_t>(),
-					   std::declval<size_t>(),
-                                           std::declval<size_t>(),
-					   std::declval<size_t>() )
+  using _const_native_expr_type = decltype(
+    std::declval<const matrix_type>().block( std::declval<size_type>(),
+					   std::declval<size_type>(),
+                                           std::declval<size_type>(),
+					   std::declval<size_type>() )
     );
-  using native_expr_t = typename std::conditional<
+  using native_expr_type = typename std::conditional<
     std::is_const<matrix_type>::value,
-    _const_native_expr_t,
-    _native_expr_t
+    _const_native_expr_type,
+    _native_expr_type
   >::type;
 
-  using const_data_return_t = native_expr_t const *;
-  using data_return_t = native_expr_t *;
+  using const_data_return_type = native_expr_type const *;
+  using data_return_type = native_expr_type *;
 };
 #endif
 

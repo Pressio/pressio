@@ -56,7 +56,7 @@ template<typename matrix_type, typename algo, bool in_place>
 struct traits_shared_all{
   using matrix_t  = matrix_type;
   using algo_t	  = algo;
-  using sc_t	  = typename ::pressio::traits<matrix_type>::scalar_t;
+  using sc_t	  = typename ::pressio::traits<matrix_type>::scalar_type;
   static constexpr bool in_place_ = in_place;
 };
 

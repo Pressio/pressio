@@ -64,23 +64,16 @@ struct traits<
   >
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
 {
-  static constexpr MultiVectorIdentifier
-  multi_vector_identifier = MultiVectorIdentifier::Epetra;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-  using data_cp_return_t = T;
-
-  using scalar_t = double;
-  using local_ordinal_t = int;
-  using global_ordinal_t = int;
-  using size_t    = global_ordinal_t;
-
+  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  using data_map_t = Epetra_BlockMap;
-  using communicator_t = Epetra_Comm;
+  using scalar_type = double;
+  using local_ordinal_type = int;
+  using global_ordinal_type = int;
+  using size_type  = global_ordinal_type;
+  using data_map_type = Epetra_BlockMap;
+  using communicator_type = Epetra_Comm;
 };
 
 //*******************************
@@ -95,41 +88,35 @@ struct traits<
   >
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
 {
-  static constexpr MultiVectorIdentifier
-  multi_vector_identifier = MultiVectorIdentifier::Tpetra;
-
-  using scalar_t = typename T::impl_scalar_type;
-  using local_ordinal_t = typename T::local_ordinal_type;
-  using global_ordinal_t = typename T::global_ordinal_type;
-  using data_map_t = typename T::map_type;
-  using size_t    = global_ordinal_t;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-  using data_cp_return_t = T;
-
+  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type = typename T::impl_scalar_type;
+  using local_ordinal_type = typename T::local_ordinal_type;
+  using global_ordinal_type = typename T::global_ordinal_type;
+  using data_map_type = typename T::map_type;
+  using size_type  = global_ordinal_type;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
    */
-  using node_t = typename wrapped_type::node_type;
-  using dual_view_t = typename wrapped_type::dual_view_type;
+  using node_type = typename wrapped_type::node_type;
+  using dual_view_type = typename wrapped_type::dual_view_type;
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
-  using device_t = typename wrapped_type::device_type;
-  using device_mem_space_t = typename device_t::memory_space;
-  using device_exec_space_t = typename device_t::execution_space;
+  using device_type = typename wrapped_type::device_type;
+  using device_mem_space_type = typename device_type::memory_space;
+  using device_exec_space_type = typename device_type::execution_space;
   // store types for host
-  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 
-  using dot_t = typename wrapped_type::dot_type;
-  using mag_t = typename wrapped_type::mag_type;
-  using communicator_t = decltype(std::declval<data_map_t>().getComm());
+  using dot_type = typename wrapped_type::dot_type;
+  using mag_type = typename wrapped_type::mag_type;
+  using communicator_type = decltype(std::declval<data_map_t>().getComm());
 };
 
 //*******************************
@@ -144,39 +131,33 @@ struct traits<
   >
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
 {
-  static constexpr MultiVectorIdentifier
-  multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
-
-  using scalar_t = typename T::impl_scalar_type;
-  using local_ordinal_t = typename T::local_ordinal_type;
-  using global_ordinal_t = typename T::global_ordinal_type;
-  using data_map_t = typename T::map_type;
-  using size_t    = global_ordinal_t;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-  using data_cp_return_t = T;
-
+  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type = typename T::impl_scalar_type;
+  using local_ordinal_type = typename T::local_ordinal_type;
+  using global_ordinal_type = typename T::global_ordinal_type;
+  using data_map_type = typename T::map_type;
+  using size_type  = global_ordinal_type;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
    */
-  using node_t = typename T::node_type;
+  using node_type = typename T::node_type;
 
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
-  using device_t = typename T::device_type;
-  using device_mem_space_t = typename device_t::memory_space;
-  using device_exec_space_t = typename device_t::execution_space;
+  using device_type = typename T::device_type;
+  using device_mem_space_type = typename device_type::memory_space;
+  using device_exec_space_type = typename device_type::execution_space;
   // store types for host
-  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 
-  using communicator_t = decltype(std::declval<data_map_t>().getComm());
+  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 #endif
 

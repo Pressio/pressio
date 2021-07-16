@@ -51,19 +51,19 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<class T, class state_type, class lin_solver_t>
+template<class T, class stateType, class linSolverType>
 class RJCorrector : public T
 {
 public:
-  using typename T::scalar_t;
-  using state_t = state_type;
+  using typename T::scalar_type;
+  using state_type = stateType;
 
 private:
-  state_t correction_ = {};
-  ::pressio::utils::instance_or_reference_wrapper<lin_solver_t> solverObj_;
-  scalar_t residNormCurrCorrStep_ = {};
-  scalar_t gradientNormCurrCorrStep_ = {};
-  scalar_t correctionNormCurrCorrStep_ = {};
+  state_type correction_ = {};
+  ::pressio::utils::instance_or_reference_wrapper<linSolverType> solverObj_;
+  scalar_type residNormCurrCorrStep_ = {};
+  scalar_type gradientNormCurrCorrStep_ = {};
+  scalar_type correctionNormCurrCorrStep_ = {};
 
 public:
   RJCorrector() = delete;
@@ -77,7 +77,7 @@ public:
       correction_(::pressio::ops::clone(state)),
       solverObj_(std::forward<lsT>(solverIn))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
   }
 
@@ -101,7 +101,7 @@ public:
 public:
   template <typename system_t>
   void computeCorrection(const system_t & sys,
-			 state_t & state,
+			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {
     PRESSIOLOG_DEBUG("res/jac correction");
@@ -114,7 +114,7 @@ public:
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::constants<scalar_t>::negOne() );
+    pressio::ops::scale(correction_, utils::constants<scalar_type>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
   }
@@ -125,17 +125,17 @@ public:
     T::resetForNewCall();
   }
 
-  const state_t & correctionCRef() const{ return correction_; }
+  const state_type & correctionCRef() const{ return correction_; }
 
-  const scalar_t & correctionNormCurrentCorrectionStep() const{
+  const scalar_type & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const scalar_t & gradientNormCurrentCorrectionStep() const{
+  const scalar_type & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const scalar_t & residualNormCurrentCorrectionStep() const{
+  const scalar_type & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 };

@@ -64,16 +64,16 @@ template <typename T, typename T1, typename T2>
   ::pressio::traits<T2>::rank == 1 
   >
 elementwise_multiply
-(typename ::pressio::traits<T>::scalar_t alpha,
+(typename ::pressio::traits<T>::scalar_type alpha,
  const T & x,
  const T1 & z,
- typename ::pressio::traits<T>::scalar_t beta,
+ typename ::pressio::traits<T>::scalar_type beta,
  T2 & y)
 {
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
 
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(y, 0); ++i){
     y(i) = beta*y(i) + alpha*x(i)*z(i);
   }

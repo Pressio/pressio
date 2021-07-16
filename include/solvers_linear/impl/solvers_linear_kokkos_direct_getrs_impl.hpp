@@ -67,9 +67,9 @@ class KokkosDirect<::pressio::linearsolvers::direct::getrs, MatrixT>
 public:
 
   using solver_tag	    = ::pressio::linearsolvers::direct::getrs;
-  using this_t          = KokkosDirect<solver_tag, MatrixT>;
+  using this_type          = KokkosDirect<solver_tag, MatrixT>;
   using matrix_type	    = MatrixT;
-  using scalar_t        = typename MatrixT::value_type;
+  using scalar_type        = typename MatrixT::value_type;
   using exe_space       = typename MatrixT::traits::execution_space;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
 
@@ -212,7 +212,7 @@ public:
 
     // for now, working buffers are stored as Kokkos arrays but
     // maybe later we can use directly cuda allocations
-    using k1d_d = Kokkos::View<scalar_t*, Kokkos::LayoutLeft, exe_space>;
+    using k1d_d = Kokkos::View<scalar_type*, Kokkos::LayoutLeft, exe_space>;
     using k1di_d = Kokkos::View<int*, Kokkos::LayoutLeft, exe_space>;
     k1d_d work_d("d_work", Lwork);
     k1di_d pivot_d("d_pivot", n);
@@ -242,7 +242,7 @@ public:
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  Teuchos::LAPACK<int, scalar_t> lpk_;
+  Teuchos::LAPACK<int, scalar_type> lpk_;
 
   MatrixT auxMat_ = {};
 #endif

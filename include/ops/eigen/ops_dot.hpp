@@ -60,14 +60,14 @@ template <typename T0, typename T1>
   >
 dot(const T0 & vecA,
     const T1 & vecB,
-    typename ::pressio::traits<T0>::scalar_t & result)
+    typename ::pressio::traits<T0>::scalar_type & result)
 {
   static_assert
     (::pressio::are_scalar_compatible<T0,T1>::value,
      "types are not scalar compatible");
   assert(::pressio::ops::extent(vecA, 0) == ::pressio::ops::extent(vecB, 0));
 
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(vecA, 0); ++i){
     result += vecA(i)*vecB(i);
   }
@@ -79,11 +79,11 @@ template <typename T0, typename T1>
   ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T0>::rank == 1 and
   ::pressio::traits<T1>::rank == 1,
-  typename ::pressio::traits<T0>::scalar_t
+  typename ::pressio::traits<T0>::scalar_type
   >
 dot(const T0 & vecA, const T1 & vecB)
 {
-  using sc_t = typename ::pressio::traits<T0>::scalar_t;
+  using sc_t = typename ::pressio::traits<T0>::scalar_type;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;

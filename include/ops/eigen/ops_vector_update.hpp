@@ -66,7 +66,7 @@ update(T & v, const scalar_t a, const T1 & v1, const scalar_t b)
   static_assert
     (::pressio::are_scalar_compatible<T,T1>::value,
      "vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = a*v(i) + b*v1(i);
   }
@@ -85,7 +85,7 @@ update(T & v, const T1 & v1, const scalar_t  b)
     (::pressio::are_scalar_compatible<T,T1>::value,
      "vector types T and T1 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
 
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = b*v1(i);
   }
@@ -110,7 +110,7 @@ update(T & v, const scalar_t &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
      "vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i);
@@ -133,7 +133,7 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
      "vector types T,T1,T2 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = b*v1(i) + c*v2(i);
@@ -168,7 +168,7 @@ update(T  & v, const scalar_t &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
      "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
@@ -198,7 +198,7 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
      "vector types T,T1,T2,T3 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = b*v1(i) + c*v2(i) + d*v3(i);
@@ -236,7 +236,7 @@ update(T & v, const scalar_t &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
      "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
@@ -270,7 +270,7 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
      "vector types T,T1,T2,T3,T4 in ops/src/eigen/ops_vector_update.hpp are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
     v(i) = b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);

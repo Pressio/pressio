@@ -53,19 +53,19 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename state_t, class scalar_type>
+template<typename state_t, class scalarType>
 class LMSchedule1Updater
 {
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
-  LMGainFactor<state_t, scalar_t> gainFactorEval_;
+  LMGainFactor<state_t, scalar_type> gainFactorEval_;
 
-  using cnst		   = pressio::utils::constants<scalar_t>;
-  const scalar_t beta_     = cnst::two();
-  const scalar_t gammaInv_ = cnst::one()/cnst::three();
-  const scalar_t p_	   = cnst::three();
-  const scalar_t tau_	   = cnst::one();
-  scalar_t nu_		   = cnst::two();
+  using cnst		   = pressio::utils::constants<scalar_type>;
+  const scalar_type beta_     = cnst::two();
+  const scalar_type gammaInv_ = cnst::one()/cnst::three();
+  const scalar_type p_	   = cnst::three();
+  const scalar_type tau_	   = cnst::one();
+  scalar_type nu_		   = cnst::two();
 
 public:
   LMSchedule1Updater() = delete;
@@ -91,8 +91,8 @@ public:
 		   solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: lm1 update");
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
 
     const auto mu	    = solver.lmDampParam();
     const auto & correction = solver.correctionCRef();
@@ -104,7 +104,7 @@ public:
     if (rho > 0){
       PRESSIOLOG_DEBUG("lm1 update: rho>0");
       ::pressio::ops::update(state, one, correction, one);
-      scalar_t mu_rat = one - (beta_ - one)*std::pow(two*rho - one, p_);
+      scalar_type mu_rat = one - (beta_ - one)*std::pow(two*rho - one, p_);
       mu_rat = std::max(mu_rat, gammaInv_);
       solver.setLMDampParam(mu*mu_rat);
       nu_ = beta_;

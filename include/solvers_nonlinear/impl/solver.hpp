@@ -91,16 +91,16 @@ class Solver
     public IterativeBase<Solver<solvertag, T>>
 {
 public:
-  using sc_t		 = typename T::scalar_t;
+  using sc_type		 = typename T::scalar_type;
   using solver_tag	 = solvertag;
-  using this_t		 = Solver<solver_tag, T>;
-  using state_t		 = typename T::state_t;
-  using iterative_base_t = IterativeBase<this_t>;
-  friend iterative_base_t;
-  using typename iterative_base_t::iteration_t;
+  using this_type		 = Solver<solver_tag, T>;
+  using state_type		 = typename T::state_type;
+  using iterative_base_type = IterativeBase<this_type>;
+  friend iterative_base_type;
+  using typename iterative_base_type::iteration_t;
 
 private:
-  const sc_t defaultTol_  = static_cast<sc_t>(0.000001);
+  const sc_type defaultTol_  = static_cast<sc_type>(0.000001);
 
   iteration_t iStep_ = {};
   iteration_t jacobianUpdateFreq_ = 1;
@@ -111,7 +111,7 @@ private:
   //3: ResidualRelativeNorm
   //4: GradientAbsoluteNorm
   //5: GradientRelativeNorm
-  std::array<sc_t, 6> norms_ = {};
+  std::array<sc_type, 6> norms_ = {};
 
   //0: tol for CorrectionAbsoluteNorm
   //1: tol for CorrectionRelativeNorm
@@ -119,7 +119,7 @@ private:
   //3: tol for ResidualRelativeNorm
   //4: tol for GradientAbsoluteNorm
   //5: tol for GradientRelativeNorm
-  std::array<sc_t, 6> tolerances_ = {};
+  std::array<sc_type, 6> tolerances_ = {};
 
   // updating criterion enum
   update updatingE_ = update::standard;
@@ -149,9 +149,9 @@ public:
   Solver & operator=(Solver &&) = delete;
   ~Solver() = default;
 
-  template <typename system_t, typename state_t, typename ...Args>
+  template <typename system_t, typename state_type, typename ...Args>
   Solver(const system_t & system,
-	 const state_t & state,
+	 const state_type & state,
 	 stop stoppingE,
 	 update updatingE,
 	 Args &&... args)
@@ -162,9 +162,9 @@ public:
     tolerances_.fill(defaultTol_);
   }
 
-  template <typename system_t, typename state_t, typename ...Args>
+  template <typename system_t, typename state_type, typename ...Args>
   Solver(const system_t & system,
-	 const state_t & state,
+	 const state_type & state,
 	 Args &&... args)
     : Solver(system, state,
 	     stop::whenCorrectionAbsoluteNormBelowTolerance,
@@ -178,21 +178,21 @@ public:
 //       But this is only supposed to be enabled when
 //       doing bindings for pressio4py */
 //   template <
-//     typename rom_problem_t, typename state_t, typename ...Args,
+//     typename rom_problem_t, typename state_type, typename ...Args,
 //     mpl::enable_if_t<has_system_ref_method<rom_problem_t>::value, int> = 0
 //     >
 //   Solver(rom_problem_t & problem,
-// 	 const state_t & state,
+// 	 const state_type & state,
 // 	 Args && ...args)
 //     : Solver(problem.systemRef(),state,std::forward<Args>(args)...)
 //   {}
 
 //   template <
-//     typename rom_problem_t, typename state_t, typename ...Args,
+//     typename rom_problem_t, typename state_type, typename ...Args,
 //     mpl::enable_if_t<has_stepper_ref_method<rom_problem_t>::value, int> = 0
 //     >
 //   Solver(rom_problem_t & problem,
-// 	 const state_t & state,
+// 	 const state_type & state,
 // 	 Args && ...args)
 //     : Solver(problem.stepperRef(),state,std::forward<Args>(args)...)
 //   {}
@@ -235,7 +235,7 @@ public:
   {
     PRESSIOLOG_INFO("nonlinsolver: creating observer");
 
-    using o_t = Observer<state_t, const functor_t &>;
+    using o_t = Observer<state_type, const functor_t &>;
     observer_ = pressio::utils::make_unique<o_t>(obsF);
     observer_->applyFnc_ = applyObserver<o_t>;
   }
@@ -243,33 +243,33 @@ public:
   // *** set or query tolerances ***
 
   // this is used to set a single tol for all
-  void setTolerance(sc_t tolerance){ tolerances_.fill(std::move(tolerance)); }
+  void setTolerance(sc_type tolerance){ tolerances_.fill(std::move(tolerance)); }
 
   // finer-grained methods for tolerances
-  void setCorrectionAbsoluteTolerance(sc_t value){ tolerances_[0] = std::move(value); }
-  void setCorrectionRelativeTolerance(sc_t value){ tolerances_[1] = std::move(value); }
-  void setResidualAbsoluteTolerance(sc_t value)	 { tolerances_[2] = std::move(value); }
-  void setResidualRelativeTolerance(sc_t value)  { tolerances_[3] = std::move(value); }
-  void setGradientAbsoluteTolerance(sc_t value)  { tolerances_[4] = std::move(value); }
-  void setGradientRelativeTolerance(sc_t value)  { tolerances_[5] = std::move(value); }
+  void setCorrectionAbsoluteTolerance(sc_type value){ tolerances_[0] = std::move(value); }
+  void setCorrectionRelativeTolerance(sc_type value){ tolerances_[1] = std::move(value); }
+  void setResidualAbsoluteTolerance(sc_type value)	 { tolerances_[2] = std::move(value); }
+  void setResidualRelativeTolerance(sc_type value)  { tolerances_[3] = std::move(value); }
+  void setGradientAbsoluteTolerance(sc_type value)  { tolerances_[4] = std::move(value); }
+  void setGradientRelativeTolerance(sc_type value)  { tolerances_[5] = std::move(value); }
 
-  sc_t correctionAbsoluteTolerance()const { return tolerances_[0]; }
-  sc_t correctionRelativeTolerance()const { return tolerances_[1]; }
-  sc_t residualAbsoluteTolerance()const   { return tolerances_[2]; }
-  sc_t residualRelativeTolerance()const   { return tolerances_[3]; }
-  sc_t gradientAbsoluteTolerance()const   { return tolerances_[4]; }
-  sc_t gradientRelativeTolerance()const   { return tolerances_[5]; }
+  sc_type correctionAbsoluteTolerance()const { return tolerances_[0]; }
+  sc_type correctionRelativeTolerance()const { return tolerances_[1]; }
+  sc_type residualAbsoluteTolerance()const   { return tolerances_[2]; }
+  sc_type residualRelativeTolerance()const   { return tolerances_[3]; }
+  sc_type gradientAbsoluteTolerance()const   { return tolerances_[4]; }
+  sc_type gradientRelativeTolerance()const   { return tolerances_[5]; }
 
 
   // *** solve ***
   template<typename system_t>
-  void solve(const system_t & system, state_t & state)
+  void solve(const system_t & system, state_type & state)
   {
     // before we solve, we check if we need to recreate the updater
     // for example, this is the case if the system object changes
     if (recreateUpdater(system)){
       PRESSIOLOG_INFO("nonlinsolver: create updater");
-      updater_ = createUpdater<this_t, system_t>(state, updatingE_);
+      updater_ = createUpdater<this_type, system_t>(state, updatingE_);
     }
     this->solveImpl(system, state, *updater_);
   }
@@ -277,7 +277,7 @@ public:
 #if not defined PRESSIO_ENABLE_TPL_PYBIND11
   template<class system_t, class custom_updater_t>
   void solve(const system_t & system,
-	     state_t & state,
+	     state_type & state,
 	     custom_updater_t && updater)
   {
     // here we have to create the updater each time becuase
@@ -289,8 +289,8 @@ public:
     using u_t =
       mpl::conditional_t<
 	std::is_lvalue_reference<custom_updater_t&&>::value,
-      Updater<system_t, state_t, this_t, custom_updater_t&>,
-      Updater<system_t, state_t, this_t, custom_updater_t>
+      Updater<system_t, state_type, this_type, custom_updater_t&>,
+      Updater<system_t, state_type, this_type, custom_updater_t>
       >;
     updater_ = pressio::utils::make_unique<u_t>(std::forward<custom_updater_t>(updater));
     updater_->applyFnc_ = applyUpdater<u_t>;
@@ -303,20 +303,20 @@ public:
 //   // this overload is needed when calling the solver from Python directly,
 //   // For example, this happens when doing steady LSPG since
 //   // the state vector is owned by the Python code
-//   template<typename system_t, typename _state_t = state_t>
+//   template<typename system_t, typename _state_type = state_type>
 //   mpl::enable_if_t<
-//     ::pressio::is_array_pybind<_state_t>::value
+//     ::pressio::is_array_pybind<_state_type>::value
 //     >
-//   solve(const system_t & system, _state_t & state)
+//   solve(const system_t & system, _state_type & state)
 //   {
 //     // here we want to view the state since we want to modify its data,
 //     // which is numpy array owned by the user inside their Python code.
 //     // upon exit of this function, the original state is changed.
-//     ::pressio::containers::Tensor<1, _state_t> stateView(state, ::pressio::view());
+//     ::pressio::containers::Tensor<1, _state_type> stateView(state, ::pressio::view());
 
 //     if (recreateUpdater(system)){
 //       PRESSIOLOG_INFO("nonlinsolver: create updater");
-//       updater_ = createUpdater<this_t, system_t>(stateView, updatingE_);
+//       updater_ = createUpdater<this_type, system_t>(stateView, updatingE_);
 //     }
 //     this->solveImpl(system, stateView, *updater_);
 //   }
@@ -339,20 +339,20 @@ private:
     }
   }
 
-  template<class system_t, class state_t, class updater_t>
+  template<class system_t, class state_type, class updater_t>
   void solveImpl(const system_t & system,
-		 state_t & state,
+		 state_type & state,
 		 updater_t & updater)
   {
     PRESSIOLOG_INFO("nonlinsolver: solve");
 
-    sc_t residualNorm0 = {};
-    sc_t correctionNorm0 = {};
-    sc_t gradientNorm0 = {};
+    sc_type residualNorm0 = {};
+    sc_type correctionNorm0 = {};
+    sc_type gradientNorm0 = {};
     bool recomputeSystemJacobian = true;
 
     iStep_ = 0;
-    while (++iStep_ <= iterative_base_t::maxIters_)
+    while (++iStep_ <= iterative_base_type::maxIters_)
     {
       recomputeSystemJacobian =
 	(iStep_ == 1) ? true : ((iStep_ % jacobianUpdateFreq_) == 0);
@@ -429,7 +429,7 @@ private:
     switch (stoppingE_)
       {
       case stop::afterMaxIters:
-    	return iStep == iterative_base_t::maxIters_;
+    	return iStep == iterative_base_type::maxIters_;
 
       case stop::whenCorrectionAbsoluteNormBelowTolerance:
     	return norms_[0] < tolerances_[0];

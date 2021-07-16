@@ -51,19 +51,19 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename T, typename state_type, typename lin_solver_t>
+template<typename T, typename stateType, typename linSolverT>
 class HessianGradientCorrector : public T
 {
 public:
-  using typename T::scalar_t;
-  using state_t = state_type;
+  using typename T::scalar_type;
+  using state_type = stateType;
 
 private:
   state_type correction_ = {};
-  ::pressio::utils::instance_or_reference_wrapper<lin_solver_t> solverObj_;
-  scalar_t residNormCurrCorrStep_ = {};
-  scalar_t gradientNormCurrCorrStep_ = {};
-  scalar_t correctionNormCurrCorrStep_ = {};
+  ::pressio::utils::instance_or_reference_wrapper<linSolverT> solverObj_;
+  scalar_type residNormCurrCorrStep_ = {};
+  scalar_type gradientNormCurrCorrStep_ = {};
+  scalar_type correctionNormCurrCorrStep_ = {};
 
 public:
   HessianGradientCorrector() = delete;
@@ -77,7 +77,7 @@ public:
       correction_(::pressio::ops::clone(state)),
       solverObj_(std::forward<lsT>(solverIn))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
   }
 
@@ -129,15 +129,15 @@ public:
     return correction_;
   }
 
-  const scalar_t & correctionNormCurrentCorrectionStep() const{
+  const scalar_type & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const scalar_t & gradientNormCurrentCorrectionStep() const{
+  const scalar_type & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const scalar_t & residualNormCurrentCorrectionStep() const{
+  const scalar_type & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 };

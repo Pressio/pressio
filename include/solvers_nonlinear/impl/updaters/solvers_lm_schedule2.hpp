@@ -53,19 +53,19 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename state_t,  class scalar_type>
+template<typename state_t,  class scalarType>
 class LMSchedule2Updater
 {
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
-  LMGainFactor<state_t, scalar_t> gainFactorEval_;
+  LMGainFactor<state_t, scalar_type> gainFactorEval_;
 
-  using cnst		   = pressio::utils::constants<scalar_t>;
-  const scalar_t rho1_	   = static_cast<scalar_t>(0.2);
-  const scalar_t rho2_     = static_cast<scalar_t>(0.8);
-  const scalar_t beta_	   = cnst::two();
-  const scalar_t gammaInv_ = cnst::one()/cnst::three();
-  const scalar_t tau_	   = cnst::one();
+  using cnst		   = pressio::utils::constants<scalar_type>;
+  const scalar_type rho1_	   = static_cast<scalar_type>(0.2);
+  const scalar_type rho2_     = static_cast<scalar_type>(0.8);
+  const scalar_type beta_	   = cnst::two();
+  const scalar_type gammaInv_ = cnst::one()/cnst::three();
+  const scalar_type tau_	   = cnst::one();
 
 public:
   LMSchedule2Updater() = delete;
@@ -90,10 +90,10 @@ public:
 		   solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: lm2 update");
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto ten  = static_cast<scalar_t>(10);
-    constexpr auto seven  = static_cast<scalar_t>(7);
-    constexpr auto negSeven  = ::pressio::utils::constants<scalar_t>::negOne()*seven;
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto ten  = static_cast<scalar_type>(10);
+    constexpr auto seven  = static_cast<scalar_type>(7);
+    constexpr auto negSeven  = ::pressio::utils::constants<scalar_type>::negOne()*seven;
     const auto tenToSev  = std::pow(ten, seven);
     const auto tenToNegSev  = std::pow(ten, negSeven);
 

@@ -57,10 +57,10 @@ class EigenDirect
 
 public:
   using matrix_type	= MatrixT;
-  using scalar_t        = typename MatrixT::Scalar;
-  using this_t          = EigenDirect<solver_tag, MatrixT>;
+  using scalar_type        = typename MatrixT::Scalar;
+  using this_type          = EigenDirect<solver_tag, MatrixT>;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
-  using native_solver_t = typename solver_traits::template eigen_solver_type<matrix_type>;
+  using native_solver_type = typename solver_traits::template eigen_solver_type<matrix_type>;
 
   static_assert
   ( solver_traits::eigen_enabled == true,
@@ -93,7 +93,7 @@ public:
   }
 
 private:
-  native_solver_t mysolver_ = {};
+  native_solver_type mysolver_ = {};
 };
 
 }}} // end namespace pressio::solvers::linear::impl

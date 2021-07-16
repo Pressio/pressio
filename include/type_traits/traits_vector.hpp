@@ -65,20 +65,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::EigenRowStatic;
-
-  using scalar_t   = typename T::Scalar;
-  using ordinal_t  = typename T::StorageIndex;
-  using size_t     = ordinal_t;
-  // using const_data_return_t = T const *;
-  // using data_return_t	    = T *;
-
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowStatic;
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  using scalar_type   = typename T::Scalar;
+  using ordinal_type  = typename T::StorageIndex;
+  using size_type     = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 
 //*******************************
@@ -94,20 +89,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::EigenColStatic;
-
-  using scalar_t   = typename T::Scalar;
-  using ordinal_t  = typename T::StorageIndex;
-  using size_t     = ordinal_t;
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColStatic;
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  using scalar_type   = typename T::Scalar;
+  using ordinal_type  = typename T::StorageIndex;
+  using size_type     = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 
 //*******************************
@@ -123,20 +113,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::EigenRowDynamic;
-
-  using scalar_t   = typename T::Scalar;
-  using ordinal_t  = typename T::StorageIndex;
-  using size_t     = ordinal_t;
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowDynamic;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type   = typename T::Scalar;
+  using ordinal_type  = typename T::StorageIndex;
+  using size_type     = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 
 //*******************************
@@ -152,19 +137,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::EigenColDynamic;
-
-  using scalar_t   = typename T::Scalar;
-  using ordinal_t  = typename T::StorageIndex;
-  using size_t     = ordinal_t;
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
-
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColDynamic;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type   = typename T::Scalar;
+  using ordinal_type  = typename T::StorageIndex;
+  using size_type     = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
@@ -182,20 +163,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Trilinos, true, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::TeuchosSerialDense;
-
-  using scalar_t  = typename T::scalarType;
-  using ordinal_t = typename T::ordinalType;
-  using size_t    = ordinal_t;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type  = typename T::scalarType;
+  using ordinal_type = typename T::ordinalType;
+  using size_type    = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 #endif
 
@@ -213,21 +189,16 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::Epetra;
-
-  using scalar_t	 = double;
-  using local_ordinal_t  = int;
-  using global_ordinal_t = int;
-  using size_t		 = global_ordinal_t;
-  using data_map_t	 = Epetra_BlockMap;
-  using communicator_t   = Epetra_Comm;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type	 = double;
+  using local_ordinal_type  = int;
+  using global_ordinal_type = int;
+  using size_type		 = global_ordinal_type;
+  using data_map_type	 = Epetra_BlockMap;
+  using communicator_type   = Epetra_Comm;
 };
 #endif
 
@@ -245,14 +216,15 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::Tpetra;
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Tpetra;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t	 = typename T::impl_scalar_type;
-  using local_ordinal_t  = typename T::local_ordinal_type;
-  using global_ordinal_t = typename T::global_ordinal_type;
-  using data_map_t	 = typename T::map_type;
-  using size_t		 = global_ordinal_t;
+  using scalar_type	 = typename T::impl_scalar_type;
+  using local_ordinal_type  = typename T::local_ordinal_type;
+  using global_ordinal_type = typename T::global_ordinal_type;
+  using data_map_type	 = typename T::map_type;
+  using size_type		 = global_ordinal_type;
   // using const_data_return_t = T const *;
   // using data_return_t = T *;
 
@@ -260,23 +232,21 @@ struct traits<
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
    */
-  using node_t = typename T::node_type;
-  using dual_view_t = typename T::dual_view_type;
+  using node_type = typename T::node_type;
+  using dual_view_type = typename T::dual_view_type;
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
-  using device_t = typename T::device_type;
-  using device_mem_space_t = typename device_t::memory_space;
-  using device_exec_space_t = typename device_t::execution_space;
-  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
+  using device_type = typename T::device_type;
+  using device_mem_space_type = typename device_type::memory_space;
+  using device_exec_space_type = typename device_type::execution_space;
+  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 
   using dot_t = typename T::dot_type;
   using mag_t = typename T::mag_type;
-  using communicator_t = decltype(std::declval<data_map_t>().getComm());
+  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
 };
 #endif
 
@@ -294,38 +264,33 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
 {
 
-  static constexpr VectorIdentifier
-  vector_identifier = VectorIdentifier::TpetraBlock;
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TpetraBlock;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename T::impl_scalar_type;
-  using local_ordinal_t = typename T::local_ordinal_type;
-  using global_ordinal_t = typename T::global_ordinal_type;
-  using data_map_t = typename T::map_type;
-  using size_t    = global_ordinal_t;
-
-  using const_data_return_t = T const *;
-  using data_return_t = T *;
-  using mag_t = scalar_t;
+  using scalar_type = typename T::impl_scalar_type;
+  using local_ordinal_type = typename T::local_ordinal_type;
+  using global_ordinal_type = typename T::global_ordinal_type;
+  using data_map_type = typename T::map_type;
+  using size_type    = global_ordinal_type;
+  using mag_type = scalar_t;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
    */
-  using node_t = typename T::node_type;
-
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
+  using node_type = typename T::node_type;
 
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
-  using device_t = typename T::device_type;
-  using device_mem_space_t = typename device_t::memory_space;
-  using device_exec_space_t = typename device_t::execution_space;
+  using device_type = typename T::device_type;
+  using device_mem_space_type = typename device_type::memory_space;
+  using device_exec_space_type = typename device_type::execution_space;
   // store types for host
-  using host_mem_space_t = typename Kokkos::HostSpace::memory_space;
-  using host_exec_space_t = typename Kokkos::HostSpace::execution_space;
-  using communicator_t = decltype(std::declval<data_map_t>().getComm());
+  using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
+  using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
+  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 #endif
 
@@ -343,31 +308,29 @@ struct traits<
   : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
 {
 
-  using scalar_t	   = typename T::traits::value_type;
-  using layout		   = typename T::traits::array_layout;
-  using ordinal_t	   = typename T::traits::size_type;
-  using size_t		   = ordinal_t;
-  using execution_space    = typename T::traits::execution_space;
-  using memory_space	   = typename T::traits::memory_space;
-  using device_type	   = typename T::traits::device_type;
-  using device_t	   = typename T::traits::device_type;
-  using memory_traits	   = typename T::traits::memory_traits;
-  using host_mirror_space  = typename T::traits::host_mirror_space;
-  using host_mirror_t      = typename T::host_mirror_type;
-
   // static view if the number of runtime determined dimensions == 0
   static constexpr bool is_static = T::traits::rank_dynamic==0;
   static constexpr bool is_dynamic  = !is_static;
-
-  // using const_data_return_t = T const *;
-  // using data_return_t = T *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
 
   static constexpr VectorIdentifier
   vector_identifier =
     is_static ? VectorIdentifier::KokkosStatic :
     VectorIdentifier::KokkosDynamic;
+
+  using scalar_type	   = typename T::traits::value_type;
+  using layout_type  = typename T::traits::array_layout;
+  using ordinal_type	   = typename T::traits::size_type;
+  using size_type		   = ordinal_type;
+  using execution_space    = typename T::traits::execution_space;
+  using memory_space	   = typename T::traits::memory_space;
+  using device_type	   = typename T::traits::device_type;
+  using device_type	   = typename T::traits::device_type;
+  using memory_traits	   = typename T::traits::memory_traits;
+  using host_mirror_space  = typename T::traits::host_mirror_space;
+  using host_mirror_type  = typename T::host_mirror_type;
+
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 
   static constexpr bool has_host_execution_space =
     (false

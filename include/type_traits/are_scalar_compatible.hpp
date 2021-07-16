@@ -64,8 +64,8 @@ template <typename T1, typename T2>
 struct are_scalar_compatible<T1, T2>
 {
   static constexpr auto value = std::is_same<
-    typename ::pressio::traits<T1>::scalar_t,
-    typename ::pressio::traits<T2>::scalar_t
+    typename ::pressio::traits<T1>::scalar_type,
+    typename ::pressio::traits<T2>::scalar_type
     >::value;
 };
 

@@ -74,10 +74,10 @@ struct AsDiagonalMatrixExpr<
 {
   using this_t = AsDiagonalMatrixExpr<T>;
   using mytraits = asdiagmatrix_traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
+  using sc_t = typename mytraits::scalar_type;
+  using size_t = typename mytraits::size_type;
+  using ref_t = typename mytraits::reference_type;
+  using const_ref_t = typename mytraits::const_reference_type;
 
 private:
   std::reference_wrapper<T> vecObj_;

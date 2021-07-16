@@ -55,7 +55,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_eigen<T>::value
   >
-resize(T & o, typename traits<T>::size_t newSize)
+resize(T & o, typename traits<T>::size_type newSize)
 {
   static_assert(
     ::pressio::is_dynamic_vector_eigen<T>::value,
@@ -69,7 +69,8 @@ template <typename T>
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value
   >
-resize(T & o, const typename traits<T>::size_t newRows, const typename traits<T>::size_t newCols)
+resize(T & o, const typename traits<T>::size_type newRows, 
+  const typename traits<T>::size_type newCols)
 {
   static_assert(
     ::pressio::is_dense_dynamic_matrix_eigen<T>::value,

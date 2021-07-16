@@ -54,15 +54,15 @@ namespace pressio { namespace linearsolvers{ namespace impl{
 template<typename derived_t>
 struct IterativeBase
 {
-  using iteration_t = unsigned int;
+  using iteration_type = unsigned int;
 
   /** Get the number of iterations performed. */
-  iteration_t numIterationsExecuted() const {
+  iteration_type numIterationsExecuted() const {
     return static_cast<const derived_t &>(*this).numIterationsExecuted();
   }
 
   /** Get the maximum number of iterations. */
-  iteration_t maxIterations() const {
+  iteration_type maxIterations() const {
     return maxIters_;
   }
 
@@ -71,12 +71,12 @@ struct IterativeBase
    *
    * @param maxIters maximum number of iterations.
    */
-  void setMaxIterations(iteration_t maxIters) {
+  void setMaxIterations(iteration_type maxIters) {
     maxIters_ = maxIters;
   }
 
 protected:
-  iteration_t maxIters_ = static_cast<iteration_t>(100);
+  iteration_type maxIters_ = static_cast<iteration_type>(100);
 };
 
 }}}

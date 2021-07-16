@@ -51,10 +51,10 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename state_t, class scalar_type>
+template<typename state_t, class scalarType>
 class LMGainFactor
 {
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
   state_t cDiagH_; // = h * diag(J^T J)
   state_t trialState_;
 
@@ -69,27 +69,27 @@ public:
     : cDiagH_(::pressio::ops::clone(state)), 
       trialState_(::pressio::ops::clone(state))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
     ::pressio::ops::fill(cDiagH_, zero);
     ::pressio::ops::fill(trialState_, zero);
   }
 
 public:
   void resetForNewCall(){
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
     ::pressio::ops::fill(cDiagH_, zero);
     ::pressio::ops::fill(trialState_, zero);
   }
 
   template<typename system_t, typename solver_mixin_t>
-  scalar_t compute(const system_t & system,
+  scalar_type compute(const system_t & system,
 		   state_t & state,
-		   const scalar_t & mu,
+		   const scalar_type & mu,
 		   solver_mixin_t & solverObj)
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
 
     const auto & correction = solverObj.correctionCRef();
     const auto & g	    = solverObj.gradientCRef();

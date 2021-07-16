@@ -60,12 +60,12 @@ class EigenIterative
 
 public:
   using matrix_type	= MatrixT;
-  using scalar_t        = typename MatrixT::Scalar;
-  using this_t          = EigenIterative<solver_tag, MatrixT>;
+  using scalar_type        = typename MatrixT::Scalar;
+  using this_type          = EigenIterative<solver_tag, MatrixT>;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
-  using native_solver_t = typename solver_traits::template eigen_solver_type<matrix_type>;
-  using base_iterative  = IterativeBase<this_t>;
-  using iteration_t = typename base_iterative::iteration_t;
+  using native_solver_type = typename solver_traits::template eigen_solver_type<matrix_type>;
+  using base_iterative_type  = IterativeBase<this_type>;
+  using iteration_type = typename base_iterative_type::iteration_type;
 
   static_assert( solver_traits::eigen_enabled == true,
 		 "the native solver must be from Eigen to use in EigenIterative");
@@ -73,12 +73,12 @@ public:
 		 "The native eigen solver must be iterative to use in EigenIterative");
 
 public:
-  iteration_t numIterationsExecuted() const
+  iteration_type numIterationsExecuted() const
   {
     return mysolver_.iterations();
   }
 
-  scalar_t finalError() const
+  scalar_type finalError() const
   {
     return mysolver_.error();
   }
@@ -109,8 +109,8 @@ public:
   }
 
 private:
-  friend base_iterative;
-  native_solver_t mysolver_ = {};
+  friend base_iterative_type;
+  native_solver_type mysolver_ = {};
 };
 
 }}} // end namespace pressio::solvers::iterarive::impl

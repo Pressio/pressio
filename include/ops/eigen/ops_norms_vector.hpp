@@ -55,12 +55,12 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T>::rank == 1,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 norm1(const T & a)
 {
-  using ordinal_t = typename traits<T>::ordinal_t;
-  using sc_t = typename traits<T>::scalar_t;
+  using ordinal_t = typename traits<T>::ordinal_type;
+  using sc_t = typename traits<T>::scalar_type;
   sc_t result = 0.0;
   for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
     result += std::abs(a(i));
@@ -72,12 +72,12 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<T>::rank == 1,
-  typename traits<T>::scalar_t
+  typename traits<T>::scalar_type
   >
 norm2(const T & a)
 {
-  using ordinal_t = typename traits<T>::ordinal_t;
-  using sc_t = typename traits<T>::scalar_t;
+  using ordinal_t = typename traits<T>::ordinal_type;
+  using sc_t = typename traits<T>::scalar_type;
   sc_t result = 0.0;
   for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
     result += a(i)*a(i);

@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename r_t, typename j_t, typename scalar_type>
+template <typename r_t, typename j_t, typename scalarType>
 class ResidualJacobianOperators
 {
 public:
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
     
 private:
   r_t r_;
@@ -107,7 +107,7 @@ public:
     throw std::runtime_error("ResidualJacobian operators do not have parameters");
   }
 
-  scalar_t getParameter(std::string key) const {
+  scalar_type getParameter(std::string key) const {
     throw std::runtime_error("ResidualJacobian operators do not have parameters");
     return {};
   }
@@ -118,7 +118,7 @@ public:
   >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
 
@@ -140,7 +140,7 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   scalar_t & residualNorm,
+		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian=true)
   {
     sys.residualAndJacobian(state, r_, J_, recomputeSystemJacobian);
@@ -157,7 +157,7 @@ public:
     >
   residualNorm(const system_t & system,
          const state_t & state,
-         scalar_t & residualNorm) const
+         scalar_type & residualNorm) const
   {
     system.residual(state, auxR_);
     residualNorm = ::pressio::ops::norm2(auxR_);
@@ -173,7 +173,7 @@ public:
     >
   residualNorm(const system_t & system,
          const state_t & state,
-         scalar_t & residualNorm) const
+         scalar_type & residualNorm) const
   {
     system.residualAndJacobian(state, auxR_, J_, false);
     residualNorm = ::pressio::ops::norm2(auxR_);

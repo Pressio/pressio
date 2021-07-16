@@ -57,7 +57,7 @@ template <typename T>
   ::pressio::is_dense_matrix_eigen<T>::value or
   ::pressio::is_sparse_matrix_eigen<T>::value
   >
-fill(T & o, const typename traits<T>::scalar_t value)
+fill(T & o, const typename traits<T>::scalar_type value)
 {
 	o.setConstant(value);
 }
@@ -67,7 +67,7 @@ template <typename T>
   ::pressio::is_expression_eigen<T>::value and 
   traits<T>::rank == 1
   >
-fill(T & v, const typename traits<T>::scalar_t value)
+fill(T & v, const typename traits<T>::scalar_type value)
 {
 	using size_t = typename traits<T>::size_t;
 	for (size_t i=0; i< v.extent(0); ++i){
@@ -80,7 +80,7 @@ template <typename T>
   ::pressio::is_expression_eigen<T>::value and 
   traits<T>::rank == 2
   >
-fill(T & v, const typename traits<T>::scalar_t value)
+fill(T & v, const typename traits<T>::scalar_type value)
 {
 	using size_t = typename traits<T>::size_t;
 	for (size_t i=0; i< v.extent(0); ++i){

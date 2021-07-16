@@ -64,16 +64,16 @@ struct SpanExpr<
 {
   using this_t = SpanExpr<vector_t>;
   using mytraits = span_traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using ord_t = typename mytraits::ordinal_t;
-  using size_t = typename mytraits::size_t;
+  using sc_t = typename mytraits::scalar_type;
+  using ord_t = typename mytraits::ordinal_type;
+  using size_t = typename mytraits::size_type;
 
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
+  using ref_t = typename mytraits::reference_type;
+  using const_ref_t = typename mytraits::const_reference_type;
 
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using native_expr_t = typename mytraits::native_expr_type;
+  using data_return_t = typename mytraits::data_return_type;
+  using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
   std::reference_wrapper<vector_t> vecObj_;

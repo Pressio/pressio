@@ -68,9 +68,9 @@ public:
 
   using solver_tag	    = ::pressio::linearsolvers::direct::potrsL;
   using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
-  using this_t          = KokkosDirect<solver_tag, MatrixT>;
+  using this_type          = KokkosDirect<solver_tag, MatrixT>;
   using matrix_type	    = MatrixT;
-  using scalar_t        = typename MatrixT::value_type;
+  using scalar_type        = typename MatrixT::value_type;
   using exe_space       = typename MatrixT::traits::execution_space;
 
   static_assert( solver_traits::kokkos_enabled == true,
@@ -158,7 +158,7 @@ public:
   const char uplo_ = 'L';
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  Teuchos::LAPACK<int, scalar_t> lpk_;
+  Teuchos::LAPACK<int, scalar_type> lpk_;
   MatrixT auxMat_ = {};
 #endif
 };

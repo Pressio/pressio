@@ -58,9 +58,9 @@ template <typename T>
   traits<T>::package_identifier == PackageIdentifier::Eigen 
   >
 pow(T & x,
-    const typename ::pressio::traits<T>::scalar_t & exponent)
+    const typename ::pressio::traits<T>::scalar_type & exponent)
 {
-  using ord_t = typename ::pressio::traits<T>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T>::ordinal_type;
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
     x(i) = std::pow(x(i), exponent);
   }
@@ -75,12 +75,12 @@ template <typename T1, typename T2>
   >
 pow(T1 & y,
     const T2 & x,
-    const typename ::pressio::traits<T1>::scalar_t & exponent)
+    const typename ::pressio::traits<T1>::scalar_type & exponent)
 {
   static_assert
     (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   for (ord_t i=0; i<::pressio::ops::extent(x, 0); ++i){
@@ -97,13 +97,13 @@ template <typename T1, typename T2>
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::traits<T1>::scalar_t & exponent)
+	const typename ::pressio::traits<T1>::scalar_type & exponent)
 {
   static_assert
     (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using sc_t = typename ::pressio::traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
@@ -125,14 +125,14 @@ template <typename T1, typename T2>
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::traits<T1>::scalar_t & exponent,
-	const typename ::pressio::traits<T1>::scalar_t & eps)
+	const typename ::pressio::traits<T1>::scalar_type & exponent,
+	const typename ::pressio::traits<T1>::scalar_type & eps)
 {
   static_assert
     (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::traits<T1>::scalar_t;
-  using ord_t = typename ::pressio::traits<T1>::ordinal_t;
+  using sc_t = typename ::pressio::traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());

@@ -62,7 +62,7 @@ class QRHouseholderDenseEigenMatrix<
   >
 {
 
-  using sc_t	       = typename ::pressio::traits<matrix_type>::scalar_t;
+  using sc_t	       = typename ::pressio::traits<matrix_type>::scalar_type;
   using factorizer_t = Eigen::HouseholderQR<matrix_type>;
   using Q_t	         = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
 

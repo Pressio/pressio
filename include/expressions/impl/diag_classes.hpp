@@ -64,13 +64,13 @@ struct DiagExpr<
 {
   using this_t = DiagExpr<matrix_t>;
   using mytraits = diag_traits<this_t>;
-  using sc_t = typename mytraits::scalar_t;
-  using size_t = typename mytraits::size_t;
-  using ref_t = typename mytraits::reference_t;
-  using const_ref_t = typename mytraits::const_reference_t;
-  using native_expr_t = typename mytraits::native_expr_t;
-  using data_return_t = typename mytraits::data_return_t;
-  using const_data_return_t = typename mytraits::const_data_return_t;
+  using sc_t = typename mytraits::scalar_type;
+  using size_t = typename mytraits::size_type;
+  using ref_t = typename mytraits::reference_type;
+  using const_ref_t = typename mytraits::const_reference_type;
+  using native_expr_t = typename mytraits::native_expr_type;
+  using data_return_t = typename mytraits::data_return_type;
+  using const_data_return_t = typename mytraits::const_data_return_type;
   using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:

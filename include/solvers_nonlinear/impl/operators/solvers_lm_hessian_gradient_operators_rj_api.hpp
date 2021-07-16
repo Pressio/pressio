@@ -56,27 +56,27 @@ template <
   typename g_t,
   typename r_t,
   typename j_t,
-  typename scalar_type,
+  typename scalarType,
   template<typename ...> class hgRJApi_t,
   typename ...Args
   >
 class LMHessianGradientOperatorsRJApi
 {
 public:
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
 private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
   // HGOpRJApi_ contains H = J^T J, and g = J^T r
-  hgRJApi_t<h_t, g_t, r_t, j_t, scalar_t, Args...>  HGOpRJApi_;
+  hgRJApi_t<h_t, g_t, r_t, j_t, scalar_type, Args...>  HGOpRJApi_;
 
   // lmH contains H + lm*diag(H)
   h_t lmH_;
 
   // damping factor for LM
-  scalar_t dampParam_ = pressio::utils::constants<scalar_t>::one();
+  scalar_type dampParam_ = pressio::utils::constants<scalar_type>::one();
 
 public:
   LMHessianGradientOperatorsRJApi() = delete;
@@ -133,18 +133,18 @@ public:
     return HGOpRJApi_.hessianCRef();
   }
 
-  void setLMDampParam(scalar_t parIn){ dampParam_ = parIn; }
-  scalar_t lmDampParam() const{ return dampParam_; }
+  void setLMDampParam(scalar_type parIn){ dampParam_ = parIn; }
+  scalar_type lmDampParam() const{ return dampParam_; }
 
 public:
   void resetForNewCall(){
-    dampParam_ = pressio::utils::constants<scalar_t>::one();
+    dampParam_ = pressio::utils::constants<scalar_type>::one();
   }
 
   template<typename system_t, typename state_t>
   void computeOperators(const system_t & sys,
 			const state_t & state,
-			scalar_t & residualNorm,
+			scalar_type & residualNorm,
 			bool recomputeSystemJacobian=true)
   {
     HGOpRJApi_.computeOperators(sys, state,
@@ -158,7 +158,7 @@ public:
 
       const auto diagH   = ::pressio::expressions::diag(H);
       auto diaglmH = ::pressio::expressions::diag(lmH_);
-      constexpr auto one  = pressio::utils::constants<scalar_t>::one();
+      constexpr auto one  = pressio::utils::constants<scalar_type>::one();
       ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
     }
   }
@@ -166,7 +166,7 @@ public:
   template< typename system_t, typename state_t>
   void residualNorm(const system_t & system,
 		    const state_t & state,
-		    scalar_t & residualNorm) const
+		    scalar_type & residualNorm) const
   {
     HGOpRJApi_.residualNorm(system, state, residualNorm);
   }

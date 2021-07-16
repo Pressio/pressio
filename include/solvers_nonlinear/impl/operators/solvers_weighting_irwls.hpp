@@ -51,16 +51,16 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <class r_t, class J_t, class scalar_type>
+template <class residual_type, class jacob_type, class scalarType>
 class IrwWeightingOperator
 {
 public:
-  using scalar_t = scalar_type;
+  using scalar_type = scalarType;
 
 private:
-  mutable r_t w_;
-  scalar_t p_ = ::pressio::utils::constants<scalar_t>::one();
-  scalar_t exponent_ = {};
+  mutable residual_type w_;
+  scalar_type p_ = ::pressio::utils::constants<scalar_type>::one();
+  scalar_type exponent_ = {};
 
 public:
   IrwWeightingOperator() = delete;
@@ -80,27 +80,27 @@ public:
   IrwWeightingOperator(const system_t & system)
     : w_(system.createResidual())
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::fill(w_, one);
     this->computeExponent();
   }
 
 public:
-  void set_p(scalar_t pIn)
+  void set_p(scalar_type pIn)
   {
     p_ = pIn;
     this->computeExponent();
   }
 
-  void operator()(const r_t & rIn, r_t & Wr) const
+  void operator()(const residual_type & rIn, residual_type & Wr) const
   {
     this->computeWeights(rIn);
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::elementwise_multiply(one, w_, rIn, zero, Wr);
   }
 
-  void operator()(const J_t & Jin, J_t & WJ) const
+  void operator()(const jacob_type & Jin, jacob_type & WJ) const
   {
     // don't compute weights here since they have been computed above
 
@@ -108,8 +108,8 @@ public:
     const auto wMat = ::pressio::expressions::asDiagonalMatrix(w_);
 
     // WJ = W * Jin
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::product(::pressio::nontranspose(),
 			    ::pressio::nontranspose(),
 			    one, wMat, Jin,
@@ -119,18 +119,18 @@ public:
 private:
   void computeExponent()
   {
-    constexpr auto two = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
     if (p_==two) throw std::runtime_error("irwls does not support using p=2!");
     exponent_ = (p_ - two);
   }
 
-  void computeWeights(const r_t & err) const
+  void computeWeights(const residual_type & err) const
   {
     // compute w = |e|^(p-2)
     // use a small epsilong to guard against diving by zero
     // when exponent < 0
 
-    constexpr auto two = ::pressio::utils::constants<scalar_t>::two();
+    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
     if (p_ > two){
       ::pressio::ops::abs_pow(w_, err, exponent_);
     }
