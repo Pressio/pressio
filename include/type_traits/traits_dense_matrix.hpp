@@ -74,8 +74,55 @@ struct traits<
   using scalar_type  = typename T::Scalar;
   using ordinal_type = typename T::StorageIndex;
   using size_type = ordinal_type;
+  using reference_type = scalar_type &;
+  using const_reference_type = scalar_type const &;
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
+
+//*******************************
+// Kokkos dense matrix
+//*******************************
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
+struct traits<
+  T,
+    ::pressio::mpl::enable_if_t<
+      is_dense_matrix_kokkos<T>::value
+    >
+  >
+  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 2>,
+  public matrix_shared_traits<false>
+{
+
+  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
+  static constexpr bool is_static = T::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type   = typename T::traits::value_type;
+  using layout_type   = typename T::traits::array_layout;
+  using ordinal_type  = typename T::traits::size_type;
+  using size_type = ordinal_type;
+
+  using execution_space   = typename T::traits::execution_space;
+  using memory_space    = typename T::traits::memory_space;
+  using device_type   = typename T::traits::device_type;
+  using memory_traits   = typename T::traits::memory_traits;
+  using host_mirror_space = typename T::traits::host_mirror_space;
+  using host_mirror_t     = typename T::host_mirror_type;
+
+  using reference_type = typename T::reference_type;
+
+  static constexpr bool has_host_execution_space =
+    (false
+     #ifdef KOKKOS_ENABLE_SERIAL
+     || std::is_same<execution_space, Kokkos::Serial>::value
+     #endif
+     #ifdef KOKKOS_ENABLE_OPENMP
+     || std::is_same<execution_space, Kokkos::OpenMP>::value
+     #endif
+     );
+};
+#endif
 
 //**********************************
 // for teuchos serial dense matrix
@@ -99,49 +146,6 @@ struct traits<
   using scalar_type = typename T::scalarType;
   using ordinal_type = typename T::ordinalType;
   using size_type = ordinal_type;
-};
-#endif
-
-//*******************************
-// Kokkos dense matrix
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T>
-struct traits<
-  T,
-    ::pressio::mpl::enable_if_t<
-      is_dense_matrix_kokkos<T>::value
-    >
-  >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 2>,
-  public matrix_shared_traits<false>
-{
-
-  static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
-  static constexpr bool is_static = T::traits::rank_dynamic==0;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type	  = typename T::traits::value_type;
-  using layout_type	  = typename T::traits::array_layout;
-  using ordinal_type  = typename T::traits::size_type;
-  using size_type = ordinal_type;
-
-  using execution_space   = typename T::traits::execution_space;
-  using memory_space	  = typename T::traits::memory_space;
-  using device_type	  = typename T::traits::device_type;
-  using memory_traits	  = typename T::traits::memory_traits;
-  using host_mirror_space = typename T::traits::host_mirror_space;
-  using host_mirror_t     = typename T::host_mirror_type;
-
-  static constexpr bool has_host_execution_space =
-    (false
-     #ifdef KOKKOS_ENABLE_SERIAL
-     || std::is_same<execution_space, Kokkos::Serial>::value
-     #endif
-     #ifdef KOKKOS_ENABLE_OPENMP
-     || std::is_same<execution_space, Kokkos::OpenMP>::value
-     #endif
-     );
 };
 #endif
 

@@ -56,9 +56,7 @@ template <typename VectorType>
 struct span_traits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<VectorType>::type
-     >::value
+    ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
@@ -66,31 +64,20 @@ struct span_traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
-  using scalar_type  = typename traits<VectorType>::scalar_type;
-  using ordinal_type = typename traits<VectorType>::ordinal_type;
-  using size_type    = ordinal_type;
-
-  // the reference type is conditionnal because the native expression
-  // returns by value when object is const
-  using reference_type = typename std::conditional<
-    std::is_const<VectorType>::value, scalar_type, scalar_type &
-  >::type;
-
-  using const_reference_type = typename std::conditional<
-    std::is_const<VectorType>::value, scalar_type, scalar_type const &
-    >::type;
+  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
+  using scalar_type  = typename ::pressio::traits<vec_remove_cv_t>::scalar_type;
+  using ordinal_type = typename ::pressio::traits<vec_remove_cv_t>::ordinal_type;
+  using size_type    = typename ::pressio::traits<vec_remove_cv_t>::size_type;
 
   // type of the native expression
   using _native_expr_type =
-    decltype
-    (
-     std::declval<VectorType>().segment(size_t(), size_t())
+    decltype(
+     std::declval<VectorType>().segment(ordinal_type{}, ordinal_type{})
      );
 
   using _const_native_expr_type =
-    decltype
-    (
-     std::declval<const VectorType>().segment(size_t(), size_t())
+    decltype(
+     std::declval<const VectorType>().segment(ordinal_type{}, ordinal_type{})
      );
 
   using native_expr_type = typename std::conditional<
@@ -99,59 +86,56 @@ struct span_traits<
     _native_expr_type
     >::type;
 
+  using reference_type = decltype( std::declval<_native_expr_type>()(0) );
+  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
   using const_data_return_type = native_expr_type const *;
   using data_return_type = native_expr_type *;
 };
 #endif
 
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename T>
-// struct span_traits<
-//   ::pressio::expressions::SpanExpr<T>,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_vector_kokkos<
-//       typename std::remove_cv<T>::type
-//     >::value
-//     >
-//   >
-//   : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
-// {
-//   static constexpr bool is_static = true;
-//   static constexpr bool is_dynamic = !is_static;
 
-//   using scalar_t	= typename traits<T>::scalar_t;
-//   using execution_space = typename traits<T>::execution_space;
-//   using memory_space	= typename traits<T>::memory_space;
-//   using device_t	= typename traits<T>::device_t;
-//   using device_type	= typename traits<T>::device_t;
-//   using ordinal_t	= typename traits<T>::ordinal_t;
-//   using size_t		= ordinal_t;
-//   using pair_t		= std::pair<size_t, size_t>;
-//   using reference_t	  = scalar_t &;
-//   using const_reference_t = scalar_t const &;
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename VectorType>
+struct span_traits<
+  SpanExpr<VectorType>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_kokkos<VectorType>::value
+    >
+  >
+  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic = !is_static;
 
-//   using _native_expr_t =
-//     decltype
-//     (
-//      Kokkos::subview(std::declval<T>(), std::declval<pair_t>())
-//      );
+  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
+  using scalar_type	    = typename ::pressio::traits<vec_remove_cv_t>::scalar_type;
+  using execution_space = typename ::pressio::traits<vec_remove_cv_t>::execution_space;
+  using memory_space	  = typename ::pressio::traits<vec_remove_cv_t>::memory_space;
+  using device_type	    = typename ::pressio::traits<vec_remove_cv_t>::device_type;
+  using ordinal_type	  = typename ::pressio::traits<vec_remove_cv_t>::ordinal_type;
+  using reference_type  = typename ::pressio::traits<vec_remove_cv_t>::reference_type;
+  using size_type	      = typename ::pressio::traits<vec_remove_cv_t>::size_type;
+  using pair_type       = std::pair<size_type, size_type>;
 
-//   using _const_native_expr_t =
-//     decltype
-//     (
-//      Kokkos::subview(std::declval<const T>(), std::declval<pair_t>())
-//      );
+  using native_expr_type =
+    decltype(
+      Kokkos::subview(std::declval<VectorType>(), std::declval<pair_type>())
+     );
 
-//   using native_expr_t = typename std::conditional<
-//     std::is_const<T>::value,
-//     _const_native_expr_t,
-//     _native_expr_t
-//     >::type;
+  // using _const_native_expr_type =
+  //   decltype(
+  //    Kokkos::subview(std::declval<const VectorType>(), std::declval<pair_type>())
+  //    );
+  // using native_expr_type = typename std::conditional<
+  //   std::is_const<VectorType>::value,
+  //   _const_native_expr_type,
+  //   _native_expr_type
+  //   >::type;
 
-//   using const_data_return_t = native_expr_t const *;
-//   using data_return_t = native_expr_t *;
-// };
-// #endif
+  using const_data_return_type = native_expr_type const *;
+  using data_return_type = native_expr_type *;
+};
+#endif
 
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11

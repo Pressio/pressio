@@ -49,11 +49,11 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TEUCHOS_DENSE_MATRIX_HPP_
 
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_MultiVector.h>
-#include <Epetra_LocalMap.h>
-#include <Tpetra_CrsMatrix_decl.hpp>
-#include "Teuchos_SerialDenseMatrix.hpp"
+// #include <Epetra_CrsMatrix.h>
+// #include <Epetra_MultiVector.h>
+// #include <Epetra_LocalMap.h>
+// #include <Tpetra_CrsMatrix_decl.hpp>
+#include <Teuchos_SerialDenseMatrix.hpp>
 
 namespace pressio{ 
 
@@ -65,7 +65,7 @@ struct is_dense_matrix_teuchos<
   T,
   typename std::enable_if<
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Teuchos::SerialDenseMatrix<typename T::ordinalType, typename T::scalarType>
       >::value
     >::type

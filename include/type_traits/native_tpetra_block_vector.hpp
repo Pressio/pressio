@@ -62,7 +62,7 @@ struct is_vector_tpetra_block<
   typename
   std::enable_if<
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Tpetra::BlockVector<
 	typename T::impl_scalar_type,
 	typename T::local_ordinal_type,

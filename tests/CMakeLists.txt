@@ -8,10 +8,9 @@ include_directories(
 # load macros that help creating tests
 include(macrosForCreatingTests)
 
-add_subdirectory(optimizers)
-add_subdirectory(solvers_linear)
-add_subdirectory(solvers_nonlinear)
-
+#add_subdirectory(optimizers)
+#add_subdirectory(solvers_linear)
+#add_subdirectory(solvers_nonlinear)
 #add_subdirectory(ode)
 #add_subdirectory(rom)
 #add_subdirectory(apps)

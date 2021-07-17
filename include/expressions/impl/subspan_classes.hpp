@@ -56,9 +56,7 @@ template <typename MatrixType>
 struct SubspanExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<
-      typename std::remove_cv<MatrixType>::type
-    >::value
+    ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
 {
@@ -146,127 +144,111 @@ public:
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename MatrixType>
-// struct SubspanExpr<
-//   MatrixType,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_dense_matrix_kokkos<
-//      typename std::remove_cv<MatrixType>::type
-//     >::value
-//     >
-//   >
-// {
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename MatrixType>
+struct SubspanExpr<
+  MatrixType,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
+    >
+  >
+{
 
-//   using this_t = SubspanExpr<MatrixType>;
-//   using mytraits = traits<this_t>;
-//   using sc_t = typename mytraits::scalar_t;
-//   using ord_t = typename mytraits::ordinal_t;
-//   using size_t = typename mytraits::size_t;
-//   using pair_t = typename mytraits::pair_t;
-//   using ref_t = typename mytraits::reference_t;
-//   using const_ref_t = typename mytraits::const_reference_t;
-//   using native_expr_t = typename mytraits::native_expr_t;
-//   using data_return_t = typename mytraits::data_return_t;
-//   using const_data_return_t = typename mytraits::const_data_return_t;
+  using this_t = SubspanExpr<MatrixType>;
+  using mytraits = subspan_traits<this_t>;
+  using sc_t = typename mytraits::scalar_type;
+  using ord_t = typename mytraits::ordinal_type;
+  using size_t = typename mytraits::size_type;
+  using pair_t = typename mytraits::pair_type;
+  using ref_t = typename mytraits::reference_type;
+  using native_expr_t = typename mytraits::native_expr_type;
+  using data_return_t = typename mytraits::data_return_type;
+  using const_data_return_t = typename mytraits::const_data_return_type;
 
-// private:
-//   std::reference_wrapper<MatrixType> matObj_;
-//   std::size_t rowStart_;
-//   std::size_t colStart_;
-//   std::size_t endRow_;
-//   std::size_t endCol_;
-//   std::size_t numRows_ = {};
-//   std::size_t numCols_ = {};
-//   native_expr_t nativeExprObj_;
+private:
+  std::reference_wrapper<MatrixType> matObj_;
+  std::size_t rowStart_;
+  std::size_t colStart_;
+  std::size_t endRow_;
+  std::size_t endCol_;
+  std::size_t numRows_ = {};
+  std::size_t numCols_ = {};
+  native_expr_t nativeExprObj_;
 
-// public:
-//   SubspanExpr() = delete;
-//   SubspanExpr(const SubspanExpr & other) = default;
-//   SubspanExpr & operator=(const SubspanExpr & other) = delete;
-//   SubspanExpr(SubspanExpr && other) = default;
-//   SubspanExpr & operator=(SubspanExpr && other) = delete;
-//   ~SubspanExpr() = default;
+public:
+  SubspanExpr() = delete;
+  SubspanExpr(const SubspanExpr & other) = default;
+  SubspanExpr & operator=(const SubspanExpr & other) = delete;
+  SubspanExpr(SubspanExpr && other) = default;
+  SubspanExpr & operator=(SubspanExpr && other) = delete;
+  ~SubspanExpr() = default;
 
-//   SubspanExpr(MatrixType & matObjIn,
-// 	      const pair_t rowRangeIn,
-// 	      const pair_t colRangeIn)
-//     : matObj_(matObjIn),
-//     rowStart_(std::get<0>(rowRangeIn)),
-//     colStart_(std::get<0>(colRangeIn)),
-//     endRow_(std::get<1>(rowRangeIn)-1),
-//     endCol_(std::get<1>(colRangeIn)-1),
-//     numRows_(endRow_ - rowStart_ + 1),
-//     numCols_(endCol_ - colStart_ + 1),
-//     nativeExprObj_(Kokkos::subview(matObj_.get(),
-//                    std::make_pair(rowStart_, rowStart_+numRows_),
-//                    std::make_pair(colStart_, colStart_+numCols_)))
-//   {
-//     assert( rowStart_ >= 0 and rowStart_ < matObjIn.rows() );
-//     assert( std::get<1>(rowRangeIn) <= matObjIn.rows() );
-//     assert( colStart_ >= 0 and colStart_ < matObjIn.cols() );
-//     assert( std::get<1>(colRangeIn) <= matObjIn.cols() );
+  SubspanExpr(MatrixType & matObjIn,
+	      const pair_t rowRangeIn,
+	      const pair_t colRangeIn)
+    : matObj_(matObjIn),
+    rowStart_(std::get<0>(rowRangeIn)),
+    colStart_(std::get<0>(colRangeIn)),
+    endRow_(std::get<1>(rowRangeIn)-1),
+    endCol_(std::get<1>(colRangeIn)-1),
+    numRows_(endRow_ - rowStart_ + 1),
+    numCols_(endCol_ - colStart_ + 1),
+    nativeExprObj_(Kokkos::subview(matObj_.get(),
+                   std::make_pair(rowStart_, rowStart_+numRows_),
+                   std::make_pair(colStart_, colStart_+numCols_)))
+  {
+    assert( rowStart_ >= 0 and rowStart_ < matObjIn.extent(0) );
+    assert( std::get<1>(rowRangeIn) <= matObjIn.extent(0) );
+    assert( colStart_ >= 0 and colStart_ < matObjIn.extent(1) );
+    assert( std::get<1>(colRangeIn) <= matObjIn.extent(1) );
 
-//     // here the ranges are exclusive of the last index (like Kokkos and Python)
-//     // so the indices of the last row and col included are:
-//     assert(endRow_ >= rowStart_);
-//     assert(endCol_ >= colStart_);
-//   }
+    // here the ranges are exclusive of the last index (like Kokkos and Python)
+    // so the indices of the last row and col included are:
+    assert(endRow_ >= rowStart_);
+    assert(endCol_ >= colStart_);
+  }
 
-// public:
-//   size_t extent(size_t i) const{
-//     return (i==0) ? numRows_ : numCols_;
-//   }
+public:
+  size_t extent(size_t i) const{
+    return (i==0) ? numRows_ : numCols_;
+  }
 
-//   const_data_return_t data() const{
-//     return &nativeExprObj_;
-//   }
+  const_data_return_t data() const{
+    return &nativeExprObj_;
+  }
 
-//   data_return_t data(){
-//     return &nativeExprObj_;
-//   }
+  data_return_t data(){
+    return &nativeExprObj_;
+  }
 
-//   // non-const subscripting
-//   /*
-//     need to be careful with non-const subscripting
-//     because for kokkos the following would be legal:
+  /*
+    need to be careful with subscripting
+    because for kokkos the following would be legal:
 
-//     using kv_t	      = Kokkos::View<double **>;
-//     using w_t = pressio::containers::DenseMatrix<kv_t>;
-//     kv_t a(..);
-//     const w_t aw(a);
-//     auto s = pressio::containers::subspan(aw,...);
-//     s(0,0) = 1.1;
+    using kv_t	      = Kokkos::View<double **>;
+    using w_t = pressio::containers::DenseMatrix<kv_t>;
+    kv_t a(..);
+    const w_t aw(a);
+    auto s = pressio::containers::subspan(aw,...);
+    s(0,0) = 1.1;
 
-//     which works because for kokkos we can assign a const view.
-//     but we do NOT wwant this since aw is const.
-//    */
-//   template<typename _MatrixType = MatrixType>
-//   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value and
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     ref_t
-//     >
-//   operator()(const size_t & i, const size_t & j)
-//   {
-//     assert(i < numRows_);
-//     assert(j < numCols_);
-//     return nativeExprObj_(i, j);
-//   }
+    which works because for kokkos we can assign a const view.
+   */
+  template<typename _MatrixType = MatrixType>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator()(const size_t & i, const size_t & j) const
+  {
+    assert(i < numRows_);
+    assert(j < numCols_);
+    return nativeExprObj_(i, j);
+  }
+};
+#endif
 
-//   template<typename _MatrixType = MatrixType>
-//   mpl::enable_if_t<
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     const_ref_t
-//     >
-//   operator()(const size_t & i, const size_t & j) const
-//   {
-//     assert(i < numRows_);
-//     assert(j < numCols_);
-//     return nativeExprObj_(i, j);
-//   }
-// };
-// #endif
+
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename MatrixType>

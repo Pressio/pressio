@@ -1,2 +1,0 @@
-
-add_subdirectory(wls_check_normaleqns)

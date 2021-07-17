@@ -102,21 +102,21 @@ struct traits<
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
    * where memory space is taken from the execution_space
    */
-  using node_type = typename wrapped_type::node_type;
-  using dual_view_type = typename wrapped_type::dual_view_type;
+  using node_type = typename T::node_type;
+  using dual_view_type = typename T::dual_view_type;
   // device_type is just an (execution space, memory space) pair.
   // defined as: Kokkos::Device<execution_space, memory_space>
   // so from the device we can get the device execution and memory space
-  using device_type = typename wrapped_type::device_type;
+  using device_type = typename T::device_type;
   using device_mem_space_type = typename device_type::memory_space;
   using device_exec_space_type = typename device_type::execution_space;
   // store types for host
   using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
   using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 
-  using dot_type = typename wrapped_type::dot_type;
-  using mag_type = typename wrapped_type::mag_type;
-  using communicator_type = decltype(std::declval<data_map_t>().getComm());
+  using dot_type = typename T::dot_type;
+  using mag_type = typename T::mag_type;
+  using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 
 //*******************************

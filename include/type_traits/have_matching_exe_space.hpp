@@ -64,8 +64,8 @@ template <typename T1, typename T2>
 struct have_matching_execution_space<T1, T2>
 {
   static constexpr auto value = std::is_same<
-    typename containers::details::traits<T1>::execution_space,
-    typename containers::details::traits<T2>::execution_space
+    typename ::pressio::traits<T1>::execution_space,
+    typename ::pressio::traits<T2>::execution_space
     >::value;
 };
 

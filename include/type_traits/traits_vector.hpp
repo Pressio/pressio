@@ -149,29 +149,52 @@ struct traits<
 };
 #endif //PRESSIO_ENABLE_TPL_EIGEN
 
+
 //*******************************
-// for teuchos serial dense vec
+// Kokkos view, rank==1
 //*******************************
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename T>
 struct traits<
   T,
-  mpl::enable_if_t<
-    is_dense_vector_teuchos<T>::value
+  ::pressio::mpl::enable_if_t<
+    is_vector_kokkos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, true, 1>
+  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
 {
 
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
-  static constexpr bool is_static = false;
+  // static view if the number of runtime determined dimensions == 0
+  static constexpr bool is_static = T::traits::rank_dynamic==0;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type  = typename T::scalarType;
-  using ordinal_type = typename T::ordinalType;
-  using size_type    = ordinal_type;
-  using reference_type = scalar_type &;
-  using const_reference_type = scalar_type const &;
+  static constexpr VectorIdentifier
+  vector_identifier =
+    is_static ? VectorIdentifier::KokkosStatic :
+    VectorIdentifier::KokkosDynamic;
+
+  using scalar_type      = typename T::traits::value_type;
+  using layout_type      = typename T::traits::array_layout;
+  using ordinal_type     = typename T::traits::size_type;
+  using size_type        = typename T::traits::size_type;
+  using execution_space  = typename T::traits::execution_space;
+  using memory_space     = typename T::traits::memory_space;
+  using device_type      = typename T::traits::device_type;
+  using memory_traits    = typename T::traits::memory_traits;
+  using host_mirror_space= typename T::traits::host_mirror_space;
+  using host_mirror_type = typename T::host_mirror_type;
+
+  using reference_type = typename T::reference_type;
+
+  static constexpr bool has_host_execution_space =
+    (false
+     #ifdef KOKKOS_ENABLE_SERIAL
+     || std::is_same<execution_space, Kokkos::Serial>::value
+     #endif
+     #ifdef KOKKOS_ENABLE_OPENMP
+     || std::is_same<execution_space, Kokkos::OpenMP>::value
+     #endif
+     );
 };
 #endif
 
@@ -193,14 +216,15 @@ struct traits<
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type	 = double;
+  using scalar_type  = double;
   using local_ordinal_type  = int;
   using global_ordinal_type = int;
-  using size_type		 = global_ordinal_type;
-  using data_map_type	 = Epetra_BlockMap;
+  using size_type    = global_ordinal_type;
+  using data_map_type  = Epetra_BlockMap;
   using communicator_type   = Epetra_Comm;
 };
 #endif
+
 
 //*******************************
 // for tpetra vector
@@ -220,11 +244,11 @@ struct traits<
   static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type	 = typename T::impl_scalar_type;
+  using scalar_type   = typename T::impl_scalar_type;
   using local_ordinal_type  = typename T::local_ordinal_type;
   using global_ordinal_type = typename T::global_ordinal_type;
-  using data_map_type	 = typename T::map_type;
-  using size_type		 = global_ordinal_type;
+  using data_map_type   = typename T::map_type;
+  using size_type     = global_ordinal_type;
   // using const_data_return_t = T const *;
   // using data_return_t = T *;
 
@@ -243,8 +267,8 @@ struct traits<
   using host_mem_space_type = typename Kokkos::HostSpace::memory_space;
   using host_exec_space_type = typename Kokkos::HostSpace::execution_space;
 
-  using dot_t = typename T::dot_type;
-  using mag_t = typename T::mag_type;
+  using dot_type = typename T::dot_type;
+  using mag_type = typename T::mag_type;
   using communicator_type = decltype(std::declval<data_map_type>().getComm());
 
 };
@@ -273,7 +297,7 @@ struct traits<
   using global_ordinal_type = typename T::global_ordinal_type;
   using data_map_type = typename T::map_type;
   using size_type    = global_ordinal_type;
-  using mag_type = scalar_t;
+  using mag_type = scalar_type;
 
   /* node is a Tpetra concept, defined as:
    * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
@@ -295,52 +319,28 @@ struct traits<
 #endif
 
 //*******************************
-// Kokkos vector
+// for teuchos serial dense vec
 //*******************************
-#ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T>
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
 struct traits<
   T,
-  ::pressio::mpl::enable_if_t<
-    is_vector_kokkos<T>::value
+  mpl::enable_if_t<
+    is_dense_vector_teuchos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
+  : public containers_shared_traits<PackageIdentifier::Trilinos, true, 1>
 {
 
-  // static view if the number of runtime determined dimensions == 0
-  static constexpr bool is_static = T::traits::rank_dynamic==0;
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;
+  static constexpr bool is_static = false;
   static constexpr bool is_dynamic  = !is_static;
 
-  static constexpr VectorIdentifier
-  vector_identifier =
-    is_static ? VectorIdentifier::KokkosStatic :
-    VectorIdentifier::KokkosDynamic;
-
-  using scalar_type	   = typename T::traits::value_type;
-  using layout_type  = typename T::traits::array_layout;
-  using ordinal_type	   = typename T::traits::size_type;
-  using size_type		   = ordinal_type;
-  using execution_space    = typename T::traits::execution_space;
-  using memory_space	   = typename T::traits::memory_space;
-  using device_type	   = typename T::traits::device_type;
-  using device_type	   = typename T::traits::device_type;
-  using memory_traits	   = typename T::traits::memory_traits;
-  using host_mirror_space  = typename T::traits::host_mirror_space;
-  using host_mirror_type  = typename T::host_mirror_type;
-
+  using scalar_type  = typename T::scalarType;
+  using ordinal_type = typename T::ordinalType;
+  using size_type    = ordinal_type;
   using reference_type = scalar_type &;
   using const_reference_type = scalar_type const &;
-
-  static constexpr bool has_host_execution_space =
-    (false
-     #ifdef KOKKOS_ENABLE_SERIAL
-     || std::is_same<execution_space, Kokkos::Serial>::value
-     #endif
-     #ifdef KOKKOS_ENABLE_OPENMP
-     || std::is_same<execution_space, Kokkos::OpenMP>::value
-     #endif
-     );
 };
 #endif
 

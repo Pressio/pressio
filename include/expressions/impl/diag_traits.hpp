@@ -56,9 +56,7 @@ template <typename MatrixType>
 struct diag_traits<
   DiagExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<
-    typename std::remove_cv<MatrixType>::type
-    >::value
+    ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
@@ -67,22 +65,13 @@ struct diag_traits<
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type  = typename traits<MatrixType>::scalar_type;
-  using ordinal_type = typename traits<MatrixType>::ordinal_type;
-  using size_type    = ordinal_type;
-
-  // the reference type is conditional because the native expression
-  // returns by value when object is const
-  using reference_type =  typename std::conditional<
-      std::is_const<MatrixType>::value, scalar_type , scalar_type &
-      >::type;
-
-  using const_reference_type = typename std::conditional<
-    std::is_const<MatrixType>::value, scalar_type, scalar_type const &
-  >::type;
+  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
+  using scalar_type     = typename ::pressio::traits<mat_remove_cv_t>::scalar_type;
+  using ordinal_type    = typename ::pressio::traits<mat_remove_cv_t>::ordinal_type;
+  using size_type       = typename ::pressio::traits<mat_remove_cv_t>::size_type;
 
   // type of the native expression
-  using _native_expr_type = decltype(std::declval<MatrixType>().diagonal( ) );
+  using _native_expr_type = decltype(std::declval<MatrixType>().diagonal());
   using _const_native_expr_type=decltype(std::declval<const MatrixType>().diagonal());
 
   using native_expr_type = typename std::conditional<
@@ -91,49 +80,50 @@ struct diag_traits<
     _native_expr_type
   >::type;
 
+  using reference_type = decltype( std::declval<_native_expr_type>()(0) );
+  using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
+
   using const_data_return_type = native_expr_type const *;
   using data_return_type = native_expr_type *;
 };
 #endif
 
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename MatrixType>
-// struct traits<
-//   ::pressio::expressions::DiagExpr<MatrixType>,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_dense_matrix_kokkos<
-//     typename std::remove_cv<MatrixType>::type
-//     >::value
-//     >
-//   >
-//   : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
-// {
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename MatrixType>
+struct diag_traits<
+  DiagExpr<MatrixType>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
+    >
+  >
+  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
+{
 
-//   static constexpr bool is_static = true;
-//   static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
 
-//   using scalar_t	= typename traits<MatrixType>::scalar_t;
-//   using execution_space = typename traits<MatrixType>::execution_space;
-//   using memory_space	= typename traits<MatrixType>::memory_space;
-//   using device_t	= typename traits<MatrixType>::device_t;
-//   using device_type	= typename traits<MatrixType>::device_t;
-//   using ordinal_t	= typename traits<MatrixType>::ordinal_t;
-//   using size_t		= ordinal_t;
-//   using reference_t	  = scalar_t &;
-//   using const_reference_t = scalar_t const &;
+  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
+  using scalar_type	    = typename ::pressio::traits<mat_remove_cv_t>::scalar_type;
+  using execution_space = typename ::pressio::traits<mat_remove_cv_t>::execution_space;
+  using memory_space	  = typename ::pressio::traits<mat_remove_cv_t>::memory_space;
+  using device_type	    = typename ::pressio::traits<mat_remove_cv_t>::device_type;
+  using ordinal_type	  = typename ::pressio::traits<mat_remove_cv_t>::ordinal_type;
+  using size_type		    = typename ::pressio::traits<mat_remove_cv_t>::size_type;
+  using reference_type	= typename ::pressio::traits<mat_remove_cv_t>::reference_type;
 
-//   using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
-//   using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
-//   using native_expr_t = typename std::conditional<
-//     std::is_const<MatrixType>::value,
-//     _const_native_expr_t,
-//     _native_expr_t
-//   >::type;
+  using native_expr_type = Kokkos::View<typename mat_remove_cv_t::traits::value_type*, Kokkos::LayoutStride>;
+  // using _native_expr_t	     = Kokkos::View<scalar_t*, Kokkos::LayoutStride>;
+  // using _const_native_expr_t = Kokkos::View<const scalar_t*, Kokkos::LayoutStride>;
+  // using native_expr_t = typename std::conditional<
+  //   std::is_const<MatrixType>::value,
+  //   _const_native_expr_t,
+  //   _native_expr_t
+  // >::type;
 
-//   using const_data_return_t = native_expr_t const *;
-//   using data_return_t	    = native_expr_t *;
-// };
-// #endif
+  using const_data_return_t = native_expr_type const *;
+  using data_return_t	    = native_expr_type *;
+};
+#endif
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename MatrixType>

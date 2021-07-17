@@ -67,14 +67,12 @@ struct is_sparse_matrix_eigen<
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
     std::is_same<
-      T,
-      Eigen::SparseMatrix<
-	typename T::Scalar, T::Options,
-	typename T::StorageIndex
-	>
+      typename std::remove_cv<T>::type,
+      Eigen::SparseMatrix<typename T::Scalar, T::Options, typename T::StorageIndex>
       >::value
     >
   > : std::true_type{};
+
 
 //----------------------------------------------------------------------
 

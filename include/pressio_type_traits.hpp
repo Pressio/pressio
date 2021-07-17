@@ -53,7 +53,7 @@
 
 namespace pressio{
 template<class T, class enable = void> struct traits;
-template<class T> struct traits<const T> : traits<T> {};
+// template<class T> struct traits<const T> : traits<T> {};
 }
 
 #include "type_traits/are_scalar_compatible.hpp"

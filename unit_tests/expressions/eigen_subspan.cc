@@ -9,7 +9,7 @@ template <typename T>
 void test1(T & A)
 {
   {
-    const auto sspan = pressio::expressions::subspan(A,
+    const auto sspan = pressio::subspan(A,
 						    std::make_pair(0,2),
 						    std::make_pair(1,2) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 1 );
@@ -17,7 +17,7 @@ void test1(T & A)
     EXPECT_DOUBLE_EQ( sspan(1,0), 6. );
   }
   {
-    const auto sspan = pressio::expressions::subspan(A,
+    const auto sspan = pressio::subspan(A,
 						    std::make_pair(0,3),
 						    std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 3 ); EXPECT_EQ( sspan.extent(1), 2 );
@@ -27,7 +27,7 @@ void test1(T & A)
   }
 
   {
-    const auto sspan = pressio::expressions::subspan(A,
+    const auto sspan = pressio::subspan(A,
 						    std::make_pair(2,4),
 						    std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
@@ -35,7 +35,7 @@ void test1(T & A)
     EXPECT_DOUBLE_EQ( sspan(1,0), 14. );  EXPECT_DOUBLE_EQ( sspan(1,1), 15. );
   }
   {
-    const auto sspan = pressio::expressions::subspan(A,
+    const auto sspan = pressio::subspan(A,
 						    std::make_pair(2,3),
 						    std::make_pair(0,1) );
     EXPECT_EQ( sspan.extent(0), 1 ); EXPECT_EQ( sspan.extent(1), 1 );
@@ -48,7 +48,7 @@ void test2(T & A)
 {
   {
     // change some entries
-    auto sspan = pressio::expressions::subspan(A,
+    auto sspan = pressio::subspan(A,
 					      std::make_pair(2,4),
 					      std::make_pair(1,3) );
     EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
@@ -65,7 +65,7 @@ void test2(T & A)
 
   {
     // get the native expression
-    const auto sspan = pressio::expressions::subspan(A,
+    const auto sspan = pressio::subspan(A,
 						    std::make_pair(2,4),
 						    std::make_pair(1,3) );
     auto &natEx = *sspan.data();
@@ -78,7 +78,7 @@ void test2(T & A)
 template <typename T>
 void testConst(const T & A)
 {
-  const auto sspan = pressio::expressions::subspan(A,
+  const auto sspan = pressio::subspan(A,
 						  std::make_pair(2,4),
 						  std::make_pair(1,3) );
   EXPECT_EQ( sspan.extent(0), 2 ); EXPECT_EQ( sspan.extent(1), 2 );
@@ -93,7 +93,7 @@ void testConst(const T & A)
 };
 
 
-TEST(containers_matrix_serial_eigen, subspan)
+TEST(matrix_serial_eigen, subspan)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::MatrixXd;
@@ -112,7 +112,7 @@ TEST(containers_matrix_serial_eigen, subspan)
 }
 
 
-TEST(containers_matrix_serial_eigen, subspanRowMajor)
+TEST(matrix_serial_eigen, subspanRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
 

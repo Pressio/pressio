@@ -61,7 +61,7 @@ struct is_dense_vector_teuchos<
   T,
   ::pressio::mpl::enable_if_t<
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Teuchos::SerialDenseVector<typename T::ordinalType, typename T::scalarType>
       >::value
     >

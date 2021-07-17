@@ -66,20 +66,14 @@ struct is_dense_static_matrix_eigen<
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
     std::is_same<
-      T,
-      Eigen::Matrix<
-	typename T::Scalar,
-	T::RowsAtCompileTime,
-	T::ColsAtCompileTime,
-	T::Options
-	>
+      typename std::remove_cv<T>::type,
+      Eigen::Matrix<typename T::Scalar, T::RowsAtCompileTime, T::ColsAtCompileTime, T::Options>
       >::value and
     T::RowsAtCompileTime != Eigen::Dynamic and
     T::ColsAtCompileTime != Eigen::Dynamic
     >
   > : std::true_type{};
 //----------------------------------------------------------------------
-
 
 template <typename T, typename enable = void>
 struct is_dense_dynamic_matrix_eigen : std::false_type {};
@@ -96,7 +90,7 @@ struct is_dense_dynamic_matrix_eigen<
     !is_vector_eigen<T>::value and
     !is_dense_static_matrix_eigen<T>::value and
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Eigen::Matrix<
 	typename T::Scalar,
 	Eigen::Dynamic, Eigen::Dynamic,
@@ -119,7 +113,7 @@ struct is_dense_dynamic_matrix_eigen<
     !is_vector_eigen<T>::value and
     !is_dense_static_matrix_eigen<T>::value and
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Eigen::Matrix<
 	typename T::Scalar,
 	T::RowsAtCompileTime,
@@ -143,7 +137,7 @@ struct is_dense_dynamic_matrix_eigen<
     !is_vector_eigen<T>::value and
     !is_dense_static_matrix_eigen<T>::value and
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Eigen::Matrix<
 	typename T::Scalar,
 	Eigen::Dynamic,
@@ -154,9 +148,8 @@ struct is_dense_dynamic_matrix_eigen<
     T::ColsAtCompileTime != Eigen::Dynamic
     >
   > : std::true_type{};
-
-
 //----------------------------------------------------------------------
+
 template <typename T, typename enable = void>
 struct is_dense_row_major_matrix_eigen : std::false_type {};
 
@@ -169,9 +162,8 @@ struct is_dense_row_major_matrix_eigen<
     int(T::IsRowMajor)==1
     >
   > : std::true_type{};
-
-
 //----------------------------------------------------------------------
+
 template <typename T, typename enable = void>
 struct is_dense_matrix_eigen : std::false_type {};
 

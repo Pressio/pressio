@@ -8,7 +8,7 @@ template <typename T>
 void test1(T & a)
 {
   {
-    const auto D = ::pressio::expressions::asDiagonalMatrix(a);
+    const auto D = ::pressio::asDiagonalMatrix(a);
     EXPECT_EQ( D.extent(0), 6 );
     EXPECT_EQ( D.extent(1), 6 );
     EXPECT_DOUBLE_EQ( D(0,0), 1. );
@@ -22,7 +22,7 @@ void test2(T & a)
 {
   {
     // change some entries
-    auto D = pressio::expressions::asDiagonalMatrix(a);
+    auto D = pressio::asDiagonalMatrix(a);
     EXPECT_EQ( D.extent(0), 6 );
 
     // before changing it
@@ -40,7 +40,7 @@ void test2(T & a)
 
 template <typename T>
 void testConst(const T & a){
-  auto D = pressio::expressions::asDiagonalMatrix(a);
+  auto D = pressio::asDiagonalMatrix(a);
   EXPECT_EQ( D.extent(0), 6 );
   EXPECT_DOUBLE_EQ( D(0,0), 44. );
   EXPECT_DOUBLE_EQ( D(1,1), 5. );

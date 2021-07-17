@@ -61,7 +61,7 @@ struct is_multi_vector_tpetra_block<
   T,
   ::pressio::mpl::enable_if_t<
     std::is_same<
-      T,
+      typename std::remove_cv<T>::type,
       Tpetra::BlockMultiVector<
 	typename T::impl_scalar_type,
 	typename T::local_ordinal_type,

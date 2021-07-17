@@ -56,21 +56,16 @@ template <typename VectorType>
 struct SpanExpr<
   VectorType,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<VectorType>::type
-      >::value
+    ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
 {
   using this_t = SpanExpr<VectorType>;
   using mytraits = span_traits<this_t>;
-  using sc_t = typename mytraits::scalar_type;
   using ord_t = typename mytraits::ordinal_type;
   using size_t = typename mytraits::size_type;
-
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
-
   using native_expr_t = typename mytraits::native_expr_type;
   using data_return_t = typename mytraits::data_return_type;
   using const_data_return_t = typename mytraits::const_data_return_type;
@@ -145,124 +140,98 @@ public:
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename VectorType>
-// struct SpanExpr<
-//   VectorType,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_vector_kokkos<
-//       typename std::remove_cv<VectorType>::type
-//       >::value
-//     >
-//   >
-// {
-//   using this_t = SpanExpr<VectorType>;
-//   using mytraits = traits<this_t>;
-//   using sc_t = typename mytraits::scalar_t;
-//   using ord_t = typename mytraits::ordinal_t;
-//   using size_t = typename mytraits::size_t;
-//   using pair_t = typename mytraits::pair_t;
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename VectorType>
+struct SpanExpr<
+  VectorType,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_vector_kokkos<VectorType>::value
+    >
+  >
+{
+  using this_t = SpanExpr<VectorType>;
+  using mytraits = span_traits<this_t>;
+  using ord_t = typename mytraits::ordinal_type;
+  using size_t = typename mytraits::size_type;
+  using pair_t = typename mytraits::pair_type;
+  using ref_t = typename mytraits::reference_type;
+  using native_expr_t = typename mytraits::native_expr_type;
+  using data_return_t = typename mytraits::data_return_type;
+  using const_data_return_t = typename mytraits::const_data_return_type;
 
-//   using ref_t = typename mytraits::reference_t;
-//   using const_ref_t = typename mytraits::const_reference_t;
+private:
+  std::reference_wrapper<VectorType> vecObj_;
+  size_t startIndex_;
+  size_t extent_ = {};
+  native_expr_t nativeExprObj_;
 
-//   using native_expr_t = typename mytraits::native_expr_t;
-//   using data_return_t = typename mytraits::data_return_t;
-//   using const_data_return_t = typename mytraits::const_data_return_t;
+public:
+  SpanExpr() = delete;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = delete;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(SpanExpr && other) = delete;
+  ~SpanExpr() = default;
 
-// private:
-//   std::reference_wrapper<VectorType> vecObj_;
-//   size_t startIndex_;
-//   size_t extent_ = {};
-//   native_expr_t nativeExprObj_;
+  SpanExpr(VectorType & objIn,
+	   const size_t startIndexIn,
+	   const size_t extentIn)
+    : vecObj_(objIn),
+      startIndex_(startIndexIn),
+      extent_(extentIn),
+      nativeExprObj_(Kokkos::subview(vecObj_.get(),std::make_pair(startIndex_, startIndex_+extent_)))
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
+  }
 
-// public:
-//   SpanExpr() = delete;
-//   SpanExpr(const SpanExpr & other) = default;
-//   SpanExpr & operator=(const SpanExpr & other) = delete;
-//   SpanExpr(SpanExpr && other) = default;
-//   SpanExpr & operator=(SpanExpr && other) = delete;
-//   ~SpanExpr() = default;
+  SpanExpr(VectorType & objIn,
+	   pair_t indexRange)
+    : vecObj_(objIn),
+      startIndex_(std::get<0>(indexRange)),
+      extent_(std::get<1>(indexRange)-startIndex_),
+      nativeExprObj_(Kokkos::subview(vecObj_.get(), std::make_pair(startIndex_, startIndex_+extent_)))
+  {
+    assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
+    assert( extent_ <= objIn.extent(0) );
+  }
 
-//   SpanExpr(VectorType & objIn,
-// 	   const size_t startIndexIn,
-// 	   const size_t extentIn)
-//     : vecObj_(objIn),
-//       startIndex_(startIndexIn),
-//       extent_(extentIn),
-//       nativeExprObj_
-//       (Kokkos::subview(*vecObj_.get(),std::make_pair(startIndex_, startIndex_+extent_)))
-//   {
-//     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-//     assert( extent_ <= objIn.extent(0) );
-//   }
+public:
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
 
-//   SpanExpr(VectorType & objIn,
-// 	   pair_t indexRange)
-//     : vecObj_(objIn),
-//       startIndex_(std::get<0>(indexRange)),
-//       extent_(std::get<1>(indexRange)-startIndex_),
-//       nativeExprObj_
-//       (Kokkos::subview(*vecObj_.get(), std::make_pair(startIndex_, startIndex_+extent_)))
-//   {
-//     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-//     assert( extent_ <= objIn.extent(0) );
-//   }
+  const_data_return_t data() const{
+    return &nativeExprObj_;
+  }
 
-// public:
-//   size_t extent(size_t i) const{
-//     assert(i==0);
-//     return extent_;
-//   }
+  data_return_t data(){
+    return &nativeExprObj_;
+  }
 
-//   const_data_return_t data() const{
-//     return &nativeExprObj_;
-//   }
+  // I need to be careful with subscripting
+  // because for kokkos the following would be legal:
 
-//   data_return_t data(){
-//     return &nativeExprObj_;
-//   }
+  // using kv_t	      = Kokkos::View<double *>;
+  // using pressio_v_t = pressio::containers::Vector<kv_t>;
+  // kv_t a(..);
+  // const pressio_v_t aw(a);
+  // auto s = pressio::containers::span(aw,...);
+  // s(0) = 1.1;
 
-//   // non-const subscripting
-//   /*
-//     I need to be careful with non-const subscripting
-//     because for kokkos the following would be legal:
-
-//     using kv_t	      = Kokkos::View<double *>;
-//     using pressio_v_t = pressio::containers::Vector<kv_t>;
-//     kv_t a(..);
-//     const pressio_v_t aw(a);
-//     auto s = pressio::containers::span(aw,...);
-//     s(0) = 1.1;
-
-//     which works because for kokkos we can assign a const view.
-//     but we do NOT wwant this since aw is const.
-//    */
-//   template<typename _VectorType = VectorType>
-//   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_VectorType>::type>::value and
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     ref_t
-//     >
-//   operator()(size_t i)
-//   {
-//     assert(i < extent_);
-//     return nativeExprObj_(i);
-//   }
-
-//   // const subscripting
-//   template<typename _VectorType = VectorType>
-//   mpl::enable_if_t<
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     const_ref_t
-//     >
-//   operator()(size_t i) const
-//   {
-//     assert(i < extent_);
-//     return nativeExprObj_(i);
-//   }
-// };
-// #endif
+  template<typename _VectorType = VectorType>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    ref_t
+    >
+  operator()(size_t i) const
+  {
+    assert(i < extent_);
+    return nativeExprObj_(i);
+  }
+};
+#endif
 
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11

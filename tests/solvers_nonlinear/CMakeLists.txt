@@ -1,9 +1,0 @@
-
-add_subdirectory(nonlinear_least_squares)
-add_subdirectory(nonlinear_least_squares_frozen_jacobian)
-add_subdirectory(irwls_gauss_newton)
-add_subdirectory(weighted_nonlinear_least_squares)
-
-if (PRESSIO_ENABLE_TPL_EIGEN)
-add_serial_exe_and_test(newton_raphson_eigen solvers solvers_newton_raphson_eigen.cc "PASSED")
-endif()

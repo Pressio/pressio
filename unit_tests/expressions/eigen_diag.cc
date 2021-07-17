@@ -8,7 +8,7 @@ namespace{
   void test1(T & A)
   {
     {
-      const auto diagvals = pressio::expressions::diag(A);
+      const auto diagvals = pressio::diag(A);
       EXPECT_EQ( diagvals.extent(), 4 );
       EXPECT_DOUBLE_EQ( diagvals(0), 1.2 );
       EXPECT_DOUBLE_EQ( diagvals(1), 6.2 );
@@ -21,7 +21,7 @@ namespace{
   {
     {
       // change some entries
-      auto diagvals = pressio::expressions::diag(A);
+      auto diagvals = pressio::diag(A);
       EXPECT_EQ( diagvals.extent(), 4 );
       // before changing it
       EXPECT_DOUBLE_EQ( diagvals(0), 1.2 );
@@ -37,7 +37,7 @@ namespace{
 
     {
       // get the native expression
-      const auto diagvals = pressio::expressions::diag(A);
+      const auto diagvals = pressio::diag(A);
       auto &natEx = *diagvals.data();
       EXPECT_DOUBLE_EQ( natEx(0), 44. );  
       EXPECT_DOUBLE_EQ( natEx(1), 6. ); 
@@ -46,7 +46,7 @@ namespace{
 
   template <typename T>
   void testConst(const T & A){
-    const  auto diagvals = pressio::expressions::diag(A);
+    const  auto diagvals = pressio::diag(A);
     EXPECT_EQ( diagvals.extent(), 4 );
     EXPECT_DOUBLE_EQ( diagvals(0), 44. );
     EXPECT_DOUBLE_EQ( diagvals(1), 6. );

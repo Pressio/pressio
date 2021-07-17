@@ -57,6 +57,9 @@ struct is_object_pybind : std::false_type {};
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <>
 struct is_object_pybind<pybind11::object> : std::true_type {};
+
+template <>
+struct is_object_pybind<const pybind11::object> : std::true_type {};
 #endif
 
 }

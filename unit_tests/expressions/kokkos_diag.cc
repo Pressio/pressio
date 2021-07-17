@@ -17,83 +17,45 @@ void fillMatrix(T & A)
 TEST(expressions_kokkos, diag1)
 {
   using n_t = Kokkos::View<double **, Kokkos::HostSpace>;
-  n_t A(4,4);
+  n_t A("A", 4,4);
   fillMatrix(A);
 
-  const auto d = pressio::expressions::diag(A);
-  static_assert
-    (std::is_const<
-     typename std::remove_reference<decltype(d(0))>::type
-     >::value, "");
-
+  auto d = pressio::diag(A);
+  d(0) = 5.;
   EXPECT_EQ( d.extent(0), 4 );
-  EXPECT_DOUBLE_EQ( d(0), 1.2 );
+  EXPECT_DOUBLE_EQ( d(0), 5. );
   EXPECT_DOUBLE_EQ( d(1), 6.2 );
   EXPECT_DOUBLE_EQ( d(2), 11.2 );
   EXPECT_DOUBLE_EQ( d(3), 16. );
-
-  EXPECT_DOUBLE_EQ( A(0,0), 1.2 );
+  EXPECT_DOUBLE_EQ( A(0,0), 5. );
   EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
   EXPECT_DOUBLE_EQ( A(2,2), 11.2 );
   EXPECT_DOUBLE_EQ( A(3,3), 16. );
 
-  //change a, should change span too
-  A(1,1)=43.;
-  EXPECT_DOUBLE_EQ( d(1), 43. );
+  const auto d2 = pressio::diag(A);
+  d2(2) = 55.;
+  EXPECT_DOUBLE_EQ( d2(0), 5. );
+  EXPECT_DOUBLE_EQ( d2(1), 6.2 );
+  EXPECT_DOUBLE_EQ( d2(2), 55. );
+  EXPECT_DOUBLE_EQ( d2(3), 16. );
+  EXPECT_DOUBLE_EQ( A(0,0), 5. );
+  EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
+  EXPECT_DOUBLE_EQ( A(2,2), 55. );
+  EXPECT_DOUBLE_EQ( A(3,3), 16. );
 }
-
 
 TEST(expressions_kokkos, diag2)
 {
-  using n_t = Kokkos::View<double **, Kokkos::HostSpace>;
-  n_t A(4,4);
+  using n_t = Kokkos::View<double**, Kokkos::HostSpace>;
+  n_t A("A", 4,4);
   fillMatrix(A);
-  EXPECT_DOUBLE_EQ( A(0,0), 1.2 );
-  EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
-  EXPECT_DOUBLE_EQ( A(2,2), 11.2 );
-  EXPECT_DOUBLE_EQ( A(3,3), 16. );
 
-  auto d = pressio::expressions::diag(A);
-  static_assert
-    (!std::is_const<
-     typename std::remove_reference<decltype(d(0))>::type
-     >::value, "");
+  using T = Kokkos::View<const double**, Kokkos::HostSpace>;
+  T B = A;
 
-  d(0) = 44.;
-  d(2) = 22.;
-
-  // both A and d should be changed
-  EXPECT_DOUBLE_EQ( d(0), 44. );
-  EXPECT_DOUBLE_EQ( d(1), 6.2 );
-  EXPECT_DOUBLE_EQ( d(2), 22. );
-  EXPECT_DOUBLE_EQ( d(3), 16. );
-  EXPECT_DOUBLE_EQ( A(0,0), 44. );
-  EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
-  EXPECT_DOUBLE_EQ( A(2,2), 22. );
-  EXPECT_DOUBLE_EQ( A(3,3), 16. );
-}
-
-TEST(expressions_kokkos, diag3)
-{
-  using n_t = Kokkos::View<double **, Kokkos::HostSpace>;
-  n_t A0("A0", 4,4);
-  fillMatrix(A0);
-
-  const my_t A(A0);
-  EXPECT_DOUBLE_EQ( A(0,0), 1.2 );
-  EXPECT_DOUBLE_EQ( A(1,1), 6.2 );
-  EXPECT_DOUBLE_EQ( A(2,2), 11.2 );
-  EXPECT_DOUBLE_EQ( A(3,3), 16. );
-
-  auto d = pressio::expressions::diag(A);
-  // since the matrix A is const, diag should be read-only
+  auto d = pressio::diag(B);
   static_assert
     (std::is_const<
      typename std::remove_reference<decltype(d(0))>::type
      >::value, "");
-
-  EXPECT_DOUBLE_EQ( d(0), 1.2 );
-  EXPECT_DOUBLE_EQ( d(1), 6.2 );
-  EXPECT_DOUBLE_EQ( d(2), 11.2 );
-  EXPECT_DOUBLE_EQ( d(3), 16. );
 }

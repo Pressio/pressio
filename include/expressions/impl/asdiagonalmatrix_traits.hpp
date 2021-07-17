@@ -56,9 +56,7 @@ template <typename VectorType>
 struct asdiagmatrix_traits<
   AsDiagonalMatrixExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dynamic_vector_eigen<
-      typename std::remove_cv<VectorType>::type
-    >::value
+    ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
   : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
@@ -66,11 +64,12 @@ struct asdiagmatrix_traits<
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
-  using scalar_type  = typename traits<VectorType>::scalar_type;
-  using ordinal_type = typename traits<VectorType>::ordinal_type;
-  using size_type    = ordinal_type;
 
-  // conditiona ref type because native expression returns by value when object is const
+  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
+  using scalar_type  = typename traits<vec_remove_cv_t>::scalar_type;
+  using ordinal_type = typename traits<vec_remove_cv_t>::ordinal_type;
+  using size_type    = typename traits<vec_remove_cv_t>::size_type;
+
   using reference_type = typename std::conditional<
     std::is_const<VectorType>::value, scalar_type, scalar_type &
   >::type;

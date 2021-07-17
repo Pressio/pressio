@@ -16,27 +16,24 @@ void fillMatrix(T & A)
 
 TEST(expressions_kokkos, subspan0)
 {
-  using n_t  = Kokkos::View<double **, Kokkos::HostSpace>;
-  using my_t = pressio::containers::DenseMatrix<n_t>;
-  n_t A("A",5,4);
-  const my_t Aw(A);
-  auto ss = pressio::containers::subspan(Aw,
+  using n_t  = Kokkos::View<double**, Kokkos::HostSpace>;
+  const n_t A("A",5,4);
+  auto ss = pressio::subspan(A,
 					 std::make_pair(0,2),
 					 std::make_pair(1,2) );
   static_assert
-    (std::is_const<
+    (!std::is_const<
      typename std::remove_reference<decltype(ss(0,0))>::type
      >::value, "");
 }
 
-TEST(expressions_kokkos, span1)
+TEST(expressions_kokkos, subspan1)
 {
-  using n_t  = Kokkos::View<double **, Kokkos::HostSpace>;
-  using my_t = pressio::containers::DenseMatrix<n_t>;
-  my_t A(5,4);
+  using T  = Kokkos::View<double **, Kokkos::HostSpace>;
+  T A("A",5,4);
   fillMatrix(A);
 
-  const auto ss = pressio::containers::subspan(A,
+  const auto ss = pressio::subspan(A,
 					       std::make_pair(0,2),
 					       std::make_pair(2,4) );
   EXPECT_EQ( ss.extent(0), 2 );
@@ -50,49 +47,31 @@ TEST(expressions_kokkos, span1)
   EXPECT_DOUBLE_EQ( ss(0,1), 43. );
 }
 
-TEST(expressions_kokkos, span2)
+
+TEST(expressions_kokkos, subspan2)
 {
-  using n_t  = Kokkos::View<double **, Kokkos::HostSpace>;
-  using my_t = pressio::containers::DenseMatrix<n_t>;
-  my_t A(5,4);
+  using T  = Kokkos::View<double**, Kokkos::HostSpace>;
+  T A("A",5,4);
   fillMatrix(A);
 
-  auto ss = pressio::containers::subspan(A,
-					 std::make_pair(0,2),
-					 std::make_pair(2,4) );
-  static_assert
-    (!std::is_const<
-     typename std::remove_reference<decltype(ss(0,0))>::type
-     >::value, "");
+  auto ss = pressio::subspan(A,
+                 std::make_pair(2,4),
+                 std::make_pair(2,4) );
+  EXPECT_EQ( ss.extent(0), 2 );
+  EXPECT_EQ( ss.extent(1), 2 );
+  ss(0,0) = -1.;
+  ss(1,1) = -2.;
+  EXPECT_DOUBLE_EQ( A(2,2), -1.); 
+  EXPECT_DOUBLE_EQ( A(3,3), -2.);  
 
-  EXPECT_DOUBLE_EQ( ss(0,0), 3.); EXPECT_DOUBLE_EQ( ss(0,1), 4.);
-  EXPECT_DOUBLE_EQ( ss(1,0), 7);  EXPECT_DOUBLE_EQ( ss(1,1), 8.);
-
-  ss(1,0) = 43.;
-  ss(1,1) = 23.;
-
-  EXPECT_DOUBLE_EQ( ss(1,0), 43.);
-  EXPECT_DOUBLE_EQ( ss(1,1), 23.);
-  EXPECT_DOUBLE_EQ( A(1,2), 43.);
-  EXPECT_DOUBLE_EQ( A(1,3), 23.);
-}
-
-TEST(expressions_kokkos, span3)
-{
-  using n_t  = Kokkos::View<double **, Kokkos::HostSpace>;
-  using my_t = pressio::containers::DenseMatrix<n_t>;
-  n_t A0("A",5,4);
-  fillMatrix(A0);
-
-  const my_t A(A0);
-  auto ss = pressio::containers::subspan(A,
-					 std::make_pair(0,2),
-					 std::make_pair(2,4) );
-  static_assert
-    (std::is_const<
-     typename std::remove_reference<decltype(ss(0,0))>::type
-     >::value, "");
-
-  EXPECT_DOUBLE_EQ( ss(0,0), 3.); EXPECT_DOUBLE_EQ( ss(0,1), 4.);
-  EXPECT_DOUBLE_EQ( ss(1,0), 7);  EXPECT_DOUBLE_EQ( ss(1,1), 8.);
+  const auto ss2 = pressio::subspan(A,
+                 std::make_pair(2,3),
+                 std::make_pair(2,4) );
+  EXPECT_EQ( ss2.extent(0), 1);
+  EXPECT_EQ( ss2.extent(1), 2);
+  ss2(0,0) = -3.;
+  ss2(0,1) = -4.;
+  EXPECT_DOUBLE_EQ( A(2,2), -3.); 
+  EXPECT_DOUBLE_EQ( A(2,3), -4.); 
+  EXPECT_DOUBLE_EQ( A(3,3), -2.); 
 }

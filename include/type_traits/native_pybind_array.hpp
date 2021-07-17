@@ -63,11 +63,8 @@ struct is_cstyle_array_pybind11<
   T,
   ::pressio::mpl::enable_if_t<
     mpl::is_same<
-      T,
-      pybind11::array_t<
-	typename T::value_type,
-	pybind11::array::c_style
-	>
+      typename std::remove_cv<T>::type,
+      pybind11::array_t<typename T::value_type, pybind11::array::c_style>
       >::value
     >
   > : std::true_type{};
@@ -81,11 +78,8 @@ struct is_fstyle_array_pybind11<
   T,
   ::pressio::mpl::enable_if_t<
     mpl::is_same<
-      T,
-      pybind11::array_t<
-	typename T::value_type,
-	pybind11::array::f_style
-	>
+      typename std::remove_cv<T>::type,
+      pybind11::array_t<typename T::value_type,	pybind11::array::f_style>
       >::value
     >
   > : std::true_type{};

@@ -8,13 +8,13 @@ namespace{
   void test1(T & a)
   {
     {
-      const auto sp = ::pressio::expressions::span(a, 3, 2);
+      const auto sp = pressio::span(a, 3, 2);
       EXPECT_EQ( sp.extent(0), 2 );
       EXPECT_DOUBLE_EQ( sp(0), 13. );
       EXPECT_DOUBLE_EQ( sp(1), 17. );
     }
     {
-      const auto sp = ::pressio::expressions::span(a, 2, 1);
+      const auto sp = pressio::span(a, 2, 1);
       EXPECT_EQ( sp.extent(0), 1 );
       EXPECT_DOUBLE_EQ( sp(0), 9. );
     }
@@ -25,7 +25,7 @@ namespace{
   {
     {
       // change some entries
-      auto sp = pressio::expressions::span(a, 2, 3);
+      auto sp = pressio::span(a, 2, 3);
       EXPECT_EQ( sp.extent(0), 3 );
 
       // before changing it
@@ -42,7 +42,7 @@ namespace{
 
     {
       // get the native expression
-      auto sp = pressio::expressions::span(a, 2, 3);
+      auto sp = pressio::span(a, 2, 3);
       auto & natEx = *sp.data();
       EXPECT_EQ( natEx.size(), 3 );
       EXPECT_DOUBLE_EQ( natEx(0), 44. );
@@ -54,7 +54,7 @@ namespace{
   template <typename T>
   void testConst(const T & a)
   {
-    auto sp = pressio::expressions::span(a, 2, 3);
+    auto sp = pressio::span(a, 2, 3);
     EXPECT_EQ( sp.extent(0), 3 );
     EXPECT_DOUBLE_EQ( sp(0), 44. );
     EXPECT_DOUBLE_EQ( sp(1), 13. );
@@ -66,7 +66,7 @@ namespace{
   }
 };
 
-TEST(containers_vector_eigen, span)
+TEST(vector_eigen, span)
 {
   using eigv_t = Eigen::VectorXd;
 
@@ -83,7 +83,7 @@ TEST(containers_vector_eigen, span)
   testConst(a);
 }
 
-TEST(containers_vector_eigen, spanConstructor)
+TEST(vector_eigen, spanConstructor)
 {
   using eigv_t = Eigen::VectorXd;
   eigv_t a(6);
@@ -95,10 +95,10 @@ TEST(containers_vector_eigen, spanConstructor)
   a(5) = 21.;
 
   // span elements a(2),a(3),a(4)
-  const auto sp = pressio::expressions::span(a, 2, 3);
+  const auto sp = pressio::span(a, 2, 3);
   EXPECT_EQ( sp.extent(0), 3 );
 
-  const auto sp2 = pressio::expressions::span(a, std::make_pair(2,5));
+  const auto sp2 = pressio::span(a, std::make_pair(2,5));
   EXPECT_EQ( sp2.extent(0), 3 );
 
   EXPECT_DOUBLE_EQ(sp(0), sp2(0));

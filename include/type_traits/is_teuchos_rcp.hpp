@@ -62,11 +62,11 @@ struct is_teuchos_rcp<
   T,
   typename std::enable_if<
     std::is_same<
-      T, Teuchos::RCP<typename T::element_type>
-      >::value or
+      typename std::remove_cv<T>::type, Teuchos::RCP<typename T::element_type> 
+     >::value or
     std::is_same<
-      T, Teuchos::RCP<const typename T::element_type>
-      >::value
+      typename std::remove_cv<T>::type, Teuchos::RCP<const typename T::element_type> 
+     >::value
     >::type
   > : std::true_type{};
 

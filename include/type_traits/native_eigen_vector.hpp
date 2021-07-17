@@ -60,9 +60,9 @@ template <typename T>
 struct is_dynamic_row_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
-    std::is_same<T,
-		 Eigen::Matrix<typename T::Scalar,
-			       1, Eigen::Dynamic>
+    std::is_same< 
+      typename std::remove_cv<T>::type,
+		  Eigen::Matrix<typename T::Scalar,1, Eigen::Dynamic>
 		 >::value
     >
   > : std::true_type{};
@@ -75,10 +75,9 @@ template <typename T>
 struct is_static_row_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
-    std::is_same<T,
-		 Eigen::Matrix<typename T::Scalar,
-			       1,
-			       T::ColsAtCompileTime>
+    std::is_same<
+     typename std::remove_cv<T>::type,
+		 Eigen::Matrix<typename T::Scalar, 1, T::ColsAtCompileTime>
 		 >::value and
     !is_dynamic_row_vector_eigen<T>::value
     >
@@ -92,9 +91,9 @@ template <typename T>
 struct is_dynamic_column_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
-    std::is_same<T,
-		 Eigen::Matrix<typename T::Scalar,
-			       Eigen::Dynamic, 1>
+    std::is_same<
+     typename std::remove_cv<T>::type,
+		 Eigen::Matrix<typename T::Scalar, Eigen::Dynamic, 1>
 		 >::value
     >
   > : std::true_type{};
@@ -107,10 +106,9 @@ template <typename T>
 struct is_static_column_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
-    std::is_same<T,
-		 Eigen::Matrix<typename T::Scalar,
-			       T::RowsAtCompileTime,
-			       1>
+    std::is_same<
+     typename std::remove_cv<T>::type,
+		 Eigen::Matrix<typename T::Scalar, T::RowsAtCompileTime,1>
 		 >::value and
     !is_dynamic_column_vector_eigen<T>::value
     >

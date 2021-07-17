@@ -56,22 +56,18 @@ template <typename MatrixType>
 struct DiagExpr<
   MatrixType,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<
-     typename std::remove_cv<MatrixType>::type
-    >::value
+    ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
 {
   using this_t = DiagExpr<MatrixType>;
   using mytraits = diag_traits<this_t>;
-  using sc_t = typename mytraits::scalar_type;
   using size_t = typename mytraits::size_type;
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
   using data_return_t = typename mytraits::data_return_type;
   using const_data_return_t = typename mytraits::const_data_return_type;
-  using pair_t = std::pair<std::size_t, std::size_t>;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -98,10 +94,6 @@ public:
       extent_(matObj_.get().rows())
   {
     assert(numRows_ == numCols_);
-  }
-
-  size_t extent() const{
-    return extent_;
   }
 
   size_t extent(size_t i) const{
@@ -132,103 +124,72 @@ public:
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// template <typename MatrixType>
-// struct DiagExpr<
-//   MatrixType,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_dense_matrix_kokkos<
-//     typename std::remove_cv<MatrixType>::type
-//     >::value
-//     >
-//   >
-// {
-//   using this_t		= DiagExpr<MatrixType>;
-//   using mytraits	= traits<this_t>;
-//   using sc_t		= typename mytraits::scalar_t;
-//   using size_t		= typename mytraits::size_t;
-//   using ref_t		= typename mytraits::reference_t;
-//   using const_ref_t	= typename mytraits::const_reference_t;
-//   using native_expr_t	= typename mytraits::native_expr_t;
-//   using data_return_t	= typename mytraits::data_return_t;
-//   using const_data_return_t = typename mytraits::const_data_return_t;
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template <typename MatrixType>
+struct DiagExpr<
+  MatrixType,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dense_matrix_kokkos<MatrixType>::value
+    >
+  >
+{
+  using this_t		= DiagExpr<MatrixType>;
+  using mytraits	= diag_traits<this_t>;
+  using size_t		= typename mytraits::size_type;
+  using ref_t		= typename mytraits::reference_type;
+  using native_expr_type	= typename mytraits::native_expr_type;
+  // using data_return_t	= typename mytraits::data_return_type;
+  // using const_data_return_t = typename mytraits::const_data_return_type;
 
-// private:
-//   std::reference_wrapper<MatrixType> matObj_;
-//   native_expr_t nativeExprObj_;
-//   size_t extent_ = {};
+private:
+  std::reference_wrapper<MatrixType> matObj_;
+  native_expr_type nativeExprObj_;
+  size_t extent_ = {};
 
-//   using natexpr_layout = typename native_expr_t::traits::array_layout;
-//   // for now leave this assert, then remove later
-//   static_assert
-//   (std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
-//    "The layout for the native type of the diagonal kokkos expression does not match the strided layout expected");
+  using natexpr_layout = typename native_expr_type::traits::array_layout;
+  // for now leave this assert, then remove later
+  static_assert
+  (std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
+   "The layout for the native type of the diagonal kokkos expression does not match the strided layout expected");
 
-// public:
-//   DiagExpr() = delete;
-//   DiagExpr(const DiagExpr & other) = default;
-//   DiagExpr & operator=(const DiagExpr & other) = delete;
-//   DiagExpr(DiagExpr && other) = default;
-//   DiagExpr & operator=(DiagExpr && other) = delete;
-//   ~DiagExpr() = default;
+public:
+  DiagExpr() = delete;
+  DiagExpr(const DiagExpr & other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = delete;
+  DiagExpr(DiagExpr && other) = default;
+  DiagExpr & operator=(DiagExpr && other) = delete;
+  ~DiagExpr() = default;
 
-//   DiagExpr(MatrixType & M)
-//     : matObj_(M),
-//       nativeExprObj_
-//       (M.data(), natexpr_layout(M.extent(0), M.stride(0)+M.stride(1))),
-//       extent_(M.extent(0))
-//   {
-//     // make sure the diagonal is taken on a square matrix
-//     assert(M.extent(0) == M.extent(1));
-//   }
+  DiagExpr(MatrixType & M)
+    : matObj_(M),
+      nativeExprObj_(M.data(), natexpr_layout(M.extent(0), M.stride(0)+M.stride(1))),
+      extent_(M.extent(0))
+  {
+    // make sure the diagonal is taken on a square matrix
+    assert(M.extent(0) == M.extent(1));
+  }
 
-// public:
-//   size_t extent() const{
-//     return extent_;
-//   }
+public:
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
 
-//   size_t extent(size_t i) const{
-//     assert(i==0);
-//     return extent_;
-//   }
+  // const_data_return_t data() const{ return &nativeExprObj_; }
+  // data_return_t data(){ return &nativeExprObj_; }
 
-//   const_data_return_t data() const{
-//     return &nativeExprObj_;
-//   }
-
-//   data_return_t data(){
-//     return &nativeExprObj_;
-//   }
-
-//   // non-const subscripting
-//   /*
-//     need to be careful with non-const subscripting, see span for details
-//   */
-//   template<typename _MatrixType = MatrixType>
-//   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value and
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     ref_t
-//     >
-//   operator()(size_t i)
-//   {
-//     assert(i < (size_t)extent_);
-//     return nativeExprObj_(i);
-//   }
-
-//   // const subscripting
-//   template<typename _MatrixType = MatrixType>
-//   mpl::enable_if_t<
-//     std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
-//     const_ref_t
-//     >
-//   operator()(size_t i) const
-//   {
-//     assert(i < (size_t)extent_);
-//     return nativeExprObj_(i);
-//   }
-// };
-// #endif
+  template<typename _MatrixType = MatrixType>
+  mpl::enable_if_t<
+    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value, 
+    ref_t
+    >
+  operator()(size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return nativeExprObj_(i);
+  }
+};
+#endif
 
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
