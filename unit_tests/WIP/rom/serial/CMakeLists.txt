@@ -1,0 +1,11 @@
+
+add_serial_utest(linear_decoder_arbitrary_types linear_decoder_arbitrary_types.cc)
+
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  add_serial_utest(rom_galerkin_projector_meta rom_galerkin_projector_meta.cc)
+  add_serial_utest(rom_lspg_continuous_time_api_meta rom_lspg_continuous_time_api_meta.cc)
+  add_serial_utest(rom_wls_continuous_time_api_meta  rom_wls_continuous_time_api_meta.cc)
+  add_serial_utest(rom_lspg_discrete_time_api_meta rom_lspg_discrete_time_api_meta.cc)
+  add_serial_utest(rom_lspg_discrete_time_api_stepper rom_lspg_discrete_time_api_stepper.cc)
+  add_serial_utest(rom_lspg_discrete_time_residual_function rom_lspg_discrete_time_residual_function.cc)
+endif()

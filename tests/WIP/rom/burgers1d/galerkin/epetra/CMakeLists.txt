@@ -1,0 +1,3 @@
+
+add_subdirectory(default_galerkin_explicit_euler_continuous_time_api)
+add_subdirectory(masked_velocity_galerkin_explicit_euler_continuous_time_api)

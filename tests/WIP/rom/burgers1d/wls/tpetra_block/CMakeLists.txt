@@ -1,0 +1,5 @@
+
+if(PRESSIO_ENABLE_TPL_EIGEN)
+  add_subdirectory(wls_normal_eq_continuous_time_api_eigen_rom)
+endif()
+add_subdirectory(wls_normal_eq_continuous_time_api_kokkos_rom)

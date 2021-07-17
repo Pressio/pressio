@@ -1,0 +1,36 @@
+
+add_serial_utest(ode_model_admissilble_implicit_stepper
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_model_admissilble_implicit_stepper.cc)
+
+add_serial_utest(ode_implicit_euler
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_euler.cc)
+
+add_serial_utest(ode_implicit_euler_custom_update
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_euler_custom_update.cc)
+
+add_serial_utest(ode_implicit_bdf2
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_bdf2.cc)
+
+add_serial_utest(ode_implicit_crank_nicolson
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_crank_nicolson.cc)
+
+add_serial_utest(ode_implicit_arbitrary_stepper
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_arbitrary_stepper.cc)
+
+add_serial_utest(ode_is_valid_time_step_setter
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_is_valid_time_step_setter_for_implicit_ode.cc)
+
+add_serial_utest(ode_is_valid_guesser_for_implicit_ode
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_is_valid_guesser_for_implicit_ode.cc)
+
+add_serial_utest(ode_implicit_arbitrary_stepper_run_euler
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_arbitrary_stepper_run_euler.cc)
+
+add_serial_utest(ode_implicit_bdf1_velocity_called_with_correct_time
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_bdf1_velocity_called_with_correct_time.cc)
+
+add_serial_utest(ode_implicit_bdf2_velocity_called_with_correct_time
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_bdf2_velocity_called_with_correct_time.cc)
+
+add_serial_utest(ode_arbitrary_stepper_call_with_correct_time
+  ${CMAKE_CURRENT_SOURCE_DIR}/ode_arbitrary_stepper_call_with_correct_time.cc)

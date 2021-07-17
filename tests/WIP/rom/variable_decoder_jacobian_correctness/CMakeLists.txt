@@ -1,0 +1,8 @@
+
+add_subdirectory(lspg_variable_decoder_jacobian_steady_api)
+add_subdirectory(lspg_variable_decoder_jacobian_continuous_time_api)
+add_subdirectory(lspg_variable_decoder_jacobian_discrete_time_api)
+
+# galerkin does not currently support variable decoder jacobian 
+#add_subdirectory(galerkin_variable_decoder_jacobian_continuous_time_api)
+#add_subdirectory(galerkin_variable_decoder_jacobian_discrete_time_api)

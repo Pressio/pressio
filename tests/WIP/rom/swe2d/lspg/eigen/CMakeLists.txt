@@ -1,0 +1,2 @@
+add_subdirectory(lspg_cn_normal_eq)
+add_subdirectory(lspg_cn_normal_eq_hyperreduced)
