@@ -43,7 +43,7 @@ namespace{
     {
       // get the native expression
       auto sp = pressio::span(a, 2, 3);
-      auto & natEx = *sp.data();
+      auto & natEx = *sp.native();
       EXPECT_EQ( natEx.size(), 3 );
       EXPECT_DOUBLE_EQ( natEx(0), 44. );
       EXPECT_DOUBLE_EQ( natEx(1), 13. );
@@ -59,7 +59,7 @@ namespace{
     EXPECT_DOUBLE_EQ( sp(0), 44. );
     EXPECT_DOUBLE_EQ( sp(1), 13. );
     EXPECT_DOUBLE_EQ( sp(2), 17. );
-    const auto &natEx = *sp.data();
+    const auto &natEx = *sp.native();
     EXPECT_DOUBLE_EQ( natEx(0), 44. );
     EXPECT_DOUBLE_EQ( natEx(1), 13. );
     EXPECT_DOUBLE_EQ( natEx(2), 17. );

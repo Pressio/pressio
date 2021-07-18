@@ -70,7 +70,7 @@ template <typename T>
   >
 max(const T & obj)
 {
-  return obj.data()->maxCoeff();
+  return obj.native()->maxCoeff();
 }
 
 template <typename T>
@@ -92,7 +92,7 @@ template <typename T>
   >
 min(const T & obj)
 {
-  return obj.data()->minCoeff();
+  return obj.native()->minCoeff();
 }
 
 }}//end namespace pressio::ops

@@ -393,14 +393,14 @@ TEST(ops_eigen, elementwiseMultiply)
 
 TEST(ops_eigen, VectorDenseMatrixProd)
 {
-  using V_t = Eigen::Matrix<double,3,1>;
-  V_t a; a << 4.,2.,6;
+  using V_t = Eigen::VectorXd;
+  V_t a(3); a << 4.,2.,6;
 
-  using M_t = Eigen::Matrix<double,3,3>;
-  M_t M;
+  using M_t = Eigen::MatrixXd;
+  M_t M(3,3);
   M << 1,0,2,2,1,3,0,0,1;
 
-  V_t myR;
+  V_t myR(3);
   constexpr auto beta  = ::pressio::utils::constants<double>::zero();
   constexpr auto alpha = ::pressio::utils::constants<double>::one();
   pressio::ops::product(pressio::nontranspose(), alpha, M, a, beta, myR);

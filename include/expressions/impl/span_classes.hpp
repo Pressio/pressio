@@ -67,8 +67,6 @@ struct SpanExpr<
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
-  using data_return_t = typename mytraits::data_return_type;
-  using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
@@ -116,11 +114,11 @@ public:
     return extent_;
   }
 
-  const_data_return_t data() const{
+  native_expr_t const * native() const{
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  native_expr_t * native(){
     return &nativeExprObj_;
   }
 
@@ -156,8 +154,6 @@ struct SpanExpr<
   using pair_t = typename mytraits::pair_type;
   using ref_t = typename mytraits::reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
-  using data_return_t = typename mytraits::data_return_type;
-  using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
@@ -202,12 +198,8 @@ public:
     return extent_;
   }
 
-  const_data_return_t data() const{
-    return &nativeExprObj_;
-  }
-
-  data_return_t data(){
-    return &nativeExprObj_;
+  native_expr_t native() const{
+    return nativeExprObj_;
   }
 
   // I need to be careful with subscripting

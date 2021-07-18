@@ -66,8 +66,6 @@ struct DiagExpr<
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
   using native_expr_t = typename mytraits::native_expr_type;
-  using data_return_t = typename mytraits::data_return_type;
-  using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -101,11 +99,11 @@ public:
     return extent_;
   }
 
-  const_data_return_t data() const{
+  native_expr_t const * native() const{
     return &nativeExprObj_;
   }
 
-  data_return_t data(){
+  native_expr_t * native(){
     return &nativeExprObj_;
   }
 
@@ -138,8 +136,6 @@ struct DiagExpr<
   using size_t		= typename mytraits::size_type;
   using ref_t		= typename mytraits::reference_type;
   using native_expr_type	= typename mytraits::native_expr_type;
-  // using data_return_t	= typename mytraits::data_return_type;
-  // using const_data_return_t = typename mytraits::const_data_return_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -175,8 +171,7 @@ public:
     return extent_;
   }
 
-  // const_data_return_t data() const{ return &nativeExprObj_; }
-  // data_return_t data(){ return &nativeExprObj_; }
+  native_expr_type native() const{ return nativeExprObj_; }
 
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<

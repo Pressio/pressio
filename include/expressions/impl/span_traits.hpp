@@ -88,8 +88,6 @@ struct span_traits<
 
   using reference_type = decltype( std::declval<_native_expr_type>()(0) );
   using const_reference_type = decltype( std::declval<_const_native_expr_type>()(0) );
-  using const_data_return_type = native_expr_type const *;
-  using data_return_type = native_expr_type *;
 };
 #endif
 
@@ -131,9 +129,8 @@ struct span_traits<
   //   _const_native_expr_type,
   //   _native_expr_type
   //   >::type;
-
-  using const_data_return_type = native_expr_type const *;
-  using data_return_type = native_expr_type *;
+  // using const_data_return_type = native_expr_type const *;
+  // using data_return_type = native_expr_type *;
 };
 #endif
 

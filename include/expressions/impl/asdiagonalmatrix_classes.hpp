@@ -102,12 +102,12 @@ public:
     return extent_;
   }
 
-  const VectorType * pressioObj() const{
-    return &vecObj_.get();
-  }
-  VectorType * pressioObj(){
-    return &vecObj_.get();
-  }
+  // const VectorType * pressioObj() const{
+  //   return &vecObj_.get();
+  // }
+  // VectorType * pressioObj(){
+  //   return &vecObj_.get();
+  // }
 
   ref_t operator()(size_t i, size_t j)
   {
