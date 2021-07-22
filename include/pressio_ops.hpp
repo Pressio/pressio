@@ -66,6 +66,8 @@ template<class ...> struct matching_extents;
 }//end namespace ops
 }//end namespace pressio
 
+#include "ops/ops_get_native.hpp"
+
 // Eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 #include "ops/eigen/ops_clone.hpp"
@@ -87,27 +89,58 @@ template<class ...> struct matching_extents;
 #include "ops/eigen/ops_level3.hpp"
 #endif
 
+// Kokkos
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+#include "ops/kokkos/ops_clone.hpp"
+#include "ops/kokkos/ops_extent.hpp"
+#include "ops/kokkos/ops_set_zero.hpp"
+#include "ops/kokkos/ops_scale.hpp"
+#include "ops/kokkos/ops_fill.hpp"
+#include "ops/kokkos/ops_resize.hpp"
+#include "ops/kokkos/ops_abs.hpp"
+#include "ops/kokkos/ops_deep_copy.hpp"
+#include "ops/kokkos/ops_norms_vector.hpp"
+#include "ops/kokkos/ops_dot.hpp"
+#include "ops/kokkos/ops_pow.hpp"
+#include "ops/kokkos/ops_vector_update.hpp"
+#include "ops/kokkos/ops_elementwise_multiply.hpp"
+#include "ops/kokkos/ops_level2.hpp"
+#include "ops/kokkos/ops_level3.hpp"
+#endif
+
+// Tpetra
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "ops/tpetra/ops_clone.hpp"
+#include "ops/tpetra/ops_extent.hpp"
+#include "ops/tpetra/ops_set_zero.hpp"
+#include "ops/tpetra/ops_fill.hpp"
+#include "ops/tpetra/ops_abs.hpp"
+#include "ops/tpetra/ops_deep_copy.hpp"
+#include "ops/tpetra/ops_dot.hpp"
+#include "ops/tpetra/ops_norms.hpp"
+#include "ops/tpetra/ops_pow.hpp"
+#include "ops/tpetra/ops_rank1_update.hpp"
+#include "ops/tpetra/ops_elementwise_multiply.hpp"
+#include "ops/tpetra/ops_multi_vector_update.hpp"
+#include "ops/tpetra/ops_level2.hpp"
+#include "ops/tpetra/ops_level3.hpp"
+#endif
+
 #include "ops/ops_matching_extents.hpp"
 
-// // Kokkos
-// #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-// #include "ops/constraints/ops_container_kokkos_with_native_data_access.hpp"
-// #include "ops/constraints/ops_rank1_container_kokkos_with_native_data_access.hpp"
-// #include "ops/constraints/ops_rank2_container_kokkos_with_native_data_access.hpp"
-// #include "ops/kokkos/ops_abs.hpp"
-// #include "ops/kokkos/ops_set_zero.hpp"
-// #include "ops/kokkos/ops_scale.hpp"
-// #include "ops/kokkos/ops_fill.hpp"
-// #include "ops/kokkos/ops_deep_copy.hpp"
-// #include "ops/kokkos/ops_level2.hpp"
-// #include "ops/kokkos/ops_level3.hpp"
-// #include "ops/kokkos/ops_norms_vector.hpp"
-// #include "ops/kokkos/ops_vector_update_kokkos_functors.hpp"
-// #include "ops/kokkos/ops_vector_update.hpp"
-// #include "ops/kokkos/ops_multi_vector_update.hpp"
-// #include "ops/kokkos/ops_dot.hpp"
-// #include "ops/kokkos/ops_elementwise_multiply.hpp"
-// #include "ops/kokkos/ops_pow.hpp"
+// // Tpetra block
+// #include "ops/tpetra_block/ops_abs.hpp"
+// #include "ops/tpetra_block/ops_set_zero.hpp"
+// #include "ops/tpetra_block/ops_fill.hpp"
+// #include "ops/tpetra_block/ops_deep_copy.hpp"
+// #include "ops/tpetra_block/ops_level2.hpp"
+// #include "ops/tpetra_block/ops_level3.hpp"
+// #include "ops/tpetra_block/ops_norms_vector.hpp"
+// #include "ops/tpetra_block/ops_vector_update.hpp"
+// #include "ops/tpetra_block/ops_multi_vector_update.hpp"
+// #include "ops/tpetra_block/ops_dot.hpp"
+// #include "ops/tpetra_block/ops_pow.hpp"
+// #include "ops/tpetra_block/ops_elementwise_multiply.hpp"
 // #endif
 
 // // Epetra
@@ -132,35 +165,6 @@ template<class ...> struct matching_extents;
 // #include "ops/teuchos/ops_norms_vector.hpp"
 // #include "ops/teuchos/ops_vector_update.hpp"
 // #include "ops/teuchos/ops_level2.hpp"
-
-// // Tpetra
-// #include "ops/tpetra/ops_abs.hpp"
-// #include "ops/tpetra/ops_set_zero.hpp"
-// #include "ops/tpetra/ops_fill.hpp"
-// #include "ops/tpetra/ops_deep_copy.hpp"
-// #include "ops/tpetra/ops_level2.hpp"
-// #include "ops/tpetra/ops_level3.hpp"
-// #include "ops/tpetra/ops_norms_vector.hpp"
-// #include "ops/tpetra/ops_vector_update.hpp"
-// #include "ops/tpetra/ops_multi_vector_update.hpp"
-// #include "ops/tpetra/ops_dot.hpp"
-// #include "ops/tpetra/ops_pow.hpp"
-// #include "ops/tpetra/ops_elementwise_multiply.hpp"
-
-// // Tpetra block
-// #include "ops/tpetra_block/ops_abs.hpp"
-// #include "ops/tpetra_block/ops_set_zero.hpp"
-// #include "ops/tpetra_block/ops_fill.hpp"
-// #include "ops/tpetra_block/ops_deep_copy.hpp"
-// #include "ops/tpetra_block/ops_level2.hpp"
-// #include "ops/tpetra_block/ops_level3.hpp"
-// #include "ops/tpetra_block/ops_norms_vector.hpp"
-// #include "ops/tpetra_block/ops_vector_update.hpp"
-// #include "ops/tpetra_block/ops_multi_vector_update.hpp"
-// #include "ops/tpetra_block/ops_dot.hpp"
-// #include "ops/tpetra_block/ops_pow.hpp"
-// #include "ops/tpetra_block/ops_elementwise_multiply.hpp"
-// #endif
 
 // // pybind11
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11

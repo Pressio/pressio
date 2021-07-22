@@ -66,10 +66,10 @@ update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
   static_assert
     (::pressio::are_scalar_compatible<T,T1>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = a*v(i) + b*v1(i);
-  }
+
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  v_n = a*v_n + b*v_n1;
 }
 
 template<typename T, typename T1, typename ScalarType>
@@ -85,10 +85,9 @@ update(T & v, const T1 & v1, const ScalarType  b)
     (::pressio::are_scalar_compatible<T,T1>::value,
       "Arguments are not scalar compatible");
 
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = b*v1(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  v_n = b*v_n1;
 }
 
 //----------------------------------------------------------------------
@@ -110,11 +109,11 @@ update(T & v, const ScalarType &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = a*v(i) + b*v1(i) + c*v2(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  v_n = a*v_n + b*v_n1 + c*v_n2;
 }
 
 template<typename T, typename T1, typename T2, typename ScalarType>
@@ -133,13 +132,12 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = b*v1(i) + c*v2(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  v_n = b*v_n1 + c*v_n2;
 }
-
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -168,11 +166,12 @@ update(T  & v, const ScalarType &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  const auto & v_n3 = impl::get_native(v3);
+  v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3;
 }
 
 template<typename T,
@@ -198,11 +197,12 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = b*v1(i) + c*v2(i) + d*v3(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  const auto & v_n3 = impl::get_native(v3);
+  v_n = b*v_n1 + c*v_n2 + d*v_n3;
 }
 
 //----------------------------------------------------------------------
@@ -236,11 +236,13 @@ update(T & v, const ScalarType &a,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  const auto & v_n3 = impl::get_native(v3);
+  const auto & v_n4 = impl::get_native(v4);
+  v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3 + e*v_n4;
 }
 
 template<typename T,
@@ -270,11 +272,13 @@ update(T & v,
   static_assert
     (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
       "Arguments are not scalar compatible");
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
-  for (ord_t i=0; i< ::pressio::ops::extent(v, 0); ++i){
-    v(i) = b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
-  }
+  auto & v_n = impl::get_native(v);
+  const auto & v_n1 = impl::get_native(v1);
+  const auto & v_n2 = impl::get_native(v2);
+  const auto & v_n3 = impl::get_native(v3);
+  const auto & v_n4 = impl::get_native(v4);
+  v_n = b*v_n1 + c*v_n2 + d*v_n3 + e*v_n4;
 }
 
 

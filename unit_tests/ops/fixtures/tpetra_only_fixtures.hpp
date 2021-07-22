@@ -5,8 +5,9 @@
 #include <gtest/gtest.h>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_Vector.hpp>
+#include <Tpetra_MultiVector.hpp>
+#include <Tpetra_CrsMatrix.hpp>
 #include <Teuchos_CommHelpers.hpp>
-#include "pressio_containers.hpp"
 #include <Tpetra_Map_decl.hpp>
 
 /* the tpetra data structures below are
@@ -18,8 +19,8 @@
  */
 
 struct tpetraVectorGlobSize15Fixture
-  : public ::testing::Test{
-
+  : public ::testing::Test
+{
 public:
   using NT = Tpetra::Vector<>::node_type;
   using tcomm = Teuchos::Comm<int>;
@@ -36,83 +37,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<vec_t> x_;
-
-  virtual void SetUp(){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-    rank_ = comm_->getRank();
-    numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
-    numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_));
-    x_ = std::make_shared<vec_t>(contigMap_);
-  }
-
-  virtual void TearDown(){}
-};
-//-----------------------------------------------------------
-
-
-struct tpetraMultiVectorGlobSize15Fixture
-  : public ::testing::Test{
-
-public:
-  using NT = Tpetra::Vector<>::node_type;
-  using tcomm = Teuchos::Comm<int>;
-  using mvec_t = Tpetra::MultiVector<>;
-  using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Vector<>;
-  using ST = typename vec_t::scalar_type;
-  using LO = typename vec_t::local_ordinal_type;
-  using GO = typename vec_t::global_ordinal_type;
-
-  int rank_;
-  int numProc_;
-  const int localSize_ = 5;
-  const int numVecs_ = 4;
-  int numGlobalEntries_;
-  Teuchos::RCP<const tcomm> comm_;
-  Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<mvec_t> x_;
-
-  virtual void SetUp(){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
-    rank_ = comm_->getRank();
-    numProc_ = comm_->getSize();
-    EXPECT_EQ(numProc_,3);
-    numGlobalEntries_ = numProc_ * localSize_;
-    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0,
-    					comm_));
-    x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
-  }
-
-  virtual void TearDown(){}
-};
-//-----------------------------------------------------------
-
-
-struct tpetraMultiVectorGlobSize9Fixture
-  : public ::testing::Test{
-
-public:
-  using tcomm = Teuchos::Comm<int>;
-  using map_t = Tpetra::Map<>;
-  using mvec_t = Tpetra::MultiVector<>;
-  using ST = typename mvec_t::scalar_type;
-  using LO = typename mvec_t::local_ordinal_type;
-  using GO = typename mvec_t::global_ordinal_type;
-
-  int rank_;
-  int numProc_;
-  const int localSize_ = 3;
-  const int numVecs_ = 4;
-  int numGlobalEntries_;
-  Teuchos::RCP<const tcomm> comm_;
-  Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<mvec_t> x_;
+  std::shared_ptr<vec_t> myVector_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -122,7 +47,86 @@ public:
     EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
-    x_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    myVector_ = std::make_shared<vec_t>(contigMap_);
+    myVector_->putScalar(0);
+  }
+
+  virtual void TearDown(){}
+};
+//-----------------------------------------------------------
+
+
+struct tpetraMultiVectorGlobSize15Fixture
+  : public ::testing::Test
+{
+
+public:
+  using NT = Tpetra::Vector<>::node_type;
+  using tcomm = Teuchos::Comm<int>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using map_t = Tpetra::Map<>;
+  using vec_t = Tpetra::Vector<>;
+  using ST = typename vec_t::scalar_type;
+  using LO = typename vec_t::local_ordinal_type;
+  using GO = typename vec_t::global_ordinal_type;
+
+  int rank_;
+  int numProc_;
+  const int localSize_ = 5;
+  const int numVecs_ = 4;
+  int numGlobalEntries_;
+  Teuchos::RCP<const tcomm> comm_;
+  Teuchos::RCP<const map_t> contigMap_;
+  std::shared_ptr<mvec_t> myMv_;
+
+  virtual void SetUp(){
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    rank_ = comm_->getRank();
+    numProc_ = comm_->getSize();
+    EXPECT_EQ(numProc_,3);
+    numGlobalEntries_ = numProc_ * localSize_;
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
+    myMv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    myMv_->putScalar(0);
+  }
+
+  virtual void TearDown(){}
+};
+//-----------------------------------------------------------
+
+
+struct tpetraMultiVectorGlobSize9Fixture
+  : public ::testing::Test
+{
+
+public:
+  using tcomm = Teuchos::Comm<int>;
+  using map_t = Tpetra::Map<>;
+  using mvec_t = Tpetra::MultiVector<>;
+  using ST = typename mvec_t::scalar_type;
+  using LO = typename mvec_t::local_ordinal_type;
+  using GO = typename mvec_t::global_ordinal_type;
+
+  int rank_;
+  int numProc_;
+  const int localSize_ = 3;
+  const int numVecs_ = 4;
+  int numGlobalEntries_;
+  Teuchos::RCP<const tcomm> comm_;
+  Teuchos::RCP<const map_t> contigMap_;
+  std::shared_ptr<mvec_t> myMv_;
+
+  virtual void SetUp(){
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    rank_ = comm_->getRank();
+    numProc_ = comm_->getSize();
+    EXPECT_EQ(numProc_,3);
+    numGlobalEntries_ = numProc_ * localSize_;
+    contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
+    myMv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    myMv_->putScalar(0);
   }
 
   virtual void TearDown(){}
@@ -131,7 +135,8 @@ public:
 
 
 struct tpetraMultiVectorR9C4VecS9Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -149,8 +154,8 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<mvec_t> mv_;
-  std::shared_ptr<vec_t> x_;
+  std::shared_ptr<mvec_t> myMv_;
+  std::shared_ptr<vec_t> myVector_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -160,8 +165,9 @@ public:
     EXPECT_EQ(numProc_,3);
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
-    mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
-    x_ = std::make_shared<vec_t>(contigMap_);
+    myMv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    myVector_ = std::make_shared<vec_t>(contigMap_);
+    myVector_->putScalar(0);
   }
 
   virtual void TearDown(){}
@@ -170,7 +176,8 @@ public:
 
 
 struct tpetraSparseMatR7MultiVectorR7C4Fixture
-  : public ::testing::Test{
+  : public ::testing::Test
+{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -206,10 +213,11 @@ public:
 
     A_ = std::make_shared<mat_t>(contigMap_, 4);
     mv_ = std::make_shared<mvec_t>(contigMap_, numVecs_);
+    mv_->putScalar(0);
   }
 
-  void fillCrsMatrix(){
-
+  void fillCrsMatrix()
+  {
     // 1 0 2 0 0 3 0
     // 1 0 1 0 1 1 0
     // 0 0 1 2 1 0 0

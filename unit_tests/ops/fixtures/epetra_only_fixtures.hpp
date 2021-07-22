@@ -6,7 +6,6 @@
 #include "Epetra_MpiComm.h"
 #include "pressio_containers.hpp"
 
-
 struct epetraVectorGlobSize15Fixture
   : public ::testing::Test{
 
@@ -17,7 +16,7 @@ public:
   const int localSize_ = 5;
   int numGlobalEntries_;
   std::shared_ptr<Epetra_Map> contigMap_;
-  std::shared_ptr<Epetra_Vector> x_;
+  std::shared_ptr<Epetra_Vector> myVector_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -28,7 +27,7 @@ public:
 
     numGlobalEntries_ = numProc_ * localSize_;
     contigMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
-    x_ = std::make_shared<Epetra_Vector>(*contigMap_);
+    myVector_ = std::make_shared<Epetra_Vector>(*contigMap_);
   }
 
   virtual void TearDown(){}
@@ -47,8 +46,8 @@ public:
   const int numVectors_ = 4;
   int numGlobalEntries_;
   std::shared_ptr<Epetra_Map> dataMap_;
-  std::shared_ptr<Epetra_MultiVector> mv_;
-  std::shared_ptr<Epetra_Vector> x_;
+  std::shared_ptr<Epetra_MultiVector> myMv_;
+  std::shared_ptr<Epetra_Vector> myVector_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -59,8 +58,8 @@ public:
 
     numGlobalEntries_ = numProc_ * localSize_;
     dataMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
-    mv_ = std::make_shared<Epetra_MultiVector>(*dataMap_, numVectors_);
-    x_ = std::make_shared<Epetra_Vector>(*dataMap_);
+    myMv_ = std::make_shared<Epetra_MultiVector>(*dataMap_, numVectors_);
+    myVector_ = std::make_shared<Epetra_Vector>(*dataMap_);
   }
 
   virtual void TearDown(){}

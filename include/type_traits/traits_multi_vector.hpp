@@ -52,29 +52,6 @@
 namespace pressio{ 
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-//*******************************
-// for epetra multivector
-//*******************************
-template<typename T>
-struct traits<
-  T,
-  ::pressio::mpl::enable_if_t<
-    is_multi_vector_epetra<T>::value
-    >
-  >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
-{
-  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type = double;
-  using local_ordinal_type = int;
-  using global_ordinal_type = int;
-  using size_type  = global_ordinal_type;
-  using data_map_type = Epetra_BlockMap;
-  using communicator_type = Epetra_Comm;
-};
 
 //*******************************
 // for tpetra multivector
@@ -119,6 +96,31 @@ struct traits<
   using communicator_type = decltype(std::declval<data_map_type>().getComm());
 };
 
+
+//*******************************
+// for epetra multivector
+//*******************************
+template<typename T>
+struct traits<
+  T,
+  ::pressio::mpl::enable_if_t<
+    is_multi_vector_epetra<T>::value
+    >
+  >
+  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
+{
+  static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type = double;
+  using local_ordinal_type = int;
+  using global_ordinal_type = int;
+  using size_type  = global_ordinal_type;
+  using data_map_type = Epetra_BlockMap;
+  using communicator_type = Epetra_Comm;
+};
+
 //*******************************
 // for block tpetra multivector
 //*******************************
@@ -141,10 +143,10 @@ struct traits<
   using data_map_type = typename T::map_type;
   using size_type  = global_ordinal_type;
 
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
+  // node is a Tpetra concept, defined as:
+  // node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
+  // where memory space is taken from the execution_space
+  //
   using node_type = typename T::node_type;
 
   // device_type is just an (execution space, memory space) pair.

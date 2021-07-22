@@ -73,11 +73,10 @@ elementwise_multiply
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));
   assert(::pressio::ops::extent(z, 0)==::pressio::ops::extent(y, 0));
 
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
-  for (ord_t i=0; i< ::pressio::ops::extent(y, 0); ++i){
-    y(i) = beta*y(i) + alpha*x(i)*z(i);
-  }
-  // (*y.data()) = beta * (*y.data()) + alpha * x.data()->cwiseProduct(*z.data());
+  auto & y_n = impl::get_native(y);
+  const auto & x_n = impl::get_native(x);
+  const auto & z_n = impl::get_native(z);
+  y_n = beta * y_n + alpha * x_n.cwiseProduct(z_n);
 }
 
 }}//end namespace pressio::ops

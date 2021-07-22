@@ -53,46 +53,22 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_eigen<T>::value or
-  ::pressio::is_dense_matrix_eigen<T>::value or
-  ::pressio::is_sparse_matrix_eigen<T>::value,
+  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen,
   typename traits<T>::scalar_type
   >
 max(const T & obj)
 {
-  return obj.maxCoeff();
+  return impl::get_native(obj).maxCoeff();
 }
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_expression_eigen<T>::value,
-  typename traits<T>::scalar_type
-  >
-max(const T & obj)
-{
-  return obj.native()->maxCoeff();
-}
-
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_eigen<T>::value or
-  ::pressio::is_dense_matrix_eigen<T>::value or
-  ::pressio::is_sparse_matrix_eigen<T>::value,
+  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen,
   typename traits<T>::scalar_type
   >
 min(const T & obj)
 {
-  return obj.minCoeff();
-}
-
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_expression_eigen<T>::value,
-  typename traits<T>::scalar_type
-  >
-min(const T & obj)
-{
-  return obj.native()->minCoeff();
+  return impl::get_native(obj).minCoeff();
 }
 
 }}//end namespace pressio::ops

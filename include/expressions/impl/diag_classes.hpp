@@ -99,12 +99,12 @@ public:
     return extent_;
   }
 
-  native_expr_t const * native() const{
-    return &nativeExprObj_;
+  native_expr_t const & native() const{
+    return nativeExprObj_;
   }
 
-  native_expr_t * native(){
-    return &nativeExprObj_;
+  native_expr_t & native(){
+    return nativeExprObj_;
   }
 
   ref_t operator()(size_t i)
@@ -135,14 +135,14 @@ struct DiagExpr<
   using mytraits	= diag_traits<this_t>;
   using size_t		= typename mytraits::size_type;
   using ref_t		= typename mytraits::reference_type;
-  using native_expr_type	= typename mytraits::native_expr_type;
+  using native_expr_t	= typename mytraits::native_expr_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
-  native_expr_type nativeExprObj_;
+  native_expr_t nativeExprObj_;
   size_t extent_ = {};
 
-  using natexpr_layout = typename native_expr_type::traits::array_layout;
+  using natexpr_layout = typename native_expr_t::traits::array_layout;
   // for now leave this assert, then remove later
   static_assert
   (std::is_same<natexpr_layout, Kokkos::LayoutStride>::value,
@@ -171,7 +171,13 @@ public:
     return extent_;
   }
 
-  native_expr_type native() const{ return nativeExprObj_; }
+  native_expr_t const & native() const{
+    return nativeExprObj_;
+  }
+
+  native_expr_t & native(){
+    return nativeExprObj_;
+  }
 
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<

@@ -59,13 +59,7 @@ template <typename T>
   >
 norm1(const T & a)
 {
-  using ordinal_t = typename traits<T>::ordinal_type;
-  using sc_t = typename traits<T>::scalar_type;
-  sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
-    result += std::abs(a(i));
-  }
-  return result;
+  return impl::get_native(a).template lpNorm<1>();
 }
 
 template <typename T>
@@ -76,13 +70,7 @@ template <typename T>
   >
 norm2(const T & a)
 {
-  using ordinal_t = typename traits<T>::ordinal_type;
-  using sc_t = typename traits<T>::scalar_type;
-  sc_t result = 0.0;
-  for (ordinal_t i=0; i<::pressio::ops::extent(a, 0); i++){
-    result += a(i)*a(i);
-  }
-  return std::sqrt(result);
+  return impl::get_native(a).template lpNorm<2>();
 }
 
 }}//end namespace pressio::ops

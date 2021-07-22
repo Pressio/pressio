@@ -199,34 +199,6 @@ struct traits<
 #endif
 
 //*******************************
-// for epetra vector
-//*******************************
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename T>
-struct traits<
-  T,
-  mpl::enable_if_t<
-    is_vector_epetra<T>::value
-    >
-  >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
-{
-
-  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
-
-  using scalar_type  = double;
-  using local_ordinal_type  = int;
-  using global_ordinal_type = int;
-  using size_type    = global_ordinal_type;
-  using data_map_type  = Epetra_BlockMap;
-  using communicator_type   = Epetra_Comm;
-};
-#endif
-
-
-//*******************************
 // for tpetra vector
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
@@ -252,10 +224,10 @@ struct traits<
   // using const_data_return_t = T const *;
   // using data_return_t = T *;
 
-  /* node is a Tpetra concept, defined as:
-   * node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
-   * where memory space is taken from the execution_space
-   */
+  // node is a Tpetra concept, defined as:
+  // node_type = ::Kokkos::Compat::KokkosDeviceWrapperNode<execution_space>;
+  // where memory space is taken from the execution_space
+  ///
   using node_type = typename T::node_type;
   using dual_view_type = typename T::dual_view_type;
   // device_type is just an (execution space, memory space) pair.
@@ -270,7 +242,33 @@ struct traits<
   using dot_type = typename T::dot_type;
   using mag_type = typename T::mag_type;
   using communicator_type = decltype(std::declval<data_map_type>().getComm());
+};
+#endif
 
+// *******************************
+// for epetra vector
+// *******************************
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+template<typename T>
+struct traits<
+  T,
+  mpl::enable_if_t<
+    is_vector_epetra<T>::value
+    >
+  >
+  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
+{
+
+  static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic  = !is_static;
+
+  using scalar_type  = double;
+  using local_ordinal_type  = int;
+  using global_ordinal_type = int;
+  using size_type    = global_ordinal_type;
+  using data_map_type  = Epetra_BlockMap;
+  using communicator_type   = Epetra_Comm;
 };
 #endif
 

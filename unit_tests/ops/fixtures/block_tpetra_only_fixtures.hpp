@@ -41,7 +41,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<vec_t> x_;
+  std::shared_ptr<vec_t> myVector_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -51,12 +51,11 @@ public:
 
     numGlobalEntries_ = 15;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
-    x_ = std::make_shared<vec_t>(*contigMap_, blockSize_);
+    myVector_ = std::make_shared<vec_t>(*contigMap_, blockSize_);
   }
 
   virtual void TearDown(){}
 };
-
 
 struct tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture
   : public ::testing::Test{
@@ -78,7 +77,7 @@ public:
   int numGlobalEntries_;
   Teuchos::RCP<const tcomm> comm_;
   Teuchos::RCP<const map_t> contigMap_;
-  std::shared_ptr<mvec_t> mv_;
+  std::shared_ptr<mvec_t> myMv_;
 
   virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
@@ -88,7 +87,7 @@ public:
 
     numGlobalEntries_ = 15;
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_, 0, comm_));
-    mv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
+    myMv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
   }
 
   virtual void TearDown(){}

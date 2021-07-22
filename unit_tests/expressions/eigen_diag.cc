@@ -38,7 +38,7 @@ namespace{
     {
       // get the native expression
       const auto diagvals = pressio::diag(A);
-      auto &natEx = *diagvals.data();
+      auto &natEx = diagvals.native();
       EXPECT_DOUBLE_EQ( natEx(0), 44. );  
       EXPECT_DOUBLE_EQ( natEx(1), 6. ); 
     }
@@ -52,7 +52,7 @@ namespace{
     EXPECT_DOUBLE_EQ( diagvals(1), 6. );
     EXPECT_DOUBLE_EQ( diagvals(2), 11.2 );
 
-    auto & natEx = *diagvals.data();
+    auto & natEx = diagvals.native();
     EXPECT_DOUBLE_EQ( natEx(0), 44. );  
     EXPECT_DOUBLE_EQ( natEx(1), 6. );
   }

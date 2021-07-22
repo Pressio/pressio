@@ -65,7 +65,7 @@ abs(T1 & y, const T2 & x)
   static_assert
     (traits<T1>::rank==1 and traits<T2>::rank==1,
      "ops::abs only accepts vectors");
-
+  
   using ord_t = typename ::pressio::traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = std::abs(x(i));

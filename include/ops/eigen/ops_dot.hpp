@@ -69,11 +69,7 @@ dot(const T0 & vecA,
       "ops::dot only accepts vectors");
 
   assert((matching_extents<T0, T1>::compare(vecA, vecB)));
-
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
-  for (ord_t i=0; i< ::pressio::ops::extent(vecA, 0); ++i){
-    result += vecA(i)*vecB(i);
-  }
+  result = impl::get_native(vecA).dot(impl::get_native(vecB));
 }
 
 template <typename T0, typename T1>

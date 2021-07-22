@@ -117,12 +117,12 @@ public:
     return (i==0) ? numRows_ : numCols_;
   }
 
-  native_expr_t const * native() const{
-    return &nativeExprObj_;
+  native_expr_t const & native() const{
+    return nativeExprObj_;
   }
 
-  native_expr_t native(){
-    return &nativeExprObj_;
+  native_expr_t & native(){
+    return nativeExprObj_;
   }
 
   ref_t operator()(const ord_t & i, const ord_t & j)
@@ -159,7 +159,7 @@ struct SubspanExpr<
   using size_t = typename mytraits::size_type;
   using pair_t = typename mytraits::pair_type;
   using ref_t = typename mytraits::reference_type;
-  using native_expr_type = typename mytraits::native_expr_type;
+  using native_expr_t = typename mytraits::native_expr_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -169,7 +169,7 @@ private:
   std::size_t endCol_;
   std::size_t numRows_ = {};
   std::size_t numCols_ = {};
-  native_expr_type nativeExprObj_;
+  native_expr_t nativeExprObj_;
 
 public:
   SubspanExpr() = delete;
@@ -209,7 +209,11 @@ public:
     return (i==0) ? numRows_ : numCols_;
   }
 
-  native_expr_type data() const{
+  native_expr_t const & native() const{
+    return nativeExprObj_;
+  }
+
+  native_expr_t & native(){
     return nativeExprObj_;
   }
 

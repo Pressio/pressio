@@ -56,7 +56,7 @@ namespace pressio{ namespace ops{
 */
 
 //-------------------------------
-// specialize for op(A) = A
+// op(A) = A
 //-------------------------------
 template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
@@ -65,10 +65,7 @@ template < typename A_type, typename x_type, typename ScalarType, typename y_typ
   ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<A_type>::rank == 2 and
   ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1 and
-  !::pressio::is_expression<A_type>::value and 
-  !::pressio::is_expression<x_type>::value and 
-  !::pressio::is_expression<y_type>::value
+  ::pressio::traits<y_type>::rank == 1
   >
 product(::pressio::nontranspose mode,
 	const ScalarType alpha,
@@ -83,69 +80,15 @@ product(::pressio::nontranspose mode,
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
-  y = beta * y + alpha * A * x;
+
+  auto & y_n = impl::get_native(y);
+  const auto & A_n = impl::get_native(A);
+  const auto & x_n = impl::get_native(x);
+  y_n = beta * y_n + alpha * A_n * x_n;
 }
-
-template < typename A_type, typename x_type, typename ScalarType, typename y_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<A_type>::rank == 2 and
-  ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1 and
-  !::pressio::is_expression<A_type>::value and 
-  !::pressio::is_expression<x_type>::value and 
-  ::pressio::is_expression<y_type>::value
-  >
-product(::pressio::nontranspose mode,
-  const ScalarType alpha,
-  const A_type & A,
-  const x_type & x,
-  const ScalarType beta,
-  y_type & y)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
-
-  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
-  (*y.data()) = beta * (*y.data()) + alpha * A * x;
-}
-
-
-template < typename A_type, typename x_type, typename ScalarType, typename y_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<A_type>::rank == 2 and
-  ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1 and
-  !::pressio::is_expression<A_type>::value and 
-  ::pressio::is_expression<x_type>::value and 
-  !::pressio::is_expression<y_type>::value
-  >
-product(::pressio::nontranspose mode,
-  const ScalarType alpha,
-  const A_type & A,
-  const x_type & x,
-  const ScalarType beta,
-  y_type & y)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
-
-  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 0) );
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 1) );
-  y = beta * y + alpha * A * (*x.data());
-}
-
 
 //-------------------------------
-// specialize for op(A) = A^T
+// op(A) = A^T
 //-------------------------------
 template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
@@ -154,10 +97,7 @@ template < typename A_type, typename x_type, typename ScalarType, typename y_typ
   ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
   ::pressio::traits<A_type>::rank == 2 and
   ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1 and
-  !::pressio::is_expression<A_type>::value and 
-  !::pressio::is_expression<x_type>::value and 
-  !::pressio::is_expression<y_type>::value
+  ::pressio::traits<y_type>::rank == 1
   >
 product(::pressio::transpose mode,
 	const ScalarType alpha,
@@ -172,36 +112,13 @@ product(::pressio::transpose mode,
 
   assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
   assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
-  y = beta * y + alpha * A.transpose() * x;
+
+  auto & y_n = impl::get_native(y);
+  const auto & A_n = impl::get_native(A);
+  const auto & x_n = impl::get_native(x);
+  y_n = beta * y_n + alpha * A_n.transpose() * x_n;
 }
 
-template < typename A_type, typename x_type, typename ScalarType, typename y_type>
-::pressio::mpl::enable_if_t<
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<A_type>::rank == 2 and
-  ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1 and
-  !::pressio::is_expression<A_type>::value and 
-  ::pressio::is_expression<x_type>::value and 
-  !::pressio::is_expression<y_type>::value
-  >
-product(::pressio::transpose mode,
-  const ScalarType alpha,
-  const A_type & A,
-  const x_type & x,
-  const ScalarType beta,
-  y_type & y)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
-     "Types are not scalar compatible");
-
-  assert( ::pressio::ops::extent(y, 0) == ::pressio::ops::extent(A, 1) );
-  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
-  y = beta * y + alpha * A.transpose() * (*x.data());
-}
 
 }}//end namespace pressio::ops
 #endif  // OPS_EIGEN_OPS_LEVEL2_HPP_

@@ -114,12 +114,12 @@ public:
     return extent_;
   }
 
-  native_expr_t const * native() const{
-    return &nativeExprObj_;
+  native_expr_t const & native() const{
+    return nativeExprObj_;
   }
 
-  native_expr_t * native(){
-    return &nativeExprObj_;
+  native_expr_t & native(){
+    return nativeExprObj_;
   }
 
   ref_t operator()(std::size_t i)
@@ -198,7 +198,11 @@ public:
     return extent_;
   }
 
-  native_expr_t native() const{
+  native_expr_t const & native() const{
+    return nativeExprObj_;
+  }
+
+  native_expr_t & native(){
     return nativeExprObj_;
   }
 

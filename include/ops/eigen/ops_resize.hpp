@@ -59,7 +59,7 @@ resize(T & o, typename traits<T>::size_type newSize)
 {
   static_assert(
     ::pressio::is_dynamic_vector_eigen<T>::value,
-    "You cannot resize a static wrapper Eigen.");
+    "You cannot resize a static Eigen.");
 
   o.resize(newSize);
 }
@@ -74,7 +74,7 @@ resize(T & o, const typename traits<T>::size_type newRows,
 {
   static_assert(
     ::pressio::is_dense_dynamic_matrix_eigen<T>::value,
-    "You cannot resize a static wrapper Eigen.");
+    "You cannot resize a static Eigen.");
 
   o.resize(newRows, newCols);
 }
