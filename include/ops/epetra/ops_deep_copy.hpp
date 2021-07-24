@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_deep_copy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,19 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_EPETRA_OPS_DEEP_COPY_HPP_
+#define OPS_EPETRA_OPS_DEEP_COPY_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template<typename T>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T>::value or 
+  ::pressio::is_multi_vector_epetra<T>::value
   >
-clone(const T & clonable)
-{
- return T(clonable, Teuchos::Copy);
+deep_copy(T & dest, const T & src){
+  dest = src;
 }
 
-}}
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_DEEP_COPY_HPP_

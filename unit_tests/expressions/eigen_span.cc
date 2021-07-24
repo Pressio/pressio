@@ -66,7 +66,7 @@ namespace{
   }
 };
 
-TEST(vector_eigen, span)
+TEST(expressions_eigen, span)
 {
   using eigv_t = Eigen::VectorXd;
 
@@ -83,7 +83,7 @@ TEST(vector_eigen, span)
   testConst(a);
 }
 
-TEST(vector_eigen, spanConstructor)
+TEST(expressions_eigen, spanConstructor)
 {
   using eigv_t = Eigen::VectorXd;
   eigv_t a(6);

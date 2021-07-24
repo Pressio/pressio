@@ -51,7 +51,7 @@ void testConst(const T & a){
 }
 };
 
-TEST(containers_eigen, asDiagonalMatrix)
+TEST(expressions_eigen, asDiagonalMatrix)
 {
   using v_t = Eigen::VectorXd;
   v_t a(6);

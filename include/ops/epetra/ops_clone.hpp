@@ -46,19 +46,20 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_OPS_CLONE_EPETRA_HPP_
+#define OPS_OPS_CLONE_EPETRA_HPP_
 
 namespace pressio{ namespace ops{
 
+
 template <typename T>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T>::value or
+  ::pressio::is_multi_vector_epetra<T>::value, T
   >
 clone(const T & clonable)
 {
- return T(clonable, Teuchos::Copy);
+ return T(clonable);
 }
 
 }}

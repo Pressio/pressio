@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// qr_solve_base.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,38 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef QR_BASE_QR_SOLVE_BASE_HPP_
+#define QR_BASE_QR_SOLVE_BASE_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{ namespace qr{
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
-  >
-clone(const T & clonable)
+template<typename derived_t>
+class QRSolveBase
+  : private utils::details::CrtpBase<QRSolveBase<derived_t> >
 {
- return T(clonable, Teuchos::Copy);
-}
 
-}}
-#endif
+  using this_t = QRSolveBase<derived_t>;
+
+  /* workaround for nvcc issue with templates, 
+  see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
+  template<typename DummyType> struct dummy{using type = DummyType;};
+  friend typename dummy<derived_t>::type;
+
+  friend utils::details::CrtpBase<this_t>;
+
+public:
+  template <typename vec_t>
+  ::pressio::mpl::enable_if_t<
+   ::pressio::traits<vec_t>::rank ==1 
+  >
+  solve(const vec_t & rhs, vec_t & y)const {
+    this->underlying().solveImpl(rhs, y);
+  }
+
+  QRSolveBase() = default;
+  ~QRSolveBase() = default;
+
+};
+
+}}//end namespace pressio::qr
+#endif  // QR_BASE_QR_SOLVE_BASE_HPP_

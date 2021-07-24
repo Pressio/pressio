@@ -49,6 +49,7 @@ if(PRESSIO_ENABLE_TPL_KOKKOS)
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
+ # TPETRA
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_tpetra_vector.cc)
  add_utest_mpi(ops_tpetra_vector "${SRC1}" gTestMain_tpetra 3)
 
@@ -61,6 +62,21 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_tpetra_level3.cc)
  add_utest_mpi(ops_tpetra_level3 "${SRC1}" gTestMain_tpetra 3)
 
- #set(SRC2 ${CMAKE_CURRENT_SOURCE_DIR}/ops_teuchos.cc)
- #add_serial_utest(ops_serial_2 "${SRC2}")
+
+ # EPETRA
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_vector.cc)
+ add_utest_mpi(ops_epetra_vector "${SRC1}" gTestMain_mpi 3)
+
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_multi_vector.cc)
+ add_utest_mpi(ops_epetra_multi_vector "${SRC1}" gTestMain_mpi 3)
+
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_level2.cc)
+ add_utest_mpi(ops_epetra_level2 "${SRC1}" gTestMain_mpi 3)
+
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_level3.cc)
+ add_utest_mpi(ops_epetra_level3 "${SRC1}" gTestMain_mpi 3)
 endif()
+
+#set(SRC2 ${CMAKE_CURRENT_SOURCE_DIR}/ops_teuchos.cc)
+#add_serial_utest(ops_serial_2 "${SRC2}")
+

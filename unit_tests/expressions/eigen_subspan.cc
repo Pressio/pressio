@@ -93,7 +93,7 @@ void testConst(const T & A)
 };
 
 
-TEST(matrix_serial_eigen, subspan)
+TEST(expressions_eigen, subspan)
 {
   // col-major matrix (which is default in Eigen)
   using eigmat_t = Eigen::MatrixXd;
@@ -112,7 +112,7 @@ TEST(matrix_serial_eigen, subspan)
 }
 
 
-TEST(matrix_serial_eigen, subspanRowMajor)
+TEST(expressions_eigen, subspanRowMajor)
 {
   using eigmat_t = Eigen::Matrix<double, -1, -1, Eigen::RowMajor>;
 

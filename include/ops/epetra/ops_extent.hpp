@@ -46,19 +46,31 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_OPS_EXTENT_EPETRA_HPP_
+#define OPS_OPS_EXTENT_EPETRA_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template <typename T, class IndexType>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T>::value, 
+  typename ::pressio::traits<T>::global_ordinal_type
   >
-clone(const T & clonable)
+extent(const T & oIn, const IndexType i)
 {
- return T(clonable, Teuchos::Copy);
+  assert(i==0);
+  return oIn.GlobalLength();
+}
+
+template <typename T, class IndexType>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_multi_vector_epetra<T>::value,
+  typename ::pressio::traits<T>::global_ordinal_type
+  >
+extent(const T & oIn, const IndexType i)
+{
+  assert(i<=1);
+  return (i==0) ? oIn.GlobalLength() : oIn.NumVectors(); 
 }
 
 }}

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_fill.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,20 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_EPETRA_OPS_FILL_HPP_
+#define OPS_EPETRA_OPS_FILL_HPP_
 
 namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T>::value or
+  ::pressio::is_multi_vector_epetra<T>::value
   >
-clone(const T & clonable)
+fill(T & o, typename ::pressio::traits<T>::scalar_type value)
 {
- return T(clonable, Teuchos::Copy);
+ o.PutScalar(value);
 }
 
-}}
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_FILL_HPP_

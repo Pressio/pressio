@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,34 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+//----------------------------------------------------------------------
+// computing elementwise:  y = beta * y + alpha * x * z
+//----------------------------------------------------------------------
+template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T>::value and
+  ::pressio::is_vector_epetra<T1>::value and
+  ::pressio::is_vector_epetra<T2>::value
   >
-clone(const T & clonable)
+elementwise_multiply
+(typename ::pressio::traits<T>::scalar_type alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::traits<T>::scalar_type beta,
+ T2 & y)
 {
- return T(clonable, Teuchos::Copy);
+  assert(x.MyLength()==z.MyLength());
+  assert(z.MyLength()==y.MyLength());
+  using ord_t = typename ::pressio::traits<T>::local_ordinal_type;
+  for (ord_t i=0; i<x.MyLength(); ++i){
+    y[i] = beta*y[i] + alpha*x[i]*z[i];
+  }
 }
 
-}}
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_ELEMENTWISE_MULTIPLY_HPP_

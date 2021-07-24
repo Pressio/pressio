@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// qr_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,46 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef QR_QR_FWD_HPP_
+#define QR_QR_FWD_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{  namespace qr{
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
-  >
-clone(const T & clonable)
-{
- return T(clonable, Teuchos::Copy);
-}
+template<typename derived, typename matrix_t> class QRInPlaceBase;
+template<typename derived, typename matrix_t, typename Q_type> class QROutOfPlaceBase;
+template<typename derived, typename R_type> class RFactorBase;
+template<typename derived> class QRSolveBase;
 
-}}
+namespace impl{
+
+#if defined PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<class matrix_t, class R_t> class EpetraMVHouseholderUsingEigen;
+template<class matrix_t, class R_t> class TpetraMVHouseholderUsingEigen;
 #endif
+
+template<class matrix_t, class R_t> class EpetraMVTSQR;
+template<class matrix_t, class R_t> class ModGramSchmidtMVEpetra;
+template<class matrix_t, class R_t> class TpetraMVTSQR;
+template<class matrix_t, class R_t> class ModGramSchmidtMVTpetra;
+template<class matrix_t, class R_t> class TpetraBlockMVTSQR;
+#endif //PRESSIO_ENABLE_TPL_TRILINOS
+
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<typename matrix_type, typename R_t = void, typename enable=void>
+class QRHouseholderDenseEigenMatrix;
+#endif
+
+template<class matrix_type, class algorithm, bool in_place, class R_type, class enable = void>
+class QRSolver;
+
+}//end namespace pressio::qr::impl
+
+template<class matrix_type, class algorithm, bool in_place = false>
+using QRSolver = impl::QRSolver<matrix_type, algorithm, in_place, void>;
+
+template<class matrix_type, class algorithm, class R_type, bool in_place = false>
+using QRSolverWrapR = impl::QRSolver<matrix_type, algorithm, in_place, R_type>;
+
+}}//end namespace pressio::qr
+#endif  // QR_QR_FWD_HPP_

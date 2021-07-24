@@ -4,7 +4,8 @@
 
 #include <gtest/gtest.h>
 #include "Epetra_MpiComm.h"
-#include "pressio_containers.hpp"
+#include "Epetra_Vector.h"
+#include "Epetra_MultiVector.h"
 
 struct epetraVectorGlobSize15Fixture
   : public ::testing::Test{
@@ -33,6 +34,37 @@ public:
   virtual void TearDown(){}
 };
 //-----------------------------------------------------------
+
+
+struct epetraMultiVectorGlobSize15Fixture
+  : public ::testing::Test{
+
+public:
+  std::shared_ptr<Epetra_MpiComm> comm_;
+  int rank_;
+  int numProc_;
+  const int numVecs_ = 4;
+  const int localSize_ = 5;
+  int numGlobalEntries_;
+  std::shared_ptr<Epetra_Map> contigMap_;
+  std::shared_ptr<Epetra_MultiVector> myMv_;
+
+  virtual void SetUp(){
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+    comm_ = std::make_shared<Epetra_MpiComm>(MPI_COMM_WORLD);
+    rank_ = comm_->MyPID();
+    numProc_ = comm_->NumProc();
+    EXPECT_EQ(numProc_,3);
+
+    numGlobalEntries_ = numProc_ * localSize_;
+    contigMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
+    myMv_ = std::make_shared<Epetra_MultiVector>(*contigMap_, numVecs_);
+  }
+
+  virtual void TearDown(){}
+};
+//-----------------------------------------------------------
+
 
 
 struct epetraMultiVectorR9C4VecS9Fixture

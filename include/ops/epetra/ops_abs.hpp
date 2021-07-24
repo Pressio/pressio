@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_abs.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,21 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_EPETRA_OPS_ABS_HPP_
+#define OPS_EPETRA_OPS_ABS_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+// y= abs(x)
+template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
+  ::pressio::is_vector_epetra<T1>::value and
+  ::pressio::is_vector_epetra<T2>::value 
   >
-clone(const T & clonable)
+abs(T1 & y, const T2 & x)
 {
- return T(clonable, Teuchos::Copy);
+  y.Abs(x);
 }
 
-}}
-#endif
+}}//end namespace pressio::ops
+#endif  // OPS_EPETRA_OPS_ABS_HPP_

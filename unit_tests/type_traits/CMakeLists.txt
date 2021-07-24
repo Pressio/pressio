@@ -8,18 +8,17 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
-  add_serial_utest_kokkos(type_traits_kokkos ${CMAKE_CURRENT_SOURCE_DIR}/traits_kokkos.cc )
+  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/traits_kokkos.cc)
+  add_serial_utest_kokkos(type_traits_kokkos ${SRC1})
 endif()
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_teuchos.cc)
   add_serial_utest(type_traits_teuchos ${SRC})
 
-  ### EPETRA ###
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_epetra.cc)
   add_serial_utest(type_traits_epetra ${SRC})
 
-  ### TPETRA ###
   set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/traits_tpetra.cc)
   add_serial_utest(type_traits_tpetra ${SRC})
 

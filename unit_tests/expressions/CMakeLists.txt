@@ -1,8 +1,6 @@
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
-  set(SRC
-   ${CMAKE_CURRENT_SOURCE_DIR}/expressions_eigen_traits.cc
-  )
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/eigen_traits.cc)
   add_serial_utest(expressions_eigen_traits ${SRC})
 
   set(SRC
@@ -15,27 +13,18 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 if(PRESSIO_ENABLE_TPL_KOKKOS)
-  add_serial_utest_kokkos(
-    kokkos_strided_subview 
-    ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_strided_subview.cc )
-
-  set(SRC
-   ${CMAKE_CURRENT_SOURCE_DIR}/expressions_kokkos_traits.cc
-  )
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_traits.cc)
   add_serial_utest_kokkos(expressions_kokkos_traits ${SRC})
 
-  set(SRC
-   ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_span.cc
-  )
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_span.cc)
   add_serial_utest_kokkos(expressions_kokkos_span ${SRC})
 
-  set(SRC
-   ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_subspan.cc
-  )
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_subspan.cc)
   add_serial_utest_kokkos(expressions_kokkos_subspan ${SRC})
 
-  set(SRC
-   ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_diag.cc
-  )
+  set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_diag.cc)
   add_serial_utest_kokkos(expressions_kokkos_diag ${SRC})
+
+  add_serial_utest_kokkos(kokkos_strided_subview 
+    ${CMAKE_CURRENT_SOURCE_DIR}/kokkos_strided_subview.cc )
 endif()

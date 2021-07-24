@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_multi_vector_update.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,20 +46,29 @@
 //@HEADER
 */
 
-#ifndef OPS_OPS_CLONE_TPETRA_HPP_
-#define OPS_OPS_CLONE_TPETRA_HPP_
+#ifndef OPS_EPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
+#define OPS_EPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-	::pressio::is_vector_tpetra<T>::value or 
-  ::pressio::is_multi_vector_tpetra<T>::value, T
-  >
-clone(const T & clonable)
+//----------------------------------------------------------------------
+//  overloads for computing: MV = a * MV + b * MV1
+//----------------------------------------------------------------------
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<is_multi_vector_epetra<T>::value>
+update(T & mv, const scalar_t &a,
+	  const T & mv1, const scalar_t &b)
 {
- return T(clonable, Teuchos::Copy);
+  mv.Update(b, mv1, a);
 }
 
-}}
-#endif
+template<typename T, typename scalar_t>
+::pressio::mpl::enable_if_t<::pressio::is_multi_vector_epetra<T>::value>
+update(T & mv, const T & mv1, const scalar_t & b)
+{
+  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  mv.Update(b, mv1, zero);
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_TPETRA_OPS_MULTI_VECTOR_UPDATE_HPP_

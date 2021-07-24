@@ -133,7 +133,6 @@ foreach(f ${all_files})
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/type_traits"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/expressions"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ops"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/apps"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/qr"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/svd"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/optimizers"
@@ -154,8 +153,6 @@ endforeach(f ${all_files})
 # install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/containers
 #   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 # install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ops
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/apps
 #   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
 # install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/qr
 #   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
