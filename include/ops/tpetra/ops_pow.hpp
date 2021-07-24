@@ -67,7 +67,7 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::traits<T1>::scalar_type;
   using ord_t = typename ::pressio::traits<T1>::local_ordinal_type;
 
-  assert(x.extent(0) == y.extent(0));
+  assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
   if (exponent < ::pressio::utils::constants<sc_t>::zero()){
@@ -101,7 +101,7 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::traits<T1>::scalar_type;
   using ord_t = typename ::pressio::traits<T1>::local_ordinal_type;
 
-  assert(x.extent(0) == y.extent(0));
+  assert(x.getGlobalLength() == y.getGlobalLength());
   assert(x.getLocalLength() == y.getLocalLength());
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
   if (exponent > ::pressio::utils::constants<sc_t>::zero()){
