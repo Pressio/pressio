@@ -131,7 +131,7 @@ product(::pressio::transpose mode,
      "Types are not scalar compatible");
 
   const int numVecs = A.NumVectors();
-  assert( (std::size_t)y.size() == (std::size_t)numVecs );
+  assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
   auto tmp = ::pressio::utils::constants<scalar_type>::zero();
   for (int i=0; i<numVecs; i++)

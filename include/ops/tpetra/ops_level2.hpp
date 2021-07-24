@@ -75,7 +75,7 @@ _product_tpetra_mv_sharedmem_vec(const scalar_type alpha,
 				 const scalar_type beta,
 				 y_type & y)
 {
-  assert(size_t(A.numVectors()) == size_t(::pressio::ops::extent(x,0)));
+  assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
 
   using kokkos_view_t = Kokkos::View<const scalar_type*, Kokkos::HostSpace,
 				     Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
@@ -110,7 +110,7 @@ _product_tpetra_mv_sharedmem_vec_kokkos(const scalar_type alpha,
     ( std::is_same<tpetra_mv_dev_t, kokkos_v_dev_t>::value,
       "product: tpetra MV and kokkos wrapper need to have same device type" );
 
-  assert(size_t(A.numVectors()) == size_t(::pressio::ops::extent(x,0)));
+  assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(x,0)));
   const char ctA = 'N';
   const auto ALocalView_d = A.getLocalViewDevice();
 
@@ -240,7 +240,7 @@ product(::pressio::transpose mode,
     (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
      "Types are not scalar compatible");
 
-  assert(size_t(A.numVectors()) == size_t(::pressio::ops::extent(y,0)));
+  assert(size_t(A.getNumVectors()) == size_t(::pressio::ops::extent(y,0)));
 
   const auto numVecs = ::pressio::ops::extent(A, 1);
   for (std::size_t i=0; i<(std::size_t)numVecs; i++)
