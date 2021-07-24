@@ -77,7 +77,7 @@ template<typename vector_type, typename R_type>
   ::pressio::is_dense_vector_teuchos<vector_type>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >
-solve(const vector_type & rhs, R_type & Rmatrix, vector_type & y)
+solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   using ord_t	 = typename R_type::element_type::ordinalType;
   using sc_t	 = typename R_type::element_type::scalarType;
@@ -106,7 +106,7 @@ template<typename vector_type, typename R_type>
   !::pressio::is_dense_vector_teuchos<vector_type>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >
-solve(const vector_type & rhs, R_type & Rmatrix, vector_type & y)
+solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
 {
   // todo: maybe here we should use directly backward substitution but it does
   // not seem to be available directly from teuchos
@@ -115,23 +115,21 @@ solve(const vector_type & rhs, R_type & Rmatrix, vector_type & y)
   using sc_t	  = typename R_type::element_type::scalarType;
   using tservec_t = Teuchos::SerialDenseVector<ord_t, sc_t>;
 
-  {
-    auto vecSize = ::pressio::ops::extent(rhs,0);
-    tservec_t rhsTV(Teuchos::View, const_cast<sc_t*>(rhs.data()), vecSize);
-    tservec_t yTV(Teuchos::View, y.data(), vecSize);
+  auto vecSize = ::pressio::ops::extent(rhs,0);
+  tservec_t rhsTV(Teuchos::View, const_cast<sc_t*>(rhs.data()), vecSize);
+  tservec_t yTV(Teuchos::View, y.data(), vecSize);
 
-    Teuchos::SerialQRDenseSolver<ord_t, sc_t> My_Solver;
-    My_Solver.setMatrix(Rmatrix);
-    My_Solver.setVectors(Teuchos::rcpFromRef(yTV), Teuchos::rcpFromRef(rhsTV));
-    int info = My_Solver.factor();
-    if (info != 0){
-      std::cout << "SerialDenseSolver::factor() returned : " << info << std::endl;
-    }
+  Teuchos::SerialQRDenseSolver<ord_t, sc_t> My_Solver;
+  My_Solver.setMatrix(Rmatrix);
+  My_Solver.setVectors(Teuchos::rcpFromRef(yTV), Teuchos::rcpFromRef(rhsTV));
+  int info = My_Solver.factor();
+  if (info != 0){
+    std::cout << "SerialDenseSolver::factor() returned : " << info << std::endl;
+  }
 
-    info = My_Solver.solve();
-    if (info != 0){
-      std::cout << "SerialDenseSolver::solve() returned : " << info << std::endl;
-    }
+  info = My_Solver.solve();
+  if (info != 0){
+    std::cout << "SerialDenseSolver::solve() returned : " << info << std::endl;
   }
 }
 #endif

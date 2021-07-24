@@ -76,12 +76,13 @@ public:
 
   void computeThinOutOfPlace(const matrix_type & A)
   {
-    auto rows = A.rows();
-    auto cols = A.cols();
+    const auto rows = A.rows();
+    const auto cols = A.cols();
     fct_ = std::make_shared<factorizer_t>(A);
 
-    if (!Qmat_ or (Qmat_->rows()!=rows and Qmat_->cols()!=cols ) ){
+    if (!Qmat_ or (Qmat_->rows()!=rows and Qmat_->cols()!=cols)){
       Qmat_ = std::make_shared<Q_type>(rows,cols);
+      Qmat_->setZero();
     }
 
     *Qmat_ = fct_->householderQ() * Q_type::Identity(rows,cols);

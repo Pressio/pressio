@@ -36,11 +36,14 @@ struct eigenDenseR9Fixture
     numGlobalEntries_ = pressio::qr::test::numRows_;
     A_.resize(numRows_, numVectors_);
     v_.resize(numRows_);
+    A_.setZero();
+    v_.setZero();
     fillVector();
     fillMatrix();
   }//setup
 
-  void fillMatrix(){
+  void fillMatrix()
+  {
     A_(0,0) = 3.2; A_(0,1) = 1.2;  A_(0,2) = 1.;
     A_(1,0) = 1.2; A_(1,2) = -2.2;
     A_(2,1) = 4.0; A_(2,3) = -2.;
@@ -110,12 +113,15 @@ struct epetraR9Fixture
     rowMap_ = std::make_shared<Epetra_Map>(numGlobalEntries_, 0, *comm_);
     A_ = std::make_shared<mymvec_t>(*rowMap_, numVectors_);
     v_ = std::make_shared<myvec_t>(*rowMap_);
+    A_->PutScalar(0);
+    v_->PutScalar(0);
 
     fillVector();
     fillMatrix();
   }
 
-  void fillMatrix(){
+  void fillMatrix()
+  {
     if(rank_==0){
       (*A_)[0][0] = 3.2; (*A_)[1][0] = 1.2;  (*A_)[2][0] = 1.;
       (*A_)[0][1] = 1.2; (*A_)[2][1] = -2.2;
@@ -191,6 +197,9 @@ struct tpetraR9Fixture
     contigMap_ = Teuchos::rcp(new map_t(numGlobalEntries_,0,comm_));
     A_ = std::make_shared<mymvec_t>(contigMap_, this_t::numVectors_);
     v_ = std::make_shared<myvec_t>(contigMap_);
+    A_->putScalar(0);
+    v_->putScalar(0);
+
     fillVector();
     fillMatrix();
   }
