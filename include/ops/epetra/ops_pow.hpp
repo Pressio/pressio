@@ -66,8 +66,8 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::traits<T1>::scalar_type;
   using ord_t = typename ::pressio::traits<T1>::local_ordinal_type;
 
-  assert(::pressio::ops::extent(x,0) == ::pressio::ops::extent(y,0));
-  assert(::pressio::ops::extent(x,1) == ::pressio::ops::extent(y,1));
+  assert(x.GlobalLength() == y.GlobalLength());
+  assert(x.MyLength() == y.MyLength());
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
   if (exponent < ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
@@ -93,11 +93,13 @@ abs_pow(T1 & y,
   using sc_t = typename ::pressio::traits<T1>::scalar_type;
   using ord_t = typename ::pressio::traits<T1>::local_ordinal_type;
 
-  assert(::pressio::ops::extent(x,0) == ::pressio::ops::extent(y,0));
-  assert(::pressio::ops::extent(x,1) == ::pressio::ops::extent(y,1));
+  assert(x.GlobalLength() == y.GlobalLength());
+  assert(x.MyLength() == y.MyLength());
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+
+  if (exponent > ::pressio::utils::constants<sc_t>::zero()){
     throw std::runtime_error("this overload is only for exponent < 0");
+  }
 
   constexpr auto one = ::pressio::utils::constants<sc_t>::one();
   const auto expo = -exponent;
