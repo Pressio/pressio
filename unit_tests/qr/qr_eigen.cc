@@ -11,7 +11,6 @@ TEST_F(eigenDenseR9Fixture,
   using qr_algo = qr::Householder;
   qr::QRSolver<matrix_type, qr_algo> qrObj;
   qrObj.computeThin( A_ );
-
   const auto & Q = qrObj.cRefQFactor();
   checkQFactor(Q);
 }
@@ -28,9 +27,8 @@ TEST_F(eigenDenseR9Fixture,
 
   vector_type rhs(pressio::qr::test::numVectors_);
   qrObj.applyQTranspose(v_, rhs);
-  std::cout << " RHS" << std::setprecision(14)
-  	    << rhs << std::endl;
-
+  std::cout << " RHS" << std::setprecision(14) << rhs << std::endl;
+  
   vector_type y(pressio::qr::test::numVectors_);
   qrObj.solve(rhs, y);
   std::cout << std::setprecision(14)
