@@ -20,7 +20,11 @@ struct MySystem
   MySystem(std::string & checkStr) 
     : checkStr_(checkStr), 
       R_(numEquations),
-      J_(numEquations, numVars){}
+      J_(numEquations, numVars)
+      {
+        R_.setZero();
+        J_.setZero();        
+      }
 
   ~MySystem()
   {
