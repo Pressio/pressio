@@ -1,23 +1,26 @@
-BasedOnStyle: LLVM
-AlignTrailingComments: false
-AllowShortFunctionsOnASingleLine: InlineOnly
-BraceWrapping:
-  AfterClass: true
-  AfterFunction: true
-  AfterStruct: true
-BreakBeforeBraces: Custom
-BreakBeforeTernaryOperators: false
-ColumnLimit: 0
-CompactNamespaces: true
+BasedOnStyle: google
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: false
+AlignOperands: true
+AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Mozilla
+ColumnLimit: 80
+CompactNamespaces: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 2
 ContinuationIndentWidth: 2
-DerivePointerAlignment: false
-FixNamespaceComments: false
-MaxEmptyLinesToKeep: 2
-PointerAlignment: Middle
-SortIncludes: false
-SortUsingDeclarations: false
-SpaceBeforeParens: Never
-SpacesBeforeTrailingComments: 0
-TabWidth: 8
-UseTab: Always
+ExperimentalAutoDetectBinPacking: false
+Language: Cpp
+NamespaceIndentation: None
+PenaltyReturnTypeOnItsOwnLine: 0
+SpaceAfterTemplateKeyword: true
+SpacesInAngles: false
+SpacesInParentheses: false
+Standard: Cpp11
