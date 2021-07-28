@@ -102,6 +102,7 @@ int main()
 
     using state_t = typename system_t::state_type;
     state_t x(numVars);
+    x.setZero();
 
     /*
     what we want to test here? 

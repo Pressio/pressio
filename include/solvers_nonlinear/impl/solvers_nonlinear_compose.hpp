@@ -73,13 +73,13 @@ namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 ////////////////////////////////////////////////////////////
 
 template<typename system_t, typename linear_solver_t>
-struct composeNewRaph
+struct composeNewtonRaphson
 {
   // Newton-Raphson requires r/j API
   static_assert
   (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value,
-   "To use NewtonRaphson, your system must meet the residual/jacobian API.");
+   "Newton-Raphson: a system with residual/jacobian API is required.");
 
   using scalar_t = typename system_t::scalar_type;
   using state_t  = typename system_t::state_type;
@@ -88,21 +88,18 @@ struct composeNewRaph
 
   static_assert
   (::pressio::nonlinearsolvers::constraints::implicit_state<state_t>::value,
-   "Newton-Raphson solver: invalid state type");
+   "Newton-Raphson: invalid state type");
 
   // check the solver_t passed is valid
   static_assert
   (::pressio::nonlinearsolvers::constraints::linear_solver_for_newton_raphson<
    mpl::remove_cvref_t<linear_solver_t>, state_t>::value,
-   "Invalid linear solver type passed to NewtonRaphson");
+   "Newton-Raphson: invalid linear solver");
 
   using operators_t = ResidualJacobianOperators<r_t, j_t, scalar_t>;
-  using corr_mixin = RJCorrector<operators_t, state_t, linear_solver_t>;
-  using type = Solver<NewtonRaphson, corr_mixin>;
+  using corrector_t = RJCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<NewtonRaphson, corrector_t>;
 };
-
-template<typename system_t, typename ... Args>
-using composeNewtonRaphson = composeNewRaph<system_t, Args...>;
 
 template<typename system_t, typename ... Args>
 using composeNewtonRaphson_t = typename composeNewtonRaphson<system_t, Args...>::type;
@@ -149,15 +146,12 @@ struct composeGNQR<
    "invalid state type");
 
   using operators_t = ResidualJacobianOperators<r_t, j_t, scalar_t>;
-  using corr_mixin  = QRCorrector<operators_t, state_t, solver_t>;
-  using type        = Solver<GaussNewtonQR, corr_mixin>;
+  using corrector_t  = QRCorrector<operators_t, state_t, solver_t>;
+  using type        = Solver<GaussNewtonQR, corrector_t>;
 };
 
 template<typename system_t, typename ... Args>
-using composeGaussNewtonQR = composeGNQR<void, system_t, Args...>;
-
-template<typename system_t, typename ... Args>
-using composeGaussNewtonQR_t = typename composeGaussNewtonQR<system_t, Args...>::type;
+using composeGaussNewtonQR_t = typename composeGNQR<void, system_t, Args...>::type;
 
 
 ////////////////////////////////////////////////////////////
@@ -215,8 +209,8 @@ struct compose<
     LMHessianGradientOperatorsHGApi<hess_t, grad_t, scalar_t>
     >::type;
 
-  using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
-  using type = Solver<tag, corr_mixin>;
+  using corrector_t = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<tag, corrector_t>;
 };
 
 
@@ -267,8 +261,8 @@ struct compose<
       >
     >::type;
 
-  using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
-  using type = Solver<tag, corr_mixin>;
+  using corrector_t = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<tag, corrector_t>;
 };
 
 // ---------------------------------------------------------------------------
@@ -372,8 +366,8 @@ struct compose<
     typename composeOperators<weighting_functor_t, tag>::template type<
     hess_t, grad_t, r_t, j_t, scalar_t>;
 
-  using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
-  using type = Solver<tag, corr_mixin>;
+  using corrector_t = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
+  using type = Solver<tag, corrector_t>;
 };
 
 
@@ -433,8 +427,8 @@ struct compose<
 //     typename composeOperators<
 //     weighting_functor_t, tag>::template type<hess_t, grad_t, r_t, j_t, ud_ops_t>;
 
-//   using corr_mixin = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
-//   using type = Solver<tag, corr_mixin>;
+//   using corrector_t = HessianGradientCorrector<operators_t, state_t, linear_solver_t>;
+//   using type = Solver<tag, corrector_t>;
 // };
 
 
