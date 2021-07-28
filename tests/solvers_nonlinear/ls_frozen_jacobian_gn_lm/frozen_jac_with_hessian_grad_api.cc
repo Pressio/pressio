@@ -43,7 +43,7 @@ struct MySystem
   {
     computeJacobian();
 
-    H =  J_.transpose() * (J_);
+    H =  J_.transpose() * J_;
   }
 
   void gradient(const state_type & , 
@@ -66,7 +66,8 @@ struct MySystem
       computeJacobian();
     }
 
-    g = J_.transpose() *  (R_);
+    auto g1 = J_.transpose() * R_;
+    g = g1;
   }
 
   void residualNorm(const state_type &, 

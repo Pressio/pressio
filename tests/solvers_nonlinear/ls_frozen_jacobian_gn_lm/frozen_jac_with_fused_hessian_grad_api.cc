@@ -57,10 +57,10 @@ struct MySystem
 
     if (updateJacobian){
       computeJacobian();
-      H =  J_.transpose() * (J_);
+      H =  J_.transpose() * J_;
     }
 
-    g = J_.transpose() *  (R_);
+    g = J_.transpose() * R_;
   }
 
   void residualNorm(const state_type &, 
