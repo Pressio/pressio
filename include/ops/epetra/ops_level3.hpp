@@ -186,27 +186,27 @@ product(::pressio::transpose modeA,
   }
 }
 
-// template <
-//   typename C_type, typename A_type, typename scalar_type
-//   >
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::is_multi_vector_epetra<A_type>::value and
-//   ::pressio::ops::constraints::sharedmem_host_subscriptable_rank2_container<C_type>::value,
-//   C_type
-//   >
-// product(::pressio::transpose modeA,
-// 	::pressio::nontranspose modeB,
-// 	const scalar_type alpha,
-// 	const A_type & A)
-// {
-//   static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-// 		"Types are not scalar compatible");
+template <
+  typename C_type, typename A_type, typename scalar_type
+  >
+::pressio::mpl::enable_if_t<
+  ::pressio::is_multi_vector_epetra<A_type>::value and
+  ::pressio::is_dense_matrix_eigen<C_type>::value,
+  C_type
+  >
+product(::pressio::transpose modeA,
+	::pressio::nontranspose modeB,
+	const scalar_type alpha,
+	const A_type & A)
+{
+  static_assert(are_scalar_compatible<A_type, C_type>::value,
+		"Types are not scalar compatible");
 
-//   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
-//   C_type C(A.numVectors(), A.numVectors());
-//   product(modeA, modeB, alpha, A, zero, C);
-//   return C;
-// }
+  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+  C_type C(A.NumVectors(), A.NumVectors());
+  product(modeA, modeB, alpha, A, zero, C);
+  return C;
+}
 
 }}//end namespace pressio::ops
 #endif  // OPS_EPETRA_OPS_LEVEL3_HPP_

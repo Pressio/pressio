@@ -70,6 +70,19 @@ struct asdiagmatrix_traits<
   using ordinal_type = typename traits<vec_remove_cv_t>::ordinal_type;
   using size_type    = typename traits<vec_remove_cv_t>::size_type;
 
+  // type of the native expression
+  using _native_expr_type =
+    decltype( std::declval<VectorType>().asDiagonal() );
+
+  using _const_native_expr_type =
+    decltype( std::declval<const VectorType>().asDiagonal() );
+
+  using native_expr_type = typename std::conditional<
+    std::is_const<VectorType>::value,
+    _const_native_expr_type,
+    _native_expr_type
+    >::type;
+
   using reference_type = typename std::conditional<
     std::is_const<VectorType>::value, scalar_type, scalar_type &
   >::type;

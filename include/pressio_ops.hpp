@@ -140,7 +140,10 @@ template<class ...> struct matching_extents;
 #include "ops/epetra/ops_multi_vector_update.hpp"
 #include "ops/epetra/ops_level2.hpp"
 #include "ops/epetra/ops_level3.hpp"
-#endif
+
+// teuchos
+#include "ops/teuchos/ops_level2.hpp"
+#endif //PRESSIO_ENABLE_TPL_TRILINOS
 
 #include "ops/ops_matching_extents.hpp"
 
@@ -158,14 +161,6 @@ template<class ...> struct matching_extents;
 // #include "ops/tpetra_block/ops_pow.hpp"
 // #include "ops/tpetra_block/ops_elementwise_multiply.hpp"
 // #endif
-
-// // teuchos
-// #include "ops/teuchos/ops_set_zero.hpp"
-// #include "ops/teuchos/ops_fill.hpp"
-// #include "ops/teuchos/ops_deep_copy.hpp"
-// #include "ops/teuchos/ops_norms_vector.hpp"
-// #include "ops/teuchos/ops_vector_update.hpp"
-// #include "ops/teuchos/ops_level2.hpp"
 
 // // pybind11
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11

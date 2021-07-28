@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_containers.hpp
+// ops_level2.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,70 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_EXPRESSIONS_HPP_
-#define PRESSIO_EXPRESSIONS_HPP_
+#ifndef OPS_TEUCHOS_OPS_LEVEL2_HPP_
+#define OPS_TEUCHOS_OPS_LEVEL2_HPP_
 
-#include "pressio_mpl.hpp"
-#include "pressio_type_traits.hpp"
+namespace pressio{ namespace ops{
 
-#include "expressions/fwd.hpp"
-#include "expressions/public_functions.hpp"
-#include "expressions/is_expression.hpp"
+/*
+ * y = beta * y + alpha*op(A)*x
+*/
 
-#endif
+//-------------------------------
+// specialize for op(A) = A
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_dense_matrix_teuchos<A_type>::value and
+  ::pressio::is_vector_eigen<x_type>::value and
+  ::pressio::is_vector_eigen<y_type>::value
+  >
+product(::pressio::nontranspose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  assert( ::pressio::ops::extent(y,0) == A.numRows() );
+  assert( ::pressio::ops::extent(x,0) == A.numCols() );
+
+  using ord_t = typename A_type::ordinalType;
+  for (ord_t i=0;i<A.numRows(); ++i){
+    y(i) = {};
+    for (ord_t j=0; j<A.numCols(); ++j){
+      y(i) += A(i,j)*x(j);
+    }
+  }
+}
+
+//-------------------------------
+// specialize for op(A) = A^T
+//-------------------------------
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
+::pressio::mpl::enable_if_t<
+  is_dense_matrix_teuchos<A_type>::value and
+  ::pressio::is_vector_eigen<x_type>::value and
+  ::pressio::is_vector_eigen<y_type>::value
+  >
+product(::pressio::transpose mode,
+	const scalar_type alpha,
+	const A_type & A,
+	const x_type & x,
+	const scalar_type beta,
+	y_type & y)
+{
+  assert( ::pressio::ops::extent(y,0) == A.numCols() );
+  assert( ::pressio::ops::extent(x,0) == A.numRows() );
+
+  using ord_t = typename A_type::ordinalType;
+  for (ord_t j=0; j<A.numCols(); ++j){
+    y(j) = {};
+    for (ord_t i=0;i<A.numRows(); ++i){
+      y(j) += A(i,j)*x(i);
+    }
+  }
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_TEUCHOS_OPS_LEVEL2_HPP_

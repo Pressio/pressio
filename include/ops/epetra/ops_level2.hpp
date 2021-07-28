@@ -53,7 +53,6 @@ namespace pressio{ namespace ops{
 
 /*
  * y = beta * y + alpha*op(A)*x
- *
 */
 
 // begin namespace pressio::ops::impl
@@ -82,9 +81,9 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 // -------------------------------
 // y = beta * y + alpha*A*x
 //
-// x is Teuchos Vector
-// A = tpetra::MultiVector
-// y = tpetra vector
+// y : epetra vector
+// A : epetra MultiVector
+// x : Teuchos Vector
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
@@ -110,9 +109,9 @@ product(::pressio::nontranspose mode,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = Teuchos vector
-// A = tpetra::MultiVector
-// y = Eigen vector
+// y : Teuchos vector
+// A : epetra MultiVector
+// x : epetra Vector
 // -------------------------------
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
@@ -145,9 +144,9 @@ product(::pressio::transpose mode,
 // -------------------------------
 // y = beta * y + alpha*A*x
 //
-// x is Eigen Vector
-// A = tpetra::MultiVector
-// y = tpetra vector
+// y : epetra vector
+// A : epetra MultiVector
+// x : eigen Vector
 // -------------------------------
 template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
@@ -173,9 +172,9 @@ product(::pressio::nontranspose mode,
 // -------------------------------
 // y = beta * y + alpha*A^T*x
 //
-// x = eigen vector
-// A = tpetra::MultiVector
-// y = Eigen vector
+// y : eigen vector
+// A : epetra MultiVector
+// x : epetra Vector
 // -------------------------------
 template <typename A_type, typename x_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<

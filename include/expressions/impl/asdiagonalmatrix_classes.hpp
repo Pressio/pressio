@@ -78,10 +78,12 @@ struct AsDiagonalMatrixExpr<
   using size_t = typename mytraits::size_type;
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
+  using native_expr_t = typename mytraits::native_expr_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
   size_t extent_ = {};
+  native_expr_t nativeExprObj_;
 
 public:
   AsDiagonalMatrixExpr() = delete;
@@ -93,7 +95,8 @@ public:
 
   AsDiagonalMatrixExpr(VectorType & objIn)
     : vecObj_(objIn),
-      extent_(objIn.size())
+      extent_(objIn.size()),
+      nativeExprObj_(vecObj_.get().asDiagonal())      
   {}
 
 public:
@@ -102,12 +105,13 @@ public:
     return extent_;
   }
 
-  // const VectorType * pressioObj() const{
-  //   return &vecObj_.get();
-  // }
-  // VectorType * pressioObj(){
-  //   return &vecObj_.get();
-  // }
+  native_expr_t const & native() const{
+    return nativeExprObj_;
+  }
+
+  native_expr_t & native(){
+    return nativeExprObj_;
+  }
 
   ref_t operator()(size_t i, size_t j)
   {

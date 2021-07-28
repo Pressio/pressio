@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// pressio_containers.hpp
+// containers_is_expression.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,14 +46,45 @@
 //@HEADER
 */
 
-#ifndef PRESSIO_EXPRESSIONS_HPP_
-#define PRESSIO_EXPRESSIONS_HPP_
+#ifndef CONTAINERS_EXPRESSIONS_FWD_HPP_
+#define CONTAINERS_EXPRESSIONS_FWD_HPP_
 
-#include "pressio_mpl.hpp"
-#include "pressio_type_traits.hpp"
+namespace pressio{ 
 
-#include "expressions/fwd.hpp"
-#include "expressions/public_functions.hpp"
-#include "expressions/is_expression.hpp"
+namespace expressions{ namespace impl{
+template <class T, class enable = void> struct SpanExpr;
+template <class T, class enable = void> struct span_traits;
+template <class T, class enable = void> struct SubspanExpr;
+template <class T, class enable = void> struct subspan_traits;
+template <class T, class enable = void> struct AsDiagonalMatrixExpr;
+template <class T, class enable = void> struct asdiagmatrix_traits;
+template <class T, class enable = void> struct DiagExpr;
+template <class T, class enable = void> struct diag_traits;
+}}//end namespace expressions::impl::impl
 
-#endif
+template<class T>
+struct traits<::pressio::expressions::impl::SpanExpr<T>> 
+  : ::pressio::expressions::impl::span_traits<
+      ::pressio::expressions::impl::SpanExpr<T>
+      >{};
+
+template<class T>
+struct traits<::pressio::expressions::impl::SubspanExpr<T>> 
+  : ::pressio::expressions::impl::subspan_traits<
+      ::pressio::expressions::impl::SubspanExpr<T>
+      >{};
+
+template<class T>
+struct traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>> 
+  : ::pressio::expressions::impl::asdiagmatrix_traits<
+     ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
+     >{};
+
+template<class T>
+struct traits<::pressio::expressions::impl::DiagExpr<T>> 
+  : ::pressio::expressions::impl::diag_traits<
+      ::pressio::expressions::impl::DiagExpr<T>
+      >{};
+
+}//end namespace pressio
+#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

@@ -151,34 +151,34 @@ product(::pressio::transpose modeA,
   return C;
 }
 
-// //-------------------------------------------
-// // C = beta * C + alpha*A*B
-// // specialize for when A = asDiagonalMatrix expression
-// //-------------------------------------------
-// template <typename A_type, typename B_type, typename ScalarType, typename C_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::is_dense_matrix_eigen<B_type>::value and
-//   ::pressio::is_dense_matrix_eigen<C_type>::value and 
-//   ::pressio::is_expression_asdiagonalmatrix<A_type>::value and 
-//   ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen
-//   >
-// product(::pressio::nontranspose modeA,
-// 	::pressio::nontranspose modeB,
-// 	const ScalarType alpha,
-// 	const A_type & A,
-// 	const B_type & B,
-// 	const ScalarType beta,
-// 	C_type & C)
-// {
-//   static_assert
-//     (::pressio::are_scalar_compatible<A_type, B_type, C_type>::value,
-//      "Types are not scalar compatible");
+//-------------------------------------------
+// C = beta * C + alpha*A*B
+// specialize for when A = asDiagonalMatrix expression
+//-------------------------------------------
+template <typename A_type, typename B_type, typename ScalarType, typename C_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_dense_matrix_eigen<B_type>::value and
+  ::pressio::is_dense_matrix_eigen<C_type>::value and 
+  ::pressio::is_expression_asdiagonalmatrix<A_type>::value and 
+  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen
+  >
+product(::pressio::nontranspose modeA,
+	::pressio::nontranspose modeB,
+	const ScalarType alpha,
+	const A_type & A,
+	const B_type & B,
+	const ScalarType beta,
+	C_type & C)
+{
+  static_assert
+    (::pressio::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
-//   assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
-//   assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
-//   assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
-//   C = beta*C + alpha * (AE.native()->asDiagonal() * B);
-// }
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
+  C = beta*C + alpha * A.native() * B;
+}
 
 }}//end namespace pressio::ops
 #endif  // OPS_EIGEN_OPS_LEVEL3_HPP_
