@@ -62,4 +62,4 @@
 #include "./concrete/containers_matrix_sparse_sharedmem_eigen.hpp"
 #endif
 
-#endif// CONTAINERS_SPARSE_MATRIX_PRESSIO_CONTAINERS_SPARSE_MATRIX_INCLUDE_HPP_
+#endif  // CONTAINERS_SPARSE_MATRIX_PRESSIO_CONTAINERS_SPARSE_MATRIX_INCLUDE_HPP_

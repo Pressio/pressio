@@ -49,7 +49,7 @@
 #ifndef ROM_LSPG_DECORATORS_ROM_MASKED_HPP_
 #define ROM_LSPG_DECORATORS_ROM_MASKED_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace decorator {
+namespace pressio{ namespace rom{ namespace lspg{ namespace decorator{
 
 template <typename masker_t, typename maskable_policy>
 class Masked : public maskable_policy
@@ -66,15 +66,14 @@ public:
   Masked & operator=(Masked &&) = default;
   ~Masked() = default;
 
-  template <typename fom_system_t, typename... Args>
+  template <typename fom_system_t, typename ... Args>
   Masked(const masker_t & maskerObj,
 	 const fom_system_t & fomObj,
-	 Args &&... args)
+	 Args && ... args)
     : maskable_policy(std::forward<Args>(args)...),
       unmaskedField_(maskable_policy::create(fomObj)),
       masker_(maskerObj)
-  {
-  }
+  {}
 
 public:
   template <typename fom_system_t>
@@ -91,7 +90,8 @@ public:
     typename state_t,
     typename prev_states_t,
     typename fom_system_t,
-    typename time_type>
+    typename time_type
+    >
   void compute(const state_t & state,
 	       const prev_states_t & prevStates,
 	       const fom_system_t & systemObj,
@@ -100,7 +100,8 @@ public:
 	       const ::pressio::ode::types::step_t & step,
 	       data_type & maskedResult) const
   {
-    maskable_policy::template compute<stepper_tag>(state, prevStates, systemObj, time, dt, step, unmaskedField_);
+    maskable_policy::template compute<stepper_tag>
+      (state, prevStates, systemObj, time, dt, step, unmaskedField_);
 
     masker_.get().applyMask(*unmaskedField_.data(), time, *maskedResult.data());
   }
@@ -110,15 +111,17 @@ public:
   //-------------------------------
   template <
     typename state_t,
-    typename fom_system_t>
+    typename fom_system_t
+    >
   void compute(const state_t & state,
-	       data_type & maskedResult,
-	       const fom_system_t & systemObj) const
+  	       data_type & maskedResult,
+  	       const fom_system_t & systemObj) const
   {
     maskable_policy::compute(state, unmaskedField_, systemObj);
     masker_.get().applyMask(*unmaskedField_.data(), *maskedResult.data());
   }
+
 };
 
 }}}}
-#endif// ROM_LSPG_DECORATORS_ROM_MASKED_HPP_
+#endif  // ROM_LSPG_DECORATORS_ROM_MASKED_HPP_

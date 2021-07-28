@@ -97,4 +97,4 @@
 #include "./fom_states_management/rom_reconstructor_fom_state.hpp"
 #include "./fom_states_management/impl/rom_fom_state_reconstructor_helper.hpp"
 
-#endif// ROM_PRESSIO_ROM_COMMON_HPP_
+#endif  // ROM_PRESSIO_ROM_COMMON_HPP_

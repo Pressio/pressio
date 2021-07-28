@@ -50,9 +50,9 @@
 #define SVD_SVD_SOLVER_GENERIC_BASE_HPP_
 
 
-namespace pressio { namespace svd {
+namespace pressio{ namespace svd{
 
-template <typename derived_type>
+template<typename derived_type>
 class SolverBase
   : private utils::details::CrtpBase<SolverBase<derived_type>>
 {
@@ -65,25 +65,22 @@ private:
   using sval_t = typename svd::details::svd_traits<derived_type>::sval_t;
 
 public:
-  template <svdType svd_enum_value>
-  ::pressio::mpl::enable_if_t<svd_enum_value == svdType::truncated>
-  compute(matrix_t & mat, int t, sc_t tol = 1e-12)
-  {
+
+  template<svdType svd_enum_value>
+	::pressio::mpl::enable_if_t< svd_enum_value==svdType::truncated >
+  compute(matrix_t & mat, int t, sc_t tol = 1e-12){
     this->underlying().template computeImpl<svd_enum_value>(mat, t, tol);
   }
 
-  const leftSvec_t & cRefLeftSingularVectors() const
-  {
+  const leftSvec_t & cRefLeftSingularVectors() const {
     return this->underlying().cRefLeftSingularVectorsImpl();
   };
 
-  const rightSvec_t & cRefRightSingularVectors() const
-  {
+  const rightSvec_t & cRefRightSingularVectors() const {
     return this->underlying().cRefRightSingularVectorsImpl();
   };
 
-  const sval_t & singularValues() const
-  {
+  const sval_t & singularValues() const{
     return this->underlying().singularValuesImpl();
   };
 
@@ -93,17 +90,13 @@ private:
 
 private:
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template <typename DummyType>
-  struct dummy
-  {
-    using type = DummyType;
-  };
+  template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_type>::type;
 
   friend utils::details::CrtpBase<SolverBase<derived_type>>;
 
 };//end class
 
-}// end namespace svd
+} // end namespace svd
 }//end namespace pressio
-#endif// SVD_SVD_SOLVER_GENERIC_BASE_HPP_
+#endif  // SVD_SVD_SOLVER_GENERIC_BASE_HPP_

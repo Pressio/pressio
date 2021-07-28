@@ -49,23 +49,13 @@
 #ifndef ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_
 #define ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-struct Default
-{
-};
-struct Preconditioned
-{
-};
-struct Masked
-{
-};
-struct HyperReduced
-{
-};
-struct PreconditionedHyperReduced
-{
-};
+struct Default{};
+struct Preconditioned{};
+struct Masked{};
+struct HyperReduced{};
+struct PreconditionedHyperReduced{};
 
 }}}}
-#endif// ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_
+#endif  // ROM_LSPG_IMPL_ROM_PROBLEM_TAGS_HPP_

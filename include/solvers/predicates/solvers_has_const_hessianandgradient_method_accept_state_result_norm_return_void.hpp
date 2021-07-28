@@ -49,7 +49,7 @@
 #ifndef SOLVERS_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
 #define SOLVERS_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
 
-namespace pressio { namespace solvers { namespace predicates {
+namespace pressio{ namespace solvers{ namespace predicates {
 
 template <
   typename T,
@@ -57,33 +57,37 @@ template <
   typename hess_t,
   typename grad_t,
   typename norm_t,
-  typename = void>
+  typename = void
+  >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <
   typename T,
   typename state_t,
   typename hess_t,
   typename grad_t,
-  typename norm_t>
+  typename norm_t
+  >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
   T, state_t, hess_t, grad_t, norm_t,
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	std::declval<T const>().hessianAndGradient(
-	  std::declval<state_t const &>(),
-	  std::declval<hess_t &>(),
-	  std::declval<grad_t &>(),
-	  /* does not matter here what we pass, just to test */
-	  ::pressio::Norm::Undefined,
-	  std::declval<norm_t &>(),
-	  std::declval<bool>()))>::value>> : std::true_type
-{
-};
+         std::declval<T const>().hessianAndGradient
+          (
+            std::declval<state_t const &>(),
+            std::declval<hess_t &>(),
+            std::declval<grad_t &>(),
+            /* does not matter here what we pass, just to test */
+            ::pressio::Norm::Undefined,
+            std::declval<norm_t &>(),
+	    std::declval<bool>()
+          )
+         )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::solvers::predicates
-#endif// SOLVERS_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_
+}}} // namespace pressio::solvers::predicates
+#endif  // SOLVERS_PREDICATES_SOLVERS_HAS_CONST_HESSIANANDGRADIENT_METHOD_ACCEPT_STATE_RESULT_NORM_RETURN_VOID_HPP_

@@ -69,4 +69,4 @@
 // } // namespace details
 // } // namespace spdlog
 
-#endif// UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_BACKTRACER_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_BACKTRACER_INL_H_

@@ -49,12 +49,10 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_admissible_as_dynamic_multi_vector_eigen : std::false_type
-{
-};
+struct is_admissible_as_dynamic_multi_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_admissible_as_dynamic_multi_vector_eigen<
@@ -62,15 +60,13 @@ struct is_admissible_as_dynamic_multi_vector_eigen<
   ::pressio::mpl::enable_if_t<
     is_dense_dynamic_matrix_eigen<T>::value and
     // multivectors must be col-major matrices
-    int(T::IsRowMajor) == 0>> : std::true_type
-{
-};
+    int(T::IsRowMajor) == 0
+    >
+  > : std::true_type{};
 
 
 template <typename T, typename enable = void>
-struct is_admissible_as_static_multi_vector_eigen : std::false_type
-{
-};
+struct is_admissible_as_static_multi_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_admissible_as_static_multi_vector_eigen<
@@ -78,24 +74,23 @@ struct is_admissible_as_static_multi_vector_eigen<
   ::pressio::mpl::enable_if_t<
     is_dense_static_matrix_eigen<T>::value and
     // multivectors must be col-major matrices
-    int(T::IsRowMajor) == 0>> : std::true_type
-{
-};
+    int(T::IsRowMajor) == 0
+    >
+  > : std::true_type{};
 
 
 template <typename T, typename enable = void>
-struct is_admissible_as_multi_vector_eigen : std::false_type
-{
-};
+struct is_admissible_as_multi_vector_eigen : std::false_type {};
 
 template <typename T>
 struct is_admissible_as_multi_vector_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_admissible_as_dynamic_multi_vector_eigen<T>::value or
-    is_admissible_as_static_multi_vector_eigen<T>::value>>
-{
-};
+    is_admissible_as_static_multi_vector_eigen<T>::value
+    >
+  >
+{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_EIGEN_MULTI_VECTOR_HPP_

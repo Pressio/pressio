@@ -49,30 +49,18 @@
 #ifndef SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_
 #define SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_
 
-namespace pressio { namespace solvers { namespace nonlinear {
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-struct NewtonRaphson
-{
-};
-struct GaussNewton
-{
-};
-struct IrwGaussNewton
-{
-};
-struct GaussNewtonQR
-{
-};
-struct LevenbergMarquardt
-{
-};
+struct NewtonRaphson{};
+struct GaussNewton{};
+struct IrwGaussNewton{};
+struct GaussNewtonQR{};
+struct LevenbergMarquardt{};
 using LM = LevenbergMarquardt;
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-struct GaussNewtonPy
-{
-};
+struct GaussNewtonPy{};
 #endif
 
 }}}
-#endif// SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_

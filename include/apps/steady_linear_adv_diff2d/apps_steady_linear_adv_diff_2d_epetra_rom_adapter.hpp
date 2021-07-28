@@ -51,65 +51,61 @@
 
 #include "apps_steady_linear_adv_diff_2d_epetra.hpp"
 
-namespace pressio { namespace apps {
+namespace pressio{ namespace apps{
 
 class SteadyLinAdvDiff2dEpetraRomAdapter
 {
 public:
   /* these types exposed because need to be detected */
-  using scalar_type = double;
-  using state_type = Epetra_Vector;
-  using residual_type = Epetra_Vector;
+  using scalar_type	= double;
+  using state_type	= Epetra_Vector;
+  using residual_type  = Epetra_Vector;
   using dense_matrix_type = Epetra_MultiVector;
 
 private:
   using velocity_type = Epetra_Vector;
 
 public:
-  template <typename... Args>
-  SteadyLinAdvDiff2dEpetraRomAdapter(Args &&... args)
+  template <typename ... Args>
+  SteadyLinAdvDiff2dEpetraRomAdapter(Args&& ... args)
     : appObj_{std::forward<Args>(args)...}
-  {
-  }
+  {}
 
 public:
-  Epetra_Map const & getDataMap() const
-  {
+  Epetra_Map const & getDataMap()const {
     return appObj_.getDataMap();
   };
 
   void printStateToFile(std::string fileName,
-			state_type & T)
-  {
+			state_type & T){
     auto x = appObj_.getX();
     auto y = appObj_.getY();
     auto dofPerProc = appObj_.getNumLocalDofs();
 
     std::ofstream file;
-    file.open(fileName);
-    for(auto i = 0; i < dofPerProc; i++) {
-      file << std::fixed << std::setprecision(14) << (*x)[i] << " " << (*y)[i] << " " << T[i];
+    file.open( fileName );
+    for(auto i=0; i < dofPerProc; i++){
+      file << std::fixed << std::setprecision(14) <<
+	(*x)[i] << " " << (*y)[i] << " " << T[i];
       file << std::endl;
     }
     file.close();
   }
 
   std::shared_ptr<state_type>
-  getState() const
-  {
+  getState() const {
     return appObj_.getState();
   }
 
-  residual_type createResidual() const
-  {
-    residual_type R(appObj_.getDataMap());
+  residual_type createResidual() const{
+    residual_type R( appObj_.getDataMap() );
     return R;
   };
 
   // computes: A = Jac B where B is a multivector
   dense_matrix_type createApplyJacobianResult(const dense_matrix_type & B) const
   {
-    dense_matrix_type C(appObj_.getDataMap(), B.NumVectors());
+    dense_matrix_type C( appObj_.getDataMap(), B.NumVectors() );
     return C;
   };
 
@@ -132,15 +128,16 @@ public:
   {
     appObj_.assembleMatrix();
     auto A = appObj_.getMatrix();
-    assert(A->NumGlobalCols() == B.GlobalLength());
-    assert(C.GlobalLength() == A->NumGlobalRows());
-    assert(C.NumVectors() == B.NumVectors());
+    assert( A->NumGlobalCols() == B.GlobalLength() );
+    assert( C.GlobalLength() == A->NumGlobalRows() );
+    assert( C.NumVectors() == B.NumVectors() );
     A->Multiply(false, B, C);
   }
 
 private:
   SteadyLinAdvDiff2dEpetra appObj_;
+
 };
 
-}}//namespace pressio::apps
-#endif// APPS_STEADY_LINEAR_ADV_DIFF2D_APPS_STEADY_LINEAR_ADV_DIFF_2D_EPETRA_ROM_ADAPTER_HPP_
+}} //namespace pressio::apps
+#endif  // APPS_STEADY_LINEAR_ADV_DIFF2D_APPS_STEADY_LINEAR_ADV_DIFF_2D_EPETRA_ROM_ADAPTER_HPP_

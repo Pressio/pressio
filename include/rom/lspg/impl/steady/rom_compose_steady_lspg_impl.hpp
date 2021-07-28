@@ -69,18 +69,22 @@
 #include "./rom_lspg_steady_hyper_reduced_problem.hpp"
 #include "./rom_lspg_steady_preconditioned_hyper_reduced_problem.hpp"
 
-namespace pressio { namespace rom { namespace lspg { namespace impl {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template <
+template<
   class problem_tag,
   class enable,
   class fom_system_type,
   class decoder_type,
-  class... Args>
+  class ...Args
+  >
 struct composeSteady
 {
   //if we are here, something is wrong, find out what
-  static_assert(::pressio::rom::why_not_steady_system_with_user_provided_apply_jacobian<fom_system_type, typename decoder_type::jacobian_type>::value, "");
+  static_assert
+  (::pressio::rom::why_not_steady_system_with_user_provided_apply_jacobian
+   <fom_system_type, typename decoder_type::jacobian_type
+   >::value, "");
 
   using type = void;
 };
@@ -90,15 +94,17 @@ struct composeSteady
 //------------------------
 
 // default
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
-  typename lspg_state_type>
+  typename lspg_state_type
+  >
 struct composeSteady<
   ::pressio::rom::lspg::impl::Default,
   mpl::enable_if_t<
     ::pressio::rom::constraints::steady_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value>,
+      fom_system_type, typename decoder_type::jacobian_type>::value
+    >,
   fom_system_type, decoder_type, lspg_state_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::DefaultProblemSteady<
@@ -106,16 +112,18 @@ struct composeSteady<
 };
 
 // preconditioned default
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
   typename lspg_state_type,
-  typename precond_type>
+  typename precond_type
+  >
 struct composeSteady<
   ::pressio::rom::lspg::impl::Preconditioned,
   mpl::enable_if_t<
     ::pressio::rom::constraints::steady_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value>,
+      fom_system_type, typename decoder_type::jacobian_type>::value
+    >,
   fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::PreconditionedProblemSteady<
@@ -123,16 +131,18 @@ struct composeSteady<
 };
 
 // masked
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
   typename lspg_state_type,
-  typename masker_type>
+  typename masker_type
+  >
 struct composeSteady<
   ::pressio::rom::lspg::impl::Masked,
   mpl::enable_if_t<
     ::pressio::rom::constraints::steady_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value>,
+      fom_system_type, typename decoder_type::jacobian_type>::value
+    >,
   fom_system_type, decoder_type, lspg_state_type, masker_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::MaskedProblemSteady<
@@ -140,32 +150,37 @@ struct composeSteady<
 };
 
 // hyper-reduced
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
-  typename lspg_state_type>
+  typename lspg_state_type
+  >
 struct composeSteady<
   ::pressio::rom::lspg::impl::HyperReduced,
   mpl::enable_if_t<
     ::pressio::rom::constraints::steady_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value>,
-  fom_system_type, decoder_type, lspg_state_type>
+      fom_system_type, typename decoder_type::jacobian_type>::value
+    >,
+  fom_system_type, decoder_type, lspg_state_type
+  >
 {
   using type = ::pressio::rom::lspg::impl::steady::HyperReducedProblemSteady<
     fom_system_type, lspg_state_type, decoder_type>;
 };
 
 // preconditioned hyper-reduced
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
   typename lspg_state_type,
-  typename precond_type>
+  typename precond_type
+  >
 struct composeSteady<
   ::pressio::rom::lspg::impl::PreconditionedHyperReduced,
   mpl::enable_if_t<
     ::pressio::rom::constraints::steady_system_with_user_provided_apply_jacobian<
-      fom_system_type, typename decoder_type::jacobian_type>::value>,
+      fom_system_type, typename decoder_type::jacobian_type>::value
+    >,
   fom_system_type, decoder_type, lspg_state_type, precond_type>
 {
   using type = ::pressio::rom::lspg::impl::steady::PreconditionedHyperReducedProblemSteady<
@@ -173,4 +188,4 @@ struct composeSteady<
 };
 
 }}}}
-#endif// ROM_LSPG_IMPL_STEADY_ROM_COMPOSE_STEADY_LSPG_IMPL_HPP_
+#endif  // ROM_LSPG_IMPL_STEADY_ROM_COMPOSE_STEADY_LSPG_IMPL_HPP_

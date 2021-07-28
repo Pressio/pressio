@@ -49,35 +49,39 @@
 #ifndef OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
 #define OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template <typename T1, typename T2, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value>
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  >
 update(T1 & v, scalar_t a,
        const T2 & v1, scalar_t b)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1));
+  assert( impl::_matching_extents(v,v1) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = a * v(i) + b * v1(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = a*v(i) + b*v1(i);
   }
 }
 
-template <typename T1, typename T2, typename scalar_t>
+template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value>
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  >
 update(T1 & v, const T2 & v1, const scalar_t b)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1));
+  assert( impl::_matching_extents(v,v1) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = b * v1(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = b*v1(i);
   }
 }
 
@@ -85,18 +89,21 @@ update(T1 & v, const T2 & v1, const scalar_t b)
 //  overloads for computing:
 //  V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value>
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  >
 update(T & v, scalar_t a,
        const T1 & v1, scalar_t b,
        const T2 & v2, scalar_t c)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1, v2));
+  assert( impl::_matching_extents(v,v1,v2) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = a * v(i) + b * v1(i) + c * v2(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = a*v(i) + b*v1(i) + c*v2(i);
   }
 }
 
@@ -104,18 +111,21 @@ update(T & v, scalar_t a,
 //  overloads for computing:
 //  V = b * V1 + c * V2
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2, typename scalar_t>
+template<typename T, typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value>
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  >
 update(T & v,
-       const T1 & v1, const scalar_t & b,
-       const T2 & v2, const scalar_t & c)
+       const T1 & v1, const scalar_t &b,
+       const T2 & v2, const scalar_t &c)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1, v2));
+  assert( impl::_matching_extents(v,v1,v2) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = b * v1(i) + c * v2(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = b*v1(i) + c*v2(i);
   }
 }
 
@@ -123,19 +133,23 @@ update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2, typename T3, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value and ::pressio::ops::constraints::rank1_container_pybind<T3>::value>
-update(T & v, const scalar_t & a,
-       const T1 & v1, const scalar_t & b,
-       const T2 & v2, const scalar_t & c,
-       const T3 & v3, const scalar_t & d)
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T3>::value
+  >
+update(T & v, const scalar_t &a,
+       const T1 & v1, const scalar_t &b,
+       const T2 & v2, const scalar_t &c,
+       const T3 & v3, const scalar_t &d)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1, v2, v3));
+  assert( impl::_matching_extents(v,v1,v2,v3) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = a * v(i) + b * v1(i) + c * v2(i) + d * v3(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i);
   }
 }
 
@@ -143,22 +157,27 @@ update(T & v, const scalar_t & a,
 //  overloads for computing:
 //  V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template <typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
+template<typename T, typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value and ::pressio::ops::constraints::rank1_container_pybind<T3>::value and ::pressio::ops::constraints::rank1_container_pybind<T4>::value>
-update(T & v, const scalar_t & a,
-       const T1 & v1, const scalar_t & b,
-       const T2 & v2, const scalar_t & c,
-       const T3 & v3, const scalar_t & d,
-       const T4 & v4, const scalar_t & e)
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T3>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T4>::value
+  >
+update(T & v, const scalar_t &a,
+       const T1 & v1, const scalar_t &b,
+       const T2 & v2, const scalar_t &c,
+       const T3 & v3, const scalar_t &d,
+       const T4 & v4, const scalar_t &e)
 {
   using size_type = typename T1::traits::size_t;
-  assert(impl::_matching_extents(v, v1, v2, v3, v4));
+  assert( impl::_matching_extents(v,v1,v2,v3,v4) );
 
-  for(size_type i = 0; i < v.extent(0); ++i) {
-    v(i) = a * v(i) + b * v1(i) + c * v2(i) + d * v3(i) + e * v4(i);
+  for (size_type i=0; i<v.extent(0); ++i){
+    v(i) = a*v(i) + b*v1(i) + c*v2(i) + d*v3(i) + e*v4(i);
   }
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_
+#endif  // OPS_PYBIND11_OPS_RANK1_UPDATE_HPP_

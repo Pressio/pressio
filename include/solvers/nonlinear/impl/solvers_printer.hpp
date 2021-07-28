@@ -49,7 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
 
-namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
 template <typename step_t, typename sc_t>
 void _printMetrics(bool printGradient,
@@ -63,21 +63,30 @@ void _printMetrics(bool printGradient,
 		   const sc_t & relGNorm)
 {
 
-  if(printGradient) {
-    if(stripLabels) {
-      PRESSIOLOG_INFO("{:2d} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e}",
-		      iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
-    } else {
-      PRESSIOLOG_INFO("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
-		      iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+  if (printGradient)
+  {
+    if (stripLabels){
+      PRESSIOLOG_INFO
+	("{:2d} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e} {:.6e}",
+	 iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
     }
-  } else {
-    if(stripLabels) {
-      PRESSIOLOG_INFO("{:2d} {:.6e} {:.6e} {:.6e} {:.6e}",
-		      iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
-    } else {
-      PRESSIOLOG_INFO("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
-		      iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+    else{
+      PRESSIOLOG_INFO
+	("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||g||(a) = {:.6e} ||g||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+	 iStep, absResNorm, relResNorm, absGNorm, relGNorm, absCorrectionNorm, relCorrectionNorm);
+    }
+  }
+  else
+  {
+    if (stripLabels){
+      PRESSIOLOG_INFO
+	("{:2d} {:.6e} {:.6e} {:.6e} {:.6e}",
+	 iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
+    }
+    else{
+      PRESSIOLOG_INFO
+	("nonlinIter = {:2d}: ||R||(a) = {:.6e} ||R||(r) = {:.6e} ||delta||(a) = {:.6e} ||delta||(r) = {:.6e}",
+	 iStep, absResNorm, relResNorm, absCorrectionNorm, relCorrectionNorm);
     }
   }
 }
@@ -113,4 +122,4 @@ void printMetrics(step_t iStep,
 
 }}}}
 
-#endif// SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_SOLVERS_PRINTER_HPP_

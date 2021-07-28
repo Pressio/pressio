@@ -49,23 +49,25 @@
 #ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
 #define ODE_IMPLICIT_CONSTRAINTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
 
-namespace pressio { namespace ode { namespace constraints {
+namespace pressio{ namespace ode{ namespace constraints {
 
 template <typename T, typename stepper_t, typename state_t, typename enable = void>
-struct legitimate_solver_for_implicit_stepper : std::false_type
-{
-};
+struct legitimate_solver_for_implicit_stepper : std::false_type{};
 
 template <typename T, typename stepper_t, typename state_t>
 struct legitimate_solver_for_implicit_stepper<
   T, stepper_t, state_t,
   mpl::void_t<
-    decltype(
-      std::declval<T>().solve(
-	std::declval<stepper_t &>(),
-	std::declval<state_t &>()))>> : std::true_type
-{
-};
+    decltype
+    (
+     std::declval<T>().solve
+     (
+      std::declval<stepper_t &>(),
+      std::declval<state_t &>()
+      )
+     )
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::constraints
-#endif// ODE_IMPLICIT_CONSTRAINTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_LEGITIMATE_SOLVER_FOR_IMPLICIT_STEPPER_HPP_

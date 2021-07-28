@@ -49,22 +49,26 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
 #define OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------
 // computing elementwise:  y = beta * y + alpha * x * z
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value>
-elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
-		     const T & x,
-		     const T1 & z,
-		     typename ::pressio::containers::details::traits<T>::scalar_t beta,
-		     T2 & y)
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  >
+elementwise_multiply
+(typename ::pressio::containers::details::traits<T>::scalar_t alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::containers::details::traits<T>::scalar_t beta,
+ T2 & y)
 {
-  assert(x.extent(0) == z.extent(0));
-  assert(z.extent(0) == y.extent(0));
+  assert(x.extent(0)==z.extent(0));
+  assert(z.extent(0)==y.extent(0));
   auto x_tpetraview = const_cast<T &>(x).data()->getVectorView();
   auto z_tpetraview = const_cast<T1 &>(z).data()->getVectorView();
   auto y_tpetraview = y.data()->getVectorView();
@@ -72,4 +76,4 @@ elementwise_multiply(typename ::pressio::containers::details::traits<T>::scalar_
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_ELEMENTWISE_MULTIPLY_HPP_

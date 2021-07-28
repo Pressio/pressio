@@ -53,7 +53,7 @@
 #include "ode_integrators_printing_helpers.hpp"
 #include "ode_dummy_collector.hpp"
 
-namespace pressio { namespace ode { namespace impl {
+namespace pressio{ namespace ode{ namespace impl{
 
 struct IntegratorNStepsWithConstDt
 {
@@ -63,14 +63,15 @@ struct IntegratorNStepsWithConstDt
     typename time_type,
     typename state_type,
     typename collector_type,
-    typename... Args>
+    typename ... Args
+    >
   static void execute(stepper_type & stepper,
 		      const ::pressio::ode::types::step_t & numSteps,
-		      const time_type & start_time,
-		      const time_type & dt,
-		      state_type & odeStateInOut,
-		      collector_type & collector,
-		      Args &&... args)
+		      const time_type			  & start_time,
+		      const time_type			  & dt,
+		      state_type			  & odeStateInOut,
+		      collector_type			  & collector,
+		      Args				  && ... args)
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -90,7 +91,8 @@ struct IntegratorNStepsWithConstDt
 
     step_t step = 1;
     PRESSIOLOG_INFO("advanceNStepsWithConstDt");
-    for(; step <= numSteps; ++step) {
+    for( ; step <= numSteps ; ++step)
+    {
       printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
@@ -124,14 +126,15 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     typename dt_setter,
     typename state_type,
     typename collector_type,
-    typename... Args>
+    typename ... Args
+    >
   static void execute(stepper_type & stepper,
 		      const ::pressio::ode::types::step_t & numSteps,
-		      const time_type & start_time,
-		      state_type & odeStateInOut,
-		      dt_setter && dtManager,
-		      collector_type & collector,
-		      Args &&... args)
+		      const time_type			  & start_time,
+		      state_type			  & odeStateInOut,
+		      dt_setter				  && dtManager,
+		      collector_type			  & collector,
+		      Args				  && ... args)
   {
     using step_t = ::pressio::ode::types::step_t;
     using collector_dispatch =
@@ -149,9 +152,10 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 				time, odeStateInOut);
 
     time_type dt = {};
-    step_t step = 1;
+    step_t step	   = 1;
     PRESSIOLOG_INFO("advanceNStepsWithDtCallBack");
-    for(; step <= numSteps; ++step) {
+    for( ; step <= numSteps ; ++step)
+    {
       // call the dt manager to set the dt to use at the beginning
       dtManager(step, time, dt);
       printStepTime(step, time, dt);
@@ -175,4 +179,4 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 };
 
 }}}//end namespace pressio::ode::impl
-#endif// ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
+#endif  // ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_

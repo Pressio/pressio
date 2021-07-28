@@ -51,7 +51,7 @@
 
 #include "KokkosBlas3_gemm.hpp"
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 /*
  * for tpetra:
@@ -65,7 +65,10 @@ namespace pressio { namespace ops {
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -76,13 +79,16 @@ product(::pressio::transpose modeA,
 {
   /* make sure we don't pass const objects to be modified.
      In kokkos it is legal to modify const views, not for pressio wrappers. */
-  static_assert(!std::is_const<C_type>::value,
-		"ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
-  static_assert(::pressio::containers::predicates::have_matching_execution_space<
-		  A_type, B_type, C_type>::value,
-		"operands need to have same execution space");
+  static_assert
+    (!std::is_const<C_type>::value,
+     "ops:product: cannot modify a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::have_matching_execution_space<
+     A_type, B_type, C_type>::value,
+     "operands need to have same execution space" );
 
   const char ctA = 'T';
   const char ctB = 'N';
@@ -94,7 +100,9 @@ product(::pressio::transpose modeA,
 ------------------------------------------*/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -107,8 +115,10 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value,
-  C_type>
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_kokkos_with_native_data_access<C_type>::value,
+  C_type
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -121,4 +131,4 @@ product(::pressio::transpose modeA,
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_LEVEL3_HPP_
+#endif  // OPS_KOKKOS_OPS_LEVEL3_HPP_

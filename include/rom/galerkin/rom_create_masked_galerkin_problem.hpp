@@ -49,9 +49,9 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_MASKED_GALERKIN_PROBLEM_HPP_
 #define ROM_GALERKIN_ROM_CREATE_MASKED_GALERKIN_PROBLEM_HPP_
 
-namespace pressio { namespace rom { namespace galerkin {
+namespace pressio{ namespace rom{ namespace galerkin{
 
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
@@ -59,25 +59,28 @@ template <
   typename fom_native_state,
   typename masker_type,
   typename projector_type,
-  typename... Args>
+  typename ...Args
+  >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
   impl::composeMaskedVelocityProblemContTime_t<
-    stepper_tag, fom_system_type, decoder_type, rom_state_type, masker_type, projector_type, Args...>>
+    stepper_tag, fom_system_type, decoder_type, rom_state_type, masker_type, projector_type, Args...>
+  >
 createMaskedVelocityProblem(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
 			    const rom_state_type & stateIn,
 			    const fom_native_state & fomRef,
 			    const masker_type & masker,
 			    const projector_type & projector,
-			    Args &&... args)
+			    Args && ... args)
 {
   using return_t = impl::composeMaskedVelocityProblemContTime_t<
     stepper_tag, fom_system_type, decoder_type, rom_state_type,
     masker_type, projector_type, Args...>;
 
-  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-		"The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef,
@@ -87,7 +90,7 @@ compatible with the FOM state type detected from adapter class");
 // Note that here the user does NOT specify the galerkin jacobian type
 // so pressio has some rules behind the scenes to select the jacobian type
 // based on the galerkin state
-template <
+template<
   std::size_t order,
   std::size_t totNumStates,
   typename fom_system_type,
@@ -95,14 +98,17 @@ template <
   typename rom_state_type,
   typename fom_native_state,
   typename masker_type,
-  typename projector_type>
+  typename projector_type
+  >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeMaskedResidualProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>>
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >
+  >
 createMaskedResidualProblem(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
 			    const rom_state_type & stateIn,
@@ -113,16 +119,18 @@ createMaskedResidualProblem(const fom_system_type & fomSysObj,
   using return_t =
     impl::composeMaskedResidualProblemDiscTime_t<
       ::pressio::ode::implicitmethods::Arbitrary,
-      fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
-      ::pressio::ode::types::StepperOrder<order>,
-      ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>;
+    fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
+    ::pressio::ode::types::StepperOrder<order>,
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >;
 
-  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-		"The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert
+  (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+   "The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, stateIn, fomRef, masker, projector);
 }
 
 }}}//end namespace pressio::rom::galerkin
-#endif// ROM_GALERKIN_ROM_CREATE_MASKED_GALERKIN_PROBLEM_HPP_
+#endif  // ROM_GALERKIN_ROM_CREATE_MASKED_GALERKIN_PROBLEM_HPP_

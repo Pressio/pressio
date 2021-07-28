@@ -51,16 +51,16 @@
 
 #include "svd_ConfigDefs.hpp"
 
-namespace pressio {
+namespace pressio{ 
 namespace svd {
-
+    
 template <typename matrix_type,
-	  template <typename...> class lsv_type,
-	  template <typename...> class rsv_type,
+	  template<typename...> class lsv_type,
+	  template<typename...> class rsv_type,
 	  typename sval_type,
 	  typename enable = void>
-class Solver;
-
-}// end namespace svd
+class Solver;  
+  
+} // end namespace svd
 }//end namespace pressio
-#endif// SVD_SVD_FWD_HPP_
+#endif  // SVD_SVD_FWD_HPP_

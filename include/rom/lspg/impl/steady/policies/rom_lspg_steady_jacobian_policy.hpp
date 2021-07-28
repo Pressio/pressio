@@ -49,12 +49,13 @@
 #ifndef ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 #define ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace steady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <
+template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
-  typename decoder_type>
+  typename decoder_type
+  >
 class JacobianPolicy
 {
 public:
@@ -71,7 +72,7 @@ public:
 
   JacobianPolicy(fom_states_manager_t & fomStatesMngr,
 		 decoder_type & decoder)
-    : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr) {}
+    : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
 public:
   template <typename fom_system_t>
@@ -119,4 +120,4 @@ protected:
 };
 
 }}}}}
-#endif// ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_
+#endif  // ROM_LSPG_IMPL_STEADY_POLICIES_ROM_LSPG_STEADY_JACOBIAN_POLICY_HPP_

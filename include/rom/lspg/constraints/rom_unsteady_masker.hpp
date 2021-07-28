@@ -49,23 +49,23 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_MASKER_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_MASKER_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace constraints {
+namespace pressio{ namespace rom{ namespace lspg{namespace constraints {
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename operand1_t,
   typename operand2_t,
-  typename enable = void>
-struct unsteady_masker : std::false_type
-{
-};
+  typename enable = void
+  >
+struct unsteady_masker : std::false_type{};
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename operand1_t,
-  typename operand2_t>
+  typename operand2_t
+  >
 struct unsteady_masker<
   T, scalar_t, operand1_t, operand2_t,
   mpl::enable_if_t<
@@ -77,12 +77,12 @@ struct unsteady_masker<
       T, operand2_t, operand2_t>::value and
     // applyMask for operand1_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
-      T, operand1_t, scalar_t, operand1_t>::value and
+      T, operand1_t, scalar_t, operand1_t >::value and
     // applyMask for operand2_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
-      T, operand2_t, scalar_t, operand2_t>::value>> : std::true_type
-{
-};
+      T, operand2_t, scalar_t, operand2_t >::value
+    >
+  > : std::true_type{};
 
 
 // template <typename T>
@@ -114,5 +114,5 @@ struct unsteady_masker<
 //   static constexpr bool value = true;
 // };
 
-}}}}
-#endif// ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_MASKER_HPP_
+}}}} 
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_UNSTEADY_MASKER_HPP_

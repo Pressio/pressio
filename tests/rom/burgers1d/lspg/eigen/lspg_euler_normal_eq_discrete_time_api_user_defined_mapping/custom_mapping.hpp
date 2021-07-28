@@ -5,13 +5,13 @@
 #include "utils_eigen.hpp"
 
 template <
-  typename native_dense_mat_type,// this is type of native dense matrix
-  typename fom_state_t// this is a pressio::containers::Vector<>
+  typename native_dense_mat_type, // this is type of native dense matrix
+  typename fom_state_t  // this is a pressio::containers::Vector<>
   >
 struct MyCustomDecoder
 {
   // this is mandatory because pressio detects it
-  using jacobian_type = pressio::containers::MultiVector<native_dense_mat_type>;
+  using jacobian_type  = pressio::containers::MultiVector<native_dense_mat_type>;
   using fom_state_type = fom_state_t;
 
 private:
@@ -24,8 +24,7 @@ public:
   MyCustomDecoder(const int romSize, const int numCell)
     : romSize_{romSize},
       jac_{pressio::rom::test::eigen::readBasis("basis.txt", romSize, numCell)}
-  {
-  }
+  {}
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState, fom_state_type & result) const
@@ -41,8 +40,7 @@ public:
     resultNativeObj = jacNativeObj * romStateNativeObj;
   }
 
-  const jacobian_type & jacobianCRef() const
-  {
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 

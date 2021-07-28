@@ -49,13 +49,11 @@
 #ifndef ODE_CONSTRAINTS_ODE_GUESSER_HPP_
 #define ODE_CONSTRAINTS_ODE_GUESSER_HPP_
 
-namespace pressio { namespace ode { namespace constraints {
+namespace pressio{ namespace ode{ namespace constraints {
 
 template <typename T, typename step_t, typename time_t, typename state_t, typename enable = void>
 struct is_legitimate_guesser
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <typename T, typename step_t, typename time_t, typename state_t>
 struct is_legitimate_guesser<
@@ -63,12 +61,15 @@ struct is_legitimate_guesser<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	std::declval<T const>().operator()(
-	  std::declval<step_t const &>(),
-	  std::declval<time_t const &>(),
-	  std::declval<state_t &>()))>::value>> : std::true_type
-{
-};
+	       std::declval<T const>().operator()(
+						  std::declval<step_t const &>(),
+						  std::declval<time_t const &>(),
+						  std::declval<state_t &>()
+						  )
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::constraints
-#endif// ODE_CONSTRAINTS_ODE_GUESSER_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_CONSTRAINTS_ODE_GUESSER_HPP_

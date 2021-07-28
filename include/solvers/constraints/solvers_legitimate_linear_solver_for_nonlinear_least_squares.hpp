@@ -49,17 +49,19 @@
 #ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
 #define SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
 
-namespace pressio { namespace solvers { namespace constraints {
+namespace pressio{ namespace solvers{ namespace constraints {
 
 template <
   typename T,
   typename state_type,
   typename rhs_type = state_type,
-  typename enable = void>
+  typename enable = void
+  >
 struct linear_solver_for_nonlinear_least_squares : std::false_type
 {
-  static_assert(!std::is_const<T>::value,
-		"The linear solver type cannot be cv-qualified: maybe you are using a const object?");
+  static_assert
+  (!std::is_const<T>::value,
+   "The linear solver type cannot be cv-qualified: maybe you are using a const object?");
 };
 
 template <typename T, typename state_type>
@@ -71,14 +73,18 @@ struct linear_solver_for_nonlinear_least_squares<
     !std::is_void<typename T::matrix_type>::value and
     // has a solve method
     std::is_void<
-      decltype(
-	std::declval<T>().solve(
-	  std::declval<typename T::matrix_type const &>(),// A
-	  std::declval<state_type const &>(),// b
-	  std::declval<state_type &>()// x
-	  ))>::value>> : std::true_type
-{
-};
+      decltype
+      (
+       std::declval<T>().solve
+       (
+        std::declval<typename T::matrix_type const &>(), // A
+        std::declval<state_type const &>(), // b
+        std::declval<state_type &>() // x
+        )
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::solvers::constraints
-#endif// SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_
+}}} // namespace pressio::solvers::constraints
+#endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_LINEAR_SOLVER_FOR_NONLINEAR_LEAST_SQUARES_HPP_

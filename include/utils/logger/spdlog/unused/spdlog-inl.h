@@ -123,5 +123,5 @@ namespace spdlog {
 //   details::registry::instance().set_default_logger(std::move(default_logger));
 // }
 
-}// namespace spdlog
-#endif// UTILS_LOGGER_SPDLOG_UNUSED_SPDLOG_INL_H_
+} // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_UNUSED_SPDLOG_INL_H_

@@ -49,58 +49,58 @@
 #ifndef OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_
 #define OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_
 
-namespace pressio { namespace ops { namespace constraints {
+namespace pressio{ namespace ops{ namespace constraints{
 
-template <class T, class = void>
+template<class T, class = void>
 struct sharedmem_host_subscriptable_rank2_container
-  : std::false_type
-{
-};
+: std::false_type{};
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T>
+template<typename T>
 struct sharedmem_host_subscriptable_rank2_container<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<T>::value or
-    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value>> : std::true_type
-{
-};
+    ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<T>::value
+   >> : std::true_type{};
 
-template <typename T>
+template<typename T>
 struct sharedmem_host_subscriptable_rank2_container<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::subspan_expression<T>::value and
+    ::pressio::containers::predicates::subspan_expression<T>::value
+    and
     T::traits::wrapped_package_identifier ==
-      ::pressio::containers::details::WrappedPackageIdentifier::Eigen>> : std::true_type
-{
-};
+    ::pressio::containers::details::WrappedPackageIdentifier::Eigen
+   >
+  > : std::true_type{};
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T>
+template<typename T>
 struct sharedmem_host_subscriptable_rank2_container<
   T,
   ::pressio::mpl::enable_if_t<
     (::pressio::containers::predicates::is_dense_matrix_wrapper_kokkos<T>::value or
-     ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value) and
-    std::is_same<typename T::traits::memory_space, Kokkos::HostSpace>::value>> : std::true_type
-{
-};
+     ::pressio::containers::predicates::is_multi_vector_wrapper_kokkos<T>::value)
+    and
+    std::is_same<typename T::traits::memory_space, Kokkos::HostSpace>::value
+   >
+  > : std::true_type{};
 
 
-template <typename T>
+template<typename T>
 struct sharedmem_host_subscriptable_rank2_container<
   T,
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::subspan_expression<T>::value and
     T::traits::wrapped_package_identifier ==
-      ::pressio::containers::details::WrappedPackageIdentifier::Kokkos and
-    std::is_same<typename T::traits::memory_space, Kokkos::HostSpace>::value>> : std::true_type
-{
-};
+    ::pressio::containers::details::WrappedPackageIdentifier::Kokkos
+    and
+    std::is_same<typename T::traits::memory_space, Kokkos::HostSpace>::value
+   >
+  > : std::true_type{};
 #endif
 
 }}}
-#endif// OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_
+#endif  // OPS_CONSTRAINTS_OPS_SHAREDMEM_HOST_SUBSCRIPTABLE_RANK2_CONTAINER_HPP_

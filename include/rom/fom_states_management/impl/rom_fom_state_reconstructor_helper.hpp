@@ -49,14 +49,15 @@
 #ifndef ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
 #define ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
 
-namespace pressio { namespace rom { namespace impl {
+namespace pressio{ namespace rom{ namespace impl{
 
 template <typename ops_t, typename enable = void>
 struct FomStateReconHelper;
 
 template <typename ops_t>
 struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t<std::is_void<ops_t>::value>>
+  ops_t, mpl::enable_if_t< std::is_void<ops_t>::value >
+  >
 {
   template <typename scalar_t, typename fom_state_t, typename decoder_t>
   using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t>;
@@ -64,11 +65,12 @@ struct FomStateReconHelper<
 
 template <typename ops_t>
 struct FomStateReconHelper<
-  ops_t, mpl::enable_if_t<mpl::not_void<ops_t>::value>>
+  ops_t, mpl::enable_if_t< mpl::not_void<ops_t>::value >
+  >
 {
   template <typename scalar_t, typename fom_state_t, typename decoder_t>
   using type = FomStateReconstructor<scalar_t, fom_state_t, decoder_t, ops_t>;
 };
 
 }}}//end  namespace pressio::rom::impl
-#endif// ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_
+#endif  // ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_FOM_STATE_RECONSTRUCTOR_HELPER_HPP_

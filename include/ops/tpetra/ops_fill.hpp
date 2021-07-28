@@ -49,18 +49,19 @@
 #ifndef OPS_TPETRA_OPS_FILL_HPP_
 #define OPS_TPETRA_OPS_FILL_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<T>::value>
+  ::pressio::containers::predicates::is_multi_vector_wrapper_tpetra<T>::value
+  >
 fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  v.data()->putScalar(value);
+  v.data()->putScalar( value );
   // // putScalar doesn't sync afterwards, so we have to sync manually.
   // v.data()->need_sync();
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TPETRA_OPS_FILL_HPP_
+#endif  // OPS_TPETRA_OPS_FILL_HPP_

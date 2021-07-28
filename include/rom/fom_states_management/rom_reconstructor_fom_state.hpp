@@ -51,13 +51,14 @@
 
 #include "./impl/rom_reconstructor_fom_state_specializer.hpp"
 
-namespace pressio { namespace rom {
+namespace pressio{ namespace rom{
 
 template <
   typename scalar_type,
   typename fom_state_type,
   typename decoder_type,
-  typename... Args>
+  typename ... Args
+  >
 using FomStateReconstructor =
   typename impl::FomStateReconstructorSpecializer<scalar_type,
 						  fom_state_type,
@@ -65,4 +66,4 @@ using FomStateReconstructor =
 						  Args...>::type;
 
 }}//end namespace pressio::rom
-#endif// ROM_FOM_STATES_MANAGEMENT_ROM_RECONSTRUCTOR_FOM_STATE_HPP_
+#endif  // ROM_FOM_STATES_MANAGEMENT_ROM_RECONSTRUCTOR_FOM_STATE_HPP_

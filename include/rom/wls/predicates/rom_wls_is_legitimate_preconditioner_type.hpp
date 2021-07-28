@@ -49,24 +49,20 @@
 #ifndef ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
 #define ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
 
-namespace pressio { namespace rom { namespace wls { namespace predicates {
+namespace pressio{ namespace rom{ namespace wls{ namespace predicates{
 
 template <typename T>
-struct is_legitimate_preconditioner_type : std::false_type
-{
-};
+struct is_legitimate_preconditioner_type : std::false_type{};
 
 template <>
 struct is_legitimate_preconditioner_type<
-  ::pressio::rom::wls::preconditioners::NoPreconditioner> : std::true_type
-{
-};
+  ::pressio::rom::wls::preconditioners::NoPreconditioner
+  > : std::true_type{};
 
 template <>
 struct is_legitimate_preconditioner_type<
-  ::pressio::rom::wls::preconditioners::AppPreconditioner> : std::true_type
-{
-};
+  ::pressio::rom::wls::preconditioners::AppPreconditioner
+  > : std::true_type{};
 
-}}}}// end namespace pressio::rom::wls::predicates
-#endif// ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_
+}}}} // end namespace pressio::rom::wls::predicates
+#endif  // ROM_WLS_PREDICATES_ROM_WLS_IS_LEGITIMATE_PRECONDITIONER_TYPE_HPP_

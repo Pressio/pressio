@@ -49,13 +49,15 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value>>
+    ::pressio::containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<wrapped_type>::value
+    >
+  >
 {
 
 public:
@@ -68,17 +70,14 @@ public:
 public:
   MultiVector() = default;
 
-  explicit MultiVector(const wrap_t & other)
-    : data_(other) {}
+  explicit MultiVector(const wrap_t & other) : data_(other){}
 
-  MultiVector(ord_t length, ord_t numVectors)
-    : data_(length, numVectors)
+  MultiVector(ord_t length, ord_t numVectors) : data_(length, numVectors)
   {
     data_.setConstant(static_cast<sc_t>(0));
   }
 
-  MultiVector(wrap_t && other)
-    : data_(std::move(other)) {}
+  MultiVector(wrap_t && other) : data_(std::move(other)){}
 
   // copy cnstr
   MultiVector(MultiVector const & other) = default;
@@ -96,42 +95,37 @@ public:
 public:
   sc_t & operator()(ord_t irow, ord_t iVec)
   {
-    assert(irow < data_.rows());
-    assert(iVec < this->numVectors());
+    assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
   sc_t const & operator()(ord_t irow, ord_t iVec) const
   {
-    assert(irow < data_.rows());
-    assert(iVec < this->numVectors());
+    assert(irow < data_.rows() );
+    assert(iVec < this->numVectors() );
     return data_(irow, iVec);
   }
 
-  ord_t numVectors() const
-  {
+  ord_t numVectors() const{
     return data_.cols();
   }
 
-  wrap_t * data()
-  {
+  wrap_t * data(){
     return &data_;
   };
 
-  wrap_t const * data() const
-  {
+  wrap_t const * data() const{
     return &data_;
   };
 
-  wrap_t dataCp() const
-  {
+  wrap_t dataCp() const{
     return data_;
   };
 
-  ord_t extent(ord_t i) const
-  {
-    assert(i == 0 or i == 1);
-    return (i == 0) ? data_.rows() : data_.cols();
+  ord_t extent(ord_t i) const {
+    assert(i==0 or i==1);
+    return (i==0) ? data_.rows() : data_.cols();
   }
 
 private:
@@ -140,4 +134,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_EIGEN_DYNAMIC_HPP_

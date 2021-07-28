@@ -50,29 +50,29 @@
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_DISCRETE_TIME_API_HPP_
 
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename... Args>
+template <typename ...Args>
 class DefaultProblemDiscreteTimeApi
 {
 public:
   using this_t = DefaultProblemDiscreteTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t = typename traits::fom_system_t;
-  using scalar_t = typename traits::scalar_t;
-  using fom_native_state_t = typename traits::fom_native_state_t;
-  using fom_native_residual_t = typename traits::fom_native_residual_t;
-  using fom_state_t = typename traits::fom_state_t;
-  using decoder_t = typename traits::decoder_t;
-  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
-  using fom_states_manager_t = typename traits::fom_states_manager_t;
-  using ud_ops_t = typename traits::ud_ops_t;
-  using lspg_state_t = typename traits::lspg_state_t;
-  using lspg_native_state_t = typename traits::lspg_native_state_t;
-  using residual_policy_t = typename traits::residual_policy_t;
-  using jacobian_policy_t = typename traits::jacobian_policy_t;
-  using stepper_t = typename traits::stepper_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using scalar_t		= typename traits::scalar_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_native_residual_t	= typename traits::fom_native_residual_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using ud_ops_t		= typename traits::ud_ops_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
+  using stepper_t		= typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
@@ -84,15 +84,13 @@ private:
   mem_t members_;
 
 public:
-  stepper_t & stepperRef() { return members_.stepperObj_; }
+  stepper_t & stepperRef(){ return members_.stepperObj_; }
 
-  const fom_native_state_t & currentFomStateCRef() const
-  {
+  const fom_native_state_t & currentFomStateCRef() const{
     return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const
-  {
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return members_.fomStateReconstructor_;
   }
 
@@ -105,29 +103,29 @@ public:
   ~DefaultProblemDiscreteTimeApi() = default;
 
   /* ud_ops_t == void */
-  template <
+  template<
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int> = 0>
+    mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+    >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				decoder_t & decoder,
 				const lspg_state_t & romStateIn,
 				const fom_native_state_t & fomNominalStateNative)
     : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative)
-  {
-  }
+  {}
 
   /* ud_ops_t != void */
-  template <
+  template<
     typename _ud_ops_t = ud_ops_t,
-    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
+    mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
+  >
   DefaultProblemDiscreteTimeApi(const fom_system_t & fomSystemObj,
 				decoder_t & decoder,
 				const lspg_state_t & romStateIn,
 				const fom_native_state_t & fomNominalStateNative,
 				const _ud_ops_t & udOps)
     : members_(romStateIn, fomSystemObj, decoder, fomNominalStateNative, udOps)
-  {
-  }
+  {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
@@ -135,16 +133,17 @@ public:
     typename _ud_ops_t = ud_ops_t,
     ::pressio::mpl::enable_if_t<
       _binding_sentinel and std::is_void<_ud_ops_t>::value,
-      int> = 0>
+      int > = 0
+    >
   DefaultProblemDiscreteTimeApi(pybind11::object fomObjPython,
 				decoder_t & decoder,
 				const lspg_native_state_t & romStateIn,
 				const fom_native_state_t fomNominalStateIn)
     : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateIn)
-  {
-  }
+  {}
 #endif
+
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif// ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_DISCRETE_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_ROM_LSPG_UNSTEADY_DEFAULT_PROBLEM_DISCRETE_TIME_API_HPP_

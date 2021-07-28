@@ -49,63 +49,64 @@
 #ifndef OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
 #define OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
 
-namespace pressio {
-namespace ops {
+namespace pressio{ namespace ops{
 
-namespace impl {
-template <class T1, class T2>
+namespace impl{
+template<class T1, class T2>
 bool _matching_extents(const T1 & a, const T2 & b)
 {
   using size_type = typename T1::traits::size_t;
-  for(size_type i = 0; i < T1::traits::rank; ++i) {
-    if(a.extent(i) != b.extent(i))
-      return false;
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i) != b.extent(i)) return false;
   }
   return true;
 }
 
-template <class T1, class T2, class T3>
-bool _matching_extents(const T1 & a, const T2 & b, const T3 & c)
+template<class T1, class T2, class T3>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c)
 {
   using size_type = typename T1::traits::size_t;
-  for(size_type i = 0; i < T1::traits::rank; ++i) {
-    if(a.extent(i) != b.extent(i) or
-       a.extent(i) != c.extent(i)) {
-      return false;
-    }
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=b.extent(i) or
+       a.extent(i)!=c.extent(i))
+      {
+	return false;
+      }
   }
   return true;
 }
 
-template <class T1, class T2, class T3, class T4>
-bool _matching_extents(const T1 & a, const T2 & b, const T3 & c, const T4 & d)
+template<class T1, class T2, class T3, class T4>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d)
 {
   using size_type = typename T1::traits::size_t;
-  for(size_type i = 0; i < T1::traits::rank; ++i) {
-    if(a.extent(i) != b.extent(i) or
-       a.extent(i) != c.extent(i) or
-       a.extent(i) != d.extent(i)) {
-      return false;
-    }
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=b.extent(i) or
+       a.extent(i)!=c.extent(i) or
+       a.extent(i)!=d.extent(i))
+      {
+	return false;
+      }
   }
   return true;
 }
 
-template <class T1, class T2, class T3, class T4, class T5>
-bool _matching_extents(const T1 & a, const T2 & b, const T3 & c, const T4 & d, const T5 & e)
+template<class T1, class T2, class T3, class T4, class T5>
+bool _matching_extents(const T1 & a, const T2 & b, const T3& c, const T4& d, const T5 & e)
 {
   using size_type = typename T1::traits::size_t;
-  for(size_type i = 0; i < T1::traits::rank; ++i) {
-    if(a.extent(i) != b.extent(i) or
-       a.extent(i) != c.extent(i) or
-       a.extent(i) != d.extent(i) or
-       a.extent(i) != e.extent(i)) {
-      return false;
-    }
+  for (size_type i=0; i<T1::traits::rank; ++i){
+    if(a.extent(i)!=b.extent(i) or
+       a.extent(i)!=c.extent(i) or
+       a.extent(i)!=d.extent(i) or
+       a.extent(i)!=e.extent(i))
+      {
+	return false;
+      }
   }
   return true;
 }
 }//end impl namespace
 
 }}//end namespace pressio::ops
-#endif// OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_
+#endif  // OPS_OPS_MATCHING_EXTENTS_IMPL_HPP_

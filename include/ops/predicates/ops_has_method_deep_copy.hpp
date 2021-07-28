@@ -49,15 +49,13 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_
 
-namespace pressio { namespace ops { namespace predicates {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
   typename T, typename from_t, typename dest_t,
   typename enable = void>
 struct has_method_deep_copy
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <typename T, typename from_t, typename dest_t>
 struct has_method_deep_copy<
@@ -65,11 +63,15 @@ struct has_method_deep_copy<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	std::declval<T const &>().deep_copy(
-	  std::declval<dest_t &>(),
-	  std::declval<from_t const &>()))>::value>> : std::true_type
-{
-};
+         std::declval< T const &>().deep_copy
+         (
+			    std::declval<dest_t &>(),
+			    std::declval<from_t const &>()
+			    )
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}//pressio::ops::predicates
-#endif// OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_
+}}} //pressio::ops::predicates
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_DEEP_COPY_HPP_

@@ -49,32 +49,37 @@
 #ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
 #define ODE_IMPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
 
-namespace pressio { namespace ode { namespace constraints {
+namespace pressio{ namespace ode{ namespace constraints {
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename state_t,
   typename residual_t,
   typename jacobian_t,
-  typename enable = void>
-struct user_defined_ops_for_implicit_ode : std::false_type
-{
-};
+  typename enable = void
+  >
+struct user_defined_ops_for_implicit_ode : std::false_type{};
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename state_t,
   typename residual_t,
-  typename jacobian_t>
+  typename jacobian_t
+  >
 struct user_defined_ops_for_implicit_ode<
   T, scalar_t, state_t, residual_t, jacobian_t,
   mpl::enable_if_t<
     ::pressio::ode::constraints::user_defined_ops_for_implicit_euler<
-      T, scalar_t, state_t, residual_t, jacobian_t>::value and ::pressio::ode::constraints::user_defined_ops_for_implicit_bdf2<T, scalar_t, state_t, residual_t, jacobian_t>::value>> : std::true_type
-{
-};
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value
+    and
+    ::pressio::ode::constraints::user_defined_ops_for_implicit_bdf2<
+      T, scalar_t, state_t, residual_t, jacobian_t
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::constraints
-#endif// ODE_IMPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_USER_DEFINED_OPS_FOR_IMPLICIT_ODE_HPP_

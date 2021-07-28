@@ -45,19 +45,19 @@ using default_factory = synchronous_factory;
 // set_default_logger() *should not* be used concurrently with the default API.
 // e.g do not call set_default_logger() from one thread while calling spdlog::info() from another.
 
-template <class T = void>
+template<class T = void>
 std::shared_ptr<spdlog::logger> default_logger()
 {
   return details::registry::instance().default_logger();
 }
 
-template <class T = void>
-spdlog::logger * default_logger_raw()
+template<class T = void>
+spdlog::logger *default_logger_raw()
 {
   return details::registry::instance().get_default_raw();
 }
 
-template <class T>
+template<class T>
 void set_default_logger(std::shared_ptr<T> default_logger)
 {
   details::registry::instance().set_default_logger(std::move(default_logger));
@@ -88,7 +88,7 @@ void set_default_logger(std::shared_ptr<T> default_logger)
 // }
 
 // Set global formatter. Each sink in each logger will get a clone of this object
-template <class T>
+template<class T>
 void set_formatter(std::unique_ptr<T> formatter)
 {
   details::registry::instance().set_formatter(std::move(formatter));
@@ -96,7 +96,7 @@ void set_formatter(std::unique_ptr<T> formatter)
 
 // Set global format string.
 // example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
-template <class T = void>
+template<class T= void>
 void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time_type::local)
 {
   set_formatter(std::unique_ptr<spdlog::formatter>(new pattern_formatter(std::move(pattern), time_type)));
@@ -145,7 +145,7 @@ void set_pattern(std::string pattern, pattern_time_type time_type = pattern_time
 // }
 
 // Set global flush level
-template <class T = void>
+template<class T = void>
 void flush_on(level::level_enum log_level)
 {
   details::registry::instance().flush_on(log_level);
@@ -153,7 +153,7 @@ void flush_on(level::level_enum log_level)
 
 // Start/Restart a periodic flusher thread
 // Warning: Use only if all your loggers are thread safe!
-template <class T = void>
+template<class T = void>
 void flush_every(std::chrono::seconds interval)
 {
   details::registry::instance().flush_every(interval);
@@ -196,7 +196,7 @@ void flush_every(std::chrono::seconds interval)
 // }
 
 // stop any running threads started by spdlog and clean registry loggers
-template <class T = void>
+template<class T = void>
 void shutdown()
 {
   details::registry::instance().shutdown();
@@ -221,91 +221,91 @@ void shutdown()
 //     default_logger_raw()->log(source_loc{}, lvl, fmt, std::forward<Args>(args)...);
 // }
 
-template <typename FormatString, typename... Args>
-void trace(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void trace(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->trace(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->trace(fmt, std::forward<Args>(args)...);
 }
 
-template <typename FormatString, typename... Args>
-void debug(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void debug(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->debug(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->debug(fmt, std::forward<Args>(args)...);
 }
 
-template <typename FormatString, typename... Args>
-void info(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void info(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->info(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->info(fmt, std::forward<Args>(args)...);
 }
 
-template <typename FormatString, typename... Args>
-void warn(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void warn(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->warn(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->warn(fmt, std::forward<Args>(args)...);
 }
 
-template <typename FormatString, typename... Args>
-void error(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void error(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->error(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->error(fmt, std::forward<Args>(args)...);
 }
 
-template <typename FormatString, typename... Args>
-void critical(const FormatString & fmt, Args &&... args)
+template<typename FormatString, typename... Args>
+void critical(const FormatString &fmt, Args&&...args)
 {
-  default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
+    default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
 }
 
-template <typename T>
-void log(source_loc source, level::level_enum lvl, const T & msg)
+template<typename T>
+void log(source_loc source, level::level_enum lvl, const T &msg)
 {
-  default_logger_raw()->log(source, lvl, msg);
+    default_logger_raw()->log(source, lvl, msg);
 }
 
-template <typename T>
-void log(level::level_enum lvl, const T & msg)
+template<typename T>
+void log(level::level_enum lvl, const T &msg)
 {
-  default_logger_raw()->log(lvl, msg);
+    default_logger_raw()->log(lvl, msg);
 }
 
-template <typename T>
-void trace(const T & msg)
+template<typename T>
+void trace(const T &msg)
 {
-  default_logger_raw()->trace(msg);
+    default_logger_raw()->trace(msg);
 }
 
-template <typename T>
-void debug(const T & msg)
+template<typename T>
+void debug(const T &msg)
 {
-  default_logger_raw()->debug(msg);
+    default_logger_raw()->debug(msg);
 }
 
-template <typename T>
-void info(const T & msg)
+template<typename T>
+void info(const T &msg)
 {
-  default_logger_raw()->info(msg);
+    default_logger_raw()->info(msg);
 }
 
-template <typename T>
-void warn(const T & msg)
+template<typename T>
+void warn(const T &msg)
 {
-  default_logger_raw()->warn(msg);
+    default_logger_raw()->warn(msg);
 }
 
-template <typename T>
-void error(const T & msg)
+template<typename T>
+void error(const T &msg)
 {
-  default_logger_raw()->error(msg);
+    default_logger_raw()->error(msg);
 }
 
-template <typename T>
-void critical(const T & msg)
+template<typename T>
+void critical(const T &msg)
 {
-  default_logger_raw()->critical(msg);
+    default_logger_raw()->critical(msg);
 }
 
-}// namespace spdlog
+} // namespace spdlog
 
 // //
 // // enable/disable log calls at compile time according to global level.
@@ -374,4 +374,4 @@ void critical(const T & msg)
 // // #include "spdlog-inl.hpp"
 // // #endif
 
-#endif// UTILS_LOGGER_SPDLOG_SPDLOG_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_SPDLOG_HPP_

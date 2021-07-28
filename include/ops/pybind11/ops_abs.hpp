@@ -49,24 +49,26 @@
 #ifndef OPS_PYBIND11_OPS_ABS_HPP_
 #define OPS_PYBIND11_OPS_ABS_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 // y= abs(x)
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value>
+  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
+  >
 abs(T0 & y, const T1 & x)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T0, T1>::value,
-		"vectors are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
+     "vectors are not scalar compatible");
 
   using sc_t = typename T0::traits::scalar_t;
   assert(y.extent(0) == x.extent(0));
-  for(std::size_t i = 0; i < y.extent(0); ++i) {
-    y(i) = std::abs(x(i));
+  for (std::size_t i=0; i<y.extent(0); ++i){
+    y(i)=std::abs(x(i));
   }
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_PYBIND11_OPS_ABS_HPP_
+#endif  // OPS_PYBIND11_OPS_ABS_HPP_

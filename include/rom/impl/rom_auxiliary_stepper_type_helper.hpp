@@ -49,15 +49,15 @@
 #ifndef ROM_IMPL_ROM_AUXILIARY_STEPPER_TYPE_HELPER_HPP_
 #define ROM_IMPL_ROM_AUXILIARY_STEPPER_TYPE_HELPER_HPP_
 
-namespace pressio { namespace rom { namespace impl {
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename stepper_tag, typename... Rest>
+template <typename stepper_tag, typename ... Rest>
 struct auxiliaryStepperHelper
 {
   using type = void;
 };
 
-template <typename... Rest>
+template <typename ... Rest>
 struct auxiliaryStepperHelper<::pressio::ode::implicitmethods::BDF2, Rest...>
 {
   using aux_stepper_tag = ::pressio::ode::implicitmethods::Euler;
@@ -65,4 +65,4 @@ struct auxiliaryStepperHelper<::pressio::ode::implicitmethods::BDF2, Rest...>
 };
 
 }}}
-#endif// ROM_IMPL_ROM_AUXILIARY_STEPPER_TYPE_HELPER_HPP_
+#endif  // ROM_IMPL_ROM_AUXILIARY_STEPPER_TYPE_HELPER_HPP_

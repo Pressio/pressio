@@ -49,111 +49,115 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_ARBITRARY_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_ARBITRARY_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value>>
+    ::pressio::containers::predicates::is_admissible_as_multi_vector_arbitrary<wrapped_type>::value
+    >
+  >
 {
 public:
   using this_t = MultiVector<wrapped_type>;
   using traits = details::traits<this_t>;
   using size_t = typename details::traits<this_t>::size_t;
-  using sc_t = typename details::traits<this_t>::scalar_t;
+  using sc_t   = typename details::traits<this_t>::scalar_t;
 
 public:
-  template <
+  template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_default_constructible<_wrapped_type>::value, int> = 0>
+      std::is_default_constructible<_wrapped_type>::value, int
+      > = 0
+  >
   MultiVector(){};
 
-  template <
+  template<
     typename _wrapped_type = wrapped_type,
     mpl::enable_if_t<
-      std::is_constructible<_wrapped_type, size_t, size_t>::value, int> = 0>
-  MultiVector(size_t nR, size_t nC)
-    : data_(nR, nC){};
+      std::is_constructible<_wrapped_type, size_t, size_t>::value, int> = 0
+  >
+  MultiVector(size_t nR, size_t nC) : data_(nR, nC){};
 
 
   explicit MultiVector(const wrapped_type & vecobj)
-    : data_(vecobj) {}
+    : data_(vecobj){}
 
-  template <
+  template<
     typename T = int,
-    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0>
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
   explicit MultiVector(wrapped_type && vecobj)
-    : data_(vecobj) {}
+    : data_(vecobj){}
 
 
   // copy constructor
   MultiVector(MultiVector const & other)
-    : data_(*other.data()) {}
+    : data_(*other.data()){}
 
   // copy assignment
-  MultiVector & operator=(const MultiVector & other)
-  {
-    if(&other != this) {
+  MultiVector & operator=(const MultiVector & other){
+    if(&other != this){
       data_ = other.data_;
     }
     return *this;
   }
 
   // mv constructor
-  template <
+  template<
     typename T = int,
-    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0>
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
   MultiVector(MultiVector && other) noexcept
-    : data_(std::move(other.data_)) {}
+    : data_(std::move(other.data_)){}
 
   // mv assignment
-  template <
+  template<
     typename T = int,
-    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0>
+    mpl::enable_if_t<std::is_move_constructible<wrapped_type>::value, T> = 0
+  >
   MultiVector & operator=(MultiVector && other) noexcept
   {
-    if(&other != this) {
+    if(&other != this){
       data_ = std::move(other.data_);
     }
     return *this;
   }
 
 public:
-  template <typename _wrapped_type = wrapped_type>
+  template<typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
-    ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value, size_t>
-  extent(size_t k) const
-  {
+  ::pressio::containers::predicates::has_method_extent<_wrapped_type>::value
+  , size_t
+  >
+  extent(size_t k) const{
     return data_.extent(k);
   }
 
-  template <typename _wrapped_type = wrapped_type>
+  template<typename _wrapped_type = wrapped_type>
   mpl::enable_if_t<
-    ::pressio::containers::predicates::has_method_size_with_arg<_wrapped_type>::value, size_t>
-  extent(size_t k) const
-  {
+  ::pressio::containers::predicates::has_method_size_with_arg<_wrapped_type>::value
+  , size_t
+  >
+  extent(size_t k) const{
     return data_.size(k);
   }
 
-  sc_t & operator()(size_t i, size_t j)
-  {
+  sc_t & operator()(size_t i, size_t j){
     return data_(i, j);
   };
-  sc_t const & operator()(size_t i, size_t j) const
-  {
+  sc_t const & operator()(size_t i, size_t j) const{
     return data_(i, j);
   };
 
 public:
-  wrapped_type const * data() const
-  {
+  wrapped_type const * data() const{
     return &data_;
   }
 
-  wrapped_type * data()
-  {
+  wrapped_type * data(){
     return &data_;
   }
 
@@ -164,4 +168,4 @@ private:
 
 }}//end namespace pressio::containers
 
-#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_ARBITRARY_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_ARBITRARY_HPP_

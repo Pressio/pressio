@@ -52,21 +52,24 @@
 #include "rom_linear_decoder_pressio_ops.hpp"
 #include "rom_linear_decoder_custom_ops.hpp"
 
-namespace pressio { namespace rom { namespace impl {
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename... Args>
+template <typename ... Args>
 struct LinearDecoderSpecializer;
 
 // matrix_type, fom_state_type
 template <typename matrix_type, typename fom_state_type>
 struct LinearDecoderSpecializer<
-  void, matrix_type, fom_state_type>
+  void, matrix_type, fom_state_type
+  >
 {
-  static_assert(::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
-		"Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
+  static_assert
+  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
+   "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
 
-  static_assert(::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-		"Fom state type template arg passed to the LinearDecoder class must be a wrapper");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "Fom state type template arg passed to the LinearDecoder class must be a wrapper");
 
   using type = LinearDecoderWithPressioOps<matrix_type, fom_state_type>;
 };
@@ -74,16 +77,19 @@ struct LinearDecoderSpecializer<
 // matrix_type, fom_state_type, ud_ops
 template <typename matrix_type, typename fom_state_type, typename ud_ops_t>
 struct LinearDecoderSpecializer<
-  void, matrix_type, fom_state_type, ud_ops_t>
+  void, matrix_type, fom_state_type, ud_ops_t
+  >
 {
-  static_assert(::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
-		"Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
+  static_assert
+  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
+   "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
 
-  static_assert(::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-		"Fom state type template arg passed to the LinearDecoder class must be a wrapper");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "Fom state type template arg passed to the LinearDecoder class must be a wrapper");
 
-  using type = LinearDecoderWithCustomOps<matrix_type, fom_state_type, ud_ops_t>;
+  using type = LinearDecoderWithCustomOps<matrix_type, fom_state_type,ud_ops_t>;
 };
 
 }}}//end namespace pressio::rom::impl
-#endif// ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
+#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_

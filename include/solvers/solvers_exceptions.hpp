@@ -51,7 +51,7 @@
 
 #include <exception>
 
-namespace pressio { namespace eh {
+namespace pressio{ namespace eh{
 
 class nonlinear_solve_failure
   : public std::exception
@@ -63,15 +63,13 @@ public:
   nonlinear_solve_failure() = default;
 
   explicit nonlinear_solve_failure(const std::string & append)
-    : append_{append}
-  {
+    : append_{append}{
     myerr_ += append_;
   }
 
-  virtual const char * what() const noexcept
-  {
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
-  }
+   }
 };
 
 class residual_evaluation_failure_unrecoverable
@@ -84,15 +82,13 @@ public:
   residual_evaluation_failure_unrecoverable() = default;
 
   explicit residual_evaluation_failure_unrecoverable(const std::string & append)
-    : append_{append}
-  {
+    : append_{append}{
     myerr_ += append_;
   }
 
-  virtual const char * what() const noexcept
-  {
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
-  }
+   }
 };
 
 class residual_has_nans
@@ -105,16 +101,14 @@ public:
   residual_has_nans() = default;
 
   explicit residual_has_nans(const std::string & append)
-    : append_{append}
-  {
+    : append_{append}{
     myerr_ += append_;
   }
 
-  virtual const char * what() const noexcept
-  {
+  virtual const char * what () const noexcept{
     return myerr_.c_str();
-  }
+   }
 };
 
 }}//end namespace pressio::eh
-#endif// SOLVERS_SOLVERS_EXCEPTIONS_HPP_
+#endif  // SOLVERS_SOLVERS_EXCEPTIONS_HPP_

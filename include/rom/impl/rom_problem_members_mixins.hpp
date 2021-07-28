@@ -49,12 +49,12 @@
 #ifndef ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
 #define ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
 
-namespace pressio { namespace rom { namespace impl {
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename fom_system_t, bool isbinding = false>
+template<typename fom_system_t, bool isbinding=false>
 struct FomObjMixin;
 
-template <typename fom_system_t>
+template<typename fom_system_t>
 struct FomObjMixin<fom_system_t, false>
 {
   std::reference_wrapper<const fom_system_t> fomObj_;
@@ -67,13 +67,13 @@ struct FomObjMixin<fom_system_t, false>
   ~FomObjMixin() = default;
 
   explicit FomObjMixin(const fom_system_t & fomObjIn)
-    : fomObj_(fomObjIn) {}
+    : fomObj_(fomObjIn){}
 
-  const fom_system_t & fomCRef() const { return fomObj_.get(); }
+  const fom_system_t & fomCRef() const{ return fomObj_.get(); }
 };
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename fom_system_t>
+template<typename fom_system_t>
 struct FomObjMixin<fom_system_t, true>
 {
   // when dealing with bindings for pressio4py, the fom_system_t
@@ -92,9 +92,9 @@ struct FomObjMixin<fom_system_t, true>
   ~FomObjMixin() = default;
 
   explicit FomObjMixin(pybind11::object pyFomObj)
-    : fomObj_(pyFomObj) {}
+    : fomObj_(pyFomObj){}
 
-  const fom_system_t & fomCRef() const { return fomObj_; }
+  const fom_system_t & fomCRef() const{ return fomObj_; }
 };
 #endif
 
@@ -104,12 +104,13 @@ template <
   typename ops_t,
   typename fom_state_t,
   typename fom_state_reconstr_t,
-  typename fom_states_manager_t>
+  typename fom_states_manager_t
+  >
 struct FomStatesMngrMixin : T
 {
-  const fom_state_t fomNominalState_;
+  const fom_state_t	     fomNominalState_;
   const fom_state_reconstr_t fomStateReconstructor_;
-  fom_states_manager_t fomStatesMngr_;
+  fom_states_manager_t	     fomStatesMngr_;
 
   FomStatesMngrMixin() = delete;
   FomStatesMngrMixin(const FomStatesMngrMixin &) = default;
@@ -118,10 +119,11 @@ struct FomStatesMngrMixin : T
   FomStatesMngrMixin & operator=(FomStatesMngrMixin &&) = delete;
   ~FomStatesMngrMixin() = default;
 
-  template <
+  template<
     typename T1, typename T2, typename T3, typename T4,
     typename _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
   FomStatesMngrMixin(const T1 & fomObj,
 		     const T2 & decoder,
 		     const T3 & romStateIn,
@@ -136,10 +138,11 @@ struct FomStatesMngrMixin : T
     fomStatesMngr_.reconstructCurrentFomState(romStateIn);
   }
 
-  template <
+  template<
     typename T1, typename T2, typename T3, typename T4,
     typename _ops_t = ops_t,
-    mpl::enable_if_t<!std::is_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t<!std::is_void<_ops_t>::value, int > = 0
+    >
   FomStatesMngrMixin(const T1 & fomObj,
 		     const T2 & decoder,
 		     const T3 & romStateIn,
@@ -173,16 +176,15 @@ struct ImplicitStepperMixin : T
   ImplicitStepperMixin & operator=(ImplicitStepperMixin &&) = delete;
   ~ImplicitStepperMixin() = default;
 
-  template <typename T1, typename... Args>
+  template<typename T1, typename...Args>
   ImplicitStepperMixin(const T1 & romStateIn,
-		       Args &&... args)
+		       Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
       auxStepperObj_(romStateIn, T::fomCRef(),
 		     T::residualPolicy_, T::jacobianPolicy_),
       stepperObj_(romStateIn, T::fomCRef(),
 		  T::residualPolicy_, T::jacobianPolicy_, auxStepperObj_)
-  {
-  }
+  {}
 };
 
 // aux_stepper_t == void
@@ -198,13 +200,12 @@ struct ImplicitStepperMixin<T, void, stepper_t> : T
   ImplicitStepperMixin & operator=(ImplicitStepperMixin &&) = delete;
   ~ImplicitStepperMixin() = default;
 
-  template <typename T1, typename... Args>
-  ImplicitStepperMixin(const T1 & romStateIn, Args &&... args)
+  template<typename T1, typename...Args>
+  ImplicitStepperMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
       stepperObj_(romStateIn, T::fomCRef(),
 		  T::residualPolicy_, T::jacobianPolicy_)
-  {
-  }
+  {}
 };
 
 //---------------------------------------------------
@@ -222,14 +223,13 @@ struct ExplicitStepperMixin : T
   ExplicitStepperMixin & operator=(ExplicitStepperMixin &&) = delete;
   ~ExplicitStepperMixin() = default;
 
-  template <typename T1, typename... Args>
+  template<typename T1, typename...Args>
   ExplicitStepperMixin(const T1 & romStateIn,
-		       Args &&... args)
+		       Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
       stepperObj_(romStateIn, T::fomCRef(), T::rhsPolicy_)
-  {
-  }
+  {}
 };
 
 }}}
-#endif// ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
+#endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_

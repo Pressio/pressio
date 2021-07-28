@@ -49,10 +49,10 @@
 #ifndef ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_
 #define ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_
 
-namespace pressio { namespace ode { namespace implicitmethods {
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
-namespace impl {
-template <typename T, std::size_t n>
+namespace impl{
+template<typename T, std::size_t n>
 class StencilVelocitiesManager
 {
 
@@ -84,66 +84,66 @@ public:
   ~StencilVelocitiesManager() = default;
 
 public:
-  static constexpr std::size_t size() { return n; }
+  static constexpr std::size_t size(){ return n; }
 
   // for rhs we have np1, n, n-1, etc
   // because the velocities are handle by the stepper and owned inside
   // n+1
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 1, T &> velocityAt(ode::nPlusOne) { return rhs_(0); }
+  mpl::enable_if_t<_n>=1, T & > velocityAt(ode::nPlusOne){ return rhs_(0); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 1, T const &> velocityAt(ode::nPlusOne) const { return rhs_(0); }
+  mpl::enable_if_t<_n>=1, T const & > velocityAt(ode::nPlusOne) const { return rhs_(0); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 1, T &> operator()(ode::nPlusOne) { return rhs_(0); }
+  mpl::enable_if_t<_n>=1, T & > operator()(ode::nPlusOne){ return rhs_(0); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 1, T const &> operator()(ode::nPlusOne) const { return rhs_(0); }
+  mpl::enable_if_t<_n>=1, T const & > operator()(ode::nPlusOne) const { return rhs_(0); }
 
   // n
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 2, T &> velocityAt(ode::n) { return rhs_(1); }
+  mpl::enable_if_t<_n>=2, T & > velocityAt(ode::n){ return rhs_(1); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 2, T const &> velocityAt(ode::n) const { return rhs_(1); }
+  mpl::enable_if_t<_n>=2, T const & > velocityAt(ode::n) const { return rhs_(1); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 2, T &> operator()(ode::n) { return rhs_(1); }
+  mpl::enable_if_t<_n>=2, T & > operator()(ode::n){ return rhs_(1); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 2, T const &> operator()(ode::n) const { return rhs_(1); }
+  mpl::enable_if_t<_n>=2, T const & > operator()(ode::n) const { return rhs_(1); }
 
   // n-1
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 3, T &> velocityAt(ode::nMinusOne) { return rhs_(2); }
+  mpl::enable_if_t<_n>=3, T & > velocityAt(ode::nMinusOne){ return rhs_(2); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 3, T const &> velocityAt(ode::nMinusOne) const { return rhs_(2); }
+  mpl::enable_if_t<_n>=3, T const & > velocityAt(ode::nMinusOne) const { return rhs_(2); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 3, T &> operator()(ode::nMinusOne) { return rhs_(2); }
+  mpl::enable_if_t<_n>=3, T & > operator()(ode::nMinusOne){ return rhs_(2); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 3, T const &> operator()(ode::nMinusOne) const { return rhs_(2); }
+  mpl::enable_if_t<_n>=3, T const & > operator()(ode::nMinusOne) const { return rhs_(2); }
 
   // n-2
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 4, T &> velocityAt(ode::nMinusTwo) { return rhs_(3); }
+  mpl::enable_if_t<_n>=4, T & > velocityAt(ode::nMinusTwo){ return rhs_(3); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 4, T const &> velocityAt(ode::nMinusTwo) const { return rhs_(3); }
+  mpl::enable_if_t<_n>=4, T const & > velocityAt(ode::nMinusTwo) const { return rhs_(3); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 4, T &> operator()(ode::nMinusTwo) { return rhs_(3); }
+  mpl::enable_if_t<_n>=4, T & > operator()(ode::nMinusTwo){ return rhs_(3); }
 
   template <std::size_t _n = n>
-  mpl::enable_if_t<_n >= 4, T const &> operator()(ode::nMinusTwo) const { return rhs_(3); }
+  mpl::enable_if_t<_n>=4, T const & > operator()(ode::nMinusTwo) const { return rhs_(3); }
 };
 }// end namespace impl
 
-template <typename T, std::size_t n>
+template<typename T, std::size_t n>
 using StencilVelocitiesManager = impl::StencilVelocitiesManager<T, n>;
 
 }}}//end namespace pressio::ode::implicitmethods
-#endif// ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_
+#endif  // ODE_IMPLICIT_ODE_STENCIL_VELOCITIES_MANAGER_HPP_

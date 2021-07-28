@@ -51,34 +51,40 @@
 
 #include <KokkosBlas1_dot.hpp>
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value,
-  typename ::pressio::containers::details::traits<T1>::scalar_t>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value,
+  typename ::pressio::containers::details::traits<T1>::scalar_t
+  >
 dot(const T1 & a,
     const T2 & b)
 {
-  static_assert(containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"dot: types are not scalar compatible");
-  static_assert(containers::predicates::have_matching_execution_space<T1, T2>::value,
-		"dot: types must have matching execution space");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T1, T2>::value,
+     "dot: types are not scalar compatible");
+  static_assert
+    (containers::predicates::have_matching_execution_space<T1, T2>::value,
+     "dot: types must have matching execution space");
 
   assert(a.extent(0) == b.extent(0));
-  return ::KokkosBlas::dot(*a.data(), *b.data());
+  return ::KokkosBlas::dot(*a.data(), *b.data() );
 }
 
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
+  >
 dot(const T1 & a,
     const T2 & b,
     typename ::pressio::containers::details::traits<T1>::scalar_t & result)
 {
-  result = ::pressio::ops::dot(a, b);
+  result = ::pressio::ops::dot(a,b);
 }
 
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_DOT_HPP_
+#endif  // OPS_KOKKOS_OPS_DOT_HPP_

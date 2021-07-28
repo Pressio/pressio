@@ -49,27 +49,33 @@
 #ifndef CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
 #define CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
-template <typename T, typename... Args>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank == 2)) and (0 < sizeof...(Args)),
-  typename details::traits<T>::subspan_const_ret_t>
-subspan(const T & obj, Args &&... args)
+  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
+   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==2))
+  and (0 < sizeof...(Args)),
+  typename details::traits<T>::subspan_const_ret_t
+  >
+subspan(const T & obj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::subspan_const_ret_t;
-  return return_t(obj, std::forward<Args>(args)...);
+  return return_t(obj, std::forward<Args>(args)... );
 }
 
-template <typename T, typename... Args>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank == 2)) and (0 < sizeof...(Args)),
-  typename details::traits<T>::subspan_ret_t>
-subspan(T & obj, Args &&... args)
+  (::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
+   or (::pressio::containers::predicates::is_tensor_wrapper<T>::value and T::traits::rank==2))
+  and (0 < sizeof...(Args)),
+  typename details::traits<T>::subspan_ret_t
+  >
+subspan(T & obj, Args&& ... args)
 {
   using return_t = typename details::traits<T>::subspan_ret_t;
-  return return_t(obj, std::forward<Args>(args)...);
+  return return_t(obj, std::forward<Args>(args)... );
 }
 
-}}//end namespace pressio::containers
-#endif// CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPRESSIONS_SUBSPAN_CONTAINERS_SUBSPAN_FUNCTION_HPP_

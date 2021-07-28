@@ -53,63 +53,56 @@
 #include "apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
 #include <iostream>
 
-namespace pressio { namespace apps {
+namespace pressio{ namespace apps{
 
 class Burgers1dArbDs
 {
 
 public:
-  using int_t = std::size_t;
+  using int_t     = std::size_t;
 
   // these are detected by pressio
-  using scalar_type = double;
-  using state_type = arbds::Vector<scalar_type>;
-  using velocity_type = arbds::Vector<scalar_type>;
-  using jacobian_type = arbds::DenseMatrix<scalar_type>;
+  using scalar_type	  = double;
+  using state_type	  = arbds::Vector<scalar_type>;
+  using velocity_type	  = arbds::Vector<scalar_type>;
+  using jacobian_type	  = arbds::DenseMatrix<scalar_type>;
 
 public:
   Burgers1dArbDs() = delete;
 
   explicit Burgers1dArbDs(int_t Ncell)
-    : Ncell_(Ncell)
-  {
+    : Ncell_(Ncell){
     setup();
   }
 
-  int_t meshSize() const
-  {
+  int_t meshSize() const{
     return Ncell_;
   }
 
-  state_type const & getInitialState() const
-  {
+  state_type const & getInitialState() const{
     return U0_;
   };
 
 public:
-  velocity_type createVelocity() const
-  {
+  velocity_type createVelocity() const{
     velocity_type f(Ncell_);
     return f;
   }
 
-  jacobian_type createJacobian() const
-  {
+  jacobian_type createJacobian() const{
     jacobian_type JJ(Ncell_, Ncell_);
     return JJ;
   }
 
   void velocity(const state_type & u,
-		const scalar_type & t,
-		velocity_type & f) const
-  {
+      const scalar_type & t,
+      velocity_type & f) const{
     this->velocity_impl(u, t, f);
   }
 
   void jacobian(const state_type & u,
-		const scalar_type & t,
-		jacobian_type & jac) const
-  {
+  		const scalar_type & t,
+  		jacobian_type & jac) const{
     this->jacobian_impl(u, t, jac);
   }
 
@@ -118,18 +111,18 @@ private:
   {
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
-    constexpr auto oneHalf = one / two;
-    dx_ = (xR_ - xL_) / static_cast<scalar_type>(Ncell_);
-    dxInv_ = one / dx_;
+    constexpr auto oneHalf = one/two;
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = one/dx_;
 
     xGrid_.resize(Ncell_);
-    for(int_t i = 0; i < Ncell_; ++i)
-      xGrid_(i) = dx_ * static_cast<scalar_type>(i) + dx_ * oneHalf;
+    for (int_t i=0; i<Ncell_; ++i)
+      xGrid_(i) = dx_*static_cast<scalar_type>(i) + dx_*oneHalf;
 
     // init condition
     U_.resize(Ncell_);
     U0_.resize(Ncell_);
-    for(int_t i = 0; i < Ncell_; ++i) {
+    for (int_t i=0; i<Ncell_; ++i){
       U_(i) = one;
       U0_(i) = one;
     }
@@ -141,23 +134,23 @@ private:
   {
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
-    constexpr auto oneHalf = one / two;
+    constexpr auto oneHalf = one/two;
 
     const auto coeff = oneHalf * dxInv_;
-    f(0) = coeff * (mu_[0] * mu_[0] - u(0) * u(0)) + mu_[1] * std::exp(mu_[2] * xGrid_(0));
-    for(int_t i = 1; i < Ncell_; ++i) {
-      f(i) = coeff * (u(i - 1) * u(i - 1) - u(i) * u(i)) + mu_[1] * std::exp(mu_[2] * xGrid_(i));
+    f(0) = coeff*(mu_[0]*mu_[0] - u(0)*u(0)) + mu_[1] * std::exp(mu_[2]*xGrid_(0));
+    for (int_t i=1; i<Ncell_; ++i){
+      f(i) = coeff*(u(i-1)*u(i-1) - u(i)*u(i)) + mu_[1]*std::exp(mu_[2]*xGrid_(i));
     }
   }
 
   void jacobian_impl(const state_type & u,
-		     const scalar_type & t,
-		     jacobian_type & jac) const
+  		     const scalar_type & t,
+  		     jacobian_type & jac) const
   {
-    jac(0, 0) = -dxInv_ * u(0);
-    for(int_t i = 1; i < Ncell_; ++i) {
-      jac(i, i) = -dxInv_ * u(i);
-      jac(i, i - 1) = dxInv_ * u(i - 1);
+    jac(0,0) = -dxInv_*u(0);
+    for (int_t i=1; i<Ncell_; ++i){
+      jac(i, i)   = -dxInv_ * u(i);
+      jac(i, i-1) = dxInv_ * u(i-1);
     }
   }
 
@@ -176,5 +169,5 @@ private:
 
 };//end class
 
-}}//namespace pressio::apps
-#endif// APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_HPP_
+}} //namespace pressio::apps
+#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_HPP_

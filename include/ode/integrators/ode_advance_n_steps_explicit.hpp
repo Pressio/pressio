@@ -51,14 +51,16 @@
 
 #include "./impl/ode_n_steps_integrators.hpp"
 
-namespace pressio { namespace ode {
+namespace pressio{ namespace ode{
 
-template <
+template<
   typename stepper_type,
   typename state_type,
-  typename time_type>
+  typename time_type
+  >
 mpl::enable_if_t<
-  ::pressio::ode::constraints::explicitly_steppable<stepper_type, state_type, time_type>::value>
+  ::pressio::ode::constraints::explicitly_steppable<stepper_type, state_type, time_type>::value
+  >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
@@ -66,24 +68,27 @@ advanceNSteps(stepper_type & stepper,
 	      const ::pressio::ode::types::step_t num_steps)
 {
 
-  static_assert(::pressio::ode::constraints::explicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an explicit stepper \
+  static_assert
+    (::pressio::ode::constraints::explicit_state<state_type>::value,
+     "You are trying to call advanceNSteps with an explicit stepper \
 but the state type you are using is not admissible for explicit time-stepping.");
 
-  using advancer_t = impl::IntegratorNStepsWithConstDt;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
   collector_t collector;
   advancer_t::execute(stepper, num_steps, start_time, dt, odeStateInOut, collector);
 }
 
-template <
+template<
   typename stepper_type,
   typename state_type,
   typename time_type,
-  typename collector_type>
+  typename collector_type
+  >
 mpl::enable_if_t<
   ::pressio::ode::constraints::explicitly_steppable<
-    stepper_type, state_type, time_type>::value>
+    stepper_type, state_type, time_type>::value
+  >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
@@ -92,19 +97,21 @@ advanceNSteps(stepper_type & stepper,
 	      collector_type & collector)
 {
 
-  static_assert(::pressio::ode::constraints::explicit_state<state_type>::value,
-		"You are trying to call advanceNSteps with an explicit stepper \
+  static_assert
+    (::pressio::ode::constraints::explicit_state<state_type>::value,
+     "You are trying to call advanceNSteps with an explicit stepper \
 but the state type you are using is not admissible for explicit time-stepping.");
 
-  static_assert(::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value,
-		"You are trying to call advanceNSteps with an explicit stepper \
+  static_assert
+    (::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value,
+     "You are trying to call advanceNSteps with an explicit stepper \
 and a collector, but the collector type you are using is not admissible. \
 It does not meet the API of a valid collector. \
 See requirements in ode_is_legitimate_collector.hpp");
 
-  using advancer_t = impl::IntegratorNStepsWithConstDt;
+  using advancer_t  = impl::IntegratorNStepsWithConstDt;
   advancer_t::execute(stepper, num_steps, start_time, dt, odeStateInOut, collector);
 }
 
 }}//end namespace pressio::ode
-#endif// ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
+#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_

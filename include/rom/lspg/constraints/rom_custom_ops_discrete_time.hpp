@@ -49,27 +49,30 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace constraints {
+namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
-template <
+template<
   typename T,
   typename mat_type, typename rom_state_type, typename fom_state_type,
-  typename enable = void>
+  typename enable = void
+  >
 struct custom_ops_discrete_time
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <
   typename T,
-  typename mat_type, typename rom_state_type, typename fom_state_type>
+  typename mat_type, typename rom_state_type, typename fom_state_type
+  >
 struct custom_ops_discrete_time<
   T, mat_type, rom_state_type, fom_state_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::rom::constraints::custom_ops_for_fom_state_reconstructor<
-      T, fom_state_type>::value and ::pressio::rom::constraints::custom_ops_for_linear_decoder<T, mat_type, rom_state_type, fom_state_type>::value>> : std::true_type
-{
-};
+      T, fom_state_type>::value
+    and
+    ::pressio::rom::constraints::custom_ops_for_linear_decoder<
+      T, mat_type, rom_state_type, fom_state_type>::value
+    >
+  > : std::true_type{};
 
-}}}}// namespace pressio::rom::constraints
-#endif// ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_
+}}}} // namespace pressio::rom::constraints
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_CUSTOM_OPS_DISCRETE_TIME_HPP_

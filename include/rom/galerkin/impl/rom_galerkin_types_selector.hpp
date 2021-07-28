@@ -49,9 +49,9 @@
 #ifndef ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
 #define ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template <typename T, class = void>
+template<typename T, class = void>
 struct select_galerkin_types
 {
   using residual_type = void;
@@ -59,11 +59,13 @@ struct select_galerkin_types
 };
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T>
+template<typename T>
 struct select_galerkin_types<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<T>::value>>
+    ::pressio::containers::predicates::is_dynamic_vector_wrapper_eigen<T>::value
+    >
+  >
 {
   // for now use residual_type = state_type
   using residual_type = T;
@@ -75,11 +77,13 @@ struct select_galerkin_types<
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T>
+template<typename T>
 struct select_galerkin_types<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value>>
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+    >
+  >
 {
   using scalar_t = typename ::pressio::containers::details::traits<T>::scalar_t;
   // for now use residual_type = state_type
@@ -91,4 +95,4 @@ struct select_galerkin_types<
 #endif
 
 }}}}
-#endif// ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_
+#endif  // ROM_GALERKIN_IMPL_ROM_GALERKIN_TYPES_SELECTOR_HPP_

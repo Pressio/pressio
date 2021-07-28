@@ -49,58 +49,50 @@
 #ifndef APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_
 #define APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_
 
-namespace pressio { namespace apps { namespace arbds {
+namespace pressio{ namespace apps{ namespace arbds{
 
 template <typename scalar_t>
 class Vector
 {
 public:
   using value_type = scalar_t;
-  using size_type = std::size_t;
+  using size_type  = std::size_t;
   using index_type = size_type;
-  using data_type = std::vector<scalar_t>;
+  using data_type  = std::vector<scalar_t>;
 
 public:
   Vector() = default;
 
   explicit Vector(std::size_t extent)
-    : data_(extent) {}
+    : data_(extent){}
 
-  void resize(size_type newSize)
-  {
+  void resize(size_type newSize){
     data_.resize(newSize);
   }
 
-  size_type extent(size_type k) const
-  {
+  size_type extent(size_type k) const{
     assert(k == 0);
     return data_.size();
   }
 
-  value_type & operator()(size_type i)
-  {
+  value_type & operator()(size_type i){
     return data_[i];
   }
-  value_type const & operator()(size_type i) const
-  {
-    return data_[i];
-  }
-
-  value_type & operator[](size_type i)
-  {
-    return data_[i];
-  }
-  value_type const & operator[](size_type i) const
-  {
+  value_type const & operator()(size_type i) const{
     return data_[i];
   }
 
-  data_type * data()
-  {
+  value_type & operator[](size_type i){
+    return data_[i];
+  }
+  value_type const & operator[](size_type i) const{
+    return data_[i];
+  }
+
+  data_type * data(){
     return &data_;
   }
-  data_type const * data() const
-  {
+  data_type const * data() const{
     return &data_;
   }
 
@@ -109,5 +101,5 @@ private:
 
 };//end class
 
-}}}//namespace pressio::apps::arbds
-#endif// APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_
+}}} //namespace pressio::apps::arbds
+#endif  // APPS_BURGERS1D_ARBITRARYDATASTRUCTURES_APPS_BURGERS1D_ARB_DS_CUSTOM_VECTOR_HPP_

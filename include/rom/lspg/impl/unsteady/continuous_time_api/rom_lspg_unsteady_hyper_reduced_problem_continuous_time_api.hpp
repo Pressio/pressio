@@ -50,51 +50,49 @@
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename... Args>
+template <typename ...Args>
 class HyperReducedProblemContinuousTimeApi
 {
 public:
   using this_t = HyperReducedProblemContinuousTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t = typename traits::fom_system_t;
-  using fom_native_state_t = typename traits::fom_native_state_t;
-  using fom_state_t = typename traits::fom_state_t;
-  using lspg_state_t = typename traits::lspg_state_t;
-  using lspg_native_state_t = typename traits::lspg_native_state_t;
-  using decoder_t = typename traits::decoder_t;
-  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
-  using fom_states_manager_t = typename traits::fom_states_manager_t;
-  using residual_policy_t = typename traits::residual_policy_t;
-  using jacobian_policy_t = typename traits::jacobian_policy_t;
-  using aux_stepper_t = typename traits::aux_stepper_t;
-  using stepper_t = typename traits::stepper_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
+  using aux_stepper_t		= typename traits::aux_stepper_t;
+  using stepper_t		= typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
-  using sample_to_stencil_t = typename traits::sample_to_stencil_t;
+  using sample_to_stencil_t        = typename traits::sample_to_stencil_t;
   using sample_to_stencil_native_t = typename traits::sample_to_stencil_native_t;
 
 private:
-  using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
-						      fom_state_reconstr_t, fom_states_manager_t>;
-  using Ct = HypRedPoliciesMixin<Bt, void, residual_policy_t,
-				 jacobian_policy_t, sample_to_stencil_t>;
+  using At    = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
+  using Bt    = ::pressio::rom::impl::FomStatesMngrMixin<At, void, fom_state_t,
+				   fom_state_reconstr_t, fom_states_manager_t>;
+  using Ct    = HypRedPoliciesMixin<Bt, void, residual_policy_t,
+				    jacobian_policy_t, sample_to_stencil_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
 public:
-  stepper_t & stepperRef() { return members_.stepperObj_; }
+  stepper_t & stepperRef(){ return members_.stepperObj_; }
 
-  const fom_native_state_t & currentFomStateCRef() const
-  {
+  const fom_native_state_t & currentFomStateCRef() const{
     return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const
-  {
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return members_.fomStateReconstructor_;
   }
 
@@ -106,33 +104,34 @@ public:
   HyperReducedProblemContinuousTimeApi & operator=(HyperReducedProblemContinuousTimeApi &&) = delete;
   ~HyperReducedProblemContinuousTimeApi() = default;
 
-  template <
+  template<
     typename _sample_to_stencil_t = sample_to_stencil_t,
-    ::pressio::mpl::enable_if_t<std::is_void<_sample_to_stencil_t>::value, int> = 0>
+    ::pressio::mpl::enable_if_t<std::is_void<_sample_to_stencil_t>::value, int > = 0
+    >
   HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
 				       decoder_t & decoder,
 				       const lspg_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn)
     : members_(romStateIn, fomObj, decoder, fomNominalStateIn)
-  {
-  }
+  {}
 
   template <
     bool _binding_sentinel = binding_sentinel,
-    ::pressio::mpl::enable_if_t<!_binding_sentinel, int> = 0>
+    ::pressio::mpl::enable_if_t<!_binding_sentinel, int > = 0
+    >
   HyperReducedProblemContinuousTimeApi(const fom_system_t & fomObj,
 				       decoder_t & decoder,
 				       const lspg_state_t & romStateIn,
 				       const fom_native_state_t fomNominalStateIn,
 				       const sample_to_stencil_t & sTosInfo)
     : members_(romStateIn, fomObj, decoder, fomNominalStateIn, sTosInfo)
-  {
-  }
+  {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
-    ::pressio::mpl::enable_if_t<_binding_sentinel, int> = 0>
+    ::pressio::mpl::enable_if_t<_binding_sentinel, int > = 0
+    >
   HyperReducedProblemContinuousTimeApi(pybind11::object fomObjPy,
 				       decoder_t & decoder,
 				       const lspg_native_state_t & romStateIn,
@@ -140,10 +139,10 @@ public:
 				       sample_to_stencil_native_t sTosInfo)
     : members_(lspg_state_t(romStateIn), fomObjPy, decoder,
 	       fomNominalStateIn, sTosInfo)
-  {
-  }
+  {}
 #endif
+
 };
 
 }}}}}
-#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_HYPER_REDUCED_PROBLEM_CONTINUOUS_TIME_API_HPP_

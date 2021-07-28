@@ -49,21 +49,23 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace constraints {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
-template <typename T, typename fom_velocity_t, typename result_t, typename enable = void>
-struct projector_explicit_stepping : std::false_type
-{
-};
+template<typename T, typename fom_velocity_t, typename result_t, typename enable = void>
+struct projector_explicit_stepping : std::false_type{};
 
-template <typename T, typename fom_velocity_t, typename result_t>
+template<typename T, typename fom_velocity_t, typename result_t>
 struct projector_explicit_stepping<
   T, fom_velocity_t, result_t,
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::constraints::fom_velocity<fom_velocity_t>::value and ::pressio::rom::galerkin::constraints::velocity<result_t>::value and ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
-      T, fom_velocity_t, result_t>::value>> : std::true_type
-{
-};
+    ::pressio::rom::galerkin::constraints::fom_velocity<fom_velocity_t>::value
+    and
+    ::pressio::rom::galerkin::constraints::velocity<result_t>::value
+    and
+    ::pressio::rom::predicates::has_const_apply_method_accept_operand_result_return_void<
+      T, fom_velocity_t, result_t>::value
+    >
+  > : std::true_type{};
 
-}}}}// namespace pressio::rom
-#endif// ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_
+}}}} // namespace pressio::rom
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_PROJECTOR_EXPLICIT_HPP_

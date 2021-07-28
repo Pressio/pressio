@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_DECORATORS_ROM_PROJECTED_HPP_
 #define ROM_GALERKIN_IMPL_DECORATORS_ROM_PROJECTED_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <typename projector_t, typename projectable_t>
 class Projected : public projectable_t
@@ -65,24 +65,24 @@ public:
   Projected & operator=(Projected &&) = default;
   ~Projected() = default;
 
-  template <typename... Args>
+  template <typename ... Args>
   Projected(const projector_t & projectorIn,
-	    Args &&... args)
+	    Args && ... args)
     : projectable_t(std::forward<Args>(args)...),
       projector_(projectorIn)
-  {
-  }
+  {}
 
 public:
-  template <
-    class galerkin_rhs_or_jacobian_t,
-    class galerkin_state_t,
-    class fom_system_t,
-    typename... Args>
+  template<
+   class galerkin_rhs_or_jacobian_t,
+   class galerkin_state_t,
+   class fom_system_t,
+   typename ...Args
+  >
   void compute(galerkin_rhs_or_jacobian_t & galerkinRhsOrJac,
 	       const galerkin_state_t & galerkinState,
-	       const fom_system_t & fomSystemObj,
-	       Args &&... args) const
+	       const fom_system_t  & fomSystemObj,
+	       Args && ...args) const
   {
     projectable_t::compute(galerkinState,
 			   fomSystemObj,
@@ -95,4 +95,4 @@ public:
 };
 
 }}}}
-#endif// ROM_GALERKIN_IMPL_DECORATORS_ROM_PROJECTED_HPP_
+#endif  // ROM_GALERKIN_IMPL_DECORATORS_ROM_PROJECTED_HPP_

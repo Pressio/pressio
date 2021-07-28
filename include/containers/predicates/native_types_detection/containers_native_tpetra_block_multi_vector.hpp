@@ -51,12 +51,10 @@
 
 #include <Tpetra_BlockMultiVector_decl.hpp>
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_multi_vector_tpetra_block : std::false_type
-{
-};
+struct is_multi_vector_tpetra_block : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_tpetra_block<
@@ -68,9 +66,11 @@ struct is_multi_vector_tpetra_block<
 	typename T::impl_scalar_type,
 	typename T::local_ordinal_type,
 	typename T::global_ordinal_type,
-	typename T::node_type>>::value>> : std::true_type
-{
-};
+	typename T::node_type
+	>
+      >::value
+    >
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_BLOCK_MULTI_VECTOR_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_TPETRA_BLOCK_MULTI_VECTOR_HPP_

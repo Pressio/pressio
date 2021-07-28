@@ -49,12 +49,10 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_admissible_as_multi_vector_kokkos : std::false_type
-{
-};
+struct is_admissible_as_multi_vector_kokkos : std::false_type {};
 
 template <typename T>
 struct is_admissible_as_multi_vector_kokkos<
@@ -62,11 +60,12 @@ struct is_admissible_as_multi_vector_kokkos<
   ::pressio::mpl::enable_if_t<
     // kokkos MV is a view and has rank=2
     Kokkos::is_view<T>::value and
-    T::traits::rank == 2 and
+    T::traits::rank==2 and
     std::is_same<
-      typename T::traits::array_layout, Kokkos::LayoutLeft>::value>> : std::true_type
-{
-};
+      typename T::traits::array_layout, Kokkos::LayoutLeft
+      >::value
+    >
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_KOKKOS_MULTI_VECTOR_HPP_

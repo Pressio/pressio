@@ -49,7 +49,7 @@
 #ifndef ROM_CONSTRAINTS_ROM_DECODER_HPP_
 #define ROM_CONSTRAINTS_ROM_DECODER_HPP_
 
-namespace pressio { namespace rom { namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
 /*
  * A type T is a legitimate decoder if:
@@ -60,35 +60,57 @@ namespace pressio { namespace rom { namespace constraints {
  * - template applyMapping(operand_t, fom_state_type)
  *
 */
-template <
+template<
   typename T,
   typename operand_t,
   typename result_t = void,
-  typename enable = void>
-struct decoder : std::false_type
-{
-};
+  typename enable = void
+  >
+struct decoder : std::false_type{};
 
-template <
+template<
   typename T,
   typename operand_t,
-  typename result_t>
+  typename result_t
+  >
 struct decoder<
   T, operand_t, result_t,
   ::pressio::mpl::enable_if_t<
-    mpl::not_void<result_t>::value and ::pressio::rom::predicates::has_fom_state_typedef<T>::value and ::pressio::ode::predicates::has_jacobian_typedef<T>::value and std::is_same<result_t, typename T::fom_state_type>::value and ::pressio::rom::constraints::decoder_jacobian<typename T::jacobian_type>::value and ::pressio::rom::predicates::has_const_get_reference_to_jacobian<
-																					T, typename T::jacobian_type>::value and ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<T, operand_t, result_t>::value and ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<T, operand_t>::value>> : std::true_type
-{
-};
+    mpl::not_void<result_t>::value
+    and ::pressio::rom::predicates::has_fom_state_typedef<T>::value
+    and ::pressio::ode::predicates::has_jacobian_typedef<T>::value
+    and std::is_same<result_t, typename T::fom_state_type>::value
+    and ::pressio::rom::constraints::decoder_jacobian<typename T::jacobian_type>::value
+    and
+    ::pressio::rom::predicates::has_const_get_reference_to_jacobian<
+      T, typename T::jacobian_type>::value
+    and
+    ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<
+      T, operand_t, result_t>::value
+    and
+    ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<
+      T, operand_t>::value
+    >
+  > : std::true_type{};
 
-template <typename T, typename operand_t>
+template<typename T, typename operand_t>
 struct decoder<
   T, operand_t, void,
   ::pressio::mpl::enable_if_t<
-    ::pressio::rom::predicates::has_fom_state_typedef<T>::value and ::pressio::ode::predicates::has_jacobian_typedef<T>::value and ::pressio::rom::constraints::decoder_jacobian<typename T::jacobian_type>::value and ::pressio::rom::predicates::has_const_get_reference_to_jacobian<
-      T, typename T::jacobian_type>::value and ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<T, operand_t, typename T::fom_state_type>::value and ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<T, operand_t>::value>> : std::true_type
-{
-};
+    ::pressio::rom::predicates::has_fom_state_typedef<T>::value
+    and ::pressio::ode::predicates::has_jacobian_typedef<T>::value
+    and ::pressio::rom::constraints::decoder_jacobian<typename T::jacobian_type>::value
+    and
+    ::pressio::rom::predicates::has_const_get_reference_to_jacobian<
+      T, typename T::jacobian_type>::value
+    and
+    ::pressio::rom::predicates::has_const_apply_mapping_accept_operand_result_return_void<
+      T, operand_t, typename T::fom_state_type>::value
+    and
+    ::pressio::rom::predicates::has_nonconst_update_jacobian_method_accept_operand_return_void<
+      T, operand_t>::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::rom::constraints
-#endif// ROM_CONSTRAINTS_ROM_DECODER_HPP_
+}}} // namespace pressio::rom::constraints
+#endif  // ROM_CONSTRAINTS_ROM_DECODER_HPP_

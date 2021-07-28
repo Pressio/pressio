@@ -49,55 +49,46 @@
 #ifndef ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_
 #define ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_
 
-namespace pressio { namespace ode { namespace predicates {
+namespace pressio{ namespace ode{ namespace predicates { 
 
 template <typename T>
-struct IsStepperOrderSetter : std::false_type
-{
-};
+struct IsStepperOrderSetter : std::false_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<1>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<1>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<2>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<2>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<3>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<3>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<4>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<4>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<5>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<5>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<6>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<6>
+  > : std::true_type{};
 
 template <>
 struct IsStepperOrderSetter<
-  ::pressio::ode::types::StepperOrder<7>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperOrder<7>
+  > : std::true_type{};
 
 
-}}}// namespace pressio::ode::predicates
-#endif// ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_
+}}} // namespace pressio::ode::predicates
+#endif  // ODE_PREDICATES_ODE_IS_STEPPER_ORDER_SETTER_HPP_

@@ -51,33 +51,39 @@
 
 #include "./impl/ode_n_steps_integrators.hpp"
 
-namespace pressio { namespace ode {
+namespace pressio{ namespace ode{
 
 // no collector object is passed
-template <
+template<
   typename stepper_type,
   typename state_type,
   typename time_type,
   typename solver_type,
   typename step_size_cb_t,
-  typename... Args>
+  typename ...Args
+  >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
-    stepper_type, state_type, time_type, solver_type>::value and ::pressio::ode::constraints::time_step_size_manager<step_size_cb_t, types::step_t, time_type>::value and ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<solver_type, stepper_type, state_type>::value>
+    stepper_type, state_type, time_type, solver_type>::value and
+  ::pressio::ode::constraints::time_step_size_manager<
+    step_size_cb_t, types::step_t, time_type>::value and
+  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value
+  >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
 	      const types::step_t num_steps,
 	      step_size_cb_t && dtManager,
 	      solver_type & solver,
-	      Args &&... solver_args)
+	      Args && ...solver_args)
 {
 
   static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping. ");
 
-  using advancer_t = impl::IntegratorNStepsWithTimeStepSizeSetter;
+  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
   using collector_t = ::pressio::ode::impl::DummyCollector<time_type, state_type>;
   collector_t collector;
   advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
@@ -87,17 +93,25 @@ but the state type you are using is not admissible for implicit time-stepping. "
 }
 
 // a collector object is passed
-template <
+template<
   typename stepper_type,
   typename state_type,
   typename time_type,
   typename step_size_cb_type,
   typename collector_type,
   typename solver_type,
-  typename... Args>
+  typename ...Args
+  >
 ::pressio::mpl::enable_if_t<
   ::pressio::ode::constraints::implicitly_steppable<
-    stepper_type, state_type, time_type, solver_type>::value and ::pressio::ode::constraints::time_step_size_manager<step_size_cb_type, types::step_t, time_type>::value and ::pressio::ode::constraints::collector<collector_type, time_type, state_type>::value and ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<solver_type, stepper_type, state_type>::value>
+    stepper_type, state_type, time_type, solver_type>::value and
+  ::pressio::ode::constraints::time_step_size_manager<
+    step_size_cb_type, types::step_t, time_type>::value and
+  ::pressio::ode::constraints::collector<
+    collector_type, time_type, state_type>::value and
+  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+    solver_type, stepper_type, state_type>::value
+  >
 advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
@@ -105,14 +119,14 @@ advanceNSteps(stepper_type & stepper,
 	      step_size_cb_type && dtManager,
 	      collector_type & collector,
 	      solver_type & solver,
-	      Args &&... solver_args)
+	      Args && ...solver_args)
 {
 
   static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
 		"You are trying to call advanceNSteps with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping. ");
 
-  using advancer_t = impl::IntegratorNStepsWithTimeStepSizeSetter;
+  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
   advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
 		      std::forward<step_size_cb_type>(dtManager),
 		      collector, solver,
@@ -120,4 +134,4 @@ but the state type you are using is not admissible for implicit time-stepping. "
 }
 
 }}//end namespace pressio::ode
-#endif// ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_
+#endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_IMPLICIT_ARBITRARY_STEP_SIZE_HPP_

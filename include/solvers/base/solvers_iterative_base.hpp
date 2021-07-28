@@ -51,20 +51,18 @@
 
 namespace pressio { namespace solvers {
 
-template <typename derived_t>
+template<typename derived_t>
 struct IterativeBase
 {
   using iteration_t = unsigned int;
 
   /** Get the number of iterations performed. */
-  iteration_t numIterationsExecuted() const
-  {
+  iteration_t numIterationsExecuted() const {
     return static_cast<const derived_t &>(*this).numIterationsExecuted();
   }
 
   /** Get the maximum number of iterations. */
-  iteration_t maxIterations() const
-  {
+  iteration_t maxIterations() const {
     return maxIters_;
   }
 
@@ -73,8 +71,7 @@ struct IterativeBase
    *
    * @param maxIters maximum number of iterations.
    */
-  void setMaxIterations(iteration_t maxIters)
-  {
+  void setMaxIterations(iteration_t maxIters) {
     maxIters_ = maxIters;
   }
 
@@ -83,6 +80,6 @@ protected:
 };
 
 
-}}//end namespace pressio::solvers
+}} //end namespace pressio::solvers
 
-#endif// SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_
+#endif  // SOLVERS_BASE_SOLVERS_ITERATIVE_BASE_HPP_

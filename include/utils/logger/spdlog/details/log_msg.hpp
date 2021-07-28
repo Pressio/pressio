@@ -18,23 +18,23 @@ struct log_msg
 	  string_view_t logger_name,
 	  level::level_enum lvl,
 	  string_view_t msg)
-    : logger_name(logger_name), level(lvl), time(log_time)
+    : logger_name(logger_name)
+    , level(lvl)
+    , time(log_time)
 #ifndef SPDLOG_NO_THREAD_ID
-      ,
-      thread_id(os::thread_id())
+    , thread_id(os::thread_id())
 #endif
-      ,
-      source(loc), payload(msg)
-  {
-  }
+    , source(loc)
+    , payload(msg)
+  {}
 
   log_msg(source_loc loc, string_view_t logger_name, level::level_enum lvl, string_view_t msg)
-    : log_msg(os::now(), loc, logger_name, lvl, msg) {}
+  : log_msg(os::now(), loc, logger_name, lvl, msg){}
 
   log_msg(string_view_t logger_name, level::level_enum lvl, string_view_t msg)
-    : log_msg(os::now(), source_loc{}, logger_name, lvl, msg) {}
+    : log_msg(os::now(), source_loc{}, logger_name, lvl, msg){}
 
-  log_msg(const log_msg & other) = default;
+  log_msg(const log_msg &other) = default;
 
   string_view_t logger_name;
   level::level_enum level{level::off};
@@ -48,10 +48,10 @@ struct log_msg
   source_loc source;
   string_view_t payload;
 };
-}// namespace details
-}// namespace spdlog
+} // namespace details
+} // namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "log_msg-inl.hpp"
 // #endif
-#endif// UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_HPP_

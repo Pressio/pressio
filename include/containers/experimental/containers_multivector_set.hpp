@@ -49,15 +49,15 @@
 #ifndef CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_
 #define CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
-namespace experimental {
-template <typename T>
+namespace experimental{
+template<typename T>
 class MultiVectorSet
 {
 public:
   using traits = ::pressio::containers::details::traits<MultiVectorSet<T>>;
-  using mv_type = ::pressio::containers::MultiVector<T>;
+  using mv_type	= ::pressio::containers::MultiVector<T>;
   using multivector_type = mv_type;
   using data_type = std::vector<mv_type>;
 
@@ -65,29 +65,27 @@ private:
   data_type data_;
 
 public:
-  std::size_t size() const { return data_.size(); }
+  std::size_t size() const{ return data_.size(); }
 
-  mv_type & operator()(std::size_t i)
-  {
+  mv_type & operator()(std::size_t i){
     return data_[i];
   }
 
-  mv_type const & operator()(std::size_t i) const
-  {
+  mv_type const & operator()(std::size_t i) const{
     return data_[i];
   }
 
 public:
   template <
-    typename _mv_type = mv_type,
-    mpl::enable_if_t<std::is_default_constructible<_mv_type>::value, int> = 0>
+  typename _mv_type = mv_type,
+  mpl::enable_if_t<std::is_default_constructible<_mv_type>::value, int> = 0
+  >
   MultiVectorSet(){};
 
-  template <typename... Args>
-  MultiVectorSet(std::size_t n, Args &&... args)
+  template<typename ...Args>
+  MultiVectorSet(std::size_t n, Args && ...args)
     : data_(n, mv_type(std::forward<Args>(args)...))
-  {
-  }
+  {}
 
   MultiVectorSet(MultiVectorSet const & other) = default;
   MultiVectorSet & operator=(MultiVectorSet const & other) = default;
@@ -98,16 +96,17 @@ public:
 
 }// end namespace experimental
 
-namespace details {
+namespace details{
 
-template <typename T>
+template<typename T>
 struct traits<
-  ::pressio::containers::experimental::MultiVectorSet<T>>
+  ::pressio::containers::experimental::MultiVectorSet<T>
+>
 {
   using mv_t = typename ::pressio::containers::experimental::MultiVectorSet<T>::mv_type;
   using scalar_t = typename traits<mv_t>::scalar_t;
 };
 }// end namespace details
 
-}}//end namespace pressio::containers
-#endif// CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPERIMENTAL_CONTAINERS_MULTIVECTOR_SET_HPP_

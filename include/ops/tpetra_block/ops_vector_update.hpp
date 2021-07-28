@@ -49,57 +49,61 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
 #define OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 //----------------------------------------------------------------------
 // computing:  V = a * V + b * V1
 //----------------------------------------------------------------------
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
 update(T & v, const scalar_t a,
-       const T & v1, const scalar_t b)
+	  const T & v1, const scalar_t b)
 {
-  v.data()->update(b, *v1.data(), a);// v = a*v + b * v1
+  v.data()->update(b, *v1.data(), a); // v = a*v + b * v1
 }
 
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
 update(T & v, const T & v1, const scalar_t b)
 {
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-  v.data()->update(b, *v1.data(), zero);// v = b * v1
+  v.data()->update(b, *v1.data(), zero); // v = b * v1
 }
 
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
 //----------------------------------------------------------------------
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
-update(T & v, const scalar_t & a,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c)
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
-  v.data()->update(b, *v1.data(), a);// v = v + b * v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+  v.data()->update(b, *v1.data(), a); // v = v + b * v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
 }
 
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
 update(T & v,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c)
+	       const T & v1, const scalar_t &b,
+	       const T & v2, const scalar_t &c)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
-  v.data()->update(b, *v1.data(), zero);// v = b * v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
+  v.data()->update(b, *v1.data(), zero); // v = b * v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
 }
 
 
@@ -107,35 +111,37 @@ update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3
 //----------------------------------------------------------------------
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
-update(T & v, const scalar_t & a,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c,
-       const T & v3, const scalar_t & d)
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
 
-  v.data()->update(b, *v1.data(), a);// v = a*v + b*v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
-  v.data()->update(d, *v3.data(), one);// add d*v3
+  v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
+  v.data()->update(d, *v3.data(), one); // add d*v3
 }
 
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
 update(T & v,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c,
-       const T & v3, const scalar_t & d)
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
-  v.data()->update(b, *v1.data(), zero);// v = b * v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
-  v.data()->update(d, *v3.data(), one);// add d*v3
+  v.data()->update(b, *v1.data(), zero); // v = b * v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
+  v.data()->update(d, *v3.data(), one); // add d*v3
 }
 
 
@@ -143,41 +149,43 @@ update(T & v,
 //  overloads for computing:
 //	V = a * V + b * V1 + c * V2 + d * V3 + e * V4
 //----------------------------------------------------------------------
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
-update(T & v, const scalar_t & a,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c,
-       const T & v3, const scalar_t & d,
-       const T & v4, const scalar_t & e)
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
+update(T & v, const scalar_t &a,
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
 
-  v.data()->update(b, *v1.data(), a);// v = a*v + b*v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
-  v.data()->update(d, *v3.data(), one);// add d*v3
-  v.data()->update(e, *v4.data(), one);// add e*v4
+  v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
+  v.data()->update(d, *v3.data(), one); // add d*v3
+  v.data()->update(e, *v4.data(), one); // add e*v4
 }
 
-template <typename T, typename scalar_t>
+template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+  >
 update(T & v,
-       const T & v1, const scalar_t & b,
-       const T & v2, const scalar_t & c,
-       const T & v3, const scalar_t & d,
-       const T & v4, const scalar_t & e)
+	  const T & v1, const scalar_t &b,
+	  const T & v2, const scalar_t &c,
+	  const T & v3, const scalar_t &d,
+	  const T & v4, const scalar_t &e)
 {
-  constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
   constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
 
-  v.data()->update(b, *v1.data(), zero);// v = b * v1
-  v.data()->update(c, *v2.data(), one);// add c*v2
-  v.data()->update(d, *v3.data(), one);// add d*v3
-  v.data()->update(e, *v4.data(), one);// add e*v4
+  v.data()->update(b, *v1.data(), zero); // v = b * v1
+  v.data()->update(c, *v2.data(), one); // add c*v2
+  v.data()->update(d, *v3.data(), one); // add d*v3
+  v.data()->update(e, *v4.data(), one); // add e*v4
 }
 
 
 }}//end namespace pressio::ops
-#endif// OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_VECTOR_UPDATE_HPP_

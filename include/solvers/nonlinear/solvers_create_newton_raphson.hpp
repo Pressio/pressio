@@ -51,16 +51,17 @@
 
 #include "./impl/solvers_nonlinear_compose.hpp"
 
-namespace pressio { namespace solvers { namespace nonlinear {
+namespace pressio{ namespace solvers{ namespace nonlinear{
 
-template <typename system_t, typename state_t, typename... Args>
+template<typename system_t, typename state_t, typename ...Args>
 auto createNewtonRaphson(const system_t & system,
 			 const state_t & state,
-			 Args &&... args)
+			 Args && ...args)
   -> impl::composeNewtonRaphson_t<system_t, Args...>
 {
-  return impl::composeNewtonRaphson_t<system_t, Args...>(system, state, std::forward<Args>(args)...);
+  return impl::composeNewtonRaphson_t<system_t, Args...>
+    (system, state, std::forward<Args>(args)...);
 }
 
 }}}
-#endif// SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_
+#endif  // SOLVERS_NONLINEAR_SOLVERS_CREATE_NEWTON_RAPHSON_HPP_

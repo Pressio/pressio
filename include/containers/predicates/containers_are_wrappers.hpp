@@ -49,18 +49,18 @@
 #ifndef CONTAINERS_PREDICATES_CONTAINERS_ARE_WRAPPERS_HPP_
 #define CONTAINERS_PREDICATES_CONTAINERS_ARE_WRAPPERS_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
-template <typename... Args>
+template<typename ...Args>
 struct are_wrappers;
 
-template <typename T>
+template<typename T>
 struct are_wrappers<T>
 {
   static constexpr auto value = is_wrapper<T>::value;
 };
 
-template <typename T, typename... Args>
+template<typename T, typename ...Args>
 struct are_wrappers<T, Args...>
 {
   static constexpr auto value =
@@ -68,4 +68,4 @@ struct are_wrappers<T, Args...>
 };
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_CONTAINERS_ARE_WRAPPERS_HPP_
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_ARE_WRAPPERS_HPP_

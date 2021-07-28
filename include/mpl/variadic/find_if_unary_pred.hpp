@@ -49,7 +49,7 @@
 #ifndef MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_
 #define MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_
 
-namespace pressio { namespace mpl { namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \class find_if_unary_pred Compute the index of the first element in the sequence which satisfies a given predicate
@@ -61,28 +61,28 @@ namespace pressio { namespace mpl { namespace variadic {
 element exists, `v` is `size<Sequence>::value`.
  */
 
-template <template <class...> class UnaryPredicate, class... Args>
+template<template<class ...> class UnaryPredicate, class ... Args>
 struct find_if_unary_pred;
 
-template <template <class...> class UnaryPredicate>
+template<template<class ...> class UnaryPredicate>
 struct find_if_unary_pred<UnaryPredicate>
   : std::integral_constant<std::size_t, 0>
-{
-};
+{};
 
-template <template <class... T> class UnaryPredicate, class Head, class... Tail>
+template<template<class ...T> class UnaryPredicate, class Head, class ... Tail>
 struct find_if_unary_pred<UnaryPredicate, Head, Tail...>
-  : std::conditional<
-      UnaryPredicate<Head>::type::value,
-      std::integral_constant<std::size_t, 0>,
-      std::integral_constant<
-	std::size_t, 1 + find_if_unary_pred<UnaryPredicate, Tail...>::type::value>>::type
-{
-};
+  : std::conditional <
+  UnaryPredicate<Head>::type::value,
+  std::integral_constant<std::size_t, 0>,
+  std::integral_constant <
+    std::size_t, 1 + find_if_unary_pred<UnaryPredicate, Tail...>::type::value
+    >
+  >::type
+{};
 
 template <template <class... T> class UnaryPredicate, class... Args>
 using find_if_unary_pred_t = typename find_if_unary_pred<UnaryPredicate, Args...>::type;
 
-}}}// namespace
+}}} // namespace 
 
-#endif// MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_
+#endif  // MPL_VARIADIC_FIND_IF_UNARY_PRED_HPP_

@@ -49,25 +49,28 @@
 #ifndef OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
 #define OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 /* computing elementwise: y = beta * y + alpha * x * z */
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and ::pressio::ops::constraints::rank1_container_pybind<T1>::value and ::pressio::ops::constraints::rank1_container_pybind<T2>::value>
+  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
+  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  >
 elementwise_multiply(typename T::traits::scalar_t alpha,
 		     const T & x,
 		     const T1 & z,
 		     typename T::traits::scalar_t beta,
 		     T2 & y)
 {
-  assert(y.extent(0) == x.extent(0));
-  assert(x.extent(0) == z.extent(0));
-  for(std::size_t i = 0; i < y.extent(0); ++i) {
-    y(i) = beta * y(i) + alpha * x(i) * z(i);
+  assert( y.extent(0)  == x.extent(0) );
+  assert( x.extent(0) == z.extent(0) );
+  for (std::size_t i=0; i<y.extent(0); ++i){
+    y(i) = beta*y(i) + alpha*x(i)*z(i);
   }
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif  // OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_

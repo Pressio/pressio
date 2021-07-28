@@ -49,26 +49,22 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename stepper_tag, typename scalar_t>
-struct dtPrefactor;
+template <typename stepper_tag, typename scalar_t> struct dtPrefactor;
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::implicitmethods::Euler, scalar_t>
-{
+struct dtPrefactor<::pressio::ode::implicitmethods::Euler, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf1<scalar_t>::c_f_;
 };
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::implicitmethods::BDF2, scalar_t>
-{
+struct dtPrefactor<::pressio::ode::implicitmethods::BDF2, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf2<scalar_t>::c_f_;
 };
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::implicitmethods::CrankNicolson, scalar_t>
-{
+struct dtPrefactor<::pressio::ode::implicitmethods::CrankNicolson, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::cranknicolson<scalar_t>::c_fnp1_;
 };
 // ------------------------------------------------------
@@ -81,15 +77,13 @@ template <
   typename decoder_jac_type,
   typename ud_ops
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-  ,
-  mpl::enable_if_t<
-    !::pressio::containers::predicates::is_tensor_wrapper_pybind<lspg_matrix_type>::value and
-      mpl::not_same<ud_ops, pybind11::object>::value,
-    int> = 0
+  , mpl::enable_if_t<
+     !::pressio::containers::predicates::is_tensor_wrapper_pybind<lspg_matrix_type>::value and
+     mpl::not_same< ud_ops, pybind11::object>::value, int > = 0
 #endif
   >
-void time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-			    const scalar_type & dt,
+void time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+			    const scalar_type	& dt,
 			    const decoder_jac_type & phi,
 			    const ud_ops * udOps)
 {
@@ -105,20 +99,22 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+  >
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-		       const scalar_type & dt,
+ ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
 		       const decoder_jac_type & phi)
 {
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = ::pressio::ops::extent(jphi, 0);
   const auto nCols = ::pressio::ops::extent(jphi, 1);
-  for(std::size_t j = 0; j < (std::size_t)nCols; ++j) {
-    for(std::size_t i = 0; i < (std::size_t)nRows; ++i) {
-      jphi(i, j) = phi(i, j) + prefactor * jphi(i, j);
+  for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+    for (std::size_t i=0; i<(std::size_t)nRows; ++i){
+      jphi(i,j) = phi(i,j) + prefactor*jphi(i,j);
     }
   }
 }
@@ -128,11 +124,13 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-		       const scalar_type & dt,
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<lspg_matrix_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
 		       const decoder_jac_type & phi,
 		       const hyp_ind_t & hypIndices)
 {
@@ -144,10 +142,12 @@ time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = ::pressio::ops::extent(jphi, 0);
   const auto nCols = ::pressio::ops::extent(jphi, 1);
-  for(std::size_t j = 0; j < (std::size_t)nCols; ++j) {
-    for(std::size_t i = 0; i < (std::size_t)nRows; ++i) {
+  for (std::size_t j=0; j<(std::size_t)nCols; ++j)
+  {
+    for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+    {
       const auto rowInd = hypIndices(i);
-      jphi(i, j) = phi(rowInd, j) + prefactor * jphi(i, j);
+      jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
     }
   }
 }
@@ -160,12 +160,14 @@ template <
   typename lspg_matrix_type,
   typename scalar_type,
   typename decoder_jac_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 mpl::enable_if_t<
   ::pressio::containers::predicates::is_dense_matrix_wrapper_eigen<lspg_matrix_type>::value or
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-		       const scalar_type & dt,
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
 		       const decoder_jac_type & phi,
 		       const hyp_ind_t & hypIndices)
 {
@@ -177,10 +179,11 @@ time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
   const auto nRows = ::pressio::ops::extent(jphi, 0);
   const auto nCols = ::pressio::ops::extent(jphi, 1);
-  for(std::size_t i = 0; i < (std::size_t)nRows; ++i) {
+  for (std::size_t i=0; i<(std::size_t)nRows; ++i)
+  {
     const auto rowInd = hypIndices(i);
-    for(std::size_t j = 0; j < (std::size_t)nCols; ++j) {
-      jphi(i, j) = phi(rowInd, j) + prefactor * jphi(i, j);
+    for (std::size_t j=0; j<(std::size_t)nCols; ++j){
+      jphi(i,j) = phi(rowInd,j) + prefactor*jphi(i,j);
     }
   }
 }
@@ -195,17 +198,19 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_eigen<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_wrapper_eigen<decoder_jac_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-		       const scalar_type & dt,
+  containers::predicates::is_multi_vector_wrapper_eigen<decoder_jac_type>::value
+>
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
 		       const decoder_jac_type & phi)
 {
 
-  assert(::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1));
-  assert(::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0));
+  assert( ::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1) );
+  assert( ::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0) );
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -221,17 +226,19 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_kokkos<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
-		       const scalar_type & dt,
+  containers::predicates::is_multi_vector_wrapper_kokkos<decoder_jac_type>::value
+>
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
+		       const scalar_type	& dt,
 		       const decoder_jac_type & phi)
 {
 
-  assert(::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1));
-  assert(::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0));
+  assert( ::pressio::ops::extent(jphi, 1) == ::pressio::ops::extent(phi, 1) );
+  assert( ::pressio::ops::extent(jphi, 0) == ::pressio::ops::extent(phi, 0) );
 
   // prefactor (f) multiplying f*dt*J*phi
   const auto prefactor = dt * dtPrefactor<stepper_tag, scalar_type>::value;
@@ -279,11 +286,13 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_epetra<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_wrapper_epetra<decoder_jac_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi stands for J * phi
+  containers::predicates::is_multi_vector_wrapper_epetra<decoder_jac_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi stands for J * phi
 		       const scalar_type & dt,
 		       const decoder_jac_type & phi)
 {
@@ -294,25 +303,25 @@ time_discrete_jacobian(lspg_matrix_type & jphi,//jphi stands for J * phi
   // row map of phi
   const auto & phi_map = phi.data()->Map();
   // my global elements
-  std::vector<GO_t> gIDphi(::pressio::ops::extent_local(phi, 0));
-  phi_map.MyGlobalElements(gIDphi.data());
+  std::vector<GO_t> gIDphi( ::pressio::ops::extent_local(phi,0) );
+  phi_map.MyGlobalElements( gIDphi.data() );
 
   // map of jphi
   const auto & jphi_map = jphi.data()->Map();
   // global elements
-  std::vector<GO_t> gIDjphi(j::pressio::ops::extent_local(phi, 0));
-  jphi_map.MyGlobalElements(gIDjphi.data());
+  std::vector<GO_t> gIDjphi( j::pressio::ops::extent_local(phi,0) );
+  jphi_map.MyGlobalElements( gIDjphi.data() );
 
   // prefactor (f) multiplying f*dt*J*phi
   constexpr auto prefactor = dtPrefactor<stepper_tag, scalar_type>::value;
 
   //loop over elements of jphi
-  for(auto i = 0; i < j::pressio::ops::extent_local(phi, 0); i++) {
+  for (auto i=0; i<j::pressio::ops::extent_local(phi,0); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     auto lid = phi_map.LID(gIDjphi[i]);
-    for(auto j = 0; j < ::pressio::ops::extent(jphi, 1); j++)
-      jphi(i, j) = phi(lid, j) + prefactor * dt * jphi(i, j);
+    for (auto j=0; j<::pressio::ops::extent(jphi, 1); j++)
+      jphi(i,j) = phi(lid,j) + prefactor*dt*jphi(i,j);
   }
 }
 
@@ -323,11 +332,13 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_tpetra<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_tpetra<decoder_jac_type>::value>
-time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
+  containers::predicates::is_multi_vector_tpetra<decoder_jac_type>::value
+  >
+time_discrete_jacobian(lspg_matrix_type & jphi, //jphi holds J * phi
 		       const scalar_type & dt,
 		       const decoder_jac_type & phi)
 {
@@ -349,12 +360,12 @@ time_discrete_jacobian(lspg_matrix_type & jphi,//jphi holds J * phi
   auto phi2dView = phi.get2dView();
 
   //loop over elements of jphi
-  for(size_t i = 0; i < jphi.getLocalLength(); i++) {
+  for (size_t i=0; i<jphi.getLocalLength(); i++){
     // ask the phi map what is the local index corresponding
     // to the global index we are handling
     const auto lid = phi_map->getLocalElement(gIDjphi[i]);
-    for(size_t j = 0; j < jphi.getNumVectors(); j++)
-      jphi2dView[j][i] = phi2dView[j][lid] + prefactor * dt * jphi2dView[j][i];
+    for (size_t j=0; j<jphi.getNumVectors(); j++)
+      jphi2dView[j][i] = phi2dView[j][lid] + prefactor*dt*jphi2dView[j][i];
   }
 }
 
@@ -366,13 +377,15 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value>
+  containers::predicates::is_multi_vector_wrapper_tpetra<decoder_jac_type>::value
+>
 time_discrete_jacobian(lspg_matrix_type & jphi,
-		       const scalar_type & dt,
-		       const decoder_jac_type & phi)
+			    const scalar_type	& dt,
+			    const decoder_jac_type & phi)
 {
   time_discrete_jacobian<stepper_tag>(*jphi.data(), dt, *phi.data());
 }
@@ -381,20 +394,22 @@ template <
   typename stepper_tag,
   typename lspg_matrix_type,
   typename scalar_type,
-  typename decoder_jac_type>
+  typename decoder_jac_type
+>
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_multi_vector_wrapper_tpetra_block<lspg_matrix_type>::value and
-  containers::predicates::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value>
+  containers::predicates::is_multi_vector_wrapper_tpetra_block<decoder_jac_type>::value
+>
 time_discrete_jacobian(lspg_matrix_type & jphi,
-		       const scalar_type & dt,
-		       const decoder_jac_type & phi)
+			    const scalar_type & dt,
+			    const decoder_jac_type & phi)
 {
   auto jphi_mvv = jphi.data()->getMultiVectorView();
-  auto phi_mvv = phi.data()->getMultiVectorView();
+  auto phi_mvv  = phi.data()->getMultiVectorView();
   time_discrete_jacobian<stepper_tag>(jphi_mvv, dt, phi_mvv);
 }
 
 #endif
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_JACOBIAN_HPP_

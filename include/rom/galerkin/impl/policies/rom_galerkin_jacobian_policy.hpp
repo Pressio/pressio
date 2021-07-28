@@ -49,9 +49,9 @@
 #ifndef ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template <class galerkin_jacobian_type, typename projection_policy_t>
+template<class galerkin_jacobian_type, typename projection_policy_t>
 class JacobianPolicy : private projection_policy_t
 {
 
@@ -63,10 +63,10 @@ public:
   JacobianPolicy & operator=(JacobianPolicy &&) = delete;
   ~JacobianPolicy() = default;
 
-  template <typename... Args>
-  JacobianPolicy(std::size_t romSize, Args &&... args)
+  template<typename ...Args>
+  JacobianPolicy(std::size_t romSize, Args && ...args)
     : projection_policy_t(std::forward<Args>(args)...),
-      romSize_(romSize) {}
+      romSize_(romSize){}
 
 public:
   template <typename fom_system_t>
@@ -80,9 +80,11 @@ public:
     typename galerkin_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
+    typename scalar_t
+    >
   mpl::enable_if_t<
-    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value>
+    ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
+    >
   compute(const galerkin_state_t & galerkinState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -102,9 +104,11 @@ public:
     typename galerkin_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
+    typename scalar_t
+    >
   mpl::enable_if_t<
-    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value>
+    ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value
+    >
   compute(const galerkin_state_t & galerkinState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -123,4 +127,4 @@ private:
 };
 
 }}}}
-#endif// ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_
+#endif  // ROM_GALERKIN_IMPL_POLICIES_ROM_GALERKIN_JACOBIAN_POLICY_HPP_

@@ -49,48 +49,46 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace constraints {
+namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
-template <typename T, typename enable = void>
-struct state : std::false_type
-{
-};
+template<typename T, typename enable = void>
+struct state : std::false_type{};
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <typename T>
+template<typename T>
 struct state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value>> : std::true_type
-{
-};
+    ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value
+    >
+  > : std::true_type{};
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T>
+template<typename T>
 struct state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value>> : std::true_type
-{
-};
+    ::pressio::containers::predicates::is_vector_wrapper_kokkos<T>::value
+   >
+  > : std::true_type{};
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T>
+template<typename T>
 struct state<
   T,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value>> : std::true_type
-{
-};
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+   >
+  > : std::true_type{};
 #endif
 
-template <typename T>
+template<typename T>
 using lspg_state = state<T>;
 
-template <typename T>
+template<typename T>
 using rom_state = state<T>;
 
 }}}}
-#endif// ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_LSPG_STATE_HPP_

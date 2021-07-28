@@ -49,11 +49,10 @@
 #ifndef SVD_SVD_SOLVER_TRAITS_HPP_
 #define SVD_SVD_SOLVER_TRAITS_HPP_
 
-namespace pressio { namespace svd { namespace details {
+namespace pressio{  namespace svd{ namespace details{
 
-template <typename T, typename enable = void>
-struct svd_traits
-{
+template<typename T, typename enable = void>
+struct svd_traits{
   using derived_t = void;
   using matrix_t = void;
   using native_matrix_t = void;
@@ -61,16 +60,15 @@ struct svd_traits
   using lsv_t = void;
   using rsv_t = void;
   using sval_t = void;
+  
 };
 //---------------------------------------------------------------
 
-template <typename T>
-struct svd_traits<const T> : svd_traits<T>
-{
-};
+template<typename T> 
+struct svd_traits<const T> : svd_traits<T> {};
 //---------------------------------------------------------------
 
-
+  
 // #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // template <typename matrix_type,
 // 	  template <typename...> class lsv_type,
@@ -106,21 +104,25 @@ struct svd_traits<const T> : svd_traits<T>
 // #endif
 // //---------------------------------------------------------------
 
-
+  
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template <typename matrix_type,
 	  template <typename...> class lsv_type,
 	  template <typename...> class rsv_type,
 	  typename sval_type>
 struct svd_traits<Solver<
-  matrix_type,
-  lsv_type,
-  rsv_type,
-  sval_type,
-  typename std::enable_if<
-    containers::predicates::is_multi_vector_epetra<
-      typename containers::details::traits<matrix_type>::wrapped_t>::value>::type>>
-{
+		    matrix_type,
+		    lsv_type,
+		    rsv_type,
+		    sval_type,
+		    typename
+		    std::enable_if<
+		      containers::predicates::is_multi_vector_epetra<
+			typename containers::details::traits<matrix_type>::wrapped_t
+			>::value
+		      >::type
+		    >
+		  >{
 
   using derived_t = Solver<matrix_type, lsv_type, rsv_type, sval_type>;
 
@@ -135,8 +137,8 @@ struct svd_traits<Solver<
 };
 #endif
 
-
+  
 }//end namespace details
-}//end namespace svd
+}//end namespace svd 
 }//end namespace pressio
-#endif// SVD_SVD_SOLVER_TRAITS_HPP_
+#endif  // SVD_SVD_SOLVER_TRAITS_HPP_

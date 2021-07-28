@@ -25,7 +25,7 @@ class log_msg_buffer : public log_msg
 public:
   log_msg_buffer() = default;
 
-  explicit log_msg_buffer(const log_msg & orig_msg)
+  explicit log_msg_buffer(const log_msg &orig_msg)
     : log_msg{orig_msg}
   {
     buffer.append(logger_name.begin(), logger_name.end());
@@ -33,7 +33,7 @@ public:
     update_string_views();
   }
 
-  log_msg_buffer(const log_msg_buffer & other)
+  log_msg_buffer(const log_msg_buffer &other)
     : log_msg{other}
   {
     buffer.append(logger_name.begin(), logger_name.end());
@@ -41,12 +41,12 @@ public:
     update_string_views();
   }
 
-  log_msg_buffer(log_msg_buffer && other) SPDLOG_NOEXCEPT
+  log_msg_buffer(log_msg_buffer &&other) SPDLOG_NOEXCEPT
   {
     update_string_views();
   }
 
-  log_msg_buffer & operator=(const log_msg_buffer & other)
+  log_msg_buffer &operator=(const log_msg_buffer &other)
   {
     log_msg::operator=(other);
     buffer.clear();
@@ -55,7 +55,7 @@ public:
     return *this;
   }
 
-  log_msg_buffer & operator=(log_msg_buffer && other) SPDLOG_NOEXCEPT
+  log_msg_buffer &operator=(log_msg_buffer &&other) SPDLOG_NOEXCEPT
   {
     log_msg::operator=(other);
     buffer = std::move(other.buffer);
@@ -64,10 +64,10 @@ public:
   }
 };
 
-}// namespace details
-}// namespace spdlog
+} // namespace details
+} // namespace spdlog
 
 // #ifdef SPDLOG_HEADER_ONLY
 // #include "log_msg_buffer-inl.hpp"
 // #endif
-#endif// UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_LOG_MSG_BUFFER_HPP_

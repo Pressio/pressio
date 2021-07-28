@@ -49,21 +49,24 @@
 #ifndef OPS_EIGEN_OPS_ABS_HPP_
 #define OPS_EIGEN_OPS_ABS_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 // y= abs(x)
 template <class T2, class T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_eigen_with_native_data_access<T2>::value
+  >
 abs(T1 & y, const T2 & x)
 {
-  static_assert(containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T1, T2>::value,
+     "Types are not scalar compatible");
 
   using ord_t = typename ::pressio::containers::details::traits<T1>::ordinal_t;
-  for(ord_t i = 0; i < ::pressio::ops::extent(x, 0); ++i)
+  for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i)
     y(i) = std::abs(x(i));
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EIGEN_OPS_ABS_HPP_
+#endif  // OPS_EIGEN_OPS_ABS_HPP_

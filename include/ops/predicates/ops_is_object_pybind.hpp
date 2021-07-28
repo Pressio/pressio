@@ -49,19 +49,15 @@
 #ifndef OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
 #define OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
 
-namespace pressio { namespace ops { namespace predicates {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_object_pybind : std::false_type
-{
-};
+struct is_object_pybind : std::false_type {};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 template <>
-struct is_object_pybind<pybind11::object> : std::true_type
-{
-};
+struct is_object_pybind<pybind11::object> : std::true_type {};
 #endif
 
 }}}//end namespace pressio::ops::predicates
-#endif// OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_
+#endif  // OPS_PREDICATES_OPS_IS_OBJECT_PYBIND_HPP_

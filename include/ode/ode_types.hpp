@@ -49,7 +49,7 @@
 #ifndef ODE_ODE_TYPES_HPP_
 #define ODE_ODE_TYPES_HPP_
 
-namespace pressio { namespace ode { namespace types {
+namespace pressio{ namespace ode{ namespace types {
 
 //! Default type for the ode step
 using step_t = int32_t;
@@ -60,18 +60,16 @@ using stepper_order_t = int32_t;
 // this is used to set implicit stepper order
 // when the user chooses the arbitrary one
 template <types::stepper_order_t valueIn>
-struct StepperOrder
-{
+struct StepperOrder{
   static constexpr types::stepper_order_t value = valueIn;
 };
 
 // this is used to set the TOTAL number of states
 // when the user chooses the arbitrary one
 template <std::size_t valueIn>
-struct StepperTotalNumberOfStates
-{
+struct StepperTotalNumberOfStates{
   static constexpr std::size_t value = valueIn;
 };
 
-}}}// end of namespace pressio::ode::types
-#endif// ODE_ODE_TYPES_HPP_
+}}} // end of namespace pressio::ode::types
+#endif  // ODE_ODE_TYPES_HPP_

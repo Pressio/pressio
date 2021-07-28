@@ -49,20 +49,21 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
 #define OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<vec_type>::value &&
-    std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
-		 typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
-  typename ::pressio::containers::details::traits<vec_type>::mag_t>
+  std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
+	       typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
+  typename ::pressio::containers::details::traits<vec_type>::mag_t
+  >
 norm2(const vec_type & a)
 {
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
   using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t *>(a.data())->getVectorView().norm2();
+  return const_cast<mv_t*>(a.data())->getVectorView().norm2();
 }
 
 template <typename vec_type>
@@ -70,14 +71,15 @@ template <typename vec_type>
   ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<vec_type>::value &&
     std::is_same<typename ::pressio::containers::details::traits<vec_type>::scalar_t,
 		 typename ::pressio::containers::details::traits<vec_type>::mag_t>::value,
-  typename ::pressio::containers::details::traits<vec_type>::mag_t>
+  typename ::pressio::containers::details::traits<vec_type>::mag_t
+  >
 norm1(const vec_type & a)
 {
   /* workaround the non-constness of getVectorView,
    * which is supposed to be const but it is not */
   using mv_t = Tpetra::BlockVector<>;
-  return const_cast<mv_t *>(a.data())->getVectorView().norm1();
+  return const_cast<mv_t*>(a.data())->getVectorView().norm1();
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_NORMS_VECTOR_HPP_

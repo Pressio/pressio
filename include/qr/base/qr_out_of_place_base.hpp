@@ -49,35 +49,29 @@
 #ifndef QR_BASE_QR_OUT_OF_PLACE_BASE_HPP_
 #define QR_BASE_QR_OUT_OF_PLACE_BASE_HPP_
 
-namespace pressio { namespace qr {
+namespace pressio{ namespace qr{
 
 
-template <typename derived_t, typename matrix_t, typename Q_t>
+template<typename derived_t, typename matrix_t, typename Q_t>
 class QROutOfPlaceBase
   : private utils::details::CrtpBase<
-      QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
+  QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
 {
 
   using this_t = QROutOfPlaceBase<derived_t, matrix_t, Q_t>;
 
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
-  template <typename DummyType>
-  struct dummy
-  {
-    using type = DummyType;
-  };
+  template<typename DummyType> struct dummy{using type = DummyType;};
   friend typename dummy<derived_t>::type;
 
   friend utils::details::CrtpBase<this_t>;
 
 public:
-  void computeThin(const matrix_t & A)
-  {
+  void computeThin(const matrix_t & A){
     this->underlying().computeThinImpl(A);
   }
 
-  const Q_t & cRefQFactor() const
-  {
+  const Q_t & cRefQFactor() const {
     return this->underlying().cRefQFactorImpl();
   }
 
@@ -85,25 +79,26 @@ public:
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_vector_wrapper<vec_in_t>::value and
     containers::predicates::is_vector_wrapper<vec_out_t>::value and
-    meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value>
-  applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const
-  {
+    meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
+  >
+  applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyQTransposeImpl(vecIn, vecOut);
   }
 
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_vector_wrapper<vec_in_t>::value and
-    containers::predicates::is_vector_wrapper<vec_out_t>::value>
-  applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const
-  {
+    containers::predicates::is_vector_wrapper<vec_out_t>::value
+  >
+  applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyRTransposeImpl(vecIn, vecOut);
   }
 
 private:
   QROutOfPlaceBase() = default;
   ~QROutOfPlaceBase() = default;
+
 };
 
 }}//end namespace pressio::qr
-#endif// QR_BASE_QR_OUT_OF_PLACE_BASE_HPP_
+#endif  // QR_BASE_QR_OUT_OF_PLACE_BASE_HPP_

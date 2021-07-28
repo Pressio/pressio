@@ -49,7 +49,7 @@
 #ifndef OPS_KOKKOS_OPS_ELEMENTWISE_MULTIPLY_HPP_
 #define OPS_KOKKOS_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 #include <KokkosBlas1_mult.hpp>
 
@@ -58,23 +58,28 @@ namespace pressio { namespace ops {
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
+  >
 elementwise_multiply(typename T::traits::scalar_t alpha,
 		     const T & x,
 		     const T1 & z,
 		     typename T::traits::scalar_t beta,
 		     T2 & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<T, T1, T2>::value,
-		"dot: types are not scalar compatible");
-  static_assert(containers::predicates::have_matching_execution_space<T, T1, T2>::value,
-		"dot: types must have matching execution space");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T, T1, T2>::value,
+     "dot: types are not scalar compatible");
+  static_assert
+    (containers::predicates::have_matching_execution_space<T, T1, T2>::value,
+     "dot: types must have matching execution space");
 
   assert(x.extent(0) == z.extent(0));
   assert(z.extent(0) == y.extent(0));
   using namespace KokkosBlas;
-  mult(beta, *y.data(), alpha, *x.data(), *z.data());
+  mult(beta, *y.data(), alpha, *x.data(), *z.data() );
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif  // OPS_KOKKOS_OPS_ELEMENTWISE_MULTIPLY_HPP_

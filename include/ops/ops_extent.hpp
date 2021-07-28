@@ -49,21 +49,23 @@
 #ifndef OPS_OPS_EXTENT_HPP_
 #define OPS_OPS_EXTENT_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
-template <class T, class index_t>
+template<class T, class index_t>
 mpl::enable_if_t<
   ::pressio::containers::predicates::is_wrapper<T>::value,
-  decltype(std::declval<const T>().extent(0))>
+  decltype(std::declval<const T>().extent(0))
+  >
 extent(const T & objectIn, const index_t i)
 {
   return objectIn.extent(i);
 }
 
-template <class T, class index_t>
+template<class T, class index_t>
 mpl::enable_if_t<
   ::pressio::containers::predicates::is_expression<T>::value,
-  decltype(std::declval<const T>().extent(0))>
+  decltype(std::declval<const T>().extent(0))
+  >
 extent(const T & objectIn, const index_t i)
 {
   return objectIn.extent(i);

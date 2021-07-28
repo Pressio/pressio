@@ -49,25 +49,20 @@
 #ifndef CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 #define CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_multi_vector_wrapper_tpetra : std::false_type
-{
-};
+struct is_multi_vector_wrapper_tpetra : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_tpetra<
   MultiVector<T>,
-  mpl::enable_if_t<is_multi_vector_tpetra<T>::value>> : std::true_type
-{
-};
+  mpl::enable_if_t<is_multi_vector_tpetra<T>::value>
+  > : std::true_type{};
 
 template <typename T>
 struct is_multi_vector_wrapper_tpetra<const MultiVector<T>>
-  : is_multi_vector_wrapper_tpetra<MultiVector<T>>
-{
-};
+  : is_multi_vector_wrapper_tpetra<MultiVector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_TPETRA_HPP_

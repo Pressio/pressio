@@ -49,15 +49,16 @@
 #ifndef OPS_TEUCHOS_OPS_FILL_HPP_
 #define OPS_TEUCHOS_OPS_FILL_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_teuchos<T>::value
+  >
 fill(T & v, typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  v.data()->putScalar(value);
+  v.data()->putScalar( value );
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TEUCHOS_OPS_FILL_HPP_
+#endif  // OPS_TEUCHOS_OPS_FILL_HPP_

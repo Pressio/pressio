@@ -49,7 +49,7 @@
 #ifndef OPS_EPETRA_OPS_LEVEL2_HPP_
 #define OPS_EPETRA_OPS_LEVEL2_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 /*
  * multi_vector prod vector
@@ -59,7 +59,7 @@ namespace pressio { namespace ops {
 */
 
 // begin namespace pressio::ops::impl
-namespace impl {
+namespace impl{
 
 template <typename A_type, typename x_type, typename scalar_type>
 void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
@@ -73,11 +73,11 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 
   // using go_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   // using lo_t = typename ::pressio::containers::details::traits<A_type>::local_ordinal_t;
-  for(std::size_t i = 0; i < (std::size_t)A.extentLocal(0); i++) {
+  for (std::size_t i=0; i<(std::size_t)A.extentLocal(0); i++){
     //rowSum = zero;
-    y(i) = beta * y(i);
-    for(std::size_t j = 0; j < (std::size_t)numVecs; j++) {
-      y(i) += alpha * A(i, j) * x(j);
+    y(i) = beta*y(i);
+    for (std::size_t j=0; j<(std::size_t)numVecs; j++){
+      y(i) += alpha * A(i,j) * x(j);
     }
   }
 }
@@ -86,9 +86,11 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 /* -------------------------------------------------------------------
  * x is a sharedmem vector wrapper
  *-------------------------------------------------------------------*/
-template <typename A_type, typename x_type, typename scalar_type>
+template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value>
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value
+  >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -96,11 +98,13 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	::pressio::containers::Vector<Epetra_Vector> & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type>::value,
-		"Types are not scalar compatible");
-  static_assert(mpl::is_same<
-		  scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
-		"Scalar compatibility broken");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
 
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
 }
@@ -115,9 +119,11 @@ product(::pressio::nontranspose mode,
  * this covers the case where the matrix A acts locally to x
    while y is distributed, so A*x only fills the corresponding part of y
  *-------------------------------------------------------------------*/
-template <typename A_type, typename x_type, typename scalar_type>
+template < typename A_type, typename x_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value>
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<x_type>::value
+  >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -125,13 +131,15 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	::pressio::containers::Vector<Epetra_Vector> & y)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, x_type>::value,
-		"Types are not scalar compatible");
-  static_assert(mpl::is_same<
-		  scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
-		"Scalar compatibility broken");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, x_type>::value,
+     "Types are not scalar compatible");
+  static_assert
+    (mpl::is_same<
+     scalar_type, typename ::pressio::containers::details::traits<x_type>::scalar_t>::value,
+     "Scalar compatibility broken");
 
-  using eig_mapping_t = Eigen::Map<Eigen::Matrix<scalar_type, -1, -1>>;
+  using eig_mapping_t = Eigen::Map< Eigen::Matrix<scalar_type, -1, -1> >;
   eig_mapping_t yMapped(y.data()->Values(), y.extentLocal(0), 1);
   const auto & AE = *A.data();
   const auto & xE = *x.data();
@@ -144,7 +152,9 @@ product(::pressio::nontranspose mode,
  *-------------------------------------------------------------------*/
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value>
+  ::pressio::containers::predicates::is_multi_vector_wrapper_epetra<A_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value
+  >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -152,17 +162,19 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
+     "Types are not scalar compatible");
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
   const auto numVecs = A.numVectorsGlobal();
-  assert((std::size_t)y.extent(0) == (std::size_t)numVecs);
+  assert( (std::size_t)y.extent(0) == (std::size_t)numVecs );
 
   auto * mvNatData = A.data();
   const auto * vecNatData = x.data();
   auto tmp = ::pressio::utils::constants<scalar_type>::zero();
-  for(std::size_t i = 0; i < (std::size_t)numVecs; i++) {
+  for (std::size_t i=0; i<(std::size_t)numVecs; i++)
+  {
     (*mvNatData)(i)->Dot(*vecNatData, &tmp);
     y(i) = beta * y(i) + alpha * tmp;
   }
@@ -177,7 +189,9 @@ product(::pressio::transpose mode,
  *-------------------------------------------------------------------*/
 template <typename A_type, typename y_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value>
+  ::pressio::containers::predicates::is_multi_vector_wrapper_eigen<A_type>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<y_type>::value
+  >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -185,10 +199,11 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<A_type, y_type>::value,
+     "Types are not scalar compatible");
 
-  using eig_mapping_t = const Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1>>;
+  using eig_mapping_t = const Eigen::Map< const Eigen::Matrix<scalar_type, -1, -1> >;
   eig_mapping_t xMapped(x.data()->Values(), x.extentLocal(0), 1);
   const auto & AE = *A.data();
   auto & yE = *y.data();
@@ -197,4 +212,4 @@ product(::pressio::transpose mode,
 #endif
 
 }}//end namespace pressio::ops
-#endif// OPS_EPETRA_OPS_LEVEL2_HPP_
+#endif  // OPS_EPETRA_OPS_LEVEL2_HPP_

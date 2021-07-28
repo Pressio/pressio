@@ -13,6 +13,7 @@
 #include <Tpetra_Map_decl.hpp>
 
 
+
 /* the tpetra data structures below are
  * left without templates such that it picks
  * up the default. So if kokkos is built with
@@ -22,8 +23,7 @@
  */
 
 struct tpetraBlockVectorGlobSize15BlockSize5Fixture
-  : public ::testing::Test
-{
+  : public ::testing::Test{
 
 public:
   using tcomm = Teuchos::Comm<int>;
@@ -43,10 +43,9 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   std::shared_ptr<vec_t> x_;
 
-  virtual void SetUp()
-  {
+  virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
 
@@ -55,15 +54,15 @@ public:
     x_ = std::make_shared<vec_t>(*contigMap_, blockSize_);
   }
 
-  virtual void TearDown() {}
+  virtual void TearDown(){}
 };
 
 
 struct tpetraBlockMultiVectorGlobSize15NVec3BlockSize4Fixture
-  : public ::testing::Test
-{
+  : public ::testing::Test{
 
 public:
+
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
   using mvec_t = Tpetra::BlockMultiVector<>;
@@ -81,10 +80,9 @@ public:
   Teuchos::RCP<const map_t> contigMap_;
   std::shared_ptr<mvec_t> mv_;
 
-  virtual void SetUp()
-  {
+  virtual void SetUp(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
-    comm_ = Teuchos::rcp(new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
     numProc_ = comm_->getSize();
 
@@ -93,7 +91,7 @@ public:
     mv_ = std::make_shared<mvec_t>(*contigMap_, blockSize_, numVecs_);
   }
 
-  virtual void TearDown() {}
+  virtual void TearDown(){}
 };
 
 

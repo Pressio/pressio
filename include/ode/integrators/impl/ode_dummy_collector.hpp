@@ -49,7 +49,7 @@
 #ifndef ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
 #define ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
 
-namespace pressio { namespace ode { namespace impl {
+namespace pressio{ namespace ode{ namespace impl{
 
 template <typename time_type, typename state_type>
 struct DummyCollector
@@ -63,4 +63,4 @@ struct DummyCollector
 };
 
 }}}//end namespace pressio::ode::impl
-#endif// ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#endif  // ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_

@@ -51,17 +51,17 @@
 
 #include "Tpetra_TsqrAdaptor.hpp"
 
-namespace pressio { namespace qr { namespace impl {
+namespace pressio{ namespace qr{ namespace impl{
 
-template <typename matrix_t, typename R_t, typename MV_t, template <typename...> class Q_type>
+template<typename matrix_t, typename R_t, typename MV_t, template<typename...> class Q_type>
 class TpetraMVTSQR<matrix_t, R_t, MV_t, Q_type, void>
 {
 
-  using int_t = int;
-  using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
+  using int_t	     = int;
+  using sc_t	     = typename containers::details::traits<matrix_t>::scalar_t;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
-  using trcp_mat = Teuchos::RCP<serden_mat_t>;
-  using Q_t = Q_type<MV_t>;
+  using trcp_mat     = Teuchos::RCP<serden_mat_t>;
+  using Q_t	     = Q_type<MV_t>;
   using tsqr_adaptor_type = Tpetra::TsqrAdaptor<MV_t>;
 
 
@@ -69,37 +69,36 @@ public:
   TpetraMVTSQR() = default;
   ~TpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(const matrix_t & A)
+  void computeThinOutOfPlace(const matrix_t & A) 
   {
-    auto nVecs = ::pressio::ops::extent(A, 1);
+    auto nVecs = ::pressio::ops::extent(A,1);
     auto & ArowMap = *A.data()->getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(*const_cast<matrix_t &>(A).data(),
-				*Qmat_->data(), *localR_.get(), false);
+    tsqrAdaptor_.factorExplicit(*const_cast<matrix_t &>(A).data(), 
+      *Qmat_->data(), *localR_.get(), false);
   }
 
   // void computeThinInPlace(matrix_t & A) {}
 
   template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y) const
-  {
-    qr::impl::solve<vector_t, trcp_mat>(rhs, this->localR_, y);
+  void doLinSolve(const vector_t & rhs, vector_t & y)const {
+      qr::impl::solve<vector_t, trcp_mat>(rhs, this->localR_, y);
   }
 
 
-  template <typename vector_in_t, typename vector_out_t>
+  template < typename vector_in_t, typename vector_out_t>
   void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
   {
-    constexpr auto beta = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  template <typename vector_in_t, typename vector_out_t>
+  template < typename vector_in_t, typename vector_out_t>
   void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
   {
-    constexpr auto beta = ::pressio::utils::constants<sc_t>::zero();
+    constexpr auto beta  = ::pressio::utils::constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->localR_, vecIn, beta, y);
   }
@@ -108,9 +107,9 @@ public:
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
     !containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
-    const T &>
-  RFactor() const
-  {
+    const T &
+  >
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(this->localR_->values());
     return *this->Rmat_;
   }
@@ -119,41 +118,38 @@ public:
   template <typename T = R_t>
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_dense_matrix_wrapper_teuchos<T>::value and !std::is_void<T>::value,
-    const T &>
-  RFactor() const
-  {
+    const T &
+  >
+  RFactor() const {
     this->Rmat_ = std::make_shared<T>(*this->localR_, Teuchos::View);
     return *this->Rmat_;
   }
 
-  const Q_t & QFactor() const
-  {
+  const Q_t & QFactor() const {
     return *this->Qmat_;
   }
 
 private:
-  void createLocalRIfNeeded(int newsize)
-  {
-    if(localR_.is_null() or
-       (localR_->numRows() != newsize and localR_->numCols() != newsize)) {
-      localR_ = Teuchos::rcp(new serden_mat_t(newsize, newsize));
+  void createLocalRIfNeeded(int newsize){
+    if (localR_.is_null() or
+    	(localR_->numRows()!=newsize and localR_->numCols()!=newsize)){
+      localR_ = Teuchos::rcp(new serden_mat_t(newsize, newsize) );
     }
   }
 
   template <typename map_t>
-  void createQIfNeeded(const map_t & map, int cols)
-  {
-    if(!Qmat_ or !Qmat_->data()->getMap()->isSameAs(map))
+  void createQIfNeeded(const map_t & map, int cols){
+    if (!Qmat_ or !Qmat_->data()->getMap()->isSameAs(map) )
       Qmat_ = std::make_shared<Q_t>(map, cols);
   }
 
 private:
   tsqr_adaptor_type tsqrAdaptor_;
-  trcp_mat localR_ = {};
-  int computedRank_ = {};
-  mutable std::shared_ptr<Q_t> Qmat_ = nullptr;
-  mutable std::shared_ptr<R_t> Rmat_ = nullptr;
+  trcp_mat localR_			= {};
+  int computedRank_			= {};
+  mutable std::shared_ptr<Q_t> Qmat_	= nullptr;
+  mutable std::shared_ptr<R_t> Rmat_	= nullptr;
 };
 
-}}}// end namespace pressio::qr::impl
-#endif// QR_IMPL_TPETRA_QR_TPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_
+}}} // end namespace pressio::qr::impl
+#endif  // QR_IMPL_TPETRA_QR_TPETRA_MULTI_VECTOR_TSQR_IMPL_HPP_

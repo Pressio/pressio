@@ -49,41 +49,41 @@
 #ifndef CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_
 #define CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_fstyle_multi_vector_wrapper_pybind : std::false_type
-{
-};
+struct is_fstyle_multi_vector_wrapper_pybind : std::false_type {};
 
 template <typename T>
 struct is_fstyle_multi_vector_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    details::traits<T>::is_matrix &&
-    details::traits<T>::wrapped_matrix_identifier == details::WrappedMatrixIdentifier::DensePybind and
+    details::traits<T>::is_matrix
+    &&
+    details::traits<T>::wrapped_matrix_identifier
+    == details::WrappedMatrixIdentifier::DensePybind
+    and
     is_fstyle_array_pybind11<
-      typename details::traits<T>::wrapped_t>::value>> : std::true_type
-{
-};
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
 // -------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_multi_vector_wrapper_pybind : std::false_type
-{
-};
+struct is_multi_vector_wrapper_pybind : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
-    is_fstyle_multi_vector_wrapper_pybind<T>::value>> : std::true_type
-{
-};
+    is_fstyle_multi_vector_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
 
 
-template <typename T>
+template<typename T>
 using is_multi_vector_wrapper_pybind11 = is_multi_vector_wrapper_pybind<T>;
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_PYBIND11_HPP_

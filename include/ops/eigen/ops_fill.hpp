@@ -49,15 +49,16 @@
 #ifndef OPS_EIGEN_OPS_FILL_HPP_
 #define OPS_EIGEN_OPS_FILL_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value>
+  ::pressio::ops::constraints::container_eigen_with_native_data_access<T>::value
+  >
 fill(T & o, typename T::traits::scalar_t value)
 {
   o.data()->setConstant(value);
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EIGEN_OPS_FILL_HPP_
+#endif  // OPS_EIGEN_OPS_FILL_HPP_

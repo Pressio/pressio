@@ -49,54 +49,45 @@
 #ifndef ODE_PREDICATES_ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_
 #define ODE_PREDICATES_ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_
 
-namespace pressio { namespace ode { namespace predicates {
+namespace pressio{ namespace ode{ namespace predicates { 
 
 template <typename T>
-struct IsStepperTotalNumStatesSetter : std::false_type
-{
-};
+struct IsStepperTotalNumStatesSetter : std::false_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<1>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<1>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<2>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<2>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<3>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<3>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<4>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<4>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<5>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<5>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<6>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<6>
+  > : std::true_type{};
 
 template <>
 struct IsStepperTotalNumStatesSetter<
-  ::pressio::ode::types::StepperTotalNumberOfStates<7>> : std::true_type
-{
-};
+  ::pressio::ode::types::StepperTotalNumberOfStates<7>
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::predicates
-#endif// ODE_PREDICATES_ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_
+}}} // namespace pressio::ode::predicates
+#endif  // ODE_PREDICATES_ODE_IS_STEPPER_TOTAL_N_STATES_SETTER_HPP_

@@ -52,12 +52,14 @@
 #include "KokkosBlas1_nrm1.hpp"
 #include "KokkosBlas1_nrm2.hpp"
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<vec_type>::value, int> = 0>
+    ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<vec_type>::value, int
+    > = 0
+  >
 auto norm1(const vec_type & a)
   -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
@@ -67,7 +69,9 @@ auto norm1(const vec_type & a)
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<vec_type>::value, int> = 0>
+    ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<vec_type>::value, int
+    > = 0
+  >
 auto norm2(const vec_type & a)
   -> typename ::pressio::containers::details::traits<vec_type>::scalar_t
 {
@@ -75,4 +79,4 @@ auto norm2(const vec_type & a)
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_KOKKOS_OPS_NORMS_VECTOR_HPP_

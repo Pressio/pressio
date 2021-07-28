@@ -49,49 +49,54 @@
 #ifndef ROM_GALERKIN_CONSTRAINTS_ROM_MASKER_IMPLICIT_HPP_
 #define ROM_GALERKIN_CONSTRAINTS_ROM_MASKER_IMPLICIT_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace constraints {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace constraints {
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename operand1_t,
   typename operand2_t,
-  typename enable = void>
-struct masker_implicit_stepping : std::false_type
-{
-};
+  typename enable = void
+  >
+struct masker_implicit_stepping : std::false_type{};
 
-template <
+template<
   typename T,
   typename scalar_t,
   typename operand1_t,
-  typename operand2_t>
+  typename operand2_t
+  >
 struct masker_implicit_stepping<
   T, scalar_t, operand1_t, operand2_t,
   mpl::enable_if_t<
-    ::pressio::rom::galerkin::constraints::fom_velocity<operand1_t>::value and ::pressio::rom::constraints::decoder_jacobian<operand2_t>::value and
+    ::pressio::rom::galerkin::constraints::fom_velocity<operand1_t>::value and
+    ::pressio::rom::constraints::decoder_jacobian<operand2_t>::value
+    and
     // createApplyMaskResult for operand1_t
     ::pressio::rom::predicates::has_const_create_apply_mask_result_method_accept_operand_return_result<
       T,
       typename ::pressio::containers::details::traits<operand1_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value and
+      typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value
+    and
     // createApplyMaskResult for operand2_t
     ::pressio::rom::predicates::has_const_create_apply_mask_result_method_accept_operand_return_result<
       T,
       typename ::pressio::containers::details::traits<operand2_t>::wrapped_t,
-      typename ::pressio::containers::details::traits<operand2_t>::wrapped_t>::value and
+      typename ::pressio::containers::details::traits<operand2_t>::wrapped_t>::value
+    and
     // applyMask for operand1_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
       T,
       typename ::pressio::containers::details::traits<operand1_t>::wrapped_t,
-      scalar_t, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value and
+      scalar_t, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value
+    and
     // applyMask for operand2_t
     ::pressio::rom::predicates::has_const_apply_mask_method_accept_operand_time_result_return_void<
-      T, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t,
-      scalar_t, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value>> : std::true_type
-{
-};
+    T, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t,
+    scalar_t, typename ::pressio::containers::details::traits<operand1_t>::wrapped_t>::value
+   >
+  > : std::true_type{};
 
 
 }}}}
-#endif// ROM_GALERKIN_CONSTRAINTS_ROM_MASKER_IMPLICIT_HPP_
+#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_MASKER_IMPLICIT_HPP_

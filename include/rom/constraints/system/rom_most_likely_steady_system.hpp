@@ -49,7 +49,7 @@
 #ifndef ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_
 #define ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_
 
-namespace pressio { namespace rom { namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
 // T is most likely a steady time system if:
 // - not "most_likely_continuous_time_system"
@@ -58,18 +58,20 @@ namespace pressio { namespace rom { namespace constraints {
 // - does not have discrete_time_residual typedef
 // - does not have velocity typedef
 
-template <typename T, typename enable = void>
-struct most_likely_steady_system : std::false_type
-{
-};
+template<typename T, typename enable = void>
+struct most_likely_steady_system : std::false_type{};
 
-template <typename T>
+template<typename T>
 struct most_likely_steady_system<
   T,
   mpl::enable_if_t<
-    !::pressio::rom::constraints::most_likely_continuous_time_system<T>::value and !::pressio::rom::constraints::most_likely_discrete_time_system<T>::value and !::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value and !::pressio::ode::predicates::has_velocity_typedef<T>::value and ::pressio::ode::predicates::has_residual_typedef<T>::value>> : std::true_type
-{
-};
+    !::pressio::rom::constraints::most_likely_continuous_time_system<T>::value
+    and !::pressio::rom::constraints::most_likely_discrete_time_system<T>::value
+    and !::pressio::ode::predicates::has_discrete_time_residual_typedef<T>::value
+    and !::pressio::ode::predicates::has_velocity_typedef<T>::value
+    and ::pressio::ode::predicates::has_residual_typedef<T>::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::rom::constraints
-#endif// ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_
+}}} // namespace pressio::rom::constraints
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_MOST_LIKELY_STEADY_SYSTEM_HPP_

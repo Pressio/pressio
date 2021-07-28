@@ -49,85 +49,89 @@
 #ifndef OPS_KOKKOS_OPS_POW_HPP_
 #define OPS_KOKKOS_OPS_POW_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T>::value
+  >
 pow(T & x,
     const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::size_t;
   auto x_kv = *x.data();
-  Kokkos::parallel_for(
-    x.extent(0),
-    KOKKOS_LAMBDA(const ord_t & i) {
-      using std::pow;
-      x_kv(i) = pow(x_kv(i), exponent);
-    });
+  Kokkos::parallel_for(x.extent(0),
+		       KOKKOS_LAMBDA (const ord_t& i){
+			 using std::pow;
+			 x_kv(i) = pow(x_kv(i), exponent);
+		       });
 }
 
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
+  >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::size_t;
 
   assert(x.extent(0) == y.extent(0));
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if(exponent < ::pressio::utils::constants<sc_t>::zero())
+  if (exponent < ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent > 0");
 
   auto x_kv = *x.data();
   auto y_kv = *y.data();
-  Kokkos::parallel_for(
-    x.extent(0),
-    KOKKOS_LAMBDA(const ord_t & i) {
-      using std::pow;
-      using std::abs;
-      y_kv(i) = pow(abs(x_kv(i)), exponent);
-    });
+  Kokkos::parallel_for(x.extent(0),
+		       KOKKOS_LAMBDA (const ord_t& i){
+			 using std::pow;
+			 using std::abs;
+			 y_kv(i) = pow( abs(x_kv(i)), exponent);
+		       });
 }
 
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
+  >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & eps)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::size_t;
 
   assert(x.extent(0) == y.extent(0));
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if(exponent > ::pressio::utils::constants<sc_t>::zero())
+  if (exponent > ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent < 0");
 
   constexpr auto one = ::pressio::utils::constants<sc_t>::one();
   const auto expo = -exponent;
   auto x_kv = *x.data();
   auto y_kv = *y.data();
-  Kokkos::parallel_for(
-    x.extent(0),
-    KOKKOS_LAMBDA(const ord_t & i) {
-      using std::pow;
-      using std::abs;
-      using std::max;
-      y_kv(i) = one / max(eps, pow(abs(x_kv(i)), expo));
-    });
+  Kokkos::parallel_for(x.extent(0),
+		       KOKKOS_LAMBDA (const ord_t& i){
+			 using std::pow;
+			 using std::abs;
+			 using std::max;
+			 y_kv(i) = one/max(eps, pow(abs(x_kv(i)), expo));
+		       });
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_POW_HPP_
+#endif  // OPS_KOKKOS_OPS_POW_HPP_

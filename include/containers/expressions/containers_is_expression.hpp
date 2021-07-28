@@ -49,12 +49,10 @@
 #ifndef CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
 #define CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_expression : std::false_type
-{
-};
+struct is_expression : std::false_type{};
 
 // --------------------------------------------
 template <typename T>
@@ -64,17 +62,15 @@ struct is_expression<
     span_expression<T>::value or
     diag_expression<T>::value or
     subspan_expression<T>::value or
-    asdiagonalmatrix_expression<T>::value>> : std::true_type
-{
-};
+    asdiagonalmatrix_expression<T>::value
+    >
+  > : std::true_type{};
 
 
 // --------------------------------------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename T, typename enable = void>
-struct is_expression_eigen : std::false_type
-{
-};
+struct is_expression_eigen : std::false_type{};
 
 template <typename T>
 struct is_expression_eigen<
@@ -82,10 +78,10 @@ struct is_expression_eigen<
   mpl::enable_if_t<
     (is_expression<T>::value and
      T::traits::wrapped_package_identifier ==
-       ::pressio::containers::details::WrappedPackageIdentifier::Eigen)>> : std::true_type
-{
-};
+     ::pressio::containers::details::WrappedPackageIdentifier::Eigen)
+    >
+  > : std::true_type{};
 #endif
 
-}}}// namespace pressio::containers::predicates
-#endif// CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_
+}}} // namespace pressio::containers::predicates
+#endif  // CONTAINERS_EXPRESSIONS_CONTAINERS_IS_EXPRESSION_HPP_

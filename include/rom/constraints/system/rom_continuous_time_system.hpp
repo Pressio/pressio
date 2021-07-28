@@ -49,30 +49,28 @@
 #ifndef ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_HPP_
 #define ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_HPP_
 
-namespace pressio { namespace rom { namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
-template <typename T, typename apply_jac_operand_t, typename enable = void>
-struct continuous_time_system : std::false_type
-{
-};
+template<typename T, typename apply_jac_operand_t, typename enable = void>
+struct continuous_time_system : std::false_type{};
 
-template <typename T, typename apply_jac_operand_t>
+template<typename T, typename apply_jac_operand_t>
 struct continuous_time_system<
   T, apply_jac_operand_t,
   mpl::enable_if_t<
     ::pressio::rom::constraints::continuous_time_system_without_user_provided_apply_jacobian<
-      T, apply_jac_operand_t>::value>> : std::true_type
-{
-};
+      T, apply_jac_operand_t>::value
+    >
+  > : std::true_type{};
 
-template <typename T, typename apply_jac_operand_t>
+template<typename T, typename apply_jac_operand_t>
 struct continuous_time_system<
   T, apply_jac_operand_t,
   mpl::enable_if_t<
     ::pressio::rom::constraints::continuous_time_system_with_user_provided_apply_jacobian<
-      T, apply_jac_operand_t>::value>> : std::true_type
-{
-};
+      T, apply_jac_operand_t>::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::rom::constraints
-#endif// ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_HPP_
+}}} // namespace pressio::rom::constraints
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_CONTINUOUS_TIME_SYSTEM_HPP_

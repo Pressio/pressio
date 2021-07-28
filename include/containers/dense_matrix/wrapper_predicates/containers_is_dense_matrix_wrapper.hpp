@@ -49,24 +49,20 @@
 #ifndef CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_
 #define CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dense_matrix_wrapper : std::false_type
-{
-};
+struct is_dense_matrix_wrapper : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper<
-  ::pressio::containers::DenseMatrix<T>> : std::true_type
-{
-};
+  ::pressio::containers::DenseMatrix<T>
+  > : std::true_type{};
 
 template <typename T>
 struct is_dense_matrix_wrapper<
-  const ::pressio::containers::DenseMatrix<T>> : std::true_type
-{
-};
+  const ::pressio::containers::DenseMatrix<T>
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_HPP_

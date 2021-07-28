@@ -49,18 +49,18 @@
 #ifndef CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
 #define CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
 
-namespace pressio { namespace containers { namespace details {
+namespace pressio{ namespace containers{ namespace details {
 
 /*--------------------------------------------
 Wrapped library name
 --------------------------------------------*/
-enum class WrappedPackageIdentifier {
-  Undefined,
-  Eigen,
-  Kokkos,
-  Trilinos,
-  Pybind,
-  Arbitrary
+enum class WrappedPackageIdentifier{
+   Undefined,
+   Eigen,
+   Kokkos,
+   Trilinos,
+   Pybind,
+   Arbitrary
 };
 
 /*--------------------------------------------
@@ -70,55 +70,55 @@ Within a given package, like trilinos, we can
 have multiple types of vectors, e.g. epetra, tpetra.
 Same can be true for other packages.
 --------------------------------------------*/
-enum class WrappedVectorIdentifier {
-  Undefined,
-  EigenRowStatic,
-  EigenColStatic,
-  EigenRowDynamic,
-  EigenColDynamic,
-  KokkosDynamic,
-  KokkosStatic,
-  Epetra,
-  Tpetra,
-  TpetraBlock,
-  TeuchosSerialDense,
-  Arbitrary
+enum class WrappedVectorIdentifier{
+   Undefined,
+   EigenRowStatic,
+   EigenColStatic,
+   EigenRowDynamic,
+   EigenColDynamic,
+   KokkosDynamic,
+   KokkosStatic,
+   Epetra,
+   Tpetra,
+   TpetraBlock,
+   TeuchosSerialDense,
+   Arbitrary
 };
 
 /*--------------------------------------------
 Identifier for wrapped matrix
 --------------------------------------------*/
-enum class WrappedMatrixIdentifier {
-  Undefined,
-  DenseEigen,
-  SparseEigen,
-  DenseKokkos,
-  DenseEpetra,
-  DenseTeuchosSerial,
-  DenseArbitrary
+enum class WrappedMatrixIdentifier{
+   Undefined,
+   DenseEigen,
+   SparseEigen,
+   DenseKokkos,
+   DenseEpetra,
+   DenseTeuchosSerial,
+   DenseArbitrary
 };
 
 /*--------------------------------------------
 Identifier for wrapped multivector
 --------------------------------------------*/
-enum class WrappedMultiVectorIdentifier {
-  Undefined,
-  Eigen,
-  Kokkos,
-  Epetra,
-  Tpetra,
-  TpetraBlock,
-  Arbitrary
+enum class WrappedMultiVectorIdentifier{
+   Undefined,
+   Eigen,
+   Kokkos,
+   Epetra,
+   Tpetra,
+   TpetraBlock,
+   Arbitrary
 };
 
 /*--------------------------------------------
 Identifier for wrapped tensor
 --------------------------------------------*/
-enum class WrappedTensorIdentifier {
-  Undefined,
-  Pybind,
-  Arbitrary
+enum class WrappedTensorIdentifier{
+   Undefined,
+   Pybind,
+   Arbitrary
 };
 
-}}}// end namespace pressio::containers::details
-#endif// CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_
+}}} // end namespace pressio::containers::details
+#endif  // CONTAINERS_CONTAINERS_WRAPPED_TYPES_ENUM_HPP_

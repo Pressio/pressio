@@ -49,27 +49,23 @@
 #ifndef CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_KOKKOS_HPP_
 #define CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_KOKKOS_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_multi_vector_wrapper_kokkos : std::false_type
-{
-};
+struct is_multi_vector_wrapper_kokkos : std::false_type {};
 
 template <typename T>
 struct is_multi_vector_wrapper_kokkos<
   MultiVector<T>,
   mpl::enable_if_t<
-    containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value>>
-  : std::true_type
-{
-};
+    containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
+    >
+  >
+  : std::true_type{};
 
 template <typename T>
 struct is_multi_vector_wrapper_kokkos<const MultiVector<T>>
-  : is_multi_vector_wrapper_kokkos<MultiVector<T>>
-{
-};
+  : is_multi_vector_wrapper_kokkos<MultiVector<T>>{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_KOKKOS_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_WRAPPER_DETECTION_PREDICATES_CONTAINERS_IS_MULTI_VECTOR_WRAPPER_KOKKOS_HPP_

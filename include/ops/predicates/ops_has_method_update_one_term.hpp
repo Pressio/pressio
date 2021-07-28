@@ -49,39 +49,48 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_ONE_TERM_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_ONE_TERM_HPP_
 
-namespace pressio { namespace ops { namespace predicates {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <typename T,
 	  typename scalar_t,
 	  typename T1,
 	  typename T2,
 	  typename = void>
-struct has_method_update_one_term : std::false_type
-{
-};
+struct has_method_update_one_term : std::false_type{};
 
 template <typename T,
 	  typename sc_t,
 	  typename T1,
-	  typename T2>
+	  typename T2 >
 struct has_method_update_one_term<
   T, sc_t, T1, T2,
   mpl::enable_if_t<
     std::is_void<
-      decltype(
-	std::declval<T const &>().update(
-	  std::declval<T1 &>(),
-	  std::declval<const sc_t>(),
-	  std::declval<const T2 &>(),
-	  std::declval<const sc_t>()))>::value and
+      decltype
+      (
+       std::declval<T const &>().update
+       (
+	std::declval< T1 & >(),
+	std::declval<const sc_t>(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>()
+	)
+       )
+      >::value
+    and
     std::is_void<
-      decltype(
-	std::declval<T const &>().update(
-	  std::declval<T1 &>(),
-	  std::declval<const T2 &>(),
-	  std::declval<const sc_t>()))>::value>> : std::true_type
-{
-};
+      decltype
+      (
+       std::declval<T const &>().update
+       (
+	std::declval< T1 & >(),
+	std::declval<const T2 &>(),
+	std::declval<const sc_t>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ops::predicates
-#endif// OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_ONE_TERM_HPP_
+}}} // namespace pressio::ops::predicates
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_UPDATE_ONE_TERM_HPP_

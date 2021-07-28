@@ -49,16 +49,14 @@
 #ifndef MPL_IDENTITY_HPP_
 #define MPL_IDENTITY_HPP_
 
-namespace pressio { namespace mpl {
+namespace pressio{ namespace mpl {
 
 /**
  * \brief Returns the argument passed
  */
-template <class T>
-struct identity
-{
+template<class T> struct identity{
   using type = T;
 };
 
-}}// namespace pressio::mpl
-#endif// MPL_IDENTITY_HPP_
+}} // namespace pressio::mpl
+#endif  // MPL_IDENTITY_HPP_

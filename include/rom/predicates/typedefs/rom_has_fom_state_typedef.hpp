@@ -49,20 +49,18 @@
 #ifndef ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_
 #define ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_
 
-namespace pressio { namespace rom { namespace predicates {
+namespace pressio{ namespace rom{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct has_fom_state_typedef : std::false_type
-{
-};
+struct has_fom_state_typedef : std::false_type{};
 
 template <typename T>
 struct has_fom_state_typedef<
   T,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<typename T::fom_state_type>::value>> : std::true_type
-{
-};
+    !std::is_void<typename T::fom_state_type>::value
+    >
+  > : std::true_type{};
 
 }}}//end namespace pressio::rom::predicates
-#endif// ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_
+#endif  // ROM_PREDICATES_TYPEDEFS_ROM_HAS_FOM_STATE_TYPEDEF_HPP_

@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
 #define ROM_GALERKIN_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
 
-namespace pressio { namespace rom { namespace galerkin {
+namespace pressio{ namespace rom{ namespace galerkin{
 
 /* why using this over just instantiating a solver directly?
    (1) we can limit the solver types admissible for a galerkin problem
@@ -66,12 +66,14 @@ namespace pressio { namespace rom { namespace galerkin {
 /* ========================
     createNewtonRaphson
    ========================*/
-template <typename rom_problem_t, typename... Args>
-auto createNewtonRaphsonSolver(rom_problem_t & problem, Args &&... args)
-  -> decltype(::pressio::solvers::nonlinear::createNewtonRaphson(problem.stepperRef(), std::forward<Args>(args)...))
+template<typename rom_problem_t, typename ...Args>
+auto createNewtonRaphsonSolver(rom_problem_t & problem, Args && ... args)
+-> decltype(::pressio::solvers::nonlinear::createNewtonRaphson
+    (problem.stepperRef(), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createNewtonRaphson(problem.stepperRef(), std::forward<Args>(args)...);
+  return ::pressio::solvers::nonlinear::createNewtonRaphson
+    (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif// ROM_GALERKIN_ROM_CREATE_SOLVER_FUNCTIONS_HPP_
+#endif  // ROM_GALERKIN_ROM_CREATE_SOLVER_FUNCTIONS_HPP_

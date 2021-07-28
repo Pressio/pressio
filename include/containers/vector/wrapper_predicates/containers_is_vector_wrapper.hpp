@@ -49,24 +49,20 @@
 #ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_HPP_
 #define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_vector_wrapper : std::false_type
-{
-};
+struct is_vector_wrapper : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper<
-  ::pressio::containers::Vector<T>> : std::true_type
-{
-};
+  ::pressio::containers::Vector<T>
+  > : std::true_type{};
 
 template <typename T>
 struct is_vector_wrapper<
-  const ::pressio::containers::Vector<T>> : std::true_type
-{
-};
+  const ::pressio::containers::Vector<T>
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_HPP_
+#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_HPP_

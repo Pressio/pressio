@@ -16,12 +16,12 @@ struct MyLinSolverNormalEq
   std::string & checkStr_;
 
   MyLinSolverNormalEq(std::string & checkStr)
-    : checkStr_(checkStr) {}
+  : checkStr_(checkStr){}
 
-  template <typename H_t, typename state_t>
+  template<typename H_t, typename state_t>
   void solve(const H_t & H,
-	     const state_t & g,
-	     state_t & correction)
+             const state_t & g,
+             state_t & correction)
   {
     ++iterCount_;
     std::cout << iterCount_ << std::endl;
@@ -34,13 +34,11 @@ struct MyLinSolverNormalEq
     // H1 = J1 * MJ
     // where J1[:] = 1
     // where MJ[:] = 2.2
-    eig_mat trueH1(numVars, numVars);
+    eig_mat trueH1(numVars,numVars);
     trueH1 << 11., 11., 11., 11., 11., 11., 11., 11., 11.;
 #if defined USE_LM_NEQ
     // LM adds mu*diag(H)
-    trueH1(0, 0) += 11.;
-    trueH1(1, 1) += 11.;
-    trueH1(2, 2) += 11.;
+    trueH1(0,0) += 11.; trueH1(1,1) += 11.; trueH1(2,2) += 11.;
 #endif
 
     // G1 = J1^T Mr
@@ -49,11 +47,9 @@ struct MyLinSolverNormalEq
     eig_vec trueG1(numVars);
     trueG1 << -15., -15., -15.;
 
-    if(iterCount_ == 1) {
-      if(!H.data()->isApprox(trueH1))
-	checkStr_ = "FAILED";
-      if(!g.data()->isApprox(trueG1))
-	checkStr_ = "FAILED";
+    if (iterCount_==1){
+      if( ! H.data()->isApprox(trueH1) ) checkStr_="FAILED";
+      if( ! g.data()->isApprox(trueG1) ) checkStr_="FAILED";
     }
 
 
@@ -63,13 +59,11 @@ struct MyLinSolverNormalEq
     // H2 = J2 * MJ2
     // where J2[:] = 2
     // where MJ2[:] = 2.2
-    eig_mat trueH2(numVars, numVars);
+    eig_mat trueH2(numVars,numVars);
     trueH2 << 22., 22., 22., 22., 22., 22., 22., 22., 22.;
 #if defined USE_LM_NEQ
     // LM adds mu*diag(H)
-    trueH2(0, 0) += 22.;
-    trueH2(1, 1) += 22.;
-    trueH2(2, 2) += 22.;
+    trueH2(0,0) += 22.; trueH2(1,1) += 22.; trueH2(2,2) += 22.;
 #endif
 
     // G2 = J2^T Mr2
@@ -78,11 +72,9 @@ struct MyLinSolverNormalEq
     eig_vec trueG2(numVars);
     trueG2 << -30., -30., -30.;
 
-    if(iterCount_ == 2) {
-      if(!H.data()->isApprox(trueH2))
-	checkStr_ = "FAILED";
-      if(!g.data()->isApprox(trueG2))
-	checkStr_ = "FAILED";
+    if (iterCount_==2){
+      if( ! H.data()->isApprox(trueH2) ) checkStr_="FAILED";
+      if( ! g.data()->isApprox(trueG2) ) checkStr_="FAILED";
     }
   }
 };

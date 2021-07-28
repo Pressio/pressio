@@ -49,15 +49,17 @@
 #ifndef OPS_EIGEN_OPS_DEEP_COPY_HPP_
 #define OPS_EIGEN_OPS_DEEP_COPY_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
-template <typename T1, typename T2>
+template<typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_eigen_with_native_data_access<T1>::value and ::pressio::ops::constraints::container_eigen_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::container_eigen_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::container_eigen_with_native_data_access<T2>::value
+  >
 deep_copy(T2 & dest, const T1 & src)
 {
   *dest.data() = *src.data();
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EIGEN_OPS_DEEP_COPY_HPP_
+#endif  // OPS_EIGEN_OPS_DEEP_COPY_HPP_

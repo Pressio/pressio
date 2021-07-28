@@ -49,23 +49,22 @@
 #ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
 #define ODE_IMPLICIT_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
 
-namespace pressio { namespace ode { namespace constraints {
+namespace pressio{ namespace ode{ namespace constraints {
 
-template <typename T, typename enable = void>
-struct auxiliary_stepper_for_bdf2 : std::false_type
-{
-};
+template<typename T, typename enable = void>
+struct auxiliary_stepper_for_bdf2 : std::false_type{};
 
-template <typename T>
+template<typename T>
 struct auxiliary_stepper_for_bdf2<
-  T,
-  mpl::enable_if_t<
-    // enable for now iff T is BDF1 stepper from pressio ode
-    T::is_implicit and
-    std::is_same<
-      typename T::tag_name, ::pressio::ode::implicitmethods::BDF1>::value>> : std::true_type
-{
-};
+  T, 
+    mpl::enable_if_t< 
+    // enable for now iff T is BDF1 stepper from pressio ode    
+     T::is_implicit and 
+     std::is_same<
+     	typename T::tag_name, ::pressio::ode::implicitmethods::BDF1
+     >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::constraints
-#endif// ODE_IMPLICIT_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_AUXILIARY_STEPPER_FOR_BDF2_HPP_

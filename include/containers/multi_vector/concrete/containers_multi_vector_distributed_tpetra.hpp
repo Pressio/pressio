@@ -51,14 +51,16 @@
 
 #include <MatrixMarket_Tpetra.hpp>
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   mpl::enable_if_t<
     ::pressio::containers::predicates::is_multi_vector_tpetra<
-      wrapped_type>::value>>
+      wrapped_type>::value
+    >
+  >
 {
 
 public:
@@ -77,22 +79,20 @@ public:
 
   explicit MultiVector(const wrap_t & other)
     // use the deep_copy constructor
-    : data_(other, Teuchos::Copy)
-  {
-  }
+    : data_(other, Teuchos::Copy){}
 
   MultiVector(Teuchos::RCP<const map_t> mapobj, GO_t numVectors)
-    : data_(mapobj, numVectors) {}
+    : data_(mapobj, numVectors){}
 
   MultiVector(const map_t & mapobj, GO_t numVectors)
-    : data_(Teuchos::rcpFromRef(mapobj), numVectors) {}
+    : data_( Teuchos::rcpFromRef(mapobj), numVectors ){}
 
   explicit MultiVector(wrap_t && other)
-    : data_(std::move(other)) {}
+    : data_(std::move(other)){}
 
   // copy constr
   MultiVector(const MultiVector & other)
-    : data_(*other.data(), Teuchos::Copy) {}
+    : data_(*other.data(), Teuchos::Copy){}
 
   // delete copy assign to force usage of ops::deep_copy
   MultiVector & operator=(const MultiVector & other) = delete;
@@ -108,28 +108,23 @@ public:
   ~MultiVector() = default;
 
 public:
-  wrap_t const * data() const
-  {
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * data()
-  {
+  wrap_t * data(){
     return &data_;
   }
 
-  GO_t numVectors() const
-  {
+  GO_t numVectors() const{
     return data_.getNumVectors();
   }
 
-  GO_t numVectorsGlobal() const
-  {
+  GO_t numVectorsGlobal() const{
     return data_.getNumVectors();
   }
 
-  LO_t numVectorsLocal() const
-  {
+  LO_t numVectorsLocal() const{
     // it is the same because epetra multivectors
     // are distributed on data, but each process owns
     // a part of each vector
@@ -137,17 +132,15 @@ public:
   }
 
   // for distributed objects, extent return the global extent
-  GO_t extent(std::size_t i) const
-  {
-    assert(i <= 1);
-    return (i == 0) ? data_.getGlobalLength() : data_.getNumVectors();
+  GO_t extent(std::size_t i) const{
+    assert(i<=1);
+    return (i==0) ? data_.getGlobalLength() : data_.getNumVectors();
   }
 
-  LO_t extentLocal(std::size_t i) const
-  {
+  LO_t extentLocal(std::size_t i) const{
     // each process owns all cols
-    assert(i <= 1);
-    return (i == 0) ? data_.getLocalLength() : data_.getNumVectors();
+    assert(i<=1);
+    return (i==0) ? data_.getLocalLength() : data_.getNumVectors();
   }
 
 private:
@@ -157,4 +150,4 @@ private:
 
 }}//end namespace pressio::containers
 
-#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_DISTRIBUTED_TPETRA_HPP_

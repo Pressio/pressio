@@ -49,61 +49,80 @@
 #ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_QR_SOLVER_FOR_GN_QR_HPP_
 #define SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_QR_SOLVER_FOR_GN_QR_HPP_
 
-namespace pressio { namespace solvers { namespace constraints {
+namespace pressio{ namespace solvers{ namespace constraints {
 
 template <
-  typename T,
-  typename state_type,
-  typename J_type,
-  typename r_type,
-  typename enable = void>
+	typename T, 
+	typename state_type,
+	typename J_type, 
+	typename r_type,
+	typename enable = void
+	>
 struct qr_solver_for_gn_qr
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <
-  typename T,
-  typename state_type,
-  typename J_type,
-  typename r_type>
+	typename T, 
+	typename state_type,
+	typename J_type, 
+	typename r_type
+	>
 struct qr_solver_for_gn_qr<
   T, state_type, J_type, r_type,
   ::pressio::mpl::enable_if_t<
-    // 1.
-    // must have computeThin
-    std::is_void<
-      decltype(
-	std::declval<T>().computeThin(
-	  std::declval<J_type const &>()))>::value and
-    // 2.
-    // must have applyQTranspose
-    std::is_void<
-      decltype(
-	std::declval<T const>().applyQTranspose(
-	  std::declval<r_type const &>(),
-	  std::declval<state_type &>()))>::value and
-    // 3.
-    // must have applyRTranspose
-    std::is_void<
-      decltype(
-	std::declval<T const>().applyRTranspose(
-	  std::declval<state_type const &>(),
-	  std::declval<state_type &>()))>::value and
-    // 4.
-    // must have solve
-    std::is_void<
-      decltype(
-	std::declval<T const>().solve(
-	  std::declval<state_type const &>(),
-	  std::declval<state_type &>()))>::value
+  	// 1.
+  	// must have computeThin 
+	std::is_void<
+	  decltype
+	  (
+	   std::declval<T>().computeThin
+	   (
+	    std::declval<J_type const &>()
+	    )
+	   )
+	  >::value and
+  	// 2.
+  	// must have applyQTranspose 
+	std::is_void<
+	  decltype
+	  (
+	   std::declval<T const>().applyQTranspose
+	   (
+	    std::declval<r_type const &>(),
+	    std::declval<state_type &>()
+	    )
+	   )
+	  >::value and
+  	// 3.
+  	// must have applyRTranspose 
+	std::is_void<
+	  decltype
+	  (
+	   std::declval<T const>().applyRTranspose
+	   (
+	    std::declval<state_type const &>(),
+	    std::declval<state_type &>()
+	    )
+	   )
+	  >::value and
+  	// 4.
+  	// must have solve 
+	std::is_void<
+	  decltype
+	  (
+	   std::declval<T const>().solve
+	   (
+	    std::declval<state_type const &>(),
+	    std::declval<state_type &>()
+	    )
+	   )
+	  >::value
 
-    // ::pressio::mpl::void_t<
-    //   typename ::pressio::qr::details::traits<T>::concrete_t
-    //   >
-    >> : std::true_type
-{
-};
+  // ::pressio::mpl::void_t<
+  //   typename ::pressio::qr::details::traits<T>::concrete_t
+  //   >
+	>
+  > : std::true_type{};
 
-}}}// namespace pressio::solvers::constraints
-#endif// SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_QR_SOLVER_FOR_GN_QR_HPP_
+}}} // namespace pressio::solvers::constraints
+#endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEGITIMATE_QR_SOLVER_FOR_GN_QR_HPP_

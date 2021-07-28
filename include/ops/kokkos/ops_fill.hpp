@@ -51,21 +51,23 @@
 
 #include <KokkosBlas1_fill.hpp>
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T>::value>
-fill(T & o, typename T::traits::scalar_t value)
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T>::value
+  >
+fill(T & o,  typename T::traits::scalar_t value)
 {
   /* make sure we don't pass a const object to be modified.
      In kokkos it is legal to modify const views.
      But for pressio wrappers it is not.*/
-  static_assert(!std::is_const<T>::value,
-		"ops:filll: cannot fill a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (!std::is_const<T>::value,
+     "ops:filll: cannot fill a const-qualified wrapper of a Kokkos view");
 
-  ::KokkosBlas::fill(*o.data(), value);
+  ::KokkosBlas::fill( *o.data(), value );
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_FILL_HPP_
+#endif  // OPS_KOKKOS_OPS_FILL_HPP_

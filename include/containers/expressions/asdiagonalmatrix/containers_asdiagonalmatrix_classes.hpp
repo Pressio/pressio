@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_
 #define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_
 
-namespace pressio { namespace containers { namespace expressions {
+namespace pressio{ namespace containers{ namespace expressions{
 
 #if defined PRESSIO_ENABLE_TPL_EIGEN or defined PRESSIO_ENABLE_TPL_PYBIND11
 template <typename T>
@@ -65,7 +65,8 @@ struct AsDiagonalMatrixExpr<
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
 #endif
-    >>
+    >
+  >
 {
   using this_t = AsDiagonalMatrixExpr<T>;
   using traits = typename details::traits<this_t>;
@@ -89,34 +90,30 @@ public:
   AsDiagonalMatrixExpr(T & objIn)
     : vecObj_(objIn),
       extent_(objIn.extent(0))
-  {
-  }
+  {}
 
 public:
-  size_t extent(size_t i) const
-  {
-    assert(i == 0 or i == 1);
+  size_t extent(size_t i) const{
+    assert(i==0 or i==1);
     return extent_;
   }
 
-  const T * pressioObj() const
-  {
+  const T * pressioObj() const{
     return &vecObj_.get();
   }
-  T * pressioObj()
-  {
+  T * pressioObj(){
     return &vecObj_.get();
   }
 
   ref_t operator()(size_t i, size_t j)
   {
-    assert(i == j and j < extent_);
+    assert(i==j and j < extent_);
     return vecObj_(i);
   }
 
   const_ref_t operator()(size_t i, size_t j) const
   {
-    assert(i == j and j < extent_);
+    assert(i==j and j < extent_);
     return vecObj_(i);
   }
 };
@@ -129,7 +126,9 @@ struct AsDiagonalMatrixExpr<
   ::pressio::mpl::enable_if_t<
     ::pressio::containers::predicates::is_vector_wrapper_tpetra<T>::value or
     ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value or
-    ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value>>
+    ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T>::value
+    >
+  >
 {
   using this_t = AsDiagonalMatrixExpr<T>;
   using traits = typename details::traits<this_t>;
@@ -154,32 +153,27 @@ public:
     : vecObj_(objIn),
       extent_(objIn.extent(0)),
       extentLocal_(objIn.extentLocal(0))
-  {
-  }
+  {}
 
 public:
-  go_t extent(size_t i) const
-  {
-    assert(i == 0 or i == 1);
+  go_t extent(size_t i) const{
+    assert(i==0 or i==1);
     return extent_;
   }
 
-  lo_t extentLocal(size_t i) const
-  {
-    assert(i == 0 or i == 1);
+  lo_t extentLocal(size_t i) const{
+    assert(i==0 or i==1);
     return extentLocal_;
   }
 
-  const T * pressioObj() const
-  {
+  const T * pressioObj() const{
     return &vecObj_.get();
   }
-  T * pressioObj()
-  {
+  T * pressioObj(){
     return &vecObj_.get();
   }
 };
 #endif
 
-}}}//end namespace pressio::containers::expressions
-#endif// CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_
+}}} //end namespace pressio::containers::expressions
+#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_CLASSES_HPP_

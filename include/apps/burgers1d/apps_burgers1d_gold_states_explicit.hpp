@@ -49,10 +49,9 @@
 #ifndef APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_
 #define APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_
 
-namespace pressio { namespace apps { namespace test {
+namespace pressio { namespace apps{ namespace test{
 
-struct Burgers1dExpGoldStatesEuler
-{
+struct Burgers1dExpGoldStatesEuler{
   using result_t = std::vector<double>;
 
   static result_t get(int N,
@@ -62,20 +61,23 @@ struct Burgers1dExpGoldStatesEuler
 		      double mu2 = 0.02,
 		      double mu3 = 0.02)
   {
-    if(N == 20 and dt == 0.01 and final_t == 35. and
-       mu1 == 5.0 and mu2 == 0.02 and mu3 == 0.02) {
-      return {5.0209814000128, 5.044067908724,
-	      5.0694601439541, 5.0973757621592,
-	      5.1280505161248, 5.1617393082963,
-	      5.1987172243105, 5.2392805237326,
-	      5.2837475435221, 5.3324594086071,
-	      5.3857802812742, 5.4440964817745,
-	      5.5078129073313, 5.5773432783592,
-	      5.6530870659136, 5.7353794504736,
-	      5.8243903774842, 5.9199350492773,
-	      6.0211454752168, 6.1259551255163};
-    } else if(N == 50 and dt == 0.01 and final_t == 35. and
-	      mu1 == 5.0 and mu2 == 0.02 and mu3 == 0.02) {
+    if (N == 20 and dt == 0.01 and final_t == 35. and
+        mu1 == 5.0 and mu2 == 0.02 and mu3 == 0.02)
+    {
+      return { 5.0209814000128,  5.044067908724,
+	       5.0694601439541,  5.0973757621592,
+	       5.1280505161248,  5.1617393082963,
+	       5.1987172243105,  5.2392805237326,
+	       5.2837475435221,  5.3324594086071,
+	       5.3857802812742,  5.4440964817745,
+	       5.5078129073313,  5.5773432783592,
+	       5.6530870659136,  5.7353794504736,
+	       5.8243903774842,  5.9199350492773,
+	       6.0211454752168,  6.1259551255163};
+    }
+    else if (N == 50 and dt == 0.01 and final_t == 35. and
+        mu1 == 5.0 and mu2 == 0.02 and mu3 == 0.02)
+    {
       return {5.0081549603823, 5.0166286518862, 5.0254329867556,
 	      5.0345802812429, 5.0440832662962, 5.0539550983142,
 	      5.064209369952, 5.0748601209605, 5.0859218490417,
@@ -93,11 +95,12 @@ struct Burgers1dExpGoldStatesEuler
 	      5.8453780035106, 5.8842356539985, 5.9244082111713,
 	      5.9659324478199, 6.0088454803145, 6.053184437725,
 	      6.0989858135867, 6.146284218731};
-    } else
+    }
+    else
       return {};
 
   }//end get
 };//end struct
 
 }}}//end namespace pressio::apps::test
-#endif// APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_GOLD_STATES_EXPLICIT_HPP_

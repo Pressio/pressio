@@ -49,10 +49,10 @@
 #ifndef ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
 #define ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
 
-namespace pressio { namespace ode { namespace implicitmethods {
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
-namespace impl {
-template <typename T, std::size_t n>
+namespace impl{
+template<typename T, std::size_t n>
 class StencilStatesManager
 {
 public:
@@ -64,9 +64,9 @@ private:
 public:
   StencilStatesManager() = delete;
 
-  template <typename... Args>
-  StencilStatesManager(Args &&... args)
-    : states_(std::forward<Args>(args)...) {}
+  template <typename ...Args>
+  StencilStatesManager(Args && ... args)
+    : states_(std::forward<Args>(args)...){}
 
   StencilStatesManager(StencilStatesManager const & other) = default;
   StencilStatesManager & operator=(StencilStatesManager const & other) = default;
@@ -75,66 +75,66 @@ public:
   ~StencilStatesManager() = default;
 
 public:
-  static constexpr std::size_t size() { return n; }
+  static constexpr std::size_t size(){ return n; }
 
   // note that for states we can index n, n-1, n-2, etc
   // because the state at n+1 is owned outside and only given to us
   // n
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 1, T &> stateAt(ode::n) { return states_(0); }
+  mpl::enable_if_t<_ns>=1, T & > stateAt(ode::n){return states_(0);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 1, T const &> stateAt(ode::n) const { return states_(0); }
+  mpl::enable_if_t<_ns>=1, T const & >stateAt(ode::n) const {return states_(0);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 1, T &> operator()(ode::n) { return states_(0); }
+  mpl::enable_if_t<_ns>=1, T & > operator()(ode::n){return states_(0);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 1, T const &> operator()(ode::n) const { return states_(0); }
+  mpl::enable_if_t<_ns>=1, T const & > operator()(ode::n)const {return states_(0);}
 
   // n-1
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 2, T &> stateAt(ode::nMinusOne) { return states_(1); }
+  mpl::enable_if_t<_ns>=2, T & > stateAt(ode::nMinusOne){return states_(1);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 2, T const &> stateAt(ode::nMinusOne) const { return states_(1); }
+  mpl::enable_if_t<_ns>=2, T const & > stateAt(ode::nMinusOne) const {return states_(1);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 2, T &> operator()(ode::nMinusOne) { return states_(1); }
+  mpl::enable_if_t<_ns>=2, T & > operator()(ode::nMinusOne){return states_(1);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 2, T const &> operator()(ode::nMinusOne) const { return states_(1); }
+  mpl::enable_if_t<_ns>=2, T const & > operator()(ode::nMinusOne) const {return states_(1);}
 
   // n-2
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 3, T &> stateAt(ode::nMinusTwo) { return states_(2); }
+  mpl::enable_if_t<_ns>=3, T & > stateAt(ode::nMinusTwo){return states_(2);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 3, T const &> stateAt(ode::nMinusTwo) const { return states_(2); }
+  mpl::enable_if_t<_ns>=3, T const & > stateAt(ode::nMinusTwo) const {return states_(2);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 3, T &> operator()(ode::nMinusTwo) { return states_(2); }
+  mpl::enable_if_t<_ns>=3, T & > operator()(ode::nMinusTwo){return states_(2);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 3, T const &> operator()(ode::nMinusTwo) const { return states_(2); }
+  mpl::enable_if_t<_ns>=3, T const & > operator()(ode::nMinusTwo) const {return states_(2);}
 
   // n-3
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 4, T &> stateAt(ode::nMinusThree) { return states_(3); }
+  mpl::enable_if_t<_ns>=4, T & > stateAt(ode::nMinusThree){return states_(3);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 4, T const &> stateAt(ode::nMinusThree) const { return states_(3); }
+  mpl::enable_if_t<_ns>=4, T const & > stateAt(ode::nMinusThree) const {return states_(3);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 4, T &> operator()(ode::nMinusThree) { return states_(3); }
+  mpl::enable_if_t<_ns>=4, T & > operator()(ode::nMinusThree){return states_(3);}
 
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns >= 4, T const &> operator()(ode::nMinusThree) const { return states_(3); }
+  mpl::enable_if_t<_ns>=4, T const & > operator()(ode::nMinusThree) const {return states_(3);}
 };
 }// end namespace impl
 
-template <typename T, std::size_t n>
+template<typename T, std::size_t n>
 using StencilStatesManager = impl::StencilStatesManager<T, n>;
 
 }}}//end namespace pressio::ode::implicitmethods
-#endif// ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
+#endif  // ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_

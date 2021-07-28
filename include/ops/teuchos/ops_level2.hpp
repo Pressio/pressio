@@ -49,7 +49,7 @@
 #ifndef OPS_TEUCHOS_OPS_LEVEL2_HPP_
 #define OPS_TEUCHOS_OPS_LEVEL2_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 /*
  * y = beta * y + alpha*op(A)*x
@@ -58,9 +58,12 @@ namespace pressio { namespace ops {
 //-------------------------------
 // specialize for op(A) = A
 //-------------------------------
-template <typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_dense_matrix_teuchos<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value>
+  ::pressio::containers::predicates::is_dense_matrix_teuchos<A_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value
+  >
 product(::pressio::nontranspose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -68,14 +71,14 @@ product(::pressio::nontranspose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  assert((std::size_t)y.extent(0) == (std::size_t)A.numRows());
-  assert((std::size_t)x.extent(0) == (std::size_t)A.numCols());
+  assert( (std::size_t)y.extent(0) == (std::size_t)A.numRows() );
+  assert( (std::size_t)x.extent(0) == (std::size_t)A.numCols() );
 
   using ord_t = typename A_type::ordinalType;
-  for(ord_t i = 0; i < A.numRows(); ++i) {
+  for (ord_t i=0;i<A.numRows(); ++i){
     y(i) = {};
-    for(ord_t j = 0; j < A.numCols(); ++j) {
-      y(i) += A(i, j) * x(j);
+    for (ord_t j=0; j<A.numCols(); ++j){
+      y(i) += A(i,j)*x(j);
     }
   }
 }
@@ -83,9 +86,12 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 // specialize for op(A) = A^T
 //-------------------------------
-template <typename A_type, typename x_type, typename scalar_type, typename y_type>
+template < typename A_type, typename x_type, typename scalar_type, typename y_type>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_dense_matrix_teuchos<A_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value and ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value>
+  containers::predicates::is_dense_matrix_teuchos<A_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<x_type>::value and
+  ::pressio::ops::constraints::sharedmem_host_subscriptable_rank1_container<y_type>::value
+  >
 product(::pressio::transpose mode,
 	const scalar_type alpha,
 	const A_type & A,
@@ -93,17 +99,17 @@ product(::pressio::transpose mode,
 	const scalar_type beta,
 	y_type & y)
 {
-  assert((std::size_t)y.extent(0) == (std::size_t)A.numCols());
-  assert((std::size_t)x.extent(0) == (std::size_t)A.numRows());
+  assert( (std::size_t)y.extent(0) == (std::size_t)A.numCols() );
+  assert( (std::size_t)x.extent(0) == (std::size_t)A.numRows() );
 
   using ord_t = typename A_type::ordinalType;
-  for(ord_t j = 0; j < A.numCols(); ++j) {
+  for (ord_t j=0; j<A.numCols(); ++j){
     y(j) = {};
-    for(ord_t i = 0; i < A.numRows(); ++i) {
-      y(j) += A(i, j) * x(i);
+    for (ord_t i=0;i<A.numRows(); ++i){
+      y(j) += A(i,j)*x(i);
     }
   }
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TEUCHOS_OPS_LEVEL2_HPP_
+#endif  // OPS_TEUCHOS_OPS_LEVEL2_HPP_

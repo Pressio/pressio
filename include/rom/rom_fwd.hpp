@@ -49,27 +49,19 @@
 #ifndef ROM_ROM_FWD_HPP_
 #define ROM_ROM_FWD_HPP_
 
-namespace pressio { namespace rom {
+namespace pressio{ namespace rom{
 
-struct Steady
-{
-};
-struct UnsteadyExplicit
-{
-};
-struct UnsteadyImplicit
-{
-};
+struct Steady{};
+struct UnsteadyExplicit{};
+struct UnsteadyImplicit{};
 
 namespace details {
-template <typename T, typename enable = void>
+template<typename T, typename enable = void>
 struct traits;
 
-template <typename T>
-struct traits<const T> : traits<T>
-{
-};
+template<typename T>
+struct traits<const T> : traits<T> {};
 }// end namespace pressio::rom::details
 
-}}// end namespace pressio::rom
-#endif// ROM_ROM_FWD_HPP_
+}} // end namespace pressio::rom
+#endif  // ROM_ROM_FWD_HPP_

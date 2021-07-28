@@ -49,7 +49,7 @@
 #ifndef OPS_EIGEN_OPS_LEVEL3_HPP_
 #define OPS_EIGEN_OPS_LEVEL3_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 /*
  * C = beta * C + alpha*op(A)*op(B)
@@ -61,7 +61,10 @@ namespace pressio { namespace ops {
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -70,12 +73,13 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
-  assert(::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1));
-  assert(::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1));
-  assert(::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0));
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 1) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 0) == ::pressio::ops::extent(B, 0) );
 
   const auto & AE = *A.data();
   const auto & BE = *B.data();
@@ -83,9 +87,11 @@ product(::pressio::transpose modeA,
   CE = beta * CE + alpha * AE.transpose() * BE;
 }
 
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template < typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::transpose,
 	::pressio::nontranspose,
 	const scalar_type alpha,
@@ -94,15 +100,18 @@ product(::pressio::transpose,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   const auto & BE = *B.data();
   auto & CE = *C.data();
-  for(std::size_t i = 0; i < A.size(); ++i) {
+  for (std::size_t i=0; i<A.size(); ++i)
+  {
     const auto currMatrixEigen = *(A(i).data());
-    assert(::pressio::ops::extent(C, 0) == currMatrixEigen.cols());
-    assert(::pressio::ops::extent(B, 0) == currMatrixEigen.rows());
+    assert( ::pressio::ops::extent(C, 0) == currMatrixEigen.cols() );
+    assert( ::pressio::ops::extent(B, 0) == currMatrixEigen.rows() );
     CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen.transpose() * BE.col(i);
   }
 }
@@ -112,7 +121,10 @@ product(::pressio::transpose,
 //-------------------------------------------
 template <typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -121,12 +133,13 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
-  assert(::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0));
-  assert(::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1));
-  assert(::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0));
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
 
   const auto & AE = *A.data();
   const auto & BE = *B.data();
@@ -135,9 +148,11 @@ product(::pressio::nontranspose modeA,
   CE = beta * CE + alpha * AE * BE;
 }
 
-template <typename A_type, typename B_type, typename scalar_type, typename C_type>
+template < typename A_type, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::nontranspose,
 	::pressio::nontranspose,
 	const scalar_type alpha,
@@ -146,15 +161,18 @@ product(::pressio::nontranspose,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible
+     <::pressio::containers::experimental::MultiVectorSet<A_type>, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
   const auto & BE = *B.data();
   auto & CE = *C.data();
-  for(std::size_t i = 0; i < A.size(); ++i) {
+  for (std::size_t i=0; i<A.size(); ++i)
+  {
     const auto & currMatrixEigen = *(A(i).data());
-    assert(::pressio::ops::extent(C, 0) == currMatrixEigen.rows());
-    assert(::pressio::ops::extent(B, 0) == currMatrixEigen.cols());
+    assert( ::pressio::ops::extent(C, 0) == currMatrixEigen.rows() );
+    assert( ::pressio::ops::extent(B, 0) == currMatrixEigen.cols() );
     CE.col(i) = beta * CE.col(i) + alpha * currMatrixEigen * BE.col(i);
   }
 }
@@ -164,7 +182,9 @@ product(::pressio::nontranspose,
 **********************************/
 template <typename A_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -172,8 +192,9 @@ product(::pressio::transpose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
   const auto & AE = *A.data();
   auto & CE = *C.data();
@@ -182,15 +203,18 @@ product(::pressio::transpose modeA,
 
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value,
-  C_type>
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<A_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value,
+  C_type
+  >
 product(::pressio::transpose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  static_assert(containers::predicates::are_scalar_compatible<A_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
+     "Types are not scalar compatible");
 
   constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
@@ -204,7 +228,10 @@ product(::pressio::transpose modeA,
 //-------------------------------------------
 template <typename T, typename B_type, typename scalar_type, typename C_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<T>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<B_type>::value and
+  ::pressio::ops::constraints::rank2_container_eigen_with_native_data_access<C_type>::value
+  >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,
 	const scalar_type alpha,
@@ -213,17 +240,18 @@ product(::pressio::nontranspose modeA,
 	const scalar_type beta,
 	C_type & C)
 {
-  static_assert(containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
-		"Types are not scalar compatible");
+  static_assert
+    (containers::predicates::are_scalar_compatible<T, B_type, C_type>::value,
+     "Types are not scalar compatible");
 
-  assert(::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0));
-  assert(::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1));
-  assert(::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0));
+  assert( ::pressio::ops::extent(C, 0) == ::pressio::ops::extent(A, 0) );
+  assert( ::pressio::ops::extent(C, 1) == ::pressio::ops::extent(B, 1) );
+  assert( ::pressio::ops::extent(A, 1) == ::pressio::ops::extent(B, 0) );
   const auto & AE = *(A.pressioObj()->data());
   const auto & BE = *B.data();
   auto & CE = *C.data();
-  CE = beta * CE + alpha * (AE.asDiagonal() * BE);
+  CE = beta*CE + alpha * (AE.asDiagonal() * BE);
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EIGEN_OPS_LEVEL3_HPP_
+#endif  // OPS_EIGEN_OPS_LEVEL3_HPP_

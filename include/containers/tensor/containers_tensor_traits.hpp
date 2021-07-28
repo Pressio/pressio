@@ -49,13 +49,15 @@
 #ifndef CONTAINERS_TENSOR_CONTAINERS_TENSOR_TRAITS_HPP_
 #define CONTAINERS_TENSOR_CONTAINERS_TENSOR_TRAITS_HPP_
 
-namespace pressio { namespace containers { namespace details {
+namespace pressio{ namespace containers{ namespace details{
 
-template <typename wrapped_type>
+template<typename wrapped_type>
 struct traits<
   Tensor<1, wrapped_type>,
-  mpl::enable_if_t<
-    containers::predicates::is_array_pybind<wrapped_type>::value>>
+    mpl::enable_if_t<
+      containers::predicates::is_array_pybind<wrapped_type>::value
+    >
+  >
 {
   static constexpr WrappedTensorIdentifier wrapped_tensor_identifier =
     WrappedTensorIdentifier::Pybind;
@@ -66,35 +68,37 @@ struct traits<
 
   static constexpr int rank = 1;
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = !is_static;
-  static constexpr bool is_vector = false;
-  static constexpr bool is_matrix = false;
+  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_vector	= false;
+  static constexpr bool is_matrix	= false;
   static constexpr bool is_multi_vector = false;
-  static constexpr bool is_shared_mem = true;
-  static constexpr bool is_distributed = false;
+  static constexpr bool is_shared_mem	= true;
+  static constexpr bool is_distributed	= false;
 
-  using scalar_t = typename wrapped_type::value_type;
+  using scalar_t  = typename wrapped_type::value_type;
   using ordinal_t = pybind11::ssize_t;
-  using size_t = ordinal_t;
-  using mut_proxy_t = decltype(std::declval<wrapped_type &>().mutable_unchecked());
-  using proxy_t = decltype(std::declval<const wrapped_type &>().unchecked());
+  using size_t	  = ordinal_t;
+  using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
+  using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  using data_return_t	    = wrapped_type *;
+  using reference_t	    = scalar_t &;
+  using const_reference_t   = scalar_t const &;
 
-  using span_ret_t = expressions::SpanExpr<Tensor<1, wrapped_type>>;
-  using span_const_ret_t = expressions::SpanExpr<const Tensor<1, wrapped_type>>;
-  using asdiagonalmatrix_ret_t = expressions::AsDiagonalMatrixExpr<Tensor<1, wrapped_type>>;
-  using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Tensor<1, wrapped_type>>;
+  using span_ret_t   = expressions::SpanExpr<Tensor<1,wrapped_type>>;
+  using span_const_ret_t = expressions::SpanExpr< const Tensor<1,wrapped_type>>;
+  using asdiagonalmatrix_ret_t = expressions::AsDiagonalMatrixExpr<Tensor<1,wrapped_type>>;
+  using asdiagonalmatrix_const_ret_t = expressions::AsDiagonalMatrixExpr<const Tensor<1,wrapped_type>>;
 };
 
 
-template <typename wrapped_type>
+template<typename wrapped_type>
 struct traits<
   Tensor<2, wrapped_type>,
-  mpl::enable_if_t<
-    containers::predicates::is_fstyle_array_pybind<wrapped_type>::value>>
+    mpl::enable_if_t<
+      containers::predicates::is_fstyle_array_pybind<wrapped_type>::value
+    >
+  >
 {
   static constexpr WrappedTensorIdentifier wrapped_tensor_identifier =
     WrappedTensorIdentifier::Pybind;
@@ -105,36 +109,38 @@ struct traits<
 
   static constexpr int rank = 2;
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = !is_static;
-  static constexpr bool is_vector = false;
-  static constexpr bool is_matrix = false;
+  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_vector	= false;
+  static constexpr bool is_matrix	= false;
   static constexpr bool is_multi_vector = false;
-  static constexpr bool is_shared_mem = true;
-  static constexpr bool is_distributed = false;
+  static constexpr bool is_shared_mem	= true;
+  static constexpr bool is_distributed	= false;
 
-  using scalar_t = typename wrapped_type::value_type;
+  using scalar_t  = typename wrapped_type::value_type;
   using ordinal_t = pybind11::ssize_t;
-  using size_t = ordinal_t;
-  using mut_proxy_t = decltype(std::declval<wrapped_type &>().mutable_unchecked());
-  using proxy_t = decltype(std::declval<const wrapped_type &>().unchecked());
+  using size_t	  = ordinal_t;
+  using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
+  using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  using data_return_t	    = wrapped_type *;
+  using reference_t	    = scalar_t &;
+  using const_reference_t   = scalar_t const &;
 
-  using diag_ret_t = expressions::DiagExpr<Tensor<2, wrapped_type>>;
-  using diag_const_ret_t = expressions::DiagExpr<const Tensor<2, wrapped_type>>;
-  using subspan_ret_t = expressions::SubspanExpr<Tensor<2, wrapped_type>>;
-  using subspan_const_ret_t = expressions::SubspanExpr<const Tensor<2, wrapped_type>>;
+  using diag_ret_t = expressions::DiagExpr<Tensor<2,wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr<const Tensor<2,wrapped_type>>;
+  using subspan_ret_t   = expressions::SubspanExpr<Tensor<2,wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const Tensor<2,wrapped_type>>;
 
   using unsuited_layout_wrapped_t = pybind11::array_t<scalar_t, pybind11::array::c_style>;
 };
 
-template <typename wrapped_type>
+template<typename wrapped_type>
 struct traits<
   Tensor<3, wrapped_type>,
-  mpl::enable_if_t<
-    containers::predicates::is_fstyle_array_pybind<wrapped_type>::value>>
+    mpl::enable_if_t<
+      containers::predicates::is_fstyle_array_pybind<wrapped_type>::value
+    >
+  >
 {
   static constexpr WrappedTensorIdentifier wrapped_tensor_identifier =
     WrappedTensorIdentifier::Pybind;
@@ -145,25 +151,25 @@ struct traits<
 
   static constexpr int rank = 3;
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = !is_static;
-  static constexpr bool is_vector = false;
-  static constexpr bool is_matrix = false;
+  static constexpr bool is_dynamic  = !is_static;
+  static constexpr bool is_vector	= false;
+  static constexpr bool is_matrix	= false;
   static constexpr bool is_multi_vector = false;
-  static constexpr bool is_shared_mem = true;
-  static constexpr bool is_distributed = false;
+  static constexpr bool is_shared_mem	= true;
+  static constexpr bool is_distributed	= false;
 
-  using scalar_t = typename wrapped_type::value_type;
+  using scalar_t  = typename wrapped_type::value_type;
   using ordinal_t = pybind11::ssize_t;
-  using size_t = ordinal_t;
-  using mut_proxy_t = decltype(std::declval<wrapped_type &>().mutable_unchecked());
-  using proxy_t = decltype(std::declval<const wrapped_type &>().unchecked());
+  using size_t	  = ordinal_t;
+  using mut_proxy_t = decltype( std::declval<wrapped_type &>().mutable_unchecked() );
+  using proxy_t	    = decltype( std::declval<const wrapped_type &>().unchecked() );
   using const_data_return_t = wrapped_type const *;
-  using data_return_t = wrapped_type *;
-  using reference_t = scalar_t &;
-  using const_reference_t = scalar_t const &;
+  using data_return_t	    = wrapped_type *;
+  using reference_t	    = scalar_t &;
+  using const_reference_t   = scalar_t const &;
 
   using unsuited_layout_wrapped_t = pybind11::array_t<scalar_t, pybind11::array::c_style>;
 };
 
-}}}//end namespace pressio::containers::details
-#endif// CONTAINERS_TENSOR_CONTAINERS_TENSOR_TRAITS_HPP_
+}}} //end namespace pressio::containers::details
+#endif  // CONTAINERS_TENSOR_CONTAINERS_TENSOR_TRAITS_HPP_

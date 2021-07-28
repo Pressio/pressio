@@ -49,12 +49,13 @@
 #ifndef CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_FUNCTION_HPP_
 #define CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_FUNCTION_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename T>
 mpl::enable_if_t<
-  T::traits::rank == 1,
-  typename details::traits<T>::asdiagonalmatrix_const_ret_t>
+  T::traits::rank==1,
+  typename details::traits<T>::asdiagonalmatrix_const_ret_t
+  >
 asDiagonalMatrix(const T & vecObj)
 {
   using return_t = typename details::traits<T>::asdiagonalmatrix_const_ret_t;
@@ -63,13 +64,14 @@ asDiagonalMatrix(const T & vecObj)
 
 template <typename T>
 mpl::enable_if_t<
-  T::traits::rank == 1,
-  typename details::traits<T>::asdiagonalmatrix_ret_t>
+  T::traits::rank==1,
+  typename details::traits<T>::asdiagonalmatrix_ret_t
+  >
 asDiagonalMatrix(T & vecObj)
 {
   using return_t = typename details::traits<T>::asdiagonalmatrix_ret_t;
   return return_t(vecObj);
 }
 
-}}//end namespace pressio::containers
-#endif// CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_FUNCTION_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPRESSIONS_ASDIAGONALMATRIX_CONTAINERS_ASDIAGONALMATRIX_FUNCTION_HPP_

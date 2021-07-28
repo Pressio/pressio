@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <class fom_states_manager_t, class fom_apply_jac_type, class decoder_type>
 class FomApplyJacobianPolicyDiscreteTimeApi
@@ -70,29 +70,28 @@ public:
   FomApplyJacobianPolicyDiscreteTimeApi & operator=(FomApplyJacobianPolicyDiscreteTimeApi &&) = delete;
   ~FomApplyJacobianPolicyDiscreteTimeApi() = default;
 
-  template <typename fom_system_t>
+  template<typename fom_system_t>
   FomApplyJacobianPolicyDiscreteTimeApi(const fom_system_t & fomSystemObj,
 					fom_states_manager_t & fomStatesMngr,
 					const decoder_type & decoder)
     : fomStatesMngr_(fomStatesMngr),
       phi_(decoder.jacobianCRef()),
       fomApplyJac_(fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi_.get().data()))
-  {
-  }
+  {}
 
 public:
-  const fom_apply_jac_type & get() const
-  {
+  const fom_apply_jac_type & get() const{
     return fomApplyJac_;
   }
 
   // we have here n = 1 prev rom states
-  template <
+  template<
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
-  mpl::enable_if_t<galerkin_stencil_states_t::size() == 1>
+    typename scalar_t
+  >
+  mpl::enable_if_t< galerkin_stencil_states_t::size()==1 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
@@ -104,7 +103,7 @@ public:
     // (to fix that at some point)
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep, dt,
 					   *(phi_.get().data()),
 					   *fomApplyJac_.data(),
@@ -113,12 +112,13 @@ public:
   }
 
   // we have here n = 2 prev rom states
-  template <
+  template<
     typename galerkin_state_t,
     typename galerkin_stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
-  mpl::enable_if_t<galerkin_stencil_states_t::size() == 2>
+    typename scalar_t
+    >
+  mpl::enable_if_t< galerkin_stencil_states_t::size()==2 >
   compute(const galerkin_state_t & galerkinState,
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
@@ -130,7 +130,7 @@ public:
     // (to fix that at some point)
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
     fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep, dt,
 					   *(phi_.get().data()),
@@ -142,4 +142,4 @@ public:
 };
 
 }}}}//end namespace
-#endif// ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
+#endif  // ROM_GALERKIN_IMPL_DISCRETE_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_

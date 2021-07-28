@@ -49,44 +49,43 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <typename... Args>
+template<typename ...Args>
 class MaskedProblemContinuousTimeApi
 {
 public:
   using this_t = MaskedProblemContinuousTimeApi<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t = typename traits::fom_system_t;
-  using scalar_t = typename traits::scalar_t;
-  using fom_native_state_t = typename traits::fom_native_state_t;
-  using fom_state_t = typename traits::fom_state_t;
-  using fom_velocity_t = typename traits::fom_velocity_t;
-  using lspg_state_t = typename traits::lspg_state_t;
-  using lspg_native_state_t = typename traits::lspg_native_state_t;
-  using decoder_t = typename traits::decoder_t;
-  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
-  using fom_state_mngr_t = typename traits::fom_states_manager_t;
-  using masker_t = typename traits::masker_t;
-  using ud_ops_t = typename traits::ud_ops_t;
-  using residual_policy_t = typename traits::residual_policy_t;
-  using jacobian_policy_t = typename traits::jacobian_policy_t;
-  using aux_stepper_t = typename traits::aux_stepper_t;
-  using stepper_t = typename traits::stepper_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using scalar_t		= typename traits::scalar_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using fom_velocity_t		= typename traits::fom_velocity_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_state_mngr_t	= typename traits::fom_states_manager_t;
+  using masker_t		= typename traits::masker_t;
+  using ud_ops_t		= typename traits::ud_ops_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
+  using aux_stepper_t		= typename traits::aux_stepper_t;
+  using stepper_t		= typename traits::stepper_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt = ::pressio::rom::impl::FomStatesMngrMixin<At, ud_ops_t, fom_state_t,
-						      fom_state_reconstr_t, fom_state_mngr_t>;
+  fom_state_reconstr_t, fom_state_mngr_t>;
   using Ct = MaskedPoliciesMixin<Bt, masker_t, ud_ops_t, residual_policy_t, jacobian_policy_t>;
   using mem_t = ::pressio::rom::impl::ImplicitStepperMixin<Ct, aux_stepper_t, stepper_t>;
   mem_t members_;
 
 public:
-  stepper_t & stepperRef()
-  {
+  stepper_t & stepperRef(){
     return members_.stepperObj_;
   }
 
@@ -95,8 +94,7 @@ public:
     return *(members_.fomStatesMngr_(::pressio::ode::nPlusOne()).data());
   }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const
-  {
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return members_.fomStateReconstructor_;
   }
 
@@ -111,7 +109,8 @@ public:
   /* ud_ops_t == void */
   template <
     typename _ud_ops_t = ud_ops_t,
-    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int> = 0>
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int > = 0
+    >
   MaskedProblemContinuousTimeApi(const fom_system_t & fomSystemObj,
 				 decoder_t & decoder,
 				 const lspg_state_t & romStateIn,
@@ -119,13 +118,13 @@ public:
 				 const masker_t & maskerObj)
     : members_(romStateIn, fomSystemObj, decoder,
 	       fomNominalStateNative, maskerObj)
-  {
-  }
+  {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
-    ::pressio::mpl::enable_if_t<_binding_sentinel, int> = 0>
+    ::pressio::mpl::enable_if_t<_binding_sentinel, int > = 0
+    >
   MaskedProblemContinuousTimeApi(pybind11::object fomObjPy,
 				 decoder_t & decoder,
 				 const lspg_native_state_t & romStateIn,
@@ -133,10 +132,9 @@ public:
 				 pybind11::object maskerPyObj)
     : members_(lspg_state_t(romStateIn), fomObjPy, decoder,
 	       fomNominalStateIn, maskerPyObj)
-  {
-  }
+  {}
 #endif
 };
 
 }}}}}
-#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_ROM_LSPG_UNSTEADY_MASKED_PROBLEM_CONTINUOUS_TIME_API_HPP_

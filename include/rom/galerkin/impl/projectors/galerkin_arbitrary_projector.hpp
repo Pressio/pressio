@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_ARBITRARY_PROJECTOR_HPP_
 #define ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_ARBITRARY_PROJECTOR_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 /*
   arbitrary projector computes "P^T * operand":
@@ -72,8 +72,9 @@ namespace pressio { namespace rom { namespace galerkin { namespace impl {
 template <typename data_type, typename ud_ops_type>
 struct ArbitraryProjector
 {
-  static_assert(::pressio::containers::predicates::is_wrapper<data_type>::value,
-		"For arbitrary projector the data type must be a wrapper");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<data_type>::value,
+   "For arbitrary projector the data type must be a wrapper");
 
   using traits = ::pressio::containers::details::traits<data_type>;
   using matrix_native_type = typename traits::wrapped_t;
@@ -86,23 +87,24 @@ struct ArbitraryProjector
   ~ArbitraryProjector() = default;
 
   ArbitraryProjector(const data_type & dataIn, const ud_ops_type & udOps)
-    : data_{dataIn}, udOps_(&udOps) {}
+    : data_{dataIn}, udOps_(&udOps){}
 
   ArbitraryProjector(data_type && dataIn, const ud_ops_type & udOps)
-    : data_(std::move(dataIn)), udOps_(udOps) {}
+    : data_(std::move(dataIn)), udOps_(udOps){}
 
   ArbitraryProjector(matrix_native_type && dataIn, const ud_ops_type & udOps)
-    : data_(std::move(dataIn)), udOps_(udOps) {}
+    : data_(std::move(dataIn)), udOps_(udOps){}
 
   ArbitraryProjector(const matrix_native_type & dataIn, const ud_ops_type & udOps)
-    : data_(dataIn), udOps_(udOps) {}
+    : data_(dataIn), udOps_(udOps){}
 
-  template <typename operand_t, typename result_t>
+  template<typename operand_t, typename result_t>
   mpl::enable_if_t<
     ::pressio::containers::details::traits<operand_t>::rank == 1 and
     ::pressio::containers::details::traits<result_t>::rank == 1 and
     (::pressio::rom::galerkin::constraints::velocity<result_t>::value or
-     ::pressio::rom::galerkin::constraints::residual<result_t>::value)>
+     ::pressio::rom::galerkin::constraints::residual<result_t>::value)
+    >
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
@@ -112,11 +114,12 @@ struct ArbitraryProjector
 			 cnst::zero(), result);
   }
 
-  template <typename operand_t, typename result_t>
+  template<typename operand_t, typename result_t>
   mpl::enable_if_t<
-    ::pressio::containers::details::traits<operand_t>::rank == 2 and
+    ::pressio::containers::details::traits<operand_t>::rank ==2 and
     ::pressio::containers::details::traits<result_t>::rank == 1 and
-    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value>
+    ::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value
+    >
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
@@ -138,8 +141,9 @@ private:
 template <typename data_type>
 struct ArbitraryProjector<data_type, void>
 {
-  static_assert(::pressio::containers::predicates::is_wrapper<data_type>::value,
-		"For arbitrary projector the data type must be a wrapper");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<data_type>::value,
+   "For arbitrary projector the data type must be a wrapper");
 
   using traits = ::pressio::containers::details::traits<data_type>;
   using native_type = typename traits::wrapped_t;
@@ -154,18 +158,18 @@ struct ArbitraryProjector<data_type, void>
   ~ArbitraryProjector() = default;
 
   explicit ArbitraryProjector(const data_type & dataIn)
-    : data_{dataIn} {}
+    : data_{dataIn}{}
 
   explicit ArbitraryProjector(data_type && dataIn)
-    : data_(std::move(dataIn)) {}
+    : data_(std::move(dataIn)){}
 
   explicit ArbitraryProjector(native_type && dataIn)
-    : data_(std::move(dataIn)) {}
+    : data_(std::move(dataIn)){}
 
   explicit ArbitraryProjector(const native_type & dataIn)
-    : data_(dataIn) {}
+    : data_(dataIn){}
 
-  template <typename operand_t, typename result_t>
+  template<typename operand_t, typename result_t>
   mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank == 1>
   apply(const operand_t & operand, result_t & result) const
   {
@@ -173,7 +177,7 @@ struct ArbitraryProjector<data_type, void>
 			    data_, operand, cnst::zero(), result);
   }
 
-  template <typename operand_t, typename result_t>
+  template<typename operand_t, typename result_t>
   mpl::enable_if_t<::pressio::containers::details::traits<result_t>::rank >= 2>
   apply(const operand_t & operand, result_t & result) const
   {
@@ -198,4 +202,4 @@ private:
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl
-#endif// ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_ARBITRARY_PROJECTOR_HPP_
+#endif  // ROM_GALERKIN_IMPL_PROJECTORS_GALERKIN_ARBITRARY_PROJECTOR_HPP_

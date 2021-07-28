@@ -49,61 +49,57 @@
 #ifndef CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 #define CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_cstyle_vector_wrapper_pybind : std::false_type
-{
-};
+struct is_cstyle_vector_wrapper_pybind : std::false_type {};
 
 template <typename T>
 struct is_cstyle_vector_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
     details::traits<T>::is_vector &&
-    details::traits<T>::wrapped_vector_identifier ==
-      details::WrappedVectorIdentifier::Pybind and
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
     is_cstyle_array_pybind11<
-      typename details::traits<T>::wrapped_t>::value>> : std::true_type
-{
-};
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
 // -------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_fstyle_vector_wrapper_pybind : std::false_type
-{
-};
+struct is_fstyle_vector_wrapper_pybind : std::false_type {};
 
 template <typename T>
 struct is_fstyle_vector_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
     details::traits<T>::is_vector &&
-    details::traits<T>::wrapped_vector_identifier ==
-      details::WrappedVectorIdentifier::Pybind and
+    details::traits<T>::wrapped_vector_identifier==
+		details::WrappedVectorIdentifier::Pybind and
     is_fstyle_array_pybind11<
-      typename details::traits<T>::wrapped_t>::value>> : std::true_type
-{
-};
+      typename details::traits<T>::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
 // -------------------------------------------------------
 
 
 template <typename T, typename enable = void>
-struct is_vector_wrapper_pybind : std::false_type
-{
-};
+struct is_vector_wrapper_pybind : std::false_type {};
 
 template <typename T>
 struct is_vector_wrapper_pybind<
   T,
   ::pressio::mpl::enable_if_t<
     is_cstyle_vector_wrapper_pybind<T>::value or
-    is_fstyle_vector_wrapper_pybind<T>::value>> : std::true_type
-{
-};
+    is_fstyle_vector_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
 
-template <typename T>
+template<typename T>
 using is_vector_wrapper_pybind11 = is_vector_wrapper_pybind<T>;
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_
+#endif  // CONTAINERS_VECTOR_WRAPPER_PREDICATES_CONTAINERS_IS_VECTOR_WRAPPER_PYBIND_HPP_

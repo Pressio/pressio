@@ -49,36 +49,30 @@
 #ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_IS_EXPRESSION_DIAG_HPP_
 #define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_IS_EXPRESSION_DIAG_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct diag_expression : std::false_type
-{
-};
+struct diag_expression : std::false_type{};
 
 template <typename T>
 struct diag_expression<
-  ::pressio::containers::expressions::DiagExpr<T>> : std::true_type
-{
-};
+  ::pressio::containers::expressions::DiagExpr<T>
+  > : std::true_type{};
 
 template <typename T>
 struct diag_expression<
-  const ::pressio::containers::expressions::DiagExpr<T>> : diag_expression<T>
-{
-};
+  const ::pressio::containers::expressions::DiagExpr<T>
+  > : diag_expression<T>{};
 
 template <typename T>
 struct diag_expression<
-  ::pressio::containers::expressions::DiagExpr<const T>> : std::true_type
-{
-};
+  ::pressio::containers::expressions::DiagExpr<const T>
+  > : std::true_type{};
 
 template <typename T>
 struct diag_expression<
-  const ::pressio::containers::expressions::DiagExpr<const T>> : std::true_type
-{
-};
+  const ::pressio::containers::expressions::DiagExpr<const T>
+  > : std::true_type{};
 
-}}}// namespace pressio::containers::predicates
-#endif// CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_IS_EXPRESSION_DIAG_HPP_
+}}} // namespace pressio::containers::predicates
+#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_IS_EXPRESSION_DIAG_HPP_

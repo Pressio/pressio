@@ -40,6 +40,6 @@ namespace sinks {
 //     file_helper_.flush();
 // }
 
-}// namespace sinks
-}// namespace spdlog
-#endif// UTILS_LOGGER_SPDLOG_SINKS_UNUSED_BASIC_FILE_SINK_INL_HPP_
+} // namespace sinks
+} // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_BASIC_FILE_SINK_INL_HPP_

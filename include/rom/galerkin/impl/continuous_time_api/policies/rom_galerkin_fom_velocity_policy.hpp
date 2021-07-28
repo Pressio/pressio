@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_VELOCITY_POLICY_HPP_
 #define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_VELOCITY_POLICY_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <typename fom_states_manager_t, typename fom_velocity_type>
 class FomVelocityPolicy
@@ -69,19 +69,19 @@ public:
   FomVelocityPolicy & operator=(FomVelocityPolicy &&) = delete;
   ~FomVelocityPolicy() = default;
 
-  template <typename fom_system_t>
+  template<typename fom_system_t>
   FomVelocityPolicy(const fom_system_t & fomSystemObj,
 		    fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr),
       fomVelo_(fomSystemObj.createVelocity())
-  {
-  }
+  {}
 
 public:
-  template <
-    class galerkin_state_t, class fom_system_t, class scalar_t, class at_tag>
+  template<
+  class galerkin_state_t, class fom_system_t, class scalar_t, class at_tag
+  >
   void compute(const galerkin_state_t & galerkinState,
-	       const fom_system_t & fomSystemObj,
+	       const fom_system_t  & fomSystemObj,
 	       const scalar_t & velocityEvalTime,
 	       at_tag tag) const
   {
@@ -90,11 +90,10 @@ public:
     fomSystemObj.velocity(*fomState.data(), velocityEvalTime, *fomVelo_.data());
   }
 
-  const fom_velocity_type & get() const
-  {
+  const fom_velocity_type & get() const{
     return fomVelo_;
   }
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl
-#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_VELOCITY_POLICY_HPP_
+#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_VELOCITY_POLICY_HPP_

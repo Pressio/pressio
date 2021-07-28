@@ -49,14 +49,15 @@
 #ifndef CONTAINERS_SPARSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 #define CONTAINERS_SPARSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class SparseMatrix<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
     containers::predicates::is_sparse_matrix_eigen<
-      wrapped_type>::value>>
+      wrapped_type >::value>
+  >
 {
 public:
   using this_t = SparseMatrix<wrapped_type>;
@@ -78,16 +79,16 @@ public:
   template <
     typename U = ord_t,
     mpl::enable_if_t<
-      !std::is_void<U>::value and
-	traits::is_row_major == 1,
-      int> = 0>
+     !std::is_void<U>::value and
+     traits::is_row_major==1, int> = 0
+    >
   explicit SparseMatrix(U nrows, U ncols, U nonZerosPerRow)
   {
     data_.resize(nrows, ncols);
-    if(nonZerosPerRow > ncols)
+    if( nonZerosPerRow > ncols )
       throw std::runtime_error(
-	"SPARSE MATRIX CNTR: estimated nonzeros larger then num of cols");
-    data_.reserve(Eigen::VectorXi::Constant(nrows, nonZerosPerRow));
+    "SPARSE MATRIX CNTR: estimated nonzeros larger then num of cols");
+    data_.reserve(Eigen::VectorXi::Constant(nrows,nonZerosPerRow));
     data_.makeCompressed();
   }
 
@@ -95,22 +96,20 @@ public:
   template <
     typename U = ord_t,
     mpl::enable_if_t<
-      !std::is_void<U>::value and
-	traits::is_row_major == 0,
-      int> = 0>
+     !std::is_void<U>::value and
+      traits::is_row_major==0, int> = 0
+    >
   explicit SparseMatrix(U nrows, U ncols, U nonZerosPerCol)
   {
     data_.resize(nrows, ncols);
-    if(nonZerosPerCol > nrows)
+    if( nonZerosPerCol > nrows )
       throw std::runtime_error(
-	"SPARSE MATRIX CNTR: estimated nonzeros larger then num of rows");
-    data_.reserve(Eigen::VectorXi::Constant(ncols, nonZerosPerCol));
+    "SPARSE MATRIX CNTR: estimated nonzeros larger then num of rows");
+    data_.reserve(Eigen::VectorXi::Constant(ncols,nonZerosPerCol));
     data_.makeCompressed();
   }
 
-  explicit SparseMatrix(const wrap_t & other)
-    : data_(other)
-  {
+  explicit SparseMatrix(const wrap_t & other) : data_(other){
     data_.makeCompressed();
   }
 
@@ -131,33 +130,28 @@ public:
 
 public:
   // note here that we return by copy
-  sc_t operator()(ord_t row, ord_t col) const
-  {
+  sc_t operator() (ord_t row, ord_t col) const{
     // eigen returns 0 if the item is zero
-    return data_.coeff(row, col);
+    return data_.coeff(row,col);
   }
 
-  this_t & operator+=(const this_t & other)
-  {
-    assert(haveCompatibleDimensions(*this, other));
+  this_t & operator+=(const this_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
     this->data_ += *other.data();
     return *this;
   }
 
-  this_t & operator-=(const this_t & other)
-  {
-    assert(haveCompatibleDimensions(*this, other));
+  this_t & operator-=(const this_t & other) {
+    assert(haveCompatibleDimensions(*this, other) );
     this->data_ -= *other.data();
     return *this;
   }
 
-  wrap_t const * data() const
-  {
+  wrap_t const * data() const{
     return &data_;
   };
 
-  wrap_t * data()
-  {
+  wrap_t * data(){
     return &data_;
   };
 
@@ -167,4 +161,4 @@ private:
 };//end class
 
 }}//end namespace pressio::containers
-#endif// CONTAINERS_SPARSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_
+#endif  // CONTAINERS_SPARSE_MATRIX_CONCRETE_CONTAINERS_MATRIX_SPARSE_SHAREDMEM_EIGEN_HPP_

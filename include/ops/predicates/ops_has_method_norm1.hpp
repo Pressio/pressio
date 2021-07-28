@@ -49,24 +49,23 @@
 #ifndef OPS_PREDICATES_OPS_HAS_METHOD_NORM1_HPP_
 #define OPS_PREDICATES_OPS_HAS_METHOD_NORM1_HPP_
 
-namespace pressio { namespace ops { namespace predicates {
+namespace pressio{ namespace ops{ namespace predicates {
 
 template <
   typename T, typename arg_t, typename norm_t,
   typename enable = void>
 struct has_method_norm1
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <typename T, typename arg_t, typename norm_t>
 struct has_method_norm1<
   T, arg_t, norm_t,
   mpl::enable_if_t<
     std::is_same<
-      decltype(std::declval<T const &>().norm1(std::declval<arg_t const &>())), norm_t>::value>> : std::true_type
-{
-};
+      decltype(std::declval< T const &>().norm1( std::declval<arg_t const &>() )), norm_t
+      >::value
+    >
+  > : std::true_type{};
 
-}}}//pressio::ops::predicates
-#endif// OPS_PREDICATES_OPS_HAS_METHOD_NORM1_HPP_
+}}} //pressio::ops::predicates
+#endif  // OPS_PREDICATES_OPS_HAS_METHOD_NORM1_HPP_

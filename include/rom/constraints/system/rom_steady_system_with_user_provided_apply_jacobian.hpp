@@ -49,69 +49,87 @@
 #ifndef ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 #define ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
-namespace pressio { namespace rom {
-namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
-template <typename T, typename apply_jacobian_operand_t, typename enable = void>
-struct steady_system_with_user_provided_apply_jacobian : std::false_type
-{
-};
+template<typename T, typename apply_jacobian_operand_t, typename enable = void>
+struct steady_system_with_user_provided_apply_jacobian : std::false_type{};
 
-template <typename T, typename apply_jacobian_operand_t>
+template<typename T, typename apply_jacobian_operand_t>
 struct steady_system_with_user_provided_apply_jacobian<
   T, apply_jacobian_operand_t,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_wrapper<apply_jacobian_operand_t>::value and ::pressio::containers::predicates::has_scalar_typedef<T>::value and ::pressio::ode::predicates::has_state_typedef<T>::value and ::pressio::ode::predicates::has_residual_typedef<T>::value and
+    ::pressio::containers::predicates::is_wrapper<apply_jacobian_operand_t>::value and
+    ::pressio::containers::predicates::has_scalar_typedef<T>::value and
+    ::pressio::ode::predicates::has_state_typedef<T>::value and
+    ::pressio::ode::predicates::has_residual_typedef<T>::value and
     ///////////////////
     /// residual
     ///////////////////
     ::pressio::rom::predicates::has_const_create_residual_method_return_result<
-      T, typename T::residual_type>::value and ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<T, typename T::state_type, typename T::residual_type>::value and
+      T, typename T::residual_type>::value and
+    ::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type
+      >::value and
     ///////////////////
     /// apply jacobian
     ///////////////////
     ::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-      T, typename apply_jacobian_operand_t::traits::wrapped_t>::value and ::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<T, typename T::state_type,
-																					      typename apply_jacobian_operand_t::traits::wrapped_t, typename apply_jacobian_operand_t::traits::wrapped_t>::value>> : std::true_type
-{
-};
+      T, typename apply_jacobian_operand_t::traits::wrapped_t
+      >::value and
+    ::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
+      T, typename T::state_type,
+	typename apply_jacobian_operand_t::traits::wrapped_t, typename apply_jacobian_operand_t::traits::wrapped_t
+      >::value
+    >
+  > : std::true_type{};
 
-}// namespace pressio::rom::constraints
+} // namespace pressio::rom::constraints
 
 template <typename T, typename apply_jac_operand_t>
 struct why_not_steady_system_with_user_provided_apply_jacobian
 {
-  static_assert(::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value,
-		"the why not checks need apply_jac_operand_t to be a wrapper type");
+  static_assert
+    (::pressio::containers::predicates::is_wrapper<apply_jac_operand_t>::value,
+     "the why not checks need apply_jac_operand_t to be a wrapper type");
 
-  static_assert(::pressio::containers::predicates::has_scalar_typedef<T>::value,
-		"Your steady adapter class is without (or has a wrong) scalar typedef");
+  static_assert
+    (::pressio::containers::predicates::has_scalar_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) scalar typedef");
 
-  static_assert(::pressio::ode::predicates::has_state_typedef<T>::value,
-		"Your steady adapter class is without (or has a wrong) state typedef");
+  static_assert
+    (::pressio::ode::predicates::has_state_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) state typedef");
 
-  static_assert(::pressio::ode::predicates::has_residual_typedef<T>::value,
-		"Your steady adapter class is without (or has a wrong) residual typedef");
+  static_assert
+    (::pressio::ode::predicates::has_residual_typedef<T>::value,
+     "Your steady adapter class is without (or has a wrong) residual typedef");
 
-  static_assert(::pressio::rom::predicates::has_const_create_residual_method_return_result<
-		  T, typename T::residual_type>::value,
-		"Your steady adapter class is without (or has a wrong) create residual method");
+  static_assert
+    (::pressio::rom::predicates::has_const_create_residual_method_return_result<
+     T, typename T::residual_type>::value,
+     "Your steady adapter class is without (or has a wrong) create residual method");
 
-  static_assert(::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
-		  T, typename T::state_type, typename T::residual_type>::value,
-		"Your steady adapter class is without (or has a wrong) residual method");
+  static_assert
+    (::pressio::rom::predicates::has_const_residual_method_accept_state_result_return_void<
+      T, typename T::state_type, typename T::residual_type
+      >::value,
+     "Your steady adapter class is without (or has a wrong) residual method");
 
-  static_assert(::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-		  T, typename apply_jac_operand_t::traits::wrapped_t>::value,
-		"Your steady adapter class is without (or has a wrong) create apply jacobian result method");
+  static_assert
+    (::pressio::rom::predicates::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
+     T, typename apply_jac_operand_t::traits::wrapped_t
+     >::value,
+     "Your steady adapter class is without (or has a wrong) create apply jacobian result method");
 
-  static_assert(::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
-		  T, typename T::state_type, typename apply_jac_operand_t::traits::wrapped_t,
-		  typename apply_jac_operand_t::traits::wrapped_t>::value,
-		"Your steady adapter class is without (or has a wrong) apply jacobian method");
+  static_assert
+    (::pressio::rom::predicates::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
+     T,  typename T::state_type,  typename apply_jac_operand_t::traits::wrapped_t,
+     typename apply_jac_operand_t::traits::wrapped_t
+     >::value,
+     "Your steady adapter class is without (or has a wrong) apply jacobian method");
 
   static constexpr bool value = true;
 };
 
-}}// namespace pressio::rom
-#endif// ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
+}} // namespace pressio::rom
+#endif  // ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_

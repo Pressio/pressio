@@ -49,16 +49,10 @@
 #ifndef QR_QR_CONFIGDEFS_HPP_
 #define QR_QR_CONFIGDEFS_HPP_
 
-namespace pressio { namespace qr { namespace details {
+namespace pressio{ namespace qr{ namespace details {
 
-template <typename T, typename enable = void>
-struct traits
-{
-};
-template <typename T>
-struct traits<const T> : traits<T>
-{
-};
+template<typename T, typename enable = void> struct traits{};
+template<typename T>  struct traits<const T> : traits<T> {};
 
 }}}// end namespace pressio::qr::details
-#endif// QR_QR_CONFIGDEFS_HPP_
+#endif  // QR_QR_CONFIGDEFS_HPP_

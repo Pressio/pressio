@@ -49,21 +49,23 @@
 #ifndef ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
 #define ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template <typename rom_problem_t>
+template<typename rom_problem_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
-  typename rom_problem_t::system_t>
+  typename rom_problem_t::system_t
+  >
 _SystemOrStepper(rom_problem_t & problem)
 {
   return problem.systemRef();
 }
 
-template <typename rom_problem_t>
+template<typename rom_problem_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::rom::details::traits<rom_problem_t>::is_unsteady_lspg,
-  typename rom_problem_t::stepper_t>
+  typename rom_problem_t::stepper_t
+  >
 _SystemOrStepper(rom_problem_t & problem)
 {
   return problem.stepperRef();
@@ -72,4 +74,4 @@ _SystemOrStepper(rom_problem_t & problem)
 }//end namespace impl
 
 }}}//end namespace pressio::rom::lspg
-#endif// ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_
+#endif  // ROM_LSPG_IMPL_ROM_VIEW_PROBLEM_SYSTEM_HPP_

@@ -49,12 +49,13 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 template <
   typename residual_type,
   typename fom_states_manager_t,
-  typename ud_ops_type>
+  typename ud_ops_type
+  >
 class ResidualPolicyContinuousTimeApi
 {
 public:
@@ -76,21 +77,21 @@ public:
   // 1. void ops
   template <
     typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value, int> = 0>
+    ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value, int > = 0
+    >
   ResidualPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr)
     : fomStatesMngr_(fomStatesMngr)
-  {
-  }
+  {}
 
   // 2. non-void ops
   template <
     typename _ud_ops_t = ud_ops_type,
-    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int> = 0>
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value, int > = 0
+    >
   ResidualPolicyContinuousTimeApi(fom_states_manager_t & fomStatesMngr,
 				  const _ud_ops_t & udOps)
     : fomStatesMngr_(fomStatesMngr), udOps_{&udOps}
-  {
-  }
+  {}
 
 public:
   template <typename fom_system_t>
@@ -104,9 +105,11 @@ public:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
+    typename scalar_t
+    >
   mpl::enable_if_t<
-    mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value>
+    mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -125,9 +128,11 @@ public:
     typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename stencil_velocities_t>
+    typename stencil_velocities_t
+    >
   mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value>
+    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
 	  const fom_system_t & fomSystemObj,
@@ -137,17 +142,19 @@ public:
 	  stencil_velocities_t & stencilVelocities,
 	  residual_type & romR) const
   {
-    this->compute_cn_impl<stepper_tag>(romState, romR, stencilStates, fomSystemObj,
-				       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
+    this->compute_cn_impl<stepper_tag>
+      (romState, romR, stencilStates, fomSystemObj,
+       timeAtNextStep, dt, currentStepNumber, stencilVelocities);
   }
 
 private:
   template <
-    typename stepper_tag,
-    typename fom_state_cont_type,
-    typename scalar_t,
-    typename _ud_ops_t = ud_ops_type>
-  ::pressio::mpl::enable_if_t<std::is_void<_ud_ops_t>::value>
+  typename stepper_tag,
+  typename fom_state_cont_type,
+  typename scalar_t,
+  typename _ud_ops_t = ud_ops_type
+  >
+  ::pressio::mpl::enable_if_t< std::is_void<_ud_ops_t>::value >
   time_discrete_dispatch(const fom_state_cont_type & fomStates,
 			 residual_type & romR,
 			 const scalar_t & dt) const
@@ -160,8 +167,9 @@ private:
     typename stepper_tag,
     typename fom_state_cont_type,
     typename scalar_t,
-    typename _ud_ops_t = ud_ops_type>
-  ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops_t>::value>
+    typename _ud_ops_t = ud_ops_type
+  >
+  ::pressio::mpl::enable_if_t< !std::is_void<_ud_ops_t>::value >
   time_discrete_dispatch(const fom_state_cont_type & fomStates,
 			 residual_type & romR,
 			 const scalar_t & dt) const
@@ -175,7 +183,8 @@ private:
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
-    typename scalar_t>
+    typename scalar_t
+  >
   void compute_impl(const lspg_state_t & romState,
 		    residual_type & romR,
 		    const stencil_states_t & stencilStates,
@@ -200,7 +209,7 @@ private:
      * The method below does not recompute all previous states, but only
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
-    if(storedStep_ != currentStepNumber) {
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = currentStepNumber;
     }
@@ -230,7 +239,8 @@ private:
     typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename stencil_velocities_t>
+    typename stencil_velocities_t
+  >
   void compute_cn_impl(const lspg_state_t & romState,
 		       residual_type & romR,
 		       const stencil_states_t & stencilStates,
@@ -245,12 +255,12 @@ private:
 
     fomStatesMngr_.get().reconstructAt(romState, ::pressio::ode::nPlusOne());
 
-    if(storedStep_ != currentStepNumber) {
+    if (storedStep_ != currentStepNumber){
       fomStatesMngr_.get().reconstructWithStencilUpdate(stencilStates(ode::n()));
       storedStep_ = currentStepNumber;
 
       // if the step changed, I need to compute f(y_n, t_n)
-      const auto tn = t_np1 - dt;
+      const auto tn = t_np1-dt;
       auto & f_n = stencilVelocities(::pressio::ode::n());
       const auto & fomState_n = fomStatesMngr_(::pressio::ode::n());
       fomSystemObj.velocity(*fomState_n.data(), tn, *f_n.data());
@@ -261,7 +271,8 @@ private:
     const auto & fomState_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     fomSystemObj.velocity(*fomState_np1.data(), t_np1, *f_np1.data());
 
-    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt);
+    ::pressio::rom::lspg::impl::unsteady::time_discrete_residual
+	<stepper_tag>(fomStatesMngr_.get(), stencilVelocities, romR, dt);
   }
 
 protected:
@@ -279,7 +290,8 @@ protected:
   // Need to figure out if we can leave ptr in all cases.
   typename std::conditional<
     ::pressio::mpl::is_same<ud_ops_type, pybind11::object>::value,
-    ud_ops_type, const ud_ops_type *>::type udOps_ = {};
+    ud_ops_type, const ud_ops_type *
+    >::type udOps_ = {};
 #else
   const ud_ops_type * udOps_ = {};
 #endif
@@ -287,4 +299,4 @@ protected:
 };//end class
 
 }}}}}
-#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_RESIDUAL_POLICY_CONTINUOUS_TIME_API_HPP_

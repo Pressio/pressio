@@ -49,60 +49,48 @@
 #ifndef CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_EIGEN_HPP_
 #define CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_EIGEN_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct is_dynamic_dense_matrix_wrapper_eigen : std::false_type
-{
-};
+struct is_dynamic_dense_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_dynamic_dense_matrix_wrapper_eigen<
   DenseMatrix<T>,
-  mpl::enable_if_t<is_dense_dynamic_matrix_eigen<T>::value>> : std::true_type
-{
-};
+    mpl::enable_if_t<is_dense_dynamic_matrix_eigen<T>::value>
+  > : std::true_type{};
 
 template <typename T>
-struct is_dynamic_dense_matrix_wrapper_eigen<const DenseMatrix<T>>
-  : is_dynamic_dense_matrix_wrapper_eigen<DenseMatrix<T>>
-{
-};
+struct is_dynamic_dense_matrix_wrapper_eigen< const DenseMatrix<T>>
+  : is_dynamic_dense_matrix_wrapper_eigen<DenseMatrix<T>>{};
 
 //--------------------------------------------------
 template <typename T, typename enable = void>
-struct is_static_dense_matrix_wrapper_eigen : std::false_type
-{
-};
+struct is_static_dense_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_static_dense_matrix_wrapper_eigen<
   DenseMatrix<T>,
-  mpl::enable_if_t<is_dense_static_matrix_eigen<T>::value>> : std::true_type
-{
-};
+  mpl::enable_if_t<is_dense_static_matrix_eigen<T>::value>
+  > : std::true_type{};
 
 template <typename T>
-struct is_static_dense_matrix_wrapper_eigen<const DenseMatrix<T>>
-  : is_static_dense_matrix_wrapper_eigen<DenseMatrix<T>>
-{
-};
+struct is_static_dense_matrix_wrapper_eigen< const DenseMatrix<T>>
+  : is_static_dense_matrix_wrapper_eigen<DenseMatrix<T>>{};
 
 //--------------------------------------------------
 template <typename T, typename enable = void>
-struct is_dense_matrix_wrapper_eigen : std::false_type
-{
-};
+struct is_dense_matrix_wrapper_eigen : std::false_type {};
 
 template <typename T>
 struct is_dense_matrix_wrapper_eigen<
   T,
   ::pressio::mpl::enable_if_t<
     is_static_dense_matrix_wrapper_eigen<T>::value or
-    is_dynamic_dense_matrix_wrapper_eigen<T>::value>>
-  : std::true_type
-{
-};
+    is_dynamic_dense_matrix_wrapper_eigen<T>::value
+    >
+  >
+  : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_EIGEN_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_WRAPPER_PREDICATES_CONTAINERS_IS_DENSE_MATRIX_WRAPPER_EIGEN_HPP_

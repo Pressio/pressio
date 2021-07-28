@@ -49,21 +49,20 @@
 #ifndef ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_
 #define ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_
 
-namespace pressio { namespace ode { namespace predicates {
+namespace pressio{ namespace ode{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct has_discrete_time_jacobian_typedef : std::false_type
-{
-};
+struct has_discrete_time_jacobian_typedef : std::false_type{};
 
 template <typename T>
 struct has_discrete_time_jacobian_typedef<
   T,
   mpl::enable_if_t<
     !std::is_void<
-      typename T::discrete_time_jacobian_type>::value>> : std::true_type
-{
-};
+      typename T::discrete_time_jacobian_type
+      >::value
+    >
+  > : std::true_type{};
 
 }}}//end namespace pressio::ode::predicates
-#endif// ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_
+#endif  // ODE_PREDICATES_TYPEDEFS_ODE_HAS_DISCRETE_TIME_JACOBIAN_TYPEDEF_HPP_

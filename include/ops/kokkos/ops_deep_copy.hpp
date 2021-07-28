@@ -49,21 +49,24 @@
 #ifndef OPS_KOKKOS_OPS_DEEP_COPY_HPP_
 #define OPS_KOKKOS_OPS_DEEP_COPY_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
-template <typename T1, typename T2>
+template< typename T1, typename T2 >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::container_kokkos_with_native_data_access<T2>::value
+  >
 deep_copy(T1 & dest, const T2 & src)
 {
   /* make sure we don't pass const objects as destination.
      In kokkos it is legal to modify const views.
      But for pressio wrappers it is not. */
-  static_assert(!std::is_const<T1>::value,
-		"ops:deep_copy: cannot copy to a const-qualified wrapper of a Kokkos view");
+  static_assert
+    (!std::is_const<T1>::value,
+     "ops:deep_copy: cannot copy to a const-qualified wrapper of a Kokkos view");
 
   ::Kokkos::deep_copy(*dest.data(), *src.data());
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_DEEP_COPY_HPP_
+#endif  // OPS_KOKKOS_OPS_DEEP_COPY_HPP_

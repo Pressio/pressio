@@ -52,10 +52,10 @@
 #include "ode_call_collector_dispatcher.hpp"
 #include "ode_integrators_printing_helpers.hpp"
 
-namespace pressio { namespace ode { namespace impl {
+namespace pressio{ namespace ode{ namespace impl{
 
 template <bool b, typename dt_manager, typename time_type>
-mpl::enable_if_t<b == true>
+mpl::enable_if_t<b==true>
 callDtManager(dt_manager && dtManager,
 	      const ::pressio::ode::types::step_t & step,
 	      const time_type & time,
@@ -67,7 +67,7 @@ callDtManager(dt_manager && dtManager,
 }
 
 template <bool b, typename dt_manager, typename time_type>
-mpl::enable_if_t<b == false>
+mpl::enable_if_t<b==false>
 callDtManager(dt_manager && dtManager,
 	      const ::pressio::ode::types::step_t & step,
 	      const time_type & time,
@@ -86,25 +86,26 @@ template <
   typename state_type,
   typename collector_t,
   typename dt_manager,
-  typename... Args>
-void integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
-						  const time_type & start_time,
-						  const time_type & final_time,
-						  state_type & odeStateInOut,
-						  collector_t & collector,
-						  dt_manager && dtManager,
-						  Args &&... args)
+  typename ... Args>
+void
+integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
+					     const time_type & start_time,
+					     const time_type & final_time,
+					     state_type	& odeStateInOut,
+					     collector_t & collector,
+					     dt_manager	&& dtManager,
+					     Args && ... args)
 {
 
   using step_t = ::pressio::ode::types::step_t;
   using collector_dispatch = CallCollectorDispatch<collector_t, time_type, state_type>;
   constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
-  if(final_time < start_time) {
+  if (final_time < start_time){
     throw std::runtime_error("You cannot call the advancer with final time < start time.");
   }
 
-  if(final_time == start_time) {
+  if (final_time == start_time){
     return;
   }
 
@@ -113,8 +114,8 @@ void integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
   timer->start("time loop");
 #endif
 
-  time_type time = start_time;
-  time_type dt = pressio::utils::constants<time_type>::zero();
+  time_type time  = start_time;
+  time_type dt    = pressio::utils::constants<time_type>::zero();
   time_type minDt = pressio::utils::constants<time_type>::zero();
   time_type dtReducFactor = ::pressio::utils::constants<time_type>::one();
 
@@ -125,71 +126,81 @@ void integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
   PRESSIOLOG_INFO("advanceToTargetTimeWithDtCallback");
   constexpr auto eps = std::numeric_limits<time_type>::epsilon();
   bool condition = true;
-  while(condition) {
-    PRESSIOLOG_DEBUG("callback dt manager");
-    impl::callDtManager<enableTimeStepRecovery>(dtManager, step, time,
-						dt, minDt, dtReducFactor);
+  while (condition)
+    {
+      PRESSIOLOG_DEBUG("callback dt manager");
+      impl::callDtManager<enableTimeStepRecovery>(dtManager, step, time,
+						  dt, minDt, dtReducFactor);
 
 
-    if(dt <= static_cast<time_type>(0)) {
-      throw std::runtime_error("The time step size cannot be <= 0.");
-    }
-    if(dt < minDt) {
-      throw std::runtime_error("The time step size cannot be smaller than the minimum value.");
-    }
-
-    if(enableTimeStepRecovery) {
-      if(minDt < static_cast<time_type>(0)) {
-	throw std::runtime_error("The minimum time step size cannot be smaller than zero.");
+      if (dt <= static_cast<time_type>(0)){
+	throw std::runtime_error
+	  ("The time step size cannot be <= 0.");
+      }
+      if (dt < minDt){
+	throw std::runtime_error
+	  ("The time step size cannot be smaller than the minimum value.");
       }
 
-      if(dtReducFactor <= ::pressio::utils::constants<time_type>::one()) {
-	throw std::runtime_error("The time step size reduction factor must be > 1.");
-      }
-    }
+      if (enableTimeStepRecovery){
+	if (minDt < static_cast<time_type>(0)){
+	  throw std::runtime_error
+	    ("The minimum time step size cannot be smaller than zero.");
+	}
 
-    printStepTime(step, time, dt);
-
-#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->start("time step");
-#endif
-
-    if(enableTimeStepRecovery) {
-      bool needStop = false;
-      while(!needStop) {
-	try {
-	  stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
-	  needStop = true;
-	} catch(::pressio::eh::time_step_failure const & e) {
-	  dt = dt / dtReducFactor;
-	  if(dt < minDt) {
-	    throw std::runtime_error("Violation of minimum time step while trying to recover time step");
-	  }
-
-	  PRESSIOLOG_CRITICAL("time step={} failed, retrying with dt={}", step, dt);
+	if (dtReducFactor <= ::pressio::utils::constants<time_type>::one()){
+	  throw std::runtime_error
+	    ("The time step size reduction factor must be > 1.");
 	}
       }
-    } else {
-      stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
-    }
+
+      printStepTime(step, time, dt);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("time step");
+      timer->start("time step");
 #endif
 
-    time += dt;
-    collector_dispatch::execute(collector, step, time, odeStateInOut);
+      if (enableTimeStepRecovery)
+      {
+	bool needStop = false;
+	while(!needStop){
+	  try
+	  {
+	    stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+	    needStop=true;
+	  }
+	  catch (::pressio::eh::time_step_failure const & e)
+	  {
+	    dt = dt/dtReducFactor;
+	    if (dt<minDt){
+	      throw std::runtime_error
+		("Violation of minimum time step while trying to recover time step");
+	    }
 
-    // use numeric limits to avoid tricky roundoff accumulation
-    if(std::abs(time - final_time) <= eps)
-      condition = false;
+	    PRESSIOLOG_CRITICAL("time step={} failed, retrying with dt={}", step, dt);
+	  }
+	}
+      }
+      else
+      {
+	stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+      }
 
-    // if we are over the final time, stop too
-    if(time > final_time)
-      condition = false;
+#ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
+      timer->stop("time step");
+#endif
 
-    step++;
-  }
+      time += dt;
+      collector_dispatch::execute(collector, step, time, odeStateInOut);
+
+      // use numeric limits to avoid tricky roundoff accumulation
+      if ( std::abs(time - final_time) <= eps ) condition = false;
+
+      // if we are over the final time, stop too
+      if ( time > final_time ) condition = false;
+
+      step++;
+    }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
   timer->stop("time loop");
@@ -198,4 +209,4 @@ void integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 
 
 }}}//end namespace pressio::ode::impl
-#endif// ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
+#endif  // ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_

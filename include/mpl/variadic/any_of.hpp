@@ -13,7 +13,7 @@
 #ifndef MPL_VARIADIC_ANY_OF_HPP_
 #define MPL_VARIADIC_ANY_OF_HPP_
 
-namespace pressio { namespace mpl { namespace variadic {
+namespace pressio{ namespace mpl{ namespace variadic {
 
 /**
  * \ingroup VarNonModAlgs
@@ -25,25 +25,23 @@ namespace pressio { namespace mpl { namespace variadic {
 is true iff at least one element in the sequence satisfy the predicate `Predicate`
  * \sa tinympl::any_of
  */
-template <template <class... T> class Predicate, class... Args>
+template< template<class... T> class Predicate, class ... Args>
 struct any_of;
 
-template <template <class... T> class Predicate, class Head, class... Args>
+template< template<class... T> class Predicate, class Head, class... Args>
 struct any_of<Predicate, Head, Args...>
   : std::conditional<
-      Predicate<Head>::type::value,
-      std::integral_constant<bool, true>,
-      typename any_of<Predicate, Args...>::type>::type
-{
-};
+  Predicate<Head>::type::value,
+  std::integral_constant<bool, true>,
+  typename any_of<Predicate, Args...>::type
+  >::type
+{};
 
-template <template <class... T> class Predicate>
+template< template<class ... T> class Predicate>
 struct any_of<Predicate>
-  : std::integral_constant<bool, false>
-{
-};
+  : std::integral_constant<bool, false>{};
 
 
-}}}// namespace
+}}} // namespace 
 
-#endif// MPL_VARIADIC_ANY_OF_HPP_
+#endif  // MPL_VARIADIC_ANY_OF_HPP_

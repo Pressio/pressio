@@ -49,13 +49,14 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
-template <
+template<
   typename fom_states_manager_t,
   typename apply_jac_return_type,
   typename decoder_type,
-  typename ud_ops_type = void>
+  typename ud_ops_type = void
+  >
 class JacobianPolicyDiscreteTimeApi
 {
 
@@ -73,21 +74,23 @@ public:
   // 1. void ops
   template <
     typename _ud_ops = ud_ops_type,
-    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int> = 0>
+    ::pressio::mpl::enable_if_t<std::is_void<_ud_ops>::value, int > =0
+    >
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
 				decoder_type & decoder)
-    : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr) {}
+    : decoderObj_(decoder), fomStatesMngr_(fomStatesMngr){}
 
   // 2. nonvoid ops
   template <
     typename _ud_ops = ud_ops_type,
-    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int> = 0>
+    ::pressio::mpl::enable_if_t<!std::is_void<_ud_ops>::value, int > =0
+    >
   JacobianPolicyDiscreteTimeApi(fom_states_manager_t & fomStatesMngr,
 				decoder_type & decoder,
 				const _ud_ops & udOps)
     : decoderObj_(decoder),
       fomStatesMngr_(fomStatesMngr),
-      udOps_{&udOps} {}
+      udOps_{&udOps}{}
 
 public:
   template <typename fom_system_t>
@@ -95,7 +98,8 @@ public:
   {
     // // this is only called once
     const auto & phi = decoderObj_.get().jacobianCRef();
-    apply_jac_return_type romJac(fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
+    apply_jac_return_type romJac
+      (fomSystemObj.createApplyDiscreteTimeJacobianResult(*phi.data()));
     return romJac;
   }
 
@@ -105,9 +109,10 @@ public:
     typename lspg_prev_states_t,
     typename lspg_jac_t,
     typename fom_system_t,
-    typename scalar_t>
+    typename scalar_t
+    >
   void compute(const lspg_state_t & romState,
-	       const lspg_prev_states_t & romPrevStates,
+	       const lspg_prev_states_t	& romPrevStates,
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
@@ -120,20 +125,21 @@ public:
 
 private:
   // we have here n = 1 prev rom states
-  template <
-    typename lspg_state_t,
-    typename stencil_states_t,
-    typename fom_system_t,
-    typename scalar_t,
-    typename lspg_jac_t>
-  mpl::enable_if_t<stencil_states_t::size() == 1>
-  compute_impl(const lspg_state_t & romState,
-	       const stencil_states_t & stencilStates,
-	       const fom_system_t & fomSystemObj,
-	       const scalar_t & timeAtNextStep,
-	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
-	       lspg_jac_t & romJac) const
+  template<
+  typename lspg_state_t,
+  typename stencil_states_t,
+  typename fom_system_t,
+  typename scalar_t,
+  typename lspg_jac_t
+    >
+  mpl::enable_if_t< stencil_states_t::size()==1 >
+  compute_impl(const lspg_state_t			& romState,
+		    const stencil_states_t		& stencilStates,
+  		    const fom_system_t		        & fomSystemObj,
+  		    const scalar_t			& timeAtNextStep,
+  		    const scalar_t			& dt,
+		    const ::pressio::ode::types::step_t	& currentStepNumber,
+		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
@@ -145,7 +151,7 @@ private:
 
     const auto & phi = decoderObj_.get().jacobianCRef();
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
 
     fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
 					   dt, *phi.data(),
@@ -155,20 +161,21 @@ private:
   }
 
   // we have here n = 2 prev rom states
-  template <
+  template<
     typename lspg_state_t,
     typename stencil_states_t,
     typename fom_system_t,
     typename scalar_t,
-    typename lspg_jac_t>
-  mpl::enable_if_t<stencil_states_t::size() == 2>
-  compute_impl(const lspg_state_t & romState,
-	       const stencil_states_t & stencilStates,
-	       const fom_system_t & fomSystemObj,
-	       const scalar_t & timeAtNextStep,
-	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
-	       lspg_jac_t & romJac) const
+    typename lspg_jac_t
+  >
+  mpl::enable_if_t< stencil_states_t::size()==2 >
+  compute_impl(const lspg_state_t			& romState,
+		    const stencil_states_t		& stencilStates,
+  		    const fom_system_t		        & fomSystemObj,
+  		    const scalar_t			& timeAtNextStep,
+  		    const scalar_t			& dt,
+		    const ::pressio::ode::types::step_t	& currentStepNumber,
+		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
@@ -181,7 +188,7 @@ private:
     const auto & phi = decoderObj_.get().jacobianCRef();
 
     const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & yn = fomStatesMngr_(::pressio::ode::n());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
     const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
 
     fomSystemObj.applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
@@ -199,4 +206,4 @@ protected:
 };
 
 }}}}}//end namespace pressio::rom::lspg::unsteady::impl
-#endif// ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_DISCRETE_TIME_API_POLICIES_ROM_LSPG_UNSTEADY_JACOBIAN_POLICY_DISCRETE_TIME_API_HPP_

@@ -49,28 +49,30 @@
 #ifndef ROM_PREDICATES_GALERKIN_PROJECTOR_ROM_HAS_CONST_APPLY_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 #define ROM_PREDICATES_GALERKIN_PROJECTOR_ROM_HAS_CONST_APPLY_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 
-namespace pressio { namespace rom { namespace predicates {
+namespace pressio{ namespace rom{ namespace predicates {
 
 template <
   typename T,
   typename operand_t,
   typename result_t,
-  typename = void>
+  typename = void
+  >
 struct has_const_apply_method_accept_operand_result_return_void
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <typename T, typename operand_t, typename result_t>
 struct has_const_apply_method_accept_operand_result_return_void<
   T, operand_t, result_t,
   ::pressio::mpl::void_t<
     decltype(
-      std::declval<T const>().apply(
-	std::declval<operand_t const &>(),
-	std::declval<result_t &>()))>> : std::true_type
-{
-};
+	     std::declval<T const>().apply
+	     (
+	      std::declval<operand_t const&>(),
+	      std::declval<result_t &>()
+	      )
+	     )
+    >
+  >: std::true_type{};
 
 }}}
-#endif// ROM_PREDICATES_GALERKIN_PROJECTOR_ROM_HAS_CONST_APPLY_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
+#endif  // ROM_PREDICATES_GALERKIN_PROJECTOR_ROM_HAS_CONST_APPLY_METHOD_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_

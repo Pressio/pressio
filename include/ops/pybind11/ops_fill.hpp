@@ -49,56 +49,60 @@
 #ifndef OPS_PYBIND11_OPS_FILL_HPP_
 #define OPS_PYBIND11_OPS_FILL_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value>
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+  >
 fill(T & v,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  for(std::size_t i = 0; i < v.extent(0); ++i)
+  for (std::size_t i=0; i<v.extent(0); ++i)
     v(i) = value;
 }
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value>
+  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
+  >
 fill(T & M,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  for(std::size_t j = 0; j < M.extent(1); ++j) {
-    for(std::size_t i = 0; i < M.extent(0); ++i) {
-      M(i, j) = value;
+  for (std::size_t j=0; j<M.extent(1); ++j){
+    for (std::size_t i=0; i<M.extent(0); ++i){
+      M(i,j) = value;
     }
   }
 }
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value>
+  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
+  >
 fill(T & M,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  for(std::size_t i = 0; i < M.extent(0); ++i)
-    for(std::size_t j = 0; j < M.extent(1); ++j)
-      M(i, j) = value;
+  for (std::size_t i=0; i<M.extent(0); ++i)
+    for (std::size_t j=0; j<M.extent(1); ++j)
+      M(i,j) = value;
 }
 
-template <typename T>
+template < typename T >
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value>
+  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
+  >
 fill(T & M,
      typename ::pressio::containers::details::traits<T>::scalar_t value)
 {
-  for(std::size_t k = 0; k < M.extent(2); ++k) {
-    for(std::size_t j = 0; j < M.extent(1); ++j) {
-      for(std::size_t i = 0; i < M.extent(0); ++i) {
-	M(i, j, k) = value;
+  for (std::size_t k=0; k<M.extent(2); ++k){
+    for (std::size_t j=0; j<M.extent(1); ++j){
+      for (std::size_t i=0; i<M.extent(0); ++i){
+	M(i,j,k) = value;
       }
     }
   }
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_PYBIND11_OPS_FILL_HPP_
+#endif  // OPS_PYBIND11_OPS_FILL_HPP_

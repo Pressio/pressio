@@ -49,9 +49,9 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_RJ_CORRECTOR_HPP_
 #define SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_RJ_CORRECTOR_HPP_
 
-namespace pressio { namespace solvers { namespace nonlinear { namespace impl {
+namespace pressio{ namespace solvers{ namespace nonlinear{ namespace impl{
 
-template <class T, class state_type, class lin_solver_t>
+template<class T, class state_type, class lin_solver_t>
 class RJCorrector : public T
 {
 public:
@@ -69,11 +69,11 @@ private:
 public:
   RJCorrector() = delete;
 
-  template <typename system_t, typename lsT, typename... Args>
+  template <typename system_t, typename lsT, typename ...Args>
   RJCorrector(const system_t & system,
 	      const state_type & state,
 	      lsT && solverIn,
-	      Args &&... args)
+	      Args && ... args)
     : T(system, state, std::forward<Args>(args)...),
       correction_(state),
       solverObj_(std::forward<lsT>(solverIn))
@@ -82,17 +82,16 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-  template <typename system_t, typename lsT, typename... Args>
+  template <typename system_t, typename lsT, typename ...Args>
   RJCorrector(const system_t & system,
 	      const state_wrapped_t & state,
 	      lsT && solverIn,
-	      Args &&... args)
+	      Args && ... args)
     : RJCorrector(system,
 		  state_type(state) /*needs a wrapped object*/,
 		  std::forward<lsT>(solverIn),
 		  std::forward<Args>(args)...)
-  {
-  }
+  {}
 
   RJCorrector(RJCorrector const &) = default;
   RJCorrector & operator=(RJCorrector const &) = default;
@@ -116,35 +115,31 @@ public:
     // solve J correction = r
     solverObj_.get().solve(J, r, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne());
+    pressio::ops::scale(correction_, utils::constants<sc_t>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
   }
 
   bool hasGradientComputation() const { return false; }
 
-  void resetForNewCall()
-  {
+  void resetForNewCall(){
     T::resetForNewCall();
   }
 
-  const state_t & correctionCRef() const { return correction_; }
+  const state_t & correctionCRef() const{ return correction_; }
 
-  const sc_t & correctionNormCurrentCorrectionStep() const
-  {
+  const sc_t & correctionNormCurrentCorrectionStep() const{
     return correctionNormCurrCorrStep_;
   }
 
-  const sc_t & gradientNormCurrentCorrectionStep() const
-  {
+  const sc_t & gradientNormCurrentCorrectionStep() const{
     return gradientNormCurrCorrStep_;
   }
 
-  const sc_t & residualNormCurrentCorrectionStep() const
-  {
+  const sc_t & residualNormCurrentCorrectionStep() const{
     return residNormCurrCorrStep_;
   }
 };
 
 }}}}
-#endif// SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_RJ_CORRECTOR_HPP_
+#endif  // SOLVERS_NONLINEAR_IMPL_CORRECTION_MIXINS_SOLVERS_RJ_CORRECTOR_HPP_

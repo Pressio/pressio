@@ -49,16 +49,18 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
 
-namespace pressio { namespace ode { namespace implicitmethods { namespace policy {
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
-template <typename state_type, typename residual_type>
+template<typename state_type, typename residual_type>
 class ResidualStandardPolicyBdf
 {
-  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
-		"Invalid state type for standard residual policy");
+  static_assert
+  (::pressio::ode::constraints::implicit_state<state_type>::value,
+   "Invalid state type for standard residual policy");
 
-  static_assert(::pressio::ode::constraints::implicit_residual<residual_type>::value,
-		"Invalid residual type for standard residual policy");
+  static_assert
+  (::pressio::ode::constraints::implicit_residual<residual_type>::value,
+   "Invalid residual type for standard residual policy");
 
 public:
   ResidualStandardPolicyBdf() = default;
@@ -72,8 +74,10 @@ public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
-    static_assert(::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-		  "system type must meet the continuous time api");
+    static_assert
+      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
+       "system type must meet the continuous time api");
 
     residual_type R(system.createVelocity());
     return R;
@@ -83,10 +87,12 @@ public:
     class ode_tag,
     class stencil_states_type,
     class system_type,
-    class scalar_type>
+    class scalar_type
+    >
   mpl::enable_if_t<
     std::is_same<ode_tag, ::pressio::ode::implicitmethods::BDF1>::value or
-    std::is_same<ode_tag, ::pressio::ode::implicitmethods::BDF2>::value>
+    std::is_same<ode_tag, ::pressio::ode::implicitmethods::BDF2>::value
+    >
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStatesManager,
 	  const system_type & system,
@@ -95,19 +101,22 @@ public:
 	  const types::step_t & step,
 	  residual_type & R) const
   {
-    static_assert(::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-		  "system type must meet the continuous time api");
+    static_assert
+      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
+       "system type must meet the continuous time api");
 
-    try {
+    try{
       system.velocity(*predictedState.data(), rhsEvaluationTime, *R.data());
       ::pressio::ode::impl::discrete_time_residual(predictedState,
 						   R, stencilStatesManager,
 						   dt, ode_tag());
-    } catch(::pressio::eh::velocity_failure_unrecoverable const & e) {
+    }
+    catch (::pressio::eh::velocity_failure_unrecoverable const & e){
       throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
     }
   }
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif// ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_
+#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_BDF_POLICY_HPP_

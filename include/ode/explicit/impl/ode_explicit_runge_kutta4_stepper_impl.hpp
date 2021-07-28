@@ -49,23 +49,24 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
 
-namespace pressio { namespace ode { namespace explicitmethods { namespace impl {
+namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
-template <
+template<
   typename scalar_type,
   typename state_type,
   typename system_type,
   typename velocity_type,
   typename velocity_policy_type,
   typename ops_t,
-  bool is_standard_policy>
+  bool is_standard_policy
+  >
 class ExplicitRungeKutta4Stepper
 {
 public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
   static constexpr types::stepper_order_t order_value = 4;
-  using velocity_storage_t = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
+  using velocity_storage_t  = ::pressio::containers::IndexableStaticCollection<velocity_type, 4>;
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
@@ -78,13 +79,14 @@ public:
   ExplicitRungeKutta4Stepper() = delete;
   ExplicitRungeKutta4Stepper(const ExplicitRungeKutta4Stepper & other) = default;
   ExplicitRungeKutta4Stepper & operator=(const ExplicitRungeKutta4Stepper & other) = delete;
-  ExplicitRungeKutta4Stepper(ExplicitRungeKutta4Stepper && other) = default;
-  ExplicitRungeKutta4Stepper & operator=(ExplicitRungeKutta4Stepper && other) = delete;
+  ExplicitRungeKutta4Stepper(ExplicitRungeKutta4Stepper && other)  = default;
+  ExplicitRungeKutta4Stepper & operator=(ExplicitRungeKutta4Stepper && other)  = delete;
   ~ExplicitRungeKutta4Stepper() = default;
 
   template <
     typename _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t< std::is_void<_ops_t>::value, int > = 0
+    >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const mpl::remove_cvref_t<velocity_policy_type> & policy)
@@ -92,12 +94,12 @@ public:
       policy_(policy),
       velocities_(policy_.get().create(systemObj)),
       tmpState_{state}
-  {
-  }
+  {}
 
   template <
     typename _ops_t = ops_t,
-    mpl::enable_if_t<!std::is_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t< !std::is_void<_ops_t>::value, int > = 0
+    >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const mpl::remove_cvref_t<velocity_policy_type> & policy,
@@ -107,8 +109,7 @@ public:
       velocities_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
-  {
-  }
+  {}
 
   // only enabled if policy standard and using pressio ops
   template <
@@ -116,15 +117,15 @@ public:
     typename _ops_t = ops_t,
     mpl::enable_if_t<
       _is_standard_policy and std::is_void<_ops_t>::value,
-      int> = 0>
+      int > = 0
+    >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj)
     : systemObj_(systemObj),
       policy_(),
       velocities_(policy_.get().create(systemObj)),
       tmpState_{state}
-  {
-  }
+  {}
 
   // only enabled if policy standard and user-defined ops
   template <
@@ -132,7 +133,8 @@ public:
     typename _ops_t = ops_t,
     mpl::enable_if_t<
       _is_standard_policy and !std::is_void<_ops_t>::value,
-      int> = 0>
+      int > = 0
+    >
   ExplicitRungeKutta4Stepper(const state_type & state,
 			     const system_type & systemObj,
 			     const _ops_t & udOps)
@@ -141,8 +143,7 @@ public:
       velocities_(policy_.get().create(systemObj)),
       tmpState_{state},
       udOps_(&udOps)
-  {
-  }
+  {}
 
 public:
   types::stepper_order_t order() const
@@ -151,9 +152,9 @@ public:
   }
 
   void doStep(state_type & odeSolution,
-	      const scalar_type & t,
-	      const scalar_type & dt,
-	      const types::step_t & step)
+  	      const scalar_type & t,
+  	      const scalar_type & dt,
+  	      const types::step_t & step)
   {
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
 
@@ -162,9 +163,9 @@ public:
     auto & rhs2 = velocities_(2);
     auto & rhs3 = velocities_(3);
 
-    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
-    constexpr auto three = ::pressio::utils::constants<scalar_type>::three();
-    constexpr auto six = two * three;
+    constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto three  = ::pressio::utils::constants<scalar_type>::three();
+    constexpr auto six  = two * three;
 
     const scalar_type dt_half = dt / two;
     const scalar_type t_phalf = t + dt_half;
@@ -190,25 +191,25 @@ public:
 
 private:
   /* use pressio ops  */
-  template <typename rhs_t, typename _ops_t = ops_t>
+  template<typename rhs_t, typename _ops_t = ops_t>
   mpl::enable_if_t<std::is_void<_ops_t>::value>
   stage_update_impl(state_type & yIn,
 		    const state_type & stateIn,
 		    const rhs_t & rhsIn,
 		    scalar_type dtValue)
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
-  template <typename rhs_t, typename _ops_t = ops_t>
-  mpl::enable_if_t<std::is_void<_ops_t>::value>
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< std::is_void<_ops_t>::value >
   stage_update_impl(state_type & stateIn,
 		    const rhs_t & rhsIn0, const rhs_t & rhsIn1,
 		    const rhs_t & rhsIn2, const rhs_t & rhsIn3,
 		    scalar_type dt6, scalar_type dt3)
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     ::pressio::ops::update(stateIn, one,
 			   rhsIn0, dt6,
 			   rhsIn1, dt3,
@@ -218,25 +219,25 @@ private:
   // -------------------------------------------------------
 
   /* with user defined ops */
-  template <typename rhs_t, typename _ops_t = ops_t>
-  mpl::enable_if_t<!std::is_void<_ops_t>::value>
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< !std::is_void<_ops_t>::value >
   stage_update_impl(state_type & yIn,
 		    const state_type & stateIn,
 		    const rhs_t & rhsIn,
 		    scalar_type dtValue)
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->update(*yIn.data(), *stateIn.data(), one, *rhsIn.data(), dtValue);
   }
 
-  template <typename rhs_t, typename _ops_t = ops_t>
-  mpl::enable_if_t<!std::is_void<_ops_t>::value>
+  template<typename rhs_t, typename _ops_t = ops_t>
+  mpl::enable_if_t< !std::is_void<_ops_t>::value >
   stage_update_impl(state_type & stateIn,
 		    const rhs_t & rhsIn0, const rhs_t & rhsIn1,
 		    const rhs_t & rhsIn2, const rhs_t & rhsIn3,
 		    scalar_type dt6, scalar_type dt3)
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
     udOps_->update(*stateIn.data(), one, *rhsIn0.data(),
 		   dt6, *rhsIn1.data(), dt3, *rhsIn2.data(),
 		   dt3, *rhsIn3.data(), dt6);
@@ -244,4 +245,4 @@ private:
 };
 
 }}}}//end namespace pressio::ode::explicitmethods::impl
-#endif// ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_

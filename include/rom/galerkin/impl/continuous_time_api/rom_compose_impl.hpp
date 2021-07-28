@@ -72,16 +72,15 @@
 #include "./rom_galerkin_masked_vel_problem_explicit_stepping.hpp"
 #include "./rom_galerkin_masked_vel_problem_implicit_stepping.hpp"
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
-namespace conttime {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace conttime{
 
 template <typename tag>
-struct supported_implicit_stepper_tag
-{
-  static_assert(std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
-		  std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
-		  std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
-		"The implicit stepper tag you are passing to create the galerkin problem \
+struct supported_implicit_stepper_tag{
+  static_assert
+  (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
+   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
+   "The implicit stepper tag you are passing to create the galerkin problem \
 is not supported: this can be because the Galerkin implementation does \
 not support it, or because you added a new ode scheme in the ode package \
 but forgot to update the list of implicit tags supported by Galerkin which \
@@ -90,12 +89,12 @@ currently contains: BDF1, BDF2 or CrankNicolson");
 };
 
 template <typename tag>
-struct supported_explicit_stepper_tag
-{
-  static_assert(std::is_same<tag, ::pressio::ode::explicitmethods::Euler>::value or
-		  std::is_same<tag, ::pressio::ode::explicitmethods::RungeKutta4>::value or
-		  std::is_same<tag, ::pressio::ode::explicitmethods::AdamsBashforth2>::value,
-		"The explicit stepper tag you are passing to create the galerkin problem \
+struct supported_explicit_stepper_tag{
+  static_assert
+  (std::is_same<tag, ::pressio::ode::explicitmethods::Euler>::value or
+   std::is_same<tag, ::pressio::ode::explicitmethods::RungeKutta4>::value or
+   std::is_same<tag, ::pressio::ode::explicitmethods::AdamsBashforth2>::value,
+   "The explicit stepper tag you are passing to create the galerkin problem \
 is not supported: this can be because the Galerkin implementation does \
 not support it, or because you added a new ode scheme in the ode package \
 but forgot to update the list of explicit tags supported by Galerkin which \
@@ -105,8 +104,7 @@ currently contains: Forward Euler, RK4, AdamsBashforth2");
 };
 
 template <typename tag>
-struct valid_stepper_tag
-{
+struct valid_stepper_tag{
   static constexpr auto value =
     supported_explicit_stepper_tag<tag>::value or
     supported_implicit_stepper_tag<tag>::value;
@@ -128,12 +126,12 @@ struct valid_stepper_tag
   galerkin_jacobian = DenseMatrix<eigen_matrix>
 */
 
-template <
+template<
   typename problem_tag,
   typename dummy,
   typename ode_tag,
   typename fom_system_t,
-  typename... Args>
+  typename ...Args>
 struct compose
 {
   /* if we fall here, it means something is wrong
@@ -143,8 +141,9 @@ struct compose
   // 1. check that the ode_tag is a valid stepper tag
   static constexpr auto is_ode_tag =
     ::pressio::ode::predicates::is_stepper_tag<ode_tag>::value;
-  static_assert(is_ode_tag,
-		"Galerkin with continuous-time API: to set the stepping scheme, \
+  static_assert
+    (is_ode_tag,
+     "Galerkin with continuous-time API: to set the stepping scheme, \
 it seems you are using a tag type that is not a valid ode stepper tag.   \
 This error is typically caused by the way you create the galerkin problem: \
 e.g. createDefaultProblem<ode_tag>(...)");
@@ -158,37 +157,41 @@ e.g. createDefaultProblem<ode_tag>(...)");
 /****
      Galerkin default, pressio ops, explicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
-  typename galerkin_state_type>
+  typename galerkin_state_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
   static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::DefaultProblemExplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, decoder_type, void>;
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, void>;
 };
 
 /****
      Galerkin default, user-defined ops, explicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
-  typename ud_ops_type>
+  typename ud_ops_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
   static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
@@ -196,53 +199,57 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::DefaultProblemExplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>;
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, ud_ops_type>;
 };
 
 /****
      hyperReducedVelocity Galerkin, pressio ops, explicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
-  typename projector_type>
+  typename projector_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
   static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::HypRedVeloProblemExplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, decoder_type, projector_type, void>;
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type, projector_type, void>;
 };
 
 /****
      maskedVelocity Galerkin, pressio ops, explicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
   typename masker_type,
-  typename projector_type>
+  typename projector_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::MaskedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {
   static_assert(supported_explicit_stepper_tag<stepper_tag>::value, "");
 
   using type =
     ::pressio::rom::galerkin::impl::MaskedVeloProblemExplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, decoder_type,
-      masker_type, projector_type, void>;
+    stepper_tag, fom_system_type, galerkin_state_type, decoder_type,
+    masker_type, projector_type, void>;
 };
 
 //*********************************************************
@@ -251,15 +258,17 @@ struct compose<
 /****
      Galerkin default, pressio ops, implicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
-  typename galerkin_state_type>
+  typename galerkin_state_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
   static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "");
@@ -272,23 +281,25 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::DefaultProblemImplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type,
-      galerkin_state_type, galerkin_residual_t, galerkin_jacobian_t, decoder_type, void>;
+    stepper_tag, fom_system_type,
+    galerkin_state_type, galerkin_residual_t, galerkin_jacobian_t, decoder_type, void>;
 };
 
 /****
      Galerkin default, user-defined ops, implicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
-  typename ud_ops_type>
+  typename ud_ops_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
   static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "");
@@ -302,24 +313,26 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::DefaultProblemImplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type,
-      galerkin_state_type, galerkin_residual_t, galerkin_jacobian_t,
-      decoder_type, ud_ops_type>;
+    stepper_tag, fom_system_type,
+    galerkin_state_type, galerkin_residual_t, galerkin_jacobian_t,
+    decoder_type, ud_ops_type>;
 };
 
 /****
      hyperReducedVelocity Galerkin, pressio ops, implicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
-  typename projector_type>
+  typename projector_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
   static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
@@ -331,24 +344,26 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::HypRedVeloProblemImplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
-      galerkin_jacobian_t, decoder_type, projector_type, void>;
+    stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
+    galerkin_jacobian_t, decoder_type, projector_type, void>;
 };
 
 /****
      hyperReducedVelocity Galerkin, user-defined ops, implicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
   typename projector_type,
-  typename ud_ops_type>
+  typename ud_ops_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type, ud_ops_type>
 {
   static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
@@ -362,24 +377,26 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::HypRedVeloProblemImplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
-      galerkin_jacobian_t, decoder_type, projector_type, ud_ops_type>;
+    stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
+    galerkin_jacobian_t, decoder_type, projector_type, ud_ops_type>;
 };
 
 /****
      maskedVelocity Galerkin, pressio ops, implicit stepping
 ***/
-template <
+template<
   typename stepper_tag,
   typename fom_system_type,
   typename decoder_type,
   typename galerkin_state_type,
   typename masker_type,
-  typename projector_type>
+  typename projector_type
+  >
 struct compose<
   ::pressio::rom::galerkin::impl::MaskedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value>,
+    ::pressio::ode::predicates::is_implicit_stepper_tag<stepper_tag>::value
+    >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {
   static_assert(supported_implicit_stepper_tag<stepper_tag>::value, "Invalid stepper tag");
@@ -392,48 +409,48 @@ struct compose<
 
   using type =
     ::pressio::rom::galerkin::impl::MaskedVeloProblemImplicitStepContinuousTimeApi<
-      stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
-      galerkin_jacobian_t, decoder_type, masker_type, projector_type, void>;
+    stepper_tag, fom_system_type, galerkin_state_type, galerkin_residual_t,
+    galerkin_jacobian_t, decoder_type, masker_type, projector_type, void>;
 };
 
 //-------------------------------------------------------
-}// end namespace pressio::rom::galerkin::impl::conttime
+} // end namespace pressio::rom::galerkin::impl::conttime
 //-------------------------------------------------------
 
 // default continuous-time
-template <typename... Args>
+template<typename ...Args>
 using composeDefaultProblemContTime =
   impl::conttime::compose<
-    impl::Default, void,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
+  impl::Default, void,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template <typename... Args>
+template<typename ...Args>
 using composeDefaultProblemContTime_t =
   typename composeDefaultProblemContTime<Args...>::type;
 
 
 // hr velocity continuous-time
-template <typename... Args>
+template<typename ...Args>
 using composeHyperReducedVelocityProblemContTime =
   impl::conttime::compose<
-    impl::HyperReducedVelocity, void,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
+  impl::HyperReducedVelocity, void,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template <typename... Args>
+template<typename ...Args>
 using composeHyperReducedVelocityProblemContTime_t =
   typename composeHyperReducedVelocityProblemContTime<Args...>::type;
 
 
 // masked velocity continuous-time
-template <typename... Args>
+template<typename ...Args>
 using composeMaskedVelocityProblemContTime =
   impl::conttime::compose<
-    impl::MaskedVelocity, void,
-    typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
+  impl::MaskedVelocity, void,
+  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...>;
 
-template <typename... Args>
+template<typename ...Args>
 using composeMaskedVelocityProblemContTime_t =
   typename composeMaskedVelocityProblemContTime<Args...>::type;
 
-}}}}// end namespace pressio::rom::galerkin::impl
-#endif// ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_
+}}}} // end namespace pressio::rom::galerkin::impl
+#endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_

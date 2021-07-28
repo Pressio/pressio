@@ -49,11 +49,10 @@
 #ifndef OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_
 #define OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_
 
-namespace pressio { namespace ops { namespace impl {
+namespace pressio{ namespace ops{ namespace impl{
 
 template <typename T, typename sc_t>
-struct DoUpdateTwoTermsFunctor
-{
+struct DoUpdateTwoTermsFunctor {
   T v_ = {};
   T v1_ = {};
   T v2_ = {};
@@ -64,23 +63,21 @@ struct DoUpdateTwoTermsFunctor
   DoUpdateTwoTermsFunctor(T v, T v1, T v2,
 			  sc_t a, sc_t b, sc_t c)
     : v_{v}, v1_{v1}, v2_{v2},
-      a_{a}, b_{b}, c_{c} {}
+      a_{a}, b_{b}, c_{c}{}
 
   DoUpdateTwoTermsFunctor(T v, T v1, T v2,
 			  sc_t b, sc_t c)
     : v_{v}, v1_{v1}, v2_{v2},
-      b_{b}, c_{c} {}
+      b_{b}, c_{c}{}
 
   KOKKOS_INLINE_FUNCTION
-  void operator()(const int i) const
-  {
-    v_(i) = a_ * v_(i) + b_ * v1_(i) + c_ * v2_(i);
+  void operator () (const int i) const {
+    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i);
   }
 };
 
 template <typename T, typename sc_t>
-struct DoUpdateThreeTermsFunctor
-{
+struct DoUpdateThreeTermsFunctor {
   T v_ = {};
   T v1_ = {};
   T v2_ = {};
@@ -93,24 +90,23 @@ struct DoUpdateThreeTermsFunctor
   DoUpdateThreeTermsFunctor(T v, T v1, T v2, T v3,
 			    sc_t a, sc_t b, sc_t c, sc_t d)
     : v_{v}, v1_{v1}, v2_{v2}, v3_{v3},
-      a_{a}, b_{b}, c_{c}, d_{d} {}
+      a_{a}, b_{b}, c_{c}, d_{d}{}
 
   DoUpdateThreeTermsFunctor(T v, T v1, T v2, T v3,
 			    sc_t b, sc_t c, sc_t d)
     : v_{v}, v1_{v1}, v2_{v2}, v3_{v3},
-      b_{b}, c_{c}, d_{d} {}
+      b_{b}, c_{c}, d_{d}{}
 
   KOKKOS_INLINE_FUNCTION
-  void operator()(const int i) const
-  {
-    v_(i) = a_ * v_(i) + b_ * v1_(i) + c_ * v2_(i) + d_ * v3_(i);
+  void operator () (const int i) const {
+    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i) + d_*v3_(i);
   }
 };
 
 
+
 template <typename T, typename sc_t>
-struct DoUpdateFourTermsFunctor
-{
+struct DoUpdateFourTermsFunctor {
   T v_ = {};
   T v1_ = {};
   T v2_ = {};
@@ -125,20 +121,19 @@ struct DoUpdateFourTermsFunctor
   DoUpdateFourTermsFunctor(T v, T v1, T v2, T v3, T v4,
 			   sc_t a, sc_t b, sc_t c, sc_t d, sc_t e)
     : v_{v}, v1_{v1}, v2_{v2}, v3_{v3}, v4_{v4},
-      a_{a}, b_{b}, c_{c}, d_{d}, e_{e} {}
+      a_{a}, b_{b}, c_{c}, d_{d}, e_{e}{}
 
   DoUpdateFourTermsFunctor(T v, T v1, T v2, T v3, T v4,
 			   sc_t b, sc_t c, sc_t d, sc_t e)
     : v_{v}, v1_{v1}, v2_{v2}, v3_{v3}, v4_{v4},
-      b_{b}, c_{c}, d_{d}, e_{e} {}
+      b_{b}, c_{c}, d_{d}, e_{e}{}
 
   KOKKOS_INLINE_FUNCTION
-  void operator()(const int i) const
-  {
-    v_(i) = a_ * v_(i) + b_ * v1_(i) + c_ * v2_(i) + d_ * v3_(i) + e_ * v4_(i);
+  void operator () (const int i) const {
+    v_(i) = a_*v_(i) + b_*v1_(i) + c_*v2_(i) + d_*v3_(i) + e_*v4_(i);
   }
 };
 
 
 }}}//end namespace pressio::ops::impl
-#endif// OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_
+#endif  // OPS_KOKKOS_OPS_VECTOR_UPDATE_KOKKOS_FUNCTORS_HPP_

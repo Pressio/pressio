@@ -49,18 +49,15 @@
 #ifndef CONTAINERS_PREDICATES_CONTAINERS_NOT_WRAPPER_HPP_
 #define CONTAINERS_PREDICATES_CONTAINERS_NOT_WRAPPER_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct not_wrapper : std::false_type
-{
-};
+struct not_wrapper : std::false_type {};
 
 template <typename T>
 struct not_wrapper<
-  T, mpl::enable_if_t<is_wrapper<T>::value == false>> : std::true_type
-{
-};
+  T, mpl::enable_if_t< is_wrapper<T>::value == false >
+  > : std::true_type{};
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_CONTAINERS_NOT_WRAPPER_HPP_
+#endif  // CONTAINERS_PREDICATES_CONTAINERS_NOT_WRAPPER_HPP_

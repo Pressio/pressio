@@ -49,40 +49,35 @@
 #ifndef ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_
 #define ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_
 
-namespace pressio { namespace rom { namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
-template <typename T, typename enable = void>
-struct decoder_jacobian : std::false_type
-{
-};
+template<typename T, typename enable = void>
+struct decoder_jacobian : std::false_type{};
 
-template <typename T>
+template<typename T>
 struct decoder_jacobian<T,
-			typename std::enable_if<
-			  ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
-			  ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value>::type> : std::true_type
-{
-};
+ typename std::enable_if<
+   ::pressio::containers::predicates::is_multi_vector_wrapper<T>::value or
+   ::pressio::containers::predicates::is_dense_matrix_wrapper<T>::value
+   >::type
+  > : std::true_type{};
 
-template <typename T>
+template<typename T>
 struct decoder_jacobian<
-  ::pressio::containers::experimental::MultiVectorSet<T>, void> : std::true_type
-{
-};
+  ::pressio::containers::experimental::MultiVectorSet<T>, void
+  > : std::true_type{};
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-template <typename T>
+template<typename T>
 struct decoder_jacobian<
-  ::pressio::containers::Tensor<2, T>> : std::true_type
-{
-};
+  ::pressio::containers::Tensor<2, T>
+  > : std::true_type{};
 
-template <typename T>
+template<typename T>
 struct decoder_jacobian<
-  ::pressio::containers::Tensor<3, T>> : std::true_type
-{
-};
+  ::pressio::containers::Tensor<3, T>
+  > : std::true_type{};
 #endif
 
-}}}// namespace pressio::ode::constraints
-#endif// ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ROM_CONSTRAINTS_ROM_DECODER_JACOBIAN_HPP_

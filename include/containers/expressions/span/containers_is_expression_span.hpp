@@ -49,36 +49,30 @@
 #ifndef CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
 #define CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 template <typename T, typename enable = void>
-struct span_expression : std::false_type
-{
-};
+struct span_expression : std::false_type{};
 
 template <typename T>
 struct span_expression<
-  ::pressio::containers::expressions::SpanExpr<T>> : std::true_type
-{
-};
+  ::pressio::containers::expressions::SpanExpr<T>
+  > : std::true_type{};
 
 template <typename T>
 struct span_expression<
-  const ::pressio::containers::expressions::SpanExpr<T>> : span_expression<T>
-{
-};
+  const ::pressio::containers::expressions::SpanExpr<T>
+  > : span_expression<T>{};
 
 template <typename T>
 struct span_expression<
-  ::pressio::containers::expressions::SpanExpr<const T>> : std::true_type
-{
-};
+  ::pressio::containers::expressions::SpanExpr<const T>
+  > : std::true_type{};
 
 template <typename T>
 struct span_expression<
-  const ::pressio::containers::expressions::SpanExpr<const T>> : std::true_type
-{
-};
+  const ::pressio::containers::expressions::SpanExpr<const T>
+  > : std::true_type{};
 
-}}}// namespace pressio::containers::predicates
-#endif// CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_
+}}} // namespace pressio::containers::predicates
+#endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_IS_EXPRESSION_SPAN_HPP_

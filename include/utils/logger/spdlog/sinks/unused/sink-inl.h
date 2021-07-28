@@ -24,4 +24,4 @@
 /* { */
 /*     return static_cast<spdlog::level::level_enum>(level_.load(std::memory_order_relaxed)); */
 /* } */
-#endif// UTILS_LOGGER_SPDLOG_SINKS_UNUSED_SINK_INL_H_
+#endif  // UTILS_LOGGER_SPDLOG_SINKS_UNUSED_SINK_INL_H_

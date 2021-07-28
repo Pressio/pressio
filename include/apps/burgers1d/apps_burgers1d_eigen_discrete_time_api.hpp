@@ -53,7 +53,7 @@
 #include "Eigen/SparseCore"
 #include <iostream>
 
-namespace pressio { namespace apps {
+namespace pressio{ namespace apps{
 
 class Burgers1dEigenDiscreteTimeApi
 {
@@ -61,18 +61,18 @@ class Burgers1dEigenDiscreteTimeApi
   using ui_t = unsigned int;
 
 public:
-  using scalar_type = double;
-  using state_type = eigVec;
-  using velocity_type = eigVec;
-  using discrete_time_residual_type = eigVec;
-  using jacobian_type = Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
+  using scalar_type	= double;
+  using state_type	= eigVec;
+  using velocity_type	= eigVec;
+  using discrete_time_residual_type	= eigVec;
+  using jacobian_type	= Eigen::SparseMatrix<scalar_type, Eigen::RowMajor, int>;
 
   typedef Eigen::Triplet<scalar_type> Tr;
 
 public:
-  explicit Burgers1dEigenDiscreteTimeApi(eigVec params, ui_t Ncell = 1000)
-    : mu_(params), Ncell_(Ncell)
-  {
+
+  explicit Burgers1dEigenDiscreteTimeApi(eigVec params, ui_t Ncell=1000)
+    : mu_(params), Ncell_(Ncell){
     this->setup();
   }
 
@@ -80,8 +80,7 @@ public:
   ~Burgers1dEigenDiscreteTimeApi() = default;
 
 public:
-  state_type const & getInitialState() const
-  {
+  state_type const & getInitialState() const {
     return U0_;
   };
 
@@ -101,27 +100,27 @@ public:
     return A;
   }
 
-  template <typename step_t, typename... Args>
+  template <typename step_t, typename ... Args>
   void discreteTimeResidual(const step_t & step,
-			    const scalar_type & time,
-			    const scalar_type & dt,
-			    discrete_time_residual_type & R,
-			    Args &&... states) const
+  			    const scalar_type & time,
+  			    const scalar_type & dt,
+  			    discrete_time_residual_type & R,
+  			    Args && ... states) const
   {
     this->discreteTimeResidualImpl(step, time, dt,
-				   R, std::forward<Args>(states)...);
+      R,std::forward<Args>(states)... );
   }
 
-  template <typename step_t, typename... Args>
+  template <typename step_t, typename ... Args>
   void applyDiscreteTimeJacobian(const step_t & step,
-				 const scalar_type & time,
-				 const scalar_type & dt,
-				 const Eigen::MatrixXd & B,
-				 Eigen::MatrixXd & A,
-				 Args &&... states) const
+  				 const scalar_type & time,
+  				 const scalar_type & dt,
+  				 const Eigen::MatrixXd & B,
+  				 Eigen::MatrixXd & A,
+  				 Args && ... states) const
   {
     this->applyDiscreteTimeJacobianImpl(step, time, dt,
-					B, A, std::forward<Args>(states)...);
+      B, A, std::forward<Args>(states)...);
   }
 
 private:
@@ -134,7 +133,7 @@ private:
 				const state_type & yn,
 				const state_type & ynm1) const
   {
-    const auto f = this->velocityImpl(yn, time);
+    const auto f =  this->velocityImpl(yn, time);
     R = yn - ynm1 - dt * f;
   }
 
@@ -146,10 +145,10 @@ private:
 				discrete_time_residual_type & R,
 				const state_type & yn,
 				const state_type & ynm1,
-				const state_type & ynm2) const
+        const state_type & ynm2) const
   {
-    const auto f = this->velocityImpl(yn, time);
-    R = yn - 4. / 3. * ynm1 + 1. / 3. * ynm2 - 2. / 3. * dt * f;
+    const auto f =  this->velocityImpl(yn, time);
+    R = yn - 4./3.*ynm1 + 1./3.*ynm2 - 2./3.*dt * f;
   }
 
 
@@ -164,13 +163,13 @@ private:
 				     const state_t & ynm1) const
   {
     // compute Jacobian
-    auto J = this->jacobianImpl(yn, time);
+    auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
     J.coeffs() *= -dt;
-    for(std::size_t i = 0; i < Ncell_; ++i)
-      J.coeffRef(i, i) += one;
+    for (std::size_t i=0; i<Ncell_; ++i)
+      J.coeffRef(i,i) += one;
 
     // compute A = J * B
     A = J * B;
@@ -188,13 +187,13 @@ private:
 				     const state_t & ynm2) const
   {
     // compute Jacobian
-    auto J = this->jacobianImpl(yn, time);
+    auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
     constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    J.coeffs() *= -2. / 3. * dt;
-    for(std::size_t i = 0; i < Ncell_; ++i)
-      J.coeffRef(i, i) += one;
+    J.coeffs() *= -2./3.*dt;
+    for (std::size_t i=0; i<Ncell_; ++i)
+      J.coeffRef(i,i) += one;
 
     // compute A = J * B
     A = J * B;
@@ -202,63 +201,60 @@ private:
 
 
 private:
-  void setup()
-  {
-    dx_ = (xR_ - xL_) / static_cast<scalar_type>(Ncell_);
-    dxInv_ = 1.0 / dx_;
+  void setup(){
+    dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
+    dxInv_ = 1.0/dx_;
     // grid
     xGrid_.resize(Ncell_);
-    for(ui_t i = 0; i < Ncell_; ++i)
-      xGrid_(i) = dx_ * i + dx_ * 0.5;
+    for (ui_t i=0; i<Ncell_; ++i)
+      xGrid_(i) = dx_*i + dx_*0.5;
 
     // init condition
     U_.resize(Ncell_);
-    for(ui_t i = 0; i < Ncell_; ++i)
+    for (ui_t i=0; i<Ncell_; ++i)
       U_(i) = 1.0;
     U0_ = U_;
   };
 
   void velocityImpl(const state_type & u,
-		    const scalar_type t,
-		    velocity_type & rhs) const
+  		const scalar_type t,
+		velocity_type & rhs) const
   {
-    rhs(0) = 0.5 * dxInv_ * (mu_(0) * mu_(0) - u(0) * u(0));
-    for(ui_t i = 1; i < Ncell_; ++i) {
-      rhs(i) = 0.5 * dxInv_ * (u(i - 1) * u(i - 1) - u(i) * u(i));
+    rhs(0) = 0.5 * dxInv_ * (mu_(0)*mu_(0) - u(0)*u(0));
+    for (ui_t i=1; i<Ncell_; ++i){
+      rhs(i) = 0.5 * dxInv_ * (u(i-1)*u(i-1) - u(i)*u(i));
     }
-    for(ui_t i = 0; i < Ncell_; ++i) {
-      rhs(i) += mu_(1) * exp(mu_(2) * xGrid_(i));
+    for (ui_t i=0; i<Ncell_; ++i){
+      rhs(i) += mu_(1)*exp(mu_(2)*xGrid_(i));
     }
   }
 
   velocity_type velocityImpl(const state_type & u,
-			     const scalar_type t) const
-  {
+  			 const scalar_type t) const{
     velocity_type RR(Ncell_);
     this->velocityImpl(u, t, RR);
     return RR;
   }
 
   void jacobianImpl(const state_type & u,
-		    const scalar_type /*t*/,
-		    jacobian_type & jac) const
+		const scalar_type /*t*/,
+		jacobian_type & jac) const
   {
     //evaluate jacobian
-    if(jac.rows() == 0 || jac.cols() == 0) {
+    if (jac.rows() == 0 || jac.cols()==0 ){
       jac.resize(u.size(), u.size());
     }
     tripletList.clear();
-    tripletList.push_back(Tr(0, 0, -dxInv_ * u(0)));
-    for(ui_t i = 1; i < Ncell_; ++i) {
-      tripletList.push_back(Tr(i, i - 1, dxInv_ * u(i - 1)));
-      tripletList.push_back(Tr(i, i, -dxInv_ * u(i)));
+    tripletList.push_back( Tr( 0, 0, -dxInv_*u(0)) );
+    for (ui_t i=1; i<Ncell_; ++i){
+      tripletList.push_back( Tr( i, i-1, dxInv_ * u(i-1) ) );
+      tripletList.push_back( Tr( i, i, -dxInv_ * u(i) ) );
     }
     jac.setFromTriplets(tripletList.begin(), tripletList.end());
   }
 
   jacobian_type jacobianImpl(const state_type & u,
-			     const scalar_type t) const
-  {
+			 const scalar_type t) const{
 
     jacobian_type JJ(u.size(), u.size());
     this->jacobianImpl(u, t, JJ);
@@ -266,18 +262,18 @@ private:
   }
 
 private:
-  eigVec mu_;// parameters
-  const scalar_type xL_ = 0.0;//left side of domain
-  const scalar_type xR_ = 100.0;// right side of domain
-  ui_t Ncell_;// # of cells
-  scalar_type dx_;// cell size
-  scalar_type dxInv_;// inv of cell size
-  eigVec xGrid_;// mesh points coordinates
+  eigVec mu_; // parameters
+  const scalar_type xL_ = 0.0; //left side of domain
+  const scalar_type xR_ = 100.0; // right side of domain
+  ui_t Ncell_; // # of cells
+  scalar_type dx_; // cell size
+  scalar_type dxInv_; // inv of cell size
+  eigVec xGrid_; // mesh points coordinates
   mutable std::vector<Tr> tripletList;
-  mutable state_type U_;// state vector
-  mutable state_type U0_;// initial state vector
+  mutable state_type U_; // state vector
+  mutable state_type U0_; // initial state vector
 
 };//end class
 
-}}//namespace pressio::apps
-#endif// APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_DISCRETE_TIME_API_HPP_
+}} //namespace pressio::apps
+#endif  // APPS_BURGERS1D_APPS_BURGERS1D_EIGEN_DISCRETE_TIME_API_HPP_

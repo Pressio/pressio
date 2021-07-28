@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 #define ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <class T, class ops_t, class projector_t>
 struct ProjectorMixin : T
@@ -63,21 +63,22 @@ struct ProjectorMixin : T
   ProjectorMixin & operator=(ProjectorMixin &&) = delete;
   ~ProjectorMixin() = default;
 
-  template <
+  template<
     class T1, class T2, class T3, class T4, class _ops_t = ops_t,
-    mpl::enable_if_t<std::is_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t<std::is_void<_ops_t>::value, int > = 0
+    >
   ProjectorMixin(const T1 & romStateIn,
 		 const T2 & fomObj,
 		 const T3 & decoder,
 		 const T4 & fomNominalStateNative)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative),
       projector_(decoder)
-  {
-  }
+  {}
 
-  template <
+  template<
     class T1, class T2, class T3, class T4, class _ops_t = ops_t,
-    mpl::enable_if_t<mpl::not_void<_ops_t>::value, int> = 0>
+    mpl::enable_if_t<mpl::not_void<_ops_t>::value, int > = 0
+    >
   ProjectorMixin(const T1 & romStateIn,
 		 const T2 & fomObj,
 		 const T3 & decoder,
@@ -85,14 +86,13 @@ struct ProjectorMixin : T
 		 const _ops_t & udOps)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, udOps),
       projector_(decoder, udOps)
-  {
-  }
+  {}
 };
 
 //---------------------------------------------------
 // implicit policies
 //---------------------------------------------------
-template <class T, bool def, bool hypredvelo, bool, typename... Args>
+template <class T, bool def, bool hypredvelo, bool, typename ... Args>
 struct ImplicitPoliciesMixin;
 
 // specialize for default
@@ -109,17 +109,16 @@ struct ImplicitPoliciesMixin<T, true, false, false, r_pol_t, j_pol_t> : T
   ImplicitPoliciesMixin & operator=(ImplicitPoliciesMixin &&) = delete;
   ~ImplicitPoliciesMixin() = default;
 
-  template <class T1, class T2, class T3, class T4, class... Args>
+  template<class T1, class T2, class T3, class T4, class ...Args>
   ImplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
-			Args &&... args)
+			Args && ... args)
     : T(romStateIn, fomObj, decoder, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(::pressio::ops::extent(romStateIn, 0), T::projector_, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(::pressio::ops::extent(romStateIn, 0), T::projector_, T::fomCRef(), T::fomStatesMngr_, decoder)
-  {
-  }
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_, decoder)
+  {}
 };
 
 // specialize for hyp-red velo
@@ -136,18 +135,17 @@ struct ImplicitPoliciesMixin<T, false, true, false, r_pol_t, j_pol_t> : T
   ImplicitPoliciesMixin & operator=(ImplicitPoliciesMixin &&) = delete;
   ~ImplicitPoliciesMixin() = default;
 
-  template <class T1, class T2, class T3, class T4, class T5, typename... Args>
+  template<class T1, class T2, class T3, class T4, class T5, typename ...Args>
   ImplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & projector,
-			Args &&... args)
+			Args && ... args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      residualPolicy_(::pressio::ops::extent(romStateIn, 0), projector, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(::pressio::ops::extent(romStateIn, 0), projector, T::fomCRef(), T::fomStatesMngr_, decoder)
-  {
-  }
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_, decoder)
+  {}
 };
 
 // specialize for masked velo
@@ -173,46 +171,45 @@ struct ImplicitPoliciesMixin<T, false, false, true, masker_t, r_pol_t, j_pol_t> 
   ImplicitPoliciesMixin & operator=(ImplicitPoliciesMixin &&) = delete;
   ~ImplicitPoliciesMixin() = default;
 
-  template <class T1, class T2, class T3, class T4, class T5, class T6, class... Args>
+  template<class T1, class T2, class T3, class T4, class T5, class T6, class ...Args>
   ImplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & masker,
 			const T6 & projector,
-			Args &&... args)
+			Args && ... args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      residualPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker_, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_, decoder)
 #else
-      residualPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker, T::fomCRef(), T::fomStatesMngr_),
-      jacobianPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker, T::fomCRef(), T::fomStatesMngr_, decoder)
+      residualPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_),
+      jacobianPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_, decoder)
 #endif
-  {
-  }
+  {}
 };
 
 // aliases to make things easier
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using DefaultImplicitPoliciesMixin = ImplicitPoliciesMixin<T, true, false, false, Args...>;
 
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using HypRedVeloImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true, false, Args...>;
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using HypRedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, true, false, Args...>;
 
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using MaskedVeloImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, false, true, Args...>;
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using MaskedResidualImplicitPoliciesMixin = ImplicitPoliciesMixin<T, false, false, true, Args...>;
 
 
 //---------------------------------------------------
 // explicit policies
 //---------------------------------------------------
-template <class T, bool, bool, bool, typename... Args>
+template <class T, bool, bool, bool, typename ... Args>
 struct ExplicitPoliciesMixin;
 
 // default
@@ -228,24 +225,24 @@ struct ExplicitPoliciesMixin<T, true, false, false, rhs_pol_t> : T
   ExplicitPoliciesMixin & operator=(ExplicitPoliciesMixin &&) = delete;
   ~ExplicitPoliciesMixin() = default;
 
-  template <
-    class T1, typename... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 1, int> = 0>
-  ExplicitPoliciesMixin(const T1 & romStateIn, Args &&... args)
+  template<
+    class T1, typename ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==1,int> = 0
+    >
+  ExplicitPoliciesMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
-  {
-  }
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
+  {}
 
-  template <
-    class T1, typename... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 2, int> = 0>
-  ExplicitPoliciesMixin(const T1 & romStateIn, Args &&... args)
+  template<
+    class T1, typename ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==2,int> = 0
+    >
+  ExplicitPoliciesMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), ::pressio::ops::extent(romStateIn, 1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 T::projector_, T::fomCRef(), T::fomStatesMngr_)
-  {
-  }
+  {}
 };
 
 // hypere-reduced
@@ -261,34 +258,34 @@ struct ExplicitPoliciesMixin<T, false, true, false, rhs_pol_t> : T
   ExplicitPoliciesMixin & operator=(ExplicitPoliciesMixin &&) = delete;
   ~ExplicitPoliciesMixin() = default;
 
-  template <
-    class T1, class T2, class T3, class T4, class T5, typename... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 1, int> = 0>
+  template<
+    class T1, class T2, class T3, class T4, class T5, typename ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==1,int> = 0
+    >
   ExplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & projector,
-			Args &&... args)
+			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), projector, T::fomCRef(), T::fomStatesMngr_)
-  {
-  }
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, T::fomCRef(), T::fomStatesMngr_)
+  {}
 
-  template <
-    class T1, class T2, class T3, class T4, class T5, typename... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 2, int> = 0>
+  template<
+    class T1, class T2, class T3, class T4, class T5, typename ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==2,int> = 0
+    >
   ExplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & projector,
-			Args &&... args)
+			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), ::pressio::ops::extent(romStateIn, 1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, T::fomCRef(), T::fomStatesMngr_)
-  {
-  }
+  {}
 };
 
 // masked
@@ -313,66 +310,70 @@ struct ExplicitPoliciesMixin<T, false, false, true, masker_t, rhs_pol_t> : T
   ExplicitPoliciesMixin & operator=(ExplicitPoliciesMixin &&) = delete;
   ~ExplicitPoliciesMixin() = default;
 
-  template <
-    class T1, class T2, class T3, class T4, class T5, class T6, class... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 1, int> = 0>
+  template<
+    class T1, class T2, class T3, class T4, class T5, class T6, class ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==1,int> = 0
+    >
   ExplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & masker,
 			const T6 & projector,
-			Args &&... args)
+			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker_, T::fomCRef(), T::fomStatesMngr_)
 #else
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), projector, masker, T::fomCRef(), T::fomStatesMngr_)
 #endif
   {
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    static_assert(std::is_same<T5, pybind11::object>::value,
-		  "Maked policies mixin: masker object must be a pybind11::object");
+    static_assert
+      (std::is_same<T5, pybind11::object>::value,
+       "Maked policies mixin: masker object must be a pybind11::object");
 #endif
   }
 
-  template <
-    class T1, class T2, class T3, class T4, class T5, class T6, class... Args,
-    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank == 2, int> = 0>
+  template<
+    class T1, class T2, class T3, class T4, class T5, class T6, class ...Args,
+    mpl::enable_if_t<::pressio::containers::details::traits<T1>::rank==2,int> = 0
+    >
   ExplicitPoliciesMixin(const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
 			const T4 & fomNominalStateNative,
 			const T5 & masker,
 			const T6 & projector,
-			Args &&... args)
+			Args && ...args)
     : T(fomObj, decoder, romStateIn, fomNominalStateNative, std::forward<Args>(args)...),
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
       masker_(masker),
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), ::pressio::ops::extent(romStateIn, 1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, masker_, T::fomCRef(), T::fomStatesMngr_)
 #else
-      rhsPolicy_(::pressio::ops::extent(romStateIn, 0), ::pressio::ops::extent(romStateIn, 1),
+      rhsPolicy_(::pressio::ops::extent(romStateIn,0), ::pressio::ops::extent(romStateIn,1),
 		 projector, masker, T::fomCRef(), T::fomStatesMngr_)
 #endif
   {
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    static_assert(std::is_same<T5, pybind11::object>::value,
-		  "Maked policies mixin: masker object must be a pybind11::object");
+    static_assert
+      (std::is_same<T5, pybind11::object>::value,
+       "Maked policies mixin: masker object must be a pybind11::object");
 #endif
   }
 };
 
 // aliases to make things easier
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using DefaultExplicitPoliciesMixin = ExplicitPoliciesMixin<T, true, false, false, Args...>;
 
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using HypRedVeloExplicitPoliciesMixin = ExplicitPoliciesMixin<T, false, true, false, Args...>;
 
-template <class T, typename... Args>
+template <class T, typename ...Args>
 using MaskedVeloExplicitPoliciesMixin = ExplicitPoliciesMixin<T, false, false, true, Args...>;
 
 }}}}
-#endif// ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_
+#endif  // ROM_GALERKIN_IMPL_ROM_PROBLEM_MEMBERS_HPP_

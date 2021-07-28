@@ -49,7 +49,7 @@
 #ifndef ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
 #define ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
 
-namespace pressio { namespace rom { namespace galerkin { namespace impl {
+namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <class masker_t, class maskable_t>
 class Masked : public maskable_t
@@ -70,25 +70,23 @@ public:
   Masked & operator=(Masked &&) = default;
   ~Masked() = default;
 
-  template <typename... Args>
-  Masked(const masker_t & maskerIn, Args &&... args)
+  template <typename ... Args>
+  Masked(const masker_t & maskerIn, Args && ... args)
     : maskable_t(std::forward<Args>(args)...),
       masker_(maskerIn),
       maskedObj_(maskerIn.createApplyMaskResult(*maskable_t::get().data()))
-  {
-  }
+  {}
 
 public:
-  const maskable_data_type & get() const
-  {
+  const maskable_data_type & get() const{
     return maskedObj_;
   }
 
-  template <class galerkin_state_t, class fom_system_t, class scalar_t, typename... Args>
+  template<class galerkin_state_t, class fom_system_t, class scalar_t, typename ...Args>
   void compute(const galerkin_state_t & galerkinState,
-	       const fom_system_t & fomSystemObj,
+	       const fom_system_t  & fomSystemObj,
 	       const scalar_t & time,
-	       Args &&... args) const
+	       Args && ...args) const
   {
     maskable_t::compute(galerkinState, fomSystemObj, time, std::forward<Args>(args)...);
     const auto & fullObj = maskable_t::get();
@@ -97,4 +95,4 @@ public:
 };
 
 }}}}
-#endif// ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_
+#endif  // ROM_GALERKIN_IMPL_DECORATORS_ROM_MASKED_HPP_

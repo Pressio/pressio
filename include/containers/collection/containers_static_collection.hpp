@@ -51,10 +51,10 @@
 
 #include "containers_static_collection_impl.hpp"
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
-template <typename T, std::size_t n>
+template<typename T, std::size_t n>
 using IndexableStaticCollection = ::pressio::containers::impl::IndexableStaticCollection<T, n>;
 
 }}//end namespace pressio::containers
-#endif// CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_
+#endif  // CONTAINERS_COLLECTION_CONTAINERS_STATIC_COLLECTION_HPP_

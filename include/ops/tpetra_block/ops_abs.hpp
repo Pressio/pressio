@@ -49,12 +49,14 @@
 #ifndef OPS_TPETRA_BLOCK_OPS_ABS_HPP_
 #define OPS_TPETRA_BLOCK_OPS_ABS_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 // y= abs(x)
 template <typename T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_tpetra_block<T2>::value
+  >
 abs(T1 & y, const T2 & x)
 {
   auto y_tpetraview = y.data()->getVectorView();
@@ -63,4 +65,4 @@ abs(T1 & y, const T2 & x)
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_TPETRA_BLOCK_OPS_ABS_HPP_
+#endif  // OPS_TPETRA_BLOCK_OPS_ABS_HPP_

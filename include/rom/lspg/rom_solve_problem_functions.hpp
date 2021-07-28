@@ -51,7 +51,7 @@
 
 #include "./impl/unsteady/rom_unsteady_problem_solve_functions_impl.hpp"
 
-namespace pressio { namespace rom { namespace lspg {
+namespace pressio{ namespace rom{ namespace lspg{
 
 /* these functions make it easier for the users
    so that they pass a rom problem and don't need to
@@ -64,25 +64,27 @@ namespace pressio { namespace rom { namespace lspg {
 ***********************************/
 // For pressio4py, I cannot handle the variadic case.
 #if not defined PRESSIO_ENABLE_TPL_PYBIND11
-template <typename rom_problem_t, typename rom_state_t, typename solver_t, typename... Args>
+template<typename rom_problem_t, typename rom_state_t, typename solver_t, typename ...Args>
 void solveSteady(rom_problem_t & problem,
 		 rom_state_t & romState,
 		 solver_t & solver,
-		 Args &&... args)
+		 Args&& ...args)
 {
-  static_assert(::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
-		"rom::lspg::solve() can only be called for a steady problem");
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+     "rom::lspg::solve() can only be called for a steady problem");
 
   solver.solve(problem.systemRef(), romState, std::forward<Args>(args)...);
 }
 #else
-template <typename rom_problem_t, typename rom_state_t, typename solver_t>
+template<typename rom_problem_t, typename rom_state_t, typename solver_t>
 void solveSteady(rom_problem_t & problem,
 		 rom_state_t & romState,
 		 solver_t & solver)
 {
-  static_assert(::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
-		"rom::lspg::solve() can only be called for a steady problem");
+  static_assert
+    (::pressio::rom::details::traits<rom_problem_t>::is_steady_lspg,
+     "rom::lspg::solve() can only be called for a steady problem");
 
   solver.solve(problem.systemRef(), romState);
 }
@@ -95,8 +97,9 @@ void solveSteady(rom_problem_t & problem,
 /*--------------------------------------------
   solve for fixed number of steps
   --------------------------------------------*/
-template <typename rom_problem_type, typename... Args>
-void solveNTimes(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveNTimes
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
@@ -106,12 +109,13 @@ void solveNTimes(rom_problem_type & problem, Args &&... args)
 // the number of arguments and this will work. For now leave to just
 // a specific case, we can add more later.
 // with valid collector
-template <
+template<
   class rom_problem_type,
   class rom_state_t,
   class timet,
   class collector_t,
-  class solver_t>
+  class solver_t
+  >
 void solveNSequentialMinimizations(rom_problem_type & problem,
 				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
@@ -125,12 +129,14 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
   rom_state_t stateView(stateInOut, ::pressio::view());
 
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, numSteps, collector, solver);
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateView, t0, dt, numSteps, collector, solver);
 }
 
 // without collector
-template <
-  class rom_problem_type, class rom_state_t, class timet, class solver_t>
+template<
+  class rom_problem_type, class rom_state_t, class timet, class solver_t
+  >
 void solveNSequentialMinimizations(rom_problem_type & problem,
 				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
@@ -142,26 +148,30 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   rom_state_t stateView(stateInOut, ::pressio::view());
 
-  ::pressio::ode::advanceNSteps(problem.stepperRef(), stateView, t0, dt, numSteps, solver);
+  ::pressio::ode::advanceNSteps
+      (problem.stepperRef(), stateView, t0, dt, numSteps, solver);
 }
 #else
 
-template <typename rom_problem_type, typename... Args>
-void solveNSequentialMinimizations(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveNSequentialMinimizations
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
 #endif
 
 
-template <typename rom_problem_type, typename... Args>
-void solveNSequentialResidualMinimizations(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveNSequentialResidualMinimizations
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialResidualMinimizationProblemNTimes(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialResidualMinimizationProblemNTimes
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyNTimes(problem, std::forward<Args>(args)...);
 }
@@ -169,26 +179,30 @@ void solveSequentialResidualMinimizationProblemNTimes(rom_problem_type & problem
 /*--------------------------------------------
   solve to target time
   -------------------------------------------- */
-template <typename rom_problem_type, typename... Args>
-void solveToTargetTime(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveToTargetTime
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTime(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialMinimizationsToTargetTime(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialMinimizationsToTargetTime
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTime(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialResidualMinimizationsToTargetTime(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialResidualMinimizationsToTargetTime
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTime(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialResidualMinimizationProblemToTargetTime(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialResidualMinimizationProblemToTargetTime
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTime(problem, std::forward<Args>(args)...);
 }
@@ -196,29 +210,33 @@ void solveSequentialResidualMinimizationProblemToTargetTime(rom_problem_type & p
 /*--------------------------------------------
   advance to target time with step recovery
   -------------------------------------------- */
-template <typename rom_problem_type, typename... Args>
-void solveToTargetTimeWithRecovery(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveToTargetTimeWithRecovery
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTimeWithRec(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialMinimizationsToTargetTimeWithRecovery(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialMinimizationsToTargetTimeWithRecovery
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTimeWithRec(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialResidualMinimizationsToTargetTimeWithRecovery(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialResidualMinimizationsToTargetTimeWithRecovery
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTimeWithRec(problem, std::forward<Args>(args)...);
 }
 
-template <typename rom_problem_type, typename... Args>
-void solveSequentialResidualMinimizationProblemToTargetTimeWithRecovery(rom_problem_type & problem, Args &&... args)
+template<typename rom_problem_type, typename ...Args>
+void solveSequentialResidualMinimizationProblemToTargetTimeWithRecovery
+(rom_problem_type & problem, Args && ...args)
 {
   impl::_lspgUnsteadyToTimeWithRec(problem, std::forward<Args>(args)...);
 }
 
 }}}//end namespace pressio::rom::lspg
-#endif// ROM_LSPG_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_
+#endif  // ROM_LSPG_ROM_SOLVE_PROBLEM_FUNCTIONS_HPP_

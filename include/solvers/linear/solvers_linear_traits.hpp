@@ -59,13 +59,12 @@
 #include <Eigen/OrderingMethods>
 #endif
 
-namespace pressio { namespace solvers { namespace linear { namespace details {
+namespace pressio{ namespace solvers{ namespace linear { namespace details {
 
 template <typename T>
-struct traits
-{
-  static constexpr bool direct = false;
-  static constexpr bool iterative = false;
+struct traits {
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = false;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   static constexpr bool eigen_enabled = false;
 #endif
@@ -77,13 +76,14 @@ struct traits
 template <>
 struct traits<::pressio::solvers::linear::iterative::CG>
 {
-  static constexpr bool direct = false;
-  static constexpr bool iterative = true;
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
-    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>>
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+    >
   using eigen_solver_type = Eigen::ConjugateGradient<MatrixT, Eigen::Lower, PrecT>;
 
   static constexpr bool eigen_enabled = true;
@@ -93,13 +93,14 @@ struct traits<::pressio::solvers::linear::iterative::CG>
 template <>
 struct traits<::pressio::solvers::linear::iterative::Bicgstab>
 {
-  static constexpr bool direct = false;
-  static constexpr bool iterative = true;
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
-    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>>
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+    >
   using eigen_solver_type = Eigen::BiCGSTAB<MatrixT, PrecT>;
 
   static constexpr bool eigen_enabled = true;
@@ -109,13 +110,14 @@ struct traits<::pressio::solvers::linear::iterative::Bicgstab>
 template <>
 struct traits<::pressio::solvers::linear::iterative::LSCG>
 {
-  static constexpr bool direct = false;
-  static constexpr bool iterative = true;
+  static constexpr bool direct        = false;
+  static constexpr bool iterative     = true;
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
   template <
     typename MatrixT,
-    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>>
+    typename PrecT = Eigen::DiagonalPreconditioner<typename MatrixT::Scalar>
+  >
   using eigen_solver_type = Eigen::LeastSquaresConjugateGradient<MatrixT, PrecT>;
 
   static constexpr bool eigen_enabled = true;
@@ -143,9 +145,10 @@ struct traits<::pressio::solvers::linear::direct::ColPivHouseholderQR>
   using eigen_solver_type =
     typename std::conditional<
       pressio::containers::predicates::is_sparse_matrix_eigen<MatrixT>::value &&
-	MatrixT::IsRowMajor == 0,
+      MatrixT::IsRowMajor==0,
       Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<typename MatrixT::StorageIndex>>,
-      Eigen::ColPivHouseholderQR<MatrixT>>::type;
+      Eigen::ColPivHouseholderQR<MatrixT>
+      >::type;
 
   static constexpr bool eigen_enabled = true;
 #endif
@@ -238,4 +241,4 @@ struct traits<::pressio::solvers::linear::direct::geqrf>
 };
 
 }}}}//end namespace pressio::solvers::linear::details
-#endif// SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_
+#endif  // SOLVERS_LINEAR_SOLVERS_LINEAR_TRAITS_HPP_

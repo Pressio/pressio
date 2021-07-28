@@ -49,20 +49,18 @@
 #ifndef OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_
 #define OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_
 
-namespace pressio { namespace ops { namespace constraints {
+namespace pressio{ namespace ops{ namespace constraints{
 
 template <typename T, typename = void>
-struct rank1_container_pybind : std::false_type
-{
-};
+struct rank1_container_pybind : std::false_type{};
 
 template <typename T>
 struct rank1_container_pybind<
   T,
   mpl::enable_if_t<
-    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value>> : std::true_type
-{
-};
+    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+    >
+  > : std::true_type{};
 
 template <typename T>
 struct rank1_container_pybind<
@@ -70,9 +68,9 @@ struct rank1_container_pybind<
   mpl::enable_if_t<
     ::pressio::containers::predicates::diag_expression<T>::value and
     T::traits::wrapped_package_identifier ==
-      ::pressio::containers::details::WrappedPackageIdentifier::Pybind>> : std::true_type
-{
-};
+    ::pressio::containers::details::WrappedPackageIdentifier::Pybind
+    >
+  > : std::true_type{};
 
 }}}
-#endif// OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_
+#endif  // OPS_CONSTRAINTS_OPS_RANK1_CONTAINER_PYBIND_HPP_

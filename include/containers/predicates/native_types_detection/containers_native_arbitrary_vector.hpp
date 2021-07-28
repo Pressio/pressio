@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
 
-namespace pressio { namespace containers { namespace predicates {
+namespace pressio{ namespace containers{ namespace predicates {
 
 /*
   T is admissible to be wrapped as an arbitrary vector iff it is:
@@ -70,37 +70,46 @@ namespace pressio { namespace containers { namespace predicates {
 template <typename T, typename enable = void>
 struct is_admissible_as_vector_arbitrary : std::false_type
 {
-  static_assert(!containers::predicates::is_wrapper<T>::value,
-		"You cannot wrap a pressio container as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_wrapper<T>::value,
+   "You cannot wrap a pressio container as a pressio::containers::Vector<>.");
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-  static_assert(!containers::predicates::is_dense_matrix_eigen<T>::value and
-		  !containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value,
-		"You cannot wrap an Eigen dense matrix as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_dense_matrix_eigen<T>::value and
+   !containers::predicates::is_admissible_as_dynamic_multi_vector_eigen<T>::value,
+   "You cannot wrap an Eigen dense matrix as a pressio::containers::Vector<>.");
 
-  static_assert(!containers::predicates::is_sparse_matrix_eigen<T>::value,
-		"You cannot wrap an Eigen sparse matrix as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_sparse_matrix_eigen<T>::value,
+   "You cannot wrap an Eigen sparse matrix as a pressio::containers::Vector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  static_assert(!containers::predicates::is_dense_matrix_kokkos<T>::value and
-		  !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value,
-		"You cannot wrap a Kokkos 2d view as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_dense_matrix_kokkos<T>::value and
+   !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value,
+   "You cannot wrap a Kokkos 2d view as a pressio::containers::Vector<>.");
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-  static_assert(!containers::predicates::is_multi_vector_epetra<T>::value and
-		  !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value,
-		"You cannot wrap an Epetra multivector as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_multi_vector_epetra<T>::value and
+   !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value,
+   "You cannot wrap an Epetra multivector as a pressio::containers::Vector<>.");
 
-  static_assert(!containers::predicates::is_dense_matrix_teuchos<T>::value or !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value,
-		"You cannot wrap a Teuchos dense matrix as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_dense_matrix_teuchos<T>::value
+   or !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value,
+   "You cannot wrap a Teuchos dense matrix as a pressio::containers::Vector<>.");
 
-  static_assert(!containers::predicates::is_multi_vector_tpetra_block<T>::value,
-		"You cannot wrap a Tpetra block multivector as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_multi_vector_tpetra_block<T>::value,
+   "You cannot wrap a Tpetra block multivector as a pressio::containers::Vector<>.");
 
-  static_assert(!containers::predicates::is_multi_vector_tpetra<T>::value,
-		"You cannot wrap a Tpetra multivector as a pressio::containers::Vector<>.");
+  static_assert
+  (!containers::predicates::is_multi_vector_tpetra<T>::value,
+   "You cannot wrap a Tpetra multivector as a pressio::containers::Vector<>.");
 #endif
 };
 
@@ -108,29 +117,40 @@ template <typename T>
 struct is_admissible_as_vector_arbitrary<
   T,
   ::pressio::mpl::enable_if_t<
-    !std::is_void<T>::value and !containers::predicates::is_wrapper<T>::value
+    !std::is_void<T>::value
+    and !containers::predicates::is_wrapper<T>::value
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-    and !containers::predicates::is_vector_eigen<T>::value and !containers::predicates::is_dense_matrix_eigen<T>::value and !containers::predicates::is_sparse_matrix_eigen<T>::value and !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
+    and !containers::predicates::is_vector_eigen<T>::value
+    and !containers::predicates::is_dense_matrix_eigen<T>::value
+    and !containers::predicates::is_sparse_matrix_eigen<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_eigen<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
     and !containers::predicates::is_array_pybind<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-    and !containers::predicates::is_vector_kokkos<T>::value and !containers::predicates::is_dense_matrix_kokkos<T>::value and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
+    and !containers::predicates::is_vector_kokkos<T>::value
+    and !containers::predicates::is_dense_matrix_kokkos<T>::value
+    and !containers::predicates::is_admissible_as_multi_vector_kokkos<T>::value
 #endif
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-    and !containers::predicates::is_vector_epetra<T>::value and !containers::predicates::is_multi_vector_epetra<T>::value and !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value
+    and !containers::predicates::is_vector_epetra<T>::value
+    and !containers::predicates::is_multi_vector_epetra<T>::value
+    and !containers::predicates::is_admissible_as_dense_matrix_epetra<T>::value
     //
-    and !containers::predicates::is_dense_vector_teuchos<T>::value and !containers::predicates::is_dense_matrix_teuchos<T>::value and !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value
+    and !containers::predicates::is_dense_vector_teuchos<T>::value
+    and !containers::predicates::is_dense_matrix_teuchos<T>::value
+    and !containers::predicates::is_dense_matrix_teuchos_rcp<T>::value
     //
-    and !containers::predicates::is_vector_tpetra_block<T>::value and !containers::predicates::is_multi_vector_tpetra_block<T>::value
+    and !containers::predicates::is_vector_tpetra_block<T>::value
+    and !containers::predicates::is_multi_vector_tpetra_block<T>::value
     //
-    and !containers::predicates::is_vector_tpetra<T>::value and !containers::predicates::is_multi_vector_tpetra<T>::value
+    and !containers::predicates::is_vector_tpetra<T>::value
+    and !containers::predicates::is_multi_vector_tpetra<T>::value
 #endif
-    >> : std::true_type
-{
-};
+    >
+  > : std::true_type{};
 
 
 }}}//end namespace pressio::containers::predicates
-#endif// CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_
+#endif  // CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_ARBITRARY_VECTOR_HPP_

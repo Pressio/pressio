@@ -49,33 +49,44 @@
 #ifndef ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 #define ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
 
-namespace pressio { namespace rom { namespace constraints {
+namespace pressio{ namespace rom{ namespace constraints {
 
-template <
+template<
   typename T,
   typename fom_state_type,
-  typename enable = void>
+  typename enable = void
+  >
 struct custom_ops_for_fom_state_reconstructor
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <
   typename T,
-  typename fom_state_type>
+  typename fom_state_type
+  >
 struct custom_ops_for_fom_state_reconstructor<
   T, fom_state_type,
   ::pressio::mpl::enable_if_t<
-    ::pressio::containers::predicates::is_wrapper<fom_state_type>::value and ::pressio::ops::predicates::has_method_deep_copy<
+    ::pressio::containers::predicates::is_wrapper<fom_state_type>::value
+    and
+    ::pressio::ops::predicates::has_method_deep_copy<
       T,
       typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t>::value and ::pressio::ops::predicates::has_method_set_zero<T,
-																	     typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t>::value and ::pressio::ops::predicates::has_method_axpy<T,
-																																		typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-																																		typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
-																																		typename ::pressio::containers::details::traits<fom_state_type>::scalar_t>::value>> : std::true_type
-{
-};
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+      >::value
+    and
+    ::pressio::ops::predicates::has_method_set_zero<
+      T,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t
+      >::value
+    and
+    ::pressio::ops::predicates::has_method_axpy<
+      T,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
+      typename ::pressio::containers::details::traits<fom_state_type>::wrapped_t,
+      typename ::pressio::containers::details::traits<fom_state_type>::scalar_t
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::rom::constraints
-#endif// ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_
+}}} // namespace pressio::rom::constraints
+#endif  // ROM_CONSTRAINTS_ROM_CUSTOM_OPS_FOR_FOM_STATE_RECONSTRUCTOR_HPP_

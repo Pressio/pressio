@@ -49,24 +49,26 @@
 #ifndef CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_PYBIND11_HPP_
 #define CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_PYBIND11_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
 template <typename wrapped_type>
 class MultiVector<
   wrapped_type,
   ::pressio::mpl::enable_if_t<
-    containers::predicates::is_array_pybind<wrapped_type>::value>>
+    containers::predicates::is_array_pybind<wrapped_type>::value
+    >
+  >
 {
 public:
-  using this_t = MultiVector<wrapped_type>;
+  using this_t	    = MultiVector<wrapped_type>;
   using traits = details::traits<this_t>;
-  using sc_t = typename traits::scalar_t;
-  using ord_t = typename traits::ordinal_t;
-  using wrap_t = typename traits::wrapped_t;
-  using ref_t = typename traits::reference_t;
+  using sc_t	    = typename traits::scalar_t;
+  using ord_t	    = typename traits::ordinal_t;
+  using wrap_t	    = typename traits::wrapped_t;
+  using ref_t	    = typename traits::reference_t;
   using const_ref_t = typename traits::const_reference_t;
   using mut_proxy_t = typename traits::mut_proxy_t;
-  using proxy_t = typename traits::proxy_t;
+  using proxy_t	    = typename traits::proxy_t;
 
 public:
   MultiVector() = delete;
@@ -74,21 +76,20 @@ public:
   explicit MultiVector(std::size_t ext1,
 		       std::size_t ext2)
     : data_({ext1, ext2})
-  {
-  }
+  {}
 
   explicit MultiVector(const wrap_t & src)
-    : data_{wrap_t(const_cast<wrap_t &>(src).request())}
+    : data_{ wrap_t(const_cast<wrap_t &>(src).request()) }
   {
     // src must be a matrix to be wraped into a matrix
-    assert(data_.ndim() == 2);
+    assert( data_.ndim() == 2 );
 
     // copy data from src to this
     auto proxy = data_.mutable_unchecked();
     const auto srcPx = src.unchecked();
-    for(ord_t i = 0; i < src.shape(0); ++i) {
-      for(ord_t j = 0; j < src.shape(1); ++j) {
-	proxy(i, j) = srcPx(i, j);
+    for (ord_t i=0; i<src.shape(0); ++i){
+      for (ord_t j=0; j<src.shape(1); ++j){
+	proxy(i,j) = srcPx(i,j);
       }
     }
   }
@@ -98,20 +99,20 @@ public:
   MultiVector(wrap_t src, ::pressio::view)
     : data_{src}
   {
-    assert(data_.ndim() == 2);
+    assert( data_.ndim() == 2 );
   }
 
   // copy cnstr
   MultiVector(MultiVector const & other)
-    : data_({other.extent(0), other.extent(1)})
+    : data_({ other.extent(0), other.extent(1) })
   {
-    assert(other.data_.ndim() == 2);
+    assert( other.data_.ndim() == 2 );
     // copy data from src to this
     auto proxy = data_.mutable_unchecked();
     const auto srcPx = other.data_.unchecked();
-    for(ord_t i = 0; i < other.extent(0); ++i) {
-      for(ord_t j = 0; j < other.extent(1); ++j) {
-	proxy(i, j) = srcPx(i, j);
+    for (ord_t i=0; i<other.extent(0); ++i){
+      for (ord_t j=0; j<other.extent(1); ++j){
+	proxy(i,j) = srcPx(i,j);
       }
     }
   }
@@ -122,49 +123,41 @@ public:
   ~MultiVector(){};
 
 public:
-  ord_t extent(ord_t i) const
-  {
-    assert(i <= 1);
+  ord_t extent(ord_t i) const {
+    assert( i <= 1 );
     return data_.shape(i);
   }
 
-  ord_t numVectors() const
-  {
+  ord_t numVectors() const{
     return extent(1);
   }
 
-  wrap_t const * data() const
-  {
+  wrap_t const * data() const{
     return &data_;
   }
 
-  wrap_t * data()
-  {
+  wrap_t * data(){
     return &data_;
   }
 
-  proxy_t proxy() const
-  {
+  proxy_t proxy() const{
     return data_.unchecked();
   }
 
-  mut_proxy_t proxy()
-  {
+  mut_proxy_t proxy(){
     return data_.mutable_unchecked();
   }
 
-  ref_t operator()(ord_t i, ord_t j)
-  {
-    assert(i < this->extent(0));
-    assert(j < this->extent(1));
-    return data_(i, j);
+  ref_t operator()(ord_t i, ord_t j){
+    assert(i < this->extent(0) );
+    assert(j < this->extent(1) );
+    return data_(i,j);
   };
 
-  const_ref_t operator()(ord_t i, ord_t j) const
-  {
-    assert(i < this->extent(0));
-    assert(j < this->extent(1));
-    return data_(i, j);
+  const_ref_t operator()(ord_t i, ord_t j) const{
+    assert(i < this->extent(0) );
+    assert(j < this->extent(1) );
+    return data_(i,j);
   };
 
 private:
@@ -172,4 +165,4 @@ private:
 };
 
 }}//end namespace pressio::containers
-#endif// CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_PYBIND11_HPP_
+#endif  // CONTAINERS_MULTI_VECTOR_CONCRETE_CONTAINERS_MULTI_VECTOR_SHAREDMEM_PYBIND11_HPP_

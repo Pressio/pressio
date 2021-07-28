@@ -71,4 +71,4 @@
 #include "has_subtraction_assign_operator.hpp"
 #include "has_subtraction_operator.hpp"
 
-#endif// MPL_MPL_NON_VARIADIC_HPP_
+#endif  // MPL_MPL_NON_VARIADIC_HPP_

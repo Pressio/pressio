@@ -4,7 +4,7 @@
 
 struct MyCustomDecoder
 {
-  using jacobian_type = pressio::containers::MultiVector<Eigen::MatrixXd>;
+  using jacobian_type  = pressio::containers::MultiVector<Eigen::MatrixXd>;
   using fom_state_type = ::pressio::containers::Vector<Eigen::VectorXd>;
 
 private:
@@ -19,13 +19,12 @@ public:
     jac_.data()->setConstant(1.);
   }
 
-  const jacobian_type & jacobianCRef() const
-  {
+  const jacobian_type & jacobianCRef() const{
     return jac_;
   }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type &) {}
+  void updateJacobian(const rom_state_type &){}
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,
@@ -44,7 +43,7 @@ class Masker
   std::vector<int> indices_ = {};
 
   using scalar_type = double;
-  using state_type = Eigen::VectorXd;
+  using state_type  = Eigen::VectorXd;
   using residual_type = state_type;
   using velocity_type = state_type;
   using dense_matrix_type = Eigen::MatrixXd;
@@ -54,11 +53,10 @@ public:
     : maskSize_(indices.size()),
       indices_(indices)
   {
-    assert(maskSize_ == 5);
+    assert(maskSize_==5);
   }
 
-  residual_type createApplyMaskResult(const residual_type & operand) const
-  {
+  residual_type createApplyMaskResult(const residual_type & operand) const{
     return residual_type(maskSize_);
   }
 
@@ -71,16 +69,16 @@ public:
   void applyMask(const residual_type & operand,
 		 residual_type & result) const
   {
-    for(auto i = 0; i < result.size(); ++i)
+    for (auto i =0; i<result.size(); ++i)
       result(i) = operand(indices_[i]);
   }
 
   void applyMask(const dense_matrix_type & operand,
 		 dense_matrix_type & result) const
   {
-    for(auto i = 0; i < result.rows(); ++i)
-      for(auto j = 0; j < result.cols(); ++j)
-	result(i, j) = operand(indices_[i], j);
+    for (auto i=0; i<result.rows(); ++i)
+      for (auto j=0; j<result.cols(); ++j)
+	result(i,j) = operand(indices_[i],j);
   }
 
   // for unsteady
@@ -88,7 +86,7 @@ public:
 		 scalar_type time,
 		 residual_type & result) const
   {
-    for(auto i = 0; i < result.size(); ++i)
+    for (auto i =0; i<result.size(); ++i)
       result(i) = operand(indices_[i]);
   }
 
@@ -96,9 +94,9 @@ public:
 		 scalar_type time,
 		 dense_matrix_type & result) const
   {
-    for(auto i = 0; i < result.rows(); ++i)
-      for(auto j = 0; j < result.cols(); ++j)
-	result(i, j) = operand(indices_[i], j);
+    for (auto i=0; i<result.rows(); ++i)
+      for (auto j=0; j<result.cols(); ++j)
+	result(i,j) = operand(indices_[i],j);
   }
 };
 

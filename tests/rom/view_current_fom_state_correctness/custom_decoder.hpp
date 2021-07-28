@@ -20,14 +20,14 @@ public:
     jac_.data()->setConstant(1);
   }
 
-  const jacobian_type & jacobianCRef() const { return jac_; }
+  const jacobian_type & jacobianCRef() const{ return jac_; }
 
   template <typename rom_state_type>
-  void updateJacobian(const rom_state_type &) {}
+  void updateJacobian(const rom_state_type &){}
 
   template <typename rom_state_type>
   void applyMapping(const rom_state_type & romState,
-		    fom_state_type & result) const
+		  fom_state_type & result) const
   {
     ++applyMappingCount_;
 

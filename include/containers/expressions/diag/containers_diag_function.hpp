@@ -49,27 +49,29 @@
 #ifndef CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_
 #define CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_
 
-namespace pressio { namespace containers {
+namespace pressio{ namespace containers{
 
-template <typename T, typename... Args>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  T::traits::rank == 2,
-  typename details::traits<T>::diag_const_ret_t>
+  T::traits::rank==2,
+  typename details::traits<T>::diag_const_ret_t
+  >
 diag(const T & obj)
 {
   using return_t = typename details::traits<T>::diag_const_ret_t;
   return return_t(obj);
 }
 
-template <typename T, typename... Args>
+template <typename T, typename ... Args>
 mpl::enable_if_t<
-  T::traits::rank == 2,
-  typename details::traits<T>::diag_ret_t>
+  T::traits::rank==2,
+  typename details::traits<T>::diag_ret_t
+  >
 diag(T & obj)
 {
   using return_t = typename details::traits<T>::diag_ret_t;
   return return_t(obj);
 }
 
-}}//end namespace pressio::containers
-#endif// CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_
+}} //end namespace pressio::containers
+#endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_FUNCTION_HPP_

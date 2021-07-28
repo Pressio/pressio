@@ -49,14 +49,14 @@
 #ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_JACOBIAN_HPP_
 #define ROM_LSPG_CONSTRAINTS_ROM_LSPG_JACOBIAN_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace constraints {
+namespace pressio{ namespace rom{ namespace lspg{ namespace constraints {
 
 // a type T is a valid lspg jacobian if it is a valid decoder jacobian
-template <typename T>
+template<typename T>
 using jacobian = ::pressio::rom::constraints::decoder_jacobian<T>;
 
-template <typename T>
+template<typename T>
 using lspg_jacobian = jacobian<T>;
 
 }}}}
-#endif// ROM_LSPG_CONSTRAINTS_ROM_LSPG_JACOBIAN_HPP_
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_LSPG_JACOBIAN_HPP_

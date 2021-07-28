@@ -55,6 +55,6 @@ namespace details {
 //     payload = string_view_t{buffer.data() + logger_name.size(), payload.size()};
 // }
 
-}// namespace details
-}// namespace spdlog
-#endif// UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_
+} // namespace details
+} // namespace spdlog
+#endif  // UTILS_LOGGER_SPDLOG_DETAILS_UNUSED_LOG_MSG_BUFFER_INL_HPP_

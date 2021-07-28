@@ -49,13 +49,11 @@
 #ifndef ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 #define ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
 
-namespace pressio { namespace ode { namespace constraints {
+namespace pressio{ namespace ode{ namespace constraints {
 
 template <typename T, typename step_t, typename time_type, typename enable = void>
 struct time_step_size_manager
-  : std::false_type
-{
-};
+  : std::false_type{};
 
 template <typename T, typename step_t, typename time_type>
 struct time_step_size_manager<
@@ -63,13 +61,16 @@ struct time_step_size_manager<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	std::declval<T const>()(
-	  std::declval<step_t const &>(),//step
-	  std::declval<time_type const &>(),//time
-	  std::declval<time_type &>()//dt
-	  ))>::value>> : std::true_type
-{
-};
+	       std::declval<T const>()
+	       (
+		std::declval<step_t const &>(),    //step
+		std::declval<time_type const &>(), //time
+		std::declval<time_type &>()        //dt
+		)
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
 template <typename T, typename step_t, typename time_type>
 struct time_step_size_manager<
@@ -77,15 +78,18 @@ struct time_step_size_manager<
   mpl::enable_if_t<
     std::is_void<
       decltype(
-	std::declval<T const>()(
-	  std::declval<step_t const &>(),//step
-	  std::declval<time_type const &>(),//time
-	  std::declval<time_type &>(),//dt
-	  std::declval<time_type &>(),//min dt
-	  std::declval<time_type &>()//dt reduction factor
-	  ))>::value>> : std::true_type
-{
-};
+	       std::declval<T const>()
+	       (
+		std::declval<step_t const &>(),    //step
+		std::declval<time_type const &>(), //time
+		std::declval<time_type &>(),       //dt
+		std::declval<time_type &>(),       //min dt
+		std::declval<time_type &>()        //dt reduction factor
+		)
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-}}}// namespace pressio::ode::constraints
-#endif// ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_
+}}} // namespace pressio::ode::constraints
+#endif  // ODE_CONSTRAINTS_ODE_TIME_STEP_SIZE_MANAGER_HPP_

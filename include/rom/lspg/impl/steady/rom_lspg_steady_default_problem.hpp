@@ -49,47 +49,45 @@
 #ifndef ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_
 #define ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace steady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace steady{
 
-template <typename... Args>
+template <typename ...Args>
 class DefaultProblemSteady
 {
 public:
   using this_t = DefaultProblemSteady<Args...>;
   using traits = ::pressio::rom::details::traits<this_t>;
 
-  using fom_system_t = typename traits::fom_system_t;
-  using fom_native_state_t = typename traits::fom_native_state_t;
-  using fom_state_t = typename traits::fom_state_t;
-  using lspg_state_t = typename traits::lspg_state_t;
-  using lspg_native_state_t = typename traits::lspg_native_state_t;
-  using decoder_t = typename traits::decoder_t;
-  using lspg_jacobian_t = typename traits::lspg_jacobian_t;
-  using fom_state_reconstr_t = typename traits::fom_state_reconstr_t;
-  using fom_states_manager_t = typename traits::fom_states_manager_t;
-  using residual_policy_t = typename traits::residual_policy_t;
-  using jacobian_policy_t = typename traits::jacobian_policy_t;
-  using system_t = typename traits::system_t;
+  using fom_system_t		= typename traits::fom_system_t;
+  using fom_native_state_t	= typename traits::fom_native_state_t;
+  using fom_state_t		= typename traits::fom_state_t;
+  using lspg_state_t		= typename traits::lspg_state_t;
+  using lspg_native_state_t	= typename traits::lspg_native_state_t;
+  using decoder_t		= typename traits::decoder_t;
+  using lspg_jacobian_t		= typename traits::lspg_jacobian_t;
+  using fom_state_reconstr_t	= typename traits::fom_state_reconstr_t;
+  using fom_states_manager_t	= typename traits::fom_states_manager_t;
+  using residual_policy_t	= typename traits::residual_policy_t;
+  using jacobian_policy_t	= typename traits::jacobian_policy_t;
+  using system_t		= typename traits::system_t;
   static constexpr auto binding_sentinel = traits::binding_sentinel;
 
 private:
   using At = ::pressio::rom::impl::FomObjMixin<fom_system_t, binding_sentinel>;
   using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At, void, fom_state_t, fom_state_reconstr_t, fom_states_manager_t>;
+    At, void, fom_state_t, fom_state_reconstr_t,fom_states_manager_t>;
   using Ct = DefaultPoliciesMixin<Bt, void, residual_policy_t, jacobian_policy_t>;
   using mem_t = SystemMixin<Ct, system_t>;
   mem_t members_;
 
 public:
-  system_t & systemRef() { return members_.systemObj_; }
+  system_t & systemRef(){ return members_.systemObj_; }
 
-  const fom_state_reconstr_t & fomStateReconstructorCRef() const
-  {
+  const fom_state_reconstr_t & fomStateReconstructorCRef() const{
     return members_.fomStateReconstructor_;
   }
 
-  const fom_native_state_t & currentFomStateCRef() const
-  {
+  const fom_native_state_t & currentFomStateCRef() const{
     return *(members_.fomStatesMngr_.currentFomState().data());
   }
 
@@ -103,28 +101,28 @@ public:
 
   template <
     bool _binding_sentinel = binding_sentinel,
-    ::pressio::mpl::enable_if_t<!_binding_sentinel, int> = 0>
+    ::pressio::mpl::enable_if_t<!_binding_sentinel, int> = 0
+    >
   DefaultProblemSteady(const fom_system_t & fomObj,
-		       decoder_t & decoder,
+		       decoder_t	& decoder,
 		       const lspg_state_t & romStateIn,
 		       const fom_native_state_t & fomNominalStateNative)
     : members_(romStateIn, fomObj, decoder, fomNominalStateNative)
-  {
-  }
+  {}
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
   template <
     bool _binding_sentinel = binding_sentinel,
-    ::pressio::mpl::enable_if_t<_binding_sentinel, int> = 0>
+    ::pressio::mpl::enable_if_t<_binding_sentinel, int> = 0
+    >
   DefaultProblemSteady(pybind11::object fomObjPython,
 		       decoder_t & decoder,
 		       const lspg_native_state_t & romStateIn,
 		       const fom_native_state_t fomNominalStateNative)
-    : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateNative)
-  {
-  }
+  : members_(lspg_state_t(romStateIn), fomObjPython, decoder, fomNominalStateNative)
+  {}
 #endif
 };
 
 }}}}}
-#endif// ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_
+#endif  // ROM_LSPG_IMPL_STEADY_ROM_LSPG_STEADY_DEFAULT_PROBLEM_HPP_

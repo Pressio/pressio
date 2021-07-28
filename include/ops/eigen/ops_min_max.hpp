@@ -49,13 +49,15 @@
 #ifndef OPS_EIGEN_OPS_MIN_MAX_HPP_
 #define OPS_EIGEN_OPS_MIN_MAX_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
-    int> = 0>
+    int
+    > = 0
+  >
 typename vec_type::traits::scalar_t max(const vec_type & a)
 {
   return a.data()->maxCoeff();
@@ -65,11 +67,13 @@ template <
   typename vec_type,
   ::pressio::mpl::enable_if_t<
     ::pressio::ops::constraints::container_eigen_with_native_data_access<vec_type>::value,
-    int> = 0>
+    int
+    > = 0
+  >
 typename vec_type::traits::scalar_t min(const vec_type & a)
 {
   return a.data()->minCoeff();
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EIGEN_OPS_MIN_MAX_HPP_
+#endif  // OPS_EIGEN_OPS_MIN_MAX_HPP_

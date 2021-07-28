@@ -49,20 +49,22 @@
 #ifndef OPS_KOKKOS_OPS_ABS_HPP_
 #define OPS_KOKKOS_OPS_ABS_HPP_
 
-#include <KokkosBlas1_abs.hpp>
+#include<KokkosBlas1_abs.hpp>
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 // y = abs(x)
 template <class T2, class T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value>
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T1>::value and
+  ::pressio::ops::constraints::rank1_container_kokkos_with_native_data_access<T2>::value
+  >
 abs(T1 & y, const T2 & x)
 {
   auto & x_kv = *x.data();
   auto & y_kv = *y.data();
-  KokkosBlas::abs(y, x);
+  KokkosBlas::abs(y,x);
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_KOKKOS_OPS_ABS_HPP_
+#endif  // OPS_KOKKOS_OPS_ABS_HPP_

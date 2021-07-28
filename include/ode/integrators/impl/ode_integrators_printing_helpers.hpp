@@ -49,10 +49,10 @@
 #ifndef ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
 #define ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
 
-namespace pressio { namespace ode { namespace impl {
+namespace pressio{ namespace ode{ namespace impl{
 
-template <typename... Args>
-void printStartOfAdvancing(Args &&... args)
+template<typename ...Args>
+void printStartOfAdvancing(Args && ... args)
 {
 #ifdef PRESSIO_ENABLE_DEBUG_PRINT
   using namespace ::pressio::utils::io;
@@ -76,17 +76,17 @@ void printStepTime(const ::pressio::ode::types::step_t & step,
 {
   PRESSIOLOG_DEBUG("starting timestep={} from time={} with dt={}",
 		   step, time, dt);
-  // #ifdef PRESSIO_ENABLE_DEBUG_PRINT
-  //   using namespace ::pressio::utils::io;
-  //   auto fmt = blue();
-  //   print_stdout(fmt,
-  // 	       std::left,
-  // 	       "time step=", step,
-  // 	       ": starts at time=", time,
-  // 	       " dt=", dt,
-  // 	       reset(), "\n");
-  // #endif
+// #ifdef PRESSIO_ENABLE_DEBUG_PRINT
+//   using namespace ::pressio::utils::io;
+//   auto fmt = blue();
+//   print_stdout(fmt,
+// 	       std::left,
+// 	       "time step=", step,
+// 	       ": starts at time=", time,
+// 	       " dt=", dt,
+// 	       reset(), "\n");
+// #endif
 }
 
 }}}//end namespace pressio::ode::impl
-#endif// ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_
+#endif  // ODE_INTEGRATORS_IMPL_ODE_INTEGRATORS_PRINTING_HELPERS_HPP_

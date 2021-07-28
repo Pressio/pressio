@@ -52,25 +52,29 @@
 #include "rom_reconstructor_fom_state_pressio_ops.hpp"
 #include "rom_reconstructor_fom_state_custom_ops.hpp"
 
-namespace pressio { namespace rom { namespace impl {
+namespace pressio{ namespace rom{ namespace impl{
 
-template <typename... Args>
+template <typename ... Args>
 struct FomStateReconstructorSpecializer;
 
 template <
   typename scalar_type,
   typename fom_state_type,
-  typename decoder_type>
+  typename decoder_type
+  >
 struct FomStateReconstructorSpecializer<
-  scalar_type, fom_state_type, decoder_type>
+  scalar_type, fom_state_type, decoder_type
+  >
 {
   // check for a valid scalar type
-  static_assert(std::is_floating_point<scalar_type>::value,
-		"The first template arg to FomStateReconstructor must be a floating point type");
+  static_assert
+  (std::is_floating_point<scalar_type>::value,
+   "The first template arg to FomStateReconstructor must be a floating point type");
 
   // check for a valid FOM state type
-  static_assert(::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-		"The second template arg to FomStateReconstructor must be a pressio wrapper.");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The second template arg to FomStateReconstructor must be a pressio wrapper.");
 
   using type = FomStateReconstructorPressioOps<scalar_type, fom_state_type, decoder_type>;
 };
@@ -79,22 +83,27 @@ template <
   typename scalar_type,
   typename fom_state_type,
   typename decoder_type,
-  typename ops_t>
+  typename ops_t
+  >
 struct FomStateReconstructorSpecializer<
-  scalar_type, fom_state_type, decoder_type, ops_t>
+  scalar_type, fom_state_type, decoder_type, ops_t
+  >
 {
   // check for a valid scalar type
-  static_assert(std::is_floating_point<scalar_type>::value,
-		"The first template arg to FomStateReconstructor must be a floating point type");
+  static_assert
+  (std::is_floating_point<scalar_type>::value,
+   "The first template arg to FomStateReconstructor must be a floating point type");
 
   // check for a valid FOM state type
-  static_assert(::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-		"The second template arg to FomStateReconstructor must be a pressio wrapper.");
+  static_assert
+  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
+   "The second template arg to FomStateReconstructor must be a pressio wrapper.");
 
   // check for valid ops
-  static_assert(::pressio::rom::constraints::custom_ops_for_fom_state_reconstructor<
-		  ops_t, fom_state_type>::value,
-		"You are tring to create a FomStateReconstructor with custom ops. \
+  static_assert
+  (::pressio::rom::constraints::custom_ops_for_fom_state_reconstructor<
+   ops_t, fom_state_type >::value,
+   "You are tring to create a FomStateReconstructor with custom ops. \
 The template arg passed representing the custom ops \
 does not have an admissible API for the FomStateReconstructor");
 
@@ -102,4 +111,4 @@ does not have an admissible API for the FomStateReconstructor");
 };
 
 }}}//end namespace pressio::rom::impl
-#endif// ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_SPECIALIZER_HPP_
+#endif  // ROM_FOM_STATES_MANAGEMENT_IMPL_ROM_RECONSTRUCTOR_FOM_STATE_SPECIALIZER_HPP_

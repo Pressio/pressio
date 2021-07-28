@@ -49,76 +49,70 @@
 #ifndef ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
 #define ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
 
-namespace pressio { namespace rom { namespace wls { namespace impl {
+namespace pressio{ namespace rom{ namespace wls{  namespace impl{
 
-template <typename jac_t>
+template<typename jac_t>
 class FrozenJacobiansContainer
 {
-  using wls_jacs_t = std::vector<jac_t>;
+  using wls_jacs_t   = std::vector<jac_t>;
 
 public:
   FrozenJacobiansContainer(const window_size_t timeStencilSize,
 			   const window_size_t numStepsInWindow,
-			   const jac_t & phi)
-    : wlsJacs_(std::min(timeStencilSize + 1, numStepsInWindow) * numStepsInWindow, phi),
-      jacStencilSize_(std::min(timeStencilSize + 1, numStepsInWindow))
-  {
+			   const jac_t  & phi )
+    :  wlsJacs_( std::min(timeStencilSize+1, numStepsInWindow)*numStepsInWindow, phi),
+       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
+  {}
+
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const{
+    return stepNumLocal*jacStencilSize_;
   }
 
-  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const
-  {
-    return stepNumLocal * jacStencilSize_;
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index){
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index)
-  {
-    return wlsJacs_[jacobianIndexOffset(stepNumLocal) + jacStencilSize_ - jacobian_index - 1];
-  }
-
-  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const
-  {
-    return wlsJacs_[jacobianIndexOffset(stepNumLocal) + jacStencilSize_ - jacobian_index - 1];
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const{
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:
   wls_jacs_t wlsJacs_;
   window_size_t jacStencilSize_;
+
 };
 
 
-template <typename jac_t>
+template<typename jac_t>
 class NonFrozenJacobiansContainer
 {
-  using wls_jacs_t = std::vector<jac_t>;
+  using wls_jacs_t   = std::vector<jac_t>;
 
 public:
   NonFrozenJacobiansContainer(const window_size_t timeStencilSize,
 			      const window_size_t numStepsInWindow,
-			      const jac_t & phi)
-    : wlsJacs_(std::min(timeStencilSize + 1, numStepsInWindow), phi),
-      jacStencilSize_(std::min(timeStencilSize + 1, numStepsInWindow))
-  {
-  }
+			      const jac_t  & phi)
+    :  wlsJacs_( std::min(timeStencilSize+1,numStepsInWindow), phi),
+       jacStencilSize_(std::min(timeStencilSize+1, numStepsInWindow))
+  {}
 
-  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const
-  {
+  window_size_t jacobianIndexOffset(window_size_t stepNumLocal) const {
     return 0;
   }
 
-  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index)
-  {
-    return wlsJacs_[jacobianIndexOffset(stepNumLocal) + jacStencilSize_ - jacobian_index - 1];
+  jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) {
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
-  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const
-  {
-    return wlsJacs_[jacobianIndexOffset(stepNumLocal) + jacStencilSize_ - jacobian_index - 1];
+  const jac_t & localJacobian(window_size_t stepNumLocal, int jacobian_index) const {
+    return wlsJacs_[jacobianIndexOffset( stepNumLocal ) + jacStencilSize_- jacobian_index -1 ] ;
   }
 
 private:
   wls_jacs_t wlsJacs_;
   window_size_t jacStencilSize_;
+
 };
 
-}}}}//end namespace pressio::rom::wls::impl
-#endif// ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_
+}}}} //end namespace pressio::rom::wls::impl
+#endif  // ROM_WLS_IMPL_ROM_WLS_JACOBIANS_CONTAINER_IMPL_HPP_

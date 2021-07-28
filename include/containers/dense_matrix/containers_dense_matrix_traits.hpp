@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
 #define CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
 
-namespace pressio { namespace containers { namespace details {
+namespace pressio{ namespace containers{ namespace details{
 
 /********************************
 an arbitrary dense matrix
@@ -58,21 +58,23 @@ template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value>>
+    containers::predicates::is_admissible_as_dense_matrix_arbitrary<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
-      wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>,
-    public matrix_shared_traits<false>
+  wrapped_type, WrappedPackageIdentifier::Arbitrary, false, 2>,
+  public matrix_shared_traits<false>
 {
 
-  using scalar_t = typename wrapped_type::value_type;
-  using value_t = typename wrapped_type::value_type;
-  using size_t = typename wrapped_type::size_type;
+  using scalar_t  = typename wrapped_type::value_type;
+  using value_t   = typename wrapped_type::value_type;
+  using size_t   = typename wrapped_type::size_type;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
   static constexpr WrappedMatrixIdentifier
-    wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseArbitrary;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseArbitrary;
 };
 
 
@@ -84,59 +86,65 @@ template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_eigen<wrapped_type>::value>>
+    containers::predicates::is_dense_matrix_eigen<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
-      wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>,
+  wrapped_type, WrappedPackageIdentifier::Eigen, true, 2>,
     public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
-    wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEigen;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEigen;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
-  static constexpr bool is_static = (wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
-				     wrapped_type::ColsAtCompileTime != Eigen::Dynamic);
-  static constexpr bool is_dynamic = !is_static;
+  static constexpr bool is_static = ( wrapped_type::RowsAtCompileTime != Eigen::Dynamic &&
+                                      wrapped_type::ColsAtCompileTime != Eigen::Dynamic );
+  static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_t = typename wrapped_type::Scalar;
+  using scalar_t  = typename wrapped_type::Scalar;
   using ordinal_t = typename wrapped_type::StorageIndex;
-  using size_t = ordinal_t;
+  using size_t    = ordinal_t;
 
   using subspan_ret_t = expressions::SubspanExpr<DenseMatrix<wrapped_type>>;
-  using subspan_const_ret_t = expressions::SubspanExpr<const DenseMatrix<wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const DenseMatrix<wrapped_type>>;
   using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
-  using diag_const_ret_t = expressions::DiagExpr<const DenseMatrix<wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
+
 };
-#endif//PRESSIO_ENABLE_TPL_EIGEN
+#endif //PRESSIO_ENABLE_TPL_EIGEN
 
 //**********************************
 // for teuchos serial dense matrix
 //**********************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template <typename wrapped_type>
+template<typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_teuchos<wrapped_type>::value>>
+    containers::predicates::is_dense_matrix_teuchos<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
-      wrapped_type, WrappedPackageIdentifier::Trilinos, true, 2>,
+  wrapped_type, WrappedPackageIdentifier::Trilinos, true, 2
+  >,
     public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
-    wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseTeuchosSerial;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseTeuchosSerial;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = !is_static;
+  static constexpr bool is_dynamic  = !is_static;
 
   using scalar_t = typename wrapped_type::scalarType;
   using ordinal_t = typename wrapped_type::ordinalType;
-  using size_t = ordinal_t;
+  using size_t    = ordinal_t;
 
   // for now, this must be empty until we enable support for subspanning a kokkos matrix
   using subspan_ret_t = void;
@@ -152,24 +160,26 @@ template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
   mpl::enable_if_t<
-    containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value>>
+    containers::predicates::is_admissible_as_dense_matrix_epetra<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
-      wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>,
+  wrapped_type, WrappedPackageIdentifier::Trilinos, false, 2>,
     public matrix_shared_traits<false>
 {
   static constexpr WrappedMatrixIdentifier
-    wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEpetra;
+  wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseEpetra;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
   static constexpr bool is_static = false;
-  static constexpr bool is_dynamic = !is_static;
+  static constexpr bool is_dynamic  = !is_static;
 
   using scalar_t = double;
   using local_ordinal_t = int;
   using global_ordinal_t = int;
-  using size_t = global_ordinal_t;
+  using size_t    = global_ordinal_t;
   using communicator_t = Epetra_Comm;
   using row_map_t = Epetra_BlockMap;
 };
@@ -182,50 +192,53 @@ struct traits<
 template <typename wrapped_type>
 struct traits<
   DenseMatrix<wrapped_type>,
-  ::pressio::mpl::enable_if_t<
-    containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value>>
+    ::pressio::mpl::enable_if_t<
+      containers::predicates::is_dense_matrix_kokkos<wrapped_type>::value
+    >
+  >
   : public containers_shared_traits<
-      wrapped_type, WrappedPackageIdentifier::Kokkos,
-      true,//true because kokkos is for shared mem
-      2>,
-    public matrix_shared_traits<false>
+  wrapped_type, WrappedPackageIdentifier::Kokkos,
+  true, //true because kokkos is for shared mem
+  2
+  >,
+  public matrix_shared_traits<false>
 {
 
   static constexpr WrappedMatrixIdentifier
-    wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
+      wrapped_matrix_identifier = WrappedMatrixIdentifier::DenseKokkos;
 
   using const_data_return_t = wrapped_type const *;
   using data_return_t = wrapped_type *;
 
-  using scalar_t = typename wrapped_type::traits::value_type;
-  using layout = typename wrapped_type::traits::array_layout;
-  using ordinal_t = typename wrapped_type::traits::size_type;
-  using size_t = ordinal_t;
+  using scalar_t	  = typename wrapped_type::traits::value_type;
+  using layout		  = typename wrapped_type::traits::array_layout;
+  using ordinal_t	  = typename wrapped_type::traits::size_type;
+  using size_t		  = ordinal_t;
 
-  using execution_space = typename wrapped_type::traits::execution_space;
-  using memory_space = typename wrapped_type::traits::memory_space;
-  using device_t = typename wrapped_type::traits::device_type;
-  using memory_traits = typename wrapped_type::traits::memory_traits;
+  using execution_space   = typename wrapped_type::traits::execution_space;
+  using memory_space	  = typename wrapped_type::traits::memory_space;
+  using device_t	  = typename wrapped_type::traits::device_type;
+  using memory_traits	  = typename wrapped_type::traits::memory_traits;
   using host_mirror_space = typename wrapped_type::traits::host_mirror_space;
-  using host_mirror_t = typename wrapped_type::host_mirror_type;
+  using host_mirror_t     = typename wrapped_type::host_mirror_type;
 
-  static constexpr bool is_static = wrapped_type::traits::rank_dynamic == 0;
-  static constexpr bool is_dynamic = !is_static;
+  static constexpr bool is_static = wrapped_type::traits::rank_dynamic==0;
+  static constexpr bool is_dynamic  = !is_static;
 
   using subspan_ret_t = expressions::SubspanExpr<DenseMatrix<wrapped_type>>;
-  using subspan_const_ret_t = expressions::SubspanExpr<const DenseMatrix<wrapped_type>>;
+  using subspan_const_ret_t = expressions::SubspanExpr< const DenseMatrix<wrapped_type>>;
   using diag_ret_t = expressions::DiagExpr<DenseMatrix<wrapped_type>>;
-  using diag_const_ret_t = expressions::DiagExpr<const DenseMatrix<wrapped_type>>;
+  using diag_const_ret_t = expressions::DiagExpr< const DenseMatrix<wrapped_type>>;
 
   static constexpr bool has_host_execution_space =
     (false
-#ifdef KOKKOS_ENABLE_SERIAL
+     #ifdef KOKKOS_ENABLE_SERIAL
      || std::is_same<execution_space, Kokkos::Serial>::value
-#endif
-#ifdef KOKKOS_ENABLE_OPENMP
+     #endif
+     #ifdef KOKKOS_ENABLE_OPENMP
      || std::is_same<execution_space, Kokkos::OpenMP>::value
-#endif
-    );
+     #endif
+     );
 };
 #endif
 
@@ -273,4 +286,4 @@ struct traits<
 // #endif
 
 }}}//end namespace pressio::containers::details
-#endif// CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_
+#endif  // CONTAINERS_DENSE_MATRIX_CONTAINERS_DENSE_MATRIX_TRAITS_HPP_

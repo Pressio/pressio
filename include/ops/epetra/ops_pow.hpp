@@ -49,67 +49,74 @@
 #ifndef OPS_EPETRA_OPS_POW_HPP_
 #define OPS_EPETRA_OPS_POW_HPP_
 
-namespace pressio { namespace ops {
+namespace pressio{ namespace ops{
 
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_epetra<T2>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T2>::value
+  >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::local_ordinal_t;
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
   assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if(exponent < ::pressio::utils::constants<sc_t>::zero())
+  if (exponent < ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
 
-  for(ord_t i = 0; i < x.extentLocal(0); ++i)
-    y(i) = std::pow(std::abs(x(i)), exponent);
+  for (ord_t i=0; i<x.extentLocal(0); ++i)
+    y(i) = std::pow( std::abs(x(i)), exponent);
 }
 
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T1>::value and ::pressio::containers::predicates::is_vector_wrapper_epetra<T2>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T1>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T2>::value
+  >
 abs_pow(T1 & y,
 	const T2 & x,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & exponent,
 	const typename ::pressio::containers::details::traits<T1>::scalar_t & eps)
 {
-  static_assert(::pressio::containers::predicates::are_scalar_compatible<T1, T2>::value,
-		"not scalar compatible");
+  static_assert
+    (::pressio::containers::predicates::are_scalar_compatible<T1,T2>::value,
+     "not scalar compatible");
   using sc_t = typename ::pressio::containers::details::traits<T1>::scalar_t;
   using ord_t = typename ::pressio::containers::details::traits<T1>::local_ordinal_t;
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
   assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if(exponent > ::pressio::utils::constants<sc_t>::zero())
+  if (exponent > ::pressio::utils::constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent < 0");
 
   constexpr auto one = ::pressio::utils::constants<sc_t>::one();
   const auto expo = -exponent;
-  for(ord_t i = 0; i < x.extentLocal(0); ++i)
-    yv(i) = one / std::max(eps, std::pow(std::abs(x(i)), expo));
+  for (ord_t i=0; i<x.extentLocal(0); ++i)
+    yv(i) = one/std::max(eps, std::pow(std::abs(x(i)), expo));
 }
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value>
+  ::pressio::containers::predicates::is_vector_wrapper_epetra<T>::value
+  >
 pow(T & x,
     const typename ::pressio::containers::details::traits<T>::scalar_t & exponent)
 {
   using ord_t = typename ::pressio::containers::details::traits<T>::local_ordinal_t;
-  for(ord_t i = 0; i < x.extentLocal(0); ++i)
+  for (ord_t i=0; i<x.extentLocal(0); ++i)
     x(i) = std::pow(x(i), exponent);
 }
 
 }}//end namespace pressio::ops
-#endif// OPS_EPETRA_OPS_POW_HPP_
+#endif  // OPS_EPETRA_OPS_POW_HPP_

@@ -49,24 +49,18 @@
 #ifndef QR_QR_ALGORITHMS_TAGS_HPP_
 #define QR_QR_ALGORITHMS_TAGS_HPP_
 
-namespace pressio { namespace qr {
+namespace pressio{ namespace qr{
 
 /* Note to devs: if you add a method here, and code it
  * remember to update the corresponding static_assert
  * message in the qr_traits.hpp */
 
-struct ModifiedGramSchmidt
-{
-};
-struct Householder
-{
-};
+struct ModifiedGramSchmidt{};
+struct Householder{};
 
 #if defined PRESSIO_ENABLE_TPL_TRILINOS
-struct TSQR
-{
-};
+struct TSQR{};
 #endif
 
-}}// end namespace pressio::qr
-#endif// QR_QR_ALGORITHMS_TAGS_HPP_
+}} // end namespace pressio::qr
+#endif  // QR_QR_ALGORITHMS_TAGS_HPP_

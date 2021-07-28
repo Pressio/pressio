@@ -49,16 +49,18 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_CRANK_NICOLSON_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_CRANK_NICOLSON_POLICY_HPP_
 
-namespace pressio { namespace ode { namespace implicitmethods { namespace policy {
+namespace pressio{ namespace ode{ namespace implicitmethods{ namespace policy{
 
-template <typename state_type, typename residual_type>
+template<typename state_type, typename residual_type>
 class ResidualStandardPolicyCrankNicolson
 {
-  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
-		"Invalid state type for standard residual policy");
+  static_assert
+  (::pressio::ode::constraints::implicit_state<state_type>::value,
+   "Invalid state type for standard residual policy");
 
-  static_assert(::pressio::ode::constraints::implicit_residual<residual_type>::value,
-		"Invalid residual type for standard residual policy");
+  static_assert
+  (::pressio::ode::constraints::implicit_residual<residual_type>::value,
+   "Invalid residual type for standard residual policy");
 
   mutable ::pressio::ode::types::step_t stepTracker_ = -1;
 
@@ -74,8 +76,10 @@ public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
-    static_assert(::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-		  "system type must meet the continuous time api");
+    static_assert
+      (::pressio::ode::constraints::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
+       "system type must meet the continuous time api");
 
     residual_type R(system.createVelocity());
     return R;
@@ -86,9 +90,11 @@ public:
     class stencil_states_type,
     class stencil_velocities_type,
     class system_type,
-    class scalar_type>
+    class scalar_type
+    >
   mpl::enable_if_t<
-    std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value>
+    std::is_same<ode_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    >
   compute(const state_type & predictedState,
 	  const stencil_states_type & stencilStates,
 	  const system_type & system,
@@ -98,20 +104,23 @@ public:
 	  stencil_velocities_type & stencilVelocities,
 	  residual_type & R) const
   {
-    static_assert(constraints::continuous_time_system_with_user_provided_jacobian<system_type>::value,
-		  "system type must meet the continuous time api");
+    static_assert
+    (constraints::continuous_time_system_with_user_provided_jacobian
+     <system_type>::value,
+     "system type must meet the continuous time api");
 
-    if(stepTracker_ != step) {
+    if (stepTracker_ != step){
       auto & f_n = stencilVelocities(::pressio::ode::n());
       auto & state_n = stencilStates(::pressio::ode::n());
-      const auto tn = t_np1 - dt;
+      const auto tn = t_np1-dt;
       system.velocity(*state_n.data(), tn, *f_n.data());
     }
 
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
     system.velocity(*predictedState.data(), t_np1, *f_np1.data());
-    ::pressio::ode::impl::discrete_time_residual(predictedState, R, stencilStates, stencilVelocities,
-						 dt, ode_tag());
+    ::pressio::ode::impl::discrete_time_residual
+    	(predictedState, R, stencilStates, stencilVelocities,
+	 dt, ode_tag());
 
 
     // if (stepTracker_ != step){
@@ -141,4 +150,4 @@ public:
 };
 
 }}}}//end namespace pressio::ode::implicitmethods::policy
-#endif// ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_CRANK_NICOLSON_POLICY_HPP_
+#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_RESIDUAL_CRANK_NICOLSON_POLICY_HPP_

@@ -49,29 +49,31 @@
 #ifndef ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_
 #define ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_
 
-namespace pressio { namespace rom { namespace lspg { namespace impl { namespace unsteady {
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unsteady{
 
 /* enable when BDF1 and user-defined ops */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
   typename scalar_type,
-  typename ud_ops>
+  typename ud_ops
+  >
 ::pressio::mpl::enable_if_t<
   std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
-  mpl::not_void<ud_ops>::value>
+  mpl::not_void<ud_ops>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       const scalar_type & dt,
 		       const ud_ops * udOps)
 {
 
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1  = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr.fomStateAt(::pressio::ode::n());
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cfdt = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   udOps->time_discrete_residual(cfdt, *R.data(),
 				cnp1, *y_np1.data(),
@@ -80,47 +82,53 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 /* default BDF1 */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1  = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr.fomStateAt(::pressio::ode::n());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cfdt = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   ::pressio::ops::update(R, cfdt, y_np1, cnp1, y_n, cn);
 }
 
 /* default BDF2 */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
-  const auto cfdt = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   ::pressio::ops::update(R, cfdt,
 			 y_np1, cnp1,
@@ -129,24 +137,27 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 }
 
 /* BDF1 and hyper-reduction indices passed in */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
   typename scalar_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt,
 		       const hyp_ind_t & hypIndices)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cfdt = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
@@ -154,42 +165,47 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
   //R = y_n+1 - y_n - dt * R but we need to combine the correct entries
   assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
-  for(std::size_t i = 0; i < (std::size_t)::pressio::ops::extent(R, 0); ++i) {
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
+  {
     const auto yI = hypIndices(i);
-    R(i) = cnp1 * y_np1(yI) + cn * y_n(yI) + cfdt * R(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfdt*R(i);
   }
 }
 
 /* BDF2 and hyper-reduction indices passed in */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
   typename scalar_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt,
 		       const hyp_ind_t & hypIndices)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
-  const auto cfdt = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
   assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
-  for(std::size_t i = 0; i < (std::size_t)::pressio::ops::extent(R, 0); ++i) {
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
+  {
     const auto yI = hypIndices(i);
-    R(i) = cnp1 * y_np1(yI) + cn * y_n(yI) + cnm1 * y_nm1(yI) + cfdt * R(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
   }
 }
 #endif
@@ -200,104 +216,116 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 // ----------------------------------------------------------------------
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 /* BDF1 and hyper-reduction indices passed in */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
   typename scalar_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt,
 		       const hyp_ind_t & hypIndices)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cfdt = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
 
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
   assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
-  for(std::size_t i = 0; i < (std::size_t)::pressio::ops::extent(R, 0); ++i) {
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
+  {
     const auto yI = hypIndices(i);
-    R(i) = cnp1 * y_np1(yI) + cn * y_n(yI) + cfdt * R(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfdt*R(i);
   }
 }
 
 
 /* BDF2 and hyper-reduction indices passed in */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename residual_type,
   typename scalar_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       residual_type & R,
 		       const scalar_type & dt,
 		       const hyp_ind_t & hypIndices)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
 
-  const auto cfdt = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   // hypindices has same extent as sample mesh and contains
   // indices of the entries in the state that correspond to
   // the sample mesh points
   assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
-  for(std::size_t i = 0; i < (std::size_t)::pressio::ops::extent(R, 0); ++i) {
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
+  {
     const auto yI = hypIndices(i);
-    R(i) = cnp1 * y_np1(yI) + cn * y_n(yI) + cnm1 * y_nm1(yI) + cfdt * R(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cnm1*y_nm1(yI) + cfdt*R(i);
   }
 }
 
 // Crank-Nicolson and hyper-reduction indices passed in */
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename fom_velocities_manager_t,
   typename residual_type,
   typename scalar_type,
-  typename hyp_ind_t>
+  typename hyp_ind_t
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
-		       const fom_velocities_manager_t & fomVelocitiesMngr,
+                       const fom_velocities_manager_t & fomVelocitiesMngr,
 		       residual_type & R,
 		       const scalar_type & dt,
 		       const hyp_ind_t & hypIndices)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
-  constexpr auto cnp1 = cnst::c_np1_;
-  constexpr auto cn = cnst::c_n_;
-  constexpr auto cfn = cnst::c_fn_;
-  const auto cfnDt = cfn * dt;
-  const auto cfnp1Dt = cfn * dt;
+  constexpr auto cnp1  = cnst::c_np1_;
+  constexpr auto cn    = cnst::c_n_;
+  constexpr auto cfn   = cnst::c_fn_;
+  const auto cfnDt   = cfn*dt;
+  const auto cfnp1Dt = cfn*dt;
 
-  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr(::pressio::ode::n());
+  const auto & y_np1  = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr(::pressio::ode::n());
 
-  const auto & f_np1 = fomVelocitiesMngr(::pressio::ode::nPlusOne());
-  const auto & f_n = fomVelocitiesMngr(::pressio::ode::n());
+  const auto & f_np1  = fomVelocitiesMngr(::pressio::ode::nPlusOne());
+  const auto & f_n    = fomVelocitiesMngr(::pressio::ode::n());
 
   assert(::pressio::ops::extent(R, 0) == ::pressio::ops::extent(hypIndices, 0));
-  for(std::size_t i = 0; i < (std::size_t)::pressio::ops::extent(R, 0); ++i) {
+  for (std::size_t i=0; i<(std::size_t) ::pressio::ops::extent(R, 0); ++i)
+  {
     const auto yI = hypIndices(i);
-    R(i) = cnp1 * y_np1(yI) + cn * y_n(yI) + cfnp1Dt * f_np1(i) + cfnDt * f_n(i);
+    R(i) = cnp1*y_np1(yI) + cn*y_n(yI) + cfnp1Dt*f_np1(i) + cfnDt*f_n(i);
   }
 }
 #endif
@@ -308,41 +336,43 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
  * only works when structures are of same size
  */
 // ----------------------------------------------------------------------
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 void _time_discrete_residual_bdf1_nohr_eig_kokkos(const fom_states_manager_t & fomStatesMngr,
 						  state_type & R,
 						  scalar_type dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1  = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr.fomStateAt(::pressio::ode::n());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
-  const auto cfdt = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+  constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
+  const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::update(R, cfdt, y_np1, cnp1, y_n, cn);
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 void _time_discrete_residual_bdf2_nohr_eig_kokkos(const fom_states_manager_t & fomStatesMngr,
 						  state_type & R,
 						  scalar_type dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-  constexpr auto cn = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
+  constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_;
-  const auto cfdt = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+  const auto cfdt     = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   ::pressio::ops::update(R, cfdt,
 			 y_np1, cnp1,
@@ -351,13 +381,16 @@ void _time_discrete_residual_bdf2_nohr_eig_kokkos(const fom_states_manager_t & f
 }
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
@@ -365,13 +398,16 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   _time_discrete_residual_bdf1_nohr_eig_kokkos<stepper_tag>(fomStatesMngr, R, dt);
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
@@ -381,43 +417,50 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 
 
 // Crank-Nicolson
-template <
+template<
   typename stepper_tag,
   typename fom_states_t,
   typename fom_velocities_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_t & fomStates,
 		       const fom_velocities_t & fomVelocities,
 		       state_type & R,
 		       scalar_type dt)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<scalar_type>;
-  constexpr auto cnp1 = cnst::c_np1_;
-  constexpr auto cn = cnst::c_n_;
-  constexpr auto cfn = cnst::c_fn_;
-  const auto cfnDt = cfn * dt;
-  const auto cfnp1Dt = cfn * dt;
+  constexpr auto cnp1  = cnst::c_np1_;
+  constexpr auto cn    = cnst::c_n_;
+  constexpr auto cfn   = cnst::c_fn_;
+  const auto cfnDt   = cfn*dt;
+  const auto cfnp1Dt = cfn*dt;
 
-  const auto & y_np1 = fomStates(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStates(::pressio::ode::n());
+  const auto & y_np1  = fomStates(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStates(::pressio::ode::n());
 
-  ::pressio::ops::update(R, y_np1, cnp1, y_n, cn,
-			 fomVelocities(::pressio::ode::n()), cfnDt,
-			 fomVelocities(::pressio::ode::nPlusOne()), cfnp1Dt);
+  ::pressio::ops::update
+      (R, y_np1, cnp1, y_n, cn,
+       fomVelocities(::pressio::ode::n()), cfnDt,
+       fomVelocities(::pressio::ode::nPlusOne()), cfnp1Dt);
 }
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and ::pressio::containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
@@ -425,13 +468,16 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   _time_discrete_residual_bdf1_nohr_eig_kokkos<stepper_tag>(fomStatesMngr, R, dt);
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and ::pressio::containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value and
+  ::pressio::containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
@@ -475,60 +521,59 @@ template <typename stepper_tag>
 struct time_discrete_single_entry_epetra;
 
 template <>
-struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>
-{
+struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>{
   template <typename T, typename fom_states_manager_t>
-  static void evaluate(const T & dt,
-		       T & R,
-		       int lid,
-		       const fom_states_manager_t & fomStatesMngr)
+    static void evaluate(const T& dt,
+			 T & R,
+			 int lid,
+			 const fom_states_manager_t & fomStatesMngr)
   {
     const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-    const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+    const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
 
     constexpr auto cnp1 = ::pressio::ode::constants::bdf1<T>::c_np1_;
     constexpr auto cn = ::pressio::ode::constants::bdf1<T>::c_n_;
-    const auto cfdt = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
-    R = cnp1 * y_np1(lid) + cn * y_n(lid) + cfdt * R;
+    const auto cfdt	  = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
+    R = cnp1*y_np1(lid) + cn*y_n(lid) + cfdt*R;
   }
 };
 
 template <>
-struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF2>
-{
+struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF2>{
   template <typename T, typename fom_states_manager_t>
-  static void evaluate(const T & dt,
-		       T & R,
-		       int lid,
-		       const fom_states_manager_t & fomStatesMngr)
+    static void evaluate(const T& dt,
+			 T & R,
+			 int lid,
+			 const fom_states_manager_t & fomStatesMngr)
   {
     const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-    const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+    const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
     const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
-    constexpr auto cnp1 = ::pressio::ode::constants::bdf2<T>::c_np1_;
+    constexpr auto cnp1   = ::pressio::ode::constants::bdf2<T>::c_np1_;
     constexpr auto cn = ::pressio::ode::constants::bdf2<T>::c_n_;
     constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
-    const auto cfdt = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
-    R = cnp1 * y_np1(lid) + cn * y_n(lid) + cnm1 * y_nm1(lid) + cfdt * R;
+    const auto cfdt	  = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
+    R = cnp1*y_np1(lid) + cn*y_n(lid) + cnm1*y_nm1(lid) + cfdt*R;
   }
 };
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_wrapper_epetra<state_type>::value == true>
+  containers::predicates::is_vector_wrapper_epetra<state_type>::value == true
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
-		       scalar_type dt)
-{
+		       scalar_type dt){
   // On input: R contains the application RHS, i.e. if
   // dudt = f(x,u,...), R contains f(...)
 
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_np1   = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
 
   // the integral type of the global indices
   using GO_t = typename containers::details::traits<state_type>::global_ordinal_t;
@@ -536,23 +581,25 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // map of y_np1 (prevStates has for sure the same map as y_np1)
   const auto & y_map = y_np1.data()->Map();
   // my global elements
-  std::vector<GO_t> gIDy(::pressio::ops::extent_local(y_np1, 0));
-  y_map.MyGlobalElements(gIDy.data());
+  std::vector<GO_t> gIDy( ::pressio::ops::extent_local(y_np1,0) );
+  y_map.MyGlobalElements( gIDy.data() );
 
   // map of R
   const auto & R_map = R.data()->Map();
   // global elements
-  std::vector<GO_t> gIDr(::pressio::ops::extent_local(R, 0));
-  R_map.MyGlobalElements(gIDr.data());
+  std::vector<GO_t> gIDr( ::pressio::ops::extent_local(R,0) );
+  R_map.MyGlobalElements( gIDr.data() );
 
   //loop over elements of R
-  for(auto i = 0; i < ::pressio::ops::extent_local(R, 0); i++) {
+  for (auto i=0; i<::pressio::ops::extent_local(R,0); i++){
     // ask the state map what is the local index corresponding
     // to the global index we are handling
     const auto lid = y_map.LID(gIDr[i]);
     // compute the time-discrete entry
     time_discrete_single_entry_epetra<
-      stepper_tag>::template evaluate<scalar_type, fom_states_manager_t>(dt, R(i), lid, fomStatesMngr);
+      stepper_tag
+      >::template evaluate<
+	scalar_type, fom_states_manager_t>(dt, R(i), lid, fomStatesMngr);
   }
 }
 
@@ -566,17 +613,17 @@ template <>
 struct time_discrete_single_entry_tpetra<::pressio::ode::implicitmethods::Euler>
 {
   template <typename T, typename state_type>
-  static void evaluate(const T & dt,
-		       T & R,
-		       int lid,
-		       const state_type & ynp1,
-		       const state_type & yn)
+    static void evaluate(const T& dt,
+			 T & R,
+			 int lid,
+			 const state_type & ynp1,
+			 const state_type & yn)
   {
     constexpr auto cnp1 = ::pressio::ode::constants::bdf1<T>::c_np1_;
-    constexpr auto cn = ::pressio::ode::constants::bdf1<T>::c_n_;
-    const auto cfdt = ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
+    constexpr auto cn   = ::pressio::ode::constants::bdf1<T>::c_n_;
+    const auto cfdt	= ::pressio::ode::constants::bdf1<T>::c_f_ * dt;
 
-    R = cnp1 * (ynp1.getData())[lid] + cn * (yn.getData())[lid] + cfdt * R;
+    R = cnp1*(ynp1.getData())[lid] + cn*(yn.getData())[lid] + cfdt*R;
   }
 };
 
@@ -584,32 +631,37 @@ template <>
 struct time_discrete_single_entry_tpetra<::pressio::ode::implicitmethods::BDF2>
 {
   template <typename T, typename state_type>
-  static void evaluate(const T & dt,
-		       T & R,
-		       int lid,
-		       const state_type & ynp1,
-		       const state_type & yn,
-		       const state_type & ynm1)
+    static void evaluate(const T& dt,
+			 T & R,
+			 int lid,
+			 const state_type & ynp1,
+			 const state_type & yn,
+			 const state_type & ynm1)
   {
     constexpr auto cnp1 = ::pressio::ode::constants::bdf2<T>::c_np1_;
-    constexpr auto cn = ::pressio::ode::constants::bdf2<T>::c_n_;
+    constexpr auto cn   = ::pressio::ode::constants::bdf2<T>::c_n_;
     constexpr auto cnm1 = ::pressio::ode::constants::bdf2<T>::c_nm1_;
-    const auto cfdt = ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
-    R = cnp1 * (ynp1.getData())[lid] + cn * (yn.getData())[lid] + cnm1 * (ynm1.getData())[lid] + cfdt * R;
+    const auto cfdt	= ::pressio::ode::constants::bdf2<T>::c_f_ * dt;
+    R = cnp1*(ynp1.getData())[lid]
+      + cn*(yn.getData())[lid]
+      + cnm1*(ynm1.getData())[lid]
+      + cfdt*R;
   }
 };
 
-template <
+template<
   typename stepper_tag,
   typename state_type,
   typename scalar_type,
-  typename... Args>
+  typename ... Args
+  >
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_vector_tpetra<state_type>::value == true>
+  containers::predicates::is_vector_tpetra<state_type>::value == true
+  >
 time_discrete_residual_tpetra_impl(const state_type & currentState,
 				   state_type & R,
 				   const scalar_type & dt,
-				   Args &&... args)
+				   Args && ... args)
 {
   // // On input: R contains the application RHS, i.e. if
   // // dudt = f(x,u,...), R contains f(...)
@@ -625,48 +677,55 @@ time_discrete_residual_tpetra_impl(const state_type & currentState,
   const auto gIDr = R_map->getMyGlobalIndices();
 
   //loop over elements of R
-  for(size_t i = 0; i < R.getLocalLength(); i++) {
+  for (size_t i=0; i<R.getLocalLength(); i++){
     // ask the state map what is the local index corresponding
     // to the global index we are handling
     const auto lid = y_map->getLocalElement(gIDr[i]);
     // compute the time-discrete entry
     time_discrete_single_entry_tpetra<
-      stepper_tag>::template evaluate<scalar_type, state_type>(dt, R.getDataNonConst()[i], lid, currentState, std::forward<Args>(args)...);
+      stepper_tag
+      >::template evaluate<
+	scalar_type, state_type
+      >(dt, R.getDataNonConst()[i], lid, currentState, std::forward<Args>(args)...);
   }
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra<state_type>::value == true and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       const scalar_type & dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   time_discrete_residual_tpetra_impl<stepper_tag>(*y_np1.data(), *R.data(),
 						  dt, *y_n.data());
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra<state_type>::value == true and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   time_discrete_residual_tpetra_impl<stepper_tag>(*y_np1.data(), *R.data(),
@@ -676,46 +735,50 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 /*************************************
             tpetra block
 *************************************/
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra_block<state_type>::value and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       const scalar_type & dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
 
   auto ynp1_vv = const_cast<state_type &>(y_np1).data()->getVectorView();
-  auto yn_vv = const_cast<state_type &>(y_n).data()->getVectorView();
-  auto R_vv = R.data()->getVectorView();
+  auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();
+  auto R_vv    = R.data()->getVectorView();
 
   time_discrete_residual_tpetra_impl<stepper_tag>(ynp1_vv, R_vv, dt, yn_vv);
 }
 
-template <
+template<
   typename stepper_tag,
   typename fom_states_manager_t,
   typename state_type,
-  typename scalar_type>
+  typename scalar_type
+  >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra_block<state_type>::value and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value>
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF2>::value
+  >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
 {
   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
 
   auto ynp1_vv = const_cast<state_type &>(y_np1).data()->getVectorView();
-  auto yn_vv = const_cast<state_type &>(y_n).data()->getVectorView();
+  auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();
   auto ynm1_vv = const_cast<state_type &>(y_nm1).data()->getVectorView();
   auto R_vv = R.data()->getVectorView();
   time_discrete_residual_tpetra_impl<stepper_tag>(ynp1_vv, R_vv, dt, yn_vv, ynm1_vv);
@@ -724,4 +787,4 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 #endif
 
 }}}}}
-#endif// ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_
+#endif  // ROM_LSPG_IMPL_UNSTEADY_CONTINUOUS_TIME_API_DISCRETE_TIME_FUNCTIONS_ROM_LSPG_TIME_DISCRETE_RESIDUAL_HPP_

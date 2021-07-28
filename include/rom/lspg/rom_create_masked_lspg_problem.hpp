@@ -49,19 +49,22 @@
 #ifndef ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_
 #define ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_
 
-namespace pressio { namespace rom { namespace lspg {
+namespace pressio{ namespace rom{ namespace lspg{
 
 // create masked steady
-template <
+template<
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type>
+  typename masker_type
+  >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_steady_system<fom_system_type>::value,
   impl::composeMaskedProblem_t<
-    fom_system_type, decoder_type, rom_state_type, masker_type>>
+    fom_system_type, decoder_type, rom_state_type, masker_type
+    >
+  >
 createMaskedProblemSteady(const fom_system_type & fomSysObj,
 			  decoder_type & decoder,
 			  const rom_state_type & romStateIn,
@@ -71,8 +74,9 @@ createMaskedProblemSteady(const fom_system_type & fomSysObj,
   using return_t = impl::composeMaskedProblem_t<
     fom_system_type, decoder_type, rom_state_type, masker_type>;
 
-  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-		"The fom reference state type deduced for the create function is not \
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 compatible with the fom state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn,
@@ -80,17 +84,20 @@ compatible with the fom state type detected from adapter class");
 }
 
 // unsteady (continuous-time api)
-template <
+template<
   typename odetag,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type>
+  typename masker_type
+  >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_type>::value,
   impl::composeMaskedProblem_t<
-    odetag, fom_system_type, decoder_type, rom_state_type, masker_type>>
+    odetag, fom_system_type, decoder_type, rom_state_type, masker_type
+    >
+  >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
 			    const rom_state_type & romStateIn,
@@ -100,29 +107,33 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
   using return_t = impl::composeMaskedProblem_t<
     odetag, fom_system_type, decoder_type, rom_state_type, masker_type>;
 
-  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-		"The fom reference state type deduced for the create function is not \
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The fom reference state type deduced for the create function is not \
 compatible with the fom state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn, fomRef, masker);
 }
 
 //  unsteady (discrete-time api)
-template <
+template<
   std::size_t order,
   std::size_t totNumStates,
   typename fom_system_type,
   typename decoder_type,
   typename rom_state_type,
   typename fom_native_state,
-  typename masker_type>
+  typename masker_type
+  >
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>>
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >
+  >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    decoder_type & decoder,
 			    const rom_state_type & romStateIn,
@@ -133,14 +144,16 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>>;
+    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    >;
 
-  static_assert(std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
-		"The type deduced for the FOM nominal state passed to the create function is not \
+  static_assert
+    (std::is_same<fom_native_state, typename return_t::fom_native_state_t>::value,
+     "The type deduced for the FOM nominal state passed to the create function is not \
 compatible with the FOM state type detected from adapter class");
 
   return return_t(fomSysObj, decoder, romStateIn, fomNominalState, masker);
 }
 
 }}}
-#endif// ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_
+#endif  // ROM_LSPG_ROM_CREATE_MASKED_LSPG_PROBLEM_HPP_

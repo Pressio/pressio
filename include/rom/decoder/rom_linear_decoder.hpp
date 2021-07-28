@@ -51,10 +51,10 @@
 
 #include "./impl/rom_linear_decoder_specializer.hpp"
 
-namespace pressio { namespace rom {
+namespace pressio{ namespace rom{
 
-template <typename... Args>
+template <typename ... Args>
 using LinearDecoder = typename impl::LinearDecoderSpecializer<void, Args...>::type;
 
-}}// end namespace pressio::rom
-#endif// ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+}} // end namespace pressio::rom
+#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
