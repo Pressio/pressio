@@ -67,6 +67,10 @@ struct MySystem
     }
 
     auto g1 = J_.transpose() * R_;
+    std::cout << "HERERE\n";
+    std::cout << J_ << std::endl;
+    std::cout << g1 << std::endl;
+    std::cout << "------\n";
     g = g1;
   }
 
