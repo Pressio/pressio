@@ -1,15 +1,10 @@
 
-include_directories(
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/include
-)
+include_directories(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/include)
 
-# load macros that help creating tests
-include(macrosForCreatingTests)
+if(PRESSIO_ENABLE_FUNCTIONAL_SMALL_TESTS OR PRESSIO_ENABLE_TESTS)
+  add_subdirectory(functional_small)
+endif()
 
-add_subdirectory(solvers_nonlinear)
-
-#add_subdirectory(optimizers)
-#add_subdirectory(ode)
-#add_subdirectory(rom)
-#add_subdirectory(apps)
+if(PRESSIO_ENABLE_FUNCTIONAL_MEDIUM_TESTS OR PRESSIO_ENABLE_TESTS)
+  add_subdirectory(functional_medium)
+endif()

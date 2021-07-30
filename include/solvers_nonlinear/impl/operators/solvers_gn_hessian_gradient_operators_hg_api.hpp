@@ -77,9 +77,10 @@ public:
       int
      > = 0
   >
-  HessianGradientOperatorsHGApi(const system_t & system, const state_t & state)
-    : g_( system.createGradient() ),
-      H_( system.createHessian() )
+  HessianGradientOperatorsHGApi(const system_t & system, 
+                                const state_t & state)
+    : g_(system.createGradient()),
+      H_(system.createHessian())
   {
     ::pressio::ops::set_zero(g_);
     ::pressio::ops::set_zero(H_);
@@ -116,7 +117,7 @@ public:
     >
   computeOperators(const system_t & sys,
 		   const state_t & state,
-		   scalar_type & residualNorm,
+		   scalar_type & residualNormOut,
 		   bool recomputeSystemJacobian = true)
   {
     if (recomputeSystemJacobian){
@@ -124,7 +125,7 @@ public:
     }
 
     sys.gradient(state, g_, ::pressio::Norm::L2,
-		 residualNorm,
+		 residualNormOut,
 		 recomputeSystemJacobian);
 
     // scale because of sign convention

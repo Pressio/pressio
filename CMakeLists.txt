@@ -83,8 +83,10 @@ if(PRESSIO_ENABLE_DEBUG_PRINT)
   message("")
 endif()
 
-option(PRESSIO_ENABLE_UNIT_TESTS "Enabling pressio unit testing." OFF)
-option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests: regression and unit tests." OFF)
+option(PRESSIO_ENABLE_TESTS "Enable ALL pressio tests." OFF)
+option(PRESSIO_ENABLE_FUNCTIONAL_SMALL_TESTS "Enabling pressio functional small testing." OFF)
+option(PRESSIO_ENABLE_FUNCTIONAL_MEDIUM_TESTS "Enabling pressio functional medium testing." OFF)
+option(PRESSIO_ENABLE_FUNCTIONAL_LARGE_TESTS "Enabling pressio functional large testing." OFF)
 
 #=====================================================================
 # note that here we don't link anything, the TPLs are only needed
@@ -173,21 +175,7 @@ endforeach(f ${all_files})
 add_custom_target (uninstall COMMAND ${CMAKE_COMMAND} -P
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pressioUninstall.cmake)
 
-#=====================================================================
-# unit tests are enabled if
-#   (a) PRESSIO_ENABLE_UNIT_TESTS = ON
-#   (b) PRESSIO_ENABLE_TESTS = ON
-#=====================================================================
-if(PRESSIO_ENABLE_UNIT_TESTS OR PRESSIO_ENABLE_TESTS)
-  enable_testing()
-  add_subdirectory(unit_tests)
-endif()
-
-#=====================================================================
-# basic regression tests are enabled if
-#   PRESSIO_ENABLE_TESTS = ON
-#=====================================================================
-if(PRESSIO_ENABLE_TESTS)
+if(PRESSIO_ENABLE_FUNCTIONAL_TESTS OR PRESSIO_ENABLE_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()

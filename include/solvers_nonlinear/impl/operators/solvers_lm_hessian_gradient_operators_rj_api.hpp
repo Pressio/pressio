@@ -69,10 +69,10 @@ private:
   static constexpr auto pT  = ::pressio::transpose();
   static constexpr auto pnT = ::pressio::nontranspose();
 
-  // HGOpRJApi_ contains H = J^T J, and g = J^T r
+  // HGOpRJApi_ computes H = J^T J, and g = J^T r
   hgRJApi_t<HessianType, GradientType, ResidualType, JacobianType, scalar_type, Args...>  HGOpRJApi_;
 
-  // lmH contains H + lm*diag(H)
+  // lmH = H + lm*diag(H)
   HessianType lmH_;
 
   // damping factor for LM

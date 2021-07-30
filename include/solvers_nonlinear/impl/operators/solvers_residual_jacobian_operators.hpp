@@ -89,7 +89,7 @@ public:
 			    const state_t & state)
     : r_( system.createResidual() ),
       J_( system.createJacobian() ),
-      auxR_( system.createResidual() )
+      auxR_(::pressio::ops::clone(r_))
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(J_);
