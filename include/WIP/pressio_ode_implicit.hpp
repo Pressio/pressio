@@ -59,10 +59,8 @@
 // need all of the dependent packages
 #include "pressio_mpl.hpp"
 #include "pressio_utils.hpp"
-#include "pressio_containers.hpp"
+#include "pressio_type_traits.hpp"
 #include "pressio_ops.hpp"
-#include "pressio_qr.hpp"
-#include "pressio_svd.hpp"
 #include "pressio_solvers.hpp"
 
 // common things
@@ -86,8 +84,7 @@
 #include "ode/implicit/constraints/ode_implicit_residual_policy.hpp"
 #include "ode/implicit/constraints/ode_implicit_jacobian_policy.hpp"
 
-#include "ode/implicit/ode_implicit_stepper.hpp"
-
+#include "ode/ode_implicit_public.hpp"
 #include "ode/integrators/ode_advance_n_steps_implicit_arbitrary_step_size.hpp"
 #include "ode/integrators/ode_advance_n_steps_implicit_constant_step_size.hpp"
 #include "ode/integrators/ode_advance_to_target_time_implicit_arbitrary_step_size.hpp"

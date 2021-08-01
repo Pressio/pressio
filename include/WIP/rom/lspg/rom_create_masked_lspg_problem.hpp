@@ -130,8 +130,8 @@ mpl::enable_if_t<
   impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
     >
   >
 createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
@@ -143,8 +143,8 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
   using return_t = impl::composeMaskedProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
     >;
 
   static_assert

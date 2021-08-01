@@ -133,8 +133,8 @@ createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysOb
 //   impl::composePreconditionedHyperReducedProblem_t<
 //     pressio::ode::implicitmethods::Arbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
-//     ::pressio::ode::types::StepperOrder<order>,
-//     ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+//     ::pressio::ode::StepperOrder<order>,
+//     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
 //     Args...
 //     >
 //   >
@@ -148,8 +148,8 @@ createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysOb
 //   using return_t = impl::composePreconditionedHyperReducedProblem_t<
 //     pressio::ode::implicitmethods::Arbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
-//     ::pressio::ode::types::StepperOrder<order>,
-//     ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+//     ::pressio::ode::StepperOrder<order>,
+//     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
 //     Args...>;
 
 //   static_assert

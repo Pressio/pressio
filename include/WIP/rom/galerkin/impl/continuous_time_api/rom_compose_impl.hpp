@@ -166,7 +166,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    ::pressio::ode::is_explicit_stepper_tag<stepper_tag>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type>
 {
@@ -190,7 +190,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::Default,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    ::pressio::ode::is_explicit_stepper_tag<stepper_tag>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, ud_ops_type>
 {
@@ -215,7 +215,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::HyperReducedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    ::pressio::ode::is_explicit_stepper_tag<stepper_tag>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, projector_type>
 {
@@ -240,7 +240,7 @@ template<
 struct compose<
   ::pressio::rom::galerkin::impl::MaskedVelocity,
   mpl::enable_if_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<stepper_tag>::value
+    ::pressio::ode::is_explicit_stepper_tag<stepper_tag>::value
     >,
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, masker_type, projector_type>
 {

@@ -8,7 +8,7 @@ struct MyFakeStepper
   void doStep(ode_state_type & odeState,
 	      const double & t,
 	      const double & dt,
-	      const pressio::ode::types::step_t & step,
+	      const pressio::ode::step_type & step,
 	      solver_type & solver)
   {
     for (int i=0; i<odeState.extent(0); i++) odeState(i) += dt;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
   std::string checkStr= "PASSED";
 
-  auto dtManager = [](const ::pressio::ode::types::step_t & step,
+  auto dtManager = [](const ::pressio::ode::step_type & step,
 		      const double & time,
 		      double & dt)
 		{
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 		  if(step==3) dt = 1.;
 		};
 
-  auto collector = [&checkStr](const ::pressio::ode::types::step_t & step,
+  auto collector = [&checkStr](const ::pressio::ode::step_type & step,
 		      const double & time,
 		      const ode_state_t & y)
 		   {

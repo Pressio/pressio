@@ -132,8 +132,8 @@ mpl::enable_if_t<
   impl::composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
     Args...
     >
   >
@@ -147,8 +147,8 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
   using return_t = impl::composePreconditionedDefaultProblem_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>,
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
     Args...>;
 
   static_assert

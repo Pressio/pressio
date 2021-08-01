@@ -348,8 +348,8 @@ int main(int argc, char *argv[])
 
   using rom_jacobian_t = pressio::containers::DenseMatrix<Eigen::MatrixXd>;
   // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using stepper_order    = ::pressio::ode::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
   // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
   //   ode_tag, fom_t, decoder_t, rom_state_t, rom_jacobian_t,
   //   stepper_order, stepper_n_states>::type;

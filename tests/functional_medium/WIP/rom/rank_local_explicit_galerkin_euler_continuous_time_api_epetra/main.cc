@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 //   fom_state_t y(y0n);
 //   auto stepperObj = pressio::ode::createForwardEulerStepper(y, appobj);
 
-//   auto Nsteps = static_cast<::pressio::ode::types::step_t>(finalTime/dt);
+//   auto Nsteps = static_cast<::pressio::ode::step_type>(finalTime/dt);
 //   observer<fom_state_t> observer(Nsteps, y.extentLocal(0), snapFreq);
 //   pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps, observer);
 //   observer.printToFile(rank);

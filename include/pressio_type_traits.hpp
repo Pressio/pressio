@@ -69,20 +69,7 @@ template<class T, class enable = void> struct traits;
 #include "type_traits/has_method_size.hpp"
 #include "type_traits/has_method_extent.hpp"
 
-// detect nested typedefs (maybe we need a macro to simplify)
-#include "type_traits/nested_typedefs/has_gradient_typedef.hpp"
-#include "type_traits/nested_typedefs/has_communicator_typedef.hpp"
-#include "type_traits/nested_typedefs/has_data_map_typedef.hpp"
-#include "type_traits/nested_typedefs/has_global_ordinal_typedef.hpp"
-#include "type_traits/nested_typedefs/has_gradient_typedef.hpp"
-#include "type_traits/nested_typedefs/has_hessian_typedef.hpp"
-#include "type_traits/nested_typedefs/has_jacobian_typedef.hpp"
-#include "type_traits/nested_typedefs/has_local_ordinal_typedef.hpp"
-#include "type_traits/nested_typedefs/has_matrix_typedef.hpp"
-#include "type_traits/nested_typedefs/has_ordinal_typedef.hpp"
-#include "type_traits/nested_typedefs/has_residual_typedef.hpp"
-#include "type_traits/nested_typedefs/has_scalar_typedef.hpp"
-#include "type_traits/nested_typedefs/has_state_typedef.hpp"
+#include "type_traits/nested_typedef_detection.hpp"
 
 //-----------------------------------------------------
 // for pybind arrays we cannot detect if a native type

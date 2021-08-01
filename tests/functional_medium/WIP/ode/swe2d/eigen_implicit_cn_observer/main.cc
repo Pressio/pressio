@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
     pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y,linSolverObj);
   NonLinSolver.setTolerance(1e-11);
   // integrate in time
-  auto Nsteps = static_cast<::pressio::ode::types::step_t>(et/dt);
+  auto Nsteps = static_cast<::pressio::ode::step_type>(et/dt);
 
   std::string filename = "solution.bin";
   std::ofstream myfile (filename,  std::ios::out | std::ios::binary);

@@ -62,7 +62,7 @@ private:
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t storedStep_ = {};
+  mutable ::pressio::ode::step_type storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
   mutable fom_residual_type fomResidual_;
@@ -99,7 +99,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
@@ -122,7 +122,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     this->doFomStatesReconstruction(galerkinState, galerkinStencilStates, currentStepNumber);
@@ -140,7 +140,7 @@ private:
   template <typename galerkin_state_t, typename galerkin_stencil_states_t>
   void doFomStatesReconstruction(const galerkin_state_t & galerkinState,
 				 const galerkin_stencil_states_t & galerkinStencilStates,
-				 const ::pressio::ode::types::step_t & currentStepNumber) const
+				 const ::pressio::ode::step_type & currentStepNumber) const
   {
     /* the FOM state corresponding to the new predicted state has to be
      * recomputed every time regardless of the time step chaning or not,

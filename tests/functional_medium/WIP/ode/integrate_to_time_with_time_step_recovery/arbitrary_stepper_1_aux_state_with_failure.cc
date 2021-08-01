@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   using jac_t		= ::pressio::containers::SparseMatrix<njacobian_t>;
 
   auto dtManager =
-    [](const ::pressio::ode::types::step_t & step,
+    [](const ::pressio::ode::step_type & step,
        const sc_t & time,
        sc_t & dt,
        sc_t & minDt,
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     };
 
   auto collector =
-    [](const ::pressio::ode::types::step_t & step,
+    [](const ::pressio::ode::step_type & step,
 		const sc_t & time,
 		const state_t & y)
     {};
@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
 
-  using custom_order = ::pressio::ode::types::StepperOrder<1>;
-  using my_num_states	= ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  using custom_order = ::pressio::ode::StepperOrder<1>;
+  using my_num_states	= ::pressio::ode::StepperTotalNumberOfStates<2>;
   using stepper_t = ::pressio::ode::ImplicitStepper<
     ::pressio::ode::implicitmethods::Arbitrary,
     state_t, res_t, jac_t, app_t, custom_order, my_num_states>;

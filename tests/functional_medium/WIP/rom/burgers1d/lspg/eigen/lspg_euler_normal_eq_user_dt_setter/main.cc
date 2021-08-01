@@ -13,7 +13,7 @@ struct MyTimeStepSetter
     : fomState_(fomState), dt_(dt)
   {}
 
-  void operator()(const pressio::ode::types::step_t & step,
+  void operator()(const pressio::ode::step_type & step,
 		  const scalar_t & time,
 		  scalar_t & dt) const
   {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
   using setter_t = MyTimeStepSetter<native_state_t, scalar_t>;
   static_assert
     (pressio::ode::constraints::time_step_size_manager<
-     setter_t, pressio::ode::types::step_t, scalar_t>::value,"");
+     setter_t, pressio::ode::step_type, scalar_t>::value,"");
   setter_t setter(lspgProblem.currentFomStateCRef(), dt);
 
   // solve

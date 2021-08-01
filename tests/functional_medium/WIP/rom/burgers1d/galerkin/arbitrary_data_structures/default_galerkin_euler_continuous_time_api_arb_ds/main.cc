@@ -178,7 +178,7 @@ struct EulerGalerkinWithVelocityApi
       (fomObj, decoderObj, yROM_, y0n, myOps);
 
     scalar_t fint = 35;
-    auto nSteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
+    auto nSteps = static_cast<::pressio::ode::step_type>(fint/dt);
     pressio::rom::galerkin::solveNSteps(galerkinProb, yROM_, 0.0, dt, nSteps);
 
     // compute the fom corresponding to our rom final state

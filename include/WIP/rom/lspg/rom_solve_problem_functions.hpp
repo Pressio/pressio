@@ -120,7 +120,7 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
 				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
 				   timet dt,
-				   const ::pressio::ode::types::step_t numSteps,
+				   const ::pressio::ode::step_type numSteps,
 				   pybind11::object pyCollector,
 				   solver_t & solver)
 {
@@ -141,7 +141,7 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
 				   typename rom_state_t::traits::wrapped_t & stateInOut,
 				   timet t0,
 				   timet dt,
-				   const ::pressio::ode::types::step_t numSteps,
+				   const ::pressio::ode::step_type numSteps,
 				   solver_t & solver)
 {
   // here we want to view the state since we want to modify its data,

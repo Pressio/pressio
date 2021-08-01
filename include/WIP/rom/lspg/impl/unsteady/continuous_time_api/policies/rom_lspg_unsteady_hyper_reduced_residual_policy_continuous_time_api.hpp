@@ -95,7 +95,7 @@ public:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
+	       const ::pressio::ode::step_type & currentStepNumber,
 	       residual_type & romR) const
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
@@ -122,7 +122,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  stencil_velocities_t & stencilVelocities,
 	  residual_type & romR) const
   {
@@ -148,7 +148,7 @@ private:
 		    const fom_system_t  & fomSystemObj,
 		    const scalar_t & timeAtNextStep,
 		    const scalar_t & dt,
-		    const ::pressio::ode::types::step_t & currentStepNumber) const
+		    const ::pressio::ode::step_type & currentStepNumber) const
   {
     /* the currrent FOM has to be recomputed every time regardless of
      * whether the currentStepNumber changes since we might be inside a non-linear solve
@@ -187,7 +187,7 @@ private:
 		       const fom_system_t & fomSystemObj,
 		       const scalar_t & t_np1,
 		       const scalar_t & dt,
-		       const ::pressio::ode::types::step_t & currentStepNumber,
+		       const ::pressio::ode::step_type & currentStepNumber,
 		       // for CN, stencilVelocities holds f_n+1 and f_n
 		       stencil_velocities_t & stencilVelocities) const
   {
@@ -221,7 +221,7 @@ protected:
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t storedStep_ = {};
+  mutable ::pressio::ode::step_type storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
   std::reference_wrapper<const sample_to_stencil_t> sTosInfo_;

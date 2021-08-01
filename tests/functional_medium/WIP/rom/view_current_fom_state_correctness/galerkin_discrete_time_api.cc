@@ -105,7 +105,7 @@ struct Observer
 	   const fom_state_t & fomStateRef)
     : sentinel_(sentinel), fomStateConstRef_(fomStateRef){}
 
-  void operator()(pressio::ode::types::step_t step,
+  void operator()(pressio::ode::step_type step,
 		  double time,
 		  const rom_state_t & romState)
   {
@@ -204,8 +204,8 @@ int main(int argc, char *argv[])
 
   // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
   using rom_jacobian_t = pressio::containers::DenseMatrix<Eigen::MatrixXd>;
-  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using stepper_order    = ::pressio::ode::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
   // using problem_t = pressio::rom::galerkin::composeDefaultProblem<
   //   ode_tag, fom_t, rom_state_t, rom_jacobian_t,
   //   decoder_t, stepper_order, stepper_n_states>::type;

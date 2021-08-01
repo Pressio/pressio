@@ -108,7 +108,7 @@ public:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::step_type & step,
 	       residual_type & romR) const
   {
     this->compute_impl(romState, stencilStates,
@@ -119,7 +119,7 @@ private:
   template <typename lspg_state_t, typename stencil_states_t>
   void doFomStatesReconstruction(const lspg_state_t & romState,
 				 const stencil_states_t & stencilStates,
-				 const ::pressio::ode::types::step_t & step) const
+				 const ::pressio::ode::step_type & step) const
   {
     /* the FOM state corresponding to the new predicted state has to be
      * recomputed every time regardless of the time step chaning or not,
@@ -151,7 +151,7 @@ private:
 	       const fom_system_t  & fomSystemObj,
 	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
+	       const ::pressio::ode::step_type & currentStepNumber,
 	       residual_type & romR) const
   {
     doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
@@ -183,7 +183,7 @@ private:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
+	       const ::pressio::ode::step_type & currentStepNumber,
 	       residual_type & romR) const
   {
     doFomStatesReconstruction(romState, stencilStates, currentStepNumber);
@@ -210,7 +210,7 @@ protected:
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::types::step_t storedStep_ = {};
+  mutable ::pressio::ode::step_type storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
   const ud_ops_type * udOps_ = {};

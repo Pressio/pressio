@@ -99,7 +99,7 @@ public:
 	       const fom_system_t & systemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::step_type & step,
 	       data_type & unpreconditionedField) const
   {
     preconditionable_policy::template compute<

@@ -105,8 +105,8 @@ mpl::enable_if_t<
   impl::composeMaskedResidualProblemDiscTime_t<
     pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
     >
   >
 createMaskedResidualProblem(const fom_system_type & fomSysObj,
@@ -120,8 +120,8 @@ createMaskedResidualProblem(const fom_system_type & fomSysObj,
     impl::composeMaskedResidualProblemDiscTime_t<
       ::pressio::ode::implicitmethods::Arbitrary,
     fom_system_type, decoder_type, rom_state_type, void, masker_type, projector_type,
-    ::pressio::ode::types::StepperOrder<order>,
-    ::pressio::ode::types::StepperTotalNumberOfStates<totNumStates>
+    ::pressio::ode::StepperOrder<order>,
+    ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
     >;
 
   static_assert

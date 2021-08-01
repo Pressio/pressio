@@ -96,7 +96,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     // we assume the residual policy already reconstucted the FOM states
@@ -123,7 +123,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  const galerkin_stencil_states_t & galerkinStencilStates) const
   {
     // we assume the residual policy already reconstucted the FOM states

@@ -123,7 +123,7 @@ public:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::types::step_t & currentStepNumber,
+	       const ::pressio::ode::step_type & currentStepNumber,
 	       lspg_jac_t & romJac) const
   {
     this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
@@ -169,7 +169,7 @@ private:
 		    const fom_system_t & fomSystemObj,
 		    const scalar_t   & timeAtNextStep,
 		    const scalar_t   & dt,
-		    const ::pressio::ode::types::step_t & currentStepNumber) const
+		    const ::pressio::ode::step_type & currentStepNumber) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();

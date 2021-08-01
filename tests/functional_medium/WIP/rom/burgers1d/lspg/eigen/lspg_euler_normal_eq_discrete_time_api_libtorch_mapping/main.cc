@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   auto t0 = static_cast<scalar_t>(0);
   scalar_t fint = 1.00;
   scalar_t dt = 0.01;
-  auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
+  auto Nsteps = static_cast<::pressio::ode::step_type>(fint/dt);
   constexpr int romSize = 8;
 
   // create decoder obj
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
 
   // // define LSPG type
   // using ode_tag		 = pressio::ode::implicitmethods::Arbitrary;
-  // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-  // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+  // using stepper_order    = ::pressio::ode::StepperOrder<1>;
+  // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
   //   using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t, 
   //     decoder_t, lspg_state_t, stepper_order, stepper_n_states>::type;
   // lspg_problem lspgProblem(appobj, decoderObj, yROM_, yRef);

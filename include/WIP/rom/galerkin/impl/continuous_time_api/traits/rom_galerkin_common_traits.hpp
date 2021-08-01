@@ -137,7 +137,7 @@ struct CommonTraitsContinuousTimeApi
    */
   static constexpr auto nstates = _num_fom_states_needed<ode_tag>::value;
   using tagtype = mpl::conditional_t<
-    ::pressio::ode::predicates::is_explicit_stepper_tag<ode_tag>::value,
+    ::pressio::ode::is_explicit_stepper_tag<ode_tag>::value,
     ::pressio::rom::UnsteadyExplicit, ::pressio::rom::UnsteadyImplicit>;
   using fom_states_manager_t = ::pressio::rom::ManagerFomStates<
     tagtype, fom_state_t, fom_state_reconstr_t, ud_ops_type, nstates>;

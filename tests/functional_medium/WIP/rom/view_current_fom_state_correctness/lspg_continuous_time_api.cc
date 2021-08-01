@@ -88,7 +88,7 @@ struct Observer
 	   const fom_state_t & fomStateRef)
     : sentinel_(sentinel), fomStateConstRef_(fomStateRef){}
 
-  void operator()(pressio::ode::types::step_t step,
+  void operator()(pressio::ode::step_type step,
 		  double time,
 		  const rom_state_t & romState)
   {

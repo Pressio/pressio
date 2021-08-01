@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
   // integrate in time
   scalar_t fint = 35;
   scalar_t dt = 0.01;
-  auto Nsteps = static_cast<::pressio::ode::types::step_t>(fint/dt);
+  auto Nsteps = static_cast<::pressio::ode::step_type>(fint/dt);
   pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps);
   y.data()->Print(std::cout << std::setprecision(14));
   {

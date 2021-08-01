@@ -138,9 +138,9 @@ struct CommonTraitsDiscreteTimeApi
   ( !std::is_void<order_setter>::value,
     "To use lspg with residual api, you need to set the order of the stepper \n \
 at compile time by passing to LSPGUnsteadyProblem a template argument as follows: \n \
-::pressio::ode::types::StepperOrder<your_order_value>.");
+::pressio::ode::StepperOrder<your_order_value>.");
   // store
-  static constexpr ::pressio::ode::types::stepper_order_t order_value = order_setter::value;
+  static constexpr ::pressio::ode::stepper_order_type order_value = order_setter::value;
 
   //-----------------------------------------------------------
   // find the total number of states needed
@@ -152,7 +152,7 @@ at compile time by passing to LSPGUnsteadyProblem a template argument as follows
   		 "\nTo use lspg with residual api, you need to set the \
 total number of states needed for the stepper at compile time by passing \
 to LSPGUnsteadyProblem a template argument as follows: \n \
-::pressio::ode::types::StepperTotalNumberOfStates<your_order_value>. \n \
+::pressio::ode::StepperTotalNumberOfStates<your_order_value>. \n \
 Note that this is the total number of states needed including previous ones, \n \
 basically the size of the stpper stencil.");
 

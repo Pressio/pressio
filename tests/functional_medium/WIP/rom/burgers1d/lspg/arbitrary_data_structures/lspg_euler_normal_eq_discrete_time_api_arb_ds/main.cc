@@ -225,8 +225,8 @@ struct EulerLSPGWithResidualApi
 
     // define LSPG type
     // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
-    // using stepper_order    = ::pressio::ode::types::StepperOrder<1>;
-    // using stepper_n_states = ::pressio::ode::types::StepperTotalNumberOfStates<2>;
+    // using stepper_order    = ::pressio::ode::StepperOrder<1>;
+    // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
     // using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<
     //   ode_tag, fom_t, decoder_t, lspg_state_t, stepper_order, stepper_n_states, ops1_t>::type;
     // lspg_problem lspgProblem(fomObj, decoderObj, yROM_, yRef, myOps1);

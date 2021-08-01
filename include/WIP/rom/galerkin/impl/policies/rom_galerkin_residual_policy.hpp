@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <typename galerkin_residual_type, typename projection_policy_t>
 class ResidualPolicy : private projection_policy_t
 {
-  mutable ::pressio::ode::types::step_t stepTracker_ = -1;
+  mutable ::pressio::ode::step_type stepTracker_ = -1;
 
 public:
   ResidualPolicy() = delete;
@@ -93,7 +93,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  galerkin_residual_type & galerkinResidual) const
   {
     projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,
@@ -121,7 +121,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & t_np1,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  stencil_velocities_t & galerkinStencilVelocities,
 	  galerkin_residual_type & galerkinResidual) const
   {
@@ -162,7 +162,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::types::step_t & currentStepNumber,
+	  const ::pressio::ode::step_type & currentStepNumber,
 	  galerkin_residual_type & galerkinResidual) const
   {
     projection_policy_t::compute(galerkinResidual, galerkinState, fomSystemObj,

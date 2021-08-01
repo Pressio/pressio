@@ -97,7 +97,7 @@ public:
 	       const fom_system_t & systemObj,
 	       const time_type & time,
 	       const time_type & dt,
-	       const ::pressio::ode::types::step_t & step,
+	       const ::pressio::ode::step_type & step,
 	       data_type & maskedResult) const
   {
     maskable_policy::template compute<stepper_tag>
