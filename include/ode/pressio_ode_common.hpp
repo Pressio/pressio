@@ -82,6 +82,34 @@ struct Arbitrary{};
 using Euler = BDF1;
 }//end namespace implicitmethods
 
+namespace constants{
+template <typename scalar_t>
+struct bdf1{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_= cnst::one();
+  static constexpr scalar_t c_n_  = cnst::negOne();
+  static constexpr scalar_t c_f_  = cnst::negOne();
+};
+
+template <typename scalar_t>
+struct bdf2{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_ = cnst::one();
+  static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
+  static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
+  static constexpr scalar_t c_f_   = cnst::negOne()*cnst::twoOvThree();
+};
+
+template <typename scalar_t>
+struct cranknicolson{
+  using cnst = ::pressio::utils::constants<scalar_t>;
+  static constexpr scalar_t c_np1_  = cnst::one();
+  static constexpr scalar_t c_n_    = cnst::negOne();
+  static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
+  static constexpr scalar_t c_fn_   = cnst::negOneHalf();
+};
+}// end namespace pressio::ode::constants
+
 template <typename stepper_tag> 
 struct requiredNumberOfStates{ 
   static constexpr std::size_t value = 1; 
@@ -139,7 +167,7 @@ class nMinusTwo{};
 class nMinusThree{};
 class nMinusFour{};
 
-// namespace types {
+
 //! Default type for the ode step
 using step_count_type = int32_t;
 
@@ -158,10 +186,10 @@ template <std::size_t valueIn>
 struct StepperTotalNumberOfStates{ 
   static constexpr std::size_t value = valueIn; 
 };
+
 }}//end namespace pressio::ode
 
 #include "ode_exceptions.hpp"
-
 #include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
 #include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "predicates/ode_is_stepper_total_n_states_setter.hpp"
@@ -172,7 +200,6 @@ struct StepperTotalNumberOfStates{
 #include "predicates/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "predicates/ode_has_const_create_jacobian_method_return_result.hpp"
 #include "predicates/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
-
 #include "constraints_common/ode_collector.hpp"
 #include "constraints_common/ode_guesser.hpp"
 #include "constraints_common/ode_time_step_size_manager.hpp"

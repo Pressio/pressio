@@ -110,7 +110,7 @@ struct ComposeForDefaultPolicy
   using velocity_type = state_type;
 
   using velocity_policy_t =
-    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_type>;
+    ::pressio::ode::explicitmethods::VelocityStandardPolicy<state_type>;
 
   using type = typename ImplSelector<tag>::template type<
       true, scalar_type, state_type, system_t, velocity_type, velocity_policy_t

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// pressio_ode_implicit.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,40 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef PRESSIO_ODE_IMPLICIT_HPP_
+#define PRESSIO_ODE_IMPLICIT_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+/*
+   include everything needed for ODE implicit integration
+   NOTE that the order below matters!
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
+*/
 
-template<typename state_type>
-class VelocityStandardPolicy
-{
-  static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+// need all of the dependent packages
+#include "pressio_mpl.hpp"
+#include "pressio_utils.hpp"
+#include "pressio_type_traits.hpp"
+#include "pressio_ops.hpp"
+#include "pressio_solvers.hpp"
 
-public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+#include "ode/pressio_ode_common.hpp"
 
-  template <typename system_type>
-  state_type create(const system_type & system) const
-  {
-    return state_type(system.createVelocity());
-  }
+#include "ode/impl_implicit/ode_stencil_states_manager.hpp"
+#include "ode/impl_implicit/ode_stencil_velocities_manager.hpp"
+#include "ode/impl_implicit/constraints/ode_implicit_state.hpp"
+#include "ode/impl_implicit/constraints/ode_implicit_residual.hpp"
+#include "ode/impl_implicit/constraints/ode_implicit_jacobian.hpp"
+#include "ode/impl_implicit/constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
+#include "ode/impl_implicit/constraints/ode_implicitly_steppable.hpp"
+#include "ode/impl_implicit/constraints/ode_implicitly_steppable_with_guesser.hpp"
+#include "ode/impl_implicit/constraints/ode_auxiliary_stepper_for_bdf2.hpp"
+#include "ode/impl_implicit/constraints/ode_implicit_residual_policy.hpp"
+#include "ode/impl_implicit/constraints/ode_implicit_jacobian_policy.hpp"
+#include "ode/ode_implicit_public.hpp"
 
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
-	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
-  {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
-  }
-};
+#include "ode/advance/ode_advance_n_steps_implicit_arbitrary_step_size.hpp"
+#include "ode/advance/ode_advance_n_steps_implicit_constant_step_size.hpp"
+#include "ode/advance/ode_advance_to_target_time_implicit_arbitrary_step_size.hpp"
 
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#endif

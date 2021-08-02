@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// ode_implicit_jacobian_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,79 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
+#define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{
 
-template<typename state_type>
-class VelocityStandardPolicy
-{
-  static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+template<
+  typename T,
+  typename tag,
+  std::size_t nS,
+  typename state_t,
+  typename jacobian_t,
+  typename system_t,
+  typename scalar_t,
+  typename = void
+  >
+struct implicit_jacobian_policy : std::false_type{};
 
-public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+template<
+  typename T,
+  typename tag,
+  std::size_t nS,
+  typename state_t,
+  typename jacobian_t,
+  typename system_t,
+  typename scalar_t
+  >
+struct implicit_jacobian_policy<
+  T, tag, nS,
+  state_t, jacobian_t, system_t, scalar_t,
+  ::pressio::mpl::enable_if_t<
+    std::is_same<
+      jacobian_t,
+      decltype
+      (
+       std::declval<T const>().create(std::declval<system_t const &>())
+       )
+      >::value
+    and
+    //
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().template compute
+       <tag>
+       (
+	std::declval<state_t const &>(),
+	std::declval<::pressio::ode::implicitmethods::StencilStatesManager<state_t, nS> const & >(),
+	std::declval<system_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<scalar_t const &>(),
+	std::declval<::pressio::ode::step_count_type const &>(),
+	std::declval<jacobian_t &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
+//------------------------------------------------------------------
 
-  template <typename system_type>
-  state_type create(const system_type & system) const
-  {
-    return state_type(system.createVelocity());
-  }
+template<typename T, typename ... args>
+using implicit_euler_jacobian_policy =
+  implicit_jacobian_policy<
+  T, ::pressio::ode::implicitmethods::Euler, 1, args...>;
 
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
-	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
-  {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
-  }
-};
+template<typename T, typename ... args>
+using implicit_bdf2_jacobian_policy =
+  implicit_jacobian_policy<
+  T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
 
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+template<typename T, typename ... args>
+using implicit_cranknicolson_jacobian_policy =
+  implicit_jacobian_policy<
+  T, ::pressio::ode::implicitmethods::CrankNicolson, 1, args...>;
+
+}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_

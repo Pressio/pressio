@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// ode_implicit_stepper.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,17 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
+#define ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+#include "./impl_implicit/ode_implicit_stepper_compose_impl.hpp"
 
-template<typename state_type>
-class VelocityStandardPolicy
-{
-  static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+namespace pressio{ namespace ode{
 
-public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+template<typename stepper_tag, typename ...Args>
+using ImplicitStepper =
+  typename ::pressio::ode::implicitmethods::impl::compose<
+  stepper_tag, void, Args...>::type;
 
-  template <typename system_type>
-  state_type create(const system_type & system) const
-  {
-    return state_type(system.createVelocity());
-  }
-
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
-	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
-  {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
-  }
-};
-
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+}} // end namespace pressio::ode
+#endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_

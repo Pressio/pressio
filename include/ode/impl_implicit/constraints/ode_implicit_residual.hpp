@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// ode_implicit_residual.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,25 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
+#define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{
 
-template<typename state_type>
-class VelocityStandardPolicy
-{
-  static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+template<typename T, typename enable = void>
+struct implicit_residual : std::false_type{};
 
-public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+template<typename T>
+struct implicit_residual<T,
+ typename std::enable_if<
+   std::is_copy_constructible<T>::value
+   >::type
+  > : std::true_type{};
 
-  template <typename system_type>
-  state_type create(const system_type & system) const
-  {
-    return state_type(system.createVelocity());
-  }
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// template<typename T>
+// struct implicit_residual<::pressio::containers::Tensor<1, T>> : std::true_type{};
+// #endif
 
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
-	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
-  {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
-  }
-};
-
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_HPP_

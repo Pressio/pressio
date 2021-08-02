@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// ode_implicitly_steppable.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,35 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICITLY_STEPPABLE_HPP_
+#define ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICITLY_STEPPABLE_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{
 
-template<typename state_type>
-class VelocityStandardPolicy
-{
-  static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+template <
+  typename T, typename state_type, typename time_type, typename solver_type,
+  typename enable = void
+  >
+struct implicitly_steppable : std::false_type{};
 
-public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+template <typename T, typename state_type, typename time_type, typename solver_type>
+struct implicitly_steppable<
+  T, state_type, time_type, solver_type,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype(
+	       std::declval<T>().doStep
+	       (
+		std::declval<state_type &>(),
+		std::declval<time_type const &>(),
+		std::declval<time_type const &>(),
+		std::declval<::pressio::ode::step_count_type const &>(),
+		std::declval<solver_type &>()
+		)
+	       )
+      >::value
+    >
+  > : std::true_type{};
 
-  template <typename system_type>
-  state_type create(const system_type & system) const
-  {
-    return state_type(system.createVelocity());
-  }
-
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
-	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
-  {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
-  }
-};
-
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+}} // namespace pressio::ode::constraints
+#endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICITLY_STEPPABLE_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_velocity_standard_policy.hpp
+// ode_implicit_jacobian_bdf_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,41 +46,66 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+#ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_
+#define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{ namespace implicitmethods{
 
-template<typename state_type>
-class VelocityStandardPolicy
+template<typename state_type, typename jacobian_type>
+class JacobianStandardPolicyBdf
 {
   static_assert
-  (::pressio::ode::explicit_state<state_type>::value,
-   "Invalid state type for standard velocity policy");
+  (::pressio::ode::implicit_state<state_type>::value,
+   "Invalid state type for standard jacobian policy");
+
+  static_assert
+  (::pressio::ode::implicit_jacobian<jacobian_type>::value,
+   "Invalid jacobian type for standard jacobian policy");
 
 public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+  JacobianStandardPolicyBdf() = default;
+  JacobianStandardPolicyBdf(const JacobianStandardPolicyBdf &) = default;
+  JacobianStandardPolicyBdf & operator=(const JacobianStandardPolicyBdf &) = default;
+  JacobianStandardPolicyBdf(JacobianStandardPolicyBdf &&) = default;
+  JacobianStandardPolicyBdf & operator=(JacobianStandardPolicyBdf &&) = default;
+  ~JacobianStandardPolicyBdf() = default;
 
+public:
   template <typename system_type>
-  state_type create(const system_type & system) const
+  jacobian_type create(const system_type & system) const
   {
-    return state_type(system.createVelocity());
+    static_assert
+      (::pressio::ode::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
+       "system type must meet the continuous time api");
+
+    jacobian_type JJ(system.createJacobian());
+    return JJ;
   }
 
-  template <typename system_type, typename scalar_type>
-  void compute(const state_type & state,
-	       state_type & rhs,
+  template <
+    typename ode_tag,
+    typename stencil_states_type,
+    typename system_type,
+    typename scalar_type
+    >
+  void compute(const state_type & odeCurrentState,
+	       const stencil_states_type & stencilStates,
 	       const system_type & system,
-	       const scalar_type & timeToPassToRhsEvaluation) const
+	       const scalar_type & rhsEvaluationTime,
+	       const scalar_type & dt,
+	       const ::pressio::ode::step_count_type &  step,
+	       jacobian_type & J) const
   {
-    system.velocity(state, timeToPassToRhsEvaluation, rhs);
+    static_assert
+      (::pressio::ode::continuous_time_system_with_user_provided_jacobian
+       <system_type>::value,
+       "system type must meet the continuous time api");
+
+    system.jacobian( odeCurrentState, rhsEvaluationTime, J);
+    ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
   }
 };
 
-}}}//end namespace pressio::ode::explicitmethods::policy
-#endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
+}}}//end namespace pressio::ode::implicitmethods::policy
+#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_

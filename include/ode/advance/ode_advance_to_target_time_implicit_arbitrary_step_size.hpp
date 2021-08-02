@@ -62,11 +62,11 @@ template<
   typename ...Args
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::constraints::implicitly_steppable<
+  ::pressio::ode::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::constraints::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value and
-  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+  ::pressio::ode::time_step_size_manager<
+    step_size_cb_t, ::pressio::ode::step_count_type, time_type>::value and
+  ::pressio::ode::legitimate_solver_for_implicit_stepper<
     solver_type, stepper_type, state_type>::value
   >
 advanceToTargetTime(stepper_type	& stepper,
@@ -77,7 +77,7 @@ advanceToTargetTime(stepper_type	& stepper,
 		    solver_type		& solver,
 		    Args&& ... solver_args)
 {
-  static_assert(::pressio::ode::constraints::implicit_state<state_type>::value,
+  static_assert(::pressio::ode::implicit_state<state_type>::value,
 		"You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -99,12 +99,12 @@ template<
   typename ...Args
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::constraints::implicitly_steppable<
+  ::pressio::ode::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::constraints::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value and
-  ode::constraints::collector<collector_type, time_type, state_type>::value and
-  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+  ::pressio::ode::time_step_size_manager<
+    step_size_cb_t, ::pressio::ode::step_count_type, time_type>::value and
+  ode::collector<collector_type, time_type, state_type>::value and
+  ::pressio::ode::legitimate_solver_for_implicit_stepper<
     solver_type, stepper_type, state_type>::value
   >
 advanceToTargetTime(stepper_type	& stepper,
@@ -118,7 +118,7 @@ advanceToTargetTime(stepper_type	& stepper,
 {
 
   static_assert
-    (::pressio::ode::constraints::implicit_state<state_type>::value,
+    (::pressio::ode::implicit_state<state_type>::value,
      "You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
@@ -138,12 +138,12 @@ template<
   typename ...Args
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::constraints::implicitly_steppable<
+  ::pressio::ode::implicitly_steppable<
     stepper_type, state_type, time_type, solver_type>::value and
-  ::pressio::ode::constraints::time_step_size_manager<
-    step_size_cb_t, types::step_t, time_type>::value and
-  ode::constraints::collector<collector_type, time_type, state_type>::value and
-  ::pressio::ode::constraints::legitimate_solver_for_implicit_stepper<
+  ::pressio::ode::time_step_size_manager<
+    step_size_cb_t, ::pressio::ode::step_count_type, time_type>::value and
+  ode::collector<collector_type, time_type, state_type>::value and
+  ::pressio::ode::legitimate_solver_for_implicit_stepper<
     solver_type, stepper_type, state_type>::value
   >
 advanceToTargetTimeWithTimeStepRecovery(stepper_type	& stepper,
@@ -157,7 +157,7 @@ advanceToTargetTimeWithTimeStepRecovery(stepper_type	& stepper,
 {
 
   static_assert
-    (::pressio::ode::constraints::implicit_state<state_type>::value,
+    (::pressio::ode::implicit_state<state_type>::value,
      "You are trying to call advanceToTargetTime with an implicit stepper \
 but the state type you are using is not admissible for implicit time-stepping.");
 
