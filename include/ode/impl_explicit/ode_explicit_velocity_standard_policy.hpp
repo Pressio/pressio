@@ -74,11 +74,11 @@ public:
 
   template <typename system_type, typename scalar_type>
   void compute(const state_type & state,
-	       state_type & f,
+	       state_type & rhs,
 	       const system_type & system,
 	       const scalar_type & timeToPassToRhsEvaluation) const
   {
-    system.velocity(state, timeToPassToRhsEvaluation, f);
+    system.velocity(state, timeToPassToRhsEvaluation, rhs);
   }
 };
 

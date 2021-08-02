@@ -46,54 +46,110 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_HPP_
-#define ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_HPP_
+#ifndef ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
+#define ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
 
 #include "./impl_explicit/ode_explicit_stepper_compose_impl.hpp"
 
 namespace pressio{ namespace ode{
 
-template<typename stepper_tag, typename ...Args>
-using ExplicitStepper =
-  typename ::pressio::ode::explicitmethods::impl::compose<
-  stepper_tag,
-  typename std::remove_cv<typename std::remove_reference<Args>::type>::type...
-  >::type;
-
-template<typename state_type, typename system_type, typename ...Args>
-auto createForwardEulerStepper(const state_type & state,
-			       const system_type & system,
-			       Args && ...args)
-  -> ExplicitStepper<explicitmethods::Euler, state_type,
-		     system_type, Args...>
-{
-  using type = ExplicitStepper
-    <explicitmethods::Euler, state_type, system_type, Args...>;
-  return type(state, system, std::forward<Args>(args)...);
+template<
+  class state_type, 
+  class system_type, 
+  class return_t = typename explicitmethods::impl::ComposeForDefaultPolicy<
+      explicitmethods::Euler, state_type, system_type>::type
+  >
+return_t createForwardEulerStepper(const state_type & state,
+			                             const system_type & system){
+  return return_t(state, system);
 };
 
-template<typename state_type, typename system_type, typename ...Args>
-auto createRungeKutta4Stepper(const state_type & state,
-			      const system_type & system,
-			      Args && ...args)
-  -> ExplicitStepper<explicitmethods::RungeKutta4, state_type,
-		     system_type, Args...>
-{
-  using type = ExplicitStepper
-    <explicitmethods::RungeKutta4, state_type, system_type, Args...>;
-  return type(state, system, std::forward<Args>(args)...);
+template<
+  class state_type, 
+  class system_type, 
+  class policy_type,
+  class return_t = typename explicitmethods::impl::ComposeForCustomPolicy<
+      explicitmethods::Euler, state_type, system_type, policy_type>::type
+  >
+return_t createForwardEulerStepper(const state_type & state,
+                                   const system_type & system,
+                                   policy_type && rhsPolicy){
+  return return_t(state, system, std::forward<policy_type>(rhsPolicy));
 };
 
-template<typename state_type, typename system_type, typename ...Args>
-auto createAdamsBashforth2Stepper(const state_type & state,
-			      const system_type & system,
-			      Args && ...args)
-  -> ExplicitStepper<explicitmethods::AdamsBashforth2, state_type,
-		     system_type, Args...>
-{
-  using type = ExplicitStepper
-    <explicitmethods::AdamsBashforth2, state_type, system_type, Args...>;
-  return type(state, system, std::forward<Args>(args)...);
+
+template<
+  class state_type, 
+  class system_type, 
+  class return_t = typename explicitmethods::impl::ComposeForDefaultPolicy<
+      explicitmethods::RungeKutta4, state_type, system_type>::type
+  >
+return_t createRungeKutta4Stepper(const state_type & state,
+                                   const system_type & system){
+  return return_t(state, system);
+};
+
+template<
+  class state_type, 
+  class system_type, 
+  class policy_type,
+  class return_t = typename explicitmethods::impl::ComposeForCustomPolicy<
+      explicitmethods::RungeKutta4, state_type, system_type, policy_type>::type
+  >
+return_t createRungeKutta4Stepper(const state_type & state,
+                                   const system_type & system,
+                                   policy_type && rhsPolicy){
+  return return_t(state, system, std::forward<policy_type>(rhsPolicy));
+};
+
+
+template<
+  class state_type, 
+  class system_type, 
+  class return_t = typename explicitmethods::impl::ComposeForDefaultPolicy<
+      explicitmethods::AdamsBashforth2, state_type, system_type>::type
+  >
+return_t createAdamsBashforth2Stepper(const state_type & state,
+                                   const system_type & system){
+  return return_t(state, system);
+};
+
+template<
+  class state_type, 
+  class system_type, 
+  class policy_type,
+  class return_t = typename explicitmethods::impl::ComposeForCustomPolicy<
+      explicitmethods::AdamsBashforth2, state_type, system_type, policy_type>::type
+  >
+return_t createAdamsBashforth2Stepper(const state_type & state,
+                                   const system_type & system,
+                                   policy_type && rhsPolicy){
+  return return_t(state, system, std::forward<policy_type>(rhsPolicy));
+};
+
+
+template<
+  class state_type, 
+  class system_type, 
+  class return_t = typename explicitmethods::impl::ComposeForDefaultPolicy<
+      explicitmethods::SSPRungeKutta3, state_type, system_type>::type
+  >
+return_t createSSPRungeKutta3Stepper(const state_type & state,
+                                   const system_type & system){
+  return return_t(state, system);
+};
+
+template<
+  class state_type, 
+  class system_type, 
+  class policy_type,
+  class return_t = typename explicitmethods::impl::ComposeForCustomPolicy<
+      explicitmethods::SSPRungeKutta3, state_type, system_type, policy_type>::type
+  >
+return_t createSSPRungeKutta3Stepper(const state_type & state,
+                                   const system_type & system,
+                                   policy_type && rhsPolicy){
+  return return_t(state, system, std::forward<policy_type>(rhsPolicy));
 };
 
 }} // end namespace pressio::ode

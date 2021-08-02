@@ -96,7 +96,7 @@ struct implicit_jacobian_policy<
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::step_type const &>(),
+	std::declval<::pressio::ode::step_count_type const &>(),
 	std::declval<jacobian_t &>()
 	)
        )

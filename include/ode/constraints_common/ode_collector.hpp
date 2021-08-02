@@ -51,20 +51,11 @@
 
 namespace pressio{ namespace ode{
 
-template<
-  typename T,
-  typename time_type,
-  typename state_type,
-  typename enable = void
-  >
+template<class T, class time_type, class state_type, class enable = void>
 struct collector_callable_with_step_time_container_return_void
   : std::false_type{};
 
-template<
-  typename T,
-  typename time_type,
-  typename state_type
-  >
+template<class T, class time_type, class state_type>
 struct collector_callable_with_step_time_container_return_void<
   T, time_type, state_type,
   ::pressio::mpl::enable_if_t<
@@ -73,7 +64,7 @@ struct collector_callable_with_step_time_container_return_void<
       (
        std::declval<T>()
        (
-        std::declval<::pressio::ode::step_type>(),
+        std::declval<::pressio::ode::step_count_type>(),
         std::declval<time_type>(),
         std::declval<const state_type &>()
        )
@@ -83,16 +74,85 @@ struct collector_callable_with_step_time_container_return_void<
   > : std::true_type{};
 
 
-template<
-  typename collector_type,
-  typename time_type,
-  typename state_type
-  >
+template<class T, class time_type, class state_type, class enable = void>
+struct collector_callable_with_step_container_time_return_void
+  : std::false_type{};
+
+template<class T, class time_type, class state_type>
+struct collector_callable_with_step_container_time_return_void<
+  T, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>()
+       (
+        std::declval<::pressio::ode::step_count_type>(),
+        std::declval<const state_type &>(),
+        std::declval<time_type>()
+       )
+      )
+      >::value
+    >
+  > : std::true_type{};
+
+
+template<class T, class time_type, class state_type, class enable = void>
+struct collector_callable_with_container_step_time_return_void
+  : std::false_type{};
+
+template<class T, class time_type, class state_type>
+struct collector_callable_with_container_step_time_return_void<
+  T, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>()
+       (
+        std::declval<const state_type &>(),
+        std::declval<::pressio::ode::step_count_type>(),
+        std::declval<time_type>()
+       )
+      )
+      >::value
+    >
+  > : std::true_type{};
+
+template<class T, class time_type, class state_type, class enable = void>
+struct collector_callable_with_time_container_step_return_void
+  : std::false_type{};
+
+template<class T, class time_type, class state_type>
+struct collector_callable_with_time_container_step_return_void<
+  T, time_type, state_type,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>()
+       (
+        std::declval<time_type>(),
+        std::declval<const state_type &>(),
+        std::declval<::pressio::ode::step_count_type>()
+       )
+      )
+      >::value
+    >
+  > : std::true_type{};
+
+template<class collector_type, class time_type, class state_type>
 struct collector
 {
   static constexpr auto value =
     collector_callable_with_step_time_container_return_void<
-      collector_type, time_type, state_type>::value;
+          collector_type, time_type, state_type>::value or
+    collector_callable_with_step_container_time_return_void<
+          collector_type, time_type, state_type>::value or
+    collector_callable_with_container_step_time_return_void<
+          collector_type, time_type, state_type>::value or
+    collector_callable_with_time_container_step_return_void<
+          collector_type, time_type, state_type>::value;
 };
 
 }} // namespace pressio::ode::meta

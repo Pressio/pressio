@@ -4,46 +4,49 @@
 
 namespace pressio{ namespace ode{ namespace testing{
 
-//************************************************
-struct fakeAppForTraitsForExp{
-  using scalar_type = double;
-  using state_type = std::vector<double>;
-  using velocity_type = std::vector<double>;
+// //************************************************
+// struct fakeAppForTraitsForExp
+// {
+//   using scalar_type = double;
+//   using state_type = std::vector<double>;
+//   using velocity_type = std::vector<double>;
 
-  void velocity(const state_type & y,
-    scalar_type t, velocity_type & R) const{
-  };
-  velocity_type createVelocity()const{
-    velocity_type R;
-    return R;
-  };
-};
-//************************************************
-//************************************************
+//   void velocity(const state_type & y,
+//     scalar_type t, velocity_type & R) const{
+//   };
+//   velocity_type createVelocity()const{
+//     velocity_type R;
+//     return R;
+//   };
+// };
+// //************************************************
+// //************************************************
 
-struct refAppEigen{
+struct refAppEigen
+{
   using scalar_type = double;
   using state_type = Eigen::VectorXd;
   using velocity_type = state_type;
 
   void velocity(const state_type & y,
-		scalar_type t, velocity_type & R) const{
-    auto sz = y.size();
-    for (decltype(sz) i=0; i<sz; i++)
-      R[i] = y[i];
-  };
-
-  velocity_type createVelocity() const
+		            scalar_type t, 
+                velocity_type & rhs) const
   {
-    velocity_type R(3);
-    return R;
+    auto sz = y.size();
+    for (decltype(sz) i=0; i<sz; i++){
+      rhs[i] = y[i];
+    }
   };
 
+  velocity_type createVelocity() const{
+    return velocity_type(3);
+  };
 };
 //************************************************
 //************************************************
 
-struct refAppForImpEigen{
+struct refAppForImpEigen
+{
 
   /*
     dy
@@ -168,7 +171,8 @@ public:
 
 
 
-struct refAppForArbitraryImpl{
+struct refAppForArbitraryImpl
+{
   using scalar_type   = double;
   using state_type    = Eigen::VectorXd;
   using residual_type = state_type;

@@ -98,7 +98,7 @@ struct implicit_residual_policy<
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::step_type>(),
+	std::declval<::pressio::ode::step_count_type>(),
 	std::declval<residual_t &>()
 	)
        )
@@ -142,7 +142,7 @@ struct implicit_residual_policy<
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
-	std::declval<::pressio::ode::step_type>(),
+	std::declval<::pressio::ode::step_count_type>(),
 	std::declval<implicitmethods::StencilStatesManager<residual_t, nVelocities> & >(),
 	std::declval<residual_t &>()
 	)

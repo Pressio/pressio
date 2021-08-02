@@ -65,7 +65,7 @@ advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
 	      const time_type dt,
-	      const ::pressio::ode::step_type num_steps)
+	      const ::pressio::ode::step_count_type num_steps)
 {
 
   static_assert
@@ -93,7 +93,7 @@ advanceNSteps(stepper_type & stepper,
 	      state_type & odeStateInOut,
 	      const time_type start_time,
 	      const time_type dt,
-	      const ::pressio::ode::step_type num_steps,
+	      const ::pressio::ode::step_count_type num_steps,
 	      collector_type & collector)
 {
 

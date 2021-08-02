@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_euler_stepper_impl.hpp
+// ode_explicit_runge_kutta4_stepper_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
-#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
+#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_SSP_RUNGE_KUTTA3_STEPPER_IMPL_HPP_
+#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_SSP_RUNGE_KUTTA3_STEPPER_IMPL_HPP_
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
@@ -59,45 +59,47 @@ template<
   class velocity_policy_type,
   bool is_standard_policy
   >
-class ExplicitEulerStepper
+class ExplicitSSPRungeKutta3Stepper
 {
-
 public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
-  static constexpr stepper_order_type order_value = 1;
+  static constexpr stepper_order_type order_value = 3;
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
   ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
   std::array<velocity_type, 1> velocities_;
+  state_type tmpState_;
 
 public:
-  ExplicitEulerStepper() = delete;
-  ExplicitEulerStepper(const ExplicitEulerStepper &) = default;
-  ExplicitEulerStepper & operator=(const ExplicitEulerStepper &) = delete;
-  ExplicitEulerStepper(ExplicitEulerStepper &&) = default;
-  ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = delete;
-  ~ExplicitEulerStepper() = default;
+  ExplicitSSPRungeKutta3Stepper() = delete;
+  ExplicitSSPRungeKutta3Stepper(const ExplicitSSPRungeKutta3Stepper & other) = default;
+  ExplicitSSPRungeKutta3Stepper & operator=(const ExplicitSSPRungeKutta3Stepper & other) = delete;
+  ExplicitSSPRungeKutta3Stepper(ExplicitSSPRungeKutta3Stepper && other)  = default;
+  ExplicitSSPRungeKutta3Stepper & operator=(ExplicitSSPRungeKutta3Stepper && other)  = delete;
+  ~ExplicitSSPRungeKutta3Stepper() = default;
 
-  ExplicitEulerStepper(const state_type & state,
-		       const system_type & systemObj,
-		       velocity_policy_type && policy)
+  ExplicitSSPRungeKutta3Stepper(const state_type & state,
+			     const system_type & systemObj,
+           velocity_policy_type && policy)
     : systemObj_(systemObj),
       policy_(std::forward<velocity_policy_type>(policy)),
-      velocities_{policy_.get().create(systemObj)}
+      velocities_{policy_.get().create(systemObj)},
+      tmpState_{::pressio::ops::clone(state)}
   {}
 
-  // only enabled if policy standard 
+  // only enabled if policy standard
   template <
     bool _is_standard_policy = is_standard_policy,
     mpl::enable_if_t<_is_standard_policy,int > = 0
     >
-  ExplicitEulerStepper(const state_type & state,
-		       const system_type & systemObj)
+  ExplicitSSPRungeKutta3Stepper(const state_type & state,
+			     const system_type & systemObj)
     : systemObj_(systemObj),
       policy_(),
-      velocities_{policy_.get().create(systemObj)}
+      velocities_{policy_.get().create(systemObj)},
+      tmpState_{::pressio::ops::clone(state)}
   {}
 
 public:
@@ -107,20 +109,44 @@ public:
   }
 
   void doStep(state_type & odeSolution,
-	 const scalar_type & time,
-	 const scalar_type & dt,
-	 const step_count_type & step)
+  	      const scalar_type & time,
+  	      const scalar_type & dt,
+  	      const step_count_type & step)
   {
-    PRESSIOLOG_DEBUG("euler forward stepper: do step");
+    PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
-    auto & rhs = velocities_[0];
-    //eval RHS
-    policy_.get().compute(odeSolution, rhs, systemObj_.get(), time);
-    // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    ::pressio::ops::update(odeSolution, one, rhs, dt);
+    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto two   = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto three = ::pressio::utils::constants<scalar_type>::three();
+    constexpr auto four  = ::pressio::utils::constants<scalar_type>::four();
+    constexpr auto oneOvTwo = one/two;
+    constexpr auto oneOvThree = one/three;
+    constexpr auto twoOvThree = two/three;
+    constexpr auto threeOvFour = three/four;
+    constexpr auto fourInv = one/four;
+
+    auto & rhs0 = velocities_[0];
+
+    // see e.g. https://gkeyll.readthedocs.io/en/latest/dev/ssp-rk.html
+
+    // rhs(u_n, t_n)
+    policy_.get().compute(odeSolution, rhs0, systemObj_.get(), time);
+    // u_1 = u_n + dt * rhs(u_n, t_n)
+    ::pressio::ops::update(tmpState_, odeSolution, one, rhs0, dt);
+
+    // rhs(u_1, t_n+dt)
+    policy_.get().compute(tmpState_, rhs0, systemObj_.get(), time+dt);
+    // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*dt*rhs(u_1, t_n+dt)
+    ::pressio::ops::update(tmpState_, fourInv,
+		   odeSolution, threeOvFour, rhs0, fourInv*dt);
+
+    // rhs(u_2, t_n + 0.5*dt)
+    policy_.get().compute(tmpState_, rhs0, systemObj_.get(), time + oneOvTwo*dt);
+    // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*dt*rhs(u_2, t_n+0.5*dt)
+    ::pressio::ops::update(odeSolution, oneOvThree,
+		   tmpState_, twoOvThree, rhs0, twoOvThree*dt);
   }
 };
 
 }}}}//end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_

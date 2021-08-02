@@ -52,6 +52,7 @@
 #include "ode_explicit_euler_stepper_impl.hpp"
 #include "ode_explicit_runge_kutta4_stepper_impl.hpp"
 #include "ode_explicit_adams_bashforth2_stepper_impl.hpp"
+#include "ode_explicit_ssp_runge_kutta3_stepper_impl.hpp"
 
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
@@ -85,18 +86,17 @@ struct ImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>
     <Args..., is_standard_policy>;
 };
 
+template<>
+struct ImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>
+{
+  template<bool is_standard_policy, typename ...Args>
+  using type = ::pressio::ode::explicitmethods::impl::ExplicitSSPRungeKutta3Stepper
+    <Args..., is_standard_policy>;
+};
 
-// --------------------------------------------------------------------------
-// tag, state_type, system_t
-// tag, state_type, system_t, policy
-// --------------------------------------------------------------------------
-template<
-  typename tag,
-  typename state_type,
-  typename system_t,
-  typename ...Args
-  >
-struct compose
+
+template<class tag, class state_type, class system_t>
+struct ComposeForDefaultPolicy
 {
   static_assert
   (::pressio::ode::continuous_time_system_with_at_least_velocity<system_t>::value,
@@ -106,37 +106,40 @@ struct compose
   (::pressio::ode::explicit_state<state_type>::value,
    "Invalid state type for explicit time stepping");
 
-  using scalar_t = typename state_type::traits::scalar_t;
-  using state_t	= state_type;
-  using velocity_t = state_type;
+  using scalar_type   = typename ::pressio::traits<state_type>::scalar_type;
+  using velocity_type = state_type;
 
-  // typedef for standard velocity policy
-  // (just typedef, only used if the user does not pass a user-defined policy)
-  using standard_velocity_policy_t =
-    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_t>;
-
-  // check Args if a user-defined velocity policy is passed
-  using ic3 = ::pressio::mpl::variadic::find_if_quinary_pred_t<
-    scalar_t, state_type, velocity_t, system_t,
-    ::pressio::ode::explicit_velocity_policy, Args...>;
   using velocity_policy_t =
-    ::pressio::mpl::variadic::at_or_t<standard_velocity_policy_t, ic3::value, Args...>;
-  static constexpr bool is_standard_policy = std::is_same
-    <standard_velocity_policy_t, velocity_policy_t>::value;
+    ::pressio::ode::explicitmethods::policy::VelocityStandardPolicy<state_type>;
 
-  // implementation class type
-  using type =
-    mpl::conditional_t<
-    std::is_same<standard_velocity_policy_t, velocity_policy_t>::value,
-    typename ImplSelector<tag>::template type<
-      is_standard_policy, scalar_t, state_t, system_t,
-      velocity_t, velocity_policy_t
-      >,
-    typename ImplSelector<tag>::template type<
-      is_standard_policy, scalar_t, state_t, system_t,
-      velocity_t, const velocity_policy_t &
-      >
-    >;
+  using type = typename ImplSelector<tag>::template type<
+      true, scalar_type, state_type, system_t, velocity_type, velocity_policy_t
+      >;
+};
+
+template<class tag, class state_type, class system_t, class policy_t>
+struct ComposeForCustomPolicy
+{
+  static_assert
+  (::pressio::ode::continuous_time_system_with_at_least_velocity<system_t>::value,
+   "The system passed to the ExplicitStepper does not meet the required API");
+
+  static_assert
+  (::pressio::ode::explicit_state<state_type>::value,
+   "Invalid state type for explicit time stepping");
+
+  using scalar_type   = typename ::pressio::traits<state_type>::scalar_type;
+  using velocity_type = state_type;
+  using time_type = scalar_type;
+
+  static_assert
+  (::pressio::ode::explicit_velocity_policy<
+      mpl::remove_cvref_t<policy_t>, time_type, state_type, velocity_type, system_t>::value,
+   "Invalid rhs policy for explicit time stepping");
+
+  using type = typename ImplSelector<tag>::template type<
+      false, scalar_type, state_type, system_t, velocity_type, policy_t 
+      >;
 };
 
 }}}} // end namespace pressio::ode::explicitmethods::impl

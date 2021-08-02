@@ -101,7 +101,7 @@ public:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & timeAtNextStep,
 	       const scalar_t & dt,
-	       const ::pressio::ode::step_type & currentStepNumber,
+	       const ::pressio::ode::step_count_type & currentStepNumber,
 	       lspg_jac_t & romJac) const
   {
     // since this is for hyp-red, I need to make sure the sTosInfo
@@ -125,7 +125,7 @@ private:
 		    const fom_system_t & fomSystemObj,
 		    const scalar_t   & timeAtNextStep,
 		    const scalar_t   & dt,
-		    const ::pressio::ode::step_type & currentStepNumber) const
+		    const ::pressio::ode::step_count_type & currentStepNumber) const
   {
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.

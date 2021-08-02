@@ -52,19 +52,18 @@
 namespace pressio{ namespace ode{
 
 template<
-  typename T,
-  typename scalar_t, typename state_t, typename velocity_t, typename system_t,
-  typename enable = void
+  class T, 
+  class time_type, class state_t, class velocity_t, class system_t, class enable = void
   >
 struct explicit_velocity_policy
   : std::false_type{};
 
 template<
-  typename T,
-  typename scalar_t, typename state_t, typename velocity_t, typename system_t
+  class T,
+  class time_type, class state_t, class velocity_t, class system_t
   >
 struct explicit_velocity_policy<
-  T, scalar_t, state_t, velocity_t, system_t,
+  T, time_type, state_t, velocity_t, system_t,
   mpl::enable_if_t<
     std::is_same<
       decltype
@@ -79,10 +78,10 @@ struct explicit_velocity_policy<
       (
        std::declval<T const>().template compute
        (
-      	std::declval<state_t const &>(), // state
-      	std::declval<velocity_t &>(),	 // velocity
-      	std::declval<system_t const &>(),// system object
-      	std::declval<scalar_t const &>() // time
+      	std::declval<state_t const &>(),  // state
+      	std::declval<velocity_t &>(),	    // velocity
+      	std::declval<system_t const &>(), // system object
+      	std::declval<time_type const &>() // time
       	)
        )
       >::value

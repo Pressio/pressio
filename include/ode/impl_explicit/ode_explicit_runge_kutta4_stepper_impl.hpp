@@ -52,11 +52,11 @@
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
-  typename scalar_type,
-  typename state_type,
-  typename system_type,
-  typename velocity_type,
-  typename velocity_policy_type,
+  class scalar_type,
+  class state_type,
+  class system_type,
+  class velocity_type,
+  class velocity_policy_type,
   bool is_standard_policy
   >
 class ExplicitRungeKutta4Stepper
@@ -65,12 +65,11 @@ public:
   static constexpr bool is_implicit = false;
   static constexpr bool is_explicit = true;
   static constexpr stepper_order_type order_value = 4;
-  using velocity_storage_t  = std::array<velocity_type, 4>;
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
   ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
-  velocity_storage_t velocities_;
+  std::array<velocity_type, 4> velocities_;
   state_type tmpState_;
 
 public:
@@ -83,9 +82,9 @@ public:
 
   ExplicitRungeKutta4Stepper(const state_type & state,
 			                       const system_type & systemObj,
-			                       const mpl::remove_cvref_t<velocity_policy_type> & policy)
+			                       velocity_policy_type && policy)
     : systemObj_(systemObj),
-      policy_(policy),
+      policy_(std::forward<velocity_policy_type>(policy)),
       velocities_{policy.create(systemObj), 
                   policy.create(systemObj), 
                   policy.create(systemObj), 
@@ -118,7 +117,7 @@ public:
   void doStep(state_type & odeSolution,
   	      const scalar_type & t,
   	      const scalar_type & dt,
-  	      const step_type & step)
+  	      const step_count_type & step)
   {
     PRESSIOLOG_DEBUG("rk4 stepper: do step");
 

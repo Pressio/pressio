@@ -70,7 +70,7 @@ void printStartOfAdvancing(Args && ... args)
 }
 
 template <typename time_type>
-void printStepTime(const ::pressio::ode::step_type & step,
+void printStepTime(const ::pressio::ode::step_count_type & step,
 		   const time_type & time,
 		   const time_type & dt)
 {

@@ -1,6 +1,6 @@
 
 #include "pressio_ode_explicit.hpp"
-#include "pressio_apps.hpp"
+#include "../testing_apps/apps.hpp"
 #include <array>
 
 constexpr double eps = 1e-12;
@@ -19,33 +19,24 @@ int main(int argc, char *argv[]){
   {
     using app_t			= pressio::apps::Burgers1dKokkos;
     using scalar_t		= typename app_t::scalar_type;
-    using app_state_t		= typename app_t::state_type;
+    using state_t		= typename app_t::state_type;
 
-    //-------------------------------
-    // create app object
     std::array< scalar_t, 3> mu({5.0, 0.02, 0.02});
     const int Ncell = 20;
     app_t appObj(mu, Ncell);
     auto y0n = appObj.getInitialState();
 
-    // types for ode
-    using ode_state_t = pressio::containers::Vector<app_state_t>;
-    ode_state_t y(y0n);
-    // using ode_tag = pressio::ode::explicitmethods::Euler;
-    // using stepper_t = pressio::ode::ExplicitStepper
-    //   <ode_tag, ode_state_t, app_t, ode_res_t, scalar_t>;
-    // stepper_t stepperObj(y, appObj);
+    state_t y(y0n);
     auto stepperObj = pressio::ode::createForwardEulerStepper(y, appObj);
 
-    // integrate in time
     scalar_t fint = 35;
     scalar_t dt = 0.01;
-    auto Nsteps = static_cast<::pressio::ode::step_type>(fint/dt);
+    auto Nsteps = static_cast<::pressio::ode::step_count_type>(fint/dt);
     pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps);
 
-    using state_type_h = typename app_state_t::HostMirror;
+    using state_type_h = typename state_t::HostMirror;
     state_type_h yH("yH", Ncell);
-    Kokkos::deep_copy(yH, *y.data());
+    Kokkos::deep_copy(yH, y);
 
     {
       using namespace pressio::apps::test;

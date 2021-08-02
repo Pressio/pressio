@@ -54,7 +54,7 @@ namespace pressio{ namespace ode{ namespace impl{
 template <typename time_type, typename state_type>
 struct DummyCollector
 {
-  void operator()(const ::pressio::ode::step_type & step,
+  void operator()(const ::pressio::ode::step_count_type & step,
 		  const time_type & time,
 		  const state_type & stateIn)
   {

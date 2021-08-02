@@ -56,37 +56,37 @@
 
 // burgers1d eigen
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-#include "apps/burgers1d/apps_burgers1d_eigen.hpp"
-#include "apps/burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
-#include "apps/swe2d/apps_swe2d_eigen.hpp"
-#include "apps/swe2d/apps_swe2d_hyper_eigen.hpp"
+#include "burgers1d/apps_burgers1d_eigen.hpp"
+#include "burgers1d/apps_burgers1d_eigen_discrete_time_api.hpp"
+#include "swe2d/apps_swe2d_eigen.hpp"
+#include "swe2d/apps_swe2d_hyper_eigen.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/burgers1d/apps_burgers1d_epetra.hpp"
-#include "apps/burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
-#include "apps/burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
-#include "apps/burgers1d/apps_burgers1d_tpetra.hpp"
-#include "apps/burgers1d/apps_burgers1d_tpetra_block.hpp"
+#include "burgers1d/apps_burgers1d_epetra.hpp"
+#include "burgers1d/apps_burgers1d_epetra_preconditioned.hpp"
+#include "burgers1d/apps_burgers1d_epetra_reduced_no_mask.hpp"
+#include "burgers1d/apps_burgers1d_tpetra.hpp"
+#include "burgers1d/apps_burgers1d_tpetra_block.hpp"
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-#include "apps/burgers1d/apps_burgers1d_kokkos.hpp"
+#include "burgers1d/apps_burgers1d_kokkos.hpp"
 #endif
 
-#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
-#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
-#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
-#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp"
-#include "apps/burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp"
+#include "burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds.hpp"
+#include "burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_dense_matrix.hpp"
+#include "burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_custom_vector.hpp"
+#include "burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_discrete_time_api_adapter.hpp"
+#include "burgers1d/arbitraryDataStructures/apps_burgers1d_arb_ds_continuous_time_api_adapter.hpp"
 
-#include "apps/burgers1d/apps_burgers1d_gold_states_explicit.hpp"
-#include "apps/burgers1d/apps_burgers1d_gold_states_implicit.hpp"
+#include "burgers1d/apps_burgers1d_gold_states_explicit.hpp"
+#include "burgers1d/apps_burgers1d_gold_states_implicit.hpp"
 
 // steady 2d adv-diff
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "apps/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
-#include "apps/steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
+#include "steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra.hpp"
+#include "steady_linear_adv_diff2d/apps_steady_linear_adv_diff_2d_epetra_rom_adapter.hpp"
 #endif
 
 #endif

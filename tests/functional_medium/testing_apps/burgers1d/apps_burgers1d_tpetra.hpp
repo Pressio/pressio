@@ -181,10 +181,10 @@ protected:
     std::iota(myGel_.begin(), myGel_.end(), minGId);
     //dataMap_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
 
-    if (myRank_==1){
-      for (auto it : myGel_)
-	std::cout << it << std::endl;
-    }
+    // if (myRank_==1){
+    //   for (auto it : myGel_)
+    //   	std::cout << it << std::endl;
+    // }
 
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
     dxInv_ = 1.0/dx_;
@@ -211,7 +211,7 @@ protected:
 
     this->assembleGraph(*dataGraph);
     Jac_ = std::make_shared<jacobian_type>(dataGraph);
-    Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
+    // Jac_->describe(*wrappedCout_, Teuchos::VERB_EXTREME);
   };
 
   void computeJacobianReplace(const state_type & u,

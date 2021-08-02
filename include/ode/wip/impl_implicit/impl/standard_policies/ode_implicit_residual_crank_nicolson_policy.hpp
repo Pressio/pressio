@@ -62,7 +62,7 @@ class ResidualStandardPolicyCrankNicolson
   (::pressio::ode::constraints::implicit_residual<residual_type>::value,
    "Invalid residual type for standard residual policy");
 
-  mutable ::pressio::ode::step_type stepTracker_ = -1;
+  mutable ::pressio::ode::step_count_type stepTracker_ = -1;
 
 public:
   ResidualStandardPolicyCrankNicolson() = default;

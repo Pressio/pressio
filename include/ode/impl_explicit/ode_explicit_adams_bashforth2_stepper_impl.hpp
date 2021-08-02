@@ -52,11 +52,11 @@
 namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
 
 template<
-  typename scalar_type,
-  typename state_type,
-  typename system_type,
-  typename velocity_type,
-  typename velocity_policy_type,
+  class scalar_type,
+  class state_type,
+  class system_type,
+  class velocity_type,
+  class velocity_policy_type,
   bool is_standard_policy
   >
 class ExplicitAdamsBashforth2Stepper
@@ -82,11 +82,12 @@ public:
   ~ExplicitAdamsBashforth2Stepper() = default;
 
   ExplicitAdamsBashforth2Stepper(const state_type & state,
-				 const system_type & systemObj,
-				 const mpl::remove_cvref_t<velocity_policy_type> & policy)
+                                 const system_type & systemObj,
+                                 velocity_policy_type && policy)
     : systemObj_(systemObj),
-      policy_(policy),
-      velocities_{policy.create(systemObj), policy.create(systemObj)},
+      policy_(std::forward<velocity_policy_type>(policy)),
+      velocities_{policy.create(systemObj), 
+                  policy.create(systemObj)},
       tmpState_{::pressio::ops::clone(state)}
   {}
 
@@ -96,10 +97,11 @@ public:
     mpl::enable_if_t<_is_standard_policy, int > = 0
     >
   ExplicitAdamsBashforth2Stepper(const state_type & state,
-				 const system_type & systemObj)
+				                         const system_type & systemObj)
     : systemObj_(systemObj),
       policy_(),
-      velocities_{policy_.get().create(systemObj), policy_.get().create(systemObj)},
+      velocities_{policy_.get().create(systemObj), 
+                  policy_.get().create(systemObj)},
       tmpState_{::pressio::ops::clone(state)}
   {}
 
@@ -112,7 +114,7 @@ public:
   void doStep(state_type & odeSolution,
   	      const scalar_type & currentTime,
   	      const scalar_type & dt,
-  	      const step_type & stepNumber)
+  	      const step_count_type & stepNumber)
   {
     PRESSIOLOG_DEBUG("adams-bashforth2 stepper: do step");
 
@@ -156,7 +158,7 @@ private:
 
   template<typename f_t>
   void doUpdate2(state_type & odeSolution,
-	    const f_t & fn, const scalar_type & cfn,
+	    const f_t & fn,   const scalar_type & cfn,
 	    const f_t & fnm1, const scalar_type & cfnm1)
   {
     constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();

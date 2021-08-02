@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace ode{ 
 
-template <typename T, typename step_t, typename time_t, typename state_t, typename enable = void>
+template <class T, class step_t, class time_t, class state_t, class enable = void>
 struct is_legitimate_guesser
   : std::false_type{};
 
-template <typename T, typename step_t, typename time_t, typename state_t>
+template <class T, class step_t, class time_t, class state_t>
 struct is_legitimate_guesser<
   T, step_t, time_t, state_t,
   mpl::enable_if_t<

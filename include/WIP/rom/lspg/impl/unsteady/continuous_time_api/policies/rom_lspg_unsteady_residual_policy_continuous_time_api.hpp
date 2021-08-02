@@ -115,7 +115,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::step_type & currentStepNumber,
+	  const ::pressio::ode::step_count_type & currentStepNumber,
 	  residual_type & romR) const
   {
     this->compute_impl<stepper_tag>(romState, romR, stencilStates,
@@ -138,7 +138,7 @@ public:
 	  const fom_system_t & fomSystemObj,
 	  const scalar_t & timeAtNextStep,
 	  const scalar_t & dt,
-	  const ::pressio::ode::step_type & currentStepNumber,
+	  const ::pressio::ode::step_count_type & currentStepNumber,
 	  stencil_velocities_t & stencilVelocities,
 	  residual_type & romR) const
   {
@@ -191,7 +191,7 @@ private:
 		    const fom_system_t & fomSystemObj,
 		    const scalar_t & timeAtNextStep,
 		    const scalar_t & dt,
-		    const ::pressio::ode::step_type & currentStepNumber) const
+		    const ::pressio::ode::step_count_type & currentStepNumber) const
   {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
     auto timer = Teuchos::TimeMonitor::getStackedTimer();
@@ -247,7 +247,7 @@ private:
 		       const fom_system_t & fomSystemObj,
 		       const scalar_t & t_np1,
 		       const scalar_t & dt,
-		       const ::pressio::ode::step_type & currentStepNumber,
+		       const ::pressio::ode::step_count_type & currentStepNumber,
 		       // for CN, stencilVelocities holds f_n+1 and f_n
 		       stencil_velocities_t & stencilVelocities) const
   {
@@ -280,7 +280,7 @@ protected:
   // This is used to decide whether we need to update/recompute the previous
   // FOM states or not. Since it does not make sense to recompute previous
   // FOM states if we are not in a new time step.
-  mutable ::pressio::ode::step_type storedStep_ = {};
+  mutable ::pressio::ode::step_count_type storedStep_ = {};
 
   std::reference_wrapper<fom_states_manager_t> fomStatesMngr_;
 

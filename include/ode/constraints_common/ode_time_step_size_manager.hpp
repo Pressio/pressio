@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace ode{ 
 
-template <typename T, typename step_t, typename time_type, typename enable = void>
+template <class T, class step_t, class time_type, class enable = void>
 struct time_step_size_manager
   : std::false_type{};
 
-template <typename T, typename step_t, typename time_type>
+template <class T, class step_t, class time_type>
 struct time_step_size_manager<
   T, step_t, time_type,
   mpl::enable_if_t<
@@ -72,7 +72,7 @@ struct time_step_size_manager<
     >
   > : std::true_type{};
 
-template <typename T, typename step_t, typename time_type>
+template <class T, class step_t, class time_type>
 struct time_step_size_manager<
   T, step_t, time_type,
   mpl::enable_if_t<

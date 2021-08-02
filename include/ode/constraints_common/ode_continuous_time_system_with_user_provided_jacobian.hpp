@@ -52,10 +52,10 @@
 
 namespace pressio{ namespace ode{
 
-template<typename T, typename enable = void>
+template<class T, class enable = void>
 struct continuous_time_system_with_user_provided_jacobian : std::false_type{};
 
-template<typename T>
+template<class T>
 struct continuous_time_system_with_user_provided_jacobian<
   T,
   mpl::enable_if_t<

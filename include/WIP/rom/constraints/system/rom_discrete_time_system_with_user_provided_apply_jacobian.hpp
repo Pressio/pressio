@@ -68,11 +68,11 @@ struct discrete_time_system_with_user_provided_apply_jacobian<
       >::value and
     ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
       T, 2,
-      ::pressio::ode::step_type,
+      ::pressio::ode::step_count_type,
       typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type
       >::value and
     ::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-      T, 3, ::pressio::ode::step_type, typename T::scalar_type,
+      T, 3, ::pressio::ode::step_count_type, typename T::scalar_type,
       typename T::state_type, typename T::discrete_time_residual_type
       >::value and
     //
@@ -80,11 +80,11 @@ struct discrete_time_system_with_user_provided_apply_jacobian<
       T, apply_jac_operand_t
       >::value and
     ::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-     T, 2, ::pressio::ode::step_type, typename T::scalar_type,
+     T, 2, ::pressio::ode::step_count_type, typename T::scalar_type,
      typename T::state_type, apply_jac_operand_t, apply_jac_operand_t
      >::value and
   ::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-    T, 3, ::pressio::ode::step_type,
+    T, 3, ::pressio::ode::step_count_type,
     typename T::scalar_type, typename T::state_type, apply_jac_operand_t, apply_jac_operand_t
     >::value
   >
@@ -135,20 +135,20 @@ struct why_not_discrete_time_system_with_user_provided_apply_jacobian
 
   static_assert
     (::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-     T, 2, ::pressio::ode::step_type,
+     T, 2, ::pressio::ode::step_count_type,
      typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type>::value,
      "Your discrete-time adapter class is without (or has a wrong) discrete time residual method accepting 2 state");
 
   static_assert
     (::pressio::ode::predicates::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-     T, 3, ::pressio::ode::step_type,
+     T, 3, ::pressio::ode::step_count_type,
      typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type>::value,
      "Your discrete-time adapter class is without (or has a wrong) discrete time residual method accepting 3 states");
 
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 2,
-     ::pressio::ode::step_type,
+     ::pressio::ode::step_count_type,
      typename T::scalar_type,
      typename T::state_type,
      typename apply_jac_operand_t::traits::wrapped_t,
@@ -159,7 +159,7 @@ struct why_not_discrete_time_system_with_user_provided_apply_jacobian
   static_assert
     (::pressio::rom::predicates::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
      T, 3,
-     ::pressio::ode::step_type,
+     ::pressio::ode::step_count_type,
      typename T::scalar_type,
      typename T::state_type,
      typename apply_jac_operand_t::traits::wrapped_t,

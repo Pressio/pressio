@@ -116,7 +116,7 @@ public:
 	       const fom_system_t & fomSystemObj,
 	       const scalar_t & time,
 	       const scalar_t & dt,
-	       const ::pressio::ode::step_type & step,
+	       const ::pressio::ode::step_count_type & step,
 	       lspg_jac_t & romJac) const
   {
     this->compute_impl(romState, romPrevStates,
@@ -138,7 +138,7 @@ private:
   		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& timeAtNextStep,
   		    const scalar_t			& dt,
-		    const ::pressio::ode::step_type	& currentStepNumber,
+		    const ::pressio::ode::step_count_type	& currentStepNumber,
 		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd
@@ -174,7 +174,7 @@ private:
   		    const fom_system_t		        & fomSystemObj,
   		    const scalar_t			& timeAtNextStep,
   		    const scalar_t			& dt,
-		    const ::pressio::ode::step_type	& currentStepNumber,
+		    const ::pressio::ode::step_count_type	& currentStepNumber,
 		    lspg_jac_t				& romJac) const
   {
     // here we assume that the current state has already been reconstructd

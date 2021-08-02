@@ -69,7 +69,7 @@ mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
-	    ::pressio::ode::step_type num_steps,
+	    ::pressio::ode::step_count_type num_steps,
 	    pybind11::object pyCollector)
 {
   // here we want to view the state since we want to modify its data,
@@ -86,7 +86,7 @@ mpl::enable_if_t<rom_problem_type::stepper_t::is_explicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
-	    ::pressio::ode::step_type num_steps)
+	    ::pressio::ode::step_count_type num_steps)
 {
   // here we want to view the state since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
@@ -104,7 +104,7 @@ mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
-	    ::pressio::ode::step_type num_steps,
+	    ::pressio::ode::step_count_type num_steps,
 	    pybind11::object pyCollector,
 	    solver_t & solver)
 {
@@ -122,7 +122,7 @@ mpl::enable_if_t<rom_problem_type::stepper_t::is_implicit>
 solveNSteps(rom_problem_type & problem,
 	    typename state_t::traits::wrapped_t & stateInOut,
 	    time_t t0, time_t dt,
-	    ::pressio::ode::step_type num_steps,
+	    ::pressio::ode::step_count_type num_steps,
 	    solver_t & solver)
 {
   // here we want to view the state since we want to modify its data,

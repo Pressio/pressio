@@ -69,6 +69,7 @@ struct Undefined{};
 struct Euler{};
 struct RungeKutta4{};
 struct AdamsBashforth2{};
+struct SSPRungeKutta3{};
 }//end namespace explicitmethods
 
 namespace implicitmethods{
@@ -81,33 +82,32 @@ struct Arbitrary{};
 using Euler = BDF1;
 }//end namespace implicitmethods
 
-template <typename stepper_tag>
-struct requiredNumberOfStates{ static constexpr std::size_t value = 1; };
-template <> 
-struct requiredNumberOfStates<implicitmethods::BDF1>{
+template <typename stepper_tag> 
+struct requiredNumberOfStates{ 
+  static constexpr std::size_t value = 1; 
+};
+template <> struct requiredNumberOfStates<implicitmethods::BDF1>{
   // need to store: state_n+1, state_n
   static constexpr std::size_t value = 2;
 };
-template <>
-struct requiredNumberOfStates<implicitmethods::BDF2>{
+template <> struct requiredNumberOfStates<implicitmethods::BDF2>{
   // need: state_n+1, state_n, state_n-1
   static constexpr std::size_t value = 3;
 };
-template <>
-struct requiredNumberOfStates<implicitmethods::CrankNicolson>{
+template <> struct requiredNumberOfStates<implicitmethods::CrankNicolson>{
   // need: state_n+1, state_n
   static constexpr std::size_t value = 2;
 };
-template <>
-struct requiredNumberOfStates<explicitmethods::Euler>{
+template <> struct requiredNumberOfStates<explicitmethods::Euler>{
   static constexpr std::size_t value = 1;
 };
-template <>
-struct requiredNumberOfStates<explicitmethods::RungeKutta4>{
+template <> struct requiredNumberOfStates<explicitmethods::RungeKutta4>{
   static constexpr std::size_t value = 1;
 };
-template <>
-struct requiredNumberOfStates<explicitmethods::AdamsBashforth2>{
+template <> struct requiredNumberOfStates<explicitmethods::AdamsBashforth2>{
+  static constexpr std::size_t value = 2;
+};
+template <> struct requiredNumberOfStates<explicitmethods::SSPRungeKutta3>{
   static constexpr std::size_t value = 2;
 };
 
@@ -116,6 +116,7 @@ template <typename T> struct is_explicit_stepper_tag : std::false_type{};
 template <> struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
 template <> struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
 template <> struct is_explicit_stepper_tag<explicitmethods::AdamsBashforth2> : std::true_type{};
+template <> struct is_explicit_stepper_tag<explicitmethods::SSPRungeKutta3> : std::true_type{};
 
 // implicit
 template <typename T> struct is_implicit_stepper_tag : std::false_type{};
@@ -140,7 +141,7 @@ class nMinusFour{};
 
 // namespace types {
 //! Default type for the ode step
-using step_type = int32_t;
+using step_count_type = int32_t;
 
 //! Default type for the order of a stepper
 using stepper_order_type = int32_t;

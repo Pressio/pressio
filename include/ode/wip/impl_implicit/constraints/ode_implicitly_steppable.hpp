@@ -68,7 +68,7 @@ struct implicitly_steppable<
 		std::declval<state_type &>(),
 		std::declval<time_type const &>(),
 		std::declval<time_type const &>(),
-		std::declval<::pressio::ode::step_type const &>(),
+		std::declval<::pressio::ode::step_count_type const &>(),
 		std::declval<solver_type &>()
 		)
 	       )

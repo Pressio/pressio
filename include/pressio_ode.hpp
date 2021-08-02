@@ -50,6 +50,6 @@
 #define PRESSIO_ODE_HPP_
 
 #include "pressio_ode_explicit.hpp"
-#include "pressio_ode_implicit.hpp"
+// #include "pressio_ode_implicit.hpp"
 
 #endif

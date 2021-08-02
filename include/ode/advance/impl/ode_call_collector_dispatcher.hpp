@@ -51,55 +51,61 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template <
-  typename collector_type, typename time_type, typename state_type,
-  typename enable = void
+template <class collector_type, class time_type, class state_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::collector_callable_with_step_time_container_return_void<
+    collector_type, time_type, state_type
+    >::value
   >
-struct CallCollectorDispatch;
-
-template <
-  typename collector_type, typename time_type, typename state_type
-  >
-struct CallCollectorDispatch<
-  collector_type, time_type, state_type,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::ode::collector_callable_with_step_time_container_return_void<
-      collector_type, time_type, state_type
-      >::value
-    >
-  >
+call_collector(collector_type & collector, 
+               const ::pressio::ode::step_count_type & step,
+               const time_type & time,
+               const state_type & odeState)
 {
-  static void execute(collector_type	& collector,
-		      const ::pressio::ode::step_type	& step,
-		      const time_type	& time,
-		      const state_type	& yIn){
+  collector(step, time, odeState);
+}
 
-    collector(step, time, *yIn.data());
-  }
-};
+template <class collector_type, class time_type, class state_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::collector_callable_with_step_container_time_return_void<
+    collector_type, time_type, state_type
+    >::value
+  >
+call_collector(collector_type & collector, 
+               const ::pressio::ode::step_count_type & step,
+               const time_type & time,
+               const state_type & odeState)
+{
+  collector(step, odeState, time);
+}
 
-// // specialize for when collector accepts a pressio container directly
-// template <
-//   typename collector_type, typename time_type, typename state_type
-//   >
-// struct CallCollectorDispatch<
-//   collector_type, time_type, state_type,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_wrapper<state_type>::value and
-//     ::pressio::ode::constraints::collector_callable_with_step_time_pressio_container_return_void<
-//       collector_type, time_type, state_type
-//       >::value
-//     >
-//   >
-// {
-//   static void execute(collector_type	& collector,
-// 		      const ::pressio::ode::step_type	& step,
-// 		      const time_type	& time,
-// 		      const state_type	& yIn){
+template <class collector_type, class time_type, class state_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::collector_callable_with_container_step_time_return_void<
+    collector_type, time_type, state_type
+    >::value
+  >
+call_collector(collector_type & collector, 
+               const ::pressio::ode::step_count_type & step,
+               const time_type & time,
+               const state_type & odeState)
+{
+  collector(odeState, step, time);
+}
 
-//     collector(step, time, yIn);
-//   }
-// };
+template <class collector_type, class time_type, class state_type>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::collector_callable_with_time_container_step_return_void<
+    collector_type, time_type, state_type
+    >::value
+  >
+call_collector(collector_type & collector, 
+               const ::pressio::ode::step_count_type & step,
+               const time_type & time,
+               const state_type & odeState)
+{
+  collector(time, odeState, step);
+}
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_

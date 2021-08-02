@@ -57,7 +57,7 @@ namespace pressio{ namespace ode{ namespace impl{
 template <bool b, typename dt_manager, typename time_type>
 mpl::enable_if_t<b==true>
 callDtManager(dt_manager && dtManager,
-	      const ::pressio::ode::step_type & step,
+	      const ::pressio::ode::step_count_type & step,
 	      const time_type & time,
 	      time_type & dt,
 	      time_type & minDt,
@@ -69,7 +69,7 @@ callDtManager(dt_manager && dtManager,
 template <bool b, typename dt_manager, typename time_type>
 mpl::enable_if_t<b==false>
 callDtManager(dt_manager && dtManager,
-	      const ::pressio::ode::step_type & step,
+	      const ::pressio::ode::step_count_type & step,
 	      const time_type & time,
 	      time_type & dt,
 	      time_type & minDt,
@@ -97,8 +97,7 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 					     Args && ... args)
 {
 
-  using step_t = ::pressio::ode::step_type;
-  using collector_dispatch = CallCollectorDispatch<collector_t, time_type, state_type>;
+  using step_t = ::pressio::ode::step_count_type;
   constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
 
   if (final_time < start_time){
@@ -120,7 +119,7 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
   time_type dtReducFactor = ::pressio::utils::constants<time_type>::one();
 
   // pass initial condition to collector object
-  collector_dispatch::execute(collector, zero, time, odeStateInOut);
+  call_collector(collector, zero, time, odeStateInOut);
 
   step_t step = 1;
   PRESSIOLOG_INFO("advanceToTargetTimeWithDtCallback");
@@ -191,7 +190,7 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 #endif
 
       time += dt;
-      collector_dispatch::execute(collector, step, time, odeStateInOut);
+      call_collector(collector, step, time, odeStateInOut);
 
       // use numeric limits to avoid tricky roundoff accumulation
       if ( std::abs(time - final_time) <= eps ) condition = false;
