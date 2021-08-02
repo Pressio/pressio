@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   using fom_t		 = pressio::apps::Burgers1dTpetraBlock;
   using scalar_t         = typename fom_t::scalar_type;
   using rom_data_t_eigen = romDataTypeEigen<scalar_t>;
-  using ode_tag_euler    = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag_euler    = ::pressio::ode::implicitmethods::BDF1;
   using lowTri		 = pressio::matrixLowerTriangular;
   using phi_native_t = Tpetra::BlockMultiVector<>;
 

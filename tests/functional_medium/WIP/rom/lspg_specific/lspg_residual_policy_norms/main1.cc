@@ -114,7 +114,7 @@ void testUnsteadyResidualPolicy(fom_state_t & yRef,
 
   // we test here for BDF1
   constexpr std::size_t numAuxStates = 1;
-  using ode_tag  = pressio::ode::implicitmethods::Euler;
+  using ode_tag  = pressio::ode::implicitmethods::BDF1;
 
   // ------------------------------------
   // construct what we need to construct

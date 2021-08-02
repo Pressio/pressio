@@ -77,7 +77,7 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace 
 template <typename tag>
 struct supported_implicit_stepper_tag{
   static_assert
-  (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
+  (std::is_same<tag, ::pressio::ode::implicitmethods::BDF1>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
    "The implicit stepper tag you are passing to create the galerkin problem \

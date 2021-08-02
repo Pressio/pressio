@@ -49,7 +49,7 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   class scalar_type,
@@ -166,5 +166,5 @@ private:
   }
 };
 
-}}}}//end namespace pressio::ode::explicitmethods::impl
+}}}//end namespace pressio::ode::explicitmethods::impl
 #endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_ADAMS_BASHFORTH2_STEPPER_IMPL_HPP_

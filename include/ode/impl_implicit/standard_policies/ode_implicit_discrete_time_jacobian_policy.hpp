@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_JACOBIAN_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename state_type, typename jacobian_type>
 class JacobianStandardDiscreteTimePolicy
@@ -104,7 +104,7 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = stencilDataManager.stateAt(ode::n());
+    const auto & yn = stencilDataManager(ode::n());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, J,
 					 odeCurrentState,
 					 yn );
@@ -130,8 +130,8 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = stencilDataManager.stateAt(ode::n());
-    const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
+    const auto & yn = stencilDataManager(ode::n());
+    const auto & ynm1 = stencilDataManager(ode::nMinusOne());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, J,
 					 odeCurrentState, yn, ynm1 );
   }
@@ -156,9 +156,9 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
        system_type>::value, "system type must meet the discrete time api");
 
-    const auto & yn = stencilDataManager.stateAt(ode::n());
-    const auto & ynm1 = stencilDataManager.stateAt(ode::nMinusOne());
-    const auto & ynm2 = stencilDataManager.stateAt(ode::nMinusTwo());
+    const auto & yn = stencilDataManager(ode::n());
+    const auto & ynm1 = stencilDataManager(ode::nMinusOne());
+    const auto & ynm2 = stencilDataManager(ode::nMinusTwo());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt,
 					 J, odeCurrentState, yn, ynm1, ynm2);
   }

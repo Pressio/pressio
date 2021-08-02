@@ -9,7 +9,7 @@ namespace pressio{ namespace testing{ namespace wls
 
 template <typename decoder_d_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dKokkos & appObj,
-		       ::pressio::ode::implicitmethods::Euler odeTag,
+		       ::pressio::ode::implicitmethods::BDF1 odeTag,
 		       std::size_t romSize, std::size_t fomSize)
 {
   using fom_dmat_t = typename decoder_d_t::jacobian_type;

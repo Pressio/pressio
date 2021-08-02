@@ -96,7 +96,7 @@ template <typename tag>
 struct valid_stepper_tag_continuous_time_api
 {
   static_assert
-  (std::is_same<tag, ::pressio::ode::implicitmethods::Euler>::value or
+  (std::is_same<tag, ::pressio::ode::implicitmethods::BDF1>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
    std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
    "The implicit stepper tag you are passing to create the LSPG problem \

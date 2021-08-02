@@ -66,7 +66,7 @@ TEST(rom_lspg_time_discrete_residual_eigen, bdf1)
   vec_t R(8);
   R.data()->setConstant(2.);
 
-  using tag = ::pressio::ode::implicitmethods::Euler;
+  using tag = ::pressio::ode::implicitmethods::BDF1;
   pressio::rom::lspg::impl::unsteady::time_discrete_residual<tag>(statesMgr, R, 1.1);
 
   EXPECT_DOUBLE_EQ(R(0), 0.-0.-1.1*2.);
@@ -96,7 +96,7 @@ TEST(rom_lspg_time_discrete_residual_eigen, bdf1_with_sample_indices)
   indices(2) = 5;
   indices(3) = 7;
 
-  using tag = ::pressio::ode::implicitmethods::Euler;
+  using tag = ::pressio::ode::implicitmethods::BDF1;
   pressio::rom::lspg::impl::unsteady::time_discrete_residual<tag>(statesMgr, R, 1.1, indices);
 
   EXPECT_DOUBLE_EQ(R(0), 1.-2.-1.1*2.);

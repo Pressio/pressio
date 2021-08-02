@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
   using fom_t              = pressio::apps::Burgers1dKokkos;
   using scalar_t           = typename fom_t::scalar_type;
   using rom_data_t         = romDataTypeKokkos<scalar_t>;
-  using ode_tag_euler      = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag_euler      = ::pressio::ode::implicitmethods::BDF1;
   using ode_tag_BDF2       = ::pressio::ode::implicitmethods::BDF2;
   using lowTri		= pressio::matrixLowerTriangular;
   using phi_native_mat_t = typename fom_t::mv_d;

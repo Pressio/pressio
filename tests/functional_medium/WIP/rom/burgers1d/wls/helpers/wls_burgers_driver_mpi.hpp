@@ -12,7 +12,7 @@
 
 namespace{
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::Euler odeTag,
+auto readSol(::pressio::ode::implicitmethods::BDF1 odeTag,
 	     const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10))
 {

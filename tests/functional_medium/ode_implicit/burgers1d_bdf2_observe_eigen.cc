@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
 
   // define auxiliary stepper
   using aux_stepper_t = pressio::ode::ImplicitStepper<
-    pressio::ode::implicitmethods::Euler,
+    pressio::ode::implicitmethods::BDF1,
     ode_state_t, ode_res_t, ode_jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 

@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_t,
@@ -221,7 +221,7 @@ private:
     stepNumber_ = stepNumber;
 
     // current solution becomes y_n
-    auto & odeState_n = stencilStates_.stateAt(ode::n());
+    auto & odeState_n = stencilStates_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeSolution);
 
     // if provided, callback to provide a guess for the odeSolution
@@ -236,12 +236,12 @@ private:
     }
     catch (::pressio::eh::nonlinear_solve_failure const & e)
     {
-      auto & rollBackState = stencilStates_.stateAt(ode::n());
+      auto & rollBackState = stencilStates_(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);
       throw ::pressio::eh::time_step_failure();
     }
   }
 };
 
-}}}} // end namespace pressio::ode::implicitmethods
+}}} // end namespace pressio::ode::implicitmethods
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_CRANKNICOLSON_IMPL_HPP_

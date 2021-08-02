@@ -67,13 +67,13 @@ void discrete_time_residual(const state_type & y_np1,
 			    residual_type & R,
 			    const stencil_states_type & stencilStates,
 			    const scalar_type & dt,
-			    ::pressio::ode::implicitmethods::Euler)
+			    ::pressio::ode::implicitmethods::BDF1)
 {
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
   const auto cf	      = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::update(R, cf, y_np1, cnp1,
-			 stencilStates.stateAt(::pressio::ode::n()),
+			 stencilStates(::pressio::ode::n()),
 			 cn);
 }
 
@@ -102,8 +102,8 @@ void discrete_time_residual(const state_type	& y_np1,
   const auto cf	      = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
 
   ::pressio::ops::update(R, cf, y_np1, cnp1,
-			 stencilStates.stateAt(::pressio::ode::n()), cn,
-			 stencilStates.stateAt(nm1()), cnm1);
+			 stencilStates(::pressio::ode::n()), cn,
+			 stencilStates(nm1()), cnm1);
 }
 
 /*

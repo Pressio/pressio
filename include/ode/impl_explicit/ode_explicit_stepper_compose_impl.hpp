@@ -54,49 +54,49 @@
 #include "ode_explicit_adams_bashforth2_stepper_impl.hpp"
 #include "ode_explicit_ssp_runge_kutta3_stepper_impl.hpp"
 
-namespace pressio{ namespace ode{ namespace explicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename tag>
-struct ImplSelector
+struct ExplicitImplSelector
 {
   template<bool, typename ...Args> using type = void;
 };
 
 template<>
-struct ImplSelector<::pressio::ode::explicitmethods::Euler>
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::Euler>
 {
   template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::explicitmethods::impl::ExplicitEulerStepper
+  using type = ::pressio::ode::impl::ExplicitEulerStepper
     <Args..., is_standard_policy>;
 };
 
 template<>
-struct ImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
 {
   template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::explicitmethods::impl::ExplicitRungeKutta4Stepper
+  using type = ::pressio::ode::impl::ExplicitRungeKutta4Stepper
     <Args..., is_standard_policy>;
 };
 
 template<>
-struct ImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>
 {
   template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::explicitmethods::impl::ExplicitAdamsBashforth2Stepper
+  using type = ::pressio::ode::impl::ExplicitAdamsBashforth2Stepper
     <Args..., is_standard_policy>;
 };
 
 template<>
-struct ImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>
 {
   template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::explicitmethods::impl::ExplicitSSPRungeKutta3Stepper
+  using type = ::pressio::ode::impl::ExplicitSSPRungeKutta3Stepper
     <Args..., is_standard_policy>;
 };
 
 
 template<class tag, class state_type, class system_t>
-struct ComposeForDefaultPolicy
+struct ExplicitComposeForDefaultPolicy
 {
   static_assert
   (::pressio::ode::continuous_time_system_with_at_least_velocity<system_t>::value,
@@ -109,16 +109,15 @@ struct ComposeForDefaultPolicy
   using scalar_type   = typename ::pressio::traits<state_type>::scalar_type;
   using velocity_type = state_type;
 
-  using velocity_policy_t =
-    ::pressio::ode::explicitmethods::VelocityStandardPolicy<state_type>;
+  using velocity_policy_t = ExplicitVelocityStandardPolicy<state_type>;
 
-  using type = typename ImplSelector<tag>::template type<
+  using type = typename ExplicitImplSelector<tag>::template type<
       true, scalar_type, state_type, system_t, velocity_type, velocity_policy_t
       >;
 };
 
 template<class tag, class state_type, class system_t, class policy_t>
-struct ComposeForCustomPolicy
+struct ExplicitComposeForCustomPolicy
 {
   static_assert
   (::pressio::ode::continuous_time_system_with_at_least_velocity<system_t>::value,
@@ -137,10 +136,10 @@ struct ComposeForCustomPolicy
       mpl::remove_cvref_t<policy_t>, time_type, state_type, velocity_type, system_t>::value,
    "Invalid rhs policy for explicit time stepping");
 
-  using type = typename ImplSelector<tag>::template type<
+  using type = typename ExplicitImplSelector<tag>::template type<
       false, scalar_type, state_type, system_t, velocity_type, policy_t 
       >;
 };
 
-}}}} // end namespace pressio::ode::explicitmethods::impl
+}}} 
 #endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_

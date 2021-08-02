@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_DISCRETE_TIME_RESIDUAL_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename state_type, typename residual_type>
 class ResidualStandardDiscreteTimePolicy
@@ -99,7 +99,7 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = stencilStatesManager.stateAt(ode::n());
+    const auto & yn = stencilStatesManager(ode::n());
 
     try{
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, R,
@@ -127,8 +127,8 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = stencilStatesManager.stateAt(ode::n());
-    const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
+    const auto & yn = stencilStatesManager(ode::n());
+    const auto & ynm1 = stencilStatesManager(ode::nMinusOne());
 
     try{
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, R,
@@ -156,9 +156,9 @@ public:
       (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
        "system type must meet the discrete time api");
 
-    const auto & yn = stencilStatesManager.stateAt(ode::n());
-    const auto & ynm1 = stencilStatesManager.stateAt(ode::nMinusOne());
-    const auto & ynm2 = stencilStatesManager.stateAt(ode::nMinusTwo());
+    const auto & yn = stencilStatesManager(ode::n());
+    const auto & ynm1 = stencilStatesManager(ode::nMinusOne());
+    const auto & ynm2 = stencilStatesManager(ode::nMinusTwo());
 
     try{
       system.template discreteTimeResidual(step, rhsEvaluationTime, dt, R,

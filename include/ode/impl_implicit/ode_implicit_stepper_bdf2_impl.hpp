@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_t,
@@ -227,8 +227,8 @@ private:
     if (stepNumber == 1){
       // step ==1 means that we are going from y_0 to y_1
       // stencilStates_(0) now holds y_0
-      ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::n()), odeState);
-      ::pressio::ops::deep_copy(stencilStates_.stateAt(ode::nMinusOne()), odeState);
+      ::pressio::ops::deep_copy(stencilStates_(ode::n()), odeState);
+      ::pressio::ops::deep_copy(stencilStates_(ode::nMinusOne()), odeState);
       auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver,
 			 std::forward<Args>(args)...);
     }
@@ -254,8 +254,8 @@ private:
 	and so on...
       */
 
-      auto & odeState_n   = stencilStates_.stateAt(ode::n());
-      auto & odeState_nm1 = stencilStates_.stateAt(ode::nMinusOne());
+      auto & odeState_n   = stencilStates_(ode::n());
+      auto & odeState_nm1 = stencilStates_(ode::nMinusOne());
       ::pressio::ops::deep_copy(recoveryState_, odeState_nm1);
       ::pressio::ops::deep_copy(odeState_nm1, odeState_n);
       ::pressio::ops::deep_copy(odeState_n, odeState);
@@ -277,5 +277,5 @@ private:
   }
 };
 
-}}}} // end namespace pressio::ode::implicitmethods
+}}} // end namespace pressio::ode::implicitmethods
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_BDF2_IMPL_HPP_

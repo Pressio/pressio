@@ -207,7 +207,7 @@ struct Bdf1Solver
   using res_t	= typename app_t::velocity_type;
   using jac_t	= typename app_t::jacobian_type;
   using stepper_t = ::pressio::ode::ImplicitStepper<
-            ::pressio::ode::implicitmethods::Euler,
+            ::pressio::ode::implicitmethods::BDF1,
 				    state_t, res_t, jac_t, app_t>;
 
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;

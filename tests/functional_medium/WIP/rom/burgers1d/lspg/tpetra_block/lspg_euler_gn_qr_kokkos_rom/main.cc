@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
     lspg_state_t yROM("romState", romSize);
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Euler;
+    using ode_tag = pressio::ode::implicitmethods::BDF1;
     auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>
       (appobj, decoderObj, yROM, yRef);
 

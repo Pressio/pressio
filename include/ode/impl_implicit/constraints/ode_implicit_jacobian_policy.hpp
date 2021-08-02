@@ -92,7 +92,7 @@ struct implicit_jacobian_policy<
        <tag>
        (
 	std::declval<state_t const &>(),
-	std::declval<::pressio::ode::implicitmethods::StencilStatesManager<state_t, nS> const & >(),
+	std::declval<::pressio::ode::StencilStatesManager<state_t, nS> const & >(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
@@ -108,7 +108,7 @@ struct implicit_jacobian_policy<
 template<typename T, typename ... args>
 using implicit_euler_jacobian_policy =
   implicit_jacobian_policy<
-  T, ::pressio::ode::implicitmethods::Euler, 1, args...>;
+  T, ::pressio::ode::implicitmethods::BDF1, 1, args...>;
 
 template<typename T, typename ... args>
 using implicit_bdf2_jacobian_policy =

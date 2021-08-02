@@ -49,19 +49,6 @@
 #ifndef ODE_PRESSIO_ODE_COMMON_HPP_
 #define ODE_PRESSIO_ODE_COMMON_HPP_
 
-/*
-   NOTE that the order below matters!
-   - Includes are ordered properly to avoid a tangled system.
-   - don't rely on files inside impl, these might change
-
-   NOTE also that this header by itself means nothing and if you use
-   it as such, you need to know what you are doing.
-   This header is here to help the publicly-exposed includes named
-   "pressio_ode_bla.hpp" inside the pressio/packages directory.
-   Users of pressio should NOT rely on this file, but only
-   on the top-level "pressio_ode_{explicit,implicit}.hpp".
-*/
-
 namespace pressio{ namespace ode{ 
 
 namespace explicitmethods{
@@ -78,8 +65,6 @@ struct BDF1{};
 struct BDF2{};
 struct CrankNicolson{};
 struct Arbitrary{};
-
-using Euler = BDF1;
 }//end namespace implicitmethods
 
 namespace constants{
@@ -189,6 +174,17 @@ struct StepperTotalNumberOfStates{
 
 }}//end namespace pressio::ode
 
+/*
+   NOTE that the order below matters!
+   Includes are ordered properly to avoid a tangled system.
+
+   NOTE also that this header by itself means nothing and if you use
+   it as such, you need to know what you are doing.
+   This header is here to help the publicly-exposed includes named
+   "pressio_ode_bla.hpp" inside the pressio/packages directory.
+   Users of pressio should NOT rely on this file, but only
+   on the top-level "pressio_ode_{explicit,implicit}.hpp".
+*/
 #include "ode_exceptions.hpp"
 #include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
 #include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"

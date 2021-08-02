@@ -701,7 +701,7 @@ private:
       fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						   stencilStates_, dt,
-						   ::pressio::ode::implicitmethods::Euler());
+						   ::pressio::ode::implicitmethods::BDF1());
     }
   }
 

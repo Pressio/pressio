@@ -51,53 +51,6 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// /*
-//   BDF1 time-discrete jacobian:
-//   J(y_n+1) = I - dt*df_n+1/dy_n+1
-
-//   - on input jac contains  df_n+1/dy_n+1
-//   - on output, jac contains the time-discrete jacobian
-// */
-// template <typename T, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_array_pybind<T>::value
-// >
-// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
-// 		       const scalar_type & dt,
-// 		       ::pressio::ode::implicitmethods::Euler)
-// {
-//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-//   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
-//   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
-//   ::pressio::ops::scale(jac, cf);
-//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
-// }
-
-// /*
-//   BDF2 time-discrete jacobian:
-//   J(y_n+1) = I - (2/3)*dt*df_n+1/dy_n+1
-
-//   - on input jac contains  df_n+1/dy_n+1
-//   - on output, jac contains the time-discrete jacobian
-// */
-// template <typename T, typename scalar_type>
-// ::pressio::mpl::enable_if_t<
-//   ::pressio::containers::predicates::is_array_pybind<T>::value
-// >
-// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
-// 		       const scalar_type & dt,
-// 		       ::pressio::ode::implicitmethods::BDF2)
-// {
-//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
-//   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
-//   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
-//   ::pressio::ops::scale(jac, cf);
-//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
-
-// }
-// #endif
-
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 /*
   BDF1 time-discrete jacobian:
@@ -113,7 +66,7 @@ template <typename jacobian_type, typename scalar_type>
 >
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
-		       ::pressio::ode::implicitmethods::Euler)
+		       ::pressio::ode::implicitmethods::BDF1)
 {
   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
@@ -135,7 +88,7 @@ template <typename jacobian_type, typename scalar_type>
 >
 discrete_time_jacobian(jacobian_type & jac,
 		       const scalar_type & dt,
-		       ::pressio::ode::implicitmethods::Euler)
+		       ::pressio::ode::implicitmethods::BDF1)
 {
   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
@@ -236,6 +189,52 @@ discrete_time_jacobian(jacobian_type & jac,
   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
 }
 #endif
+
+// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
+// /*
+//   BDF1 time-discrete jacobian:
+//   J(y_n+1) = I - dt*df_n+1/dy_n+1
+
+//   - on input jac contains  df_n+1/dy_n+1
+//   - on output, jac contains the time-discrete jacobian
+// */
+// template <typename T, typename scalar_type>
+// ::pressio::mpl::enable_if_t<
+//   ::pressio::containers::predicates::is_array_pybind<T>::value
+// >
+// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
+//           const scalar_type & dt,
+//           ::pressio::ode::implicitmethods::BDF1)
+// {
+//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
+//   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
+//   const auto cf    = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
+//   ::pressio::ops::scale(jac, cf);
+//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+// }
+
+// /*
+//   BDF2 time-discrete jacobian:
+//   J(y_n+1) = I - (2/3)*dt*df_n+1/dy_n+1
+
+//   - on input jac contains  df_n+1/dy_n+1
+//   - on output, jac contains the time-discrete jacobian
+// */
+// template <typename T, typename scalar_type>
+// ::pressio::mpl::enable_if_t<
+//   ::pressio::containers::predicates::is_array_pybind<T>::value
+// >
+// discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
+//           const scalar_type & dt,
+//           ::pressio::ode::implicitmethods::BDF2)
+// {
+//   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
+//   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
+//   const auto cf    = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
+//   ::pressio::ops::scale(jac, cf);
+//   for (auto i=0; i<::pressio::ops::extent(jac,0); ++i) jac(i,i) += cnp1;
+// }
+// #endif
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_IMPLICIT_IMPL_ODE_DISCRETE_TIME_JACOBIAN_IMPL_HPP_

@@ -54,7 +54,7 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{ namespace unst
 template <typename stepper_tag, typename scalar_t> struct dtPrefactor;
 
 template <typename scalar_t>
-struct dtPrefactor<::pressio::ode::implicitmethods::Euler, scalar_t>{
+struct dtPrefactor<::pressio::ode::implicitmethods::BDF1, scalar_t>{
   static constexpr auto value = ::pressio::ode::constants::bdf1<scalar_t>::c_f_;
 };
 

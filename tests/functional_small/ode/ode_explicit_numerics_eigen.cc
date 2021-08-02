@@ -35,7 +35,7 @@ TEST(ode, explicit_euler_custom_policy_reference)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  using res_std_pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
   auto stepperObj = ode::createForwardEulerStepper(y, appObj, polObj);
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
@@ -49,7 +49,7 @@ TEST(ode, explicit_euler_custom_policy_move)
   app_t appObj;
 
   state_t y(3);
-  using res_std_pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
   auto stepperObj = ode::createForwardEulerStepper(y, appObj, std::move(polObj));
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
@@ -84,7 +84,7 @@ TEST(ode, explicit_rk4_custom_policy_reference)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  using res_std_pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
   auto stepperObj = ode::createRungeKutta4Stepper(y, appObj, polObj);
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
@@ -97,7 +97,7 @@ TEST(ode, explicit_rk4_custom_policy_move)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  using res_std_pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
   auto stepperObj = ode::createRungeKutta4Stepper(y, appObj, std::move(polObj));
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
@@ -239,7 +239,7 @@ TEST(ode, explicit_ab2_custom_policy_reference)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  using pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   pol_t polObj;
   auto stepperObj = ode::createAdamsBashforth2Stepper(y, appObj, polObj);
   double dt = 2.;
@@ -257,7 +257,7 @@ TEST(ode, explicit_ab2_custom_policy_move)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  using pol_t = ode::explicitmethods::VelocityStandardPolicy<state_t>;
+  using pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   auto stepperObj = ode::createAdamsBashforth2Stepper(y, appObj, pol_t());
   double dt = 2.;
   Collector C;

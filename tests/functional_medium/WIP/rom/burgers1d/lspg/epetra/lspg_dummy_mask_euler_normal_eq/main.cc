@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
   mask_t masker(&Comm, appobj.getDataMap());
 
   // define LSPG type
-  using ode_tag  = pressio::ode::implicitmethods::Euler;
+  using ode_tag  = pressio::ode::implicitmethods::BDF1;
   auto lspgProblem = pressio::rom::lspg::createMaskedProblemUnsteady<ode_tag>(appobj, decoderObj, yROM, yRef, masker);
 
   // linear solver

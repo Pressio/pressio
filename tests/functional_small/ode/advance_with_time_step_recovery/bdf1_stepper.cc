@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
   state_t y(3);
   pressio::ops::fill(y, 1);
 
-  using ode_tag = pressio::ode::implicitmethods::Euler;
+  using ode_tag = pressio::ode::implicitmethods::BDF1;
   using stepper_t = pressio::ode::ImplicitStepper<
     ode_tag, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);

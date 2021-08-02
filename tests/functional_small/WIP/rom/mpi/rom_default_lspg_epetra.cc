@@ -18,7 +18,7 @@ TEST(lspg, epetra_types_euler)
   static_assert(::pressio::rom::constraints::continuous_time_system_with_at_least_velocity
       <fom_t>::value , "");
 
-  using ode_name_t = pressio::ode::implicitmethods::Euler;
+  using ode_name_t = pressio::ode::implicitmethods::BDF1;
   using lspg_problem = pressio::rom::lspg::impl::composeDefaultProblem<
     ode_name_t, fom_t, decoder_t, lspg_state_t>::type;
   using lspg_stepper_t = typename lspg_problem::stepper_t;

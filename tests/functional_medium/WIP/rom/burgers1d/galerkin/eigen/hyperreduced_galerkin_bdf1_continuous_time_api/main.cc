@@ -77,7 +77,7 @@ struct GalerkinBDF1WithContinuousTimeApi
     using pressio::rom::galerkin::createArbitraryProjector;
     auto dummyProjector = createArbitraryProjector(phi);
 
-    using ode_tag = pressio::ode::implicitmethods::Euler;
+    using ode_tag = pressio::ode::implicitmethods::BDF1;
     using pressio::rom::galerkin::createHyperReducedVelocityProblem;
     auto Problem = createHyperReducedVelocityProblem<ode_tag>(appobj, decoderObj, yROM_, yRef, dummyProjector);
     using problem_t = decltype(Problem);

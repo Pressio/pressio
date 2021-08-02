@@ -49,8 +49,9 @@
 #ifndef ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
 #define ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ 
 
+namespace impl{
 template<typename T, std::size_t n>
 class StencilStatesManager
 {
@@ -63,36 +64,34 @@ private:
 public:
   StencilStatesManager() = delete;
 
-  // template <
-  // typename _T = T,
-  // mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0
-  // >
+  // template <typename _T = T, mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0>
   // StencilStatesManager(){};
 
   // constructor for n == 1
   template <std::size_t _n = n, mpl::enable_if_t<_n == 1, int> = 0>
   StencilStatesManager(T const & y)
-    : data_{{y}}{}
+    : data_{::pressio::ops::clone(y)}{}
 
   // constructor for n == 2
   template <std::size_t _n = n, mpl::enable_if_t<_n == 2, int> = 0>
   StencilStatesManager(T const & y)
-    : data_{{y,y}}{}
+    : data_{::pressio::ops::clone(y),
+            ::pressio::ops::clone(y)}{}
 
   // constructor for n == 3
   template <std::size_t _n = n, mpl::enable_if_t<_n == 3, int> = 0>
   StencilStatesManager(T const & y)
-    : data_{{y,y,y}}{}
+    : data_{::pressio::ops::clone(y),
+            ::pressio::ops::clone(y),
+            ::pressio::ops::clone(y)}{}
 
   // constructor for n == 4
   template <std::size_t _n = n, mpl::enable_if_t<_n == 4, int> = 0>
   StencilStatesManager(T const & y)
-    : data_{{y,y,y,y}}{}
-
-  // constructor for n == 5
-  template <std::size_t _n = n, mpl::enable_if_t<_n == 5, int> = 0>
-  StencilStatesManager(T const & y)
-    : data_{{y,y,y,y,y}}{}
+    : data_{::pressio::ops::clone(y),
+            ::pressio::ops::clone(y),
+            ::pressio::ops::clone(y),
+            ::pressio::ops::clone(y)}{}
 
   StencilStatesManager(StencilStatesManager const & other) = default;
   StencilStatesManager & operator=(StencilStatesManager const & other) = default;
@@ -108,24 +107,12 @@ public:
 
   // n
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=1, T & > stateAt(ode::n){return data_[0];}
-
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=1, T const & >stateAt(ode::n) const {return data_[0];}
-
-  template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=1, T & > operator()(ode::n){return data_[0];}
 
   template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=1, T const & > operator()(ode::n)const {return data_[0];}
 
   // n-1
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=2, T & > stateAt(ode::nMinusOne){return data_[1];}
-
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=2, T const & > stateAt(ode::nMinusOne) const {return data_[1];}
-
   template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=2, T & > operator()(ode::nMinusOne){return data_[1];}
 
@@ -134,24 +121,12 @@ public:
 
   // n-2
   template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=3, T & > stateAt(ode::nMinusTwo){return data_[2];}
-
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=3, T const & > stateAt(ode::nMinusTwo) const {return data_[2];}
-
-  template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=3, T & > operator()(ode::nMinusTwo){return data_[2];}
 
   template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=3, T const & > operator()(ode::nMinusTwo) const {return data_[2];}
 
   // n-3
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=4, T & > stateAt(ode::nMinusThree){return data_[3];}
-
-  template <std::size_t _ns = n>
-  mpl::enable_if_t<_ns>=4, T const & > stateAt(ode::nMinusThree) const {return data_[3];}
-
   template <std::size_t _ns = n>
   mpl::enable_if_t<_ns>=4, T & > operator()(ode::nMinusThree){return data_[3];}
 
@@ -163,5 +138,5 @@ public:
 template<typename T, std::size_t n>
 using StencilStatesManager = impl::StencilStatesManager<T, n>;
 
-}}}//end namespace pressio::ode::implicitmethods
+}}//end namespace pressio::ode::implicitmethods
 #endif  // ODE_IMPLICIT_ODE_STENCIL_STATES_MANAGER_HPP_

@@ -94,7 +94,7 @@ struct implicit_residual_policy<
        <tag>
        (
 	std::declval<state_t const &>(),
-	std::declval<::pressio::ode::implicitmethods::StencilStatesManager<state_t, nStates> const & >(),
+	std::declval<::pressio::ode::StencilStatesManager<state_t, nStates> const & >(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
@@ -138,12 +138,12 @@ struct implicit_residual_policy<
        <tag>
        (
 	std::declval<state_t const &>(),
-	std::declval<::pressio::ode::implicitmethods::StencilStatesManager<state_t, nStates> const & >(),
+	std::declval<::pressio::ode::StencilStatesManager<state_t, nStates> const & >(),
 	std::declval<system_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<scalar_t const &>(),
 	std::declval<::pressio::ode::step_count_type>(),
-	std::declval<::pressio::ode::implicitmethods::StencilVelocitiesManager<residual_t, nVelocities> & >(),
+	std::declval<::pressio::ode::StencilVelocitiesManager<residual_t, nVelocities> & >(),
 	std::declval<residual_t &>()
 	)
        )
@@ -156,7 +156,7 @@ struct implicit_residual_policy<
 template<typename T, typename ... args>
 using implicit_euler_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::Euler, 1, 0, args...>;
+  T, ::pressio::ode::implicitmethods::BDF1, 1, 0, args...>;
 
 template<typename T, typename ... args>
 using implicit_bdf2_residual_policy =

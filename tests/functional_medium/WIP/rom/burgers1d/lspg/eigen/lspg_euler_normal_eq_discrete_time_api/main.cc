@@ -127,7 +127,7 @@ struct EulerLSPGWithVelocityApi
     ::pressio::ops::fill(yROM_, 0.0);
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::Euler;
+    using ode_tag = pressio::ode::implicitmethods::BDF1;
     auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
       appobj, decoderObj, yROM_, yRef);
 

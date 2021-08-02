@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
   // prec obj
   precond_t PrecObj;
 
-  using odetag = pressio::ode::implicitmethods::Euler;
+  using odetag = pressio::ode::implicitmethods::BDF1;
   // using problem_t  =
   //   pressio::rom::lspg::composePreconditionedDefaultProblem<
   //     ode_tag, fom_t, decoder_t, rom_state_t, precond_t>::type;

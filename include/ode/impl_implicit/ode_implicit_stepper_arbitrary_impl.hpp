@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_t,
@@ -197,7 +197,7 @@ private:
   mpl::enable_if_t<nAux==1>
   updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_n = stencilStates_(ode::n());
     ::pressio::ops::deep_copy(recoveryState_, y_n);
     ::pressio::ops::deep_copy(y_n, odeState);
   }
@@ -206,7 +206,7 @@ private:
   mpl::enable_if_t<nAux==1>
   rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
+    auto & y_n = stencilStates_(ode::n());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, recoveryState_);
   }
@@ -216,8 +216,8 @@ private:
   mpl::enable_if_t<nAux==2>
   updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
-    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
+    auto & y_n = stencilStates_(ode::n());
+    auto & y_nm1 = stencilStates_(ode::nMinusOne());
     ::pressio::ops::deep_copy(recoveryState_, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_n);
     ::pressio::ops::deep_copy(y_n, odeState);
@@ -227,8 +227,8 @@ private:
   mpl::enable_if_t<nAux==2>
   rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
-    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
+    auto & y_n = stencilStates_(ode::n());
+    auto & y_nm1 = stencilStates_(ode::nMinusOne());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, recoveryState_);
@@ -239,9 +239,9 @@ private:
   mpl::enable_if_t<nAux==3>
   updateAuxiliaryStorage(const ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
-    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
-    auto & y_nm2 = stencilStates_.stateAt(ode::nMinusTwo());
+    auto & y_n = stencilStates_(ode::n());
+    auto & y_nm1 = stencilStates_(ode::nMinusOne());
+    auto & y_nm2 = stencilStates_(ode::nMinusTwo());
     ::pressio::ops::deep_copy(recoveryState_, y_nm2);
     ::pressio::ops::deep_copy(y_nm2, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_n);
@@ -252,9 +252,9 @@ private:
   mpl::enable_if_t<nAux==3>
   rollBackStates(ode_state_type & odeState)
   {
-    auto & y_n = stencilStates_.stateAt(ode::n());
-    auto & y_nm1 = stencilStates_.stateAt(ode::nMinusOne());
-    auto & y_nm2 = stencilStates_.stateAt(ode::nMinusTwo());
+    auto & y_n = stencilStates_(ode::n());
+    auto & y_nm1 = stencilStates_(ode::nMinusOne());
+    auto & y_nm2 = stencilStates_(ode::nMinusTwo());
     ::pressio::ops::deep_copy(odeState, y_n);
     ::pressio::ops::deep_copy(y_n, y_nm1);
     ::pressio::ops::deep_copy(y_nm1, y_nm2);
@@ -262,5 +262,5 @@ private:
   }
 };
 
-}}}}
+}}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ARBITRARY_IMPL_HPP_

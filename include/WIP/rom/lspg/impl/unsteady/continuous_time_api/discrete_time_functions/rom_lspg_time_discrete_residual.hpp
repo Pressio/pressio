@@ -60,7 +60,7 @@ template<
   typename ud_ops
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
   mpl::not_void<ud_ops>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -89,7 +89,7 @@ template<
   typename scalar_type
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
   ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -145,7 +145,7 @@ template<
   typename hyp_ind_t
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
    ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -224,7 +224,7 @@ template<
   typename hyp_ind_t
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_eigen<residual_type>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -388,7 +388,7 @@ template<
   typename scalar_type
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_eigen<state_type>::value == true
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -458,7 +458,7 @@ template<
   typename scalar_type
   >
 ::pressio::mpl::enable_if_t<
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value and
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value and
   ::pressio::containers::predicates::is_vector_wrapper_kokkos<state_type>::value == true
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
@@ -521,7 +521,7 @@ template <typename stepper_tag>
 struct time_discrete_single_entry_epetra;
 
 template <>
-struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::Euler>{
+struct time_discrete_single_entry_epetra<::pressio::ode::implicitmethods::BDF1>{
   template <typename T, typename fom_states_manager_t>
     static void evaluate(const T& dt,
 			 T & R,
@@ -610,7 +610,7 @@ template <typename stepper_tag>
 struct time_discrete_single_entry_tpetra;
 
 template <>
-struct time_discrete_single_entry_tpetra<::pressio::ode::implicitmethods::Euler>
+struct time_discrete_single_entry_tpetra<::pressio::ode::implicitmethods::BDF1>
 {
   template <typename T, typename state_type>
     static void evaluate(const T& dt,
@@ -698,7 +698,7 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra<state_type>::value == true and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
@@ -743,7 +743,7 @@ template<
   >
 ::pressio::mpl::enable_if_t<
   containers::predicates::is_vector_wrapper_tpetra_block<state_type>::value and
-  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::Euler>::value
+  std::is_same<stepper_tag, ::pressio::ode::implicitmethods::BDF1>::value
   >
 time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,

@@ -17,7 +17,7 @@ TEST(ode, implicit_euler_policy_default_created)
   y = appObj.getInitCond();
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   using lin_solver_t = linearsolvers::Solver<
@@ -51,7 +51,7 @@ TEST(ode, implicit_euler_guesserLambda)
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   // define solver
@@ -91,11 +91,11 @@ TEST(ode, implicit_euler_custom_policy)
   y = appObj.getInitCond();
 
   // define policies and stepper
-  using res_pol_t = ode::implicitmethods::ResidualStandardPolicyBdf<state_t, res_t>;
-  using jac_pol_t = ode::implicitmethods::JacobianStandardPolicyBdf<state_t, jac_t>;
+  using res_pol_t = ode::impl::ResidualStandardPolicyBdf<state_t, res_t>;
+  using jac_pol_t = ode::impl::JacobianStandardPolicyBdf<state_t, jac_t>;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
   stepper_t stepperObj(y, appObj, res_pol_t(), jac_pol_t());
 
   //**********************
@@ -162,7 +162,7 @@ TEST(ode, implicit_euler_policy_default_created_custom_update)
   y(0) = 1.; y(1) = 2.; y(2) = 4.;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   // define solver
@@ -198,7 +198,7 @@ TEST(ode, implicit_euler_guesserLambdaCustomUpdate)
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   using lin_algo_t = linearsolvers::iterative::Bicgstab;
@@ -240,7 +240,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
 
   // define auxiliary stepper
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   // bdf2 stepper
@@ -281,11 +281,11 @@ TEST(ode, implicit_bdf2_custom_policy)
   y = appObj.getInitCond();
 
   // define auxiliary policies and stepper
-  using res_pol_t = ode::implicitmethods::ResidualStandardPolicyBdf<state_t, res_t>;
-  using jac_pol_t = ode::implicitmethods::JacobianStandardPolicyBdf<state_t, jac_t>;
+  using res_pol_t = ode::impl::ResidualStandardPolicyBdf<state_t, res_t>;
+  using jac_pol_t = ode::impl::JacobianStandardPolicyBdf<state_t, jac_t>;
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler,
+    ode::implicitmethods::BDF1,
     state_t, res_t, jac_t, app_t, res_pol_t, jac_pol_t>;
   aux_stepper_t stepperAux(y, appObj, res_pol_t(), jac_pol_t());
 

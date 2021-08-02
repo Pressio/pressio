@@ -57,7 +57,7 @@ struct _num_fom_states_needed{
 };
 
 template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::Euler>{
+struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF1>{
   static constexpr std::size_t value = 1;
 };
 

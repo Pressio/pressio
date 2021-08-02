@@ -134,7 +134,7 @@ public:
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
     ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						 stencilStates_, dt,
-						 ::pressio::ode::implicitmethods::Euler());
+						 ::pressio::ode::implicitmethods::BDF1());
   }
 
   /** time_discrete_jacobian for eigen */
@@ -196,7 +196,7 @@ public:
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
     ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						 stencilStates_, dt,
-						 ::pressio::ode::implicitmethods::Euler());
+						 ::pressio::ode::implicitmethods::BDF1());
   }
 
   template <
@@ -259,7 +259,7 @@ public:
     fomSystemObj.velocity(*fomState.data(),t,*residual.data());
     ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						 stencilStates_, dt,
-						 ::pressio::ode::implicitmethods::Euler());
+						 ::pressio::ode::implicitmethods::BDF1());
   }
 
   /** time_discrete_jacobian for kokkos */

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
   using fom_residual_api_t = pressio::apps::Burgers1dEigenDiscreteTimeApi;
   using scalar_t        = typename fom_t::scalar_type;
   using rom_data_t      = romDataTypeEigen<scalar_t>;
-  using ode_tag_euler   = ::pressio::ode::implicitmethods::Euler;
+  using ode_tag_euler   = ::pressio::ode::implicitmethods::BDF1;
   using ode_tag_BDF2    = ::pressio::ode::implicitmethods::BDF2;
   using lowTri		= pressio::matrixLowerTriangular;
 

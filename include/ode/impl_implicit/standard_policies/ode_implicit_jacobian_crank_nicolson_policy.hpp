@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
 #define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename state_type, typename jacobian_type>
 class JacobianStandardPolicyCrankNicolson

@@ -64,23 +64,23 @@
 #include "ode_implicit_stepper_cranknicolson_impl.hpp"
 #include "ode_implicit_stepper_arbitrary_impl.hpp"
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename tag, typename ...Args>
-struct compose;
+struct ImplicitCompose;
 
 ////////////////////////////////////////
 /// CRANK-NICOLSON stepper
 ////////////////////////////////////////
-// 1. compose<tag, state_t, res_t, jac_t, system_t>;
-// 2. compose<tag, state_t, res_t, jac_t, system_t, void, res_pol, jac_pol>;
+// 1. ImplicitCompose<tag, state_t, res_t, jac_t, system_t>;
+// 2. ImplicitCompose<tag, state_t, res_t, jac_t, system_t, void, res_pol, jac_pol>;
 template<
   typename state_type,
   typename residual_type,
   typename jacobian_type,
   typename system_type
   >
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::CrankNicolson,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -97,10 +97,10 @@ struct compose<
    "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t =
-    ::pressio::ode::implicitmethods::ResidualStandardPolicyCrankNicolson<
+    ::pressio::ode::impl::ResidualStandardPolicyCrankNicolson<
     state_type, residual_type>;
   using jacobian_policy_t =
-    ::pressio::ode::implicitmethods::JacobianStandardPolicyCrankNicolson<
+    ::pressio::ode::impl::JacobianStandardPolicyCrankNicolson<
     state_type, jacobian_type>;
 
   using type = StepperCrankNicolson<
@@ -118,7 +118,7 @@ template<
   typename system_type,
   typename residual_policy_type,
   typename jacobian_policy_type>
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::CrankNicolson,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -157,9 +157,9 @@ struct compose<
 ////////////////////////////////////////
 
 // potential cases
-// 1. compose<bdf1, state_t, res_t, jac_t, system_t>;
-// 2. compose<bdf1, state_t, res_t, jac_t, system_t, res_pol, jac_pol>;
-// 3. compose<bdf1, state_t, res_t, jac_t, system_t, void, res_pol, jac_pol>;
+// 1. ImplicitCompose<bdf1, state_t, res_t, jac_t, system_t>;
+// 2. ImplicitCompose<bdf1, state_t, res_t, jac_t, system_t, res_pol, jac_pol>;
+// 3. ImplicitCompose<bdf1, state_t, res_t, jac_t, system_t, void, res_pol, jac_pol>;
 
 // 1.
 // when we have standard policies, the system must be checked for API
@@ -171,8 +171,8 @@ template<
   typename jacobian_type,
   typename system_type
   >
-struct compose<
-  ::pressio::ode::implicitmethods::Euler,
+struct ImplicitCompose<
+  ::pressio::ode::implicitmethods::BDF1,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
     ::pressio::ode::implicit_residual<residual_type>::value and
@@ -187,10 +187,10 @@ struct compose<
    "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t =
-    ::pressio::ode::implicitmethods::ResidualStandardPolicyBdf<
+    ::pressio::ode::impl::ResidualStandardPolicyBdf<
     state_type, residual_type>;
   using jacobian_policy_t =
-    ::pressio::ode::implicitmethods::JacobianStandardPolicyBdf<
+    ::pressio::ode::impl::JacobianStandardPolicyBdf<
     state_type, jacobian_type>;
 
   using type = StepperBDF1<
@@ -215,8 +215,8 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
   >
-struct compose<
-  ::pressio::ode::implicitmethods::Euler,
+struct ImplicitCompose<
+  ::pressio::ode::implicitmethods::BDF1,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
     ::pressio::ode::implicit_residual<residual_type>::value and
@@ -254,8 +254,8 @@ template<
   typename system_type,
   typename residual_policy_type,
   typename jacobian_policy_type>
-struct compose<
-  ::pressio::ode::implicitmethods::Euler,
+struct ImplicitCompose<
+  ::pressio::ode::implicitmethods::BDF1,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
     ::pressio::ode::implicit_residual<residual_type>::value and
@@ -292,8 +292,8 @@ struct compose<
 /// BDF2 stepper
 ////////////////////////////////////////
 
-// compose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t>;
-// compose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t, res_pol, jac_pol>;
+// ImplicitCompose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t>;
+// ImplicitCompose<bdf2, state_t, res_t, jac_t, system_t, aux_stepper_t, res_pol, jac_pol>;
 template<
   typename state_type,
   typename residual_type,
@@ -301,7 +301,7 @@ template<
   typename system_type,
   typename aux_stepper_t
   >
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -318,10 +318,10 @@ struct compose<
    "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t =
-    ::pressio::ode::implicitmethods::ResidualStandardPolicyBdf<
+    ::pressio::ode::impl::ResidualStandardPolicyBdf<
     state_type, residual_type>;
   using jacobian_policy_t =
-    ::pressio::ode::implicitmethods::JacobianStandardPolicyBdf<
+    ::pressio::ode::impl::JacobianStandardPolicyBdf<
     state_type, jacobian_type>;
 
   using type = StepperBDF2<
@@ -341,7 +341,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
   >
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::BDF2,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -376,10 +376,10 @@ struct compose<
 
 
 ////////////////////////////////////////
-/// compose Arbitrary stepper
+/// ImplicitCompose Arbitrary stepper
 ////////////////////////////////////////
 
-// compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
+// ImplicitCompose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
 // if we are here, it means we only need auxiliary states and not auxiliary rhs
 template<
   typename state_type,
@@ -389,7 +389,7 @@ template<
   typename order_setter_t,
   typename tot_n_setter_t
   >
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -407,10 +407,10 @@ struct compose<
    "state, residual and jacobian are not scalar compatible ");
 
   using residual_policy_t =
-    ::pressio::ode::implicitmethods::ResidualStandardDiscreteTimePolicy<
+    ::pressio::ode::impl::ResidualStandardDiscreteTimePolicy<
     state_type, residual_type>;
   using jacobian_policy_t =
-    ::pressio::ode::implicitmethods::JacobianStandardDiscreteTimePolicy<
+    ::pressio::ode::impl::JacobianStandardDiscreteTimePolicy<
     state_type, jacobian_type>;
 
   using type = StepperArbitrary<
@@ -421,7 +421,7 @@ struct compose<
     >;
 };
 
-// compose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
+// ImplicitCompose< state_t, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
 // if we are here, it means we only need auxiliary states and not auxiliary rhs
 template<
   typename state_type,
@@ -433,7 +433,7 @@ template<
   typename residual_policy_type,
   typename jacobian_policy_type
 >
-struct compose<
+struct ImplicitCompose<
   ::pressio::ode::implicitmethods::Arbitrary,
   mpl::enable_if_t<
     ::pressio::ode::implicit_state<state_type>::value and
@@ -471,5 +471,5 @@ struct compose<
     >;
 };
 
-}}}} // end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+}}}
+#endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ImplicitCompose_IMPL_HPP_

@@ -77,8 +77,7 @@ TEST(ode, implicit_euler_appVelocityCalledWithCorrectTime)
   state_t y(3); y.setConstant(1.5);
 
   using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler,
-    state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
   MyFakeSolver1 solver;
@@ -182,7 +181,7 @@ TEST(ode, implicit_bdf2_appVelocityCalledWithCorrectTime)
   state_t y(3); y.setConstant(1.5);
 
   using aux_stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::Euler, state_t, res_t, jac_t, app_t>;
+    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
   aux_stepper_t stepperAux(y, appObj);
 
   using stepper_t = ode::ImplicitStepper<

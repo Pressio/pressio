@@ -49,7 +49,7 @@
 #ifndef ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
 #define ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_
 
-namespace pressio{ namespace ode{ namespace implicitmethods{ namespace impl{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<
   typename scalar_t,
@@ -71,7 +71,7 @@ public:
   using residual_type	= residual_t;
   using jacobian_type	= jacobian_t;
 
-  using tag_name = ::pressio::ode::implicitmethods::Euler;
+  using tag_name = ::pressio::ode::implicitmethods::BDF1;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   static constexpr stepper_order_type order_value = 1;
@@ -209,7 +209,7 @@ private:
     stepNumber_ = stepNumber;
 
     // copy current solution into y_n
-    auto & odeState_n = stencilStates_.stateAt(ode::n());
+    auto & odeState_n = stencilStates_(ode::n());
     ::pressio::ops::deep_copy(odeState_n, odeSolution);
 
     // if provided, callback to provide a guess for the odeSolution
@@ -222,7 +222,7 @@ private:
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeSolution to that
-      auto & rollBackState = stencilStates_.stateAt(ode::n());
+      auto & rollBackState = stencilStates_(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);
 
       // now throw
@@ -231,5 +231,5 @@ private:
   }
 };
 
-}}}}
+}}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_EULER_IMPL_HPP_

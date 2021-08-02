@@ -49,22 +49,22 @@
 #ifndef ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
 #define ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
 
-namespace pressio{ namespace ode{ namespace explicitmethods{
+namespace pressio{ namespace ode{ namespace impl{
 
 template<typename state_type>
-class VelocityStandardPolicy
+class ExplicitVelocityStandardPolicy
 {
   static_assert
   (::pressio::ode::explicit_state<state_type>::value,
    "Invalid state type for standard velocity policy");
 
 public:
-  VelocityStandardPolicy() = default;
-  VelocityStandardPolicy(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy & operator=(const VelocityStandardPolicy &) = default;
-  VelocityStandardPolicy(VelocityStandardPolicy &&) = default;
-  VelocityStandardPolicy & operator=(VelocityStandardPolicy &&) = default;
-  ~VelocityStandardPolicy() = default;
+  ExplicitVelocityStandardPolicy() = default;
+  ExplicitVelocityStandardPolicy(const ExplicitVelocityStandardPolicy &) = default;
+  ExplicitVelocityStandardPolicy & operator=(const ExplicitVelocityStandardPolicy &) = default;
+  ExplicitVelocityStandardPolicy(ExplicitVelocityStandardPolicy &&) = default;
+  ExplicitVelocityStandardPolicy & operator=(ExplicitVelocityStandardPolicy &&) = default;
+  ~ExplicitVelocityStandardPolicy() = default;
 
   template <typename system_type>
   state_type create(const system_type & system) const
@@ -82,5 +82,5 @@ public:
   }
 };
 
-}}}//end namespace pressio::ode::explicitmethods::policy
+}}}//end namespace 
 #endif  // ODE_EXPLICIT_ODE_EXPLICIT_VELOCITY_STANDARD_POLICY_HPP_
