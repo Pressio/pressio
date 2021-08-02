@@ -7,8 +7,9 @@ macro(add_serial_utest TESTNAME TESTSRCS)
   add_executable(${testNameFinal}
     ${TESTSRCS} ${GTESTMAINSDIR}/gTestMain_serial.cc)
 
+  find_library(GMOCKLIB NAMES gmock PATHS ${GTEST_ROOT}/lib/ NO_DEFAULT_PATH) 
   target_link_libraries(${testNameFinal}
-    GTest::gtest ${GTEST_ROOT}/lib/libgmock.dylib GTest::Main)
+    GTest::gtest ${GMOCKLIB} GTest::Main)
 
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()
