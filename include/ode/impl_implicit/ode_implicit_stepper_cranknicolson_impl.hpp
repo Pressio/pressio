@@ -109,7 +109,7 @@ public:
 		       const mpl::remove_cvref_t<residual_policy_t> & resPolicyObj,
 		       const mpl::remove_cvref_t<jacobian_policy_t> & jacPolicyObj)
     : systemObj_{systemObj},
-      recoveryState_{state},
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj},
       stencilStates_(state),
@@ -123,7 +123,7 @@ public:
   StepperCrankNicolson(const state_type & state,
 		       const system_type & systemObj)
     : systemObj_{systemObj},
-      recoveryState_{state},
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{},
       jacPolicy_{},
       stencilStates_(state),

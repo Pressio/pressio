@@ -100,7 +100,7 @@ public:
 	      const mpl::remove_cvref_t<residual_policy_t> & resPolicyObj,
 	      const mpl::remove_cvref_t<jacobian_policy_t> & jacPolicyObj)
     : systemObj_{systemObj},
-      stencilStates_{state},
+      stencilStates_(::pressio::ops::clone(state)),
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
   {}
@@ -112,7 +112,7 @@ public:
   StepperBDF1(const state_type & state,
 	      const system_type & systemObj)
     : systemObj_{systemObj},
-      stencilStates_{state},
+      stencilStates_(::pressio::ops::clone(state)),
       resPolicy_{},
       jacPolicy_{}
   {}
@@ -134,7 +134,9 @@ public:
     PRESSIOLOG_DEBUG("bdf1 stepper: do step");
 
     auto dummyGuesser =
-      [](const ::pressio::ode::step_count_type &, const scalar_t &, state_type &)
+      [](const ::pressio::ode::step_count_type &, 
+         const scalar_t &, 
+         state_type &)
       { /*no op*/ };
 
     doStepImpl(odeState, currentTime, dt, stepNumber,

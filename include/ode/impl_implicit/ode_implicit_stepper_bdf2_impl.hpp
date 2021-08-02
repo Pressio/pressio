@@ -111,8 +111,8 @@ public:
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
-      stencilStates_{state},
-      recoveryState_{state},
+      stencilStates_(::pressio::ops::clone(state)),
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
   {}
@@ -126,8 +126,8 @@ public:
 	      aux_stepper_t & auxStepper)
     : auxStepper_{auxStepper},
       systemObj_{systemObj},
-      stencilStates_{state},
-      recoveryState_{state},
+      stencilStates_(::pressio::ops::clone(state)),
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{},
       jacPolicy_{}
   {}

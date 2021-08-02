@@ -54,14 +54,6 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename state_type, typename residual_type>
 class ResidualStandardPolicyCrankNicolson
 {
-  static_assert
-  (::pressio::ode::implicit_state<state_type>::value,
-   "Invalid state type for standard residual policy");
-
-  static_assert
-  (::pressio::ode::implicit_residual<residual_type>::value,
-   "Invalid residual type for standard residual policy");
-
   mutable ::pressio::ode::step_count_type stepTracker_ = -1;
 
 public:
@@ -76,11 +68,6 @@ public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::continuous_time_system_with_user_provided_jacobian
-       <system_type>::value,
-       "system type must meet the continuous time api");
-
     residual_type R(system.createVelocity());
     return R;
   }
@@ -104,9 +91,6 @@ public:
 	  stencil_velocities_type & stencilVelocities,
 	  residual_type & R) const
   {
-    static_assert(continuous_time_system_with_user_provided_jacobian<system_type>::value,
-     "system type must meet the continuous time api");
-
     if (stepTracker_ != step){
       auto & f_n = stencilVelocities(::pressio::ode::n());
       auto & state_n = stencilStates(::pressio::ode::n());

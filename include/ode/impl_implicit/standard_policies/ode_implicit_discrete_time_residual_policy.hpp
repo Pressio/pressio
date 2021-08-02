@@ -54,14 +54,6 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename state_type, typename residual_type>
 class ResidualStandardDiscreteTimePolicy
 {
-  static_assert
-  (::pressio::ode::implicit_state<state_type>::value,
-   "Invalid state type for standard residual policy");
-
-  static_assert
-  (::pressio::ode::implicit_residual<residual_type>::value,
-   "Invalid residual type for standard residual policy");
-
 public:
   ResidualStandardDiscreteTimePolicy() = default;
   ResidualStandardDiscreteTimePolicy(const ResidualStandardDiscreteTimePolicy &) = default;
@@ -74,10 +66,6 @@ public:
   template <typename system_type>
   residual_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
-
     residual_type R(system.createDiscreteTimeResidual());
     return R;
   }
@@ -95,10 +83,6 @@ public:
 	  const ::pressio::ode::step_count_type & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
-
     const auto & yn = stencilStatesManager(ode::n());
 
     try{
@@ -123,10 +107,6 @@ public:
 	  const ::pressio::ode::step_count_type & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
-
     const auto & yn = stencilStatesManager(ode::n());
     const auto & ynm1 = stencilStatesManager(ode::nMinusOne());
 
@@ -152,10 +132,6 @@ public:
 	  const ::pressio::ode::step_count_type & step,
 	  residual_type & R) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<system_type>::value,
-       "system type must meet the discrete time api");
-
     const auto & yn = stencilStatesManager(ode::n());
     const auto & ynm1 = stencilStatesManager(ode::nMinusOne());
     const auto & ynm2 = stencilStatesManager(ode::nMinusTwo());

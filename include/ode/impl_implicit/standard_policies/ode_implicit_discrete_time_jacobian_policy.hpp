@@ -54,14 +54,6 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename state_type, typename jacobian_type>
 class JacobianStandardDiscreteTimePolicy
 {
-  static_assert
-  (::pressio::ode::implicit_state<state_type>::value,
-   "Invalid state type for standard jacobian policy");
-
-  static_assert
-  (::pressio::ode::implicit_jacobian<jacobian_type>::value,
-   "Invalid jacobian type for standard jacobian policy");
-
 public:
   JacobianStandardDiscreteTimePolicy() = default;
   JacobianStandardDiscreteTimePolicy(const JacobianStandardDiscreteTimePolicy &) = default;
@@ -74,10 +66,6 @@ public:
   template <typename system_type>
   jacobian_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
-
     jacobian_type JJ(system.createDiscreteTimeJacobian());
     return JJ;
   }
@@ -100,10 +88,6 @@ public:
 	  const ::pressio::ode::step_count_type &  step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
-
     const auto & yn = stencilDataManager(ode::n());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, J,
 					 odeCurrentState,
@@ -126,10 +110,6 @@ public:
 	  const ::pressio::ode::step_count_type & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
-
     const auto & yn = stencilDataManager(ode::n());
     const auto & ynm1 = stencilDataManager(ode::nMinusOne());
     system.template discreteTimeJacobian(step, rhsEvaluationTime, dt, J,
@@ -152,10 +132,6 @@ public:
 	  const ::pressio::ode::step_count_type & step,
 	  jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
-       system_type>::value, "system type must meet the discrete time api");
-
     const auto & yn = stencilDataManager(ode::n());
     const auto & ynm1 = stencilDataManager(ode::nMinusOne());
     const auto & ynm2 = stencilDataManager(ode::nMinusTwo());

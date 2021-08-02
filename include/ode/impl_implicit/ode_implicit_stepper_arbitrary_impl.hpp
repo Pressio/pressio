@@ -107,8 +107,8 @@ public:
 		   residual_policy_t resPolicyObj,
 		   jacobian_policy_t jacPolicyObj)
     : systemObj_{systemObj},
-      stencilStates_{state},
-      recoveryState_{state},
+      stencilStates_(::pressio::ops::clone(state)),
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{resPolicyObj},
       jacPolicy_{jacPolicyObj}
     {}
@@ -121,8 +121,8 @@ public:
   StepperArbitrary(const ode_state_type & state,
                    const system_type & systemObj)
     : systemObj_{systemObj},
-      stencilStates_{state},
-      recoveryState_{state},
+      stencilStates_(::pressio::ops::clone(state)),
+      recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{},
       jacPolicy_{}
   {}

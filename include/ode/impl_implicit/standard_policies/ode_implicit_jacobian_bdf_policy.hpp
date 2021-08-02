@@ -54,14 +54,6 @@ namespace pressio{ namespace ode{ namespace impl{
 template<typename state_type, typename jacobian_type>
 class JacobianStandardPolicyBdf
 {
-  static_assert
-  (::pressio::ode::implicit_state<state_type>::value,
-   "Invalid state type for standard jacobian policy");
-
-  static_assert
-  (::pressio::ode::implicit_jacobian<jacobian_type>::value,
-   "Invalid jacobian type for standard jacobian policy");
-
 public:
   JacobianStandardPolicyBdf() = default;
   JacobianStandardPolicyBdf(const JacobianStandardPolicyBdf &) = default;
@@ -74,11 +66,6 @@ public:
   template <typename system_type>
   jacobian_type create(const system_type & system) const
   {
-    static_assert
-      (::pressio::ode::continuous_time_system_with_user_provided_jacobian
-       <system_type>::value,
-       "system type must meet the continuous time api");
-
     jacobian_type JJ(system.createJacobian());
     return JJ;
   }
@@ -97,11 +84,6 @@ public:
 	       const ::pressio::ode::step_count_type &  step,
 	       jacobian_type & J) const
   {
-    static_assert
-      (::pressio::ode::continuous_time_system_with_user_provided_jacobian
-       <system_type>::value,
-       "system type must meet the continuous time api");
-
     system.jacobian( odeCurrentState, rhsEvaluationTime, J);
     ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode_tag());
   }
