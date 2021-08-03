@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_least_squares_weighting_operator.hpp
+// solvers_admissible_least_squares_weighting_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -49,7 +49,7 @@
 #ifndef SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
 #define SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
+namespace pressio{ namespace nonlinearsolvers{
 
 template <
   typename T,
@@ -57,10 +57,10 @@ template <
   typename JType,
   typename enable = void
 >
-struct least_squares_weighting_operator : std::false_type{};
+struct admissible_least_squares_weighting_operator : std::false_type{};
 
 template <typename T, typename RType, typename JType>
-struct least_squares_weighting_operator<
+struct admissible_least_squares_weighting_operator<
   T, RType, JType,
   ::pressio::mpl::enable_if_t<
     std::is_void<
@@ -88,5 +88,5 @@ struct least_squares_weighting_operator<
   > : std::true_type{};
 
 
-}}} // namespace pressio::solvers::constraints
+}}
 #endif  // SOLVERS_CONSTRAINTS_SOLVERS_LEAST_SQUARES_WEIGHTING_OPERATOR_HPP_

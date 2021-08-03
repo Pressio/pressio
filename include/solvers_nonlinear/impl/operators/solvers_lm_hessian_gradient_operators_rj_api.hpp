@@ -90,8 +90,8 @@ public:
     typename SystemType,
     typename StateType,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value),
+      (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
+       ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value),
       int
       > = 0
     >
@@ -108,8 +108,8 @@ public:
     typename StateType,
     typename ...ArgsIn,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value)
+      (::pressio::nonlinearsolvers::compliant_with_residual_jacobian_api<SystemType>::value or
+       ::pressio::nonlinearsolvers::compliant_with_fused_residual_jacobian_api<SystemType>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
       > = 0

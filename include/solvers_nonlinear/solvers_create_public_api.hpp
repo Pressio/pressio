@@ -102,7 +102,7 @@ template<typename SystemType, typename StateType, typename linear_solver_t>
 auto create_irlw_gauss_newton(const SystemType & system,
         const StateType & state,
         linear_solver_t && linSolver)
-  -> impl::ComposeIrwGaussNewton_t<SystemType, linear_solver_t>
+  -> typename impl::ComposeIrwGaussNewton<SystemType, linear_solver_t>::type
 {
   using c_t = impl::ComposeIrwGaussNewton<SystemType, linear_solver_t>;
   using w_t = typename c_t::weighting_t;

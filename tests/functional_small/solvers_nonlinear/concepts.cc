@@ -91,37 +91,37 @@ TEST(solvers_nonlinear, res_jac_api)
 {
   using namespace pressio;
   using system_t   = ValidSystemResJac;
-  static_assert(nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value, "");
-  static_assert(!nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(nonlinearsolvers::compliant_with_residual_jacobian_api<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_fused_residual_jacobian_api<system_t>::value, "");
 }
 
 TEST(solvers_nonlinear, system_non_admissible_res_jac_api){
   using namespace pressio;
   using system_t   = NonValidSystemResJac;
-  static_assert(!nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value, "");
-  static_assert(!nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_residual_jacobian_api<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_fused_residual_jacobian_api<system_t>::value, "");
 }
 
 TEST(solvers_nonlinear, system_admissible_fused_res_jac_api){
   using namespace pressio;
   using system_t   = ValidSystemFusedResJac;
-  static_assert(!nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value, "");
-  static_assert(nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_residual_jacobian_api<system_t>::value, "");
+  static_assert(nonlinearsolvers::compliant_with_fused_residual_jacobian_api<system_t>::value, "");
 }
 
 TEST(solvers_nonlinear, hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemHessGrad;
-  static_assert(nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value, "");
-  static_assert(!nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
+  static_assert(nonlinearsolvers::compliant_with_hessian_gradient_api<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_fused_hessian_gradient_api<system_t>::value, "");
 }
 
 
 TEST(solvers_nonlinear, fused_hes_gra_api){
   using namespace pressio;
   using system_t   = ValidSystemFusedHessGrad;
-  static_assert(!nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value, "");
-  static_assert(nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value, "");
+  static_assert(!nonlinearsolvers::compliant_with_hessian_gradient_api<system_t>::value, "");
+  static_assert(nonlinearsolvers::compliant_with_fused_hessian_gradient_api<system_t>::value, "");
 }
 
 struct ValidLinearSolver 
@@ -144,16 +144,16 @@ TEST(solvers_meta, admissible_linear_solver_newtonraphon)
 {
   using state_type    = std::vector<double>;
   using namespace pressio;
-  static_assert(nonlinearsolvers::constraints::linear_solver_for_newton_raphson<ValidLinearSolver, state_type>::value, "");
-  static_assert(!nonlinearsolvers::constraints::linear_solver_for_newton_raphson<InvalidLinearSolver, state_type>::value, "");
+  static_assert(nonlinearsolvers::admissible_linear_solver_for_newton_raphson<ValidLinearSolver, state_type>::value, "");
+  static_assert(!nonlinearsolvers::admissible_linear_solver_for_newton_raphson<InvalidLinearSolver, state_type>::value, "");
 }
 
 TEST(solvers_meta, admissible_linear_solver_nonlinear_ls)
 {
   using state_type    = std::vector<double>;
   using namespace pressio;
-  static_assert(nonlinearsolvers::constraints::linear_solver_for_nonlinear_least_squares<ValidLinearSolver, state_type>::value, "");
-  static_assert(!nonlinearsolvers::constraints::linear_solver_for_nonlinear_least_squares<InvalidLinearSolver, state_type>::value, "");
+  static_assert(nonlinearsolvers::admissible_linear_solver_for_nonlinear_least_squares<ValidLinearSolver, state_type>::value, "");
+  static_assert(!nonlinearsolvers::admissible_linear_solver_for_nonlinear_least_squares<InvalidLinearSolver, state_type>::value, "");
 }
 
 template <typename A_t, typename r_t, typename state_type>
@@ -172,6 +172,6 @@ TEST(solvers_nonlinear, admissible_qr_solver)
   using state_type = std::vector<double>;
 
   using solver_t = ValidQRSolver<A_t, r_t, state_type>;
-  static_assert(pressio::nonlinearsolvers::constraints::qr_solver_for_gn_qr<
+  static_assert(pressio::nonlinearsolvers::admissible_qr_solver_for_gn_qr<
     solver_t, state_type, A_t, r_t>::value, "");
 }

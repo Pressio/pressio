@@ -70,13 +70,7 @@ public:
   IrwWeightingOperator & operator=(IrwWeightingOperator && o) = default;
   ~IrwWeightingOperator() = default;
 
-  template <
-    typename SystemType,
-    mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
-    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value,
-    int > = 0
-    >
+  template <typename SystemType>
   IrwWeightingOperator(const SystemType & system)
     : w_(system.createResidual())
   {

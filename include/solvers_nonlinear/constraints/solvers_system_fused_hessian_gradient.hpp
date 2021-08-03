@@ -50,14 +50,14 @@
 #ifndef SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_
 #define SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
+namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
-struct system_fused_hessian_gradient : std::false_type{};
+struct compliant_with_fused_hessian_gradient_api : std::false_type{};
 
 template<typename T>
-struct system_fused_hessian_gradient
-<T,
+struct compliant_with_fused_hessian_gradient_api<
+ T,
  ::pressio::mpl::enable_if_t<
    ::pressio::has_scalar_typedef<T>::value   and
    ::pressio::has_state_typedef<T>::value    and
@@ -80,5 +80,5 @@ struct system_fused_hessian_gradient
    >
  > : std::true_type{};
 
-}}} // namespace pressio::solvers::constraints
+}}
 #endif  // SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_HESSIAN_GRADIENT_HPP_

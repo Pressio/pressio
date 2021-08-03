@@ -49,13 +49,13 @@
 #ifndef SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_RESIDUAL_JACOBIAN_HPP_
 #define SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_RESIDUAL_JACOBIAN_HPP_
 
-namespace pressio{ namespace nonlinearsolvers{ namespace constraints {
+namespace pressio{ namespace nonlinearsolvers{
 
 template<typename T, typename enable = void>
-struct system_fused_residual_jacobian : std::false_type{};
+struct compliant_with_fused_residual_jacobian_api : std::false_type{};
 
 template<typename T>
-struct system_fused_residual_jacobian
+struct compliant_with_fused_residual_jacobian_api
 <T,
  ::pressio::mpl::enable_if_t<
    ::pressio::has_scalar_typedef<T>::value   and
@@ -77,5 +77,5 @@ struct system_fused_residual_jacobian
   >
  > : std::true_type{};
 
-}}} // namespace pressio::solvers::constraints
+}}
 #endif  // SOLVERS_CONSTRAINTS_SYSTEM_SOLVERS_SYSTEM_FUSED_RESIDUAL_JACOBIAN_HPP_

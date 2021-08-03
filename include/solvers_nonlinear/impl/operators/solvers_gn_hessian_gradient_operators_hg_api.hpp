@@ -72,8 +72,8 @@ public:
   template <
    typename SystemType, typename StateType,
     mpl::enable_if_t<
-      ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<SystemType>::value or
-      ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<SystemType>::value,
+      ::pressio::nonlinearsolvers::compliant_with_hessian_gradient_api<SystemType>::value or
+      ::pressio::nonlinearsolvers::compliant_with_fused_hessian_gradient_api<SystemType>::value,
       int
      > = 0
   >
@@ -113,7 +113,7 @@ public:
 
   template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<SystemType>::value
+    ::pressio::nonlinearsolvers::compliant_with_hessian_gradient_api<SystemType>::value
     >
   computeOperators(const SystemType & sys,
 		   const StateType & state,
@@ -134,7 +134,7 @@ public:
 
   template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<SystemType>::value
+    ::pressio::nonlinearsolvers::compliant_with_fused_hessian_gradient_api<SystemType>::value
     >
   computeOperators(const SystemType & sys,
 		   const StateType & state,
