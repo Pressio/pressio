@@ -71,7 +71,7 @@ discrete_time_jacobian(jacobian_type & jac,
   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   const auto cf	  = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
   ::pressio::ops::scale(jac, cf);
-  ::pressio::ops::addToDiagonal(jac, cnp1);
+  ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
 /*
@@ -117,7 +117,7 @@ discrete_time_jacobian(jacobian_type & jac,
   const auto cf	  = ::pressio::ode::constants::bdf2<scalar_type>::c_f_ * dt;
   using namespace ::pressio::ode::constants;
   ::pressio::ops::scale(jac, cf);
-  ::pressio::ops::addToDiagonal(jac, cnp1);
+  ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
 /*
@@ -163,7 +163,7 @@ discrete_time_jacobian(jacobian_type & jac,
   constexpr auto cnp1  = cnst::c_np1_;
   const auto cf	= cnst::c_fnp1_ * dt;
   ::pressio::ops::scale(jac, cf);
-  ::pressio::ops::addToDiagonal(jac, cnp1);
+  ::pressio::ops::add_to_diagonal(jac, cnp1);
 }
 
 /*

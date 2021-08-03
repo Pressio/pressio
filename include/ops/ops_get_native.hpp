@@ -88,9 +88,8 @@ get_native(T & objectIn){
 }
 
 
-template<typename T, class enable = void>
+template<typename T, class Enable = void>
 struct NativeType;
-
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
