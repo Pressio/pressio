@@ -73,7 +73,7 @@ public:
   using this_type          = KokkosDirect<solver_tag, MatrixType>;
   using matrix_type	= MatrixType;
   using scalar_type        = typename MatrixType::value_type;
-  using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
+  using solver_traits   = ::pressio::linearsolvers::Traits<solver_tag>;
 
   static_assert( solver_traits::kokkos_enabled == true,
   		 "the native solver must suppport kokkos to use in KokkosDirect");

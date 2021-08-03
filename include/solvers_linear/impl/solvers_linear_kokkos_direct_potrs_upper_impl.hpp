@@ -67,7 +67,7 @@ class KokkosDirect<::pressio::linearsolvers::direct::potrsU, MatrixType>
 public:
 
   using solver_tag	    = ::pressio::linearsolvers::direct::potrsU;
-  using solver_traits   = ::pressio::linearsolvers::traits<solver_tag>;
+  using solver_traits   = ::pressio::linearsolvers::Traits<solver_tag>;
   using this_type          = KokkosDirect<solver_tag, MatrixType>;
   using matrix_type	    = MatrixType;
   using scalar_type        = typename MatrixType::traits::value_type;

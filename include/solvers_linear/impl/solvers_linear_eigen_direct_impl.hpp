@@ -59,7 +59,7 @@ public:
   using matrix_type	= MatrixType;
   using scalar_type        = typename MatrixType::Scalar;
   using this_type          = EigenDirect<TagType, MatrixType>;
-  using solver_traits   = ::pressio::linearsolvers::traits<TagType>;
+  using solver_traits   = ::pressio::linearsolvers::Traits<TagType>;
   using native_solver_type = typename solver_traits::template eigen_solver_type<matrix_type>;
 
   static_assert

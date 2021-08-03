@@ -62,7 +62,7 @@
 namespace pressio{ namespace linearsolvers{
 
 template <typename T>
-struct traits {
+struct Traits {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = false;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -74,7 +74,7 @@ struct traits {
 };
 
 template <>
-struct traits<::pressio::linearsolvers::iterative::CG>
+struct Traits<::pressio::linearsolvers::iterative::CG>
 {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = true;
@@ -91,7 +91,7 @@ struct traits<::pressio::linearsolvers::iterative::CG>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::iterative::Bicgstab>
+struct Traits<::pressio::linearsolvers::iterative::Bicgstab>
 {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = true;
@@ -108,7 +108,7 @@ struct traits<::pressio::linearsolvers::iterative::Bicgstab>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::iterative::LSCG>
+struct Traits<::pressio::linearsolvers::iterative::LSCG>
 {
   static constexpr bool direct        = false;
   static constexpr bool iterative     = true;
@@ -125,7 +125,7 @@ struct traits<::pressio::linearsolvers::iterative::LSCG>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::ColPivHouseholderQR>
+struct Traits<::pressio::linearsolvers::direct::ColPivHouseholderQR>
 {
 
   static constexpr bool iterative = false;
@@ -153,7 +153,7 @@ struct traits<::pressio::linearsolvers::direct::ColPivHouseholderQR>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::HouseholderQR>
+struct Traits<::pressio::linearsolvers::direct::HouseholderQR>
 {
   static constexpr bool iterative = false;
   static constexpr bool direct = true;
@@ -167,7 +167,7 @@ struct traits<::pressio::linearsolvers::direct::HouseholderQR>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::PartialPivLU>
+struct Traits<::pressio::linearsolvers::direct::PartialPivLU>
 {
   static constexpr bool iterative = false;
   static constexpr bool direct = true;
@@ -181,7 +181,7 @@ struct traits<::pressio::linearsolvers::direct::PartialPivLU>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::potrsL>
+struct Traits<::pressio::linearsolvers::direct::potrsL>
 {
   static constexpr bool iterative = false;
   static constexpr bool direct = true;
@@ -198,7 +198,7 @@ struct traits<::pressio::linearsolvers::direct::potrsL>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::potrsU>
+struct Traits<::pressio::linearsolvers::direct::potrsU>
 {
   static constexpr bool direct = true;
   static constexpr bool eigen_enabled = true;
@@ -214,7 +214,7 @@ struct traits<::pressio::linearsolvers::direct::potrsU>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::getrs>
+struct Traits<::pressio::linearsolvers::direct::getrs>
 {
   static constexpr bool direct = true;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
@@ -227,7 +227,7 @@ struct traits<::pressio::linearsolvers::direct::getrs>
 };
 
 template <>
-struct traits<::pressio::linearsolvers::direct::geqrf>
+struct Traits<::pressio::linearsolvers::direct::geqrf>
 {
   static constexpr bool direct = true;
 #ifdef PRESSIO_ENABLE_TPL_EIGEN

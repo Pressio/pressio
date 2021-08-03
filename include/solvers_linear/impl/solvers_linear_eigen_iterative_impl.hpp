@@ -62,7 +62,7 @@ public:
   using matrix_type	= MatrixType;
   using scalar_type        = typename MatrixType::Scalar;
   using this_type          = EigenIterative<TagType, MatrixType>;
-  using solver_traits   = ::pressio::linearsolvers::traits<TagType>;
+  using solver_traits   = ::pressio::linearsolvers::Traits<TagType>;
   using native_solver_type = typename solver_traits::template eigen_solver_type<matrix_type>;
   using base_iterative_type  = IterativeBase<this_type>;
   using iteration_type = typename base_iterative_type::iteration_type;
