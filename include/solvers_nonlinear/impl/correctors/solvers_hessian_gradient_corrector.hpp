@@ -60,7 +60,7 @@ public:
 
 private:
   state_type correction_ = {};
-  ::pressio::utils::instance_or_reference_wrapper<LinSolverType> solverObj_;
+  ::pressio::utils::InstanceOrReferenceWrapper<LinSolverType> solverObj_;
   scalar_type residNormCurrCorrStep_ = {};
   scalar_type gradientNormCurrCorrStep_ = {};
   scalar_type correctionNormCurrCorrStep_ = {};
@@ -77,7 +77,7 @@ public:
       correction_(::pressio::ops::clone(state)),
       solverObj_(std::forward<lsT>(solverIn))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
   }
 

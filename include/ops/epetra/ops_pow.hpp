@@ -68,8 +68,8 @@ abs_pow(T1 & y,
 
   assert(x.GlobalLength() == y.GlobalLength());
   assert(x.MyLength() == y.MyLength());
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
 
   for (ord_t i=0; i< x.MyLength(); ++i){
@@ -95,13 +95,13 @@ abs_pow(T1 & y,
 
   assert(x.GlobalLength() == y.GlobalLength());
   assert(x.MyLength() == y.MyLength());
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
 
-  if (exponent > ::pressio::utils::constants<sc_t>::zero()){
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero()){
     throw std::runtime_error("this overload is only for exponent < 0");
   }
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   for (ord_t i=0; i<x.MyLength(); ++i){
     y[i] = one/std::max(eps, std::pow(std::abs(x[i]), expo));

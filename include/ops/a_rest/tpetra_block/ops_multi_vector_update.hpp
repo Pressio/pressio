@@ -71,7 +71,7 @@ template<typename T, typename scalar_t>
   >
 update(T & mv, const T & mv1, const scalar_t & b)
 {
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   mv.data()->update(b, *mv1.data(), zero);
 }
 

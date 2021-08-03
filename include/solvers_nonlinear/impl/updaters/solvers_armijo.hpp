@@ -68,7 +68,7 @@ public:
   ArmijoUpdater(const state_t & state)
     : trialState_(::pressio::ops::clone(state))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
     ::pressio::ops::fill(trialState_, zero);
   }
 
@@ -82,11 +82,11 @@ public:
   {
     PRESSIOLOG_DEBUG("armijo update");
 
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_t>::one();
     auto alpha = static_cast<scalar_t>(1);
 
     ::pressio::ops::fill(trialState_,
-			 ::pressio::utils::constants<scalar_t>::zero());
+			 ::pressio::utils::Constants<scalar_t>::zero());
 
     // https://people.maths.ox.ac.uk/hauser/hauser_lecture2.pdf
 
@@ -102,7 +102,7 @@ public:
     const auto & p_k   = solver.correctionCRef();
     const auto & g_k   = solver.gradientCRef();
     auto fx_k    = solver.residualNormCurrentCorrectionStep();
-    fx_k = std::pow(fx_k, ::pressio::utils::constants<scalar_t>::two());
+    fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_t>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("starting backtracking");
@@ -123,7 +123,7 @@ public:
 
       // eval f(x_k + alpha_l * p_k)
       solver.residualNorm(system, trialState_, ftrial);
-      ftrial = std::pow(ftrial, ::pressio::utils::constants<scalar_t>::two());
+      ftrial = std::pow(ftrial, ::pressio::utils::Constants<scalar_t>::two());
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;

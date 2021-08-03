@@ -69,7 +69,7 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<velocity_policy_type> policy_;
   velocity_storage_t velocities_;
   state_type tmpState_;
 
@@ -120,8 +120,8 @@ public:
 
     // y_n+1 = y_n + dt*[ (3/2)*f(y_n, t_n) - (1/2)*f(y_n-1, t_n-1) ]
 
-    const auto cfn   = ::pressio::utils::constants<scalar_type>::threeOvTwo()*dt;
-    const auto cfnm1 = ::pressio::utils::constants<scalar_type>::negOneHalf()*dt;
+    const auto cfn   = ::pressio::utils::Constants<scalar_type>::threeOvTwo()*dt;
+    const auto cfnm1 = ::pressio::utils::Constants<scalar_type>::negOneHalf()*dt;
 
     if (stepNumber==1){
       // use Euler forward or we could use something else here maybe RK4
@@ -152,7 +152,7 @@ private:
 	    const f_t & rhs,
 	    const scalar_type & dt)
   {
-    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one   = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(odeSolution, one, rhs, dt);
   }
 
@@ -161,7 +161,7 @@ private:
 	    const f_t & fn,   const scalar_type & cfn,
 	    const f_t & fnm1, const scalar_type & cfnm1)
   {
-    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one   = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(odeSolution, one, fn, cfn, fnm1, cfnm1);
   }
 };

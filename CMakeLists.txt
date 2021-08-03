@@ -136,8 +136,6 @@ foreach(f ${all_files})
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/expressions"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ops"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/qr"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/svd"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/optimizers"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/solvers"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ode"
       AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/rom"

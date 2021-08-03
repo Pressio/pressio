@@ -96,7 +96,7 @@ private:
   JacobianType MJ_;
   GradientType g_;
   HessianType H_;
-  ::pressio::utils::instance_or_reference_wrapper<weighting_functor_t> functorM_;
+  ::pressio::utils::InstanceOrReferenceWrapper<weighting_functor_t> functorM_;
 
   static constexpr auto is_irwls =
     std::is_same<
@@ -130,7 +130,7 @@ public:
     J_(system.createJacobian()),
     MJ_(::pressio::ops::clone(J_)),
     g_(::pressio::ops::clone(state)),
-    H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_)),
+    H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::Constants<scalar_type>::one(), J_)),
     functorM_(std::forward<_weigh_t>(functorM))
   {
     ::pressio::ops::set_zero(r_);
@@ -162,7 +162,7 @@ public:
 //     J_(system.createJacobian()),
 //     MJ_(::pressio::ops::clone(J_)),
 //     g_(::pressio::ops::clone(state)),
-//     H_(::pressio::ops::product<HessianType>(pT, pnT,::pressio::utils::constants<scalar_type>::one(), J_)),
+//     H_(::pressio::ops::product<HessianType>(pT, pnT,::pressio::utils::Constants<scalar_type>::one(), J_)),
 //     functorM_(std::move(_weigh_t(system)))
 //   {
 //     this->set_p(pValue);
@@ -308,20 +308,20 @@ private:
 
   void _computeHessian()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::product(pT, pnT, alpha, J_, MJ_, beta, H_);
   }
 
 
   void _computeGradient()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
     // compute gradient (g_ = J^T M r)
     ::pressio::ops::product(pT, alpha, J_, Mr_, beta, g_);
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
   }
 };
 

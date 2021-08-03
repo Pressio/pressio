@@ -197,7 +197,7 @@ public:
       throw std::runtime_error("cannot call WLS with a norm != L2");
     }
 
-    rnorm = pressio::utils::constants<scalar_type>::zero();
+    rnorm = pressio::utils::Constants<scalar_type>::zero();
     hessianGradientPolicy_(wls_state,
 			   wlsStateIC_,
 			   hessian,
@@ -217,7 +217,7 @@ public:
       throw std::runtime_error("cannot call WLS with a norm != L2");
     }
 
-    rnorm = pressio::utils::constants<scalar_type>::zero();
+    rnorm = pressio::utils::Constants<scalar_type>::zero();
     hessianGradientPolicy_.get().computeResidualNorm
       (
        wls_state,

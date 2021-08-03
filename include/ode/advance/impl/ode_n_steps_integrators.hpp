@@ -84,7 +84,7 @@ struct IntegratorNStepsWithConstDt
     time_type time = start_time;
     // pass initial condition to collector object
     call_collector(collector,
-				::pressio::utils::constants<step_t>::zero(),
+				::pressio::utils::Constants<step_t>::zero(),
 				time, odeStateInOut);
 
     step_t step = 1;
@@ -144,7 +144,7 @@ struct IntegratorNStepsWithTimeStepSizeSetter
     time_type time = start_time;
     // pass initial condition to collector object
     call_collector(collector,
-				::pressio::utils::constants<step_t>::zero(),
+				::pressio::utils::Constants<step_t>::zero(),
 				time, odeStateInOut);
 
     time_type dt = {};

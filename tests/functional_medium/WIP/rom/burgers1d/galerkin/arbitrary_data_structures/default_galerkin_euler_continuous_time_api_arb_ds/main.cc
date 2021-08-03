@@ -39,7 +39,7 @@ void readBasis(std::string filename, result_t & phi)
   const auto nCols = phi.extent(1);
 
   std::vector<std::vector<double>> A0;
-  ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, nCols);
+  ::pressio::utils::read_ascii_matrix_stdvecvec(filename, A0, nCols);
   for (std::size_t i=0; i<nRows; i++){
     for (std::size_t j=0; j<nCols; j++)
       phi(i,j) = A0[i][j];
@@ -163,11 +163,11 @@ struct EulerGalerkinWithVelocityApi
     // for this problem, my reference state = initial state
     native_state_t yRef(numCell);
     for (std::size_t i=0; i<yRef.extent(0); ++i)
-      yRef(i) = pressio::utils::constants<scalar_t>::one();
+      yRef(i) = pressio::utils::Constants<scalar_t>::one();
 
     // define ROM state
     pressio::ops::resize(yROM_, romSize);
-    pressio::ops::fill(yROM_, pressio::utils::constants<scalar_t>::zero());
+    pressio::ops::fill(yROM_, pressio::utils::Constants<scalar_t>::zero());
 
     using ode_tag = pressio::ode::explicitmethods::Euler;
     // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<

@@ -63,7 +63,7 @@ private:
   state_type QTResid_ = {};
   state_type g_ = {};
 
-  ::pressio::utils::instance_or_reference_wrapper<QRSolverType> solverObj_;
+  ::pressio::utils::InstanceOrReferenceWrapper<QRSolverType> solverObj_;
   scalar_type residNormCurrCorrStep_ = {};
   scalar_type gradientNormCurrCorrStep_ = {};
   scalar_type correctionNormCurrCorrStep_ = {};
@@ -81,7 +81,7 @@ public:
       g_(::pressio::ops::clone(state)),
       solverObj_(std::forward<qrs_t>(solverObj))
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
     ::pressio::ops::fill(QTResid_, zero);
     ::pressio::ops::fill(g_, zero);
@@ -124,7 +124,7 @@ public:
     // solve: R correction = Q^T Residual
     solverObj_.get().solve(QTResid_, correction_);
     // scale by -1 for sign convention
-    pressio::ops::scale(correction_, utils::constants<scalar_type>::negOne() );
+    pressio::ops::scale(correction_, utils::Constants<scalar_type>::negOne() );
 
     correctionNormCurrCorrStep_ = pressio::ops::norm2(correction_);
     gradientNormCurrCorrStep_ = pressio::ops::norm2(g_);

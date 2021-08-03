@@ -132,7 +132,7 @@ product(::pressio::transpose mode,
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.length() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::constants<scalar_type>::zero();
+  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);
@@ -195,7 +195,7 @@ product(::pressio::transpose mode,
   const int numVecs = A.NumVectors();
   assert( (std::size_t)y.size() == (std::size_t)numVecs );
 
-  auto tmp = ::pressio::utils::constants<scalar_type>::zero();
+  auto tmp = ::pressio::utils::Constants<scalar_type>::zero();
   for (int i=0; i<numVecs; i++)
   {
     A(i)->Dot(x, &tmp);

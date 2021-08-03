@@ -60,7 +60,7 @@ template <typename T>
 set_zero(const T & v)
 {
   using value_t	      = typename ::pressio::traits<T>::scalar_type;
-  constexpr auto zero = ::pressio::utils::constants<value_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<value_t>::zero();
   ::KokkosBlas::fill(impl::get_native(v), zero);
 }
 

@@ -76,7 +76,7 @@ public:
     std::cout << "calling createTimeDiscreteResidualObject" << std::endl;
     discrete_time_residual_type R( appObj_.meshSize() );
     // for (int_t i=0; i<R.extent(0); ++i)
-    //   R(i) = ::pressio::utils::constants<scalar_type>::zero();
+    //   R(i) = ::pressio::utils::Constants<scalar_type>::zero();
     return R;
   }
 
@@ -86,7 +86,7 @@ public:
     dense_matrix_type A(appObj_.meshSize(), B.extent(1));
     // for (int_t i=0; i<A.extent(0); ++i){
     //   for (int_t j=0; j<A.extent(1); ++j){
-    //     A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
+    //     A(i,j) = ::pressio::utils::Constants<scalar_type>::zero();
     //   }
     // }
     return A;
@@ -146,14 +146,14 @@ private:
       for (int_t j=0; j<JJ_.extent(1); ++j){
 	JJ_(i,j) *= -dt;
 	if (i==j)
-	  JJ_(i,j) += ::pressio::utils::constants<scalar_type>::one();
+	  JJ_(i,j) += ::pressio::utils::Constants<scalar_type>::one();
       }
     }
 
     // compute A = JJ * B
     for (int_t i=0; i<A.extent(0); ++i){
       for (int_t j=0; j<A.extent(1); ++j){
-	A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
+	A(i,j) = ::pressio::utils::Constants<scalar_type>::zero();
 	for (int_t k=0; k<JJ_.extent(1); ++k){
 	  A(i,j) += JJ_(i,k) * B(k,j);
 	}

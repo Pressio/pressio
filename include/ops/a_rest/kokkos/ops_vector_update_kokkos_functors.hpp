@@ -56,9 +56,9 @@ struct DoUpdateTwoTermsFunctor {
   T v_ = {};
   T v1_ = {};
   T v2_ = {};
-  sc_t a_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t b_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t c_ = ::pressio::utils::constants<sc_t>::zero();
+  sc_t a_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t b_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t c_ = ::pressio::utils::Constants<sc_t>::zero();
 
   DoUpdateTwoTermsFunctor(T v, T v1, T v2,
 			  sc_t a, sc_t b, sc_t c)
@@ -82,10 +82,10 @@ struct DoUpdateThreeTermsFunctor {
   T v1_ = {};
   T v2_ = {};
   T v3_ = {};
-  sc_t a_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t b_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t c_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t d_ = ::pressio::utils::constants<sc_t>::zero();
+  sc_t a_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t b_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t c_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t d_ = ::pressio::utils::Constants<sc_t>::zero();
 
   DoUpdateThreeTermsFunctor(T v, T v1, T v2, T v3,
 			    sc_t a, sc_t b, sc_t c, sc_t d)
@@ -112,11 +112,11 @@ struct DoUpdateFourTermsFunctor {
   T v2_ = {};
   T v3_ = {};
   T v4_ = {};
-  sc_t a_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t b_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t c_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t d_ = ::pressio::utils::constants<sc_t>::zero();
-  sc_t e_ = ::pressio::utils::constants<sc_t>::zero();
+  sc_t a_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t b_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t c_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t d_ = ::pressio::utils::Constants<sc_t>::zero();
+  sc_t e_ = ::pressio::utils::Constants<sc_t>::zero();
 
   DoUpdateFourTermsFunctor(T v, T v1, T v2, T v3, T v4,
 			   sc_t a, sc_t b, sc_t c, sc_t d, sc_t e)

@@ -130,8 +130,8 @@ public:
     // scalar_type normR = {};
     this->residual(romState, R_);//, ::pressio::Norm::L2, normR);
     this->jacobian(romState, J_);
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::two();
     ::pressio::ops::product(::pressio::transpose(), alpha, J_, R_, beta, g);
   }
 };//end class

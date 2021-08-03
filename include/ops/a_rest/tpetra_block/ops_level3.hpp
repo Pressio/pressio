@@ -122,7 +122,7 @@ product(::pressio::transpose modeA,
   static_assert
     (containers::predicates::are_scalar_compatible<A_type, B_type, C_type>::value,
      "Types are not scalar compatible");
-  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
 
   const auto numVecsA = A.numVectors();
   const auto numVecsB = B.numVectors();
@@ -155,7 +155,7 @@ product(::pressio::transpose modeA,
   const auto numVecsA = A.numVectors();
   assert(C.extent(0) == numVecsA);
   assert(C.extent(1) == numVecsA);
-  scalar_type tmp = ::pressio::utils::constants<scalar_type>::zero();
+  scalar_type tmp = ::pressio::utils::Constants<scalar_type>::zero();
 
   // using ord_t = typename ::pressio::containers::details::traits<A_type>::global_ordinal_t;
 
@@ -230,7 +230,7 @@ product(::pressio::transpose modeA,
     (containers::predicates::are_scalar_compatible<A_type, C_type>::value,
      "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
   C_type C(A.numVectors(), A.numVectors());
   product(modeA, modeB, alpha, A, zero, C);
   return C;

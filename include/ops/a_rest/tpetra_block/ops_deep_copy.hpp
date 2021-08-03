@@ -58,9 +58,9 @@ template<typename T>
 deep_copy(T & dest, const T & src)
 {
 	using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-	dest.data()->update(::pressio::utils::constants<sc_t>::one(),
+	dest.data()->update(::pressio::utils::Constants<sc_t>::one(),
 		 *src.data(),
-		 ::pressio::utils::constants<sc_t>::zero() );
+		 ::pressio::utils::Constants<sc_t>::zero() );
 }
 
 }}//end namespace pressio::ops

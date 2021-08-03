@@ -76,7 +76,7 @@ private:
   HessianType lmH_;
 
   // damping factor for LM
-  scalar_type dampParam_ = pressio::utils::constants<scalar_type>::one();
+  scalar_type dampParam_ = pressio::utils::Constants<scalar_type>::one();
 
 public:
   LMHessianGradientOperatorsRJApi() = delete;
@@ -138,7 +138,7 @@ public:
 
 public:
   void resetForNewCall(){
-    dampParam_ = pressio::utils::constants<scalar_type>::one();
+    dampParam_ = pressio::utils::Constants<scalar_type>::one();
   }
 
   template<typename system_t, typename state_t>
@@ -158,7 +158,7 @@ public:
 
       const auto diagH   = ::pressio::diag(H);
       auto diaglmH = ::pressio::diag(lmH_);
-      constexpr auto one  = pressio::utils::constants<scalar_type>::one();
+      constexpr auto one  = pressio::utils::Constants<scalar_type>::one();
       ::pressio::ops::update(diaglmH, one, diagH, dampParam_);
     }
   }

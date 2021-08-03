@@ -99,7 +99,7 @@ public:
 
     for (int_t i=0; i<A.extent(0); ++i){
       for (int_t j=0; j<A.extent(1); ++j){
-	A(i,j) = ::pressio::utils::constants<scalar_type>::zero();
+	A(i,j) = ::pressio::utils::Constants<scalar_type>::zero();
 	for (int_t k=0; k<JJ_.extent(1); ++k){
 	  A(i,j) += JJ_(i,k) * B(k,j);
 	}

@@ -229,8 +229,8 @@ public:
                   const window_size_t step_s,
                   scalar_t & rnorm) const
   {
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
 
     window_size_t stepNumLocal = 0;
     scalar_t t = ts + stepNumLocal*dt;
@@ -456,7 +456,7 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
     {
       for (window_size_t j=0; j <= i; j++)
       {
-        constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+        constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
 
         auto hess_block =
 	  ::pressio::containers::subspan(hess,
@@ -481,7 +481,7 @@ To run with jacobianUpdateFrequency > 1, use FrozenJacobiansContainer\n");
     {
       for (window_size_t j=0; j <= i; j++)
       {
-        constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+        constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
         auto hess_block =
 	  ::pressio::containers::subspan(hess,
 					 std::make_pair( (n-j)*romSize_, (n-j+1)*romSize_ ),

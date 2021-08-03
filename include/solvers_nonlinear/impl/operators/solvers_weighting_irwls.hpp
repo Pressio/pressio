@@ -59,7 +59,7 @@ public:
 
 private:
   mutable ResidualType w_;
-  scalar_type p_ = ::pressio::utils::constants<scalar_type>::one();
+  scalar_type p_ = ::pressio::utils::Constants<scalar_type>::one();
   scalar_type exponent_ = {};
 
 public:
@@ -80,7 +80,7 @@ public:
   IrwWeightingOperator(const system_t & system)
     : w_(system.createResidual())
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::fill(w_, one);
     this->computeExponent();
   }
@@ -95,8 +95,8 @@ public:
   void operator()(const ResidualType & rIn, ResidualType & Wr) const
   {
     this->computeWeights(rIn);
-    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::elementwise_multiply(one, w_, rIn, zero, Wr);
   }
 
@@ -108,8 +108,8 @@ public:
     const auto wMat = ::pressio::asDiagonalMatrix(w_);
 
     // WJ = W * Jin
-    constexpr auto zero = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::product(::pressio::nontranspose(),
 			    ::pressio::nontranspose(),
 			    one, wMat, Jin,
@@ -119,7 +119,7 @@ public:
 private:
   void computeExponent()
   {
-    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto two = ::pressio::utils::Constants<scalar_type>::two();
     if (p_==two) throw std::runtime_error("irwls does not support using p=2!");
     exponent_ = (p_ - two);
   }
@@ -130,7 +130,7 @@ private:
     // use a small epsilong to guard against diving by zero
     // when exponent < 0
 
-    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto two = ::pressio::utils::Constants<scalar_type>::two();
     if (p_ > two){
       ::pressio::ops::abs_pow(w_, err, exponent_);
     }

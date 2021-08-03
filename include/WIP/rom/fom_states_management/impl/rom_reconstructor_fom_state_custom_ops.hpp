@@ -82,7 +82,7 @@ struct FomStateReconstructorCustomOps
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
 
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     // fomState = fomState + fomNominalState_;
     udOps_.get().axpy(one, *(fomNominalState_.get().data()), *fomState.data());
   }

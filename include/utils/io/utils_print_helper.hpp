@@ -58,15 +58,15 @@ namespace pressio{ namespace utils{ namespace io{
 
 namespace impl{
 
-template <typename head_t>
-void print(std::ostream & ss, head_t && head){
-  ss << std::forward<head_t>(head);
+template <typename HeadType>
+void print(std::ostream & ss, HeadType && head){
+  ss << std::forward<HeadType>(head);
 }
 
-template <typename head_t, typename ... tail_t>
-void print(std::ostream & ss, head_t && head, tail_t && ... args){
-  ss << std::forward<head_t>(head) << " ";
-  print(ss, std::forward<tail_t>(args)...);
+template <typename HeadType, typename ... TailType>
+void print(std::ostream & ss, HeadType && head, TailType && ... args){
+  ss << std::forward<HeadType>(head) << " ";
+  print(ss, std::forward<TailType>(args)...);
 }
 
 template <typename T = int>

@@ -89,7 +89,7 @@ public:
   using solver_type = solver_t;
 
 private:
-  pressio::utils::instance_or_reference_wrapper<functor_t> F_;
+  pressio::utils::InstanceOrReferenceWrapper<functor_t> F_;
 
 public:
   template<class T>

@@ -84,8 +84,8 @@ abs_pow(T1 & y,
   using ord_t = typename ::pressio::containers::details::traits<T1>::size_t;
 
   assert(x.extent(0) == y.extent(0));
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent > 0");
 
   auto x_kv = *x.data();
@@ -116,11 +116,11 @@ abs_pow(T1 & y,
   using ord_t = typename ::pressio::containers::details::traits<T1>::size_t;
 
   assert(x.extent(0) == y.extent(0));
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent < 0");
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   auto x_kv = *x.data();
   auto y_kv = *y.data();

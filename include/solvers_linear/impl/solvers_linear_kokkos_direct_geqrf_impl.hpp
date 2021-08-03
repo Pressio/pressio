@@ -192,7 +192,7 @@ public:
     //std::cout << " info-ormqr " << info << std::endl;
 
     // solver R y = Q^T b
-    constexpr scalar_type alpha = ::pressio::utils::constants<scalar_type>::one();
+    constexpr scalar_type alpha = ::pressio::utils::Constants<scalar_type>::one();
     blas_.TRSM(Teuchos::ESide::LEFT_SIDE,
     	       Teuchos::EUplo::UPPER_TRI,
     	       Teuchos::ETransp::NO_TRANS,

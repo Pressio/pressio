@@ -69,8 +69,8 @@ abs_pow(T1 & y,
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
 
   for (ord_t i=0; i<x.extentLocal(0); ++i)
@@ -96,11 +96,11 @@ abs_pow(T1 & y,
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent < 0");
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   for (ord_t i=0; i<x.extentLocal(0); ++i)
     yv(i) = one/std::max(eps, std::pow(std::abs(x(i)), expo));

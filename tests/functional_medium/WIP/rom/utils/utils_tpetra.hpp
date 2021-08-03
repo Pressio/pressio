@@ -42,7 +42,7 @@ auto readBasis(std::string filename,
   ->pressio::containers::MultiVector<Tpetra::MultiVector<>>
 {
   std::vector<std::vector<double>> A0;
-  ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::utils::read_ascii_matrix_stdvecvec(filename, A0, romSize);
 
   // read basis into a MultiVector
   return convertFromVVecToMultiVec(A0, numCell, romSize, Comm, rowMap);

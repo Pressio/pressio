@@ -68,7 +68,7 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<velocity_policy_type> policy_;
   std::array<velocity_type, 4> velocities_;
   state_type tmpState_;
 
@@ -126,8 +126,8 @@ public:
     auto & rhs2 = velocities_[2];
     auto & rhs3 = velocities_[3];
 
-    constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
-    constexpr auto three  = ::pressio::utils::constants<scalar_type>::three();
+    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
+    constexpr auto three  = ::pressio::utils::Constants<scalar_type>::three();
     constexpr auto six  = two * three;
 
     const scalar_type dt_half = dt / two;
@@ -159,7 +159,7 @@ private:
 		    const rhs_t & rhsIn,
 		    scalar_type dtValue)
   {
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(yIn, stateIn, one, rhsIn, dtValue);
   }
 
@@ -172,7 +172,7 @@ private:
 		    scalar_type dt6, 
         scalar_type dt3)
   {
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(stateIn, one,
 			   rhsIn0, dt6,
 			   rhsIn1, dt3,

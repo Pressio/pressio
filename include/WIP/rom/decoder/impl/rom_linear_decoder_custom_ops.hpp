@@ -112,8 +112,8 @@ public:
     using scalar_t = typename ::pressio::containers::details::traits<
       fom_state_type>::scalar_t;
 
-    constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
-    constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
     udOps_.get().product(::pressio::nontranspose(), one,
 			 *jacobianOfDecoder_.data(),
 			 operand, zero, *result.data());

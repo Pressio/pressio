@@ -73,7 +73,7 @@ public:
     PRESSIOLOG_DEBUG("nonlinsolver: default update");
     // default update: y = y + alpha*correction
     const auto & correction = solver.correctionCRef();
-    constexpr auto one = ::pressio::utils::constants<scalar_t>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_t>::one();
     ::pressio::ops::update(state, one, correction, one);
   }
 };

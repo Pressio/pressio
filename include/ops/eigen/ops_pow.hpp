@@ -106,8 +106,8 @@ abs_pow(T1 & y,
   using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero()){
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero()){
     throw std::runtime_error("This overload only supports exponent > 0");
   }
 
@@ -135,12 +135,12 @@ abs_pow(T1 & y,
   using ord_t = typename ::pressio::traits<T1>::ordinal_type;
 
   assert(::pressio::ops::extent(x, 0) == ::pressio::ops::extent(y, 0));
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero()){
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero()){
     throw std::runtime_error("This overload only supports exponent < 0");
   }
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = one/std::max(eps, std::pow(std::abs(x(i)), -exponent));
   }

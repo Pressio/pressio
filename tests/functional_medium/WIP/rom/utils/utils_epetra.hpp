@@ -39,7 +39,7 @@ auto readBasis(
   ->pressio::containers::MultiVector<Epetra_MultiVector>
 {
   std::vector<std::vector<double>> A0;
-  ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::utils::read_ascii_matrix_stdvecvec(filename, A0, romSize);
   // read basis into a MultiVector
   auto phi = convertFromVVecToMultiVec(A0, numCell, romSize, Comm, rowMap);
   //  phi.data()->Print(std::cout);

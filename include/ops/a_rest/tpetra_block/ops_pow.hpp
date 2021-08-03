@@ -69,8 +69,8 @@ abs_pow(T1 & y,
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent > 0");
 
   const auto y_tp = y.data()->getVectorView();
@@ -106,8 +106,8 @@ abs_pow(T1 & y,
 
   assert(x.extent(0) == y.extent(0));
   assert(x.extentLocal(0) == y.extentLocal(0));
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("this overload is only for exponent < 0");
 
   const auto y_tp = y.data()->getVectorView();
@@ -116,7 +116,7 @@ abs_pow(T1 & y,
   const auto y_kv = y_tp.getLocalViewDevice();
   const auto x_kv = x_tp.getLocalViewDevice();
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   // NOTE that we need the local length of the tpetra view NOT the block
   Kokkos::parallel_for(y_tp.getLocalLength(),

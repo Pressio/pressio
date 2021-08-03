@@ -77,9 +77,9 @@ product(::pressio::nontranspose modeA,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
   pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
-  constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-  constexpr auto no   = ::pressio::utils::constants<int>::zero();
-  constexpr auto yes  = ::pressio::utils::constants<int>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::Constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::Constants<int>::one();
   constexpr auto transA = no;
   constexpr auto transB = no;
   constexpr auto ovw    = yes;
@@ -123,8 +123,8 @@ product(::pressio::nontranspose,
   // by slicing A along third axis and
   if (C.extent(1) == 1 and B.extent(1) == 1)
   {
-    constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-    constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+    constexpr auto izero	    = ::pressio::utils::Constants<int>::zero();
+    constexpr auto ione	    = ::pressio::utils::Constants<int>::one();
     constexpr auto transA	    = izero;
     constexpr auto overWritey = ione;
     for (int k=0; k<A.extent(2); ++k)
@@ -185,8 +185,8 @@ product(::pressio::nontranspose,
   const auto & nativeB = *B.data();
   auto & nativeC = *C.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+  constexpr auto izero	    = ::pressio::utils::Constants<int>::zero();
+  constexpr auto ione	    = ::pressio::utils::Constants<int>::one();
   constexpr auto transA	    = izero;
   constexpr auto overWritey = ione;
   for (int k=0; k<A.extent(2); ++k)
@@ -236,9 +236,9 @@ product(::pressio::transpose modeA,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
   pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
-  constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-  constexpr auto no   = ::pressio::utils::constants<int>::zero();
-  constexpr auto yes  = ::pressio::utils::constants<int>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::Constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::Constants<int>::one();
   constexpr auto transA = yes;
   constexpr auto transB = no;
   constexpr auto ovw    = yes;
@@ -313,8 +313,8 @@ product(::pressio::transpose,
   const auto & nativeB = *B.data();
   auto & nativeC = *C.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+  constexpr auto izero	    = ::pressio::utils::Constants<int>::zero();
+  constexpr auto ione	    = ::pressio::utils::Constants<int>::one();
   constexpr auto transA	    = ione;
   constexpr auto overWritey = ione;
 
@@ -386,9 +386,9 @@ product(::pressio::transpose modeA,
   // and assess whether we can use blas directly when we know
   // that objects involved are dense with not strange layout.
   pybind11::object pyblas = pybind11::module::import("scipy.linalg.blas");
-  constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-  constexpr auto no   = ::pressio::utils::constants<int>::zero();
-  constexpr auto yes  = ::pressio::utils::constants<int>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+  constexpr auto no   = ::pressio::utils::Constants<int>::zero();
+  constexpr auto yes  = ::pressio::utils::Constants<int>::one();
   constexpr auto transA = yes;
   constexpr auto transB = no;
   constexpr auto ovw    = yes;
@@ -407,7 +407,7 @@ product(::pressio::transpose modeA,
 	const scalar_type alpha,
 	const A_type & A)
 {
-  constexpr auto zero  = ::pressio::utils::constants<scalar_type>::zero();
+  constexpr auto zero  = ::pressio::utils::Constants<scalar_type>::zero();
   C_type C(A.extent(1), A.extent(1));
   product(modeA, modeB, alpha, A, zero, C);
   return C;

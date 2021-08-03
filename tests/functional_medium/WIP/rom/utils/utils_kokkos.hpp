@@ -28,7 +28,7 @@ void readBasis(std::string filename,
 	       phi_d_t phi_d)
 {
   std::vector<std::vector<double>> A0;
-  ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::utils::read_ascii_matrix_stdvecvec(filename, A0, romSize);
 
   using view_h_t = typename phi_d_t::HostMirror;
   view_h_t phi_h("phi_h", numCell, romSize);

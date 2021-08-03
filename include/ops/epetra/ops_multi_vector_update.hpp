@@ -66,7 +66,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<::pressio::is_multi_vector_epetra<T>::value>
 update(T & mv, const T & mv1, const scalar_t & b)
 {
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   mv.Update(b, mv1, zero);
 }
 

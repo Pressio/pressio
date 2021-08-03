@@ -224,8 +224,8 @@ public:
   {
     auto JJ = createJacobian();
     jacobian(y,t,JJ);
-    constexpr auto zero = ::pressio::utils::constants<sc_t>::zero();
-    constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+    constexpr auto zero = ::pressio::utils::Constants<sc_t>::zero();
+    constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
 
     const char ct = 'N';
     KokkosSparse::spmv(&ct, one, JJ, B, zero, A);

@@ -98,7 +98,7 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 {
 
   using step_t = ::pressio::ode::step_count_type;
-  constexpr auto zero = ::pressio::utils::constants<step_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<step_t>::zero();
 
   if (final_time < start_time){
     throw std::runtime_error("You cannot call the advancer with final time < start time.");
@@ -114,9 +114,9 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 #endif
 
   time_type time  = start_time;
-  time_type dt    = pressio::utils::constants<time_type>::zero();
-  time_type minDt = pressio::utils::constants<time_type>::zero();
-  time_type dtReducFactor = ::pressio::utils::constants<time_type>::one();
+  time_type dt    = pressio::utils::Constants<time_type>::zero();
+  time_type minDt = pressio::utils::Constants<time_type>::zero();
+  time_type dtReducFactor = ::pressio::utils::Constants<time_type>::one();
 
   // pass initial condition to collector object
   call_collector(collector, zero, time, odeStateInOut);
@@ -147,7 +147,7 @@ integrateToTargetTimeWithTimeStepSizeManager(stepper_type & stepper,
 	    ("The minimum time step size cannot be smaller than zero.");
 	}
 
-	if (dtReducFactor <= ::pressio::utils::constants<time_type>::one()){
+	if (dtReducFactor <= ::pressio::utils::Constants<time_type>::one()){
 	  throw std::runtime_error
 	    ("The time step size reduction factor must be > 1.");
 	}

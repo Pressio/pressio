@@ -60,7 +60,7 @@ class LMSchedule2Updater
 
   LMGainFactor<state_t, scalar_type> gainFactorEval_;
 
-  using cnst		   = pressio::utils::constants<scalar_type>;
+  using cnst		   = pressio::utils::Constants<scalar_type>;
   const scalar_type rho1_	   = static_cast<scalar_type>(0.2);
   const scalar_type rho2_     = static_cast<scalar_type>(0.8);
   const scalar_type beta_	   = cnst::two();
@@ -90,10 +90,10 @@ public:
 		   solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: lm2 update");
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     constexpr auto ten  = static_cast<scalar_type>(10);
     constexpr auto seven  = static_cast<scalar_type>(7);
-    constexpr auto negSeven  = ::pressio::utils::constants<scalar_type>::negOne()*seven;
+    constexpr auto negSeven  = ::pressio::utils::Constants<scalar_type>::negOne()*seven;
     const auto tenToSev  = std::pow(ten, seven);
     const auto tenToNegSev  = std::pow(ten, negSeven);
 

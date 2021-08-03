@@ -70,7 +70,7 @@ struct Arbitrary{};
 namespace constants{
 template <typename scalar_t>
 struct bdf1{
-  using cnst = ::pressio::utils::constants<scalar_t>;
+  using cnst = ::pressio::utils::Constants<scalar_t>;
   static constexpr scalar_t c_np1_= cnst::one();
   static constexpr scalar_t c_n_  = cnst::negOne();
   static constexpr scalar_t c_f_  = cnst::negOne();
@@ -78,7 +78,7 @@ struct bdf1{
 
 template <typename scalar_t>
 struct bdf2{
-  using cnst = ::pressio::utils::constants<scalar_t>;
+  using cnst = ::pressio::utils::Constants<scalar_t>;
   static constexpr scalar_t c_np1_ = cnst::one();
   static constexpr scalar_t c_n_   = cnst::negOne()*cnst::fourOvThree();
   static constexpr scalar_t c_nm1_ = cnst::oneOvThree();
@@ -87,7 +87,7 @@ struct bdf2{
 
 template <typename scalar_t>
 struct cranknicolson{
-  using cnst = ::pressio::utils::constants<scalar_t>;
+  using cnst = ::pressio::utils::Constants<scalar_t>;
   static constexpr scalar_t c_np1_  = cnst::one();
   static constexpr scalar_t c_n_    = cnst::negOne();
   static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();

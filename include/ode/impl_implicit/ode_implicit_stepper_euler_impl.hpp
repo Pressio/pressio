@@ -84,8 +84,8 @@ private:
   ::pressio::ode::step_count_type stepNumber_  = {};
   std::reference_wrapper<const system_type> systemObj_;
   stencil_states_t stencilStates_;
-  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
-  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<residual_policy_t> resPolicy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<jacobian_policy_t> jacPolicy_;
 
 public:
   StepperBDF1() = delete;

@@ -88,8 +88,8 @@ abs_pow(T1 & y,
   const auto & x_n = impl::get_native(x);
 
   assert(x.extent(0) == y.extent(0));
-  assert(exponent > ::pressio::utils::constants<sc_t>::zero());
-  if (exponent < ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent > ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent < ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent > 0");
 
   Kokkos::parallel_for(x.extent(0),
@@ -121,11 +121,11 @@ abs_pow(T1 & y,
   const auto & x_n = impl::get_native(x);
 
   assert(x.extent(0) == y.extent(0));
-  assert(exponent < ::pressio::utils::constants<sc_t>::zero());
-  if (exponent > ::pressio::utils::constants<sc_t>::zero())
+  assert(exponent < ::pressio::utils::Constants<sc_t>::zero());
+  if (exponent > ::pressio::utils::Constants<sc_t>::zero())
     throw std::runtime_error("This overload only supports exponent < 0");
 
-  constexpr auto one = ::pressio::utils::constants<sc_t>::one();
+  constexpr auto one = ::pressio::utils::Constants<sc_t>::one();
   const auto expo = -exponent;
   Kokkos::parallel_for(x.extent(0),
 		       KOKKOS_LAMBDA (const ord_t& i){

@@ -137,9 +137,9 @@ struct ExplicitComposeForCustomPolicy
    "Invalid rhs policy for explicit time stepping");
 
   using type = typename ExplicitImplSelector<tag>::template type<
-      false, scalar_type, state_type, system_t, velocity_type, policy_t 
+      false, scalar_type, state_type, system_t, velocity_type, policy_t
       >;
 };
 
-}}} 
+}}}
 #endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_

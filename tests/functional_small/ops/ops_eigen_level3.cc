@@ -8,8 +8,8 @@ using mat_t = Eigen::MatrixXd;
   mat_t M(4,3);                     \
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
   mat_t myR(4,4);         \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), pressio::nontranspose(), \
       alpha, M, OPERAND, beta, myR);\
   EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
@@ -35,8 +35,8 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), \
       alpha, M, OPERAND, beta, myR); \
   EXPECT_DOUBLE_EQ(myR(0,0), 0.0); \
@@ -55,8 +55,8 @@ using mat_t = Eigen::MatrixXd;
   M << 1,0,2, 2,1,3, 0,0,1, 2,2,2;\
                                   \
   mat_t myR(3,3);         \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), pressio::nontranspose(), alpha, M, beta, myR); \
   EXPECT_DOUBLE_EQ(myR(0,0), 9.0); \
   EXPECT_DOUBLE_EQ(myR(0,1), 6.0); \

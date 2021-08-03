@@ -68,7 +68,7 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<velocity_policy_type> policy_;
   std::array<velocity_type, 1> velocities_;
   state_type tmpState_;
 
@@ -115,10 +115,10 @@ public:
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
-    constexpr auto one   = ::pressio::utils::constants<scalar_type>::one();
-    constexpr auto two   = ::pressio::utils::constants<scalar_type>::two();
-    constexpr auto three = ::pressio::utils::constants<scalar_type>::three();
-    constexpr auto four  = ::pressio::utils::constants<scalar_type>::four();
+    constexpr auto one   = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto two   = ::pressio::utils::Constants<scalar_type>::two();
+    constexpr auto three = ::pressio::utils::Constants<scalar_type>::three();
+    constexpr auto four  = ::pressio::utils::Constants<scalar_type>::four();
     constexpr auto oneOvTwo = one/two;
     constexpr auto oneOvThree = one/three;
     constexpr auto twoOvThree = two/three;

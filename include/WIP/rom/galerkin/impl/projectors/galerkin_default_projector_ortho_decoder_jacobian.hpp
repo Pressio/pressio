@@ -97,7 +97,7 @@ struct DefaultProjector
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), cnst::one(),
 			 *decoderJacobian_.get().data(), *operand.data(),
 			 cnst::zero(), result);
@@ -111,7 +111,7 @@ struct DefaultProjector
   apply(const dec_jac_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), ::pressio::nontranspose(),
 			 cnst::one(), *decoderJacobian_.get().data(),
 			 *operand.data(), cnst::zero(), result);
@@ -145,7 +145,7 @@ struct DefaultProjector<decoder_type, void>
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
 			    decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
@@ -156,7 +156,7 @@ struct DefaultProjector<decoder_type, void>
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
@@ -167,7 +167,7 @@ struct DefaultProjector<decoder_type, void>
   // apply(const dec_jac_t & operand, result_t & result) const
   // {
   //   // using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-  //   // using cnst = ::pressio::utils::constants<scalar_t>;
+  //   // using cnst = ::pressio::utils::Constants<scalar_t>;
   //   // ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
   //   //  			    cnst::one(), decoderJacobian_.get(), operand,
   //   // 			    cnst::zero(), result);

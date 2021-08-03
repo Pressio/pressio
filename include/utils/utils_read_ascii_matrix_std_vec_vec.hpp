@@ -56,16 +56,16 @@
 namespace pressio{ namespace utils{
 
 // template just to avoid having a cc file
-template <typename T = int32_t, typename sc_t = double>
-void readAsciiMatrixStdVecVec(std::string filename,
-			      std::vector<std::vector<sc_t>> & A0,
+template <typename T = int32_t, typename ScalarType = double>
+void read_ascii_matrix_stdvecvec(std::string filename,
+			      std::vector<std::vector<ScalarType>> & A0,
 			      T ncols)
 {
   assert( A0.empty() );
   std::ifstream source;
   source.open( filename, std::ios_base::in);
   std::string line, colv;
-  std::vector<sc_t> tmpv(ncols);
+  std::vector<ScalarType> tmpv(ncols);
   while (std::getline(source, line) )
   {
     std::istringstream in(line);

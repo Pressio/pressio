@@ -60,7 +60,7 @@ class LMSchedule1Updater
 
   LMGainFactor<state_t, scalar_type> gainFactorEval_;
 
-  using cnst		   = pressio::utils::constants<scalar_type>;
+  using cnst		   = pressio::utils::Constants<scalar_type>;
   const scalar_type beta_     = cnst::two();
   const scalar_type gammaInv_ = cnst::one()/cnst::three();
   const scalar_type p_	   = cnst::three();
@@ -91,8 +91,8 @@ public:
 		   solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: lm1 update");
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
-    constexpr auto two  = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto two  = ::pressio::utils::Constants<scalar_type>::two();
 
     const auto mu	    = solver.lmDampParam();
     const auto & correction = solver.correctionCRef();

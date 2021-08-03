@@ -16,8 +16,8 @@ TEST(ops_matrix_vector_product, teuchosDenseMatEigenVec)
   M(2,0) = 5.0; M(2,1) = 6.0;
 
   Eigen::VectorXd y(3);
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();
   ::pressio::ops::product(::pressio::nontranspose(), alpha, M, a, beta, y);
 
   EXPECT_DOUBLE_EQ( y(0), 5.0);
@@ -39,8 +39,8 @@ TEST(ops_teuchos, teuchosDenseMatTransposeEigenVec)
   M(2,0) = 5.0; M(2,1) = 6.0;
 
   Eigen::VectorXd y(2);
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero();
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero();
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();
   ::pressio::ops::product(::pressio::transpose(), alpha, M, a, beta, y);
 
   EXPECT_DOUBLE_EQ( y(0), 22.0);

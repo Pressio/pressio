@@ -57,10 +57,6 @@ namespace pressio{
 
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
 using logger = spdlog::logger;
-// #else
-// // need to make a trivial logger type so that instrumentation
-// // around pressio code can be a noop easily
-// using logger = ::pressio::utils::empty;
 #endif
 
 namespace log{

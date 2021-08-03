@@ -77,7 +77,7 @@ public:
   using state_type = StateType;
 
 private:
-  pressio::utils::instance_or_reference_wrapper<FunctorType> F_;
+  pressio::utils::InstanceOrReferenceWrapper<FunctorType> F_;
 
 public:
   Observer(FunctorType Fin) : F_(Fin){}

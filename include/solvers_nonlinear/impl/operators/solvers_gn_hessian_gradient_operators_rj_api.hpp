@@ -94,7 +94,7 @@ public:
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(::pressio::ops::clone(state)),
-      H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::constants<scalar_type>::one(), J_))
+      H_(::pressio::ops::product<HessianType>(pT, pnT, ::pressio::utils::Constants<scalar_type>::one(), J_))
   {
     ::pressio::ops::set_zero(r_);
     ::pressio::ops::set_zero(J_);
@@ -211,19 +211,19 @@ public:
 private:
   void _computeHessian()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::product(pT, pnT, alpha, J_, beta, H_);
   }
 
   void _computeGradient()
   {
-    constexpr auto beta  = ::pressio::utils::constants<scalar_type>::zero();
-    constexpr auto alpha = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto beta  = ::pressio::utils::Constants<scalar_type>::zero();
+    constexpr auto alpha = ::pressio::utils::Constants<scalar_type>::one();
     // compute gradient (g_ = J^T r)
     ::pressio::ops::product(pT, alpha, J_, r_, beta, g_);
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
   }
 };
 

@@ -83,8 +83,8 @@ product(::pressio::nontranspose mode,
   const auto & x_native = *x.data();
   auto & y_native = *y.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+  constexpr auto izero	    = ::pressio::utils::Constants<int>::zero();
+  constexpr auto ione	    = ::pressio::utils::Constants<int>::one();
   constexpr auto transA	    = izero;
   constexpr auto overWritey = ione;
   pyblas_.attr("dgemv")(alpha, A_native, x_native, beta, y_native,
@@ -123,8 +123,8 @@ product(::pressio::transpose mode,
   const auto & xE = *x.data();
   auto & yE = *y.data();
 
-  constexpr auto izero	    = ::pressio::utils::constants<int>::zero();
-  constexpr auto ione	    = ::pressio::utils::constants<int>::one();
+  constexpr auto izero	    = ::pressio::utils::Constants<int>::zero();
+  constexpr auto ione	    = ::pressio::utils::Constants<int>::one();
   constexpr auto transA	    = ione;
   constexpr auto overWritey = ione;
   pyblas_.attr("dgemv")(alpha, AE, xE, beta, yE,

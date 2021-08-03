@@ -109,8 +109,8 @@ public:
 private:
   void setup()
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto two = ::pressio::utils::Constants<scalar_type>::two();
     constexpr auto oneHalf = one/two;
     dx_ = (xR_ - xL_)/static_cast<scalar_type>(Ncell_);
     dxInv_ = one/dx_;
@@ -132,8 +132,8 @@ private:
 		     const scalar_type & t,
 		     velocity_type & f) const
   {
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
-    constexpr auto two = ::pressio::utils::constants<scalar_type>::two();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
+    constexpr auto two = ::pressio::utils::Constants<scalar_type>::two();
     constexpr auto oneHalf = one/two;
 
     const auto coeff = oneHalf * dxInv_;

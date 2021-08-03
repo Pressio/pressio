@@ -190,7 +190,7 @@ private:
         const state_t & ynm1) const
   {
     this->computeJacobian(yn, time, J);
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     J.coeffs() *= -dt;
     J.coeffRef(0,0) += one;
     J.coeffRef(1,1) += one;
@@ -326,9 +326,9 @@ struct CustomBdf1Solver
 
 TEST(ode, implicit_arbitraryStepperRunEulerConstDt)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 
@@ -350,9 +350,9 @@ TEST(ode, implicit_arbitraryStepperRunEulerConstDt)
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetter)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 
@@ -374,9 +374,9 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetter)
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterWithWrongDt)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 
@@ -399,9 +399,9 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterWithWrongDt)
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 
@@ -421,9 +421,9 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 
@@ -451,9 +451,9 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWithCollector)
 {
-  constexpr double one = ::pressio::utils::constants<double>::one();
-  constexpr double two = ::pressio::utils::constants<double>::two();
-  constexpr double three = ::pressio::utils::constants<double>::three();
+  constexpr double one = ::pressio::utils::Constants<double>::one();
+  constexpr double two = ::pressio::utils::Constants<double>::two();
+  constexpr double three = ::pressio::utils::Constants<double>::three();
   Eigen::VectorXd y0(3);
   y0 << one,two,three;
 

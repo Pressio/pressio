@@ -103,7 +103,7 @@ update(T1 & mv,
     (::pressio::containers::predicates::have_matching_execution_space<T1, T2>::value,
      "operands need to have same execution space" );
 
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   ::KokkosBlas::axpby(b, *mv1.data(), zero, *mv.data());
 }
 

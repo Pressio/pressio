@@ -59,7 +59,7 @@ set_zero(T & v)
 {
   using traits	 = ::pressio::containers::details::traits<T>;
   using scalar_t = typename traits::scalar_t;
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   ::pressio::ops::fill(v, zero);
 }
 

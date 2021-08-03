@@ -108,7 +108,7 @@ struct ArbitraryProjector
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), cnst::one(),
 			 *data_.data(), *operand.data(),
 			 cnst::zero(), result);
@@ -123,7 +123,7 @@ struct ArbitraryProjector
   apply(const operand_t & operand, result_t & result) const
   {
     using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-    using cnst = ::pressio::utils::constants<scalar_t>;
+    using cnst = ::pressio::utils::Constants<scalar_t>;
     udOps_.get().product(::pressio::transpose(), ::pressio::nontranspose(),
 			 cnst::one(), *data_.data(), *operand.data(),
 			 cnst::zero(), result);
@@ -148,7 +148,7 @@ struct ArbitraryProjector<data_type, void>
   using traits = ::pressio::containers::details::traits<data_type>;
   using native_type = typename traits::wrapped_t;
   using scalar_t = typename traits::scalar_t;
-  using cnst = ::pressio::utils::constants<scalar_t>;
+  using cnst = ::pressio::utils::Constants<scalar_t>;
 
   ArbitraryProjector() = delete;
   ArbitraryProjector(const ArbitraryProjector &) = default;

@@ -67,7 +67,7 @@ set_zero(T & v)
      "cannot modify a const-qualified wrapper of a Kokkos view");
 
   using value_t	      = typename ::pressio::containers::details::traits<T>::scalar_t;
-  constexpr auto zero = ::pressio::utils::constants<value_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<value_t>::zero();
   ::KokkosBlas::fill(*v.data(), zero);
 }
 

@@ -52,7 +52,7 @@
 namespace pressio{ namespace utils{
 
 template <typename scalar_t>
-struct constants
+struct Constants
 {
   static constexpr scalar_t negOne(){ return static_cast<scalar_t>(-1); }
   static constexpr scalar_t zero()  { return static_cast<scalar_t>(0);  }

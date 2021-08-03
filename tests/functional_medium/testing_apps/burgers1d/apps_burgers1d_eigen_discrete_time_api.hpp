@@ -166,7 +166,7 @@ private:
     auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     J.coeffs() *= -dt;
     for (std::size_t i=0; i<Ncell_; ++i)
       J.coeffRef(i,i) += one;
@@ -190,7 +190,7 @@ private:
     auto J =  this->jacobianImpl(yn, time);
 
     // compute time discrete Jacobian
-    constexpr auto one = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
     J.coeffs() *= -2./3.*dt;
     for (std::size_t i=0; i<Ncell_; ++i)
       J.coeffRef(i,i) += one;

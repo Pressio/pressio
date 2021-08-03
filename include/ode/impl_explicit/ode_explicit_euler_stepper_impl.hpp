@@ -69,7 +69,7 @@ public:
 
 private:
   std::reference_wrapper<const system_type> systemObj_;
-  ::pressio::utils::instance_or_reference_wrapper<velocity_policy_type> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<velocity_policy_type> policy_;
   std::array<velocity_type, 1> velocities_;
 
 public:
@@ -117,7 +117,7 @@ public:
     //eval RHS
     policy_.get().compute(odeSolution, rhs, systemObj_.get(), time);
     // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::constants<scalar_type>::one();
+    constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();
     ::pressio::ops::update(odeSolution, one, rhs, dt);
   }
 };

@@ -145,7 +145,7 @@ product(::pressio::transpose modeA,
     (::pressio::are_scalar_compatible<A_type, C_type>::value,
      "Types are not scalar compatible");
 
-  constexpr auto zero = ::pressio::utils::constants<ScalarType>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
   C_type C(::pressio::ops::extent(A, 1), ::pressio::ops::extent(A, 1));
   product(modeA, modeB, alpha, A, A, zero, C);
   return C;

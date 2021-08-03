@@ -27,7 +27,7 @@ auto readBasis(std::string filename, T romSize, T numCell)
   ->pressio::containers::MultiVector<Eigen::MatrixXd>
 {
   std::vector<std::vector<double>> A0;
-  ::pressio::utils::readAsciiMatrixStdVecVec(filename, A0, romSize);
+  ::pressio::utils::read_ascii_matrix_stdvecvec(filename, A0, romSize);
   // read basis into a MultiVector
   auto phi = convertFromVVecToMultiVec(A0, numCell, romSize);
   //  phi.data()->Print(std::cout);

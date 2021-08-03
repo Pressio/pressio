@@ -7,8 +7,8 @@
   M_t M(3,3);                  \
   M << 1.,0.,2.,2.,1.,3.,0.,0.,1.;      \
   Eigen::VectorXd myR(3);      \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), alpha, M, VECIN, beta, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 16.0); \
   EXPECT_DOUBLE_EQ( myR(1), 28.0); \
@@ -20,8 +20,8 @@
   M << 1.,0.,2.,2.,1.,3.,0.,0.,1.,2.,3.,4.; \
                                \
   Eigen::VectorXd myR(3);      \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), alpha, M, VECIN, beta, myR); \
   EXPECT_DOUBLE_EQ( myR(0), 14.);  \
   EXPECT_DOUBLE_EQ( myR(1), 11.0); \

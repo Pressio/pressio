@@ -16,8 +16,8 @@
   M_h(2,2) = 1.; \
   Kokkos::deep_copy(M, M_h); \
   Kokkos::View<double*> myR("myR", 3); \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::nontranspose(), alpha, M, VECIN, beta, myR); \
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
   EXPECT_DOUBLE_EQ( myR_h(0), 16.0); \
@@ -41,8 +41,8 @@
   M_h(3,2) = 4.; \
   Kokkos::deep_copy(M, M_h); \
   Kokkos::View<double*> myR("myR", 3); \
-  constexpr auto beta  = ::pressio::utils::constants<double>::zero(); \
-  constexpr auto alpha = ::pressio::utils::constants<double>::one();  \
+  constexpr auto beta  = ::pressio::utils::Constants<double>::zero(); \
+  constexpr auto alpha = ::pressio::utils::Constants<double>::one();  \
   pressio::ops::product(pressio::transpose(), alpha, M, VECIN, beta, myR); \
   auto myR_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), myR); \
   EXPECT_DOUBLE_EQ( myR_h(0), 14.);  \

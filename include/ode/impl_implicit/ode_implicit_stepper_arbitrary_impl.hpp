@@ -89,8 +89,8 @@ private:
   // state object to ensure the strong guarantee for handling excpetions
   ode_state_type recoveryState_;
   // policies
-  ::pressio::utils::instance_or_reference_wrapper<residual_policy_t> resPolicy_;
-  ::pressio::utils::instance_or_reference_wrapper<jacobian_policy_t> jacPolicy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<residual_policy_t> resPolicy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<jacobian_policy_t> jacPolicy_;
 
 public:
   StepperArbitrary() = delete;

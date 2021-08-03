@@ -59,7 +59,7 @@ template <typename T>
 norm1(const T & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  sc_t result = ::pressio::utils::constants<sc_t>::zero();
+  sc_t result = ::pressio::utils::Constants<sc_t>::zero();
   for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
     result += std::abs(a(i));
   }
@@ -74,7 +74,7 @@ template <typename T>
 norm2(const T & a)
 {
   using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  auto result = ::pressio::utils::constants<sc_t>::zero();
+  auto result = ::pressio::utils::Constants<sc_t>::zero();
   for (std::size_t i=0; i<a.extent(0); i++){
     result += a(i)*a(i);
   }

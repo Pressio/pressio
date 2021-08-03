@@ -51,13 +51,15 @@
 
 namespace pressio{ namespace utils{ namespace details {
 
-template <typename T, typename enable = void>
+template <typename T, typename Enable = void>
 struct CrtpBase;
 
-template <typename T,
-	  template<typename, typename...> class crtpType,
+template <
+    typename T,
+	  template<typename, typename...> class CrtpType,
 	  typename ... Args>
-struct CrtpBase< crtpType<T, Args...>>{
+struct CrtpBase< CrtpType<T, Args...>>
+{
   T & underlying() {
     return static_cast<T&>(*this);
   }
@@ -68,15 +70,18 @@ struct CrtpBase< crtpType<T, Args...>>{
 private:
   CrtpBase() = default;
   ~CrtpBase() = default;
-  friend crtpType<T, Args...>;
+  friend CrtpType<T, Args...>;
 };//end class
 
 
-template <typename T,
-	  int a,
-	  int b,
-	  template<typename, int, int> class crtpType>
-struct CrtpBase< crtpType<T, a, b> >{
+template <
+  typename T,
+	int a,
+	int b,
+	template<typename, int, int> class CrtpType
+>
+struct CrtpBase< CrtpType<T, a, b> >
+{
   T & underlying() {
     return static_cast<T&>(*this);
   }
@@ -87,14 +92,17 @@ struct CrtpBase< crtpType<T, a, b> >{
 private:
   CrtpBase() = default;
   ~CrtpBase() = default;
-  friend crtpType<T, a, b>;
+  friend CrtpType<T, a, b>;
 };//end class
 
 
-template <typename T,
-	  int a,
-	  template<typename, int> class crtpType>
-struct CrtpBase< crtpType<T, a> >{
+template <
+  typename T,
+	int a,
+	template<typename, int> class CrtpType
+  >
+struct CrtpBase< CrtpType<T, a> >
+{
   T & underlying() {
     return static_cast<T&>(*this);
   }
@@ -105,7 +113,7 @@ struct CrtpBase< crtpType<T, a> >{
 private:
   CrtpBase() = default;
   ~CrtpBase() = default;
-  friend crtpType<T, a>;
+  friend CrtpType<T, a>;
 };//end class
 
 

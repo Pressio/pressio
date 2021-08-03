@@ -70,7 +70,7 @@ template<typename T, typename scalar_t>
   >
 update(T & v, const T & v1, const scalar_t b)
 {
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   v.data()->update(b, *v1.data(), zero); // v = b * v1
 }
 
@@ -86,7 +86,7 @@ update(T & v, const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
   v.data()->update(b, *v1.data(), a); // v = v + b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2
 }
@@ -99,8 +99,8 @@ update(T & v,
 	       const T & v1, const scalar_t &b,
 	       const T & v2, const scalar_t &c)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
 
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -120,7 +120,7 @@ update(T & v, const scalar_t &a,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
 
   v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -136,8 +136,8 @@ update(T & v,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
 
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -159,7 +159,7 @@ update(T & v, const scalar_t &a,
 	  const T & v3, const scalar_t &d,
 	  const T & v4, const scalar_t &e)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
 
   v.data()->update(b, *v1.data(), a); // v = a*v + b*v1
   v.data()->update(c, *v2.data(), one); // add c*v2
@@ -177,8 +177,8 @@ update(T & v,
 	  const T & v3, const scalar_t &d,
 	  const T & v4, const scalar_t &e)
 {
-  constexpr auto one  = ::pressio::utils::constants<scalar_t>::one();
-  constexpr auto zero = ::pressio::utils::constants<scalar_t>::zero();
+  constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
 
   v.data()->update(b, *v1.data(), zero); // v = b * v1
   v.data()->update(c, *v2.data(), one); // add c*v2

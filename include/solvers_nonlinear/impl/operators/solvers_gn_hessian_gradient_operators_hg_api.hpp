@@ -129,7 +129,7 @@ public:
 		 recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
   }
 
   template<typename system_t, typename state_t>
@@ -146,7 +146,7 @@ public:
 			   residualNorm, recomputeSystemJacobian);
 
     // scale because of sign convention
-    ::pressio::ops::scale(g_, ::pressio::utils::constants<scalar_type>::negOne());
+    ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
   }
 };
 
