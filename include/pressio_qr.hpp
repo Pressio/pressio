@@ -54,10 +54,8 @@
 #include "pressio_type_traits.hpp"
 #include "pressio_ops.hpp"
 
-#include "qr/qr_ConfigDefs.hpp"
 #include "qr/qr_fwd.hpp"
 #include "qr/qr_algorithms_tags.hpp"
-
 #include "qr/qr_meta.hpp"
 
 #include "qr/base/qr_in_place_base.hpp"

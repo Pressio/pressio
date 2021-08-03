@@ -58,26 +58,26 @@
 namespace pressio{ namespace qr{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-template< typename vector_type, typename R_type>
+template< typename VectorType, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_eigen<vector_type>::value and
+  ::pressio::is_vector_eigen<VectorType>::value and
   ::pressio::is_dense_matrix_eigen<R_type>::value
 >
-solve(const vector_type & rhs,
+solve(const VectorType & rhs,
 	   const R_type & Rmatrix,
-	   vector_type & y)
+	   VectorType & y)
 {
   y = Rmatrix.template triangularView<Eigen::Upper>().solve(rhs);
 }
 #endif
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-template<typename vector_type, typename R_type>
+template<typename VectorType, typename R_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_dense_vector_teuchos<vector_type>::value and
+  ::pressio::is_dense_vector_teuchos<VectorType>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >
-solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+solve(const VectorType & rhs, R_type Rmatrix, VectorType & y)
 {
   using ord_t	 = typename R_type::element_type::ordinalType;
   using sc_t	 = typename R_type::element_type::scalarType;
@@ -86,7 +86,7 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
   solver_t My_Solver;
   My_Solver.setMatrix(Rmatrix);
   My_Solver.setVectors( Teuchos::rcpFromRef(y), 
-    Teuchos::rcpFromRef(const_cast<vector_type&>(rhs)));
+    Teuchos::rcpFromRef(const_cast<VectorType&>(rhs)));
 
   int info = My_Solver.factor();
   if (info != 0){
@@ -101,12 +101,12 @@ solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
   }
 }
 
-template<typename vector_type, typename R_type>
+template<typename VectorType, typename R_type>
 ::pressio::mpl::enable_if_t<
-  !::pressio::is_dense_vector_teuchos<vector_type>::value and
+  !::pressio::is_dense_vector_teuchos<VectorType>::value and
   ::pressio::is_dense_matrix_teuchos_rcp<R_type>::value
 >
-solve(const vector_type & rhs, R_type Rmatrix, vector_type & y)
+solve(const VectorType & rhs, R_type Rmatrix, VectorType & y)
 {
   // todo: maybe here we should use directly backward substitution but it does
   // not seem to be available directly from teuchos

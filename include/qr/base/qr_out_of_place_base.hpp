@@ -52,44 +52,44 @@
 namespace pressio{ namespace qr{
 
 
-template<typename derived_t, typename matrix_t, typename Q_t>
+template<typename DerivedType, typename MatrixType, typename QType>
 class QROutOfPlaceBase
-  : private utils::details::CrtpBase<QROutOfPlaceBase<derived_t, matrix_t, Q_t>>
+  : private utils::details::CrtpBase<QROutOfPlaceBase<DerivedType, MatrixType, QType>>
 {
 
-  using this_t = QROutOfPlaceBase<derived_t, matrix_t, Q_t>;
+  using this_t = QROutOfPlaceBase<DerivedType, MatrixType, QType>;
 
   /* workaround for nvcc issue with templates, see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_t>::type;
+  friend typename dummy<DerivedType>::type;
 
   friend utils::details::CrtpBase<this_t>;
 
 public:
-  void computeThin(const matrix_t & A){
+  void computeThin(const MatrixType & A){
     this->underlying().computeThinImpl(A);
   }
 
-  const Q_t & cRefQFactor() const {
+  const QType & cRefQFactor() const {
     return this->underlying().cRefQFactorImpl();
   }
 
-  template <typename vec_in_t, typename vec_out_t>
+  template <typename VectorInType, typename VectorOutType>
   ::pressio::mpl::enable_if_t<
-    ::pressio::Traits<vec_in_t>::rank ==1 and
-    ::pressio::Traits<vec_out_t>::rank ==1 and
-    meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
+    ::pressio::Traits<VectorInType>::rank ==1 and
+    ::pressio::Traits<VectorOutType>::rank ==1 and
+    meta::is_legitimate_vector_type_for_qr_project<VectorInType, QType>::value
   >
-  applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
+  applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const{
     this->underlying().applyQTransposeImpl(vecIn, vecOut);
   }
 
-  template <typename vec_in_t, typename vec_out_t>
+  template <typename VectorInType, typename VectorOutType>
   ::pressio::mpl::enable_if_t<
-    ::pressio::Traits<vec_in_t>::rank ==1 and
-    ::pressio::Traits<vec_out_t>::rank ==1
+    ::pressio::Traits<VectorInType>::rank ==1 and
+    ::pressio::Traits<VectorOutType>::rank ==1
   >
-  applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
+  applyRTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const{
     this->underlying().applyRTransposeImpl(vecIn, vecOut);
   }
 

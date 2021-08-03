@@ -53,18 +53,18 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template< typename matrix_type, typename R_t>
+template< typename MatrixType, typename R_t>
 class QRHouseholderDenseEigenMatrix<
-  matrix_type, R_t,
+  MatrixType, R_t,
   ::pressio::mpl::enable_if_t<
-    ::pressio::is_dense_matrix_eigen<matrix_type>::value
+    ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
 {
 public:
-  using sc_t	       = typename ::pressio::Traits<matrix_type>::scalar_type;
+  using sc_t	       = typename ::pressio::Traits<MatrixType>::scalar_type;
   using Q_type = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
-  using factorizer_t = Eigen::HouseholderQR<matrix_type>;
+  using factorizer_t = Eigen::HouseholderQR<MatrixType>;
 
 private:
   mutable std::shared_ptr<Q_type> Qmat_	     = {};
@@ -74,7 +74,7 @@ public:
   QRHouseholderDenseEigenMatrix() = default;
   ~QRHouseholderDenseEigenMatrix() = default;
 
-  void computeThinOutOfPlace(const matrix_type & A)
+  void computeThinOutOfPlace(const MatrixType & A)
   {
     const auto rows = A.rows();
     const auto cols = A.cols();
@@ -88,16 +88,16 @@ public:
     *Qmat_ = fct_->householderQ() * Q_type::Identity(rows,cols);
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
     // y = R^T vecIn
     auto vecSize = ::pressio::ops::extent(y, 0);
@@ -105,8 +105,8 @@ public:
     y = Rm.transpose() * vecIn;
   }
 
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const
   {
     auto vecSize = ::pressio::ops::extent(y, 0);
     auto & Rm = fct_->matrixQR().block(0,0,vecSize,vecSize).

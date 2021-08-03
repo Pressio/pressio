@@ -51,13 +51,13 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t>
+template<typename MatrixType, typename R_t>
 class ModGramSchmidtMVEpetra
 {
 
 public:
   using int_t	     = int;
-  using sc_t	     = typename ::pressio::Traits<matrix_t>::scalar_type;
+  using sc_t	     = typename ::pressio::Traits<MatrixType>::scalar_type;
   using R_nat_t	    = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
   using Q_type      = Epetra_MultiVector;
   static constexpr sc_t one_ = static_cast<sc_t>(1);
@@ -67,9 +67,9 @@ public:
   ModGramSchmidtMVEpetra() = default;
   ~ModGramSchmidtMVEpetra() = default;
 
-  void computeThinOutOfPlace(const matrix_t & Ain) 
+  void computeThinOutOfPlace(const MatrixType & Ain) 
   {
-    auto & A = const_cast<matrix_t &>(Ain);
+    auto & A = const_cast<MatrixType &>(Ain);
 
     auto nVecs = ::pressio::ops::extent(A,1);
     auto & ArowMap = A.Map();
@@ -94,14 +94,14 @@ public:
     }
   }
 
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const {
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const {
     auto & Rm = localR_.template triangularView<Eigen::Upper>();
     y = Rm.solve(rhs);
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();

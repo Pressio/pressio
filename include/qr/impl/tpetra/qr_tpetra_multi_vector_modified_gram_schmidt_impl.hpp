@@ -51,16 +51,16 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t>
+template<typename MatrixType, typename R_t>
 class ModGramSchmidtMVTpetra
 {
 
 public:
   using int_t	     = int;
-  using sc_t        = typename ::pressio::Traits<matrix_t>::scalar_type;
-  using lo_t        = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
-  using go_t        = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
-  using node_t      = typename ::pressio::Traits<matrix_t>::node_type;
+  using sc_t        = typename ::pressio::Traits<MatrixType>::scalar_type;
+  using lo_t        = typename ::pressio::Traits<MatrixType>::local_ordinal_type;
+  using go_t        = typename ::pressio::Traits<MatrixType>::global_ordinal_type;
+  using node_t      = typename ::pressio::Traits<MatrixType>::node_type;
   using Q_type      = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
   using R_nat_t	    = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
 
@@ -68,9 +68,9 @@ public:
   ModGramSchmidtMVTpetra() = default;
   ~ModGramSchmidtMVTpetra() = default;
 
-  void computeThinOutOfPlace(const matrix_t & Ain)
+  void computeThinOutOfPlace(const MatrixType & Ain)
   {
-    auto & A = const_cast<matrix_t &>(Ain);
+    auto & A = const_cast<MatrixType &>(Ain);
 
     auto nVecs = ::pressio::ops::extent(A,1);
     auto ArowMap = A.getMap();
@@ -95,15 +95,15 @@ public:
     }
   }
 
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const {
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const {
     //auto vecSize = y.size();
     auto & Rm = localR_.template triangularView<Eigen::Upper>();
     y = Rm.solve(rhs);
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
@@ -124,8 +124,8 @@ private:
     }
   }
 
-  template <typename map_t>
-  void createQIfNeeded(const map_t & map, int cols){
+  template <typename MapType>
+  void createQIfNeeded(const MapType & map, int cols){
     if (!Qmat_ or !Qmat_->getMap()->isSameAs(*map) )
       Qmat_ = std::make_shared<Q_type>(map, cols);
   }

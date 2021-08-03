@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace qr{ namespace meta {
 
-template <typename T, typename enable = void>
+template <typename T, typename Enable = void>
 struct is_legitimate_r_type : std::false_type {};
 
 template <typename T>
@@ -63,7 +63,7 @@ struct is_legitimate_r_type<T,
 	   >
       > : std::true_type{};
 
-template <typename T, typename Q_T, typename enable = void>
+template <typename T, typename Q_T, typename Enable = void>
 struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 
 template <typename T, typename Q_t>

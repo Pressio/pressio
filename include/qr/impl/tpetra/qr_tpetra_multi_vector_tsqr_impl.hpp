@@ -53,53 +53,51 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t>
+template<typename MatrixType, typename R_t>
 class TpetraMVTSQR
 {
 
 public:
   using int_t	       = int;
-  using sc_t	       = typename ::pressio::Traits<matrix_t>::scalar_type;
+  using sc_t	       = typename ::pressio::Traits<MatrixType>::scalar_type;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
 
-  using lo_t         = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
-  using go_t         = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
-  using node_t       = typename ::pressio::Traits<matrix_t>::node_type;
+  using lo_t         = typename ::pressio::Traits<MatrixType>::local_ordinal_type;
+  using go_t         = typename ::pressio::Traits<MatrixType>::global_ordinal_type;
+  using node_t       = typename ::pressio::Traits<MatrixType>::node_type;
   using Q_type       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
-  using tsqr_adaptor_type = Tpetra::TsqrAdaptor<matrix_t>;
+  using tsqr_adaptor_type = Tpetra::TsqrAdaptor<MatrixType>;
 
 public:
   TpetraMVTSQR() = default;
   ~TpetraMVTSQR() = default;
 
-  void computeThinOutOfPlace(const matrix_t & A) 
+  void computeThinOutOfPlace(const MatrixType & A) 
   {
     auto nVecs = ::pressio::ops::extent(A,1);
     auto ArowMap = A.getMap();
     createQIfNeeded(ArowMap, nVecs);
     createLocalRIfNeeded(nVecs);
-    tsqrAdaptor_.factorExplicit(const_cast<matrix_t &>(A), *Qmat_, *localR_.get(), false);
+    tsqrAdaptor_.factorExplicit(const_cast<MatrixType &>(A), *Qmat_, *localR_.get(), false);
   }
 
-  // void computeThinInPlace(matrix_t & A) {}
-
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const {
-      qr::impl::solve<vector_t, trcp_mat>(rhs, this->localR_, y);
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const {
+      qr::impl::solve<VectorType, trcp_mat>(rhs, this->localR_, y);
   }
 
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();

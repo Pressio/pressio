@@ -57,12 +57,12 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t>
+template<typename MatrixType, typename R_t>
 class EpetraMVHouseholderUsingEigen
 {
 
 public:
-  using sc_t = typename ::pressio::Traits<matrix_t>::scalar_type;
+  using sc_t = typename ::pressio::Traits<MatrixType>::scalar_type;
   using Q_type = Epetra_MultiVector;
   using eig_dyn_mat	= Eigen::MatrixXd;
   using help_impl_t	= QRHouseholderDenseEigenMatrix<eig_dyn_mat, R_t>;
@@ -74,18 +74,18 @@ public:
   EpetraMVHouseholderUsingEigen() = default;
   ~EpetraMVHouseholderUsingEigen() = default;
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyQTranspose(const vector_in_t & vecIn, vector_out_t & vecOut) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyQTranspose(const VectorInType & vecIn, VectorOutType & vecOut) const
   {
     constexpr auto beta  = ::pressio::utils::Constants<sc_t>::zero();
     constexpr auto alpha = ::pressio::utils::Constants<sc_t>::one();
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const
   {
-    myImpl_.template doLinSolve<vector_t>(rhs, y);
+    myImpl_.template doLinSolve<VectorType>(rhs, y);
   }
 
   const Q_type & QFactor() const 
@@ -93,13 +93,13 @@ public:
     return *this->Qmat_;
   }
 
-  template < typename vector_in_t, typename vector_out_t>
-  void applyRTranspose(const vector_in_t & vecIn, vector_out_t & y) const
+  template < typename VectorInType, typename VectorOutType>
+  void applyRTranspose(const VectorInType & vecIn, VectorOutType & y) const
   {
     myImpl_.applyRTranspose(vecIn, y);
   }
 
-  void computeThinOutOfPlace(const matrix_t & A)
+  void computeThinOutOfPlace(const MatrixType & A)
   {
     auto rows = ::pressio::ops::extent(A,0);
     auto cols = ::pressio::ops::extent(A,1);
@@ -108,7 +108,7 @@ public:
     // convert it to replicated eptra matrix
     Epetra_LocalMap locMap(rows, 0, A.Comm());
     Epetra_Import importer(locMap, ArowMap);
-    matrix_t A2(locMap, cols);
+    MatrixType A2(locMap, cols);
     A2.Import(A, importer, Insert);
 
     // store it into an Eigen matrix

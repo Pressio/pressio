@@ -51,23 +51,23 @@
 
 namespace pressio{ namespace qr{
 
-template<typename derived_t, typename matrix_t>
+template<typename DerivedType, typename MatrixType>
 class QRInPlaceBase
   : private utils::details::CrtpBase<
-  QRInPlaceBase<derived_t, matrix_t>>
+  QRInPlaceBase<DerivedType, MatrixType>>
 {
 
-  using this_t = QRInPlaceBase<derived_t, matrix_t>;
+  using this_t = QRInPlaceBase<DerivedType, MatrixType>;
 
   /* workaround for nvcc issue with templates, 
   see https://devtalk.nvidia.com/default/topic/1037721/nvcc-compilation-error-with-template-parameter-as-a-friend-within-a-namespace/ */
   template<typename DummyType> struct dummy{using type = DummyType;};
-  friend typename dummy<derived_t>::type;
+  friend typename dummy<DerivedType>::type;
 
   friend utils::details::CrtpBase<this_t>;
 
 public:
-  void computeThin(matrix_t & A){
+  void computeThin(MatrixType & A){
     this->underlying().computeThinImpl(A);
   }
 

@@ -56,23 +56,15 @@
 
 namespace pressio{ namespace qr{ namespace impl{
 
-template<typename matrix_t, typename R_t>
+template<typename MatrixType, typename R_t>
 class TpetraMVHouseholderUsingEigen
 {
 
 public:
-  // using MV = typename containers::details::traits<matrix_t>::wrapped_t;
-  // using sc_t = typename containers::details::traits<matrix_t>::scalar_t;
-  // using LO_t = typename containers::details::traits<matrix_t>::local_ordinal_t;
-  // using GO_t = typename containers::details::traits<matrix_t>::global_ordinal_t;
-  // using map_t = typename containers::details::traits<matrix_t>::data_map_t;
-  // using node_t = typename containers::details::traits<matrix_t>::node_t;
-  // using hexsp = typename containers::details::traits<matrix_t>::host_exec_space_t;
-
-  using sc_t = typename ::pressio::Traits<matrix_t>::scalar_type;
-  using lo_t         = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
-  using go_t         = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
-  using node_t       = typename ::pressio::Traits<matrix_t>::node_type;
+  using sc_t = typename ::pressio::Traits<MatrixType>::scalar_type;
+  using lo_t         = typename ::pressio::Traits<MatrixType>::local_ordinal_type;
+  using go_t         = typename ::pressio::Traits<MatrixType>::global_ordinal_type;
+  using node_t       = typename ::pressio::Traits<MatrixType>::node_type;
   using Q_type       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
 
   using eig_dyn_mat	= Eigen::Matrix<sc_t, -1, -1>;
@@ -91,18 +83,18 @@ public:
     ::pressio::ops::product(::pressio::transpose(), alpha, *this->Qmat_, vecIn, beta, vecOut);
   }
 
-  template <typename vector_t>
-  void doLinSolve(const vector_t & rhs, vector_t & y)const{
-    myImpl_.template doLinSolve<vector_t>(rhs, y);
+  template <typename VectorType>
+  void doLinSolve(const VectorType & rhs, VectorType & y)const{
+    myImpl_.template doLinSolve<VectorType>(rhs, y);
   }
 
   const Q_type & QFactor() const {
     return *this->Qmat_;
   }
 
-  void computeThinOutOfPlace(const matrix_t & Ain)
+  void computeThinOutOfPlace(const MatrixType & Ain)
   {
-    auto & A = const_cast<matrix_t &>(Ain);
+    auto & A = const_cast<MatrixType &>(Ain);
 
     auto rows = ::pressio::ops::extent(A,0);
     auto cols = ::pressio::ops::extent(A,1);
@@ -117,7 +109,7 @@ public:
 
     using import_t = Tpetra::Import<lo_t, go_t, node_t>;
     import_t importer(ArowMap, rcp_local_map);
-    matrix_t A2(rcp_local_map, cols);
+    MatrixType A2(rcp_local_map, cols);
     A2.doImport(A, importer, Tpetra::INSERT);
 
     // store it into an Eigen matrix

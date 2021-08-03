@@ -49,11 +49,11 @@
 #ifndef QR_QR_TRAITS_HPP_
 #define QR_QR_TRAITS_HPP_
 
-namespace pressio{ namespace qr{ namespace details{
+namespace pressio{ 
 
 /* common to all cases */
 template<typename matrix_type, typename algo, bool in_place>
-struct traits_shared_all{
+struct qr_traits_shared_all{
   using matrix_t  = matrix_type;
   using algo_t	  = algo;
   using sc_t	  = typename ::pressio::Traits<matrix_type>::scalar_type;
@@ -68,29 +68,29 @@ struct traits_shared_all{
  *  R_type = void
  */
 template<typename matrix_type, typename algo_t, bool in_place>
-struct traits<
-  impl::QRSolver<matrix_type, algo_t, in_place, void>,
+struct Traits<
+  qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
     ::pressio::mpl::enable_if_t<
       ::pressio::is_dense_matrix_eigen<matrix_type>::value 
       >
-  > : traits_shared_all<matrix_type, algo_t, in_place>
+  > : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
 
-  static_assert( std::is_same<algo_t, ModifiedGramSchmidt>::value or
-     std::is_same<algo_t, Householder>::value,
+  static_assert( std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
+     std::is_same<algo_t, qr::Householder>::value,
   "Currently, only ModifiedGramSchmidt and Householder are available for Eigen matrices.");
 
-  using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place>;
+  using traits_all_t  = qr_traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
 
-  using impl_t = impl::QRHouseholderDenseEigenMatrix<matrix_t, void>;
+  using impl_t = qr::impl::QRHouseholderDenseEigenMatrix<matrix_t, void>;
   using Q_type   = typename impl_t::Q_type;
-  using concrete_t  = impl::QRSolver<matrix_type, algo_t, in_place, void>;
-  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_type>;
-  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
+  using concrete_t  = qr::impl::QRSolver<matrix_type, algo_t, in_place, void>;
+  using inplace_base_t  = qr::QRInPlaceBase<concrete_t, matrix_type>;
+  using outplace_base_t = qr::QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
   using base_compute_t  = typename std::conditional<in_place, inplace_base_t, outplace_base_t>::type;
-  using base_solve_t  = QRSolveBase<concrete_t>;
+  using base_solve_t  = qr::QRSolveBase<concrete_t>;
 };
 #endif
 
@@ -103,17 +103,17 @@ struct impl_class_helper{};
 
 template <class R_t>
 struct impl_class_helper<Epetra_MultiVector, qr::Householder, R_t>{
-  using impl_t = impl::EpetraMVHouseholderUsingEigen<Epetra_MultiVector, R_t>;
+  using impl_t = qr::impl::EpetraMVHouseholderUsingEigen<Epetra_MultiVector, R_t>;
 };
 
 template <class R_t>
 struct impl_class_helper<Epetra_MultiVector, qr::TSQR, R_t>{
-  using impl_t = impl::EpetraMVTSQR<Epetra_MultiVector, R_t>;
+  using impl_t = qr::impl::EpetraMVTSQR<Epetra_MultiVector, R_t>;
 };
 
 template <class R_t>
 struct impl_class_helper<Epetra_MultiVector, qr::ModifiedGramSchmidt, R_t>{
-  using impl_t = impl::ModGramSchmidtMVEpetra<Epetra_MultiVector, R_t>;
+  using impl_t = qr::impl::ModGramSchmidtMVEpetra<Epetra_MultiVector, R_t>;
 };
 
 
@@ -125,7 +125,7 @@ struct impl_class_helper<
     >
   >
 {
-  using impl_t = impl::TpetraMVTSQR<matrix_t, R_t>;
+  using impl_t = qr::impl::TpetraMVTSQR<matrix_t, R_t>;
 };
 
 template <class matrix_t, class R_t>
@@ -136,7 +136,7 @@ struct impl_class_helper<
     >
   >
 {
-  using impl_t = impl::ModGramSchmidtMVTpetra<matrix_t, R_t>;
+  using impl_t = qr::impl::ModGramSchmidtMVTpetra<matrix_t, R_t>;
 };
 
 template <class matrix_t, class R_t>
@@ -146,7 +146,7 @@ struct impl_class_helper<
     ::pressio::is_multi_vector_tpetra<matrix_t>::value
     >
   >{
-  using impl_t = impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t>;
+  using impl_t = qr::impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t>;
 };
 
 template <class matrix_t, class R_t>
@@ -157,7 +157,7 @@ struct impl_class_helper<
     >
   >
 {
-  using impl_t = impl::TpetraBlockMVTSQR<matrix_t, R_t>;
+  using impl_t = qr::impl::TpetraBlockMVTSQR<matrix_t, R_t>;
 };
 
 
@@ -165,52 +165,53 @@ struct impl_class_helper<
  * specialize for Epetra::MultiVector, R_type = void
  */
 template<class algo_t, bool in_place>
-struct traits<  
-  impl::QRSolver<Epetra_MultiVector, algo_t, in_place, void>
-  > : traits_shared_all<Epetra_MultiVector, algo_t, in_place>
+struct Traits<  
+  qr::impl::QRSolver<Epetra_MultiVector, algo_t, in_place, void>
+  > : qr_traits_shared_all<Epetra_MultiVector, algo_t, in_place>
 {
 
   static_assert( 
-     std::is_same<algo_t, ModifiedGramSchmidt>::value or
-     std::is_same<algo_t, Householder>::value or
-     std::is_same<algo_t, TSQR>::value,
+     std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
+     std::is_same<algo_t, qr::Householder>::value or
+     std::is_same<algo_t, qr::TSQR>::value,
      "Currently, only TSQR, ModifiedGramSchmidt and Householder are available for \
      Epetra dense matrices. Use TSQR because it is fast and accurate. ModifiedGramSchmidt \
      and Householder are just here for testing purposes. ");
 
-  using traits_all_t  = traits_shared_all<Epetra_MultiVector, algo_t, in_place>;
+  using traits_all_t  = qr_traits_shared_all<Epetra_MultiVector, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
 
   using impl_t  = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;
 
-  using concrete_t  = impl::QRSolver<matrix_t, algo_t, in_place, void>;
-  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_t>;
-  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_t, Q_type>;
+  using concrete_t  = qr::impl::QRSolver<matrix_t, algo_t, in_place, void>;
+  using inplace_base_t  = qr::QRInPlaceBase<concrete_t, matrix_t>;
+  using outplace_base_t = qr::QROutOfPlaceBase<concrete_t, matrix_t, Q_type>;
   using base_compute_t  = typename std::conditional<in_place, inplace_base_t, outplace_base_t>::type;
-  using base_solve_t  = QRSolveBase<concrete_t>;
+  using base_solve_t  = qr::QRSolveBase<concrete_t>;
 };
 
 /*
  * specialize for Tpetra::MultiVector, R_type = void
  */
 template<typename matrix_type, typename algo_t, bool in_place>
-struct traits<
-  impl::QRSolver<matrix_type, algo_t, in_place, void>,
+struct Traits<
+  qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
     ::pressio::mpl::enable_if_t<::pressio::is_multi_vector_tpetra<matrix_type>::value>
   > 
-  : traits_shared_all<matrix_type, algo_t, in_place>
+  : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
 
-  static_assert( std::is_same<algo_t, ModifiedGramSchmidt>::value or
-    std::is_same<algo_t, Householder>::value or
-    std::is_same<algo_t, TSQR>::value,
+  static_assert( 
+    std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
+    std::is_same<algo_t, qr::Householder>::value or
+    std::is_same<algo_t, qr::TSQR>::value,
     "Currently, only TSQR, ModifiedGramSchmidt and Householder are available for Tpetra dense matrices. \
     Use TSQR because it is fast and accurate. ModifiedGramSchmidt and Householder \
     are just here for testing purposes. ");
 
-  using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place>;
+  using traits_all_t  = qr_traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
   using node_t = typename ::pressio::Traits<matrix_type>::node_type;
@@ -219,28 +220,28 @@ struct traits<
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;
 
-  using concrete_t = impl::QRSolver<matrix_type, algo_t, in_place, void>;
-  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_type>;
-  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
+  using concrete_t = qr::impl::QRSolver<matrix_type, algo_t, in_place, void>;
+  using inplace_base_t  = qr::QRInPlaceBase<concrete_t, matrix_type>;
+  using outplace_base_t = qr::QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
   using base_compute_t = typename std::conditional<in_place, inplace_base_t, outplace_base_t>::type;
-  using base_solve_t = QRSolveBase<concrete_t>;
+  using base_solve_t = qr::QRSolveBase<concrete_t>;
 };
 
 /*
  * specialize for Tpetra::BlockMultiVector, R_type = void
  */
 template<typename matrix_type, typename algo_t, bool in_place>
-struct traits<
-  impl::QRSolver<
+struct Traits<
+  qr::impl::QRSolver<
     matrix_type, algo_t, in_place, void>,
     ::pressio::mpl::enable_if_t< ::pressio::is_multi_vector_tpetra_block<matrix_type>::value >
-  > : traits_shared_all<matrix_type, algo_t, in_place>
+  > : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
 
-  static_assert( std::is_same<algo_t, TSQR>::value,
+  static_assert( std::is_same<algo_t, qr::TSQR>::value,
     "Currently, only TSQR is available for BlockTpetra dense matrices.");
 
-  using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place>;
+  using traits_all_t  = qr_traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
   using node_t = typename ::pressio::Traits<matrix_type>::node_t;
@@ -249,13 +250,13 @@ struct traits<
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;
 
-  using concrete_t = impl::QRSolver<matrix_type, algo_t, in_place, void>;
-  using inplace_base_t  = QRInPlaceBase<concrete_t, matrix_type>;
-  using outplace_base_t = QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
+  using concrete_t = qr::impl::QRSolver<matrix_type, algo_t, in_place, void>;
+  using inplace_base_t  = qr::QRInPlaceBase<concrete_t, matrix_type>;
+  using outplace_base_t = qr::QROutOfPlaceBase<concrete_t, matrix_type, Q_type>;
   using base_compute_t = typename std::conditional<in_place,inplace_base_t, outplace_base_t>::type;
-  using base_solve_t = QRSolveBase<concrete_t>;
+  using base_solve_t = qr::QRSolveBase<concrete_t>;
 };
 #endif // PRESSIO_ENABLE_TPL_TRILINOS
 
-}}}
+}
 #endif  // QR_QR_TRAITS_HPP_
