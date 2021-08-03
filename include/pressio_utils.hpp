@@ -50,6 +50,7 @@
 #define PRESSIO_UTILS_HPP_
 
 #include "pressio_mpl.hpp"
+#include <iomanip>
 
 #include "utils/utils_crtp_helper.hpp"
 #include "utils/utils_static_constants.hpp"
