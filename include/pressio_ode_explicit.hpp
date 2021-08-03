@@ -64,12 +64,7 @@
 #include "pressio_solvers.hpp"
 
 #include "ode/pressio_ode_common.hpp"
-#include "ode/impl_explicit/constraints/ode_explicit_state.hpp"
-#include "ode/impl_explicit/constraints/ode_explicit_velocity.hpp"
-#include "ode/impl_explicit/constraints/ode_explicit_velocity_policy.hpp"
-#include "ode/impl_explicit/constraints/ode_explicitly_steppable.hpp"
-#include "ode/impl_explicit/ode_explicit_velocity_standard_policy.hpp"
-#include "ode/ode_explicit_public.hpp"
-#include "ode/advance/ode_advance_n_steps_explicit.hpp"
+#include "ode/ode_create_explicit_stepper.hpp"
+#include "ode/ode_advance_n_steps.hpp"
 
 #endif

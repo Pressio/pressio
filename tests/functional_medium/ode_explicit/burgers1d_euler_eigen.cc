@@ -24,12 +24,12 @@ int main(int argc, char *argv[]){
   auto & y0n = appObj.getInitialState();
 
   state_t y(y0n);
-  auto stepperObj = pressio::ode::createForwardEulerStepper(y, appObj);
+  auto stepperObj = pressio::ode::create_forward_euler_stepper(y, appObj);
 
   scalar_t fint = 35;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<::pressio::ode::step_count_type>(fint/dt);
-  pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps);
+  pressio::ode::advance_n_steps(stepperObj, y, 0.0, dt, Nsteps);
   {
     using namespace pressio::apps::test;
     checkSol(y, Burgers1dExpGoldStatesEuler::get(Ncell, dt, fint));

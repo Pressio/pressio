@@ -25,11 +25,11 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_crank_nic_numerics_eigen.cc)
 	add_serial_utest(${TESTING_LEVEL}_ode_implicit_crank_nicolson_stepper_numerics_eigen ${SRC})
 
-	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_ensure_app_called_with_correct_time.cc.cc)
+	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_ensure_app_called_with_correct_time.cc)
 	add_serial_utest(${TESTING_LEVEL}_ode_implicit_ensure_app_called_with_correct_time_eigen ${SRC})
 endif()
 
-set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_numerics_custom_types.cc)
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_steppers_numerics_custom_types.cc)
 add_serial_utest(${TESTING_LEVEL}_ode_explicit_steppers_numerics_custom_types ${SRC})
 
 

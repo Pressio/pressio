@@ -82,7 +82,7 @@ TEST(ode, implicit_euler_appVelocityCalledWithCorrectTime)
 
   MyFakeSolver1 solver;
   double dt = 1.1;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1, solver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 1, solver);
 }
 
 
@@ -191,7 +191,7 @@ TEST(ode, implicit_bdf2_appVelocityCalledWithCorrectTime)
 
   MyFakeSolver2 solver;
   double dt = 1.1;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, solver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
 }
 
 
@@ -296,7 +296,7 @@ TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, solver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
 }
 
 TEST(ode, implicit_arbitrary_callWithCorrectTime2)
@@ -318,7 +318,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime2)
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, solver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
 }
 
 TEST(ode, implicit_arbitrary_callWithCorrectTime3)
@@ -340,5 +340,5 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime3)
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, solver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
 }

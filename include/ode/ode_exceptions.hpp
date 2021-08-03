@@ -53,21 +53,21 @@
 
 namespace pressio{ namespace eh{
 
-class time_step_failure
+class TimeStepFailure
   : public std::exception
 {
   std::string myerr_ = "Time step failed";
   std::string append_ = {};
 
 public:
-  time_step_failure() = default;
-  time_step_failure(const time_step_failure &) = default;
-  time_step_failure & operator=(const time_step_failure &) = default;
-  time_step_failure(time_step_failure &&) = default;
-  time_step_failure & operator=(time_step_failure &&) = default;
-  ~time_step_failure() = default;
+  TimeStepFailure() = default;
+  TimeStepFailure(const TimeStepFailure &) = default;
+  TimeStepFailure & operator=(const TimeStepFailure &) = default;
+  TimeStepFailure(TimeStepFailure &&) = default;
+  TimeStepFailure & operator=(TimeStepFailure &&) = default;
+  ~TimeStepFailure() = default;
 
-  explicit time_step_failure(std::string append)
+  explicit TimeStepFailure(std::string append)
     : append_{append}{
     myerr_ += append_;
   }
@@ -78,21 +78,21 @@ public:
 };
 
 
-class velocity_failure_unrecoverable
+class VelocityFailureUnrecoverable
   : public std::exception
 {
   std::string myerr_ = "Velocity evaluation failed";
   std::string append_ = {};
 
 public:
-  velocity_failure_unrecoverable() = default;
-  velocity_failure_unrecoverable(const velocity_failure_unrecoverable &) = default;
-  velocity_failure_unrecoverable & operator=(const velocity_failure_unrecoverable &) = default;
-  velocity_failure_unrecoverable(velocity_failure_unrecoverable &&) = default;
-  velocity_failure_unrecoverable & operator=(velocity_failure_unrecoverable &&) = default;
-  ~velocity_failure_unrecoverable() = default;
+  VelocityFailureUnrecoverable() = default;
+  VelocityFailureUnrecoverable(const VelocityFailureUnrecoverable &) = default;
+  VelocityFailureUnrecoverable & operator=(const VelocityFailureUnrecoverable &) = default;
+  VelocityFailureUnrecoverable(VelocityFailureUnrecoverable &&) = default;
+  VelocityFailureUnrecoverable & operator=(VelocityFailureUnrecoverable &&) = default;
+  ~VelocityFailureUnrecoverable() = default;
 
-  explicit velocity_failure_unrecoverable(std::string append)
+  explicit VelocityFailureUnrecoverable(std::string append)
     : append_{append}{
     myerr_ += append_;
   }
@@ -103,21 +103,21 @@ public:
 };
 
 
-class discrete_time_residual_failure_unrecoverable
+class DiscreteTimeResidualFailureUnrecoverable
   : public std::exception
 {
   std::string myerr_ = "discreteTimeResidual failed";
   std::string append_ = {};
 
 public:
-  discrete_time_residual_failure_unrecoverable() = default;
-  discrete_time_residual_failure_unrecoverable(const discrete_time_residual_failure_unrecoverable &) = default;
-  discrete_time_residual_failure_unrecoverable & operator=(const discrete_time_residual_failure_unrecoverable &) = default;
-  discrete_time_residual_failure_unrecoverable(discrete_time_residual_failure_unrecoverable &&) = default;
-  discrete_time_residual_failure_unrecoverable & operator=(discrete_time_residual_failure_unrecoverable &&) = default;
-  ~discrete_time_residual_failure_unrecoverable() = default;
+  DiscreteTimeResidualFailureUnrecoverable() = default;
+  DiscreteTimeResidualFailureUnrecoverable(const DiscreteTimeResidualFailureUnrecoverable &) = default;
+  DiscreteTimeResidualFailureUnrecoverable & operator=(const DiscreteTimeResidualFailureUnrecoverable &) = default;
+  DiscreteTimeResidualFailureUnrecoverable(DiscreteTimeResidualFailureUnrecoverable &&) = default;
+  DiscreteTimeResidualFailureUnrecoverable & operator=(DiscreteTimeResidualFailureUnrecoverable &&) = default;
+  ~DiscreteTimeResidualFailureUnrecoverable() = default;
 
-  explicit discrete_time_residual_failure_unrecoverable(std::string append)
+  explicit DiscreteTimeResidualFailureUnrecoverable(std::string append)
     : append_{append}{
     myerr_ += append_;
   }

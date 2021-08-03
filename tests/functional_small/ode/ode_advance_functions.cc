@@ -25,7 +25,7 @@ TEST(ode, explicit_advance_n_steps_fix_dt)
 		[](ScalarType & val){val = 0.0; });
 	MyFakeStepperExplicit stepper;
 	ScalarType dt = 1.0;
-	pressio::ode::advanceNSteps(stepper, odeState, 0.0, dt, 2.);
+	pressio::ode::advance_n_steps(stepper, odeState, 0.0, dt, 2.);
 	std::for_each(odeState.begin(), odeState.end(), 
 		[](const ScalarType & val){ EXPECT_DOUBLE_EQ(val, 1.);});
 }
@@ -105,5 +105,5 @@ TEST(ode, explicit_advance_n_steps_fix_dt)
 // 			 checkStr = "FAILED";
 // 		     }
 // 		   };
-//   pressio::ode::advanceNSteps(stepper, y, 0., 3, dtManager, collector, solver);
+//   pressio::ode::advance_n_steps(stepper, y, 0., 3, dtManager, collector, solver);
 // }

@@ -76,7 +76,7 @@ solveNSteps(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
       (problem.stepperRef(), stateView, t0, dt, num_steps, collector);
 }
 
@@ -91,7 +91,7 @@ solveNSteps(rom_problem_type & problem,
   // here we want to view the state since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
     (problem.stepperRef(), stateView, t0, dt, num_steps);
 }
 
@@ -112,7 +112,7 @@ solveNSteps(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
       (problem.stepperRef(), stateView, t0, dt, num_steps, collector, solver);
 }
 
@@ -128,7 +128,7 @@ solveNSteps(rom_problem_type & problem,
   // here we want to view the state since we want to modify its data,
   // which is numpy array owned by the user inside their Python code.
   state_t stateView(stateInOut, ::pressio::view());
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
       (problem.stepperRef(), stateView, t0, dt, num_steps, solver);
 }
 
@@ -138,7 +138,7 @@ template<typename rom_problem_type, typename ...Args>
 void solveNSteps
 (rom_problem_type & problem, Args && ...args)
 {
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 #endif
@@ -150,7 +150,7 @@ template<typename rom_problem_type, typename ...Args>
 void solveToTargetTime
 (rom_problem_type & problem, Args && ...args)
 {
-  ::pressio::ode::advanceToTargetTime
+  ::pressio::ode::advance_to_target_time
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
@@ -161,7 +161,7 @@ template<typename rom_problem_type, typename ...Args>
 void solveToTargetTimeWithTimeStepRecovery
 (rom_problem_type & problem, Args && ...args)
 {
-  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+  ::pressio::ode::advance_to_target_time_with_time_step_recovery
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 

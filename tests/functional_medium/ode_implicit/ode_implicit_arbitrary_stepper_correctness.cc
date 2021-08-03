@@ -227,7 +227,7 @@ struct Bdf1Solver
     lin_solver_t linSolverObj;
     auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
 
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 };
 
@@ -265,7 +265,7 @@ struct CustomBdf1Solver
   {
     lin_solver_t linSolverObj;
     auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambda(int steps)
@@ -278,7 +278,7 @@ struct CustomBdf1Solver
 				  dt = dt_;
 				};
 
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
@@ -290,7 +290,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_*2.;
 				};
-    ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
   };
 
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
@@ -302,7 +302,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0, finalTime, dtSetterLambda, solverO);
+    ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0, finalTime, dtSetterLambda, solverO);
   };
 
   template <typename observer_t>
@@ -317,7 +317,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::advanceToTargetTime(stepperObj_, y_, 0.0,
+    ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0,
 					  finalTime, dtSetterLambda, observer, solverO);
   };
 

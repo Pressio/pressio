@@ -88,7 +88,7 @@ int main(int argc, char *argv[]){
   // define observer
   observer<ode_state_t> Obs(Nsteps, Ncell, y);
 
-  pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps, Obs, NonLinSolver);
+  pressio::ode::advance_n_steps(stepperObj, y, 0.0, dt, Nsteps, Obs, NonLinSolver);
   Obs.printAll();
   {
     using namespace pressio::apps::test;

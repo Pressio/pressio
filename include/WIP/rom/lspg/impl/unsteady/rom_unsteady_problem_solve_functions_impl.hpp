@@ -58,7 +58,7 @@ void _lspgUnsteadyNTimes(rom_problem_type & problem, Args && ...args)
     (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
      "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
@@ -69,7 +69,7 @@ void _lspgUnsteadyToTime(rom_problem_type & problem, Args && ...args)
     (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
      "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceToTargetTime
+  ::pressio::ode::advance_to_target_time
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 
@@ -80,7 +80,7 @@ void _lspgUnsteadyToTimeWithRec(rom_problem_type & problem, Args && ...args)
     (::pressio::rom::details::traits<rom_problem_type>::is_unsteady_lspg,
      "The rom::lspg::solve... functions can only be used for unsteady lspg problems");
 
-  ::pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+  ::pressio::ode::advance_to_target_time_with_time_step_recovery
     (problem.stepperRef(), std::forward<Args>(args)...);
 }
 

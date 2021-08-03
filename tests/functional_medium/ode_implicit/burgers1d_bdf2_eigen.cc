@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   scalar_t fint = 10;
   scalar_t dt = 0.01;
   auto Nsteps = static_cast<::pressio::ode::step_count_type>(fint/dt);
-  pressio::ode::advanceNSteps(stepperObj, y, 0.0, dt, Nsteps, NonLinSolver);
+  pressio::ode::advance_n_steps(stepperObj, y, 0.0, dt, Nsteps, NonLinSolver);
   {
     using namespace pressio::apps::test;
     checkSol(y, Burgers1dImpGoldStatesBDF2::get(Ncell, dt, fint));

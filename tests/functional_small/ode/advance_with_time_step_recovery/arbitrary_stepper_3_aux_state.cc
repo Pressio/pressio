@@ -105,10 +105,10 @@ public:
     }
 
     if (step==2 and (dt==0.1))
-      throw pressio::eh::discrete_time_residual_failure_unrecoverable();
+      throw pressio::eh::DiscreteTimeResidualFailureUnrecoverable();
 
     if (step==3 and (dt==0.1 or dt==0.05))
-      throw pressio::eh::discrete_time_residual_failure_unrecoverable();
+      throw pressio::eh::DiscreteTimeResidualFailureUnrecoverable();
 
     if (step==3){
       // the only one to succeed at step=3 should be dt=0.025 and such that
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
   static_assert(!std::is_void<stepper_t>::value, "");
 
   stepper_t stepperObj(y, appObj);
-  pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+  pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;

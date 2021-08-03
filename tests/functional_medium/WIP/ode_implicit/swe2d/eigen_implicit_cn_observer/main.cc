@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
   std::string filename = "solution.bin";
   std::ofstream myfile (filename,  std::ios::out | std::ios::binary);
 
-  pressio::ode::advanceNSteps(stepperObj, y, t, dt, Nsteps,Obs, NonLinSolver);
+  pressio::ode::advance_n_steps(stepperObj, y, t, dt, Nsteps,Obs, NonLinSolver);
   Obs.closeFile();
   constexpr double solNormGold = 8.1221307554237;
   auto solNorm = (*y.data()).norm();

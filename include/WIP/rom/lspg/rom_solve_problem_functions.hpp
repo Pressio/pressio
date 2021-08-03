@@ -129,7 +129,7 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
   rom_state_t stateView(stateInOut, ::pressio::view());
 
   collector_t collector(pyCollector);
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
       (problem.stepperRef(), stateView, t0, dt, numSteps, collector, solver);
 }
 
@@ -148,7 +148,7 @@ void solveNSequentialMinimizations(rom_problem_type & problem,
   // which is numpy array owned by the user inside their Python code.
   rom_state_t stateView(stateInOut, ::pressio::view());
 
-  ::pressio::ode::advanceNSteps
+  ::pressio::ode::advance_n_steps
       (problem.stepperRef(), stateView, t0, dt, numSteps, solver);
 }
 #else

@@ -67,6 +67,64 @@ struct CrankNicolson{};
 struct Arbitrary{};
 }//end namespace implicitmethods
 
+// explicit
+template <typename T> struct is_explicit_stepper_tag : std::false_type{};
+template <> struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
+template <> struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
+template <> struct is_explicit_stepper_tag<explicitmethods::AdamsBashforth2> : std::true_type{};
+template <> struct is_explicit_stepper_tag<explicitmethods::SSPRungeKutta3> : std::true_type{};
+
+// implicit
+template <typename T> struct is_implicit_stepper_tag : std::false_type{};
+template <> struct is_implicit_stepper_tag<implicitmethods::BDF1> : std::true_type{};
+template <> struct is_implicit_stepper_tag<implicitmethods::BDF2> : std::true_type{};
+template <> struct is_implicit_stepper_tag<implicitmethods::CrankNicolson> : std::true_type{};
+template <> struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
+
+// is_stepper_tag
+template <typename T>
+struct is_stepper_tag{
+  static constexpr auto value = 
+  is_explicit_stepper_tag<T>::value or is_implicit_stepper_tag<T>::value;
+};
+
+
+template <typename stepper_tag> 
+struct ImplicitStencilSize{ 
+  static constexpr std::size_t value = 0; 
+};
+template <> struct ImplicitStencilSize<implicitmethods::BDF1>{
+  // need to store: state_n+1, state_n
+  static constexpr std::size_t value = 2;
+};
+template <> struct ImplicitStencilSize<implicitmethods::BDF2>{
+  // need: state_n+1, state_n, state_n-1
+  static constexpr std::size_t value = 3;
+};
+template <> struct ImplicitStencilSize<implicitmethods::CrankNicolson>{
+  // need: state_n+1, state_n
+  static constexpr std::size_t value = 2;
+};
+
+//! Default type for the ode step
+using step_count_type = int32_t;
+
+//! Default type for the order of a stepper
+using stepper_order_type = int32_t;
+
+// to set implicit stepper order for arbitrary stepper
+template <stepper_order_type valueIn>
+struct StepperOrder{
+  static constexpr stepper_order_type value = valueIn;
+};
+
+// this is used to set the TOTAL number of states
+// when the user chooses the arbitrary one
+template <std::size_t valueIn>
+struct StepperTotalNumberOfStates{ 
+  static constexpr std::size_t value = valueIn; 
+};
+
 namespace constants{
 template <typename scalar_t>
 struct bdf1{
@@ -93,57 +151,7 @@ struct cranknicolson{
   static constexpr scalar_t c_fnp1_ = cnst::negOneHalf();
   static constexpr scalar_t c_fn_   = cnst::negOneHalf();
 };
-}// end namespace pressio::ode::constants
-
-template <typename stepper_tag> 
-struct requiredNumberOfStates{ 
-  static constexpr std::size_t value = 1; 
-};
-template <> struct requiredNumberOfStates<implicitmethods::BDF1>{
-  // need to store: state_n+1, state_n
-  static constexpr std::size_t value = 2;
-};
-template <> struct requiredNumberOfStates<implicitmethods::BDF2>{
-  // need: state_n+1, state_n, state_n-1
-  static constexpr std::size_t value = 3;
-};
-template <> struct requiredNumberOfStates<implicitmethods::CrankNicolson>{
-  // need: state_n+1, state_n
-  static constexpr std::size_t value = 2;
-};
-template <> struct requiredNumberOfStates<explicitmethods::Euler>{
-  static constexpr std::size_t value = 1;
-};
-template <> struct requiredNumberOfStates<explicitmethods::RungeKutta4>{
-  static constexpr std::size_t value = 1;
-};
-template <> struct requiredNumberOfStates<explicitmethods::AdamsBashforth2>{
-  static constexpr std::size_t value = 2;
-};
-template <> struct requiredNumberOfStates<explicitmethods::SSPRungeKutta3>{
-  static constexpr std::size_t value = 2;
-};
-
-// explicit
-template <typename T> struct is_explicit_stepper_tag : std::false_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::AdamsBashforth2> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::SSPRungeKutta3> : std::true_type{};
-
-// implicit
-template <typename T> struct is_implicit_stepper_tag : std::false_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::BDF1> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::BDF2> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::CrankNicolson> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
-
-// is_stepper_tag
-template <typename T>
-struct is_stepper_tag{
-  static constexpr auto value = 
-  is_explicit_stepper_tag<T>::value or is_implicit_stepper_tag<T>::value;
-};
+}//end namespace pressio::ode::constants
 
 class nPlusOne{};
 class n{};
@@ -152,25 +160,19 @@ class nMinusTwo{};
 class nMinusThree{};
 class nMinusFour{};
 
+}}//end namespace pressio::ode
 
-//! Default type for the ode step
-using step_count_type = int32_t;
+#include "./impl/ode_stencil_data_container.hpp"
 
-//! Default type for the order of a stepper
-using stepper_order_type = int32_t;
+namespace pressio{ namespace ode{ 
 
-// to set implicit stepper order for arbitrary stepper
-template <stepper_order_type valueIn>
-struct StepperOrder{
-  static constexpr stepper_order_type value = valueIn;
-};
+template<typename VelocityType, std::size_t N>
+using ImplicitStencilVelocitiesContainer 
+  = impl::StencilDataContainerImpl<VelocityType, N, nPlusOne /*stencil ends with n+1*/>;
 
-// this is used to set the TOTAL number of states
-// when the user chooses the arbitrary one
-template <std::size_t valueIn>
-struct StepperTotalNumberOfStates{ 
-  static constexpr std::size_t value = valueIn; 
-};
+template<typename StateType, std::size_t N>
+using ImplicitStencilStatesContainer 
+  = impl::StencilDataContainerImpl<StateType, N, n /*starts end at n*/>;
 
 }}//end namespace pressio::ode
 
@@ -186,21 +188,37 @@ struct StepperTotalNumberOfStates{
    on the top-level "pressio_ode_{explicit,implicit}.hpp".
 */
 #include "ode_exceptions.hpp"
-#include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
-#include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "predicates/ode_is_stepper_total_n_states_setter.hpp"
 #include "predicates/ode_is_stepper_order_setter.hpp"
+#include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
+#include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "predicates/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
 #include "predicates/ode_has_const_discrete_time_residual_method_accept_step_time_dt_result_states_return_void.hpp"
 #include "predicates/ode_has_const_create_discrete_time_jacobian_method_return_result.hpp"
 #include "predicates/ode_has_const_discrete_time_jacobian_method_accepting_n_states_returning_void.hpp"
 #include "predicates/ode_has_const_create_jacobian_method_return_result.hpp"
 #include "predicates/ode_has_const_jacobian_method_accept_state_time_result_return_void.hpp"
-#include "constraints_common/ode_collector.hpp"
-#include "constraints_common/ode_guesser.hpp"
-#include "constraints_common/ode_time_step_size_manager.hpp"
-#include "constraints_common/ode_continuous_time_system_with_at_least_velocity.hpp"
-#include "constraints_common/ode_continuous_time_system_with_user_provided_jacobian.hpp"
-#include "constraints_common/ode_discrete_time_system_with_user_provided_jacobian.hpp"
+
+#include "constraints/ode_collector.hpp"
+#include "constraints/ode_guesser.hpp"
+#include "constraints/ode_time_step_size_manager.hpp"
+#include "constraints/ode_continuous_time_system_with_at_least_velocity.hpp"
+#include "constraints/ode_continuous_time_system_with_user_provided_jacobian.hpp"
+#include "constraints/ode_discrete_time_system_with_user_provided_jacobian.hpp"
+
+#include "constraints/ode_explicit_state.hpp"
+#include "constraints/ode_explicit_velocity.hpp"
+#include "constraints/ode_explicit_velocity_policy.hpp"
+#include "constraints/ode_explicitly_steppable.hpp"
+
+#include "constraints/ode_implicit_state.hpp"
+#include "constraints/ode_implicit_residual.hpp"
+#include "constraints/ode_implicit_jacobian.hpp"
+#include "constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
+#include "constraints/ode_implicitly_steppable.hpp"
+#include "constraints/ode_implicitly_steppable_with_guesser.hpp"
+#include "constraints/ode_auxiliary_stepper_for_bdf2.hpp"
+#include "constraints/ode_implicit_residual_policy.hpp"
+#include "constraints/ode_implicit_jacobian_policy.hpp"
 
 #endif  // ODE_PRESSIO_ODE_COMMON_HPP_

@@ -165,7 +165,7 @@ private:
 					*ynp1.data(),
 					*yn.data());
     }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
@@ -200,7 +200,7 @@ private:
 					*ynm1.data());
 
     }
-    catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
+    catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }

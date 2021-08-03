@@ -29,7 +29,7 @@ TEST(ode, implicit_euler_policy_default_created)
 
   ::pressio::ode::step_count_type nSteps = 2;
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << y << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -71,7 +71,7 @@ TEST(ode, implicit_euler_guesserLambda)
           };
 
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 1, testLambda, NonLinSolver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 1, testLambda, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y(0), -22.0);
@@ -109,7 +109,7 @@ TEST(ode, implicit_euler_custom_policy)
   // integrate in time
   ::pressio::ode::step_count_type nSteps = 2;
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, nSteps);
@@ -175,7 +175,7 @@ TEST(ode, implicit_euler_policy_default_created_custom_update)
 
   // integrate in time
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 2, NonLinSolver, CustomUpdate{});
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, NonLinSolver, CustomUpdate{});
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y(0), 1.);
@@ -217,7 +217,7 @@ TEST(ode, implicit_euler_guesserLambdaCustomUpdate)
           };
 
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, 5, testLambda, NonLinSolver, CustomUpdate{});
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, 5, testLambda, NonLinSolver, CustomUpdate{});
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   EXPECT_DOUBLE_EQ(y(0), -22.0);
@@ -257,7 +257,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
   // integrate in time
   ::pressio::ode::step_count_type nSteps = 4;
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);
@@ -304,7 +304,7 @@ TEST(ode, implicit_bdf2_custom_policy)
   // integrate in time
   ::pressio::ode::step_count_type nSteps = 4;
   double dt = 0.01;
-  ode::advanceNSteps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
+  ode::advance_n_steps(stepperObj, y, 0.0, dt, nSteps, NonLinSolver);
   std::cout << std::setprecision(14) << *y.data() << "\n";
 
   appObj.analyticAdvanceBackEulerNSteps(dt, 1);

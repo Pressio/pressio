@@ -27,7 +27,7 @@ public:
 
     if (std::abs(time-0.2) < 1e-13)
     {
-      throw pressio::eh::velocity_failure_unrecoverable();
+      throw pressio::eh::VelocityFailureUnrecoverable();
     }
 
     f[0] = 1.;
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     ode_tag, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
 
-  pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+  pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;

@@ -122,7 +122,7 @@ struct CommonTraitsContinuousTimeApi
 
   // total num of fom states (i.e. stencil size plus the state at current step)
   static constexpr auto numstates =
-    ::pressio::ode::requiredNumberOfStates<stepper_tag>::value;
+    ::pressio::ode::ImplicitStencilSize<stepper_tag>::value;
 
   // type of class holding the fom states
   using fom_states_manager_t = ::pressio::rom::ManagerFomStates<

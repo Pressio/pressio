@@ -254,7 +254,7 @@ TEST(ode, implicit_crank_nicolson_correctness)
   using stepper_t = pressio::ode::ImplicitStepper<
     ode_tag, state_t, res_t, jac_t, app_t>;
   stepper_t stepperObj(y, appObj);
-  pressio::ode::advanceNSteps(stepperObj, y, 0., 1.5, 3, solver);
+  pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
   std::cout << checkStr << std::endl;
   pressio::log::finalize();
 }

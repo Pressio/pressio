@@ -12,9 +12,9 @@ struct MyFakeStepper
 	      solver_type & solver)
   {
     if (step==3 and dt==0.1)
-      throw pressio::eh::time_step_failure();
+      throw pressio::eh::TimeStepFailure();
     if (step==5 and (dt==0.1 or dt==0.05))
-      throw pressio::eh::time_step_failure();
+      throw pressio::eh::TimeStepFailure();
 
     for (int i=0; i<odeState.size(); i++){ 
       odeState(i) += dt;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       // 	       << y(1) << std::endl;
     };
 
-  pressio::ode::advanceToTargetTimeWithTimeStepRecovery
+  pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepper, y, 0., 0.5, dtManager, collector, solver);
 
   if( std::abs(y(0)-1.575) > 1e-10 or
