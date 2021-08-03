@@ -61,7 +61,7 @@ struct SpanExpr<
   >
 {
   using this_t = SpanExpr<VectorType>;
-  using mytraits = span_traits<this_t>;
+  using mytraits = SpanTraits<this_t>;
   using ord_t = typename mytraits::ordinal_type;
   using size_t = typename mytraits::size_type;
   using ref_t = typename mytraits::reference_type;
@@ -148,7 +148,7 @@ struct SpanExpr<
   >
 {
   using this_t = SpanExpr<VectorType>;
-  using mytraits = span_traits<this_t>;
+  using mytraits = SpanTraits<this_t>;
   using ord_t = typename mytraits::ordinal_type;
   using size_t = typename mytraits::size_type;
   using pair_t = typename mytraits::pair_type;

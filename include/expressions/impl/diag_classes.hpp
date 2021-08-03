@@ -61,7 +61,7 @@ struct DiagExpr<
   >
 {
   using this_t = DiagExpr<MatrixType>;
-  using mytraits = diag_traits<this_t>;
+  using mytraits = DiagTraits<this_t>;
   using size_t = typename mytraits::size_type;
   using ref_t = typename mytraits::reference_type;
   using const_ref_t = typename mytraits::const_reference_type;
@@ -132,7 +132,7 @@ struct DiagExpr<
   >
 {
   using this_t		= DiagExpr<MatrixType>;
-  using mytraits	= diag_traits<this_t>;
+  using mytraits	= DiagTraits<this_t>;
   using size_t		= typename mytraits::size_type;
   using ref_t		= typename mytraits::reference_type;
   using native_expr_t	= typename mytraits::native_expr_type;

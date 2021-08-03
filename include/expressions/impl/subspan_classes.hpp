@@ -62,7 +62,7 @@ struct SubspanExpr<
 {
 
   using this_t = SubspanExpr<MatrixType>;
-  using mytraits = subspan_traits<this_t>;
+  using mytraits = SubSpanTraits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using ord_t = typename mytraits::ordinal_type;
   using size_t = typename mytraits::size_type;
@@ -153,7 +153,7 @@ struct SubspanExpr<
 {
 
   using this_t = SubspanExpr<MatrixType>;
-  using mytraits = subspan_traits<this_t>;
+  using mytraits = SubSpanTraits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using ord_t = typename mytraits::ordinal_type;
   using size_t = typename mytraits::size_type;

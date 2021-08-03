@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_span_traits.hpp
+// containers_SpanTraits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
-struct span_traits<
+struct SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
@@ -94,7 +94,7 @@ struct span_traits<
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename VectorType>
-struct span_traits<
+struct SpanTraits<
   SpanExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_vector_kokkos<VectorType>::value

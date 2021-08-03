@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_subspan_traits.hpp
+// containers_SubSpanTraits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct subspan_traits<
+struct SubSpanTraits<
   SubspanExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
@@ -90,7 +90,7 @@ struct subspan_traits<
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct subspan_traits<
+struct SubSpanTraits<
   SubspanExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value

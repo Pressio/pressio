@@ -43,10 +43,10 @@ TEST(expressions_eigen, asDiagMatrix_traits)
 {
   using T = Eigen::VectorXd;
   T o(10);
-  using expr_t = decltype(pressio::asDiagonalMatrix(o));
+  using expr_t = decltype(pressio::as_diagonal_matrix(o));
   static_assert(pressio::Traits<expr_t>::is_static, "");
 
   const T o1(10);
-  using expr1_t = decltype(pressio::asDiagonalMatrix(o1));
+  using expr1_t = decltype(pressio::as_diagonal_matrix(o1));
   static_assert(pressio::Traits<expr1_t>::is_static, "");
 }

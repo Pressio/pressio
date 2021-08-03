@@ -159,7 +159,7 @@ expressions::impl::DiagExpr<const T> diag(const T & obj)
 // asDiagonalMatrix
 //------------------
 template <typename T>
-expressions::impl::AsDiagonalMatrixExpr<T> asDiagonalMatrix(T & vecObj)
+expressions::impl::AsDiagonalMatrixExpr<T> as_diagonal_matrix(T & vecObj)
 {
   static_assert(::pressio::Traits<T>::rank==1, 
     "AsDiagonalMatrix can only be applied to a rank-1 object.");
@@ -168,7 +168,7 @@ expressions::impl::AsDiagonalMatrixExpr<T> asDiagonalMatrix(T & vecObj)
 }
 
 template <typename T>
-expressions::impl::AsDiagonalMatrixExpr<const T> asDiagonalMatrix(const T & vecObj)
+expressions::impl::AsDiagonalMatrixExpr<const T> as_diagonal_matrix(const T & vecObj)
 {
   static_assert(::pressio::Traits<T>::rank==1, 
     "AsDiagonalMatrix can only be applied to a rank-1 object.");

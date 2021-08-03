@@ -105,7 +105,7 @@ public:
     // don't compute weights here since they have been computed above
 
     // view the weights as a diagonal matrix
-    const auto wMat = ::pressio::asDiagonalMatrix(w_);
+    const auto wMat = ::pressio::as_diagonal_matrix(w_);
 
     // WJ = W * Jin
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();

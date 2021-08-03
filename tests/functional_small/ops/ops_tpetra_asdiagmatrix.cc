@@ -31,8 +31,8 @@
 //   for (int i=0; i<6; ++i) v0[i]= (double) i;
 //   for (int i=0; i<numLocalEntries; ++i) vh(i,0) = v0[shift+i];
 
-//   // 2. create asDiagonalMatrix object from v
-//   const auto vD = pressio::containers::asDiagonalMatrix(v);
+//   // 2. create as_diagonal_matrix object from v
+//   const auto vD = pressio::containers::as_diagonal_matrix(v);
 
 //   // 3. create mv and fill with data
 //   ::pressio::containers::MultiVector<mv_t> mv(map, 3);

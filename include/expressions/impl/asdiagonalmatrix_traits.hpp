@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{  namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename VectorType>
-struct asdiagmatrix_traits<
+struct AsdiagmatrixTraits<
   AsDiagonalMatrixExpr<VectorType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_diag_traits.hpp
+// containers_DiagTraits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -53,7 +53,7 @@ namespace pressio{ namespace expressions{ namespace impl{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 template <typename MatrixType>
-struct diag_traits<
+struct DiagTraits<
   DiagExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
@@ -87,7 +87,7 @@ struct diag_traits<
 
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename MatrixType>
-struct diag_traits<
+struct DiagTraits<
   DiagExpr<MatrixType>,
   ::pressio::mpl::enable_if_t<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value

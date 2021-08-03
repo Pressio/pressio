@@ -73,7 +73,7 @@ struct AsDiagonalMatrixExpr<
   >
 {
   using this_t = AsDiagonalMatrixExpr<VectorType>;
-  using mytraits = asdiagmatrix_traits<this_t>;
+  using mytraits = AsdiagmatrixTraits<this_t>;
   using sc_t = typename mytraits::scalar_type;
   using size_t = typename mytraits::size_type;
   using ref_t = typename mytraits::reference_type;
