@@ -57,7 +57,7 @@ template <typename vec_type>
   >
 dot(const vec_type & a,
     const vec_type & b,
-    typename ::pressio::traits<vec_type>::scalar_type & result)
+    typename ::pressio::Traits<vec_type>::scalar_type & result)
 {
   assert(a.MyLength() == b.MyLength());
   a.Dot(b, &result);
@@ -66,11 +66,11 @@ dot(const vec_type & a,
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::traits<vec_type>::scalar_type
+  typename ::pressio::Traits<vec_type>::scalar_type
   >
 dot(const vec_type & a, const vec_type & b)
 {
-  using sc_t = typename ::pressio::traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
   sc_t result = {};
   dot(a, b, result);
   return result;

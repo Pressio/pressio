@@ -107,7 +107,7 @@ struct NativeType<
   T, mpl::enable_if_t<::pressio::is_expression<T>::value>
  >
 {
-  using type = typename ::pressio::traits<T>::native_expr_type;
+  using type = typename ::pressio::Traits<T>::native_expr_type;
 };
 
 }}}

@@ -58,17 +58,17 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T>::rank == 1
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
+      ::pressio::Traits<T>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T>::rank == 1
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
   >
-elementwise_multiply(typename traits<T>::scalar_type alpha,
+elementwise_multiply(typename ::pressio::Traits<T>::scalar_type alpha,
 		     const T & x,
 		     const T1 & z,
-		     typename traits<T>::scalar_type beta,
+		     typename ::pressio::Traits<T>::scalar_type beta,
 		     T2 & y)
 {
   static_assert

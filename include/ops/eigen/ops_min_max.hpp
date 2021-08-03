@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen,
-  typename traits<T>::scalar_type
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  typename ::pressio::Traits<T>::scalar_type
   >
 max(const T & obj)
 {
@@ -63,8 +63,8 @@ max(const T & obj)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen,
-  typename traits<T>::scalar_type
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen,
+  typename ::pressio::Traits<T>::scalar_type
   >
 min(const T & obj)
 {

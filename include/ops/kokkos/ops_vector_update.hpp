@@ -66,7 +66,7 @@ struct _kokkosUpdateAdmissibleOperands
   static_assert
     (are_scalar_compatible<T1, Args...>::value and
      std::is_same<
-     typename pressio::traits<T1>::scalar_type,
+     typename pressio::Traits<T1>::scalar_type,
      scalar_type>::value, "Types are not scalar compatible");
   static_assert
     (::pressio::have_matching_execution_space<T1,Args...>::value,
@@ -82,10 +82,10 @@ struct _kokkosUpdateAdmissibleOperands
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
   >
 update(T1 & v,         const scalar_t & a,
 	     const T2 & v1,  const scalar_t & b)
@@ -96,10 +96,10 @@ update(T1 & v,         const scalar_t & a,
 
 template<typename T1, typename T2, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
   >
 update(T1 & v, const T2 & v1, const scalar_t & b)
 {
@@ -113,12 +113,12 @@ update(T1 & v, const T2 & v1, const scalar_t & b)
 //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
   >
 update(T1 & v,	   const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
@@ -139,12 +139,12 @@ update(T1 & v,	   const scalar_t &a,
 
 template<typename T1, typename T2, typename T3, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
   >
 update(T1 & v,
     const T2 & v1, const scalar_t &b,
@@ -169,14 +169,14 @@ update(T1 & v,
 // //----------------------------------------------------------------------
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
-  and ::pressio::traits<T4>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
+  and ::pressio::Traits<T4>::rank == 1
   >
 update(T1 & v,  const scalar_t &a,
     const T2 & v1, const scalar_t &b,
@@ -201,14 +201,14 @@ update(T1 & v,  const scalar_t &a,
 
 template<typename T1, typename T2, typename T3, typename T4, typename scalar_t>
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
-  and ::pressio::traits<T4>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
+  and ::pressio::Traits<T4>::rank == 1
   >
 update(T1 & v, 
     const T2 & v1, const scalar_t &b,
@@ -240,16 +240,16 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T5>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
-  and ::pressio::traits<T4>::rank == 1
-  and ::pressio::traits<T5>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T5>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
+  and ::pressio::Traits<T4>::rank == 1
+  and ::pressio::Traits<T5>::rank == 1
   >
 update(T1 & v,	const scalar_t &a,
 	  const T2 & v1, const scalar_t &b,
@@ -280,16 +280,16 @@ template<
   typename scalar_t
   >
 ::pressio::mpl::enable_if_t<
-      ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T3>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T4>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T5>::package_identifier == PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1
-  and ::pressio::traits<T2>::rank == 1
-  and ::pressio::traits<T3>::rank == 1
-  and ::pressio::traits<T4>::rank == 1
-  and ::pressio::traits<T5>::rank == 1
+      ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T5>::package_identifier == PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1
+  and ::pressio::Traits<T2>::rank == 1
+  and ::pressio::Traits<T3>::rank == 1
+  and ::pressio::Traits<T4>::rank == 1
+  and ::pressio::Traits<T5>::rank == 1
   >
 update(T1 & v, 
     const T2 & v1, const scalar_t &b,

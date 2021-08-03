@@ -53,9 +53,9 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1,
-  typename traits<T>::scalar_type
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1,
+  typename ::pressio::Traits<T>::scalar_type
   >
 norm1(const T & a)
 {
@@ -64,9 +64,9 @@ norm1(const T & a)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1,
-  typename traits<T>::scalar_type
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1,
+  typename ::pressio::Traits<T>::scalar_type
   >
 norm2(const T & a)
 {

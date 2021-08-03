@@ -56,13 +56,13 @@ namespace pressio{
 // Eigen STATIC ROW vector
 //*******************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_static_row_vector_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowStatic;
@@ -80,13 +80,13 @@ struct traits<
 // Eigen STATIC COLUMN vector
 //*******************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_static_column_vector_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColStatic;
@@ -104,13 +104,13 @@ struct traits<
 // Eigen DYNAMIC ROW vector
 //*******************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_dynamic_row_vector_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenRowDynamic;
@@ -128,13 +128,13 @@ struct traits<
 // Eigen DYNAMIC COLUMN vector
 //*******************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_dynamic_column_vector_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::EigenColDynamic;
@@ -155,13 +155,13 @@ struct traits<
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
-struct traits<
+struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_vector_kokkos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
 {
 
   // static view if the number of runtime determined dimensions == 0
@@ -203,13 +203,13 @@ struct traits<
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_vector_tpetra<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Tpetra;
@@ -250,13 +250,13 @@ struct traits<
 // *******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_vector_epetra<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::Epetra;
@@ -277,13 +277,13 @@ struct traits<
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_vector_tpetra_block<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TpetraBlock;
@@ -321,13 +321,13 @@ struct traits<
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_dense_vector_teuchos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 1>
 {
 
   static constexpr VectorIdentifier vector_identifier = VectorIdentifier::TeuchosSerialDense;

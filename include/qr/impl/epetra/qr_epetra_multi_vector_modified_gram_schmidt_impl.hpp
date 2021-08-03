@@ -57,7 +57,7 @@ class ModGramSchmidtMVEpetra
 
 public:
   using int_t	     = int;
-  using sc_t	     = typename traits<matrix_t>::scalar_type;
+  using sc_t	     = typename ::pressio::Traits<matrix_t>::scalar_type;
   using R_nat_t	    = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
   using Q_type      = Epetra_MultiVector;
   static constexpr sc_t one_ = static_cast<sc_t>(1);

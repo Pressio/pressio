@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template <class T2, class T1>
 ::pressio::mpl::enable_if_t<
-  traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  traits<T2>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen
   >
 abs(T1 & y, const T2 & x)
 {
@@ -63,10 +63,10 @@ abs(T1 & y, const T2 & x)
      "Types are not scalar compatible");
 
   static_assert
-    (traits<T1>::rank==1 and traits<T2>::rank==1,
+    (::pressio::Traits<T1>::rank==1 and ::pressio::Traits<T2>::rank==1,
      "ops::abs only accepts vectors");
   
-  using ord_t = typename ::pressio::traits<T1>::ordinal_type;
+  using ord_t = typename ::pressio::Traits<T1>::ordinal_type;
   for (ord_t i=0; i< ::pressio::ops::extent(x, 0); ++i){
     y(i) = std::abs(x(i));
   }

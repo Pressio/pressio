@@ -53,13 +53,13 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
   >
 pow(T & x,
-    const typename ::pressio::traits<T>::scalar_type & exponent)
+    const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
   auto & x_n = impl::get_native(x);
-  using ord_t = typename ::pressio::traits<T>::size_type;
+  using ord_t = typename ::pressio::Traits<T>::size_type;
   // this pow won't work for device
   Kokkos::parallel_for(x.extent(0),
 		       KOKKOS_LAMBDA (const ord_t& i){
@@ -71,18 +71,18 @@ pow(T & x,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
+  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::traits<T1>::scalar_type & exponent)
+	const typename ::pressio::Traits<T1>::scalar_type & exponent)
 {
   static_assert
     (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::traits<T1>::size_type;
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::Traits<T1>::size_type;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);
@@ -103,19 +103,19 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
-  ::pressio::traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos and
+  ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
   >
 abs_pow(T1 & y,
 	const T2 & x,
-	const typename ::pressio::traits<T1>::scalar_type & exponent,
-	const typename ::pressio::traits<T1>::scalar_type & eps)
+	const typename ::pressio::Traits<T1>::scalar_type & exponent,
+	const typename ::pressio::Traits<T1>::scalar_type & eps)
 {
   static_assert
     (::pressio::are_scalar_compatible<T1,T2>::value,
      "not scalar compatible");
-  using sc_t = typename ::pressio::traits<T1>::scalar_type;
-  using ord_t = typename ::pressio::traits<T1>::size_type;
+  using sc_t = typename ::pressio::Traits<T1>::scalar_type;
+  using ord_t = typename ::pressio::Traits<T1>::size_type;
 
   auto & y_n = impl::get_native(y);
   const auto & x_n = impl::get_native(x);

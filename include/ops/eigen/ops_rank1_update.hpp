@@ -56,10 +56,10 @@ namespace pressio{ namespace ops{
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 
   >
 update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
 {
@@ -74,10 +74,10 @@ update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
 
 template<typename T, typename T1, typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1
   >
 update(T & v, const T1 & v1, const ScalarType  b)
 {
@@ -95,12 +95,12 @@ update(T & v, const T1 & v1, const ScalarType  b)
 //----------------------------------------------------------------------
 template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 
   >
 update(T & v, const ScalarType &a,
        const T1 & v1, const ScalarType &b,
@@ -118,12 +118,12 @@ update(T & v, const ScalarType &a,
 
 template<typename T, typename T1, typename T2, typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 
   >
 update(T & v,
        const T1 & v1, const ScalarType &b,
@@ -149,14 +149,14 @@ template<typename T,
          typename T3,
          typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 and 
-  ::pressio::traits<T3>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 and 
+  ::pressio::Traits<T3>::rank == 1 
   >
 update(T  & v, const ScalarType &a,
        const T1 & v1, const ScalarType &b,
@@ -180,14 +180,14 @@ template<typename T,
          typename T3,
          typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 and 
-  ::pressio::traits<T3>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 and 
+  ::pressio::Traits<T3>::rank == 1 
   >
 update(T & v,
        const T1 & v1, const ScalarType &b,
@@ -216,16 +216,16 @@ template< typename T,
           typename T4,
           typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T4>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 and 
-  ::pressio::traits<T3>::rank == 1 and 
-  ::pressio::traits<T4>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 and 
+  ::pressio::Traits<T3>::rank == 1 and 
+  ::pressio::Traits<T4>::rank == 1 
   >
 update(T & v, const ScalarType &a,
        const T1 & v1, const ScalarType &b,
@@ -252,16 +252,16 @@ template<typename T,
          typename T4,
          typename ScalarType>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T4>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T>::rank == 1 and
-  ::pressio::traits<T1>::rank == 1 and 
-  ::pressio::traits<T2>::rank == 1 and 
-  ::pressio::traits<T3>::rank == 1 and 
-  ::pressio::traits<T4>::rank == 1 
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T>::rank == 1 and
+  ::pressio::Traits<T1>::rank == 1 and 
+  ::pressio::Traits<T2>::rank == 1 and 
+  ::pressio::Traits<T3>::rank == 1 and 
+  ::pressio::Traits<T4>::rank == 1 
   >
 update(T & v,
        const T1 & v1, const ScalarType &b,

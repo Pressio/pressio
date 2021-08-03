@@ -55,7 +55,7 @@ template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_tpetra<T1>::value and
   ::pressio::is_vector_tpetra<T2>::value,
-  typename ::pressio::traits<T1>::scalar_type
+  typename ::pressio::Traits<T1>::scalar_type
   >
 dot(const T1 & a, const T2 & b)
 {
@@ -73,7 +73,7 @@ template <typename T1, typename T2>
   ::pressio::is_vector_tpetra<T2>::value
   >
 dot(const T1 & a, const T2 & b,
-    typename ::pressio::traits<T1>::scalar_type & result)
+    typename ::pressio::Traits<T1>::scalar_type & result)
 {
   result = dot(a,b);
 }

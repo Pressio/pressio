@@ -62,7 +62,7 @@ class EpetraMVHouseholderUsingEigen
 {
 
 public:
-  using sc_t = typename ::pressio::traits<matrix_t>::scalar_type;
+  using sc_t = typename ::pressio::Traits<matrix_t>::scalar_type;
   using Q_type = Epetra_MultiVector;
   using eig_dyn_mat	= Eigen::MatrixXd;
   using help_impl_t	= QRHouseholderDenseEigenMatrix<eig_dyn_mat, R_t>;

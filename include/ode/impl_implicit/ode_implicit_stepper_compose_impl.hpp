@@ -90,7 +90,7 @@ struct ImplicitCompose<
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
 
   static_assert(::pressio::are_scalar_compatible<
    state_type, residual_type, jacobian_type>::value,
@@ -127,18 +127,18 @@ struct ImplicitCompose<
     and
     ::pressio::ode::implicit_cranknicolson_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type
+      typename ::pressio::Traits<state_type>::scalar_type
       >::value
     and
     ::pressio::ode::implicit_cranknicolson_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type
+      typename ::pressio::Traits<state_type>::scalar_type
       >::value
   >,
   state_type, residual_type, jacobian_type,
   system_type, void, residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
 
   static_assert(::pressio::are_scalar_compatible
    <state_type, residual_type, jacobian_type>::value,
@@ -181,7 +181,7 @@ struct ImplicitCompose<
   >,
   state_type, residual_type, jacobian_type, system_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
   static_assert(::pressio::are_scalar_compatible<
    state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
@@ -224,16 +224,16 @@ struct ImplicitCompose<
     and
     ::pressio::ode::implicit_euler_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
     and
     ::pressio::ode::implicit_euler_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
   >,
   state_type, residual_type, jacobian_type,
   system_type, residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
 
   static_assert(::pressio::are_scalar_compatible
    <state_type, residual_type, jacobian_type>::value,
@@ -263,18 +263,18 @@ struct ImplicitCompose<
     and
     ::pressio::ode::implicit_euler_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type
+      typename ::pressio::Traits<state_type>::scalar_type
       >::value
     and
     ::pressio::ode::implicit_euler_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type
+      typename ::pressio::Traits<state_type>::scalar_type
       >::value
   >,
   state_type, residual_type, jacobian_type,
   system_type, void, residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
 
   static_assert(::pressio::are_scalar_compatible
    <state_type, residual_type, jacobian_type>::value,
@@ -312,7 +312,7 @@ struct ImplicitCompose<
   >,
   state_type, residual_type, jacobian_type, system_type, aux_stepper_t>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
   static_assert(::pressio::are_scalar_compatible<
    state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
@@ -351,17 +351,17 @@ struct ImplicitCompose<
     and
     ::pressio::ode::implicit_bdf2_residual_policy<
       residual_policy_type, state_type, residual_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
     and
     ::pressio::ode::implicit_bdf2_jacobian_policy<
       jacobian_policy_type, state_type, jacobian_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
   >,
   state_type, residual_type, jacobian_type,
   system_type, aux_stepper_t,
   residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
   static_assert(::pressio::are_scalar_compatible
    <state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
@@ -401,7 +401,7 @@ struct ImplicitCompose<
   >,
   state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
   static_assert(::pressio::are_scalar_compatible<
    state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");
@@ -447,18 +447,18 @@ struct ImplicitCompose<
       tot_n_setter_t::value - 1, // number of wanted auxiliary states
       0, // number of wanted auxiliary rhs (this is because of the template specialization)
       state_type, residual_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
     and
     ::pressio::ode::implicit_jacobian_policy<
       jacobian_policy_type, ::pressio::ode::implicitmethods::Arbitrary,
       tot_n_setter_t::value - 1, // number of wanted auxiliary states
       state_type, jacobian_type, system_type,
-      typename ::pressio::traits<state_type>::scalar_type>::value
+      typename ::pressio::Traits<state_type>::scalar_type>::value
   >,
   state_type, residual_type, jacobian_type, system_type, order_setter_t, tot_n_setter_t,
   residual_policy_type, jacobian_policy_type>
 {
-  using scalar_t = typename traits<state_type>::scalar_type;
+  using scalar_t = typename ::pressio::Traits<state_type>::scalar_type;
   static_assert(::pressio::are_scalar_compatible<
    state_type, residual_type, jacobian_type>::value,
    "state, residual and jacobian are not scalar compatible ");

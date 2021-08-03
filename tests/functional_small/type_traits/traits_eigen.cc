@@ -4,7 +4,7 @@
 TEST(type_traits, eigen_dynamic_vector)
 {
   using T = Eigen::Matrix<double, Eigen::Dynamic, 1>;
-  using traits = pressio::traits<T>;
+  using traits = pressio::Traits<T>;
 
   static_assert(std::is_same<typename traits::scalar_type, double>::value, "");
 }

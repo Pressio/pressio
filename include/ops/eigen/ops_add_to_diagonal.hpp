@@ -55,7 +55,7 @@ template <typename T>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_sparse_matrix_eigen<T>::value
   >
-addToDiagonal(T & o, typename ::pressio::traits<T>::scalar_type value)
+addToDiagonal(T & o, typename ::pressio::Traits<T>::scalar_type value)
 {
   auto ide(o);
   ide.setIdentity();

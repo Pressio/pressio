@@ -52,8 +52,7 @@
 #include "pressio_mpl.hpp"
 
 namespace pressio{
-template<class T, class enable = void> struct traits;
-// template<class T> struct traits<const T> : traits<T> {};
+template<class T, class Enable = void> struct Traits;
 }
 
 #include "type_traits/are_scalar_compatible.hpp"

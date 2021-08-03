@@ -54,11 +54,11 @@ namespace pressio{ namespace ops{
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::traits<vec_type>::scalar_type
+  typename ::pressio::Traits<vec_type>::scalar_type
   >
 norm1(const vec_type & a)
 {
-  using sc_t = typename ::pressio::traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
   sc_t result = 0.0;
   a.Norm1(&result);
   return result;
@@ -67,11 +67,11 @@ norm1(const vec_type & a)
 template <typename vec_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<vec_type>::value,
-  typename ::pressio::traits<vec_type>::scalar_type
+  typename ::pressio::Traits<vec_type>::scalar_type
   >
 norm2(const vec_type & a)
 {
-  using sc_t = typename ::pressio::traits<vec_type>::scalar_type;
+  using sc_t = typename ::pressio::Traits<vec_type>::scalar_type;
   sc_t result = 0.0;
   a.Norm2(&result);
   return result;

@@ -59,15 +59,15 @@ struct span_traits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
   using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type  = typename ::pressio::traits<vec_remove_cv_t>::scalar_type;
-  using ordinal_type = typename ::pressio::traits<vec_remove_cv_t>::ordinal_type;
-  using size_type    = typename ::pressio::traits<vec_remove_cv_t>::size_type;
+  using scalar_type  = typename ::pressio::Traits<vec_remove_cv_t>::scalar_type;
+  using ordinal_type = typename ::pressio::Traits<vec_remove_cv_t>::ordinal_type;
+  using size_type    = typename ::pressio::Traits<vec_remove_cv_t>::size_type;
 
   // type of the native expression
   using _native_expr_type =
@@ -100,19 +100,19 @@ struct span_traits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 1>
+  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
 
   using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type	    = typename ::pressio::traits<vec_remove_cv_t>::scalar_type;
-  using execution_space = typename ::pressio::traits<vec_remove_cv_t>::execution_space;
-  using memory_space	  = typename ::pressio::traits<vec_remove_cv_t>::memory_space;
-  using device_type	    = typename ::pressio::traits<vec_remove_cv_t>::device_type;
-  using ordinal_type	  = typename ::pressio::traits<vec_remove_cv_t>::ordinal_type;
-  using reference_type  = typename ::pressio::traits<vec_remove_cv_t>::reference_type;
-  using size_type	      = typename ::pressio::traits<vec_remove_cv_t>::size_type;
+  using scalar_type	    = typename ::pressio::Traits<vec_remove_cv_t>::scalar_type;
+  using execution_space = typename ::pressio::Traits<vec_remove_cv_t>::execution_space;
+  using memory_space	  = typename ::pressio::Traits<vec_remove_cv_t>::memory_space;
+  using device_type	    = typename ::pressio::Traits<vec_remove_cv_t>::device_type;
+  using ordinal_type	  = typename ::pressio::Traits<vec_remove_cv_t>::ordinal_type;
+  using reference_type  = typename ::pressio::Traits<vec_remove_cv_t>::reference_type;
+  using size_type	      = typename ::pressio::Traits<vec_remove_cv_t>::size_type;
   using pair_type       = std::pair<size_type, size_type>;
 
   using native_expr_type =
@@ -134,7 +134,6 @@ struct span_traits<
 };
 #endif
 
-
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template <typename T>
 // struct traits<
@@ -143,7 +142,7 @@ struct span_traits<
 //     ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
 //     >
 //   >
-//   : public containers_shared_traits<
+//   : public ContainersSharedTraits<
 //   typename details::traits<T>::wrapped_t, PackageIdentifier::Pybind,
 //   true,
 //   1

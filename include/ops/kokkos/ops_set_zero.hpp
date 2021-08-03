@@ -55,11 +55,11 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
   >
 set_zero(const T & v)
 {
-  using value_t	      = typename ::pressio::traits<T>::scalar_type;
+  using value_t	      = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<value_t>::zero();
   ::KokkosBlas::fill(impl::get_native(v), zero);
 }

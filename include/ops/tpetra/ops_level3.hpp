@@ -225,8 +225,8 @@ product(::pressio::transpose modeA,
 
   static_assert
     (std::is_same<
-     typename ::pressio::traits<A_type>::device_type,
-     typename ::pressio::traits<C_type>::device_type
+     typename ::pressio::Traits<A_type>::device_type,
+     typename ::pressio::Traits<C_type>::device_type
      >::value,
      "Non-matching device types");
 
@@ -234,8 +234,8 @@ product(::pressio::transpose modeA,
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
-  using map_t      = typename ::pressio::traits<A_type>::data_map_type;
-  // using tpetra_mv_t = typename ::pressio::traits<A_type>::wrapped_type;
+  using map_t      = typename ::pressio::Traits<A_type>::data_map_type;
+  // using tpetra_mv_t = typename ::pressio::Traits<A_type>::wrapped_type;
   const auto indexBase = A.getMap()->getIndexBase();
   const auto comm = A.getMap()->getComm();
 
@@ -303,8 +303,8 @@ product(::pressio::transpose modeA,
 
   static_assert
     (std::is_same<
-     typename ::pressio::traits<A_type>::device_type,
-     typename ::pressio::traits<C_type>::device_type
+     typename ::pressio::Traits<A_type>::device_type,
+     typename ::pressio::Traits<C_type>::device_type
      >::value,
      "Non-matching device types");
 
@@ -312,7 +312,7 @@ product(::pressio::transpose modeA,
     (std::is_same< typename C_type::array_layout, Kokkos::LayoutLeft>::value,
      "The kokkos matrix must be layout left");
 
-  using map_t      = typename ::pressio::traits<A_type>::data_map_type;
+  using map_t      = typename ::pressio::Traits<A_type>::data_map_type;
   const auto indexBase = A.getMap()->getIndexBase();
   const auto comm = A.getMap()->getComm();
 

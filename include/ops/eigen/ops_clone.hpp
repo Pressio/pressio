@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier 
+  ::pressio::Traits<T>::package_identifier 
   	== ::pressio::PackageIdentifier::Eigen,
   T
   >

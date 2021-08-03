@@ -61,10 +61,10 @@ template <typename T, typename T1, typename T2>
   ::pressio::is_vector_tpetra<T2>::value
   >
 elementwise_multiply
-(typename ::pressio::traits<T>::scalar_type alpha,
+(typename ::pressio::Traits<T>::scalar_type alpha,
  const T & x,
  const T1 & z,
- typename ::pressio::traits<T>::scalar_type beta,
+ typename ::pressio::Traits<T>::scalar_type beta,
  T2 & y)
 {
   assert(::pressio::ops::extent(x, 0)==::pressio::ops::extent(z, 0));

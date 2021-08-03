@@ -160,7 +160,7 @@ template <typename A_type, typename B_type, typename ScalarType, typename C_type
   ::pressio::is_dense_matrix_eigen<B_type>::value and
   ::pressio::is_dense_matrix_eigen<C_type>::value and 
   ::pressio::is_expression_asdiagonalmatrix<A_type>::value and 
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen
   >
 product(::pressio::nontranspose modeA,
 	::pressio::nontranspose modeB,

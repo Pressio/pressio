@@ -92,7 +92,7 @@ struct sharedmem_host_subscriptable_rank1_container<
     ::pressio::is_vector_kokkos<T>::value
     and
     std::is_same<
-      typename ::pressio::traits<T>::memory_space, Kokkos::HostSpace
+      typename ::pressio::Traits<T>::memory_space, Kokkos::HostSpace
       >::value
    >
   > : std::true_type{};

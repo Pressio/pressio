@@ -59,16 +59,16 @@ struct asdiagmatrix_traits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
-    public matrix_shared_traits<false>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+    public MatrixSharedTraits<false>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
 
   using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type  = typename traits<vec_remove_cv_t>::scalar_type;
-  using ordinal_type = typename traits<vec_remove_cv_t>::ordinal_type;
-  using size_type    = typename traits<vec_remove_cv_t>::size_type;
+  using scalar_type  = typename Traits<vec_remove_cv_t>::scalar_type;
+  using ordinal_type = typename Traits<vec_remove_cv_t>::ordinal_type;
+  using size_type    = typename Traits<vec_remove_cv_t>::size_type;
 
   // type of the native expression
   using _native_expr_type =
@@ -101,8 +101,8 @@ struct asdiagmatrix_traits<
 //     ::pressio::is_rank1_tensor_pybind<VectorType>::value
 //     >
 //   >
-//   : public containers_shared_traits<PackageIdentifier::Pybind, true, 2>,
-//     public matrix_shared_traits<false>
+//   : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
+//     public MatrixSharedTraits<false>
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;
@@ -126,8 +126,8 @@ struct asdiagmatrix_traits<
 //     >::value
 //     >
 //   >
-//   : public containers_shared_traits<PackageIdentifier::Trilinos, true, 2>,
-//     public matrix_shared_traits<false>
+//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public MatrixSharedTraits<false>
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
@@ -146,8 +146,8 @@ struct asdiagmatrix_traits<
 //     >::value
 //     >
 //   >
-//   : public containers_shared_traits<PackageIdentifier::Trilinos, true, 2>,
-//     public matrix_shared_traits<false>
+//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public MatrixSharedTraits<false>
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
@@ -167,8 +167,8 @@ struct asdiagmatrix_traits<
 //     >::value
 //     >
 //   >
-//   : public containers_shared_traits<PackageIdentifier::Trilinos, true, 2>,
-//     public matrix_shared_traits<false>
+//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public MatrixSharedTraits<false>
 // {
 
 //   static constexpr bool is_static = true;

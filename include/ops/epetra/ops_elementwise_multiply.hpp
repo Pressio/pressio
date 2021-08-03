@@ -61,15 +61,15 @@ template <typename T, typename T1, typename T2>
   ::pressio::is_vector_epetra<T2>::value
   >
 elementwise_multiply
-(typename ::pressio::traits<T>::scalar_type alpha,
+(typename ::pressio::Traits<T>::scalar_type alpha,
  const T & x,
  const T1 & z,
- typename ::pressio::traits<T>::scalar_type beta,
+ typename ::pressio::Traits<T>::scalar_type beta,
  T2 & y)
 {
   assert(x.MyLength()==z.MyLength());
   assert(z.MyLength()==y.MyLength());
-  using ord_t = typename ::pressio::traits<T>::local_ordinal_type;
+  using ord_t = typename ::pressio::Traits<T>::local_ordinal_type;
   for (ord_t i=0; i<x.MyLength(); ++i){
     y[i] = beta*y[i] + alpha*x[i]*z[i];
   }

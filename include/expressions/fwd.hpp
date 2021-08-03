@@ -63,25 +63,25 @@ template <class T, class enable = void> struct diag_traits;
 }}//end namespace expressions::impl::impl
 
 template<class T>
-struct traits<::pressio::expressions::impl::SpanExpr<T>> 
+struct Traits<::pressio::expressions::impl::SpanExpr<T>> 
   : ::pressio::expressions::impl::span_traits<
       ::pressio::expressions::impl::SpanExpr<T>
       >{};
 
 template<class T>
-struct traits<::pressio::expressions::impl::SubspanExpr<T>> 
+struct Traits<::pressio::expressions::impl::SubspanExpr<T>> 
   : ::pressio::expressions::impl::subspan_traits<
       ::pressio::expressions::impl::SubspanExpr<T>
       >{};
 
 template<class T>
-struct traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>> 
+struct Traits<::pressio::expressions::impl::AsDiagonalMatrixExpr<T>> 
   : ::pressio::expressions::impl::asdiagmatrix_traits<
      ::pressio::expressions::impl::AsDiagonalMatrixExpr<T>
      >{};
 
 template<class T>
-struct traits<::pressio::expressions::impl::DiagExpr<T>> 
+struct Traits<::pressio::expressions::impl::DiagExpr<T>> 
   : ::pressio::expressions::impl::diag_traits<
       ::pressio::expressions::impl::DiagExpr<T>
       >{};

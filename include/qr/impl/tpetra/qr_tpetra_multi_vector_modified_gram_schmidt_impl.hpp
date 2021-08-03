@@ -57,10 +57,10 @@ class ModGramSchmidtMVTpetra
 
 public:
   using int_t	     = int;
-  using sc_t        = typename traits<matrix_t>::scalar_type;
-  using lo_t        = typename traits<matrix_t>::local_ordinal_type;
-  using go_t        = typename traits<matrix_t>::global_ordinal_type;
-  using node_t      = typename traits<matrix_t>::node_type;
+  using sc_t        = typename ::pressio::Traits<matrix_t>::scalar_type;
+  using lo_t        = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
+  using go_t        = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
+  using node_t      = typename ::pressio::Traits<matrix_t>::node_type;
   using Q_type      = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
   using R_nat_t	    = Eigen::Matrix<sc_t, Eigen::Dynamic, Eigen::Dynamic>;
 

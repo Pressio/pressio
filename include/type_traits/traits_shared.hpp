@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// containers_shared_traits.hpp
+// ContainersSharedTraits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -56,7 +56,7 @@ template<
   bool _is_shared_mem,
   int _rank
   >
-struct containers_shared_traits
+struct ContainersSharedTraits
 {
   static constexpr PackageIdentifier package_identifier = PackId;
   static constexpr bool is_shared_mem	= _is_shared_mem;
@@ -66,7 +66,7 @@ struct containers_shared_traits
 
 /// common traits of matrices
 template<bool is_sparse_b>
-struct matrix_shared_traits{
+struct MatrixSharedTraits{
   static constexpr bool is_sparse = is_sparse_b;
   static constexpr bool is_dense  = !is_sparse_b;
 };

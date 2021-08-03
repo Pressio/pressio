@@ -56,7 +56,7 @@ template <typename T>
   ::pressio::is_vector_epetra<T>::value or
   ::pressio::is_multi_vector_epetra<T>::value
   >
-fill(T & o, typename ::pressio::traits<T>::scalar_type value)
+fill(T & o, typename ::pressio::Traits<T>::scalar_type value)
 {
  o.PutScalar(value);
 }

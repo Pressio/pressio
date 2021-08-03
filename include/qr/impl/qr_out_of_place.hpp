@@ -58,7 +58,7 @@ class QRSolver<matrix_type, algo, false, void>
     public details::traits< QRSolver<matrix_type, algo, false, void>>::base_solve_t
 {
 
-  static_assert(::pressio::traits<matrix_type>::rank == 2, 
+  static_assert(::pressio::Traits<matrix_type>::rank == 2, 
     "QRSolver only supports rank-2 objects");
 
   using this_t	       = QRSolver<matrix_type, algo, false, void>;

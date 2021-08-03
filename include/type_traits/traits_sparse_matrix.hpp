@@ -56,14 +56,14 @@ namespace pressio{
 // eigen sparse matrix
 //***********************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_sparse_matrix_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
-    public matrix_shared_traits<true>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+    public MatrixSharedTraits<true>
 {
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::SparseEigen;
   static constexpr bool is_static = false;

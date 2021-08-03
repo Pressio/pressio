@@ -58,7 +58,7 @@ template <typename T>
   >
 set_zero(T & v)
 {
-  using value_t = typename ::pressio::traits<T>::scalar_type;
+  using value_t = typename ::pressio::Traits<T>::scalar_type;
   v.PutScalar( ::pressio::utils::Constants<value_t>::zero() );
 }
 

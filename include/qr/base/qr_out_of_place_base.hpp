@@ -76,8 +76,8 @@ public:
 
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
-    ::pressio::traits<vec_in_t>::rank ==1 and
-    ::pressio::traits<vec_out_t>::rank ==1 and
+    ::pressio::Traits<vec_in_t>::rank ==1 and
+    ::pressio::Traits<vec_out_t>::rank ==1 and
     meta::is_legitimate_vector_type_for_qr_project<vec_in_t, Q_t>::value
   >
   applyQTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
@@ -86,8 +86,8 @@ public:
 
   template <typename vec_in_t, typename vec_out_t>
   ::pressio::mpl::enable_if_t<
-    ::pressio::traits<vec_in_t>::rank ==1 and
-    ::pressio::traits<vec_out_t>::rank ==1
+    ::pressio::Traits<vec_in_t>::rank ==1 and
+    ::pressio::Traits<vec_out_t>::rank ==1
   >
   applyRTranspose(const vec_in_t & vecIn, vec_out_t & vecOut) const{
     this->underlying().applyRTransposeImpl(vecIn, vecOut);

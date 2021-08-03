@@ -106,7 +106,7 @@ struct ExplicitComposeForDefaultPolicy
   (::pressio::ode::explicit_state<state_type>::value,
    "Invalid state type for explicit time stepping");
 
-  using scalar_type   = typename ::pressio::traits<state_type>::scalar_type;
+  using scalar_type   = typename ::pressio::Traits<state_type>::scalar_type;
   using velocity_type = state_type;
 
   using velocity_policy_t = ExplicitVelocityStandardPolicy<state_type>;
@@ -127,7 +127,7 @@ struct ExplicitComposeForCustomPolicy
   (::pressio::ode::explicit_state<state_type>::value,
    "Invalid state type for explicit time stepping");
 
-  using scalar_type   = typename ::pressio::traits<state_type>::scalar_type;
+  using scalar_type   = typename ::pressio::Traits<state_type>::scalar_type;
   using velocity_type = state_type;
   using time_type = scalar_type;
 

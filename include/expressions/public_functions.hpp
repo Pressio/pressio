@@ -74,7 +74,7 @@ span(T & vecObj, Args&& ... args)
 {
   static_assert(0 < sizeof...(Args), 
     "span must be called with arguments specifying the span bounds.");
-  static_assert(::pressio::traits<T>::rank==1, 
+  static_assert(::pressio::Traits<T>::rank==1, 
     "span can only be applied to a rank-1 object.");
 
   using return_t = expressions::impl::SpanExpr<T>;
@@ -86,7 +86,7 @@ expressions::impl::SpanExpr<const T> span(const T & vecObj, Args&& ... args)
 {  
   static_assert(0 < sizeof...(Args), 
     "span must be called with arguments specifying the span bounds.");
-  static_assert(::pressio::traits<T>::rank==1, 
+  static_assert(::pressio::Traits<T>::rank==1, 
     "span can only be applied to a rank-1 object.");
 
   using return_t = expressions::impl::SpanExpr<const T>;
@@ -107,7 +107,7 @@ subspan(T & obj, Args&& ... args)
 {
   static_assert(0 < sizeof...(Args), 
     "subspan must be called with arguments specifying the bounds.");
-  static_assert(::pressio::traits<T>::rank==2, 
+  static_assert(::pressio::Traits<T>::rank==2, 
     "subspan can only be applied to a rank-2 object.");
 
   using return_t = expressions::impl::SubspanExpr<T>;
@@ -119,7 +119,7 @@ expressions::impl::SubspanExpr<const T> subspan(const T & obj, Args&& ... args)
 {
   static_assert(0 < sizeof...(Args), 
     "subspan must be called with arguments specifying the bounds.");
-  static_assert(::pressio::traits<T>::rank==2, 
+  static_assert(::pressio::Traits<T>::rank==2, 
     "subspan can only be applied to a rank-2 object.");
 
   using return_t = expressions::impl::SubspanExpr<const T>;
@@ -138,7 +138,7 @@ template <typename T, typename ... Args>
 #endif
 diag(T & obj)
 {
-  static_assert(::pressio::traits<T>::rank==2, 
+  static_assert(::pressio::Traits<T>::rank==2, 
     "diag can only be applied to a rank-2 object.");
 
   using return_t = expressions::impl::DiagExpr<T>;
@@ -148,7 +148,7 @@ diag(T & obj)
 template <typename T, typename ... Args>
 expressions::impl::DiagExpr<const T> diag(const T & obj)
 {
-  static_assert(::pressio::traits<T>::rank==2, 
+  static_assert(::pressio::Traits<T>::rank==2, 
     "diag can only be applied to a rank-2 object.");
 
   using return_t = expressions::impl::DiagExpr<const T>;
@@ -161,7 +161,7 @@ expressions::impl::DiagExpr<const T> diag(const T & obj)
 template <typename T>
 expressions::impl::AsDiagonalMatrixExpr<T> asDiagonalMatrix(T & vecObj)
 {
-  static_assert(::pressio::traits<T>::rank==1, 
+  static_assert(::pressio::Traits<T>::rank==1, 
     "AsDiagonalMatrix can only be applied to a rank-1 object.");
   using return_t = expressions::impl::AsDiagonalMatrixExpr<T>;
   return return_t(vecObj);
@@ -170,7 +170,7 @@ expressions::impl::AsDiagonalMatrixExpr<T> asDiagonalMatrix(T & vecObj)
 template <typename T>
 expressions::impl::AsDiagonalMatrixExpr<const T> asDiagonalMatrix(const T & vecObj)
 {
-  static_assert(::pressio::traits<T>::rank==1, 
+  static_assert(::pressio::Traits<T>::rank==1, 
     "AsDiagonalMatrix can only be applied to a rank-1 object.");
   using return_t = expressions::impl::AsDiagonalMatrixExpr<const T>;
   return return_t(vecObj);

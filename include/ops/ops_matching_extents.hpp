@@ -56,8 +56,8 @@ struct matching_extents<T1, T2>
 {
   static bool compare(const T1 & a, const T2 & b)
   {
-    using size_type = typename ::pressio::traits<T1>::size_type;
-    for (size_type i=0; i<::pressio::traits<T1>::rank; ++i)
+    using size_type = typename ::pressio::Traits<T1>::size_type;
+    for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
     {
       if(::pressio::ops::extent(a, i) != ::pressio::ops::extent(b, i)){
         return false;
@@ -72,8 +72,8 @@ struct matching_extents<T1, T2, T3>
 {
   static bool compare(const T1 & a, const T2 & b, const T3& c)
   {
-    using size_type = typename ::pressio::traits<T1>::size_type;
-    for (size_type i=0; i<::pressio::traits<T1>::rank; ++i)
+    using size_type = typename ::pressio::Traits<T1>::size_type;
+    for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
     {
       if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
          ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i))
@@ -90,8 +90,8 @@ struct matching_extents<T1, T2, T3, T4>
 {
   static bool compare(const T1 & a, const T2 & b, const T3& c, const T4& d)
   {
-    using size_type = typename ::pressio::traits<T1>::size_type;
-    for (size_type i=0; i<::pressio::traits<T1>::rank; ++i)
+    using size_type = typename ::pressio::Traits<T1>::size_type;
+    for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
     {
     if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
        ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i) or
@@ -111,8 +111,8 @@ struct matching_extents<T1, T2, T3, T4, T5>
                       const T3& c, const T4& d, 
                       const T5 & e)
   {
-    using size_type = typename traits<T1>::size_type;
-    for (size_type i=0; i<traits<T1>::rank; ++i){
+    using size_type = typename ::pressio::Traits<T1>::size_type;
+    for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i){
       if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
          ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i) or
          ::pressio::ops::extent(a, i)!=::pressio::ops::extent(d, i) or

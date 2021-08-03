@@ -57,13 +57,13 @@ namespace pressio{
 // for tpetra multivector
 //*******************************
 template<typename T>
-struct traits<
+struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_tpetra<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Tpetra;
   static constexpr bool is_static = false;
@@ -101,13 +101,13 @@ struct traits<
 // for epetra multivector
 //*******************************
 template<typename T>
-struct traits<
+struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_epetra<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::Epetra;
   static constexpr bool is_static = false;
@@ -125,13 +125,13 @@ struct traits<
 // for block tpetra multivector
 //*******************************
 template<typename T>
-struct traits<
+struct Traits<
   T,
   ::pressio::mpl::enable_if_t<
     is_multi_vector_tpetra_block<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, false, 2>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, false, 2>
 {
   static constexpr MultiVectorIdentifier multi_vector_identifier = MultiVectorIdentifier::TpetraBlock;
   static constexpr bool is_static = false;

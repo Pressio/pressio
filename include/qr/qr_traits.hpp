@@ -56,7 +56,7 @@ template<typename matrix_type, typename algo, bool in_place>
 struct traits_shared_all{
   using matrix_t  = matrix_type;
   using algo_t	  = algo;
-  using sc_t	  = typename ::pressio::traits<matrix_type>::scalar_type;
+  using sc_t	  = typename ::pressio::Traits<matrix_type>::scalar_type;
   static constexpr bool in_place_ = in_place;
 };
 
@@ -213,8 +213,8 @@ struct traits<
   using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
-  using node_t = typename ::pressio::traits<matrix_type>::node_type;
-  using hexsp  = typename ::pressio::traits<matrix_type>::host_exec_space_type;
+  using node_t = typename ::pressio::Traits<matrix_type>::node_type;
+  using hexsp  = typename ::pressio::Traits<matrix_type>::host_exec_space_type;
 
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;
@@ -243,8 +243,8 @@ struct traits<
   using traits_all_t  = traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
-  using node_t = typename ::pressio::traits<matrix_type>::node_t;
-  using hexsp  = typename ::pressio::traits<matrix_type>::host_exec_space_t;
+  using node_t = typename ::pressio::Traits<matrix_type>::node_t;
+  using hexsp  = typename ::pressio::Traits<matrix_type>::host_exec_space_t;
 
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;

@@ -34,7 +34,7 @@ public:
 namespace pressio{ 
 
 template<>
-struct traits<VectorType>
+struct Traits<VectorType>
 {
   using scalar_type = ScalarType;
 };

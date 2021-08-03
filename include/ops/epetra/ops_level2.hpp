@@ -67,7 +67,7 @@ void _product_epetra_mv_sharedmem_vec(const scalar_type alpha,
 {
 
   const int numVecs = A.NumVectors();
-  using lo_t = typename ::pressio::traits<A_type>::local_ordinal_type;
+  using lo_t = typename ::pressio::Traits<A_type>::local_ordinal_type;
   for (lo_t i=0; i< A.MyLength(); i++)
   {
     y[i] = beta*y[i];
@@ -100,7 +100,7 @@ product(::pressio::nontranspose mode,
   static_assert(are_scalar_compatible<A_type, x_type>::value,
      "Types are not scalar compatible");
   static_assert
-    (mpl::is_same<scalar_type, typename ::pressio::traits<x_type>::scalar_type>::value,
+    (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
 
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);
@@ -163,7 +163,7 @@ product(::pressio::nontranspose mode,
   static_assert(are_scalar_compatible<A_type, x_type>::value,
      "Types are not scalar compatible");
   static_assert
-    (mpl::is_same<scalar_type, typename ::pressio::traits<x_type>::scalar_type>::value,
+    (mpl::is_same<scalar_type, typename ::pressio::Traits<x_type>::scalar_type>::value,
      "Scalar compatibility broken");
 
   ::pressio::ops::impl::_product_epetra_mv_sharedmem_vec(alpha, A, x, beta, y);

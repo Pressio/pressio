@@ -57,9 +57,9 @@ struct is_legitimate_r_type : std::false_type {};
 template <typename T>
 struct is_legitimate_r_type<T,
 	 ::pressio::mpl::enable_if_t<
-  	   ::pressio::traits<T>::rank == 2 and
-	   ::pressio::traits<T>::is_shared_mem and
-	   ::pressio::traits<T>::is_dense
+  	   ::pressio::Traits<T>::rank == 2 and
+	   ::pressio::Traits<T>::is_shared_mem and
+	   ::pressio::Traits<T>::is_dense
 	   >
       > : std::true_type{};
 
@@ -69,10 +69,10 @@ struct is_legitimate_vector_type_for_qr_project : std::false_type {};
 template <typename T, typename Q_t>
 struct is_legitimate_vector_type_for_qr_project<T, Q_t,
 	 ::pressio::mpl::enable_if_t<
-  	   ::pressio::traits<T>::rank == 1 and
+  	   ::pressio::Traits<T>::rank == 1 and
 	   // the vector type should be from same package as Q
-	   ::pressio::traits<T>::package_identifier ==
-	   ::pressio::traits<Q_t>::package_identifier
+	   ::pressio::Traits<T>::package_identifier ==
+	   ::pressio::Traits<Q_t>::package_identifier
 	 >
       > : std::true_type{};
 

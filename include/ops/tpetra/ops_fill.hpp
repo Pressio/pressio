@@ -56,7 +56,7 @@ template <typename T>
   ::pressio::is_vector_tpetra<T>::value or
   ::pressio::is_multi_vector_tpetra<T>::value
   >
-fill(T & v, typename ::pressio::traits<T>::scalar_type value)
+fill(T & v, typename ::pressio::Traits<T>::scalar_type value)
 {
   v.putScalar(value);
   // // putScalar doesn't sync afterwards, so we have to sync manually.

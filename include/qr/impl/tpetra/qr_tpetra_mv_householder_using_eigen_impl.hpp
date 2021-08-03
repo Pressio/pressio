@@ -69,10 +69,10 @@ public:
   // using node_t = typename containers::details::traits<matrix_t>::node_t;
   // using hexsp = typename containers::details::traits<matrix_t>::host_exec_space_t;
 
-  using sc_t = typename ::pressio::traits<matrix_t>::scalar_type;
-  using lo_t         = typename traits<matrix_t>::local_ordinal_type;
-  using go_t         = typename traits<matrix_t>::global_ordinal_type;
-  using node_t       = typename traits<matrix_t>::node_type;
+  using sc_t = typename ::pressio::Traits<matrix_t>::scalar_type;
+  using lo_t         = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
+  using go_t         = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
+  using node_t       = typename ::pressio::Traits<matrix_t>::node_type;
   using Q_type       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
 
   using eig_dyn_mat	= Eigen::Matrix<sc_t, -1, -1>;

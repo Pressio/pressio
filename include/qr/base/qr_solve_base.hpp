@@ -68,7 +68,7 @@ class QRSolveBase
 public:
   template <typename vec_t>
   ::pressio::mpl::enable_if_t<
-   ::pressio::traits<vec_t>::rank ==1 
+   ::pressio::Traits<vec_t>::rank ==1 
   >
   solve(const vec_t & rhs, vec_t & y)const {
     this->underlying().solveImpl(rhs, y);

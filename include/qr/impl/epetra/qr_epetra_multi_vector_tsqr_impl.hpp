@@ -60,7 +60,7 @@ class EpetraMVTSQR
 public:
   using Q_type     = Epetra_MultiVector;
   using int_t	     = int;
-  using sc_t	     = typename ::pressio::traits<matrix_t>::scalar_type;
+  using sc_t	     = typename ::pressio::Traits<matrix_t>::scalar_type;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
   using tsqr_adaptor_type = Epetra::TsqrAdaptor;

@@ -14,7 +14,7 @@ TEST(tpetra, MVTraits)
   typedef Tpetra::Map<LO, GO, NT> map_type;
 
   using T = Tpetra::MultiVector<ST, LO, GO, NT>;
-  using mytraits = pressio::traits<T>;
+  using mytraits = pressio::Traits<T>;
   static_assert(pressio::is_multi_vector_tpetra<T>::value,"");
 
   ::testing::StaticAssertTypeEq<typename
@@ -63,7 +63,7 @@ TEST(tpetra, VectorTraits)
   
   using T = Tpetra::Vector<ST, LO, GO, NT>;
   static_assert(::pressio::is_vector_tpetra<T>::value,"");
-  using mytraits = pressio::traits<T>;
+  using mytraits = pressio::Traits<T>;
  
   ::testing::StaticAssertTypeEq<typename
           mytraits::scalar_type, double>();

@@ -59,13 +59,13 @@ class TpetraMVTSQR
 
 public:
   using int_t	       = int;
-  using sc_t	       = typename traits<matrix_t>::scalar_type;
+  using sc_t	       = typename ::pressio::Traits<matrix_t>::scalar_type;
   using serden_mat_t = Teuchos::SerialDenseMatrix<int_t, sc_t>;
   using trcp_mat     = Teuchos::RCP<serden_mat_t>;
 
-  using lo_t         = typename traits<matrix_t>::local_ordinal_type;
-  using go_t         = typename traits<matrix_t>::global_ordinal_type;
-  using node_t       = typename traits<matrix_t>::node_type;
+  using lo_t         = typename ::pressio::Traits<matrix_t>::local_ordinal_type;
+  using go_t         = typename ::pressio::Traits<matrix_t>::global_ordinal_type;
+  using node_t       = typename ::pressio::Traits<matrix_t>::node_type;
   using Q_type       = Tpetra::MultiVector<sc_t, lo_t, go_t, node_t>;
   using tsqr_adaptor_type = Tpetra::TsqrAdaptor<matrix_t>;
 

@@ -56,10 +56,10 @@ namespace pressio{ namespace ops{
 // y = abs(x)
 template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
-  and ::pressio::traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
-  and ::pressio::traits<T1>::rank == 1 
-  and ::pressio::traits<T2>::rank == 1 
+  ::pressio::Traits<T1>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T2>::package_identifier == ::pressio::PackageIdentifier::Kokkos 
+  and ::pressio::Traits<T1>::rank == 1 
+  and ::pressio::Traits<T2>::rank == 1 
   >
 abs(T1 & y, const T2 & x)
 {

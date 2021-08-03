@@ -60,12 +60,12 @@ namespace pressio{ namespace ops{
 //-------------------------------
 template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<A_type>::rank == 2 and
-  ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1
+  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<A_type>::rank == 2 and
+  ::pressio::Traits<x_type>::rank == 1 and
+  ::pressio::Traits<y_type>::rank == 1
   >
 product(::pressio::nontranspose mode,
 	const ScalarType alpha,
@@ -92,12 +92,12 @@ product(::pressio::nontranspose mode,
 //-------------------------------
 template < typename A_type, typename x_type, typename ScalarType, typename y_type>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<A_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<x_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<y_type>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<A_type>::rank == 2 and
-  ::pressio::traits<x_type>::rank == 1 and
-  ::pressio::traits<y_type>::rank == 1
+  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<A_type>::rank == 2 and
+  ::pressio::Traits<x_type>::rank == 1 and
+  ::pressio::Traits<y_type>::rank == 1
   >
 product(::pressio::transpose mode,
 	const ScalarType alpha,

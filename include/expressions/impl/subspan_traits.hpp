@@ -59,16 +59,16 @@ struct subspan_traits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
-  public matrix_shared_traits<traits<MatrixType>::is_sparse>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+  public MatrixSharedTraits<Traits<MatrixType>::is_sparse>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
   using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type  = typename traits<mat_remove_cv_t>::scalar_type;
-  using ordinal_type = typename traits<mat_remove_cv_t>::ordinal_type;
-  using size_type    = typename traits<mat_remove_cv_t>::size_type;
+  using scalar_type  = typename Traits<mat_remove_cv_t>::scalar_type;
+  using ordinal_type = typename Traits<mat_remove_cv_t>::ordinal_type;
+  using size_type    = typename Traits<mat_remove_cv_t>::size_type;
 
   // type of the native expression
   using _native_expr_type = decltype(
@@ -96,21 +96,21 @@ struct subspan_traits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 2>,
-  public matrix_shared_traits<false>
+  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 2>,
+  public MatrixSharedTraits<false>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
 
   using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
-  using scalar_type	      = typename traits<mat_remove_cv_t>::scalar_type;
-  using execution_space = typename traits<mat_remove_cv_t>::execution_space;
-  using memory_space	= typename traits<mat_remove_cv_t>::memory_space;
-  using device_type	= typename traits<mat_remove_cv_t>::device_type;
-  using ordinal_type	= typename traits<mat_remove_cv_t>::ordinal_type;
-  using size_type		= typename traits<mat_remove_cv_t>::size_type;
+  using scalar_type	      = typename Traits<mat_remove_cv_t>::scalar_type;
+  using execution_space = typename Traits<mat_remove_cv_t>::execution_space;
+  using memory_space	= typename Traits<mat_remove_cv_t>::memory_space;
+  using device_type	= typename Traits<mat_remove_cv_t>::device_type;
+  using ordinal_type	= typename Traits<mat_remove_cv_t>::ordinal_type;
+  using size_type		= typename Traits<mat_remove_cv_t>::size_type;
   using pair_type  		= std::pair<size_type, size_type>;
-  using reference_type   = typename ::pressio::traits<mat_remove_cv_t>::reference_type;
+  using reference_type   = typename ::pressio::Traits<mat_remove_cv_t>::reference_type;
 
   using _native_expr_type = decltype
     (
@@ -141,10 +141,10 @@ struct subspan_traits<
 //     ::pressio::containers::predicates::is_rank2_tensor_wrapper_pybind<MatrixType>::value
 //     >
 //   >
-//   : public containers_shared_traits<
+//   : public ContainersSharedTraits<
 //   typename details::traits<MatrixType>::wrapped_t,
 //   WrappedPackageIdentifier::Pybind, true, 2>,
-//   public matrix_shared_traits<false>
+//   public MatrixSharedTraits<false>
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;

@@ -13,7 +13,7 @@ TEST(epetra, VectorTraits)
   using T = Epetra_Vector;
   static_assert(pressio::is_vector_epetra<T>::value,"");
 
-  using vecTrait = pressio::traits<T>;
+  using vecTrait = pressio::Traits<T>;
  
   ::testing::StaticAssertTypeEq<typename
   				vecTrait::scalar_type, double>();
@@ -41,7 +41,7 @@ TEST(eped_epetra, MVTraits)
   using T = Epetra_MultiVector;
   static_assert(::pressio::is_multi_vector_epetra<T>::value, "");
 
-  using vecTrait = pressio::traits<T>;
+  using vecTrait = pressio::Traits<T>;
   ::testing::StaticAssertTypeEq<typename
        vecTrait::scalar_type, double>();
 

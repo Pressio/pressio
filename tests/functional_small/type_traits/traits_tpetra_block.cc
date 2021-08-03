@@ -15,7 +15,7 @@ TEST(tpetra_block, VectorTraits)
 
   using T = Tpetra::BlockVector<ST, LO, GO, NT>;
   static_assert(pressio::is_vector_tpetra_block<T>::value,"");
-  using vecTrait = pressio::traits<T>;
+  using vecTrait = pressio::Traits<T>;
 
   ::testing::StaticAssertTypeEq<typename vecTrait::scalar_type, double>();
   ::testing::StaticAssertTypeEq<typename vecTrait::local_ordinal_type,int>();
@@ -45,7 +45,7 @@ TEST(tpetra_block, MVTraits)
   using T = Tpetra::BlockMultiVector<ST, LO, GO, NT>;
   static_assert(::pressio::is_multi_vector_tpetra_block<T>::value,"");
 
-  using mvecTrait = pressio::traits<T>;
+  using mvecTrait = pressio::Traits<T>;
   ::testing::StaticAssertTypeEq<typename mvecTrait::scalar_type, ST>();
   ::testing::StaticAssertTypeEq<typename mvecTrait::local_ordinal_type, LO>();
   ::testing::StaticAssertTypeEq<typename mvecTrait::global_ordinal_type, unsigned long>();

@@ -34,7 +34,7 @@ TEST(type_traits, TeuchosVector)
   using namespace pressio;
 
   using T = Teuchos::SerialDenseVector<int, double>;
-  using mytraits = pressio::traits<T>;
+  using mytraits = pressio::Traits<T>;
   static_assert(pressio::is_dense_vector_teuchos<T>::value,"");
 
   ::testing::StaticAssertTypeEq<typename mytraits::scalar_type, double>();
@@ -53,7 +53,7 @@ TEST(type_traits, TeuchosMatrix)
   using namespace pressio;
 
   using T = Teuchos::SerialDenseMatrix<long long, double>;
-  using mytraits = pressio::traits<T>;
+  using mytraits = pressio::Traits<T>;
   static_assert(pressio::is_dense_matrix_teuchos<T>::value,"");
 
   ::testing::StaticAssertTypeEq<typename mytraits::scalar_type, double>();

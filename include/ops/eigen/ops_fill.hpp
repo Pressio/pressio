@@ -53,9 +53,9 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen
   >
-fill(T & o, const typename traits<T>::scalar_type value)
+fill(T & o, const typename ::pressio::Traits<T>::scalar_type value)
 {
 	impl::get_native(o).setConstant(value);
 }

@@ -53,19 +53,19 @@ namespace pressio{ namespace ops{
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T0>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen
+  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen
   >
 dot(const T0 & vecA,
     const T1 & vecB,
-    typename ::pressio::traits<T0>::scalar_type & result)
+    typename ::pressio::Traits<T0>::scalar_type & result)
 {
   static_assert
     (::pressio::are_scalar_compatible<T0,T1>::value,
      "types are not scalar compatible");
 
   static_assert
-    (traits<T0>::rank==1 and traits<T1>::rank==1, 
+    (::pressio::Traits<T0>::rank==1 and ::pressio::Traits<T1>::rank==1, 
       "ops::dot only accepts vectors");
 
   assert((matching_extents<T0, T1>::compare(vecA, vecB)));
@@ -74,13 +74,13 @@ dot(const T0 & vecA,
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T0>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Eigen,
-  typename ::pressio::traits<T0>::scalar_type
+  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen,
+  typename ::pressio::Traits<T0>::scalar_type
   >
 dot(const T0 & vecA, const T1 & vecB)
 {
-  using sc_t = typename ::pressio::traits<T0>::scalar_type;
+  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
   sc_t result = {};
   dot(vecA, vecB, result);
   return result;

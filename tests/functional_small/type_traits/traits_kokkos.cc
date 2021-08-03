@@ -6,7 +6,7 @@ TEST(type_traits, eigen_dynamic_vector)
   using namespace pressio;
   using T = Kokkos::View<double*>;
 
-  using traits = pressio::traits<T>;
+  using traits = pressio::Traits<T>;
   static_assert(pressio::is_dynamic_vector_kokkos<T>::value, "" );
   static_assert(!pressio::is_static_vector_kokkos<T>::value, "" );
   static_assert(traits::is_static == 0, "" );
@@ -18,7 +18,7 @@ TEST(type_traits, eigen_static_vector)
   using namespace pressio;
   using T = Kokkos::View<double[5]>;
 
-  using traits = pressio::traits<T>;
+  using traits = pressio::Traits<T>;
   static_assert(!pressio::is_dynamic_vector_kokkos<T>::value, "" );
   static_assert(pressio::is_static_vector_kokkos<T>::value, "" );
   static_assert(traits::is_static == 1, "" );

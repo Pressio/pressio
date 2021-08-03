@@ -56,14 +56,14 @@ namespace pressio{
 // eigen dense matrix
 //***********************************
 template <typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_dense_matrix_eigen<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Eigen, true, 2>,
-    public matrix_shared_traits<false>
+  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+    public MatrixSharedTraits<false>
 {
 
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseEigen;
@@ -84,14 +84,14 @@ struct traits<
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <typename T>
-struct traits<
+struct Traits<
   T,
     ::pressio::mpl::enable_if_t<
       is_dense_matrix_kokkos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Kokkos, true, 2>,
-  public matrix_shared_traits<false>
+  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 2>,
+  public MatrixSharedTraits<false>
 {
 
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseKokkos;
@@ -129,14 +129,14 @@ struct traits<
 //**********************************
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS
 template<typename T>
-struct traits<
+struct Traits<
   T,
   mpl::enable_if_t<
     is_dense_matrix_teuchos<T>::value
     >
   >
-  : public containers_shared_traits<PackageIdentifier::Trilinos, true, 2>,
-    public matrix_shared_traits<false>
+  : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+    public MatrixSharedTraits<false>
 {
 
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::DenseTeuchosSerial;

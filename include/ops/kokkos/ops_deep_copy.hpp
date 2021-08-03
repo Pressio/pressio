@@ -53,8 +53,8 @@ namespace pressio{ namespace ops{
 
 template< typename T1, typename T2 >
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T1>::package_identifier == PackageIdentifier::Kokkos and
-  ::pressio::traits<T2>::package_identifier == PackageIdentifier::Kokkos
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Kokkos and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Kokkos
   >
 deep_copy(const T1 & dest, const T2 & src)
 {

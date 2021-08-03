@@ -53,7 +53,7 @@ namespace pressio{ namespace ops{
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra, T
+  ::pressio::Traits<T>::vector_identifier == pressio::VectorIdentifier::Epetra, T
   >
 clone(const T & clonable)
 {
@@ -62,7 +62,7 @@ clone(const T & clonable)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::matrix_identifier == pressio::VectorIdentifier::DenseEpetra, T
+  ::pressio::Traits<T>::matrix_identifier == pressio::VectorIdentifier::DenseEpetra, T
   >
 clone(const T & clonable)
 {
@@ -71,7 +71,7 @@ clone(const T & clonable)
 
 template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::traits<T>::matrix_identifier == pressio::VectorIdentifier::DenseEpetra, T
+  ::pressio::Traits<T>::matrix_identifier == pressio::VectorIdentifier::DenseEpetra, T
   >
 clone(const T & clonable)
 {
