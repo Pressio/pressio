@@ -123,7 +123,7 @@ std::string doRun()
   pressio::ops::set_zero(wlsState);
 
   //NL solver
-  auto GNSolver = pressio::solvers::nonlinear::createGaussNewton(
+  auto GNSolver = pressio::solvers::nonlinear::create_gauss_newton(
     wlsSystem, wlsState, linearSolver);
   GNSolver.setTolerance(1e-13);
   GNSolver.setMaxIterations(5);

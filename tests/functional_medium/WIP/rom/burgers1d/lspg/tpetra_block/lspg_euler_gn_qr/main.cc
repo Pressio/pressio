@@ -59,10 +59,10 @@ int main(int argc, char *argv[]){
     using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
     qr_solver_type qrSolver;
 
-    auto solver = pressio::rom::lspg::createGaussNewtonQRSolver(lspgProblem, yROM, qrSolver);
+    auto solver = pressio::rom::lspg::create_gauss_newtonQRSolver(lspgProblem, yROM, qrSolver);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
-    solver.setUpdatingCriterion(pressio::solvers::nonlinear::update::armijo);
+    solver.setUpdatingCriterion(pressio::solvers::nonlinear::Update::armijo);
 
     // solve
     pressio::rom::lspg::solveNSequentialMinimizations(lspgProblem, yROM, 0.0, dt, 10, solver);

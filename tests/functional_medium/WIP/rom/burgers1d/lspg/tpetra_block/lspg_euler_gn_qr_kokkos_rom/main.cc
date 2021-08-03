@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
     using rom_jac_t = typename decltype(lspgProblem)::traits::lspg_jacobian_t;
     using qr_solver_type = pressio::qr::QRSolver<rom_jac_t, pressio::qr::TSQR>;
     qr_solver_type qrSolver;
-    auto solver = pressio::rom::lspg::createGaussNewtonQRSolver(lspgProblem, yROM, qrSolver);
+    auto solver = pressio::rom::lspg::create_gauss_newtonQRSolver(lspgProblem, yROM, qrSolver);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 

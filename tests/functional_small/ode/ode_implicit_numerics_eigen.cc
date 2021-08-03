@@ -24,7 +24,7 @@ TEST(ode, implicit_euler_policy_default_created)
     linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
 
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(
     stepperObj,y,linSolverObj);
 
   ::pressio::ode::step_count_type nSteps = 2;
@@ -59,7 +59,7 @@ TEST(ode, implicit_euler_guesserLambda)
   using lin_solver_t = linearsolvers::Solver<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
 
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
   NonLinSolver.setMaxIterations(0);
 
   // integrate in time
@@ -103,7 +103,7 @@ TEST(ode, implicit_euler_custom_policy)
   //**********************
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(
       stepperObj,y,linSolverObj);
 
   // integrate in time
@@ -170,7 +170,7 @@ TEST(ode, implicit_euler_policy_default_created_custom_update)
       linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
 
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
   NonLinSolver.setMaxIterations(1);
 
   // integrate in time
@@ -205,7 +205,7 @@ TEST(ode, implicit_euler_guesserLambdaCustomUpdate)
   using lin_solver_t = linearsolvers::Solver<lin_algo_t, jac_t>;
   lin_solver_t linSolverObj;
 
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
   NonLinSolver.setMaxIterations(0);
 
   // integrate in time
@@ -252,7 +252,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
   using lin_solver_t = linearsolvers::Solver<
     linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
 
   // integrate in time
   ::pressio::ode::step_count_type nSteps = 4;
@@ -299,7 +299,7 @@ TEST(ode, implicit_bdf2_custom_policy)
   using lin_solver_t = linearsolvers::Solver<
     linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
-  auto NonLinSolver = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj,y,linSolverObj);
+  auto NonLinSolver = pressio::nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);
 
   // integrate in time
   ::pressio::ode::step_count_type nSteps = 4;

@@ -87,16 +87,16 @@ public:
   ~LMHessianGradientOperatorsRJApi() = default;
 
   template <
-    typename system_t,
-    typename state_t,
+    typename SystemType,
+    typename StateType,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value),
+      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value),
       int
       > = 0
     >
-  LMHessianGradientOperatorsRJApi(const system_t & system,
-                                  const state_t & state)
+  LMHessianGradientOperatorsRJApi(const SystemType & system,
+                                  const StateType & state)
     : HGOpRJApi_(system, state),
       lmH_(::pressio::ops::clone(HGOpRJApi_.hessianCRef()))
   {
@@ -104,18 +104,18 @@ public:
   }
 
   template <
-    typename system_t,
-    typename state_t,
+    typename SystemType,
+    typename StateType,
     typename ...ArgsIn,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value)
+      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value)
       and sizeof ...(ArgsIn) >= 1,
       int
       > = 0
     >
-  LMHessianGradientOperatorsRJApi(const system_t & system,
-				  const state_t & state,
+  LMHessianGradientOperatorsRJApi(const SystemType & system,
+				  const StateType & state,
 				  ArgsIn && ...args)
     : HGOpRJApi_(system, state, std::forward<ArgsIn>(args)...),
       lmH_(::pressio::ops::clone(HGOpRJApi_.hessianCRef()))
@@ -141,9 +141,9 @@ public:
     dampParam_ = pressio::utils::Constants<scalar_type>::one();
   }
 
-  template<typename system_t, typename state_t>
-  void computeOperators(const system_t & sys,
-			const state_t & state,
+  template<typename SystemType, typename StateType>
+  void computeOperators(const SystemType & sys,
+			const StateType & state,
 			scalar_type & residualNorm,
 			bool recomputeSystemJacobian=true)
   {
@@ -163,9 +163,9 @@ public:
     }
   }
 
-  template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system,
-		    const state_t & state,
+  template< typename SystemType, typename StateType>
+  void residualNorm(const SystemType & system,
+		    const StateType & state,
 		    scalar_type & residualNorm) const
   {
     HGOpRJApi_.residualNorm(system, state, residualNorm);

@@ -65,10 +65,10 @@ struct BaseUpdater
   BaseUpdater & operator=(BaseUpdater &&) = default;
   virtual ~BaseUpdater() = default;
 
-  template <class sys_t, class state_t, class solver_t>
-  void operator()(const sys_t & S,
-		  state_t & y,
-		  solver_t & solver)
+  template <class SystemType, class StateType, class SolverType>
+  void operator()(const SystemType & S,
+		  StateType & y,
+		  SolverType & solver)
   {
     (*applyFnc_)(this, &S, &y, &solver);
   }
@@ -79,17 +79,17 @@ struct BaseUpdater
   }
 };
 
-template <class sys_t, class state_t, class solver_t, class functor_t>
+template <class SystemType, class StateType, class SolverType, class FunctorType>
 class Updater : public BaseUpdater
 {
 public:
-  using functor_type = mpl::remove_cvref_t<functor_t>;
-  using system_type = sys_t;
-  using state_type = state_t;
-  using solver_type = solver_t;
+  using functor_type = mpl::remove_cvref_t<FunctorType>;
+  using system_type = SystemType;
+  using state_type = StateType;
+  using solver_type = SolverType;
 
 private:
-  pressio::utils::InstanceOrReferenceWrapper<functor_t> F_;
+  pressio::utils::InstanceOrReferenceWrapper<FunctorType> F_;
 
 public:
   template<class T>

@@ -22,7 +22,7 @@ void testC2(std::string & sentinel,
             state_t & x,
             solver & GNSolver)
 {
-  auto criterion = pressio::nonlinearsolvers::stop::whenGradientAbsoluteNormBelowTolerance;
+  auto criterion = pressio::nonlinearsolvers::Stop::whenGradientAbsoluteNormBelowTolerance;
   GNSolver.setStoppingCriterion(criterion);
   // 1e3 is chosen to test the convergence condition
   GNSolver.setTolerance(1e3);
@@ -40,7 +40,7 @@ void testC3(std::string & sentinel,
             state_t & x,
             solver & GNSolver)
 {
-  auto criterion = pressio::nonlinearsolvers::stop::whenGradientRelativeNormBelowTolerance;
+  auto criterion = pressio::nonlinearsolvers::Stop::whenGradientRelativeNormBelowTolerance;
   GNSolver.setStoppingCriterion(criterion);
   GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);
@@ -71,7 +71,7 @@ int main()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = nonlinearsolvers::createGaussNewton(problem,x,linSolver);
+  auto GNSolver = nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
   x(0) = 2.0; x(1) = 0.25;
   testC1(sentinel, problem, x, GNSolver);

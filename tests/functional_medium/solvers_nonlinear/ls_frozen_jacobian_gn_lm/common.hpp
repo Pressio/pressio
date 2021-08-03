@@ -173,14 +173,14 @@ struct MySolverQR
   }  
 };
 
-namespace pressio{ namespace qr{  namespace details{ 
+namespace pressio{ 
 
 template<>
-struct traits<MySolverQR>{
+struct Traits<MySolverQR>{
   using matrix_t = mat_type;  
   using concrete_t = double;  
 };
-}}}
+}
 
 #endif
 

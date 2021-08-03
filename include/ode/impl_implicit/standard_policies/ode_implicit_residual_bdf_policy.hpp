@@ -95,7 +95,7 @@ public:
 						   dt, ode_tag());
     }
     catch (::pressio::eh::velocity_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 };

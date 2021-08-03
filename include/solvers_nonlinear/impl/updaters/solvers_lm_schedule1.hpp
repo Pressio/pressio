@@ -53,12 +53,12 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename state_t, class scalarType>
+template<typename StateType, class ScalarType>
 class LMSchedule1Updater
 {
-  using scalar_type = scalarType;
+  using scalar_type = ScalarType;
 
-  LMGainFactor<state_t, scalar_type> gainFactorEval_;
+  LMGainFactor<StateType, scalar_type> gainFactorEval_;
 
   using cnst		   = pressio::utils::Constants<scalar_type>;
   const scalar_type beta_     = cnst::two();
@@ -75,7 +75,7 @@ public:
   LMSchedule1Updater & operator=(LMSchedule1Updater &&) = default;
   ~LMSchedule1Updater() = default;
 
-  LMSchedule1Updater(const state_t & state)
+  LMSchedule1Updater(const StateType & state)
     : gainFactorEval_(state){}
 
 public:
@@ -85,10 +85,10 @@ public:
     gainFactorEval_.resetForNewCall();
   }
 
-  template<typename system_t, typename solver_mixin_t>
-  void operator()(const system_t & sys,
-		   state_t & state,
-		   solver_mixin_t & solver)
+  template<typename SystemType, typename SolverMixinType>
+  void operator()(const SystemType & sys,
+		   StateType & state,
+		   SolverMixinType & solver)
   {
     PRESSIOLOG_DEBUG("nonlinsolver: lm1 update");
     constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();

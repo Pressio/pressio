@@ -26,9 +26,9 @@ bool test1()
 
   using qr_solver_type = qr::QRSolver<mat_type, qr::TSQR>;
   qr_solver_type qrSolver;
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewtonQR(problem,x,qrSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,x,qrSolver);
 
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
@@ -59,9 +59,9 @@ bool test2()
 
   using qr_solver_type = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_type qrSolver;
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewtonQR(problem,x,qrSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,x,qrSolver);
 
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;

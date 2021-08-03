@@ -113,17 +113,17 @@ public:
   ~WeightedHessianGradientOperatorsRJApi() = default;
 
   template <
-    typename system_t,
-    typename state_t,
+    typename SystemType,
+    typename StateType,
     typename _weigh_t,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value),
+      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value),
       int
       > = 0
     >
-  WeightedHessianGradientOperatorsRJApi(const system_t & system,
-					const state_t & state,
+  WeightedHessianGradientOperatorsRJApi(const SystemType & system,
+					const StateType & state,
 					_weigh_t && functorM)
   : r_(system.createResidual()),
     Mr_(::pressio::ops::clone(r_)),
@@ -143,19 +143,19 @@ public:
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   template <
-//     typename system_t,
-//     typename state_t,
+//     typename SystemType,
+//     typename StateType,
 //     typename _weigh_t = weighting_functor_t,
 //     mpl::enable_if_t<
-//       (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-//        ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value)
+//       (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
+//        ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value)
 //       and std::is_same<_weigh_t,
 // 		       ::pressio::nonlinearsolvers::impl::IrwWeightingOperator<ResidualType, JacobianType>
 // 		       >::value
 //       , int > = 0
 //     >
-//   WeightedHessianGradientOperatorsRJApi(const system_t & system,
-// 					const state_t & state,
+//   WeightedHessianGradientOperatorsRJApi(const SystemType & system,
+// 					const StateType & state,
 // 					scalar_type pValue)
 //   : r_(system.createResidual()),
 //     Mr_(::pressio::ops::clone(r_)),
@@ -203,12 +203,12 @@ public:
     throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value
     >
-  computeOperators(const system_t & system,
-		   const state_t & state,
+  computeOperators(const SystemType & system,
+		   const StateType & state,
 		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
@@ -223,7 +223,7 @@ public:
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
 
     if (recomputeSystemJacobian){
@@ -236,12 +236,12 @@ public:
     _computeGradient();
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value
     >
-  computeOperators(const system_t & system,
-		   const state_t & state,
+  computeOperators(const SystemType & system,
+		   const StateType & state,
 		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
@@ -253,7 +253,7 @@ public:
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
 
     if (recomputeSystemJacobian){
@@ -265,12 +265,12 @@ public:
     _computeGradient();
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value
     >
-  residualNorm(const system_t & system,
-	       const state_t & state,
+  residualNorm(const SystemType & system,
+	       const StateType & state,
 	       scalar_type & residualNorm) const
   {
     system.residual(state, r_);
@@ -278,16 +278,16 @@ public:
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value
     >
-  residualNorm(const system_t & system,
-	       const state_t & state,
+  residualNorm(const SystemType & system,
+	       const StateType & state,
 	       scalar_type & residualNorm) const
   {
     // here we query system to recompute r_ only (that is why we pass false)
@@ -296,7 +296,7 @@ public:
     residualNorm = this->_computeNorm();
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
   }
 

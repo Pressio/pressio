@@ -53,9 +53,9 @@ namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
 template <
   typename T,
-  typename state_t,
-  typename grad_t,
-  typename norm_t,
+  typename StateType,
+  typename GradientType,
+  typename NormType,
   typename = void
   >
 struct has_const_gradient_method_accept_state_result_norm_return_void
@@ -63,20 +63,20 @@ struct has_const_gradient_method_accept_state_result_norm_return_void
 
 template <
   typename T,
-  typename state_t,
-  typename grad_t,
-  typename norm_t
+  typename StateType,
+  typename GradientType,
+  typename NormType
   >
 struct has_const_gradient_method_accept_state_result_norm_return_void<
-  T, state_t, grad_t, norm_t,
+  T, StateType, GradientType, NormType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().gradient(
-            std::declval<state_t const &>(),
-            std::declval<grad_t &>(),
+            std::declval<StateType const &>(),
+            std::declval<GradientType &>(),
             ::pressio::Norm::Undefined,
-            std::declval<norm_t &>(),
+            std::declval<NormType &>(),
 	    std::declval<bool>()
             )
          )

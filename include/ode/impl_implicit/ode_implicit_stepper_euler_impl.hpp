@@ -220,7 +220,7 @@ private:
     try{
       solver.solve(*this, odeSolution, std::forward<Args>(args)...);
     }
-    catch (::pressio::eh::nonlinear_solve_failure const & e)
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
     {
       // the state before attempting solution was stored in y_n-1,
       // so revert odeSolution to that

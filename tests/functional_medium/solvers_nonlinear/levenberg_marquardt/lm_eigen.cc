@@ -50,8 +50,8 @@ int main()
   {
     x0(0) = 0.5;
     x0(1) = -2.;
-    auto solver = pressio::nonlinearsolvers::createLevenbergMarquardt(sys, x0, linSolverObj);
-    solver.setUpdatingCriterion(pressio::nonlinearsolvers::update::LMSchedule1);
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
+    solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule1);
     solver.setTolerance(1e-15);
     solver.solve(sys, x0);
   }
@@ -61,9 +61,9 @@ int main()
   {
     x1(0) = 0.5;
     x1(1) = -2.;
-    auto solver = pressio::nonlinearsolvers::createLevenbergMarquardt(sys, x0, linSolverObj);
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
     solver.setTolerance(1e-15);
-    solver.setUpdatingCriterion(pressio::nonlinearsolvers::update::LMSchedule2);
+    solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule2);
     solver.solve(sys, x1);
   }
 
@@ -74,9 +74,9 @@ int main()
   vector_t x2a(2);
   vector_t x2b(2);
   {
-    auto solver = pressio::nonlinearsolvers::createLevenbergMarquardt(sys, x0, linSolverObj);
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sys, x0, linSolverObj);
     solver.setMaxIterations(4);
-    solver.setUpdatingCriterion(pressio::nonlinearsolvers::update::LMSchedule1);
+    solver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::LMSchedule1);
 
     x2a(0) = 0.5; x2a(1) = -2.;
     solver.solve(sys, x2a);

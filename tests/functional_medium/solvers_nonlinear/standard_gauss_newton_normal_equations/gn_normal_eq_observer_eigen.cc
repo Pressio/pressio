@@ -84,8 +84,8 @@ int main()
   state_t x(4);
   x(0)=1.0; x(1)=2.; x(2)=3.; x(3)=4.;
 
-  auto solver = nonlinearsolvers::createGaussNewton(problem, x, FakeLinS<hessian_t>{});
-  auto criterion = nonlinearsolvers::stop::afterMaxIters;
+  auto solver = nonlinearsolvers::create_gauss_newton(problem, x, FakeLinS<hessian_t>{});
+  auto criterion = nonlinearsolvers::Stop::afterMaxIters;
   solver.setStoppingCriterion(criterion);
   solver.setMaxIterations(3);
   Observer myO(sentinel);

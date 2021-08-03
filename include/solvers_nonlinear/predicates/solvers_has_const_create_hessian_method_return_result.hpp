@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
-template<typename T, typename h_t, typename enable = void>
+template<typename T, typename HessianType, typename enable = void>
 struct has_const_create_hessian_method_return_result : std::false_type{};
 
-template<typename T, typename h_t>
+template<typename T, typename HessianType>
 struct has_const_create_hessian_method_return_result
-<T, h_t,
+<T, HessianType,
  ::pressio::mpl::enable_if_t<
    ::pressio::mpl::is_same<
-     h_t,
+     HessianType,
      decltype( std::declval<T const>().createHessian() )
      >::value
    >

@@ -21,7 +21,7 @@ int main()
   using lin_solver_t = linearsolvers::Solver<lin_tag, hessian_t>;
   lin_solver_t linSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewton(problem,x,linSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
   GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);

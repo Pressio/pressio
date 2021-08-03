@@ -58,9 +58,5 @@ struct GaussNewtonQR{};
 struct LevenbergMarquardt{};
 using LM = LevenbergMarquardt;
 
-#ifdef PRESSIO_ENABLE_TPL_PYBIND11
-struct GaussNewtonPy{};
-#endif
-
 }}
 #endif  // SOLVERS_NONLINEAR_SOLVERS_NONLINEAR_TAGS_HPP_

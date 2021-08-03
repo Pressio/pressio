@@ -70,15 +70,15 @@ public:
   ~HessianGradientOperatorsHGApi() = default;
 
   template <
-   typename system_t, typename state_t,
+   typename SystemType, typename StateType,
     mpl::enable_if_t<
-      ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value or
-      ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value,
+      ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<SystemType>::value or
+      ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<SystemType>::value,
       int
      > = 0
   >
-  HessianGradientOperatorsHGApi(const system_t & system, 
-                                const state_t & state)
+  HessianGradientOperatorsHGApi(const SystemType & system, 
+                                const StateType & state)
     : g_(system.createGradient()),
       H_(system.createHessian())
   {
@@ -103,20 +103,20 @@ public:
     throw std::runtime_error("GN HessGrad operators do not have parameters");
   }
 
-  template< typename system_t, typename state_t>
-  void residualNorm(const system_t & system,
-		    const state_t & state,
+  template< typename SystemType, typename StateType>
+  void residualNorm(const SystemType & system,
+		    const StateType & state,
 		    scalar_type & residualNorm) const
   {
     system.residualNorm(state, ::pressio::Norm::L2, residualNorm);
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_hessian_gradient<SystemType>::value
     >
-  computeOperators(const system_t & sys,
-		   const state_t & state,
+  computeOperators(const SystemType & sys,
+		   const StateType & state,
 		   scalar_type & residualNormOut,
 		   bool recomputeSystemJacobian = true)
   {
@@ -132,12 +132,12 @@ public:
     ::pressio::ops::scale(g_, ::pressio::utils::Constants<scalar_type>::negOne());
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_fused_hessian_gradient<SystemType>::value
     >
-  computeOperators(const system_t & sys,
-		   const state_t & state,
+  computeOperators(const SystemType & sys,
+		   const StateType & state,
 		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {

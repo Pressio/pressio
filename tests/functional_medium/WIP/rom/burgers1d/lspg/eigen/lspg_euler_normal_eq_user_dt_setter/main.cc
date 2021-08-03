@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
   linear_solver_t linSolverObj;
 
   // GaussNewton solver with normal equations
-  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::create_gauss_newtonSolver(lspgProblem, yROM, linSolverObj);
   solver.setTolerance(1e-13);
   // I know this should converge in few iters every step
   solver.setMaxIterations(4);

@@ -53,16 +53,16 @@
 
 namespace pressio{ namespace eh{
 
-class nonlinear_solve_failure
+class NonlinearSolveFailure
   : public std::exception
 {
   std::string myerr_ = "Nonlinear solve failed";
   std::string append_ = {};
 
 public:
-  nonlinear_solve_failure() = default;
+  NonlinearSolveFailure() = default;
 
-  explicit nonlinear_solve_failure(const std::string & append)
+  explicit NonlinearSolveFailure(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }
@@ -72,16 +72,16 @@ public:
    }
 };
 
-class residual_evaluation_failure_unrecoverable
+class ResidualEvaluationFailureUnrecoverable
   : public std::exception
 {
   std::string myerr_ = "Residual evaluation failed";
   std::string append_ = {};
 
 public:
-  residual_evaluation_failure_unrecoverable() = default;
+  ResidualEvaluationFailureUnrecoverable() = default;
 
-  explicit residual_evaluation_failure_unrecoverable(const std::string & append)
+  explicit ResidualEvaluationFailureUnrecoverable(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }
@@ -91,16 +91,16 @@ public:
    }
 };
 
-class residual_has_nans
+class ResidualHasNans
   : public std::exception
 {
   std::string myerr_ = "NaNs found in residual";
   std::string append_ = {};
 
 public:
-  residual_has_nans() = default;
+  ResidualHasNans() = default;
 
-  explicit residual_has_nans(const std::string & append)
+  explicit ResidualHasNans(const std::string & append)
     : append_{append}{
     myerr_ += append_;
   }

@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
-template<typename T, typename res_t, typename enable = void>
+template<typename T, typename ResidualType, typename Enable = void>
 struct has_const_create_residual_method_return_result : std::false_type{};
 
-template<typename T, typename res_t>
+template<typename T, typename ResidualType>
 struct has_const_create_residual_method_return_result
-<T, res_t,
+<T, ResidualType,
  ::pressio::mpl::enable_if_t<
    ::pressio::mpl::is_same<
-     res_t,
+     ResidualType,
      decltype( std::declval<T const>().createResidual() )
      >::value
    >

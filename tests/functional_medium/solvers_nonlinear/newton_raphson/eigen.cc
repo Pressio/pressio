@@ -51,7 +51,7 @@ int main()
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::LSCG, jacobian_t>;
   lin_solver_t linearSolverObj;
 
-  auto NonLinSolver = nonlinearsolvers::createNewtonRaphson(sys, y, linearSolverObj);
+  auto NonLinSolver = nonlinearsolvers::create_newton_raphson(sys, y, linearSolverObj);
   NonLinSolver.solve(sys, y);
 
   std::string strOut = "PASSED";

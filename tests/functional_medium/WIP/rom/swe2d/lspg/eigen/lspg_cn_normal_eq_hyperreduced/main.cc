@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
   linear_solver_t linSolverObj;
 
   // GaussNewton solver with normal equations
-  auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
+  auto solver = pressio::rom::lspg::create_gauss_newtonSolver(lspgProblem, yROM, linSolverObj);
   auto Nsteps = static_cast<::pressio::ode::step_type>(et/dt);
   solver.setTolerance(1e-13);
   solver.setMaxIterations(100);

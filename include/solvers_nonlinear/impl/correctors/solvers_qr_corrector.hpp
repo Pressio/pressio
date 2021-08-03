@@ -71,15 +71,15 @@ private:
 public:
   QRCorrector() = delete;
 
-  template <typename system_t, typename qrs_t>
-  QRCorrector(const system_t & system,
+  template <typename SystemType, typename qrsT>
+  QRCorrector(const SystemType & system,
 	      const state_type & state,
-	      qrs_t && solverObj)
+	      qrsT && solverObj)
     : T(system, state),
       correction_(::pressio::ops::clone(state)),
       QTResid_(::pressio::ops::clone(state)),
       g_(::pressio::ops::clone(state)),
-      solverObj_(std::forward<qrs_t>(solverObj))
+      solverObj_(std::forward<qrsT>(solverObj))
   {
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     ::pressio::ops::fill(correction_, zero);
@@ -87,12 +87,12 @@ public:
     ::pressio::ops::fill(g_, zero);
   }
 
-  // template <typename system_t, typename qrs_t>
-  // QRCorrector(const system_t & system,
+  // template <typename SystemType, typename qrsT>
+  // QRCorrector(const SystemType & system,
 	 //      const state_wrapped_t & state,
-	 //      qrs_t && solverObj)
+	 //      qrsT && solverObj)
   //   : QRCorrector(system, state_type(state),
-		//   std::forward<qrs_t>(solverObj))
+		//   std::forward<qrsT>(solverObj))
   // {}
 
   QRCorrector(QRCorrector const &) = default;
@@ -102,8 +102,8 @@ public:
   ~QRCorrector() = default;
 
 public:
-  template <typename system_t>
-  void computeCorrection(const system_t & sys,
+  template <typename SystemType>
+  void computeCorrection(const SystemType & sys,
 			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {

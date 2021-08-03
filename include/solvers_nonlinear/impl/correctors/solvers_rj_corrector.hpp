@@ -68,8 +68,8 @@ private:
 public:
   RJCorrector() = delete;
 
-  template <typename system_t, typename lsT, typename ...Args>
-  RJCorrector(const system_t & system,
+  template <typename SystemType, typename lsT, typename ...Args>
+  RJCorrector(const SystemType & system,
 	      const state_type & state,
 	      lsT && solverIn,
 	      Args && ... args)
@@ -81,8 +81,8 @@ public:
     ::pressio::ops::fill(correction_, zero);
   }
 
-  // template <typename system_t, typename lsT, typename ...Args>
-  // RJCorrector(const system_t & system,
+  // template <typename SystemType, typename lsT, typename ...Args>
+  // RJCorrector(const SystemType & system,
 	 //      const state_wrapped_t & state,
 	 //      lsT && solverIn,
 	 //      Args && ... args)
@@ -99,8 +99,8 @@ public:
   ~RJCorrector() = default;
 
 public:
-  template <typename system_t>
-  void computeCorrection(const system_t & sys,
+  template <typename SystemType>
+  void computeCorrection(const SystemType & sys,
 			 state_type & state,
 			 bool recomputeSystemJacobian = true)
   {

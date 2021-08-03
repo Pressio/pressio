@@ -53,10 +53,10 @@ namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
 template <
   typename T,
-  typename state_t,
-  typename hess_t,
-  typename grad_t,
-  typename norm_t,
+  typename StateType,
+  typename HessianType,
+  typename GradientType,
+  typename NormType,
   typename = void
   >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void
@@ -64,24 +64,24 @@ struct has_const_hessianandgradient_method_accept_state_result_norm_return_void
 
 template <
   typename T,
-  typename state_t,
-  typename hess_t,
-  typename grad_t,
-  typename norm_t
+  typename StateType,
+  typename HessianType,
+  typename GradientType,
+  typename NormType
   >
 struct has_const_hessianandgradient_method_accept_state_result_norm_return_void<
-  T, state_t, hess_t, grad_t, norm_t,
+  T, StateType, HessianType, GradientType, NormType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().hessianAndGradient
           (
-            std::declval<state_t const &>(),
-            std::declval<hess_t &>(),
-            std::declval<grad_t &>(),
+            std::declval<StateType const &>(),
+            std::declval<HessianType &>(),
+            std::declval<GradientType &>(),
             /* does not matter here what we pass, just to test */
             ::pressio::Norm::Undefined,
-            std::declval<norm_t &>(),
+            std::declval<NormType &>(),
 	    std::declval<bool>()
           )
          )

@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
     linear_solver_t linSolverObj;
 
     // GaussNewton solver
-    auto solver = pressio::rom::lspg::createGaussNewtonSolver(lspgProblem, yROM, linSolverObj);
+    auto solver = pressio::rom::lspg::create_gauss_newtonSolver(lspgProblem, yROM, linSolverObj);
     solver.setTolerance(1e-13);
     solver.setMaxIterations(4);
 

@@ -53,8 +53,8 @@ namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
   
 template <
   typename T,
-  typename state_t,
-  typename hess_t,
+  typename StateType,
+  typename HessianType,
   typename = void
   >
 struct has_const_hessian_method_accept_state_result_return_void
@@ -62,17 +62,17 @@ struct has_const_hessian_method_accept_state_result_return_void
 
 template <
   typename T,
-  typename state_t,
-  typename hess_t
+  typename StateType,
+  typename HessianType
   >
 struct has_const_hessian_method_accept_state_result_return_void<
-  T, state_t, hess_t, 
+  T, StateType, HessianType, 
   mpl::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().hessian(
-            std::declval<state_t const &>(),
-            std::declval<hess_t &>()
+            std::declval<StateType const &>(),
+            std::declval<HessianType &>()
             )
          )
       >::value

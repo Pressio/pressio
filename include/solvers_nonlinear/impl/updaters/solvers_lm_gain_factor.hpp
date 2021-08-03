@@ -51,12 +51,12 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template<typename state_t, class scalarType>
+template<typename StateType, class ScalarType>
 class LMGainFactor
 {
-  using scalar_type = scalarType;
-  state_t cDiagH_; // = h * diag(J^T J)
-  state_t trialState_;
+  using scalar_type = ScalarType;
+  StateType cDiagH_; // = h * diag(J^T J)
+  StateType trialState_;
 
 public:
   LMGainFactor(LMGainFactor const &) = default;
@@ -65,7 +65,7 @@ public:
   LMGainFactor & operator=(LMGainFactor &&) = default;
   ~LMGainFactor() = default;
 
-  LMGainFactor(const state_t & state)
+  LMGainFactor(const StateType & state)
     : cDiagH_(::pressio::ops::clone(state)), 
       trialState_(::pressio::ops::clone(state))
   {
@@ -81,11 +81,11 @@ public:
     ::pressio::ops::fill(trialState_, zero);
   }
 
-  template<typename system_t, typename solver_mixin_t>
-  scalar_type compute(const system_t & system,
-		   state_t & state,
+  template<typename SystemType, typename SolverMixinType>
+  scalar_type compute(const SystemType & system,
+		   StateType & state,
 		   const scalar_type & mu,
-		   solver_mixin_t & solverObj)
+		   SolverMixinType & solverObj)
   {
     constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
     constexpr auto one  = ::pressio::utils::Constants<scalar_type>::one();

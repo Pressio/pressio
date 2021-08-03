@@ -51,7 +51,7 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-enum class stop
+enum class Stop
   {
    whenCorrectionAbsoluteNormBelowTolerance, // this is the default
    whenCorrectionRelativeNormBelowTolerance,
@@ -62,7 +62,7 @@ enum class stop
    afterMaxIters
   };
 
-enum class update
+enum class Update
   {
    standard, // default
    armijo,

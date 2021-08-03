@@ -28,7 +28,7 @@ TEST(solvers_nonlinear, tolerances)
   using lin_solver_t = pressio::linearsolvers::Solver<
     pressio::linearsolvers::iterative::LSCG, typename MySystem::jacobian_type>;
   lin_solver_t linearSolverObj;
-  auto solver = pressio::nonlinearsolvers::createNewtonRaphson(sysObj, y, linearSolverObj);
+  auto solver = pressio::nonlinearsolvers::create_newton_raphson(sysObj, y, linearSolverObj);
 
   // if we don't specify anything, the tolerance should be defaulted to 0.000001
   const double defaultTol = 0.000001;

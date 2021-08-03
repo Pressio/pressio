@@ -84,33 +84,33 @@ void resetUpdater(BaseUpdater* updater)
 /*
   GaussNewton only admits: standard, armijo
 */
-template<class solver_t, class system_t, typename state_t>
+template<class SolverType, class SystemType, typename StateType>
 mpl::enable_if_t<
-  std::is_same<typename solver_t::solver_tag, GaussNewton>::value or
-  std::is_same<typename solver_t::solver_tag, GaussNewtonQR>::value,
+  std::is_same<typename SolverType::solver_tag, GaussNewton>::value or
+  std::is_same<typename SolverType::solver_tag, GaussNewtonQR>::value,
   std::unique_ptr<BaseUpdater>
   >
-createUpdater(const state_t & state,
-	      ::pressio::nonlinearsolvers::update updateE)
+createUpdater(const StateType & state,
+	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename system_t::scalar_type;
+  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
-    case update::standard:{
+    case Update::standard:{
       using f_t = DefaultUpdater<scalar_t>;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
 
-    case update::armijo:{
-      using f_t = ArmijoUpdater<state_t, scalar_t>;
+    case Update::armijo:{
+      using f_t = ArmijoUpdater<StateType, scalar_t>;
       f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;
@@ -126,42 +126,42 @@ createUpdater(const state_t & state,
 /*
    Levenberg-Mqrquardt: standard, LM1, LM2
 */
-template<typename solver_t, typename system_t, typename state_t>
+template<typename solver_t, typename SystemType, typename StateType>
 mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, LevenbergMarquardt>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const state_t & state,
-	      ::pressio::nonlinearsolvers::update updateE)
+createUpdater(const StateType & state,
+	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename system_t::scalar_type;
+  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
-    case update::standard:{
+    case Update::standard:{
       using f_t = DefaultUpdater<scalar_t>;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
 
-    case update::LMSchedule1:{
-      using f_t = LMSchedule1Updater<state_t, scalar_t>;
+    case Update::LMSchedule1:{
+      using f_t = LMSchedule1Updater<StateType, scalar_t>;
       f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;
       return result;
     }
 
-    case update::LMSchedule2:{
-      using f_t = LMSchedule2Updater<state_t, scalar_t>;
+    case Update::LMSchedule2:{
+      using f_t = LMSchedule2Updater<StateType, scalar_t>;
       f_t F(state);
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(std::move(F));
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;
@@ -177,22 +177,22 @@ createUpdater(const state_t & state,
 /*
    Newton-Raphson admits: standard
 */
-template<typename solver_t, typename system_t, typename state_t>
+template<typename solver_t, typename SystemType, typename StateType>
 mpl::enable_if_t<
   std::is_same<typename solver_t::solver_tag, NewtonRaphson>::value,
   std::unique_ptr<impl::BaseUpdater>
   >
-createUpdater(const state_t & state,
-	      ::pressio::nonlinearsolvers::update updateE)
+createUpdater(const StateType & state,
+	      ::pressio::nonlinearsolvers::Update updateE)
 {
   using res_t = std::unique_ptr<BaseUpdater>;
-  using scalar_t = typename system_t::scalar_type;
+  using scalar_t = typename SystemType::scalar_type;
 
   switch (updateE)
     {
-    case update::standard:{
+    case Update::standard:{
       using f_t = DefaultUpdater<scalar_t>;
-      using u_t = Updater<system_t, state_t, solver_t, f_t>;
+      using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
       result->applyFnc_ = applyUpdater<u_t>;
       result->resetFnc_ = resetUpdater<u_t>;

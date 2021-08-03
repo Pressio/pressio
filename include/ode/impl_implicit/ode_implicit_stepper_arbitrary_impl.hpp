@@ -184,7 +184,7 @@ public:
     try{
       solver.solve(*this, odeState, std::forward<Args>(args)...);
     }
-    catch (::pressio::eh::nonlinear_solve_failure const & e)
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
     {
       rollBackStates<numAuxStates>(odeState);
       throw ::pressio::eh::time_step_failure();

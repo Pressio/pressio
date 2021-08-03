@@ -30,7 +30,7 @@ bool test1()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewton(problem,x,linSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
@@ -63,9 +63,9 @@ bool test2()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewton(problem,x,linSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
 
@@ -98,7 +98,7 @@ bool test3()
   using linear_solver_t = linearsolvers::Solver<solver_tag, hessian_t>;
   linear_solver_t linSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewton(problem,x,linSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);

@@ -166,7 +166,7 @@ private:
 					*yn.data());
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 
@@ -201,7 +201,7 @@ private:
 
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 

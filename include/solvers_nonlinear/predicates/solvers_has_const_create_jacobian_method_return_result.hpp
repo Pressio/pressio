@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
-template<typename T, typename jac_t, typename enable = void>
+template<typename T, typename JacobianType, typename enable = void>
 struct has_const_create_jacobian_method_return_result : std::false_type{};
 
-template<typename T, typename jac_t>
+template<typename T, typename JacobianType>
 struct has_const_create_jacobian_method_return_result
-<T, jac_t,
+<T, JacobianType,
  ::pressio::mpl::enable_if_t<
    ::pressio::mpl::is_same<
-     jac_t,
+     JacobianType,
      decltype( std::declval<T const>().createJacobian() )
      >::value
    >

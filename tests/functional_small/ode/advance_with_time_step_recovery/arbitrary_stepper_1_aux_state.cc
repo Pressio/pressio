@@ -129,8 +129,8 @@ struct MyFakeSolver
 	state(1) += 0.2;
 	state(2) += 0.3;
       }
-      catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e){
-	throw ::pressio::eh::nonlinear_solve_failure();
+      catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e){
+	throw ::pressio::eh::NonlinearSolveFailure();
       }
     }
   }

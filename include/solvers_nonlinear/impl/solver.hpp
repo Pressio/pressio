@@ -122,11 +122,11 @@ private:
   std::array<sc_type, 6> tolerances_ = {};
 
   // updating criterion enum
-  update updatingE_ = update::standard;
+  Update updatingE_ = Update::standard;
   std::unique_ptr<impl::BaseUpdater> updater_ = nullptr;
 
   // stopping creterion enum
-  stop stoppingE_   = stop::whenCorrectionAbsoluteNormBelowTolerance;
+  Stop stoppingE_   = Stop::whenCorrectionAbsoluteNormBelowTolerance;
 
   // size of system object is used to check if system changes
   // this might not be a great solution, but we will work on this
@@ -152,8 +152,8 @@ public:
   template <typename SystemType, typename StateType, typename ...Args>
   Solver(const SystemType & system,
 	 const StateType & state,
-	 stop stoppingE,
-	 update updatingE,
+	 Stop stoppingE,
+	 Update updatingE,
 	 Args &&... args)
     : T(system, state, std::forward<Args>(args)...)
     , updatingE_(updatingE)
@@ -167,8 +167,8 @@ public:
 	 const StateType & state,
 	 Args &&... args)
     : Solver(system, state,
-	     stop::whenCorrectionAbsoluteNormBelowTolerance,
-	     update::standard,
+	     Stop::whenCorrectionAbsoluteNormBelowTolerance,
+	     Update::standard,
 	     std::forward<Args>(args)...)
   {}
 
@@ -212,21 +212,21 @@ public:
   }
 
   // *** set or query updatating criterion ***
-  void setUpdatingCriterion(update value){
+  void setUpdatingCriterion(Update value){
     updatingE_ = value;
     // set 0 to indicate it needs to be constructed
     sizeOfSystemObj_ = 0;
   }
 
-  update updatingCriterion() const{
+  Update updatingCriterion() const{
     return updatingE_;
   }
 
   // *** set or query stopping criterion ***
-  void setStoppingCriterion(stop value){
+  void setStoppingCriterion(Stop value){
     stoppingE_ = value;
   }
-  stop stoppingCriterion() const{
+  Stop stoppingCriterion() const{
     return stoppingE_;
   }
 
@@ -284,7 +284,7 @@ public:
     // we don't know if the updater changes or not
 
     PRESSIOLOG_INFO("nonlinsolver: custom updater");
-    updatingE_ = ::pressio::nonlinearsolvers::update::custom;
+    updatingE_ = ::pressio::nonlinearsolvers::Update::custom;
 
     using u_t =
       mpl::conditional_t<
@@ -365,15 +365,15 @@ private:
       try{
 	T::computeCorrection(system, state, recomputeSystemJacobian);
       }
-      catch (::pressio::eh::residual_evaluation_failure_unrecoverable const &e)
+      catch (::pressio::eh::ResidualEvaluationFailureUnrecoverable const &e)
       {
 	PRESSIOLOG_CRITICAL(e.what());
-	throw ::pressio::eh::nonlinear_solve_failure();
+	throw ::pressio::eh::NonlinearSolveFailure();
       }
-      catch (::pressio::eh::residual_has_nans const &e)
+      catch (::pressio::eh::ResidualHasNans const &e)
       {
 	PRESSIOLOG_CRITICAL(e.what());
-	throw ::pressio::eh::nonlinear_solve_failure();
+	throw ::pressio::eh::NonlinearSolveFailure();
       }
 
       // 2.
@@ -397,13 +397,13 @@ private:
       }
 
       if (T::hasGradientComputation()){
-	impl::printMetrics
+	impl::print_metrics
 	  (iStep_, printStrippedMetrics_,
 	   norms_[0], norms_[1], norms_[2],
 	   norms_[3], norms_[4], norms_[5]);
       }
       else{
-	impl::printMetrics
+	impl::print_metrics
 	  (iStep_, printStrippedMetrics_,
 	   norms_[0], norms_[1], norms_[2], norms_[3]);
       }
@@ -428,22 +428,22 @@ private:
   {
     switch (stoppingE_)
       {
-      case stop::afterMaxIters:
+      case Stop::afterMaxIters:
     	return iStep == iterative_base_type::maxIters_;
 
-      case stop::whenCorrectionAbsoluteNormBelowTolerance:
+      case Stop::whenCorrectionAbsoluteNormBelowTolerance:
     	return norms_[0] < tolerances_[0];
-      case stop::whenCorrectionRelativeNormBelowTolerance:
+      case Stop::whenCorrectionRelativeNormBelowTolerance:
     	return norms_[1] < tolerances_[1];
 
-      case stop::whenResidualAbsoluteNormBelowTolerance:
+      case Stop::whenResidualAbsoluteNormBelowTolerance:
     	return norms_[2] < tolerances_[2];
-      case stop::whenResidualRelativeNormBelowTolerance:
+      case Stop::whenResidualRelativeNormBelowTolerance:
     	return norms_[3] < tolerances_[3];
 
-      case stop::whenGradientAbsoluteNormBelowTolerance:
+      case Stop::whenGradientAbsoluteNormBelowTolerance:
     	return norms_[4] < tolerances_[4];
-      case stop::whenGradientRelativeNormBelowTolerance:
+      case Stop::whenGradientRelativeNormBelowTolerance:
     	return norms_[5] < tolerances_[5];
 
       default:

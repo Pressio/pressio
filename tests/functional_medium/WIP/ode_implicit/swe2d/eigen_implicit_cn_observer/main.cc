@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
   observer<ode_state_t> Obs;
 
   auto NonLinSolver=
-    pressio::solvers::nonlinear::createNewtonRaphson(stepperObj, y,linSolverObj);
+    pressio::solvers::nonlinear::create_newton_raphson(stepperObj, y,linSolverObj);
   NonLinSolver.setTolerance(1e-11);
   // integrate in time
   auto Nsteps = static_cast<::pressio::ode::step_type>(et/dt);

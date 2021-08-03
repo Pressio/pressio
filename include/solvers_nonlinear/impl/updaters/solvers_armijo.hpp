@@ -51,11 +51,11 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
-template <typename state_t, class scalar_t>
+template <typename StateType, class ScalarType>
 class ArmijoUpdater
 {
-  state_t trialState_;
-  const scalar_t beta_  = 0.0001;
+  StateType trialState_;
+  const ScalarType beta_  = 0.0001;
 
 public:
   ArmijoUpdater() = delete;
@@ -65,10 +65,10 @@ public:
   ArmijoUpdater & operator=(ArmijoUpdater &&) = default;
   ~ArmijoUpdater() = default;
 
-  ArmijoUpdater(const state_t & state)
+  ArmijoUpdater(const StateType & state)
     : trialState_(::pressio::ops::clone(state))
   {
-    constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+    constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
     ::pressio::ops::fill(trialState_, zero);
   }
 
@@ -77,16 +77,16 @@ public:
 
   template<typename system_t, typename solver_mixin_t>
   void operator()(const system_t & system,
-		  state_t & state,
+		  StateType & state,
 		  solver_mixin_t & solver)
   {
     PRESSIOLOG_DEBUG("armijo update");
 
-    constexpr auto one = ::pressio::utils::Constants<scalar_t>::one();
-    auto alpha = static_cast<scalar_t>(1);
+    constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
+    auto alpha = static_cast<ScalarType>(1);
 
     ::pressio::ops::fill(trialState_,
-			 ::pressio::utils::Constants<scalar_t>::zero());
+			 ::pressio::utils::Constants<ScalarType>::zero());
 
     // https://people.maths.ox.ac.uk/hauser/hauser_lecture2.pdf
 
@@ -102,11 +102,11 @@ public:
     const auto & p_k   = solver.correctionCRef();
     const auto & g_k   = solver.gradientCRef();
     auto fx_k    = solver.residualNormCurrentCorrectionStep();
-    fx_k = std::pow(fx_k, ::pressio::utils::Constants<scalar_t>::two());
+    fx_k = std::pow(fx_k, ::pressio::utils::Constants<ScalarType>::two());
     const auto gkDotpk = ::pressio::ops::dot(g_k, p_k);
 
     PRESSIOLOG_DEBUG("starting backtracking");
-    scalar_t ftrial = {};
+    ScalarType ftrial = {};
     bool done = false;
     while (not done)
     {
@@ -123,7 +123,7 @@ public:
 
       // eval f(x_k + alpha_l * p_k)
       solver.residualNorm(system, trialState_, ftrial);
-      ftrial = std::pow(ftrial, ::pressio::utils::Constants<scalar_t>::two());
+      ftrial = std::pow(ftrial, ::pressio::utils::Constants<ScalarType>::two());
 
       // lhs = f(x_k + alpha_l * p_k) - f(x_k)
       const auto lhs = ftrial - fx_k;

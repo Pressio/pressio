@@ -134,18 +134,18 @@ int main()
 
 // test GN normal eq
 #if defined USE_GN_NEQ
-    auto solver = pressio::nonlinearsolvers::createGaussNewton(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, x, linSolverObj);    
     solver.setMaxIterations(6);
-    solver.setStoppingCriterion(pressio::nonlinearsolvers::stop::afterMaxIters);
+    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
     solver.solve(sysObj, x);
 #endif
 
 // test LM 
 #if defined USE_LM_NEQ
-    auto solver = pressio::nonlinearsolvers::createLevenbergMarquardt(sysObj, x, linSolverObj);    
+    auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, x, linSolverObj);    
     solver.setMaxIterations(6);
-    solver.setStoppingCriterion(pressio::nonlinearsolvers::stop::afterMaxIters);
+    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
     solver.solve(sysObj, x);
 #endif

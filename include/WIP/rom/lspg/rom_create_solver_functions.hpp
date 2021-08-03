@@ -69,12 +69,12 @@ namespace pressio{ namespace rom{ namespace lspg{
     Gauss-Newton normal-eq
    ========================*/
 template<typename rom_problem_t, typename ...Args>
-auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
+auto create_gauss_newtonSolver(rom_problem_t & problem, Args && ... args)
 ->
-  decltype(::pressio::solvers::nonlinear::createGaussNewton
+  decltype(::pressio::solvers::nonlinear::create_gauss_newton
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createGaussNewton
+  return ::pressio::solvers::nonlinear::create_gauss_newton
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
@@ -82,11 +82,11 @@ auto createGaussNewtonSolver(rom_problem_t & problem, Args && ... args)
 	Gauss-Newton QR
    ========================*/
 template<typename rom_problem_t, typename ...Args>
-auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
-->  decltype(::pressio::solvers::nonlinear::createGaussNewtonQR
+auto create_gauss_newtonQRSolver(rom_problem_t & problem, Args && ... args)
+->  decltype(::pressio::solvers::nonlinear::create_gauss_newtonQR
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createGaussNewtonQR
+  return ::pressio::solvers::nonlinear::create_gauss_newtonQR
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 
@@ -94,11 +94,11 @@ auto createGaussNewtonQRSolver(rom_problem_t & problem, Args && ... args)
       LevenbergMarquardt
    ========================*/
 template<typename rom_problem_t, typename ...Args>
-auto createLevenbergMarquardtSolver(rom_problem_t & problem, Args && ... args)
-->  decltype(::pressio::solvers::nonlinear::createLevenbergMarquardt
+auto create_levenberg_marquardtSolver(rom_problem_t & problem, Args && ... args)
+->  decltype(::pressio::solvers::nonlinear::create_levenberg_marquardt
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...))
 {
-  return ::pressio::solvers::nonlinear::createLevenbergMarquardt
+  return ::pressio::solvers::nonlinear::create_levenberg_marquardt
     (impl::_SystemOrStepper(problem), std::forward<Args>(args)...);
 }
 

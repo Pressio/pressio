@@ -51,15 +51,15 @@
 
 namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
-template<typename T, typename g_t, typename enable = void>
+template<typename T, typename GradientType, typename enable = void>
 struct has_const_create_gradient_method_return_result : std::false_type{};
 
-template<typename T, typename g_t>
+template<typename T, typename GradientType>
 struct has_const_create_gradient_method_return_result
-<T, g_t,
+<T, GradientType,
  ::pressio::mpl::enable_if_t<
    ::pressio::mpl::is_same<
-     g_t,
+     GradientType,
      decltype( std::declval<T const>().createGradient() )
      >::value
    >

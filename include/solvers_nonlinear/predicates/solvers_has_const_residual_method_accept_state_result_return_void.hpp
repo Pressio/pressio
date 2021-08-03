@@ -53,8 +53,8 @@ namespace pressio{ namespace nonlinearsolvers{ namespace predicates {
 
 template <
   typename T,
-  typename state_t,
-  typename res_t,
+  typename StateType,
+  typename ResidualType,
   typename = void
   >
 struct has_const_residual_method_accept_state_result_return_void
@@ -62,18 +62,18 @@ struct has_const_residual_method_accept_state_result_return_void
 
 template <
   typename T,
-  typename state_t,
-  typename res_t
+  typename StateType,
+  typename ResidualType
   >
 struct has_const_residual_method_accept_state_result_return_void<
-  T, state_t, res_t,  
+  T, StateType, ResidualType,  
   mpl::enable_if_t<
     std::is_void<
       decltype(
          std::declval<T const>().residual
             (
-              std::declval<state_t const &>(),
-              std::declval<res_t &>()
+              std::declval<StateType const &>(),
+              std::declval<ResidualType &>()
             )
          )
       >::value

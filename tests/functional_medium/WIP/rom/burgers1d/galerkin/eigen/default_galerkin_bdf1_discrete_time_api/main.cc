@@ -66,7 +66,7 @@ struct GalerkinBDF1WithResidualApi
     linear_solver_t linSolverObj;
 
     // nonlinear system
-    auto solver = pressio::rom::galerkin::createNewtonRaphsonSolver(Problem, yROM_, linSolverObj);
+    auto solver = pressio::rom::galerkin::create_newton_raphsonSolver(Problem, yROM_, linSolverObj);
     solver.setTolerance(1e-12);
     solver.setMaxIterations(4);
 

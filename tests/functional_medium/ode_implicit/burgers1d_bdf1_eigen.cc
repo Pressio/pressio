@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     pressio::linearsolvers::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;
 
-  auto NonLinSolver= pressio::nonlinearsolvers::createNewtonRaphson(stepperObj, y, linSolverObj);
+  auto NonLinSolver= pressio::nonlinearsolvers::create_newton_raphson(stepperObj, y, linSolverObj);
   NonLinSolver.setTolerance(1e-11);
   // integrate in time
   scalar_t fint = 35;

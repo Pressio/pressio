@@ -94,8 +94,8 @@ int main()
   state_t x(4);
   x(0)=1.0; x(1)=2.; x(2)=3.; x(3)=4.;
 
-  auto solver = pressio::nonlinearsolvers::createGaussNewton(problem, x, FakeLinS<hessian_t>{});
-  auto criterion = pressio::nonlinearsolvers::stop::afterMaxIters;
+  auto solver = pressio::nonlinearsolvers::create_gauss_newton(problem, x, FakeLinS<hessian_t>{});
+  auto criterion = pressio::nonlinearsolvers::Stop::afterMaxIters;
   solver.setStoppingCriterion(criterion);
   solver.setMaxIterations(3);
   Observer myO(sentinel);
@@ -104,7 +104,7 @@ int main()
   try{
     solver.solve(problem, x);
   }
-  catch (::pressio::eh::nonlinear_solve_failure const &e)
+  catch (::pressio::eh::NonlinearSolveFailure const &e)
   {
     Eigen::VectorXd gold(4);
     gold << 2.1,3.1,4.1,5.1;

@@ -89,7 +89,7 @@ struct GalerkinBDF1WithContinuousTimeApi
     linear_solver_t linSolverObj;
 
     // nonlinear system
-    auto solver = pressio::rom::galerkin::createNewtonRaphsonSolver(Problem, yROM_, linSolverObj);
+    auto solver = pressio::rom::galerkin::create_newton_raphsonSolver(Problem, yROM_, linSolverObj);
     solver.setMaxIterations(2);
 
     // integrate in time

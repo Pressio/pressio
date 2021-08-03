@@ -264,7 +264,7 @@ private:
 	guesserCb(stepNumber, rhsEvaluationTime_, odeState);
 	solver.solve(*this, odeState, std::forward<Args>(args)...);
       }
-      catch (::pressio::eh::nonlinear_solve_failure const & e)
+      catch (::pressio::eh::NonlinearSolveFailure const & e)
 	{
 	  ::pressio::ops::deep_copy(odeState, odeState_n);
 	  ::pressio::ops::deep_copy(odeState_n, odeState_nm1);

@@ -234,7 +234,7 @@ private:
       // auto & fnp1 = stencilStates_.rhsAt(ode::nPlusOne());
       // //::pressio::ops::deep_copy(fn, fnp1);
     }
-    catch (::pressio::eh::nonlinear_solve_failure const & e)
+    catch (::pressio::eh::NonlinearSolveFailure const & e)
     {
       auto & rollBackState = stencilStates_(ode::n());
       ::pressio::ops::deep_copy(odeSolution, rollBackState);

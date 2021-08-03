@@ -81,16 +81,16 @@ public:
   ~HessianGradientOperatorsRJApiNoWeighting() = default;
 
   template <
-    typename system_t,
-    typename state_t,
+    typename SystemType,
+    typename StateType,
     mpl::enable_if_t<
-      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value or
-       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value),
+      (::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value or
+       ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value),
       int
       > = 0
     >
-  HessianGradientOperatorsRJApiNoWeighting(const system_t & system,
-					   const state_t & state)
+  HessianGradientOperatorsRJApiNoWeighting(const SystemType & system,
+					   const StateType & state)
     : r_(system.createResidual()),
       J_(system.createJacobian()),
       g_(::pressio::ops::clone(state)),
@@ -120,12 +120,12 @@ public:
   }
 
 public:
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-  ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value
+  ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value
   >
-  computeOperators(const system_t & systemObj,
-		   const state_t & state,
+  computeOperators(const SystemType & systemObj,
+		   const StateType & state,
 		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
@@ -136,7 +136,7 @@ public:
     residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
 
     // recompute Jacobian is needed
@@ -149,12 +149,12 @@ public:
     this->_computeGradient();
   }
 
-  template<typename system_t, typename state_t>
+  template<typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value
     >
-  computeOperators(const system_t & systemObj,
-		   const state_t & state,
+  computeOperators(const SystemType & systemObj,
+		   const StateType & state,
 		   scalar_type & residualNorm,
 		   bool recomputeSystemJacobian = true)
   {
@@ -164,7 +164,7 @@ public:
     residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
 
     // hessian only recomputed if Jacobian has been updated
@@ -176,35 +176,35 @@ public:
     this->_computeGradient();
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_residual_jacobian<SystemType>::value
     >
-  residualNorm(const system_t & systemObj,
-	       const state_t & state,
+  residualNorm(const SystemType & systemObj,
+	       const StateType & state,
 	       scalar_type & residualNorm) const
   {
     systemObj.residual(state, r_);
     residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
   }
 
-  template< typename system_t, typename state_t>
+  template< typename SystemType, typename StateType>
   mpl::enable_if_t<
-    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<system_t>::value
+    ::pressio::nonlinearsolvers::constraints::system_fused_residual_jacobian<SystemType>::value
     >
-  residualNorm(const system_t & systemObj,
-	       const state_t & state,
+  residualNorm(const SystemType & systemObj,
+	       const StateType & state,
 	       scalar_type & residualNorm) const
   {
     systemObj.residualAndJacobian(state, r_, J_, false);
     residualNorm = ::pressio::ops::norm2(r_);
 
     if (std::isnan(residualNorm)){
-      throw ::pressio::eh::residual_has_nans();
+      throw ::pressio::eh::ResidualHasNans();
     }
   }
 

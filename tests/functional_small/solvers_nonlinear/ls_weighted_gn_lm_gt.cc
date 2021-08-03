@@ -153,10 +153,10 @@ TEST(solvers_nonlinear, weighted_least_squares_gauss_newton)
   using state_t = typename system_t::state_type;
   state_t x(numVars);
 
-  auto solver = pressio::nonlinearsolvers::createGaussNewton
+  auto solver = pressio::nonlinearsolvers::create_gauss_newton
     (sysObj,x,linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
-  solver.setStoppingCriterion(pressio::nonlinearsolvers::stop::afterMaxIters);
+  solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
   solver.solve(sysObj, x);
   ASSERT_TRUE(checkStr == "PASSED");
 }
@@ -172,10 +172,10 @@ TEST(solvers_nonlinear, weighted_least_squares_lm)
   using state_t = typename system_t::state_type;
   state_t x(numVars);
 
-  auto solver = pressio::nonlinearsolvers::createLevenbergMarquardt
+  auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt
     (sysObj,x,linSolverObj, WeightingOperator());
   solver.setMaxIterations(2);
-  solver.setStoppingCriterion(pressio::nonlinearsolvers::stop::afterMaxIters);
+  solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
   solver.solve(sysObj, x);
   ASSERT_TRUE(checkStr == "PASSED");
 }

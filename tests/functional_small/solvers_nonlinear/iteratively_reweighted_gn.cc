@@ -209,10 +209,10 @@ TEST(solvers_nonlinear, irwls_gauss_newton)
   using state_t = typename system_t::state_type;
   state_t x(numVars);
 
-  using pressio::nonlinearsolvers::experimental::createIRWGaussNewton;
-  auto solver = createIRWGaussNewton(sysObj, x, linSolverObj);
+  using pressio::nonlinearsolvers::experimental::create_irlw_gauss_newton;
+  auto solver = create_irlw_gauss_newton(sysObj, x, linSolverObj);
   solver.setMaxIterations(3);
-  solver.setStoppingCriterion(pressio::nonlinearsolvers::stop::afterMaxIters);
+  solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
   solver.solve(sysObj, x);
 
 }

@@ -52,7 +52,7 @@
 namespace pressio{ namespace nonlinearsolvers{ namespace impl{
 
 template <typename StepType, typename ScalarType>
-void _printMetrics(bool printGradient,
+void _print_metrics(bool printGradient,
 		   StepType iStep,
 		   bool stripLabels,
 		   const ScalarType & absCorrectionNorm,
@@ -92,7 +92,7 @@ void _printMetrics(bool printGradient,
 }
 
 template <typename StepType, typename ScalarType>
-void printMetrics(StepType iStep,
+void print_metrics(StepType iStep,
 		  bool stripLabels,
 		  const ScalarType & absCorrectionNorm,
 		  const ScalarType & relCorrectionNorm,
@@ -101,21 +101,21 @@ void printMetrics(StepType iStep,
 		  const ScalarType & absGNorm,
 		  const ScalarType & relGNorm)
 {
-  _printMetrics(true, iStep, stripLabels,
+  _print_metrics(true, iStep, stripLabels,
 		absCorrectionNorm, relCorrectionNorm,
 		absResNorm, relResNorm,
 		absGNorm, relGNorm);
 }
 
 template <typename StepType, typename ScalarType>
-void printMetrics(StepType iStep,
+void print_metrics(StepType iStep,
 		  bool stripLabels,
 		  const ScalarType & absCorrectionNorm,
 		  const ScalarType & relCorrectionNorm,
 		  const ScalarType & absResNorm,
 		  const ScalarType & relResNorm)
 {
-  _printMetrics(false, iStep, stripLabels,
+  _print_metrics(false, iStep, stripLabels,
 		absCorrectionNorm, relCorrectionNorm,
 		absResNorm, relResNorm, ScalarType(), ScalarType());
 }

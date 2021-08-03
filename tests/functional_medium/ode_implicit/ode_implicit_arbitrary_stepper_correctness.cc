@@ -225,7 +225,7 @@ struct Bdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
 
     ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
@@ -264,14 +264,14 @@ struct CustomBdf1Solver
   void integrateForNSteps(int steps)
   {
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     ::pressio::ode::advanceNSteps(stepperObj_, y_, 0.0, dt_, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambda(int steps)
   {
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::step_count_type;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -284,7 +284,7 @@ struct CustomBdf1Solver
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
   {
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::step_count_type;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -296,7 +296,7 @@ struct CustomBdf1Solver
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
   {
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::step_count_type;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;
@@ -311,7 +311,7 @@ struct CustomBdf1Solver
     static_assert( pressio::ode::collector<observer_t, double, state_t>::value, "");
 
     lin_solver_t linSolverObj;
-    auto solverO = pressio::nonlinearsolvers::createNewtonRaphson(stepperObj_,y_,linSolverObj);
+    auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::step_count_type;
     const auto dtSetterLambda = [=](const step_t & step, const sc_t & time, sc_t & dt){
 				  std::cout << " SETTING DT " << std::endl;

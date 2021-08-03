@@ -90,7 +90,7 @@ public:
 					   predictedState, yn);
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 
@@ -115,7 +115,7 @@ public:
 					   predictedState, yn, ynm1);
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 
@@ -144,7 +144,7 @@ public:
 					   ynm2);
     }
     catch (::pressio::eh::discrete_time_residual_failure_unrecoverable const & e){
-      throw ::pressio::eh::residual_evaluation_failure_unrecoverable();
+      throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 };

@@ -21,10 +21,10 @@ int main()
   using qr_solver_t = qr::QRSolver<mat_type, qr::Householder>;
   qr_solver_t qrSolver;
 
-  auto GNSolver = pressio::nonlinearsolvers::createGaussNewtonQR(problem,x,qrSolver);
+  auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,x,qrSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.setMaxIterations(10);
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
 
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;
