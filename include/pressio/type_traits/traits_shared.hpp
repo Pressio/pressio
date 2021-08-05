@@ -50,6 +50,7 @@
 #define TYPE_TRAITS_TRAITS_SHARED_HPP_
 
 namespace pressio{
+namespace impl{
 
 template<
   PackageIdentifier PackId,
@@ -64,12 +65,49 @@ struct ContainersSharedTraits
   static constexpr int rank = _rank;
 };
 
+template<
+  typename Ordinal,
+  typename Size = Ordinal
+>
+struct OrdinalTrait
+{
+  using ordinal_type = Ordinal;
+  using size_type    = Size;
+};
+
+template<
+  typename Scalar,
+  typename ScalarRef = Scalar&,
+  typename ScalarConstRef = typename std::add_const<ScalarRef>::type
+>
+struct ScalarTrait
+{
+  using scalar_type    = Scalar;
+  using reference_type = ScalarRef;
+  using const_reference_type = ScalarConstRef;
+};
+
+template<bool _is_static>
+struct AllocTrait
+{
+  static constexpr bool is_static = _is_static;
+  static constexpr bool is_dynamic  = !is_static;
+};
+
+using StaticAllocTrait = AllocTrait<true>;
+using DynamicAllocTrait = AllocTrait<false>;
+
 /// common traits of matrices
 template<bool is_sparse_b>
-struct MatrixSharedTraits{
+struct MatrixDensityTrait
+{
   static constexpr bool is_sparse = is_sparse_b;
   static constexpr bool is_dense  = !is_sparse_b;
 };
 
+using DenseMatrixTrait = MatrixDensityTrait<false>;
+using SparseMatrixTrait = MatrixDensityTrait<true>;
+
+}
 }
 #endif  // TYPE_TRAITS_TRAITS_SHARED_HPP_

@@ -59,8 +59,10 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
-  public MatrixSharedTraits<Traits<MatrixType>::is_sparse>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+    public ::pressio::impl::MatrixDensityTrait<
+      ::pressio::Traits<MatrixType>::is_sparse
+    >
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;
@@ -96,8 +98,8 @@ struct SubSpanTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 2>,
-  public MatrixSharedTraits<false>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Kokkos, true, 2>,
+    public ::pressio::impl::DenseMatrixTrait
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic  = !is_static;

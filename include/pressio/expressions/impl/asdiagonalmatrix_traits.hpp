@@ -59,8 +59,8 @@ struct AsdiagmatrixTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
-    public MatrixSharedTraits<false>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+    public ::pressio::impl::DenseMatrixTrait
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = false;
@@ -101,8 +101,8 @@ struct AsdiagmatrixTraits<
 //     ::pressio::is_rank1_tensor_pybind<VectorType>::value
 //     >
 //   >
-//   : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
-//     public MatrixSharedTraits<false>
+//   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Pybind, true, 2>,
+//     public ::pressio::impl::DenseMatrixTrait
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic  = !is_static;
@@ -126,8 +126,8 @@ struct AsdiagmatrixTraits<
 //     >::value
 //     >
 //   >
-//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
-//     public MatrixSharedTraits<false>
+//   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public ::pressio::impl::DenseMatrixTrait
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
@@ -146,8 +146,8 @@ struct AsdiagmatrixTraits<
 //     >::value
 //     >
 //   >
-//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
-//     public MatrixSharedTraits<false>
+//   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public ::pressio::impl::DenseMatrixTrait
 // {
 //   static constexpr bool is_static = true;
 //   static constexpr bool is_dynamic = false;
@@ -167,8 +167,8 @@ struct AsdiagmatrixTraits<
 //     >::value
 //     >
 //   >
-//   : public ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
-//     public MatrixSharedTraits<false>
+//   : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Trilinos, true, 2>,
+//     public ::pressio::impl::DenseMatrixTrait
 // {
 
 //   static constexpr bool is_static = true;

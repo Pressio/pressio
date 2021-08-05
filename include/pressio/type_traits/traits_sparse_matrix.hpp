@@ -59,19 +59,21 @@ struct Traits<
     is_sparse_matrix_eigen<T>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
-    public MatrixSharedTraits<true>
+  : public ::pressio::impl::EigenTraits<T, 2>,
+    public ::pressio::impl::StaticAllocTrait, // Should be EigenMatrixAllocTrait<T> ?
+    public ::pressio::impl::SparseMatrixTrait
 {
+private:
+  using OrdinalTrait = ::pressio::impl::OrdinalTrait<typename T::StorageIndex>;
+  using ordinal_type = typename OrdinalTrait::ordinal_type;
+public:
   static constexpr MatrixIdentifier matrix_identifier = MatrixIdentifier::SparseEigen;
-  static constexpr bool is_static = false;
-  static constexpr bool is_dynamic  = !is_static;
 
-  using scalar_type = typename T::Scalar;
-  using ordinal_type = typename T::StorageIndex;
-  using size_type    = ordinal_type;
-  static_assert( std::is_integral<ordinal_type>::value &&
-  		 std::is_signed<ordinal_type>::value,
-  "ordinal type for indexing eigen sparse matrix has to be signed");
+  static_assert(
+    std::is_integral<ordinal_type>::value &&
+    std::is_signed<ordinal_type>::value,
+    "ordinal type for indexing eigen sparse matrix has to be signed"
+  );
 
   static constexpr bool is_row_major = T::IsRowMajor;
   static constexpr bool is_col_major = !is_row_major;

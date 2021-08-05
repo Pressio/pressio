@@ -59,7 +59,7 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_eigen<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
 
   static constexpr bool is_static = true;
@@ -93,7 +93,7 @@ struct DiagTraits<
     ::pressio::is_dense_matrix_kokkos<MatrixType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
 {
 
   static constexpr bool is_static = true;

@@ -59,7 +59,7 @@ struct SpanTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Eigen, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
@@ -100,7 +100,7 @@ struct SpanTraits<
     ::pressio::is_vector_kokkos<VectorType>::value
     >
   >
-  : public ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
+  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Kokkos, true, 1>
 {
   static constexpr bool is_static = true;
   static constexpr bool is_dynamic = !is_static;
