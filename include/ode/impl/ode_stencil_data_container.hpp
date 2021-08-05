@@ -61,6 +61,9 @@ class StencilDataContainerImpl;
 template<class ValueType, std::size_t N>
 class StencilDataContainerImpl<ValueType, N, ::pressio::ode::nPlusOne>
 {
+  static_assert( N>0, 
+   "Cannot initialize stencil data container with 0 elements.");
+
 public:
   using data_type = std::array<ValueType, N>;
 
@@ -161,6 +164,9 @@ public:
 template<class ValueType, std::size_t N>
 class StencilDataContainerImpl<ValueType, N, ::pressio::ode::n>
 {
+  static_assert( N>0, 
+   "Cannot initialize stencil data container with 0 elements.");
+
 public:
   using data_type = std::array<ValueType, N>;
 

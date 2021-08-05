@@ -89,22 +89,26 @@ struct is_stepper_tag{
 };
 
 
-template <typename stepper_tag> 
-struct ImplicitStencilSize{ 
-  static constexpr std::size_t value = 0; 
-};
-template <> struct ImplicitStencilSize<implicitmethods::BDF1>{
-  // need to store: state_n+1, state_n
-  static constexpr std::size_t value = 2;
-};
-template <> struct ImplicitStencilSize<implicitmethods::BDF2>{
-  // need: state_n+1, state_n, state_n-1
-  static constexpr std::size_t value = 3;
-};
-template <> struct ImplicitStencilSize<implicitmethods::CrankNicolson>{
-  // need: state_n+1, state_n
-  static constexpr std::size_t value = 2;
-};
+constexpr int implicit_stencil_size(implicitmethods::BDF1){ return 2; }
+constexpr int implicit_stencil_size(implicitmethods::BDF2){ return 3; }
+constexpr int implicit_stencil_size(implicitmethods::CrankNicolson){ return 2; }
+
+// template <typename stepper_tag> 
+// struct ImplicitStencilSize{ 
+//   static constexpr std::size_t value = 0; 
+// };
+// template <> struct ImplicitStencilSize<implicitmethods::BDF1>{
+//   // need to store: state_n+1, state_n
+//   static constexpr std::size_t value = 2;
+// };
+// template <> struct ImplicitStencilSize<implicitmethods::BDF2>{
+//   // need: state_n+1, state_n, state_n-1
+//   static constexpr std::size_t value = 3;
+// };
+// template <> struct ImplicitStencilSize<implicitmethods::CrankNicolson>{
+//   // need: state_n+1, state_n
+//   static constexpr std::size_t value = 2;
+// };
 
 //! Default type for the ode step
 using step_count_type = int32_t;

@@ -63,3 +63,12 @@ TEST(ode, concepts_policies_arbitrary_stepper)
   static_assert(ode::implicit_euler_jacobian_policy<
      jacobian_policy_t, state_t, jac_t, app_t, double>::value, "");
 }
+
+TEST(ode, implicit_stencil_size)
+{
+  namespace po = pressio::ode;
+  static_assert(po::implicit_stencil_size(po::implicitmethods::BDF1())==2,"" );
+  static_assert(po::implicit_stencil_size(po::implicitmethods::BDF2())==3, "");
+  static_assert(po::implicit_stencil_size(po::implicitmethods::CrankNicolson())==2,"");
+}
+

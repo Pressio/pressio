@@ -15,9 +15,17 @@ add_serial_utest(
 	${TESTING_LEVEL}_ode_advance_functions
 	${CMAKE_CURRENT_SOURCE_DIR}/ode_advance_functions.cc)
 
+if(PRESSIO_ENABLE_TPL_KOKKOS)
+ 	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_stencil_data_kokkos.cc)
+	add_serial_utest_kokkos(${TESTING_LEVEL}_ode_implicit_stencil_data_kokkos ${SRC})
+endif()
+
 if(PRESSIO_ENABLE_TPL_EIGEN)
 	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_steppers_numerics_eigen.cc)
 	add_serial_utest(${TESTING_LEVEL}_ode_explicit_steppers_numerics_eigen ${SRC})
+
+	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_stencil_data_eigen.cc)
+	add_serial_utest(${TESTING_LEVEL}_ode_implicit_stencil_data_eigen ${SRC})
 
 	set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_steppers_numerics_eigen.cc)
 	add_serial_utest(${TESTING_LEVEL}_ode_implicit_steppers_numerics_eigen ${SRC})
