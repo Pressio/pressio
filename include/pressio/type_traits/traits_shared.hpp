@@ -108,6 +108,15 @@ struct MatrixDensityTrait
 using DenseMatrixTrait = MatrixDensityTrait<false>;
 using SparseMatrixTrait = MatrixDensityTrait<true>;
 
+template<typename T>
+struct SizePair
+{
+  using size_type = typename ::pressio::Traits<
+    ::pressio::mpl::remove_cvref_t<T>
+  >::size_type;
+  using pair_type = std::pair<size_type, size_type>;
+};
+
 }
 }
 #endif  // TYPE_TRAITS_TRAITS_SHARED_HPP_

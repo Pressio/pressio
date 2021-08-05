@@ -177,7 +177,11 @@ struct TeuchosTraits
 // Kokkos traits
 //*******************************
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-template <typename T, int Rank = 1>
+template <
+  typename T,
+  int Rank = 1,
+  bool is_static = T::traits::rank_dynamic == 0 // static has no runtime dimensions
+>
 struct KokkosTraits
   : public ::pressio::impl::ContainersSharedTraits<
       PackageIdentifier::Kokkos,
@@ -191,9 +195,7 @@ struct KokkosTraits
       typename T::traits::value_type,
       typename T::reference_type
     >,
-    public ::pressio::impl::AllocTrait<
-      T::traits::rank_dynamic==0 // static has no runtime dimensions
-    >
+    public ::pressio::impl::AllocTrait<is_static>
 {
   using layout_type       = typename T::traits::array_layout;
   using execution_space   = typename T::traits::execution_space;

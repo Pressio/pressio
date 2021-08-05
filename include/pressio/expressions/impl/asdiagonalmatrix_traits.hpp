@@ -59,16 +59,16 @@ struct AsdiagmatrixTraits<
     ::pressio::is_dynamic_vector_eigen<VectorType>::value
     >
   >
-  : public ::pressio::impl::ContainersSharedTraits<PackageIdentifier::Eigen, true, 2>,
+  : public ::pressio::impl::EigenTraits<
+      ::pressio::mpl::remove_cvref_t<VectorType>,
+      2
+    >,
+    public ::pressio::impl::StaticAllocTrait,
     public ::pressio::impl::DenseMatrixTrait
 {
-  static constexpr bool is_static = true;
-  static constexpr bool is_dynamic = false;
-
-  using vec_remove_cv_t = typename std::remove_cv<VectorType>::type;
-  using scalar_type  = typename Traits<vec_remove_cv_t>::scalar_type;
-  using ordinal_type = typename Traits<vec_remove_cv_t>::ordinal_type;
-  using size_type    = typename Traits<vec_remove_cv_t>::size_type;
+  using scalar_type = typename ::pressio::Traits<
+    ::pressio::mpl::remove_cvref_t<VectorType>
+  >::scalar_type;
 
   // type of the native expression
   using _native_expr_type =
