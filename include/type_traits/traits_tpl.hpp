@@ -84,7 +84,7 @@ struct TrilinosTraits
 //*******************************
 // Epetra traits
 //*******************************
-template<int Rank = 1>
+template<int Rank>
 using EpetraTraits = TrilinosTraits<
   Rank,
   double, int, int,
@@ -121,7 +121,7 @@ struct TpetraExtraTraits<
   using mag_type = typename T::mag_type;
 };
 
-template<typename T, int Rank = 1>
+template<typename T, int Rank>
 struct TpetraTraits
   : public ::pressio::impl::TrilinosTraits<
       Rank,
@@ -157,7 +157,7 @@ struct TpetraTraits
 //*******************************
 // Teuchos traits
 //*******************************
-template<typename T, int Rank = 1>
+template<typename T, int Rank>
 struct TeuchosTraits
   : public ::pressio::impl::ContainersSharedTraits<
       PackageIdentifier::Trilinos,
@@ -179,7 +179,7 @@ struct TeuchosTraits
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template <
   typename T,
-  int Rank = 1,
+  int Rank,
   bool is_static = T::traits::rank_dynamic == 0 // static has no runtime dimensions
 >
 struct KokkosTraits
