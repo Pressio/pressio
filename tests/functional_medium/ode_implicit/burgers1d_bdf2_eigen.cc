@@ -15,30 +15,16 @@ int main(int argc, char *argv[]){
   using app_t		= pressio::apps::Burgers1dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using ode_state_t = typename app_t::state_type;
-  using ode_res_t = typename app_t::velocity_type;
-  using ode_jac_t = typename app_t::jacobian_type;
 
-  //-------------------------------
-  // create app object
   Eigen::Vector3d mu(5.0, 0.02, 0.02);
   const int Ncell = 20;
   app_t appObj(mu, Ncell);
   auto & y0n = appObj.getInitialState();
   ode_state_t y(y0n);
 
-  // define auxiliary stepper
-  using aux_stepper_t = pressio::ode::ImplicitStepper<
-    pressio::ode::implicitmethods::BDF1,
-    ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  aux_stepper_t stepperAux(y, appObj);
+  auto stepperObj = pressio::ode::create_bdf2_stepper(appObj, y);
 
-  // nonimal stepper
-  using ode_tag = pressio::ode::implicitmethods::BDF2;
-  using stepper_t = pressio::ode::ImplicitStepper<
-    ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t, aux_stepper_t>;
-  stepper_t stepperObj(y, appObj, stepperAux);
-
-  // define solver
+  using ode_jac_t = typename app_t::jacobian_type;
   using lin_solver_t = pressio::linearsolvers::Solver<
     pressio::linearsolvers::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;

@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
     auto & y0 = appObj.getInitialState();
 
     state_t y(pressio::ops::clone(y0));
-    auto stepperObj = pressio::ode::create_forward_euler_stepper(y, appObj);
+    auto stepperObj = pressio::ode::create_forward_euler_stepper(appObj, y);
 
     // integrate in time
     scalar_t fint = 35;

@@ -135,8 +135,6 @@ int main(int argc, char *argv[])
   using app_t		= MyApp;
   using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;
-  using res_t	        = typename app_t::velocity_type;
-  using jac_t	= typename app_t::jacobian_type;
 
   auto dtManager =
     [](const ::pressio::ode::step_count_type & step,
@@ -163,11 +161,7 @@ int main(int argc, char *argv[])
   state_t y(3);
   pressio::ops::fill(y, 1);
 
-  using ode_tag = pressio::ode::implicitmethods::BDF1;
-  using stepper_t = pressio::ode::ImplicitStepper<
-    ode_tag, state_t, res_t, jac_t, app_t>;
-  stepper_t stepperObj(y, appObj);
-
+  auto stepperObj = pressio::ode::create_bdf1_stepper(appObj,y);
   pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

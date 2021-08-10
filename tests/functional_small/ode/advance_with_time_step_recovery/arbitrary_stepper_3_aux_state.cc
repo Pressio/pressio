@@ -162,8 +162,6 @@ int main(int argc, char *argv[])
   using app_t		= MyApp;
   using sc_t		= typename app_t::scalar_type;
   using state_t = typename app_t::state_type;
-  using res_t = typename app_t::discrete_time_residual_type;
-  using jac_t = typename app_t::discrete_time_jacobian_type;
 
   auto dtManager =
     [](const ::pressio::ode::step_count_type & step,
@@ -189,14 +187,8 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
 
-  using custom_order = ::pressio::ode::StepperOrder<2>;
-  using my_num_states	= ::pressio::ode::StepperTotalNumberOfStates<4>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::implicitmethods::Arbitrary,
-    state_t, res_t, jac_t, app_t, custom_order, my_num_states>;
-  static_assert(!std::is_void<stepper_t>::value, "");
+  auto stepperObj = pressio::ode::create_arbitrary_stepper<2,4>(appObj, y);
 
-  stepper_t stepperObj(y, appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

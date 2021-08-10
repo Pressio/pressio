@@ -52,15 +52,15 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  typename ScalarType,
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename OrderSetterType,
-  typename TotalNumStatesSetter_t,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType,
+  int order_in,
+  int n_states,
+  class ScalarType,
+  class StateType,
+  class ResidualType,
+  class JacobianType,
+  class SystemType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
   bool policies_are_standard
   >
 class StepperArbitrary
@@ -75,7 +75,7 @@ public:
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
-  static constexpr std::size_t numAuxStates = TotalNumStatesSetter_t::value - 1;
+  static constexpr std::size_t numAuxStates = n_states - 1;
   using tag_name = ::pressio::ode::implicitmethods::Arbitrary;
   using stencil_states_t = ImplicitStencilStatesContainer<StateType, numAuxStates>;
 
@@ -104,13 +104,13 @@ public:
   // so we don't need to specify & in argument to constructor
   StepperArbitrary(const StateType & state,
 		   const SystemType & systemObj,
-		   ResidualPolicyType resPolicyObj,
-		   JacobianPolicyType jacPolicyObj)
+		   ResidualPolicyType && resPolicyObj,
+		   JacobianPolicyType && jacPolicyObj)
     : systemObj_{systemObj},
-      stencilStates_(::pressio::ops::clone(state)),
+      stencilStates_(state), //stencilstates handles right semantics
       recoveryState_{::pressio::ops::clone(state)},
-      resPolicy_{resPolicyObj},
-      jacPolicy_{jacPolicyObj}
+      resPolicy_{std::forward<ResidualPolicyType>(resPolicyObj)},
+      jacPolicy_{std::forward<JacobianPolicyType>(jacPolicyObj)}
     {}
 
   // cstr for standard residual and jacob policies
@@ -121,7 +121,7 @@ public:
   StepperArbitrary(const StateType & state,
                    const SystemType & systemObj)
     : systemObj_{systemObj},
-      stencilStates_(::pressio::ops::clone(state)),
+      stencilStates_(state), //stencilstates handles right semantics
       recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{},
       jacPolicy_{}
@@ -130,7 +130,7 @@ public:
 public:
   ::pressio::ode::stepper_order_type order() const
   {
-    return OrderSetterType::value;
+    return order_in;
   }
 
   residual_type createResidual() const

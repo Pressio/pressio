@@ -204,12 +204,9 @@ struct Bdf1Solver
   using app_t		= MyAppContinuousTimeApi;
   using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;
-  using res_t	= typename app_t::velocity_type;
-  using jac_t	= typename app_t::jacobian_type;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-            ::pressio::ode::implicitmethods::BDF1,
-				    state_t, res_t, jac_t, app_t>;
+  using stepper_t = decltype( pressio::ode::create_bdf1_stepper(std::declval<app_t>(), std::declval<state_t>()) );
 
+  using jac_t	= typename app_t::jacobian_type;
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;
   using lin_solver_t = ::pressio::linearsolvers::Solver<lin_solver_name, jac_t>;
 
@@ -231,7 +228,6 @@ struct Bdf1Solver
   };
 };
 
-
 struct CustomBdf1Solver
 {
   using app_t		= MyAppDiscreteTimeAPI;
@@ -242,12 +238,13 @@ struct CustomBdf1Solver
   using res_t	= typename app_t::residual_type;
   using jac_t	= typename app_t::jacobian_type;
 
-  using my_custom_order = ::pressio::ode::StepperOrder<1>;
-  using my_num_states	= ::pressio::ode::StepperTotalNumberOfStates<2>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-          ::pressio::ode::implicitmethods::Arbitrary,
-			    state_t, res_t, jac_t, app_t,
-			    my_custom_order, my_num_states>;
+  using rp = pressio::ode::impl::ResidualStandardDiscreteTimePolicy<state_t, res_t>;
+  using jp = pressio::ode::impl::JacobianStandardDiscreteTimePolicy<state_t, jac_t>;
+
+  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper<1,2>(std::declval<app_t>(), std::declval<state_t>()));
+  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper_partial_deduction<1,2, res_t, jac_t>(std::declval<app_t>(), std::declval<state_t>() ));
+  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper<1,2>(std::declval<app_t>(), std::declval<state_t>(), std::declval<rp>(), std::declval<jp>()) );
+  using stepper_t = decltype( pressio::ode::create_arbitrary_stepper_partial_deduction<1,2, res_t, jac_t>(std::declval<app_t>(), std::declval<state_t>(), std::declval<rp>(), std::declval<jp>()) );
 
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;
   using lin_solver_t = ::pressio::linearsolvers::Solver<lin_solver_name, jac_t>;
@@ -258,7 +255,7 @@ struct CustomBdf1Solver
   const sc_t dt_	= 0.01;
 
   CustomBdf1Solver(const state_t & yIn)
-    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
+    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_, rp(), jp()}
   {}
 
   void integrateForNSteps(int steps)
@@ -320,7 +317,6 @@ struct CustomBdf1Solver
     ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0,
 					  finalTime, dtSetterLambda, observer, solverO);
   };
-
 };
 
 
@@ -347,7 +343,6 @@ TEST(ode, implicit_arbitraryStepperRunEulerConstDt)
   }
 }
 
-
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetter)
 {
   constexpr double one = ::pressio::utils::Constants<double>::one();
@@ -370,7 +365,6 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetter)
     EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
   }
 }
-
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterWithWrongDt)
 {
@@ -396,7 +390,6 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterWithWrongDt)
   }
 }
 
-
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
 {
   constexpr double one = ::pressio::utils::Constants<double>::one();
@@ -417,7 +410,6 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeTrivial)
   EXPECT_DOUBLE_EQ( S1.y_(1) , two );
   EXPECT_DOUBLE_EQ( S1.y_(2) , three);
 }
-
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
 {
@@ -447,7 +439,6 @@ TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivial)
   EXPECT_DOUBLE_EQ( S1.y_(1), S2.y_(1));
   EXPECT_DOUBLE_EQ( S1.y_(2), S2.y_(2));
 }
-
 
 TEST(ode, implicit_arbitraryStepperRunEulerDtSetterIntegrateToTimeNonTrivialWithCollector)
 {

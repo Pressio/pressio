@@ -88,7 +88,7 @@ public:
       velocities_{policy_.get().create(systemObj)}
   {}
 
-  // only enabled if policy standard 
+  // only enabled if policy standard
   template <
     bool _is_standard_policy = is_standard_policy,
     mpl::enable_if_t<_is_standard_policy,int > = 0

@@ -49,6 +49,8 @@
 #ifndef UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 #define UTILS_UTILS_INSTANCE_OR_REFERENCE_WRAPPER_HPP_
 
+#include <iostream>
+
 namespace pressio{ namespace utils{
 
 template <class T>
@@ -75,14 +77,21 @@ public:
     >
   InstanceOrReferenceWrapper(){}
 
-  InstanceOrReferenceWrapper(T & valIn) : value_(valIn){}
-  InstanceOrReferenceWrapper(const T & valIn) : value_(valIn){}
+  InstanceOrReferenceWrapper(T & valIn) : value_(valIn){
+    std::cout << "COP C\n";
+  }
+  InstanceOrReferenceWrapper(const T & valIn) : value_(valIn){
+    std::cout << "COP 2 C\n";
+  }
 
   // template<
   //   typename _T = T,
   //   typename std::enable_if<std::is_move_constructible<_T>::value, int>::type = 0
   //   >
-  InstanceOrReferenceWrapper(T && valIn) : value_(std::move(valIn)){}
+  InstanceOrReferenceWrapper(T && valIn) : value_(std::move(valIn))
+  {
+    std::cout << "MOVE C\n";
+  }
 
   T& get() { return value_; }
   T const& get() const { return value_; }

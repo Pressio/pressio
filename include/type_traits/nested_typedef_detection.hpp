@@ -49,14 +49,14 @@
 #ifndef CONTAINERS_PREDICATES_TYPEDEFS_NESTED_TYPEDEF_DETECTION_HPP_
 #define CONTAINERS_PREDICATES_TYPEDEFS_NESTED_TYPEDEF_DETECTION_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 template <typename T, typename enable = void>
 struct has_state_typedef : std::false_type{};
 
 template <typename T>
 struct has_state_typedef<
-  T, 
+  T,
   mpl::enable_if_t< !std::is_void<typename T::state_type>::value >
   > : std::true_type{};
 
@@ -65,7 +65,7 @@ struct has_velocity_typedef : std::false_type{};
 
 template <typename T>
 struct has_velocity_typedef<
-  T, 
+  T,
   mpl::enable_if_t< !std::is_void<typename T::velocity_type>::value >
   > : std::true_type{};
 
@@ -74,7 +74,7 @@ struct has_residual_typedef : std::false_type{};
 
 template <typename T>
 struct has_residual_typedef<
-  T, 
+  T,
   mpl::enable_if_t< !std::is_void<typename T::residual_type>::value >
   > : std::true_type{};
 
@@ -83,7 +83,7 @@ struct has_scalar_typedef : std::false_type{};
 
 template <typename T>
 struct has_scalar_typedef<
-  T, 
+  T,
   mpl::enable_if_t< !std::is_void<typename T::scalar_type>::value >
   > : std::true_type{};
 
@@ -111,7 +111,7 @@ struct has_matrix_typedef : std::false_type{};
 template <typename T>
 struct has_matrix_typedef<
   T,
-  mpl::enable_if_t< !std::is_void<typename T::matrix_type>::value > 
+  mpl::enable_if_t< !std::is_void<typename T::matrix_type>::value >
   > : std::true_type{};
 
 template <typename T, typename enable = void>
@@ -186,5 +186,5 @@ struct has_discrete_time_jacobian_typedef<
   mpl::enable_if_t< !std::is_void<typename T::discrete_time_jacobian_type>::value >
   > : std::true_type{};
 
-}//end namespace 
+}//end namespace
 #endif  // CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_

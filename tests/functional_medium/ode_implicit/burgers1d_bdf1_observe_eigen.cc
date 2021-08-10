@@ -48,8 +48,6 @@ int main(int argc, char *argv[]){
   using app_t		= pressio::apps::Burgers1dEigen;
   using scalar_t	= typename app_t::scalar_type;
   using ode_state_t = typename app_t::state_type;
-  using ode_res_t = typename app_t::velocity_type;
-  using ode_jac_t = typename app_t::jacobian_type;
 
   //-------------------------------
   // create app object
@@ -58,12 +56,10 @@ int main(int argc, char *argv[]){
   app_t appObj(mu, Ncell);
   auto & y0n = appObj.getInitialState();
   ode_state_t y(y0n);
-  using ode_tag = pressio::ode::implicitmethods::BDF1;
-  using stepper_t = pressio::ode::ImplicitStepper<
-    ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  stepper_t stepperObj(y, appObj);
 
-  // define solver
+  auto stepperObj = pressio::ode::create_bdf1_stepper(appObj, y);
+
+  using ode_jac_t = typename app_t::jacobian_type;
   using lin_solver_t = pressio::linearsolvers::Solver<
     pressio::linearsolvers::iterative::Bicgstab, ode_jac_t>;
   lin_solver_t linSolverObj;

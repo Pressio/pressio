@@ -53,10 +53,127 @@
 
 namespace pressio{ namespace ode{
 
-template<typename stepper_tag, typename ...Args>
-using ImplicitStepper =
-  typename ::pressio::ode::impl::ImplicitCompose<
-   	stepper_tag, void, Args...>::type;
+// template<typename stepper_tag, typename ...Args>
+// using ImplicitStepper = impl::ImplicitCompose_t<stepper_tag, Args...>;
+
+// BDF1
+template<class SystemType, class StateType, class ...Args>
+auto create_bdf1_stepper(const SystemType & system,  const StateType & state,  Args && ... args)
+->  decltype( 
+         impl::create_stepper_impl<implicitmethods::BDF1>(system, state, std::forward<Args>(args)...) )
+{
+  return impl::create_stepper_impl<implicitmethods::BDF1>(system, state, std::forward<Args>(args)...);
+};
+
+template<class ResidualType, class JacobianType, class SystemType, class StateType, class ...Args>
+auto create_bdf1_stepper_partial_deduction(const SystemType & system, const StateType & state, Args && ... args)
+->  decltype( 
+         impl::create_stepper_partial_deduction_impl<
+  implicitmethods::BDF1, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...) )
+
+{
+  return impl::create_stepper_partial_deduction_impl<
+  implicitmethods::BDF1, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...);
+};
+
+// BDF2
+template<class SystemType, class StateType, class ...Args>
+auto create_bdf2_stepper(const SystemType & system,  const StateType & state,  Args && ... args)
+->  decltype( 
+         impl::create_stepper_impl<implicitmethods::BDF2>(system, state, std::forward<Args>(args)...) )
+{
+  return impl::create_stepper_impl<implicitmethods::BDF2>(system, state, std::forward<Args>(args)...);
+};
+
+template<class ResidualType, class JacobianType, class SystemType, class StateType, class ...Args>
+auto create_bdf2_stepper_partial_deduction(const SystemType & system, const StateType & state, Args && ... args)
+->  decltype( 
+         impl::create_stepper_partial_deduction_impl<
+  implicitmethods::BDF2, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...) )
+
+{
+  return impl::create_stepper_partial_deduction_impl<
+  implicitmethods::BDF2, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...);
+};
+
+// CrankNicolson
+template<class SystemType, class StateType, class ...Args>
+auto create_cranknicolson_stepper(const SystemType & system,  const StateType & state,  Args && ... args)
+->  decltype(   
+         impl::create_stepper_impl<implicitmethods::CrankNicolson>(system, state, std::forward<Args>(args)...) )
+{
+  return impl::create_stepper_impl<implicitmethods::CrankNicolson>(system, state, std::forward<Args>(args)...);
+};
+
+template<class ResidualType, class JacobianType, class SystemType, class StateType, class ...Args>
+auto create_cranknicolson_stepper_partial_deduction(const SystemType & system, const StateType & state, Args && ... args)
+->  decltype( 
+         impl::create_stepper_partial_deduction_impl<
+  implicitmethods::CrankNicolson, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...) )
+
+{
+  return impl::create_stepper_partial_deduction_impl<
+  implicitmethods::CrankNicolson, ResidualType, JacobianType>(system, state, std::forward<Args>(args)...);
+};
+
+
+//
+// Arbitrary
+//
+template<
+  int order, 
+  int num_states, 
+  class SystemType, 
+  class StateType, 
+  class ...Args,
+  class ReturnType = impl::ImplicitCompose_t<
+    implicitmethods::Arbitrary, 
+    StepperOrder<order>, StepperTotalNumberOfStates<num_states>, SystemType, StateType, Args...>
+  >
+ReturnType create_arbitrary_stepper(const SystemType & system, const StateType & state, Args && ... args)
+{
+  return ReturnType(state, system, std::forward<Args>(args)...);
+};
+
+template<
+  int order, 
+  int num_states, 
+  class ResidualType, 
+  class JacobianType, 
+  class SystemType, 
+  class StateType, 
+  class ReturnType = impl::ImplicitCompose_t<
+    implicitmethods::Arbitrary,
+    StepperOrder<order>, StepperTotalNumberOfStates<num_states>,
+    SystemType, StateType, ResidualType, JacobianType, void>
+  >
+ReturnType create_arbitrary_stepper_partial_deduction(const SystemType & system, const StateType & state)
+{
+  return ReturnType(state, system);
+};
+
+
+template<
+  int order,
+  int num_states,
+  class ResidualType,
+  class JacobianType,
+  class SystemType,
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ReturnType = impl::ImplicitCompose_t<
+    implicitmethods::Arbitrary,
+    StepperOrder<order>, StepperTotalNumberOfStates<num_states>,
+    SystemType, StateType, ResidualType, JacobianType, ResidualPolicyType, JacobianPolicyType>
+  >
+ReturnType create_arbitrary_stepper_partial_deduction(const SystemType & system, const StateType & state, 
+                                                      ResidualPolicyType && rPol, JacobianPolicyType && jPol)
+{
+  return ReturnType(state, system,
+		    std::forward<ResidualPolicyType>(rPol),
+		    std::forward<JacobianPolicyType>(jPol));
+};
 
 }} // end namespace pressio::ode
 #endif  // ODE_IMPLICIT_ODE_IMPLICIT_STEPPER_HPP_

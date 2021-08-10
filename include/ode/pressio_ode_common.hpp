@@ -93,23 +93,6 @@ constexpr int implicit_stencil_size(implicitmethods::BDF1){ return 2; }
 constexpr int implicit_stencil_size(implicitmethods::BDF2){ return 3; }
 constexpr int implicit_stencil_size(implicitmethods::CrankNicolson){ return 2; }
 
-// template <typename stepper_tag> 
-// struct ImplicitStencilSize{ 
-//   static constexpr std::size_t value = 0; 
-// };
-// template <> struct ImplicitStencilSize<implicitmethods::BDF1>{
-//   // need to store: state_n+1, state_n
-//   static constexpr std::size_t value = 2;
-// };
-// template <> struct ImplicitStencilSize<implicitmethods::BDF2>{
-//   // need: state_n+1, state_n, state_n-1
-//   static constexpr std::size_t value = 3;
-// };
-// template <> struct ImplicitStencilSize<implicitmethods::CrankNicolson>{
-//   // need: state_n+1, state_n
-//   static constexpr std::size_t value = 2;
-// };
-
 //! Default type for the ode step
 using step_count_type = int32_t;
 
@@ -192,8 +175,6 @@ using ImplicitStencilStatesContainer
    on the top-level "pressio_ode_{explicit,implicit}.hpp".
 */
 #include "ode_exceptions.hpp"
-#include "predicates/ode_is_stepper_total_n_states_setter.hpp"
-#include "predicates/ode_is_stepper_order_setter.hpp"
 #include "predicates/ode_has_const_create_velocity_method_return_result.hpp"
 #include "predicates/ode_has_const_velocity_method_accept_state_time_result_return_void.hpp"
 #include "predicates/ode_has_const_create_discrete_time_residual_method_return_result.hpp"
@@ -221,7 +202,6 @@ using ImplicitStencilStatesContainer
 #include "constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
 #include "constraints/ode_implicitly_steppable.hpp"
 #include "constraints/ode_implicitly_steppable_with_guesser.hpp"
-#include "constraints/ode_auxiliary_stepper_for_bdf2.hpp"
 #include "constraints/ode_implicit_residual_policy.hpp"
 #include "constraints/ode_implicit_jacobian_policy.hpp"
 

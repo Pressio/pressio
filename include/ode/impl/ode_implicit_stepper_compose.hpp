@@ -66,312 +66,312 @@
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<typename tag, typename ...Args>
-struct ImplicitCompose;
+template<class StateType, class ResidualType,class JacobianType>
+struct ImplicitComposeAssertValidStateResJac
+{
+  static_assert(::pressio::ode::implicit_state<StateType>::value,
+    "Invalid state type for implicit time stepping");
+  static_assert(::pressio::ode::implicit_residual<ResidualType>::value,
+    "Invalid residual type for implicit time stepping");
+  static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
+    "Invalid jacobian type for implicit time stepping");
+  static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
+   "state, residual and jacobian are not scalar compatible ");
 
-////////////////////////////////////////
-/// CRANK-NICOLSON stepper
-////////////////////////////////////////
-// 1. ImplicitCompose<tag, StateType, res_t, jac_t, system_t>;
-// 2. ImplicitCompose<tag, StateType, res_t, jac_t, system_t, void, res_pol, jac_pol>;
+  static constexpr bool value = true;
+};
+
+template<class ... Args>
+struct ImplicitComposeAssertValidPolicies;
+
 template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ScalarType,
+  class StateType,
+  class SystemType,
+  class ResidualType,
+  class JacobianType
   >
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::CrankNicolson,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value
-  >,
-  StateType, ResidualType, JacobianType, SystemType>
+struct ImplicitComposeAssertValidPolicies<
+  implicitmethods::BDF1,
+  ResidualPolicyType, JacobianPolicyType,
+  ScalarType, StateType, SystemType, ResidualType, JacobianType
+  >
 {
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  static_assert(::pressio::ode::implicit_euler_residual_policy<
+		mpl::remove_cvref_t<ResidualPolicyType>,
+		StateType, ResidualType, SystemType, ScalarType>::value,
+		"Invalid residual policy for BDF1");
 
-  static_assert(::pressio::are_scalar_compatible<
-   StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
-
-  using ResidualPolicyType =
-    ::pressio::ode::impl::ResidualStandardPolicyCrankNicolson<
-    StateType, ResidualType>;
-  using JacobianPolicyType =
-    ::pressio::ode::impl::JacobianStandardPolicyCrankNicolson<
-    StateType, JacobianType>;
-
-  using type = StepperCrankNicolson<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, ResidualPolicyType, JacobianPolicyType,
-    true // policies are standard
-    >;
+  static_assert(::pressio::ode::implicit_euler_jacobian_policy<
+		mpl::remove_cvref_t<JacobianPolicyType>,
+		StateType, JacobianType, SystemType, ScalarType>::value,
+		"Invalid jacobian policy for BDF1");
+  static constexpr bool value = true;
 };
 
-// 2. when we pass a void before policies in place of aux stepper
 template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType>
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::CrankNicolson,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value
-    and
-    ::pressio::ode::implicit_cranknicolson_residual_policy<
-      ResidualPolicyType, StateType, ResidualType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type
-      >::value
-    and
-    ::pressio::ode::implicit_cranknicolson_jacobian_policy<
-      JacobianPolicyType, StateType, JacobianType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type
-      >::value
-  >,
-  StateType, ResidualType, JacobianType,
-  SystemType, void, ResidualPolicyType, JacobianPolicyType>
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ScalarType,
+  class StateType,
+  class SystemType,
+  class ResidualType,
+  class JacobianType
+  >
+struct ImplicitComposeAssertValidPolicies<
+  implicitmethods::BDF2,
+  ResidualPolicyType, JacobianPolicyType,
+  ScalarType, StateType, SystemType, ResidualType, JacobianType
+  >
 {
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  static_assert(::pressio::ode::implicit_bdf2_residual_policy<
+		mpl::remove_cvref_t<ResidualPolicyType>,
+		StateType, ResidualType, SystemType, ScalarType>::value,
+		"Invalid residual policy for BDF2");
 
-  static_assert(::pressio::are_scalar_compatible
-   <StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
+  static_assert(::pressio::ode::implicit_bdf2_jacobian_policy<
+		mpl::remove_cvref_t<JacobianPolicyType>,
+		StateType, JacobianType, SystemType, ScalarType>::value,
+		"Invalid jacobian policy for BDF2");
+  static constexpr bool value = true;
+};
 
-  using type = StepperCrankNicolson<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, const ResidualPolicyType &, const JacobianPolicyType &,
-    false // policies are custom
-    >;
+template<
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ScalarType,
+  class StateType,
+  class SystemType,
+  class ResidualType,
+  class JacobianType
+  >
+struct ImplicitComposeAssertValidPolicies<
+  implicitmethods::CrankNicolson,
+  ResidualPolicyType, JacobianPolicyType,
+  ScalarType, StateType, SystemType, ResidualType, JacobianType
+  >
+{
+  static_assert(::pressio::ode::implicit_cranknicolson_residual_policy<
+		mpl::remove_cvref_t<ResidualPolicyType>,
+		StateType, ResidualType, SystemType, ScalarType>::value,
+		"Invalid residual policy for CrankNicolson");
+
+  static_assert(::pressio::ode::implicit_cranknicolson_jacobian_policy<
+		mpl::remove_cvref_t<JacobianPolicyType>,
+		StateType, JacobianType, SystemType, ScalarType>::value,
+		"Invalid jacobian policy for CrankNicolson");
+  static constexpr bool value = true;
 };
 
 
+template<class Tag>
+struct ImplicitComposeConcreteStepper;
+
+template<>
+struct ImplicitComposeConcreteStepper<implicitmethods::BDF1>
+{
+  template<bool b, class ...Args>
+  using type = StepperBDF1<Args..., b>;
+};
+
+template<>
+struct ImplicitComposeConcreteStepper<implicitmethods::BDF2>
+{
+  template<bool b, class ...Args>
+  using type = StepperBDF2<Args..., b>;
+};
+
+template<>
+struct ImplicitComposeConcreteStepper<implicitmethods::CrankNicolson>
+{
+  template<bool b, class ...Args>
+  using type = StepperCrankNicolson<Args..., b>;
+};
+
+
+template<class Tag>
+struct ImplicitComposeConcretePolicies;
+
+template<>
+struct ImplicitComposeConcretePolicies<implicitmethods::BDF1>{
+  template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyBdf<Args...>;
+};
+
+template<>
+struct ImplicitComposeConcretePolicies<implicitmethods::BDF2>{
+  template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyBdf<Args...>;
+};
+
+
+template<>
+struct ImplicitComposeConcretePolicies<implicitmethods::CrankNicolson>{
+  template<class ...Args> using residual_policy_type = ResidualStandardPolicyCrankNicolson<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyCrankNicolson<Args...>;
+};
+
+
+template<class ...Args>
+struct ImplicitCompose{
+  using type = void;
+};
+
 ////////////////////////////////////////
-/// BDF1 stepper
+/// BDF1 or BDF2 stepper
 ////////////////////////////////////////
 
-// potential cases
-// 1. ImplicitCompose<bdf1, StateType, res_t, jac_t, system_t>;
-// 2. ImplicitCompose<bdf1, StateType, res_t, jac_t, system_t, res_pol, jac_pol>;
-// 3. ImplicitCompose<bdf1, StateType, res_t, jac_t, system_t, void, res_pol, jac_pol>;
+// 0. ImplicitCompose<tag, enable, SystemType, StateType>
+// 1. ImplicitCompose<tag, enable, SystemType, StateType, ResPol,  JacPol>
+// 2. ImplicitCompose<tag, enable, SystemType, StateType, ResType, JacType, void>
+// 3. ImplicitCompose<tag, enable, SystemType, StateType, ResType, JacType, ResPol, JacPol>
+
+// 0.
+template<class TagType, class SystemType, class StateType>
+struct ImplicitCompose<
+  TagType,
+  mpl::enable_if_t<
+    std::is_same<TagType, implicitmethods::BDF1>::value or
+    std::is_same<TagType, implicitmethods::BDF2>::value or
+    std::is_same<TagType, implicitmethods::CrankNicolson>::value
+    >,
+  SystemType, StateType>
+{
+  static_assert
+  (::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+
+  using ResidualType = typename SystemType::velocity_type;
+  using JacobianType = typename SystemType::jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using ResidualPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template residual_policy_type<StateType, ResidualType>;
+  using JacobianPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template jacobian_policy_type<StateType, JacobianType>;
+
+  using type = typename ImplicitComposeConcreteStepper<TagType>::template  type<
+    true, ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType>;
+};
 
 // 1.
-// when we have standard policies, the system must be checked for API
-// because the standard policies call some specific methods on the system,
-// so the system must meet some requirements
 template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType
+  class TagType,
+  class SystemType,
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType
   >
 struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::BDF1,
+  TagType,
   mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value
-  >,
-  StateType, ResidualType, JacobianType, SystemType>
+    std::is_same<TagType, implicitmethods::BDF1>::value or
+    std::is_same<TagType, implicitmethods::BDF2>::value or
+    std::is_same<TagType, implicitmethods::CrankNicolson>::value
+    >,
+  SystemType, StateType, ResidualPolicyType, JacobianPolicyType>
 {
+
+  static_assert
+  (::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+
+  using ResidualType = typename SystemType::velocity_type;
+  using JacobianType = typename SystemType::jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(::pressio::are_scalar_compatible<
-   StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
 
-  using ResidualPolicyType =
-    ::pressio::ode::impl::ResidualStandardPolicyBdf<
-    StateType, ResidualType>;
-  using JacobianPolicyType =
-    ::pressio::ode::impl::JacobianStandardPolicyBdf<
-    StateType, JacobianType>;
+  static_assert(ImplicitComposeAssertValidPolicies<
+		TagType, ResidualPolicyType, JacobianPolicyType,
+		ScalarType, StateType, SystemType, ResidualType, JacobianType
+		>::value, "");
 
-  using type = StepperBDF1<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, ResidualPolicyType, JacobianPolicyType,
-    true // policies are standard
-    >;
+  using type = typename ImplicitComposeConcreteStepper<TagType>::template  type<
+    false, ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType>;
 };
 
 // 2.
-// when we have custom policies, we do not check the system, because in general,
+template<
+  class TagType,
+  class SystemType,
+  class StateType,
+  class ResidualType,
+  class JacobianType
+  >
+struct ImplicitCompose<
+  TagType,
+  mpl::enable_if_t<
+    std::is_same<TagType, implicitmethods::BDF1>::value or
+    std::is_same<TagType, implicitmethods::BDF2>::value or
+    std::is_same<TagType, implicitmethods::CrankNicolson>::value
+    >,
+  SystemType,
+  StateType, ResidualType, JacobianType,
+  void
+  >
+{
+
+  static_assert
+  (::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using ResidualPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template residual_policy_type<StateType, ResidualType>;
+  using JacobianPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template jacobian_policy_type<StateType, JacobianType>;
+
+  using type = typename ImplicitComposeConcreteStepper<TagType>::template type<
+    true, ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType>;
+};
+
+// 3.
+// when we have custom policies and provided types for res and jac,
+// we do not check the system, because in general,
 // one could not use it since the stepper only knows about the policies,
 // and these can themselves contain the system object.
-// in this case, we dont need to checck if system has certain requirements.
-// it is user's responsibility to make sure the policies
-// are doing the right thing.
+// in this case, we dont need to check if system has certain requirements.
+// it is user's responsibility to make sure the policies are doing the right thing.
 template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType
+  class TagType,
+  class SystemType,
+  class StateType,
+  class ResidualType,
+  class JacobianType,
+  class ResidualPolicyType,
+  class JacobianPolicyType
   >
 struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::BDF1,
+  TagType,
   mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value
-    and
-    ::pressio::ode::implicit_euler_residual_policy<
-      ResidualPolicyType, StateType, ResidualType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-    and
-    ::pressio::ode::implicit_euler_jacobian_policy<
-      JacobianPolicyType, StateType, JacobianType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-  >,
+    std::is_same<TagType, implicitmethods::BDF1>::value or
+    std::is_same<TagType, implicitmethods::BDF2>::value or
+    std::is_same<TagType, implicitmethods::CrankNicolson>::value
+    >,
+  SystemType,
   StateType, ResidualType, JacobianType,
-  SystemType, ResidualPolicyType, JacobianPolicyType>
-{
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-
-  static_assert(::pressio::are_scalar_compatible
-   <StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
-
-  using type = StepperBDF1<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, const ResidualPolicyType &, const JacobianPolicyType&,
-    false // policies are custom
-    >;
-};
-
-// 3. when we pass a void before policies in place of aux stepper
-template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType>
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::BDF1,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value
-    and
-    ::pressio::ode::implicit_euler_residual_policy<
-      ResidualPolicyType, StateType, ResidualType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type
-      >::value
-    and
-    ::pressio::ode::implicit_euler_jacobian_policy<
-      JacobianPolicyType, StateType, JacobianType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type
-      >::value
-  >,
-  StateType, ResidualType, JacobianType,
-  SystemType, void, ResidualPolicyType, JacobianPolicyType>
-{
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-
-  static_assert(::pressio::are_scalar_compatible
-   <StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
-
-  using type = StepperBDF1<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, const ResidualPolicyType &, const JacobianPolicyType &,
-    false // policies are custom
-    >;
-};
-
-
-////////////////////////////////////////
-/// BDF2 stepper
-////////////////////////////////////////
-
-// ImplicitCompose<bdf2, StateType, res_t, jac_t, system_t, aux_stepper_t>;
-// ImplicitCompose<bdf2, StateType, res_t, jac_t, system_t, aux_stepper_t, res_pol, jac_pol>;
-template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename aux_stepper_t
+  ResidualPolicyType, JacobianPolicyType
   >
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::BDF2,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::continuous_time_system_with_user_provided_jacobian<SystemType>::value and
-    ::pressio::ode::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
-  >,
-  StateType, ResidualType, JacobianType, SystemType, aux_stepper_t>
 {
+
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(::pressio::are_scalar_compatible<
-   StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
 
-  using ResidualPolicyType =
-    ::pressio::ode::impl::ResidualStandardPolicyBdf<
-    StateType, ResidualType>;
-  using JacobianPolicyType =
-    ::pressio::ode::impl::JacobianStandardPolicyBdf<
-    StateType, JacobianType>;
+  static_assert(ImplicitComposeAssertValidPolicies<
+		TagType, ResidualPolicyType, JacobianPolicyType,
+		ScalarType, StateType, SystemType, ResidualType, JacobianType
+		>::value, "");
 
-  using type = StepperBDF2<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, aux_stepper_t,
-    ResidualPolicyType, JacobianPolicyType,
-    true // policies are standard
-    >;
-};
-
-template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename aux_stepper_t,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType
-  >
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::BDF2,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::auxiliary_stepper_for_bdf2<aux_stepper_t>::value
-    and
-    ::pressio::ode::implicit_bdf2_residual_policy<
-      ResidualPolicyType, StateType, ResidualType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-    and
-    ::pressio::ode::implicit_bdf2_jacobian_policy<
-      JacobianPolicyType, StateType, JacobianType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-  >,
-  StateType, ResidualType, JacobianType,
-  SystemType, aux_stepper_t,
-  ResidualPolicyType, JacobianPolicyType>
-{
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(::pressio::are_scalar_compatible
-   <StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
-
-  using type = StepperBDF2<
-    ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, aux_stepper_t,
-    const ResidualPolicyType &, const JacobianPolicyType &,
-    false // policies are custom
-    >;
+  using type = typename ImplicitComposeConcreteStepper<TagType>::template type<
+    false, ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType>;
 };
 
 
@@ -379,96 +379,221 @@ struct ImplicitCompose<
 /// ImplicitCompose Arbitrary stepper
 ////////////////////////////////////////
 
-// ImplicitCompose< StateType, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter>;
-// if we are here, it means we only need auxiliary states and not auxiliary rhs
-template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename order_setter_t,
-  typename tot_n_setter_t
-  >
-struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::Arbitrary,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::discrete_time_system_with_user_provided_jacobian<SystemType>::value and
-    ::pressio::ode::IsStepperOrderSetter<order_setter_t>::value and
-    ::pressio::ode::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
-  >,
-  StateType, ResidualType, JacobianType, SystemType, order_setter_t, tot_n_setter_t>
-{
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(::pressio::are_scalar_compatible<
-   StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
+// 0. ImplicitCompose<tag, order, n_states, SystemType, StateType>
+// 1. ImplicitCompose<tag, order, n_states, SystemType, StateType, ResPol,  JacPol>
+// 2. ImplicitCompose<tag, order, n_states, SystemType, StateType, ResType, JacType, void>
+// 3. ImplicitCompose<tag, order, n_states, SystemType, StateType, ResType, JacType, ResPol, JacPol>
 
-  using ResidualPolicyType =
-    ::pressio::ode::impl::ResidualStandardDiscreteTimePolicy<
-    StateType, ResidualType>;
-  using JacobianPolicyType =
-    ::pressio::ode::impl::JacobianStandardDiscreteTimePolicy<
-    StateType, JacobianType>;
+// 0.
+template<class Order, class NStates, class SystemType, class StateType>
+struct ImplicitCompose<
+  implicitmethods::Arbitrary, Order, NStates, SystemType, StateType>
+{
+  static_assert
+  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+
+  using ResidualType = typename SystemType::discrete_time_residual_type;
+  using JacobianType = typename SystemType::discrete_time_jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using ResidualPolicyType = ResidualStandardDiscreteTimePolicy<StateType, ResidualType>;
+  using JacobianPolicyType = JacobianStandardDiscreteTimePolicy<StateType, JacobianType>;
 
   using type = StepperArbitrary<
+    Order::value, NStates::value,
     ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, order_setter_t, tot_n_setter_t,
-    ResidualPolicyType, JacobianPolicyType,
+    SystemType, ResidualPolicyType, JacobianPolicyType,
     true // policies are standard
     >;
 };
 
-// ImplicitCompose< StateType, res_t, jac_t, system_t, OrderSetter, TotNumStatesSetter, res_pol, jac_pol>;
-// if we are here, it means we only need auxiliary states and not auxiliary rhs
+// 1.
 template<
-  typename StateType,
-  typename ResidualType,
-  typename JacobianType,
-  typename SystemType,
-  typename order_setter_t,
-  typename tot_n_setter_t,
-  typename ResidualPolicyType,
-  typename JacobianPolicyType
->
+  class Order,
+  class NStates,
+  class SystemType,
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType
+  >
 struct ImplicitCompose<
-  ::pressio::ode::implicitmethods::Arbitrary,
-  mpl::enable_if_t<
-    ::pressio::ode::implicit_state<StateType>::value and
-    ::pressio::ode::implicit_residual<ResidualType>::value and
-    ::pressio::ode::implicit_jacobian<JacobianType>::value and
-    ::pressio::ode::IsStepperOrderSetter<order_setter_t>::value and
-    ::pressio::ode::IsStepperTotalNumStatesSetter<tot_n_setter_t>::value
-    and
-    ::pressio::ode::implicit_residual_policy<
-      ResidualPolicyType, ::pressio::ode::implicitmethods::Arbitrary,
-      tot_n_setter_t::value - 1, // number of wanted auxiliary states
-      0, // number of wanted auxiliary rhs (this is because of the template specialization)
-      StateType, ResidualType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-    and
-    ::pressio::ode::implicit_jacobian_policy<
-      JacobianPolicyType, ::pressio::ode::implicitmethods::Arbitrary,
-      tot_n_setter_t::value - 1, // number of wanted auxiliary states
-      StateType, JacobianType, SystemType,
-      typename ::pressio::Traits<StateType>::scalar_type>::value
-  >,
-  StateType, ResidualType, JacobianType, SystemType, order_setter_t, tot_n_setter_t,
-  ResidualPolicyType, JacobianPolicyType>
+  implicitmethods::Arbitrary, Order, NStates, SystemType, StateType, ResidualPolicyType, JacobianPolicyType
+  >
 {
+
+  static_assert
+  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+
+  using ResidualType = typename SystemType::discrete_time_residual_type;
+  using JacobianType = typename SystemType::discrete_time_jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(::pressio::are_scalar_compatible<
-   StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
+
+  static_assert(::pressio::ode::implicit_residual_policy<
+		ResidualPolicyType,
+		implicitmethods::Arbitrary,
+		NStates::value - 1, // number of wanted auxiliary states
+		0, // number of wanted auxiliary rhs (this is because of the template specialization)
+		StateType, ResidualType, SystemType,
+		ScalarType>::value,
+		"Invalid residual policy for arbitrary stepper");
+
+  static_assert(::pressio::ode::implicit_jacobian_policy<
+		JacobianPolicyType,
+		implicitmethods::Arbitrary,
+		NStates::value - 1, // number of wanted auxiliary states
+		StateType, JacobianType, SystemType,
+		ScalarType>::value,
+		"Invalid jacobian policy for arbitrary stepper");
 
   using type = StepperArbitrary<
+    Order::value, NStates::value,
     ScalarType, StateType, ResidualType, JacobianType,
-    SystemType, order_setter_t, tot_n_setter_t,
-    const ResidualPolicyType &, const JacobianPolicyType &,
-    false // policies are custom
+    SystemType, ResidualPolicyType, JacobianPolicyType,
+    false
     >;
+};
+
+// 2.
+template<
+  class Order, class NStates,
+  class SystemType,
+  class StateType,
+  class ResidualType,
+  class JacobianType
+  >
+struct ImplicitCompose<
+  implicitmethods::Arbitrary, Order, NStates, SystemType, StateType, ResidualType, JacobianType, void>
+{
+  static_assert
+  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<SystemType>::value,
+   "The system passed does not meet the required API");
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using ResidualPolicyType = ResidualStandardDiscreteTimePolicy<StateType, ResidualType>;
+  using JacobianPolicyType = JacobianStandardDiscreteTimePolicy<StateType, JacobianType>;
+
+  using type = StepperArbitrary<
+    Order::value, NStates::value,
+    ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType,
+    true // policies are standard
+    >;
+};
+
+
+// 3.
+template<
+  class Order,
+  class NStates,
+  class SystemType,
+  class StateType,
+  class ResidualType,
+  class JacobianType,
+  class ResidualPolicyType,
+  class JacobianPolicyType
+  >
+struct ImplicitCompose<
+  implicitmethods::Arbitrary,
+  Order, NStates,
+  SystemType, StateType, ResidualType, JacobianType, ResidualPolicyType, JacobianPolicyType
+  >
+{
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+
+  static_assert(::pressio::ode::implicit_residual_policy<
+		ResidualPolicyType,
+		implicitmethods::Arbitrary,
+		NStates::value - 1, // number of wanted auxiliary states
+		0, // number of wanted auxiliary rhs (this is because of the template specialization)
+		StateType, ResidualType, SystemType,
+		ScalarType>::value,
+		"Invalid residual policy for arbitrary stepper");
+
+  static_assert(::pressio::ode::implicit_jacobian_policy<
+		JacobianPolicyType,
+		implicitmethods::Arbitrary,
+		NStates::value - 1, // number of wanted auxiliary states
+		StateType, JacobianType, SystemType,
+		ScalarType>::value,
+		"Invalid jacobian policy for arbitrary stepper");
+
+  using type = StepperArbitrary<
+    Order::value, NStates::value,
+    ScalarType, StateType, ResidualType, JacobianType,
+    SystemType, ResidualPolicyType, JacobianPolicyType,
+    false
+    >;
+};
+
+template<class ...Args>
+using ImplicitCompose_t = typename ImplicitCompose<Args...>::type;
+
+template<
+  class TagType,
+  class SystemType,
+  class StateType,
+  class ReturnType = impl::ImplicitCompose_t<TagType, void, SystemType, StateType>
+  >
+ReturnType create_stepper_impl(const SystemType & system, const StateType & state){
+  return ReturnType(state, system);
+};
+
+template<
+  class TagType,
+  class SystemType,
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ReturnType = impl::ImplicitCompose_t<TagType, void, SystemType, StateType, ResidualPolicyType, JacobianPolicyType>
+  >
+  ReturnType create_stepper_impl(const SystemType & system, const StateType & state, 
+                                 ResidualPolicyType && rPol, JacobianPolicyType && jPol)
+{
+  return ReturnType(state, system,
+        std::forward<ResidualPolicyType>(rPol),
+        std::forward<JacobianPolicyType>(jPol));
+};
+
+template<
+  class TagType,
+  class ResidualType,
+  class JacobianType,
+  class SystemType,
+  class StateType,
+  class ReturnType = impl::ImplicitCompose_t<TagType, void, SystemType, StateType, ResidualType, JacobianType, void>
+  >
+ReturnType create_stepper_partial_deduction_impl(const SystemType & system, const StateType & state)
+{
+  return ReturnType(state, system);
+};
+
+template<
+  class TagType,
+  class ResidualType,
+  class JacobianType,
+  class SystemType,
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ReturnType = impl::ImplicitCompose_t<
+    TagType, void, SystemType, StateType, ResidualType, JacobianType, ResidualPolicyType, JacobianPolicyType>
+  >
+ReturnType create_stepper_partial_deduction_impl(const SystemType & system, const StateType & state, 
+                                                 ResidualPolicyType && rPol, JacobianPolicyType && jPol)
+{
+  return ReturnType(state, system,
+        std::forward<ResidualPolicyType>(rPol),
+        std::forward<JacobianPolicyType>(jPol));
 };
 
 }}}

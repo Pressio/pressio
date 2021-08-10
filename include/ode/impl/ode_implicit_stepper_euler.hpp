@@ -93,16 +93,6 @@ public:
   StepperBDF1 & operator=(StepperBDF1 && other) = delete;
   ~StepperBDF1() = default;
 
-  StepperBDF1(const state_type & state,
-	      const SystemType & systemObj,
-	      const mpl::remove_cvref_t<ResidualPolicyType> & resPolicyObj,
-	      const mpl::remove_cvref_t<JacobianPolicyType> & jacPolicyObj)
-    : systemObj_{systemObj},
-      stencilStates_(state),
-      resPolicy_{resPolicyObj},
-      jacPolicy_{jacPolicyObj}
-  {}
-
   template<
     bool _policies_are_standard = policies_are_standard,
     ::pressio::mpl::enable_if_t<_policies_are_standard, int > = 0
@@ -110,9 +100,35 @@ public:
   StepperBDF1(const state_type & state,
 	      const SystemType & systemObj)
     : systemObj_{systemObj},
-      stencilStates_(state),
+      stencilStates_(state), //stencilstates handles right semantics
       resPolicy_{},
       jacPolicy_{}
+  {}
+
+  StepperBDF1(const state_type & state,
+	      const SystemType & systemObj,
+	      ResidualPolicyType && resPolicyObj,
+	      JacobianPolicyType && jacPolicyObj)
+    : systemObj_{systemObj},
+      stencilStates_(state), //stencilstates handles right semantics
+      resPolicy_{std::forward<ResidualPolicyType>(resPolicyObj)},
+      jacPolicy_{std::forward<JacobianPolicyType>(jacPolicyObj)}
+  {}
+
+  template<
+    class _ResidualPolicyType = ResidualPolicyType,
+    class _JacobianPolicyType = JacobianPolicyType,
+    mpl::enable_if_t<!std::is_reference<_ResidualPolicyType>::value and
+		     !std::is_reference<_JacobianPolicyType>::value, int> = 0
+    >
+  StepperBDF1(const state_type & state,
+	      const SystemType & systemObj,
+	      const _ResidualPolicyType & resPolicyObj,
+	      const _JacobianPolicyType & jacPolicyObj)
+    : systemObj_{systemObj},
+      stencilStates_(state), //stencilstates handles right semantics
+      resPolicy_{resPolicyObj},
+      jacPolicy_{jacPolicyObj}
   {}
 
 public:
@@ -132,8 +148,8 @@ public:
     PRESSIOLOG_DEBUG("bdf1 stepper: do step");
 
     auto dummyGuesser =
-      [](const ::pressio::ode::step_count_type &, 
-         const ScalarType &, 
+      [](const ::pressio::ode::step_count_type &,
+         const ScalarType &,
          state_type &)
       { /*no op*/ };
 

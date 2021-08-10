@@ -29,7 +29,7 @@ struct refAppEigen
   using velocity_type = state_type;
 
   void velocity(const state_type & y,
-		            scalar_type t, 
+		            scalar_type t,
                 velocity_type & rhs) const
   {
     auto sz = y.size();

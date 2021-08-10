@@ -24,7 +24,7 @@ TEST(ode, explicit_euler_policy_default_created)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_forward_euler_stepper(y, appObj);
+  auto stepperObj = ode::create_forward_euler_stepper(appObj, y);
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
 }
 
@@ -37,7 +37,7 @@ TEST(ode, explicit_euler_custom_policy_reference)
   state_t y(3);
   using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
-  auto stepperObj = ode::create_forward_euler_stepper(y, appObj, polObj);
+  auto stepperObj = ode::create_forward_euler_stepper(appObj, y, polObj);
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
 }
 
@@ -51,7 +51,7 @@ TEST(ode, explicit_euler_custom_policy_move)
   state_t y(3);
   using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
-  auto stepperObj = ode::create_forward_euler_stepper(y, appObj, std::move(polObj));
+  auto stepperObj = ode::create_forward_euler_stepper(appObj, y, std::move(polObj));
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
 }
 
@@ -72,7 +72,7 @@ TEST(ode, explicit_rk4_policy_default_created)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_rk4_stepper(y, appObj);
+  auto stepperObj = ode::create_rk4_stepper(appObj, y);
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
@@ -86,7 +86,7 @@ TEST(ode, explicit_rk4_custom_policy_reference)
   state_t y(3);
   using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
-  auto stepperObj = ode::create_runge_kutta4_stepper(y, appObj, polObj);
+  auto stepperObj = ode::create_runge_kutta4_stepper(appObj, y, polObj);
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
@@ -99,7 +99,7 @@ TEST(ode, explicit_rk4_custom_policy_move)
   state_t y(3);
   using res_std_pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   res_std_pol_t polObj;
-  auto stepperObj = ode::create_runge_kutta4_stepper(y, appObj, std::move(polObj));
+  auto stepperObj = ode::create_runge_kutta4_stepper(appObj, y, std::move(polObj));
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
@@ -132,7 +132,7 @@ TEST(ode, explicit_ssprk3_policy_default_created)
   app_t appObj;
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.; 
-  auto stepperObj = ode::create_ssp_runge_kutta3_stepper(y, appObj);
+  auto stepperObj = ode::create_ssp_runge_kutta3_stepper(appObj, y);
   double dt = 2.; 
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y(0), 29./3.); 
@@ -223,7 +223,7 @@ TEST(ode, explicit_ab2_policy_default_created)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(y, appObj);
+  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj, y);
 
   double dt = 2.;
   Collector C;
@@ -241,7 +241,7 @@ TEST(ode, explicit_ab2_custom_policy_reference)
 
   using pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
   pol_t polObj;
-  auto stepperObj = ode::create_adams_bashforth2_stepper(y, appObj, polObj);
+  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj, y, polObj);
   double dt = 2.;
   Collector C;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 3, C);
@@ -258,7 +258,7 @@ TEST(ode, explicit_ab2_custom_policy_move)
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
   using pol_t = ode::impl::ExplicitVelocityStandardPolicy<state_t>;
-  auto stepperObj = ode::create_adams_bashforth2_stepper(y, appObj, pol_t());
+  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj, y, pol_t());
   double dt = 2.;
   Collector C;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 3, C);

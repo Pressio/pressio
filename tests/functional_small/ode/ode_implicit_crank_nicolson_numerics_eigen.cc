@@ -241,8 +241,8 @@ TEST(ode, implicit_crank_nicolson_correctness)
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
-  using res_t	        = typename app_t::velocity_type;
-  using jac_t	= typename app_t::jacobian_type;
+  // using res_t	        = typename app_t::velocity_type;
+  // using jac_t	= typename app_t::jacobian_type;
   std::string checkStr= "PASSED";
   app_t appObj;
   MyFakeSolver solver(checkStr);
@@ -250,10 +250,12 @@ TEST(ode, implicit_crank_nicolson_correctness)
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
-  using ode_tag = pressio::ode::implicitmethods::CrankNicolson;
-  using stepper_t = pressio::ode::ImplicitStepper<
-    ode_tag, state_t, res_t, jac_t, app_t>;
-  stepper_t stepperObj(y, appObj);
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(appObj, y);
+  // using ode_tag = pressio::ode::implicitmethods::CrankNicolson;
+  // using stepper_t = pressio::ode::ImplicitStepper<
+  //   ode_tag, state_t, res_t, jac_t, app_t>;
+  // stepper_t stepperObj(y, appObj);
+
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
   std::cout << checkStr << std::endl;
   pressio::log::finalize();

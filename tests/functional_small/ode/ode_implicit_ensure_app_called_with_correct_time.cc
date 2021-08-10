@@ -71,15 +71,10 @@ TEST(ode, implicit_euler_appVelocityCalledWithCorrectTime)
   using namespace pressio;
   using app_t = MyApp1;
   using state_t = typename app_t::state_type;
-  using res_t = typename app_t::velocity_type;
-  using jac_t = typename app_t::jacobian_type;
   app_t appObj;
   state_t y(3); y.setConstant(1.5);
 
-  using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
-  stepper_t stepperObj(y, appObj);
-
+  auto stepperObj = ode::create_bdf1_stepper(appObj, y);
   MyFakeSolver1 solver;
   double dt = 1.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1, solver);
@@ -175,20 +170,10 @@ TEST(ode, implicit_bdf2_appVelocityCalledWithCorrectTime)
   using namespace pressio;
   using app_t = MyApp2;
   using state_t = typename app_t::state_type;
-  using res_t = typename app_t::velocity_type;
-  using jac_t = typename app_t::jacobian_type;
   app_t appObj;
   state_t y(3); y.setConstant(1.5);
 
-  using aux_stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::BDF1, state_t, res_t, jac_t, app_t>;
-  aux_stepper_t stepperAux(y, appObj);
-
-  using stepper_t = ode::ImplicitStepper<
-    ode::implicitmethods::BDF2,
-    state_t, res_t, jac_t, app_t, aux_stepper_t>;
-  stepper_t stepperObj(y, appObj, stepperAux);
-
+  auto stepperObj = ode::create_bdf2_stepper(appObj, y);
   MyFakeSolver2 solver;
   double dt = 1.1;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
@@ -287,12 +272,7 @@ TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  using my_custom_order = ::pressio::ode::StepperOrder<1>;
-  using my_num_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::implicitmethods::Arbitrary,
-    state_t, res_t, jac_t, app_t, my_custom_order, my_num_states>;
-  stepper_t stepperObj(y, appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<1,2>(appObj, y);
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
@@ -309,12 +289,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime2)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  using my_custom_order = ::pressio::ode::StepperOrder<1>;
-  using my_num_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::implicitmethods::Arbitrary,
-    state_t, res_t, jac_t, app_t, my_custom_order, my_num_states>;
-  stepper_t stepperObj(y, appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<1,2>(appObj, y);
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
@@ -331,12 +306,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime3)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  using my_custom_order = ::pressio::ode::StepperOrder<1>;
-  using my_num_states = ::pressio::ode::StepperTotalNumberOfStates<3>;
-  using stepper_t = ::pressio::ode::ImplicitStepper<
-    ::pressio::ode::implicitmethods::Arbitrary,
-    state_t, res_t, jac_t, app_t, my_custom_order, my_num_states>;
-  stepper_t stepperObj(y, appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<1,2>(appObj, y);
 
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;

@@ -57,7 +57,6 @@ template<
   typename ResidualType,
   typename JacobianType,
   typename SystemType,
-  typename AuxiliaryStepperType,
   typename ResidualPolicyType,
   typename JacobianPolicyType,
   bool policies_are_standard
@@ -78,8 +77,11 @@ public:
   static constexpr stepper_order_type order_value = 2;
 
 private:
-  // auxiliary stepper
-  AuxiliaryStepperType & auxStepper_;
+  using AuxiliaryStepperType =
+    StepperBDF1<ScalarType, StateType, ResidualType, JacobianType,
+		SystemType, ResidualPolicyType, JacobianPolicyType,
+		policies_are_standard>;
+  AuxiliaryStepperType auxStepper_;
 
   ScalarType rhsEvaluationTime_  = {};
   ScalarType dt_ = {};
@@ -102,32 +104,31 @@ public:
   StepperBDF2 & operator=(StepperBDF2 && other) = delete;
   ~StepperBDF2() = default;
 
-  StepperBDF2(const state_type & state,
-	      const SystemType & systemObj,
-	      const mpl::remove_cvref_t<ResidualPolicyType> & resPolicyObj,
-	      const mpl::remove_cvref_t<JacobianPolicyType> & jacPolicyObj,
-	      AuxiliaryStepperType & auxStepper)
-    : auxStepper_{auxStepper},
-      systemObj_{systemObj},
-      stencilStates_(state),
-      recoveryState_{::pressio::ops::clone(state)},
-      resPolicy_{resPolicyObj},
-      jacPolicy_{jacPolicyObj}
-  {}
-
   template <
     bool _policies_are_standard = policies_are_standard,
     ::pressio::mpl::enable_if_t<_policies_are_standard, int> = 0
     >
   StepperBDF2(const state_type & state,
-	      const SystemType & systemObj,
-	      AuxiliaryStepperType & auxStepper)
-    : auxStepper_{auxStepper},
+	      const SystemType & systemObj)
+    : auxStepper_(state, systemObj),
       systemObj_{systemObj},
-      stencilStates_(state),
+      stencilStates_(state), //stencilstates handles right semantics
       recoveryState_{::pressio::ops::clone(state)},
       resPolicy_{},
       jacPolicy_{}
+  {}
+
+  StepperBDF2(const state_type & state,
+	      const SystemType & systemObj,
+	      ResidualPolicyType && resPolicyObj,
+	      JacobianPolicyType && jacPolicyObj)
+    // avoid policies in an undefined state by first copying, then moving
+    : auxStepper_(state, systemObj, resPolicyObj, jacPolicyObj),
+      systemObj_{systemObj},
+      stencilStates_(state), //stencilstates handles right semantics
+      recoveryState_{::pressio::ops::clone(state)},
+      resPolicy_{std::forward<ResidualPolicyType>(resPolicyObj)},
+      jacPolicy_{std::forward<JacobianPolicyType>(jacPolicyObj)}
   {}
 
 public:

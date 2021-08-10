@@ -85,14 +85,14 @@ private:
   // state object to ensure the strong guarantee for handling excpetions
   state_type recoveryState_;
 
-  // policies
-  ::pressio::utils::InstanceOrReferenceWrapper<ResidualPolicyType> resPolicy_;
-  ::pressio::utils::InstanceOrReferenceWrapper<JacobianPolicyType> jacPolicy_;
-
   // stencilStates contains: y_n
   ImplicitStencilStatesContainer<StateType, 1> stencilStates_;
   // stencilVelocities contains f(y_n,t_n) and f(y_np1, t_np1)
   mutable ImplicitStencilVelocitiesContainer<ResidualType, 2> stencilVelocities_;
+
+  // policies
+  ::pressio::utils::InstanceOrReferenceWrapper<ResidualPolicyType> resPolicy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<JacobianPolicyType> jacPolicy_;
 
 public:
   StepperCrankNicolson() = delete;
@@ -104,14 +104,14 @@ public:
 
   StepperCrankNicolson(const state_type & state,
 		       const SystemType & systemObj,
-		       const mpl::remove_cvref_t<ResidualPolicyType> & resPolicyObj,
-		       const mpl::remove_cvref_t<JacobianPolicyType> & jacPolicyObj)
+		       ResidualPolicyType && resPolicyObj,
+		       JacobianPolicyType && jacPolicyObj)
     : systemObj_{systemObj},
       recoveryState_{::pressio::ops::clone(state)},
-      resPolicy_{resPolicyObj},
-      jacPolicy_{jacPolicyObj},
-      stencilStates_(state),
-      stencilVelocities_(resPolicy_.get().create(systemObj))
+      stencilStates_(state), //stencilstates handles right semantics
+      stencilVelocities_(resPolicy_.get().create(systemObj)),
+      resPolicy_{std::forward<ResidualPolicyType>(resPolicyObj)},
+      jacPolicy_{std::forward<JacobianPolicyType>(jacPolicyObj)}
   {}
 
   template <
@@ -122,10 +122,10 @@ public:
 		       const SystemType & systemObj)
     : systemObj_{systemObj},
       recoveryState_{::pressio::ops::clone(state)},
+      stencilStates_(state), //stencilstates handles right semantics
+      stencilVelocities_(resPolicy_.get().create(systemObj)),
       resPolicy_{},
-      jacPolicy_{},
-      stencilStates_(state),
-      stencilVelocities_(resPolicy_.get().create(systemObj))
+      jacPolicy_{}
   {}
 
 public:
