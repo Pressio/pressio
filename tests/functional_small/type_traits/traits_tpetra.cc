@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Tpetra_Map.hpp>
 #include <Tpetra_MultiVector.hpp>
-#include "pressio_type_traits.hpp"
+#include "pressio/type_traits.hpp"
 
 TEST(tpetra, MVTraits)
 {

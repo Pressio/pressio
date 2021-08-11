@@ -1,5 +1,5 @@
 
-#include "pressio_ode_explicit.hpp"
+#include "pressio/ode_explicit.hpp"
 #include "../testing_apps/apps.hpp"
 #include <array>
 

@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode_explicit.hpp"
+#include "pressio/ode_explicit.hpp"
 #include "testing_apps.hpp"
 
 #define TEST_ODE_EULER_NUMERICS(y, stepperObj) \

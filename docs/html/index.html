@@ -24,21 +24,19 @@
       <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
         <div class="m-row">
           <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation and Dependencies</a></li>
             <li>
-              <a>Get Started</a>
+              <a href="md_pages_components.html">Components</a>
               <ol>
-                <li><a href="md_pages_getstarted_build_and_install.html">Installation and Dependencies</a></li>
-                <li><a href="md_pages_getstarted_packages.html">Components</a></li>
-                <li><a href="md_pages_getstarted_build_tests_eigen.html">Build tests with Eigen only</a></li>
-              </ol>
-            </li>
-            <li>
-              <a>Core Concepts</a>
-              <ol>
-                <li><a href="md_pages_coreconcepts_adapter_api.html">Adapter API</a></li>
-                <li><a href="md_pages_coreconcepts_datatypes.html">Data Types</a></li>
-                <li><a href="md_pages_coreconcepts_densenature.html">Dense nature of ROMs</a></li>
-                <li><a href="md_pages_coreconcepts_decoder.html">ROM-to-FOM Decoder</a></li>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a href="md_pages_components_nonlinsolvers.html">Nonlinear solvers</a></li>
+                <li><a href="md_pages_components_ode.html">ode</a></li>
+                <li><a href="md_pages_components_rom.html">rom</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
@@ -50,10 +48,8 @@
                 <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
               </ol>
             </li>
-            <li><a href="annotated.html">Classes</a></li>
-            <li><a href="namespaces.html">Namespaces</a></li>
           </ol>
-          <ol class="m-col-t-6 m-col-m-none" start="7">
+          <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -70,7 +66,7 @@
         <h1>
           Pressio C++
         </h1>
-<p><a name="md_pages_main"></a> <em>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</em></p><p>This is the documentation of the <a href="https://github.com/Pressio/pressio">C++ library</a>, which is one component of the <a href="https://pressio.github.io/">Pressio project</a>.</p><section id="autotoc_md33"><h2><a href="#autotoc_md33">In a nutshell</a></h2><p>Pressio can be applied to any dynamical system expressible in a <em>continuous-time</em> form as</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
+<p><a name="md_pages_main"></a> <em>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</em></p><p>This is the documentation of the <a href="https://github.com/Pressio/pressio">C++ library</a>, which is one component of the <a href="https://pressio.github.io/">Pressio project</a>.</p><section id="autotoc_md19"><h2><a href="#autotoc_md19">In a nutshell</a></h2><p>Pressio can be applied to any dynamical system expressible in a <em>continuous-time</em> form as</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 </title>
@@ -193,7 +189,7 @@ $R$
 <g id='eq6-page1'>
 <use x='0' y='0' xlink:href='#eq6-g0-82'/>
 </g>
-</svg> is the residual.</p><p>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <em>adapter class</em> to expose the operators needed for the chosen formulation. In general, you don&#x27;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <a href="./md_pages_coreconcepts_adapter_api.html">the doc page</a> to learn more about the adapter classes and see code templates.</p><img class="m-image" src="frontpageschem.svg" alt="Image" style="width: 85%;" /></section><section id="autotoc_md34"><h2><a href="#autotoc_md34">Getting Started</a></h2><ul><li>learn about the <a href="./md_pages_getstarted_build_and_install.html">installation process</a></li><li>read about the <a href="./md_pages_getstarted_packages.html">packages</a> composing the pressio C++ library</li><li>explore the <a href="./md_pages_tutorials.html">tutorials</a></li><li>dig into the <a href="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</a> of the C++ library</li></ul></section><section id="autotoc_md35"><h2><a href="#autotoc_md35">License and Citation</a></h2><p>The full license (BSD-3) is available <a href="https://pressio.github.io/various/license/">here</a>.</p><p>We are working on publishing this: you can find our arXiv preprint at: <a href="https://arxiv.org/abs/2003.07798">https:/<wbr />/<wbr />arxiv.org/<wbr />abs/<wbr />2003.07798</a></p></section><section id="autotoc_md36"><h2><a href="#autotoc_md36">Questions?</a></h2><p>Find us on Slack: <a href="https://pressioteam.slack.com">https:/<wbr />/<wbr />pressioteam.slack.com</a> or open an issue on <a href="https://github.com/Pressio/pressio">github</a>.</p></section>
+</svg> is the residual.</p><p>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <em>adapter class</em> to expose the operators needed for the chosen formulation. In general, you don&#x27;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <a href="./md_pages_coreconcepts_adapter_api.html">the doc page</a> to learn more about the adapter classes and see code templates.</p><img class="m-image" src="frontpageschem.svg" alt="Image" style="width: 70%;" /></section><section id="autotoc_md20"><h2><a href="#autotoc_md20">Getting Started</a></h2><ul><li>learn about the <a href="./md_pages_getstarted_build_and_install.html">installation process</a></li><li>read about the <a href="./md_pages_getstarted_packages.html">packages</a> composing the pressio C++ library</li><li>explore the <a href="./md_pages_tutorials.html">tutorials</a></li><li>dig into the <a href="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">test subdirectory</a> of the C++ library</li></ul></section><section id="autotoc_md21"><h2><a href="#autotoc_md21">License and Citation</a></h2><p>The full license (BSD-3) is available <a href="https://pressio.github.io/various/license/">here</a>.</p><p>We are working on publishing this: you can find our arXiv preprint at: <a href="https://arxiv.org/abs/2003.07798">https:/<wbr />/<wbr />arxiv.org/<wbr />abs/<wbr />2003.07798</a></p></section><section id="autotoc_md22"><h2><a href="#autotoc_md22">Questions?</a></h2><p>Find us on Slack: <a href="https://pressioteam.slack.com">https:/<wbr />/<wbr />pressioteam.slack.com</a> or open an issue on <a href="https://github.com/Pressio/pressio">github</a>.</p></section>
       </div>
     </div>
   </div>

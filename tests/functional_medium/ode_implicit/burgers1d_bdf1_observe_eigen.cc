@@ -1,5 +1,5 @@
 
-#include "pressio_ode_implicit.hpp"
+#include "pressio/ode_implicit.hpp"
 #include "../testing_apps/apps.hpp"
 
 constexpr double eps = 1e-12;

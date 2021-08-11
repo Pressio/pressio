@@ -1,5 +1,5 @@
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 #include "common.hpp"
 
 struct MySystem

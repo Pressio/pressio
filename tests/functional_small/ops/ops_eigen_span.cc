@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 using vec_t = Eigen::VectorXd;
 using mat_t = Eigen::MatrixXd;

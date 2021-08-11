@@ -1,6 +1,6 @@
 
 #include "fixtures.hpp"
-#include "pressio_qr.hpp"
+#include "pressio/qr.hpp"
 
 TEST_F(eigenDenseR9Fixture, HouseholderEigenDenseOutOfPlace)
 {

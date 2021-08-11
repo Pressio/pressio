@@ -6,6 +6,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="pages/getstarted/packages.md"/>
+    <location file="pages/old/getstarted/packages.md"/>
   </compounddef>
 </doxygen>

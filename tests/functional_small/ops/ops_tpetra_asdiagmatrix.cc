@@ -1,6 +1,6 @@
 
 #include "tpetra_only_fixtures.hpp"
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 // TEST(ops_tpetra, asDiagMatrixProductMultivector)
 // {

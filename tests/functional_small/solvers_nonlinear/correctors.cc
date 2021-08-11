@@ -1,6 +1,6 @@
 
 #include "mocks.hpp"
-#include "pressio_solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear.hpp"
 
 TEST(solvers_nonlinear, correctors_residual_jacobian)
 {

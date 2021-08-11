@@ -1,5 +1,5 @@
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 #include "eigen_expon_data_fit_n2.hpp"
 
 template <typename problem_t, typename state_t, typename solver>

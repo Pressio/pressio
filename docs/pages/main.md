@@ -33,7 +33,7 @@ in some cases it might be easier to directly expose the residual).
 Read [the doc page](./md_pages_coreconcepts_adapter_api.html)
 to learn more about the adapter classes and see code templates.
 
-@image html frontpageschem.svg width=85%
+@image html frontpageschem.svg width=70%
 
 
 ## Getting Started

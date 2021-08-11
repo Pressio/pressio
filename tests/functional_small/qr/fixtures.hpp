@@ -3,7 +3,7 @@
 #define QR_UTEST_FIXTURES_HPP_
 
 #include <gtest/gtest.h>
-#include "pressio_qr.hpp"
+#include "pressio/qr.hpp"
 #include "qr_r9c4_gold.hpp"
 
 #ifdef PRESSIO_ENABLE_TPL_TRILINOS

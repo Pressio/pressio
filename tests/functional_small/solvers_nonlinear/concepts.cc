@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear.hpp"
 
 struct ValidSystemResJac 
 {

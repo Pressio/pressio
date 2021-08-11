@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode_implicit.hpp"
+#include "pressio/ode_implicit.hpp"
 
 template <typename state_t>
 struct Observer{

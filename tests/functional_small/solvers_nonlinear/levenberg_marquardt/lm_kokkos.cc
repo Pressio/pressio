@@ -1,5 +1,5 @@
 #include <iostream>
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 using vector_t = Kokkos::View<double*, Kokkos::HostSpace>;
 using matrix_t = Kokkos::View<double**, Kokkos::LayoutLeft, Kokkos::HostSpace>;

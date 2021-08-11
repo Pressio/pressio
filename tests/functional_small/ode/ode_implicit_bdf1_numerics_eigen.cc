@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "pressio_solvers.hpp"
-#include "pressio_ode_implicit.hpp"
+#include "pressio/solvers.hpp"
+#include "pressio/ode_implicit.hpp"
 #include "testing_apps.hpp"
 
 TEST(ode, implicit_bdf1_policy_default_created)

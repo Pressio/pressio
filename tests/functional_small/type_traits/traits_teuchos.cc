@@ -4,7 +4,7 @@
 #include <Teuchos_CommHelpers.hpp>
 #include "Teuchos_SerialDenseVector.hpp"
 #include <Teuchos_SerialDenseMatrix.hpp>
-#include "pressio_type_traits.hpp"
+#include "pressio/type_traits.hpp"
 
 TEST(type_traits, isTeuchosRCP)
 {

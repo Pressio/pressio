@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ode.hpp"
+#include "pressio/ode.hpp"
 
 namespace
 {

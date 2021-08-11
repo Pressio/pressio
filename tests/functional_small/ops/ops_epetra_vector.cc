@@ -1,6 +1,6 @@
 
 #include "epetra_only_fixtures.hpp"
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 TEST_F(epetraVectorGlobSize15Fixture, vector_clone)
 {

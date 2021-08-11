@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "pressio_containers.hpp"
+#include "pressio/type_traits.hpp"
 
 using eigvec_d_t = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 using eigvec_i_t = Eigen::Matrix<int, Eigen::Dynamic, 1>;

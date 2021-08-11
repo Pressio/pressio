@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_solvers_linear.hpp"
+#include "pressio/solvers_linear.hpp"
 
 TEST(solvers_linear_eigen, sparse_iterative_lscg)
 {

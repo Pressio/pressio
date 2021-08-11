@@ -1,8 +1,8 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "pressio_solvers_linear.hpp"
-#include "pressio_solvers_nonlinear.hpp"
+#include "pressio/solvers_linear.hpp"
+#include "pressio/solvers_nonlinear.hpp"
 
 namespace{
 struct MySystem

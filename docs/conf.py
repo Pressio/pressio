@@ -3,27 +3,50 @@ DOXYFILE = 'Doxyfile-mcss'
 MAIN_PROJECT_URL: "Pressio"
 
 LINKS_NAVBAR1 = [
-  # Get Started
-  #("<a href=\"md_pages_get_started.html\">Get Started</a>",
-  ("<a>Get Started</a>", # empty href so that get started only has children
+
+  ("<a href=\"md_pages_introduction.html\">Introduction</a>", []),
+
+  ("<a href=\"md_pages_installation.html\">Installation and Dependencies</a>", []),
+
+  ("<a href=\"md_pages_components.html\">Components</a>",
    [
-     ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
-     ("<a href=\"md_pages_getstarted_packages.html\">Components</a>",),
-     ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",)
+     ("<a href=\"md_pages_components_mpl.html\">mpl</a>",),
+     ("<a href=\"md_pages_components_type_traits.html\">type_traits</a>",),
+     ("<a href=\"md_pages_components_expressions.html\">expressions</a>",),
+     ("<a href=\"md_pages_components_ops.html\">ops</a>",),
+     ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers.html\">Nonlinear solvers</a>",),
+     ("<a href=\"md_pages_components_ode.html\">ode</a>",),
+     ("<a href=\"md_pages_components_rom.html\">rom</a>",)
    ]),
 
-  # core concepts
-  ("<a>Core Concepts</a>",
-   [
-     ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
-     ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",),
-     ("<a href=\"md_pages_coreconcepts_densenature.html\">Dense nature of ROMs</a>",),
-          ("<a href=\"md_pages_coreconcepts_decoder.html\">ROM-to-FOM Decoder</a>",)
-     # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
-   ]),
-
-  # tutorials
   ("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
+
+  ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",
+   [
+     ("<a href=\"md_pages_hyperreduction_hyperred_how_to_enable.html\">How to enable hyperreduction</a>",),
+     ("<a href=\"md_pages_hyperreduction_hyperred_eigen_example.html\">Eigen example</a>",),
+     ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
+   ]),
+
+  # # core concepts
+  # ("<a>Core Concepts</a>",
+  #  [
+  #    ("<a href=\"md_pages_coreconcepts_adapter_api.html\">Adapter API</a>",),
+  #    ("<a href=\"md_pages_coreconcepts_datatypes.html\">Data Types</a>",),
+  #    ("<a href=\"md_pages_coreconcepts_densenature.html\">Dense nature of ROMs</a>",),
+  #         ("<a href=\"md_pages_coreconcepts_decoder.html\">ROM-to-FOM Decoder</a>",)
+  #    # ("<a href=\"md_pages_coreconcepts_adapting_app.html\">Step-by-step on adapting an app</a>",)
+  #  ]),
+
+  # #("<a href=\"md_pages_get_started.html\">Get Started</a>",
+  # ("<a>Installation and Dependencies</a>", # empty href so that get started only has children
+  #  [
+  #    ("<a href=\"md_pages_getstarted_build_and_install.html\">Installation and Dependencies</a>",),
+  #    ("<a href=\"md_pages_getstarted_packages.html\">Components</a>",),
+  #    ("<a href=\"md_pages_getstarted_build_tests_eigen.html\">Build tests with Eigen only</a>",)
+  #  ]),
+
   #("<a href=>Tutorials</a>", ("<a href=\"md_pages_tutorials.html\">Tutorials</a>",
   # #  [
   # #    ("<a href=\"md_pages_tutorials_tutorial1.html\">Linear Decoder</a>", ),
@@ -36,14 +59,6 @@ LINKS_NAVBAR1 = [
   #  [
   #    ("<a href=\"md_pages_examples_example1.html\">Example1</a>", )
   #  ]),
-
-  # hyper-reduction
-  ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",
-   [
-     ("<a href=\"md_pages_hyperreduction_hyperred_how_to_enable.html\">How to enable hyperreduction</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_eigen_example.html\">Eigen example</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
-   ]),
 
   # # custom ops
   # ("<a href=>Custom Ops</a>", #("<a href=\"md_pages_custom_ops.html\">Custom Ops</a>",
@@ -58,8 +73,8 @@ LINKS_NAVBAR1 = [
   #    ("<a href=\"md_pages_adapter_apis_adapter_discrete_time_api.html\">Discrete-time API</a>",)
   #  ]),
 
-  ('Classes', 'annotated', []),
-  ('Namespaces', 'namespaces', [])
+  # ('Classes', 'annotated', []),
+  # ('Namespaces', 'namespaces', [])
 ]
 
 LINKS_NAVBAR2 = []

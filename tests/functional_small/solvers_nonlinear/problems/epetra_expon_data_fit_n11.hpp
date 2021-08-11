@@ -3,7 +3,7 @@
 #define SOLVERS_TESTS_EPETRA_EXPONENTIAL_DATA_FIT_N11_HPP_
 
 #include "Epetra_MpiComm.h"
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 /*
  * test taken from:

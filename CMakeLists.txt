@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 project(pressio C CXX)
 
 # setting where other cmake commands are
@@ -111,61 +111,21 @@ include(tplKokkos)
 message("")
 
 #=====================================================================
-# configure file with some cmakedefines that are used
-# within the code in preprocessor directives statements
-#=====================================================================
-configure_file(include/pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
-install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-)
-
-#=====================================================================
 # install
 #=====================================================================
-set(INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
+set(INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/pressio)
 
-file(GLOB all_files "${CMAKE_CURRENT_SOURCE_DIR}/include/*")
-foreach(f ${all_files})
-  if(NOT f MATCHES "\\.txt"
-      AND NOT f MATCHES ".DS_Store"
-      AND NOT f MATCHES ".h.in"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/mpl"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/utils"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/type_traits"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/expressions"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ops"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/qr"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/solvers"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/ode"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/rom"
-      AND NOT f MATCHES "${CMAKE_CURRENT_SOURCE_DIR}/include/[.].+")
-    list(APPEND files_to_install ${f})
-  endif()
-endforeach(f ${all_files})
+configure_file(include/pressio/pressio_cmake_config.h.in pressio_cmake_config.h @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pressio_cmake_config.h DESTINATION ${INC_INSTALL_DIR})
 
-#install(FILES ${files_to_install} DESTINATION ${INC_INSTALL_DIR})
+file(GLOB include_helpers "${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/*.hpp")
+install(FILES ${include_helpers} DESTINATION ${INC_INSTALL_DIR})
 
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/mpl
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/utils
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/containers
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ops
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/qr
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/svd
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/optimizers
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/solvers
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ode
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
-# install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/rom
-#   DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+foreach(X IN ITEMS mpl utils type_traits expressions ops qr solvers_linear solvers_nonlinear ode)
+  install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/pressio/${X} 
+    DESTINATION ${INC_INSTALL_DIR} FILES_MATCHING PATTERN "*.hpp")
+endforeach()
 
 #=====================================================================
 # Add uninstall target

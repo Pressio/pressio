@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "Eigen/SparseCore"
-#include "pressio_solvers_nonlinear.hpp"
+#include "pressio/solvers_nonlinear.hpp"
 
 // =========================================
 // problem class with residual-jacobian API 

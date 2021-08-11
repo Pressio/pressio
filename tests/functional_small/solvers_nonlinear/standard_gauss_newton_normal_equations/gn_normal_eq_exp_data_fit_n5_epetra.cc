@@ -1,5 +1,5 @@
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 #include "epetra_expon_data_fit_n5.hpp"
 
 /*

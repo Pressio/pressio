@@ -1,6 +1,6 @@
 
 #include "epetra_only_fixtures.hpp"
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
 TEST_F(epetraMultiVectorGlobSize15Fixture, mv_prod_eigen_vector)

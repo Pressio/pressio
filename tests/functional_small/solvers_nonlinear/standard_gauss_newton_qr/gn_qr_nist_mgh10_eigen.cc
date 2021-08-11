@@ -1,6 +1,6 @@
 // Note: This problem is mgh10 from 
 // https://www.itl.nist.gov/div898/strd/nls/nls_main.shtml
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 #include "eigen_nist_mgh10.hpp"
 
 template <typename problem_t, typename state_t, typename solver>

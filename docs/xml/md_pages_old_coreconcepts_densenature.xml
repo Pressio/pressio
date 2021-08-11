@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_old_coreconcepts_densenature" kind="page">
+    <compoundname>md_pages_old_coreconcepts_densenature</compoundname>
+    <title>Dense Nature of ROMs</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem><para>ROMs are dense</para>
+</listitem><listitem><para>pressio was designed with that in mind </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <location file="pages/old/coreconcepts/densenature.md"/>
+  </compounddef>
+</doxygen>

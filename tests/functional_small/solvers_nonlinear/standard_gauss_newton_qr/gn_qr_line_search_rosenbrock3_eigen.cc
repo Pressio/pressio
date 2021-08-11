@@ -1,5 +1,5 @@
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 #include "eigen_rosenbrock_N3.hpp"
 
 int main()

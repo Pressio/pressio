@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 using mat_t = Kokkos::View<double**>;
 

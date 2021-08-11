@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_expressions.hpp"
+#include "pressio/expressions.hpp"
 
 namespace{
 

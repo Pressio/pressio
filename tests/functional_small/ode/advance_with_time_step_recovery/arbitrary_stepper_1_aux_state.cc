@@ -1,5 +1,5 @@
 
-#include "pressio_ode_implicit.hpp"
+#include "pressio/ode_implicit.hpp"
 
 struct MyApp
 {

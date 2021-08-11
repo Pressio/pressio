@@ -3,7 +3,7 @@
 #ifndef SOLVERS_TESTS_EIGEN_NIST_MGH10_HPP_
 #define SOLVERS_TESTS_EIGEN_NIST_MGH10_HPP_
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 namespace pressio{ namespace solvers{ namespace test{
 

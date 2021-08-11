@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_utils.hpp"
+#include "pressio/utils.hpp"
 
 TEST(utils_basic, loggerMpi)
 {

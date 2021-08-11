@@ -1,5 +1,5 @@
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 struct FakeProblem
 {

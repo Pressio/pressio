@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 #define OPS_KOKKOS_DENSEMATRIX_VEC_PROD(VECIN) \
   Kokkos::View<double**> M("M",3,3); \

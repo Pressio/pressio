@@ -4,7 +4,7 @@
 #include "Epetra_MultiVector.h"
 #include "Epetra_Version.h"
 #include "Epetra_MpiComm.h"
-#include "pressio_type_traits.hpp"
+#include "pressio/type_traits.hpp"
 
 TEST(epetra, VectorTraits)
 {

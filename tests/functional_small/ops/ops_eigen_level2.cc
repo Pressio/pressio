@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio_ops.hpp"
+#include "pressio/ops.hpp"
 
 #define OPS_EIGEN_DENSEMATRIX_VEC_PROD(VECIN) \
   using M_t = Eigen::MatrixXd; \

@@ -2,7 +2,7 @@
 #ifndef SOLVERS_TESTS_EIGEN_ROSENBROCK_N3_HPP_
 #define SOLVERS_TESTS_EIGEN_ROSENBROCK_N3_HPP_
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 namespace pressio{ namespace solvers{ namespace test{
 

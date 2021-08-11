@@ -6,7 +6,7 @@
 #define SCALE2 1.e1
 #define SCALE3 1.e1
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 namespace pressio{ namespace solvers{ namespace test{
 

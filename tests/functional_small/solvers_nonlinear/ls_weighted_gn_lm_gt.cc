@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 using eig_mat = Eigen::Matrix<double, -1, -1>;
 using eig_vec = Eigen::VectorXd;

@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
   /*
     this test is for IRWLS p=1 with Gauss-Newton

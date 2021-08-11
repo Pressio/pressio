@@ -2,7 +2,7 @@
 #ifndef PRESSIO_TESTS_SOLVERS_FROZEN_JAC_COMMON_HPP_
 #define PRESSIO_TESTS_SOLVERS_FROZEN_JAC_COMMON_HPP_
 
-#include "pressio_solvers.hpp"
+#include "pressio/solvers.hpp"
 
 using vec_type = Eigen::VectorXd;
 using mat_type = Eigen::Matrix<double, -1, -1>;

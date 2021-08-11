@@ -29,7 +29,7 @@ public:
 };
 } // end namespace
 
-#include "pressio_type_traits.hpp"
+#include "pressio/type_traits.hpp"
 
 namespace pressio{ 
 
@@ -106,7 +106,7 @@ void update(VectorType & v, const ScalarType a,
 }
 }} //end namespace pressio::ops
 
-#include "pressio_ode_explicit.hpp"
+#include "pressio/ode_explicit.hpp"
 
 TEST(ode, explicit_euler_custom_types)
 {
