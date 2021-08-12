@@ -8,15 +8,15 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, which is one component of the <ulink url="https://pressio.github.io/">Pressio project</ulink>.</para>
-<sect1 id="index_1autotoc_md19">
+<sect1 id="index_1autotoc_md49">
 <title>In a nutshell</title>
-<para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="1">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
-<para>Here, <formula id="2">$y$</formula> is the full-order model (FOM) state, <formula id="3">$f$</formula> the FOM velocity, <formula id="4">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
+<para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
+<para>Here, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
 <para>We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding <emphasis>adapter class</emphasis> to expose the operators needed for the chosen formulation. In general, you don&apos;t need to support both: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read <ulink url="./md_pages_coreconcepts_adapter_api.html">the doc page</ulink> to learn more about the adapter classes and see code templates.</para>
 <para><image type="html" name="frontpageschem.svg" width="70%"></image>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md20">
+<sect1 id="index_1autotoc_md50">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
@@ -26,12 +26,12 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md21">
+<sect1 id="index_1autotoc_md51">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md22">
+<sect1 id="index_1autotoc_md52">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

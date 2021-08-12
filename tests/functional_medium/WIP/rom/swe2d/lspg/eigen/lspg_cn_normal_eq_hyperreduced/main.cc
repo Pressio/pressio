@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   //======== Read in information to enable hyper-reduction=================
   std::ifstream info_file("info_file.txt");
   info_file >> romSize;
-  std::cout << romSize << std::endl;;
+  std::cout << romSize << std::endl;
   info_file >> sampleMeshSize;
   info_file >> sampleMeshPlusStencilSize;
   info_file.close();

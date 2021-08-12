@@ -4,7 +4,7 @@
 struct ValidSystem 
 {
   using scalar_type = double;
-  using state_type = Eigen::VectorXd;;
+  using state_type = Eigen::VectorXd;
   using residual_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<scalar_type>;
 
@@ -38,7 +38,7 @@ int main()
 
   using namespace pressio;
   using problem_t  = ValidSystem;
-  using state_t	   = problem_t::state_type;
+  using state_t    = problem_t::state_type;
   using jacobian_t = problem_t::jacobian_type;
 
   problem_t sys;

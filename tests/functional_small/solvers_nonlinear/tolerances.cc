@@ -8,7 +8,7 @@ namespace{
 struct MySystem
 {
   using scalar_type = double;
-  using state_type  = Eigen::VectorXd;;
+  using state_type  = Eigen::VectorXd;
   using residual_type = state_type;
   using jacobian_type = Eigen::SparseMatrix<double>;
 

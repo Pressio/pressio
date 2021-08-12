@@ -99,7 +99,7 @@ auto create_levenberg_marquardt(const SystemType & system,
 namespace experimental{
 //***** IRWGN *******
 template<typename SystemType, typename StateType, typename linear_solver_t>
-auto create_irlw_gauss_newton(const SystemType & system,
+auto create_irls_gauss_newton(const SystemType & system,
         const StateType & state,
         linear_solver_t && linSolver)
   -> typename impl::ComposeIrwGaussNewton<SystemType, linear_solver_t>::type

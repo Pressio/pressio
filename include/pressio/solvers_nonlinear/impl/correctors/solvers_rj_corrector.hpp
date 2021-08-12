@@ -77,8 +77,7 @@ public:
       correction_(::pressio::ops::clone(state)),
       solverObj_(std::forward<lsT>(solverIn))
   {
-    constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
-    ::pressio::ops::fill(correction_, zero);
+    ::pressio::ops::set_zero(correction_);
   }
 
   // template <typename SystemType, typename lsT, typename ...Args>

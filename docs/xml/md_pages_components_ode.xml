@@ -6,6 +6,68 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
+<para>Explicit methods are defined in: <computeroutput>&lt;pressio/ode_explicit.hpp&gt;</computeroutput></para>
+<para>Implicit methods are defined in: <computeroutput>&lt;pressio/ode_implicit.hpp&gt;</computeroutput></para>
+<para>Both can be includes via <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>.</para>
+<para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
+<sect1 id="md_pages_components_ode_1autotoc_md28">
+<title>Overview</title>
+<para>The ode package provides classes for doing time integration. Specifically, the design of the package is rooted on the following main ideas:<itemizedlist>
+<listitem><para>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</para>
+</listitem><listitem><para>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
+<sect1 id="md_pages_components_ode_1autotoc_md29">
+<title>Explicit Methods</title>
+<para>The explicit methods of the pressio ode aim to solve systems of the form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
+<para>where <formula id="1">$y$</formula> is the state, <formula id="2">$f$</formula> is the RHS (also called velocity below), <formula id="3">$t$</formula> is time.</para>
+<sect2 id="md_pages_components_ode_1autotoc_md30">
+<title>API:</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType&gt;</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>policy_type&gt;</highlight></codeline>
+<codeline><highlight class="normal">ReturnType<sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>policy_type<sp/>&amp;&amp;<sp/>rhsPolicy);</highlight></codeline>
+</programlisting> where <computeroutput>keyword</computeroutput> is one of: <computeroutput>forward_euler</computeroutput>, <computeroutput>runge_kutta4</computeroutput>, <computeroutput>adams_bashforth2</computeroutput>, <computeroutput>ssp_runge_kutta3</computeroutput>.</para>
+</sect2>
+<sect2 id="md_pages_components_ode_1autotoc_md31">
+<title>Parameters and Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>SystemType</computeroutput>:<itemizedlist>
+<listitem><para>class defining the problem: how to create an instance of the velocity <formula id="2">$f$</formula> and how to compute it;</para>
+</listitem><listitem><para>Requirements: must conform to the following API needed for doing explicit time integration <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ValidSystemForExplicitOde</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>typically<sp/>the<sp/>same<sp/>as<sp/>state_type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_type<sp/>time,<sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
+<listitem><para>type of the data structure you use for the state</para>
+</listitem><listitem><para>Requirements: must be copy constructible</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>PolicyType</computeroutput>:<itemizedlist>
+<listitem><para>type of the class defining the policy for how to evaluate the right-hand-side</para>
+</listitem><listitem><para>Requirements: must conform to a specific API <programlisting filename=".cpp"></programlisting></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_ode_1autotoc_md32">
+<title>Implicit Methods</title>
+</sect1>
     </detaileddescription>
     <location file="pages/components/ode.md"/>
   </compounddef>

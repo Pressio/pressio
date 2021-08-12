@@ -14,9 +14,13 @@
   </compound>
   <compound refid="ops_8md" kind="file"><name>ops.md</name>
   </compound>
+  <compound refid="qr_8md" kind="file"><name>qr.md</name>
+  </compound>
   <compound refid="rom_8md" kind="file"><name>rom.md</name>
   </compound>
   <compound refid="type__traits_8md" kind="file"><name>type_traits.md</name>
+  </compound>
+  <compound refid="utils_8md" kind="file"><name>utils.md</name>
   </compound>
   <compound refid="hyperreduction_8md" kind="file"><name>hyperreduction.md</name>
   </compound>
@@ -72,9 +76,13 @@
   </compound>
   <compound refid="md_pages_components_ops" kind="page"><name>md_pages_components_ops</name>
   </compound>
+  <compound refid="md_pages_components_qr" kind="page"><name>md_pages_components_qr</name>
+  </compound>
   <compound refid="md_pages_components_rom" kind="page"><name>md_pages_components_rom</name>
   </compound>
   <compound refid="md_pages_components_type_traits" kind="page"><name>md_pages_components_type_traits</name>
+  </compound>
+  <compound refid="md_pages_components_utils" kind="page"><name>md_pages_components_utils</name>
   </compound>
   <compound refid="md_pages_components" kind="page"><name>md_pages_components</name>
   </compound>

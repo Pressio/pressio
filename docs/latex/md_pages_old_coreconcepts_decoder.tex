@@ -2,7 +2,7 @@ todo\+: complete
 
 A key assumption of projection-\/based ROMs is to approximate the full-\/order model (FOM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
-where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md33}{}\doxysection{Linear}\label{md_pages_old_coreconcepts_decoder_autotoc_md33}
+where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md63}{}\doxysection{Linear}\label{md_pages_old_coreconcepts_decoder_autotoc_md63}
 If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). The Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]
 
 Graphically, this corresponds to\+: 
@@ -14,7 +14,7 @@ In the C++ library, the class representing the linear decoder is\+:
 \DoxyCodeLine{pressio::rom::LinearDecoder<...>;}
 
 \end{DoxyCode}
-\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md34}{}\doxysection{Generic decoder API}\label{md_pages_old_coreconcepts_decoder_autotoc_md34}
+\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md64}{}\doxysection{Generic decoder API}\label{md_pages_old_coreconcepts_decoder_autotoc_md64}
 If you want to use your own decoder, you can write a custom one that should meet the following API.
 
 

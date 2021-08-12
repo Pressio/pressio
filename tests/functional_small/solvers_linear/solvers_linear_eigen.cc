@@ -28,7 +28,7 @@ TEST(solvers_linear_eigen, sparse_iterative_lscg)
   ASSERT_TRUE(e1 <= 1e-13 and e2 <= 1e-13);
 }
 
-#define SOLVERSLINEAR_EIGEN_DENSE_UTEST(TAGIN) \
+#define PRESSIO_SOLVERS_LINEAR_EIGEN_DENSE_UTEST(TAGIN) \
   using matrix_t = Eigen::MatrixXd; \
   using vector_t = Eigen::VectorXd; \
   vector_t b(3); \
@@ -52,17 +52,17 @@ TEST(solvers_linear_eigen, sparse_iterative_lscg)
 TEST(solvers_linear_eigen, dense_iterative_lscg)
 {
   using tag = pressio::linearsolvers::iterative::LSCG;
-  SOLVERSLINEAR_EIGEN_DENSE_UTEST(tag);
+  PRESSIO_SOLVERS_LINEAR_EIGEN_DENSE_UTEST(tag);
 }
 
 TEST(solvers_linear_eigen, dense_direct_colpivqr)
 {
   using tag = pressio::linearsolvers::direct::ColPivHouseholderQR;
-  SOLVERSLINEAR_EIGEN_DENSE_UTEST(tag);
+  PRESSIO_SOLVERS_LINEAR_EIGEN_DENSE_UTEST(tag);
 }
 
 TEST(solvers_linear_eigen, dense_direct_houseqr)
 {
   using tag = pressio::linearsolvers::direct::HouseholderQR;
-  SOLVERSLINEAR_EIGEN_DENSE_UTEST(tag);
+  PRESSIO_SOLVERS_LINEAR_EIGEN_DENSE_UTEST(tag);
 }

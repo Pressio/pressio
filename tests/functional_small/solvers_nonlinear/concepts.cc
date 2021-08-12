@@ -134,9 +134,6 @@ struct ValidLinearSolver
 
 struct InvalidLinearSolver {
   using matrix_type = std::vector<std::vector<double>>;
-
-  // template  <typename state_type>
-  // void solve(const matrix_type &, const state_type &, state_type &) const;
 };
 
 

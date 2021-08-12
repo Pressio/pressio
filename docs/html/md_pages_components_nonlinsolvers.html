@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>nonlinear solvers | Pressio|C++</title>
+  <title>Nonlinear Solvers | Pressio|C++</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -64,9 +64,128 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          nonlinear solvers
+          Nonlinear Solvers
         </h1>
-        <p><span></span></p>
+<p>Defined in header <code>&lt;pressio/solvers_nonlinear.hpp&gt;</code></p><p>Public namespace: <code>pressio::nonlinearsolvers</code></p><section id="autotoc_md8"><h2><a href="#autotoc_md8">Overview</a></h2><table class="m-table"><thead><tr><th>Name</th><th>Use for:</th><th>Useful math links</th></tr></thead><tbody><tr><td>Newthon-Raphson</td><td>Systems of nonlinear equations</td><td><a href="https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf">l1</a>, <a href="https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf">l2</a></td></tr><tr><td>Gauss-Newton (normal equations)</td><td>Nonlinear least-squares problem.</td><td><a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">l1</a></td></tr><tr><td>Gauss-Newton (via QR)</td><td>Nonlinear least-squares problem.</td><td><a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">l1</a></td></tr><tr><td>Levenberg–Marquardt</td><td>Nonlinear least-squares problem.</td><td><a href="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">l1</a></td></tr><tr><td>Iteratively reweighted least squares</td><td>optimization problem formulated in a p-norm</td><td><a href="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">l1</a></td></tr></tbody></table></section><section id="autotoc_md9"><h2><a href="#autotoc_md9">Newthon-Raphson</a></h2><section id="autotoc_md10"><h3><a href="#autotoc_md10">API, Parameters and Requirements</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ProblemClassType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">LinearSolverType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_newton_raphson</span><span class="p">(</span><span class="k">const</span> <span class="n">ProblemClassType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                           <span class="n">LinearSolverType</span> <span class="o">&amp;&amp;</span> <span class="n">lsolver</span><span class="p">);</span></pre><ul><li><code>ProblemClassType</code>:<ul><li>type of the class defining the problem to solve</li><li>Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li><li>Requirements: must be copy constructible</li></ul></li><li><code>LinearSolverType</code>:<ul><li>self-explanatory</li><li>Requirements: must conform to this <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html">API</a></li></ul></li></ul></section><section id="autotoc_md11"><h3><a href="#autotoc_md11">Ops</a></h3><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</p><pre class="m-code"><span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="n">ACustomVectorClass</span><span class="p">;</span>  <span class="c1">//this can be any type</span>
+<span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span> <span class="n">ACustomMatrixClass</span><span class="p">;</span>  <span class="c1">//this can be any type</span></pre><p>Then you need to provide the following specializations:</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomVectorClass</span><span class="o">&gt;</span><span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomMatrixClass</span><span class="o">&gt;</span><span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span> <span class="n">ops</span><span class="p">{</span>
+
+<span class="n">ACustomVectorClass</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span> <span class="cm">/* return a deep copy of src */</span> <span class="p">}</span>
+<span class="n">ACustomMatrixClass</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomMatrixClass</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span> <span class="cm">/* return a deep copy of src */</span> <span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span> <span class="cm">/* set elements zero */</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomMatrixClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span> <span class="cm">/* set elements zero */</span> <span class="p">}</span>
+
+<span class="n">scalar_type</span> <span class="nf">norm2</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>
+  <span class="cm">/* return l2-norm of object */</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// compute v = a*v + v1*b;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">scale</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">factor</span><span class="p">){</span>
+  <span class="cm">/* scale v elementwise by factor</span>
+<span class="cm">}</span>
+
+<span class="cm">}}//end namepsace pressio::ops</span></pre></section><section id="autotoc_md12"><h3><a href="#autotoc_md12">Example usage</a></h3><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// assuming that:</span>
+  <span class="c1">// problem_t is a problem class that meets API</span>
+  <span class="c1">// state_t is defined too</span>
+
+  <span class="n">problem_t</span> <span class="n">myProblem</span><span class="p">;</span>
+  <span class="n">state_t</span> <span class="n">y</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+  <span class="c1">// set initial state</span>
+
+  <span class="c1">// create linear system</span>
+  <span class="k">using</span> <span class="n">lin_solver_t</span> <span class="o">=</span> <span class="cm">/* something that meets API needed */</span><span class="p">;</span>
+  <span class="n">lin_solver_t</span> <span class="n">linearSolverObj</span><span class="p">;</span>
+
+  <span class="k">namespace</span> <span class="n">pnls</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">NonLinSolver</span> <span class="o">=</span> <span class="n">pnls</span><span class="o">::</span><span class="n">create_newton_raphson</span><span class="p">(</span><span class="n">myProblem</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">linearSolverObj</span><span class="p">);</span>
+  <span class="n">NonLinSolver</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">myProblem</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+<span class="p">}</span></pre></section></section><section id="autotoc_md13"><h2><a href="#autotoc_md13">Gauss-Newton via Normal-Equations</a></h2><section id="autotoc_md14"><h3><a href="#autotoc_md14">API, Parameters and Requirements</a></h3></section><section id="autotoc_md15"><h3><a href="#autotoc_md15">Ops</a></h3></section><section id="autotoc_md16"><h3><a href="#autotoc_md16">Example usage</a></h3></section></section><section id="autotoc_md17"><h2><a href="#autotoc_md17">Gauss-Newton via QR factorization</a></h2><section id="autotoc_md18"><h3><a href="#autotoc_md18">API, Parameters and Requirements</a></h3></section><section id="autotoc_md19"><h3><a href="#autotoc_md19">Ops</a></h3></section><section id="autotoc_md20"><h3><a href="#autotoc_md20">Example usage</a></h3></section></section><section id="autotoc_md21"><h2><a href="#autotoc_md21">Levenberg–Marquardt</a></h2><section id="autotoc_md22"><h3><a href="#autotoc_md22">API, Parameters and Requirements</a></h3></section><section id="autotoc_md23"><h3><a href="#autotoc_md23">Ops</a></h3></section><section id="autotoc_md24"><h3><a href="#autotoc_md24">Example usage</a></h3></section></section><section id="autotoc_md25"><h2><a href="#autotoc_md25">General solver settings</a></h2><ul><li>convergence criterion</li><li>logging</li><li>updating step, choices and custom</li></ul></section><section id="autotoc_md26"><h2><a href="#autotoc_md26">Problem Classes</a></h2><pre class="m-code"><span class="k">struct</span> <span class="nc">ProblemResJac</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* your type */</span>
+  <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+
+  <span class="n">residual_type</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residual</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">res</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre><pre class="m-code"><span class="k">struct</span> <span class="nc">ProblemFusedResJac</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>    <span class="o">=</span> <span class="cm">/* your type */</span>
+  <span class="k">using</span> <span class="n">state_type</span>     <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">residual_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+
+  <span class="n">residual_type</span> <span class="nf">createResidual</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="nf">residualAndJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span><span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+                           <span class="n">residual_type</span> <span class="o">&amp;</span> <span class="n">res</span><span class="p">,</span>
+                           <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jac</span><span class="p">,</span>
+                           <span class="kt">bool</span> <span class="n">recomputeJacobian</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre><pre class="m-code"><span class="k">struct</span> <span class="nc">ProblemHessGrad</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* your type */</span>
+  <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">hessian_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">gradient_type</span> <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+
+  <span class="n">hessian_type</span> <span class="nf">createHessian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">gradient_type</span> <span class="nf">createGradient</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">residualNorm</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                    <span class="n">pressio</span><span class="o">::</span><span class="n">Norm</span> <span class="n">normKind</span><span class="p">,</span>
+                    <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">resNorm</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">gradient</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                <span class="n">gradient_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                <span class="n">pressio</span><span class="o">::</span><span class="n">Norm</span> <span class="n">normKind</span><span class="p">,</span>
+                <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">normResidual</span><span class="p">,</span>
+                <span class="kt">bool</span> <span class="n">recomputeJacobian</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">hessian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">hessian_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre><pre class="m-code"><span class="k">struct</span> <span class="nc">ProblemHessGradFused</span>
+<span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* your type */</span>
+  <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">hessian_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">gradient_type</span> <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
+
+  <span class="n">hessian_type</span> <span class="nf">createHessian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="n">gradient_type</span> <span class="nf">createGradient</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">residualNorm</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                    <span class="n">pressio</span><span class="o">::</span><span class="n">Norm</span> <span class="n">normKind</span><span class="p">,</span>
+                    <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">resNorm</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">hessianAndGradient</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                          <span class="n">hessian_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                          <span class="n">gradient_type</span> <span class="o">&amp;</span><span class="p">,</span>
+                          <span class="n">pressio</span><span class="o">::</span><span class="n">Norm</span> <span class="n">normKind</span><span class="p">,</span>
+                          <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">normResidual</span><span class="p">,</span>
+                          <span class="kt">bool</span> <span class="n">recomputeJacobian</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span></pre></section>
       </div>
     </div>
   </div>
