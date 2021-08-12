@@ -55,9 +55,7 @@ template<
   class ScalarType,
   class StateType,
   class SystemType,
-  class VelocityType,
-  class VelocityPolicyType,
-  bool is_standard_policy
+  class VelocityType
   >
 class ExplicitEulerStepper
 {
@@ -68,8 +66,7 @@ public:
   static constexpr stepper_order_type order_value = 1;
 
 private:
-  std::reference_wrapper<const SystemType> systemObj_;
-  ::pressio::utils::InstanceOrReferenceWrapper<VelocityPolicyType> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::array<VelocityType, 1> velocities_;
 
 public:
@@ -80,24 +77,9 @@ public:
   ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = delete;
   ~ExplicitEulerStepper() = default;
 
-  ExplicitEulerStepper(const StateType & state,
-		       const SystemType & systemObj,
-		       VelocityPolicyType && policy)
-    : systemObj_(systemObj),
-      policy_(std::forward<VelocityPolicyType>(policy)),
-      velocities_{policy_.get().create(systemObj)}
-  {}
-
-  // only enabled if policy standard
-  template <
-    bool _is_standard_policy = is_standard_policy,
-    mpl::enable_if_t<_is_standard_policy,int > = 0
-    >
-  ExplicitEulerStepper(const StateType & state,
-		       const SystemType & systemObj)
-    : systemObj_(systemObj),
-      policy_(),
-      velocities_{policy_.get().create(systemObj)}
+  ExplicitEulerStepper(const StateType & state, SystemType && systemObj)
+    : systemObj_(std::forward<SystemType>(systemObj)),
+      velocities_{systemObj.createVelocity()}
   {}
 
 public:
@@ -115,7 +97,7 @@ public:
 
     auto & rhs = velocities_[0];
     //eval RHS
-    policy_.get().compute(odeSolution, rhs, systemObj_.get(), time);
+    systemObj_.get().velocity(odeSolution, time, rhs);
     // y = y + dt * rhs
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
     ::pressio::ops::update(odeSolution, one, rhs, dt);

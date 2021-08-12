@@ -53,9 +53,6 @@
 
 namespace pressio{ namespace ode{
 
-// template<typename stepper_tag, typename ...Args>
-// using ImplicitStepper = impl::ImplicitCompose_t<stepper_tag, Args...>;
-
 // BDF1
 template<class SystemType, class StateType, class ...Args>
 auto create_bdf1_stepper(const SystemType & system,  const StateType & state,  Args && ... args)

@@ -22,29 +22,25 @@ such that this allows great flexiblity on using this time integration package.
 
 ## Explicit Methods
 
-The explicit methods of the pressio ode aim to solve systems of the form:
+pressio ode's explicit methods aim to solve systems of the form:
 @f[
 \frac{d \boldsymbol{y}}{dt} =
 \boldsymbol{f}(\boldsymbol{y},t; ...)
 @f]
 
 where @f$y@f$ is the state, @f$f@f$ is the RHS (also called velocity below), @f$t@f$ is time.
+Note that here we do not constraing
 
 ### API:
 ```cpp
 template<class SystemType, class StateType>
-ReturnType create_keyword_stepper(const SystemType & system,
+ReturnType create_keyword_stepper(SystemType && system,
 								  const StateType & state);
-
-template<class SystemType, class StateType, class policy_type>
-ReturnType create_keyword_stepper(const SystemType & system,
-							      const StateType & state,
-                                  policy_type && rhsPolicy);
 ```
 where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, `ssp_runge_kutta3`.
 
 
-### Parameters and Requirements
+### Parameters
 
 - `SystemType`:
   - class defining the problem: how to create an instance of the velocity @f$f@f$ and how to compute it;
@@ -54,7 +50,7 @@ where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, 
   {
 	using scalar_type   = /* */;
 	using state_type    = /* */;
-	using velocity_type = /* typically the same as state_type */;
+	using velocity_type = /* */;
 
 	velocity_type createVelocity() const;
 	void velocity(const state_type &, scalar_type time, velocity_type &) const;
@@ -65,13 +61,14 @@ where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, 
   - type of the data structure you use for the state
   - Requirements: must be copy constructible
 
-- `PolicyType`:
-  - type of the class defining the policy for how to evaluate the right-hand-side
-  - Requirements: must conform to a specific API
-  ```cpp
-  ```
 
+### Requirements
 
+- the nested aliases `scalar_type`, `state_type` and `velocity_type` must be valid types:
+these typedefs are needed for pressio to collect information
+
+- if `StateType` is the type deduced for `state` from `create_...`, the following must hold:<br/>
+  `std::is_same<StateType, typename ValidSystemForExplicitOde::state_type>::value == true`
 
 
 ## Implicit Methods

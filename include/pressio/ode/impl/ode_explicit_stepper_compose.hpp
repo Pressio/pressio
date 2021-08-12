@@ -49,7 +49,6 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 
-#include "ode_explicit_policy_velocity.hpp"
 #include "ode_explicit_stepper_euler.hpp"
 #include "ode_explicit_stepper_runge_kutta4.hpp"
 #include "ode_explicit_stepper_adams_bashforth2.hpp"
@@ -64,81 +63,48 @@ struct ExplicitImplSelector
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::Euler>
-{
-  template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::impl::ExplicitEulerStepper
-    <Args..., is_standard_policy>;
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::Euler>{
+  template<typename ...Args> using type = ::pressio::ode::impl::ExplicitEulerStepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::RungeKutta4>
-{
-  template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::impl::ExplicitRungeKutta4Stepper
-    <Args..., is_standard_policy>;
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::RungeKutta4>{
+  template<typename ...Args> using type = ::pressio::ode::impl::ExplicitRungeKutta4Stepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>
-{
-  template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::impl::ExplicitAdamsBashforth2Stepper
-    <Args..., is_standard_policy>;
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>{
+  template<typename ...Args> using type = ::pressio::ode::impl::ExplicitAdamsBashforth2Stepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>
-{
-  template<bool is_standard_policy, typename ...Args>
-  using type = ::pressio::ode::impl::ExplicitSSPRungeKutta3Stepper
-    <Args..., is_standard_policy>;
+struct ExplicitImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>{
+  template<typename ...Args> using type = ::pressio::ode::impl::ExplicitSSPRungeKutta3Stepper<Args...>;
 };
-
 
 template<class TagType, class StateType, class SystemType>
-struct ExplicitComposeForDefaultPolicy
+struct ExplicitCompose
 {
   static_assert
-  (::pressio::ode::continuous_time_system_with_at_least_velocity<SystemType>::value,
+  (::pressio::ode::continuous_time_system_with_at_least_velocity<mpl::remove_cvref_t<SystemType>>::value,
    "The system passed to the ExplicitStepper does not meet the required API");
 
   static_assert
   (::pressio::ode::explicit_state<StateType>::value,
    "Invalid state type for explicit time stepping");
 
-  using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
-  using velocity_type = StateType;
-
-  using velocity_policy_t = ExplicitVelocityStandardPolicy<StateType>;
-
-  using type = typename ExplicitImplSelector<TagType>::template type<
-      true, scalar_type, StateType, SystemType, velocity_type, velocity_policy_t
-      >;
-};
-
-template<class TagType, class StateType, class SystemType, class policy_t>
-struct ExplicitComposeForCustomPolicy
-{
   static_assert
-  (::pressio::ode::continuous_time_system_with_at_least_velocity<SystemType>::value,
-   "The system passed to the ExplicitStepper does not meet the required API");
-
-  static_assert
-  (::pressio::ode::explicit_state<StateType>::value,
-   "Invalid state type for explicit time stepping");
+  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
+   "Incompatible StateType and state_type alias deduced from the system class");
 
   using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
-  using velocity_type = StateType;
-  using time_type = scalar_type;
-
+  using velocity_type = typename mpl::remove_cvref_t<SystemType>::velocity_type;
   static_assert
-  (::pressio::ode::explicit_velocity_policy<
-      mpl::remove_cvref_t<policy_t>, time_type, StateType, velocity_type, SystemType>::value,
-   "Invalid rhs policy for explicit time stepping");
+  (::pressio::ode::explicit_velocity<velocity_type>::value,
+   "Invalid velocity type for explicit time stepping");
 
   using type = typename ExplicitImplSelector<TagType>::template type<
-      false, scalar_type, StateType, SystemType, velocity_type, policy_t
+      scalar_type, StateType, SystemType, velocity_type
       >;
 };
 

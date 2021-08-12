@@ -193,7 +193,6 @@ using ImplicitStencilStatesContainer
 
 #include "constraints/ode_explicit_state.hpp"
 #include "constraints/ode_explicit_velocity.hpp"
-#include "constraints/ode_explicit_velocity_policy.hpp"
 #include "constraints/ode_explicitly_steppable.hpp"
 
 #include "constraints/ode_implicit_state.hpp"

@@ -10,7 +10,7 @@
 <para><simplesect kind="par"><title></title><para>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</para>
 </simplesect>
 </para>
-<sect1 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md58">
+<sect1 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md59">
 <title>Continuous-time API</title>
 <para>This API is intended for any system expressible in <emphasis>time-continuous</emphasis> form as <formula id="6">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, and <formula id="3">$t$</formula> is time.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
 <para>We envision two scenarios:<itemizedlist>
@@ -18,7 +18,7 @@
 </listitem><listitem><para>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&apos;s Jacobian on some operand</para>
 </listitem></itemizedlist>
 </para>
-<sect2 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md59">
+<sect2 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md60">
 <title>A: velocity only</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterA</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -40,7 +40,7 @@
 </simplesect>
 </para>
 </sect2>
-<sect2 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md60">
+<sect2 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md61">
 <title>B: velocity and Jacobian action</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">AdapterB</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -73,7 +73,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md61">
+<sect1 id="md_pages_old_coreconcepts_adapter_api_1autotoc_md62">
 <title>Discrete-time API</title>
 <para>This API is intended for any system expressible in a discrete-time form as <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula> where <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>

@@ -55,9 +55,7 @@ template<
   class ScalarType,
   class StateType,
   class SystemType,
-  class VelocityType,
-  class VelocityPolicyType,
-  bool is_standard_policy
+  class VelocityType
   >
 class ExplicitRungeKutta4Stepper
 {
@@ -67,8 +65,7 @@ public:
   static constexpr stepper_order_type order_value = 4;
 
 private:
-  std::reference_wrapper<const SystemType> systemObj_;
-  ::pressio::utils::InstanceOrReferenceWrapper<VelocityPolicyType> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::array<VelocityType, 4> velocities_;
   StateType auxiliaryState_;
 
@@ -81,30 +78,12 @@ public:
   ~ExplicitRungeKutta4Stepper() = default;
 
   ExplicitRungeKutta4Stepper(const StateType & state,
-			                       const SystemType & systemObj,
-			                       VelocityPolicyType && policy)
-    : systemObj_(systemObj),
-      policy_(std::forward<VelocityPolicyType>(policy)),
-      velocities_{policy.create(systemObj), 
-                  policy.create(systemObj), 
-                  policy.create(systemObj), 
-                  policy.create(systemObj)},
-      auxiliaryState_{::pressio::ops::clone(state)}
-  {}
-
-  // only enabled if policy standard
-  template <
-    bool _is_standard_policy = is_standard_policy,
-    mpl::enable_if_t<_is_standard_policy, int > = 0
-    >
-  ExplicitRungeKutta4Stepper(const StateType & state,
-			     const SystemType & systemObj)
-    : systemObj_(systemObj),
-      policy_(),
-      velocities_{policy_.get().create(systemObj), 
-                  policy_.get().create(systemObj), 
-                  policy_.get().create(systemObj), 
-                  policy_.get().create(systemObj)},
+                                 SystemType && systemObj)
+    : systemObj_(std::forward<SystemType>(systemObj)),
+      velocities_{systemObj.createVelocity(), 
+                  systemObj.createVelocity(), 
+                  systemObj.createVelocity(), 
+                  systemObj.createVelocity()},
       auxiliaryState_{::pressio::ops::clone(state)}
   {}
 
@@ -136,19 +115,19 @@ public:
     const ScalarType dt3 = dt / three;
 
     // stage 1: ytmp = y + rhs0*dt_half;
-    policy_.get().compute(odeSolution, rhs0, systemObj_.get(), t);
+    systemObj_.get().velocity(odeSolution, t, rhs0);
     this->stage_update_impl(auxiliaryState_, odeSolution, rhs0, dt_half);
 
     // stage 2: ytmp = y + rhs1*dt_half;
-    policy_.get().compute(auxiliaryState_, rhs1, systemObj_.get(), t_phalf);
+    systemObj_.get().velocity(auxiliaryState_, t_phalf, rhs1);
     this->stage_update_impl(auxiliaryState_, odeSolution, rhs1, dt_half);
 
     // stage 3: ytmp = y + rhs2*dt;
-    policy_.get().compute(auxiliaryState_, rhs2, systemObj_.get(), t_phalf);
+    systemObj_.get().velocity(auxiliaryState_, t_phalf, rhs2);
     this->stage_update_impl(auxiliaryState_, odeSolution, rhs2, dt);
 
     // stage 4: y_n += dt/6 * ( k1 + 2 * k2 + 2 * k3 + k4 )
-    policy_.get().compute(auxiliaryState_, rhs3, systemObj_.get(), t + dt);
+    systemObj_.get().velocity(auxiliaryState_,  t + dt, rhs3);
     this->stage_update_impl(odeSolution, rhs0, rhs1, rhs2, rhs3, dt6, dt3);
   }
 

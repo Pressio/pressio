@@ -10,22 +10,17 @@ The ode package provides classes for doing time integration. Specifically, the d
 \item we separate the concept of a \char`\"{}stepper\char`\"{} from the actual \char`\"{}advancer\char`\"{}\+: a stepper class is responsible for knowing how to perform a step in time, while the \char`\"{}advancer\char`\"{} (or integrator) is responbile of knowing how many times the stepper should be called.
 \item we use a policy-\/based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.
 \end{DoxyItemize}\hypertarget{md_pages_components_ode_autotoc_md29}{}\doxysection{Explicit Methods}\label{md_pages_components_ode_autotoc_md29}
-The explicit methods of the pressio ode aim to solve systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
+pressio ode\textquotesingle{}s explicit methods aim to solve systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 
-where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.\hypertarget{md_pages_components_ode_autotoc_md30}{}\doxysubsection{API\+:}\label{md_pages_components_ode_autotoc_md30}
+where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time. Note that here we do not constraing\hypertarget{md_pages_components_ode_autotoc_md30}{}\doxysubsection{API\+:}\label{md_pages_components_ode_autotoc_md30}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} SystemType, \textcolor{keyword}{class} StateType>}
-\DoxyCodeLine{ReturnType create\_keyword\_stepper(\textcolor{keyword}{const} SystemType \& system,}
+\DoxyCodeLine{ReturnType create\_keyword\_stepper(SystemType \&\& system,}
 \DoxyCodeLine{                                  \textcolor{keyword}{const} StateType \& state);}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} SystemType, \textcolor{keyword}{class} StateType, \textcolor{keyword}{class} policy\_type>}
-\DoxyCodeLine{ReturnType create\_keyword\_stepper(\textcolor{keyword}{const} SystemType \& system,}
-\DoxyCodeLine{                                  \textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{                                  policy\_type \&\& rhsPolicy);}
 
 \end{DoxyCode}
- where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamily runge\+\_\+kutta4}, {\ttfamily adams\+\_\+bashforth2}, {\ttfamily ssp\+\_\+runge\+\_\+kutta3}.\hypertarget{md_pages_components_ode_autotoc_md31}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_ode_autotoc_md31}
+ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamily runge\+\_\+kutta4}, {\ttfamily adams\+\_\+bashforth2}, {\ttfamily ssp\+\_\+runge\+\_\+kutta3}.\hypertarget{md_pages_components_ode_autotoc_md31}{}\doxysubsection{Parameters}\label{md_pages_components_ode_autotoc_md31}
 
 \begin{DoxyItemize}
 \item {\ttfamily System\+Type}\+:
@@ -37,7 +32,7 @@ where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time
 \DoxyCodeLine{\{}
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* */};}
-\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type = \textcolor{comment}{/* typically the same as state\_type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type = \textcolor{comment}{/* */};}
 \DoxyCodeLine{}
 \DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&, scalar\_type time, velocity\_type \&) \textcolor{keyword}{const};}
@@ -51,13 +46,10 @@ where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time
 \item type of the data structure you use for the state
 \item Requirements\+: must be copy constructible
 \end{DoxyItemize}
-\item {\ttfamily Policy\+Type}\+:
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_autotoc_md32}{}\doxysubsection{Requirements}\label{md_pages_components_ode_autotoc_md32}
+
 \begin{DoxyItemize}
-\item type of the class defining the policy for how to evaluate the right-\/hand-\/side
-\item Requirements\+: must conform to a specific API 
-\begin{DoxyCode}{0}
-
-\end{DoxyCode}
-
-\end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_autotoc_md32}{}\doxysection{Implicit Methods}\label{md_pages_components_ode_autotoc_md32}
+\item the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be valid types\+: these typedefs are needed for pressio to collect information
+\item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
+ {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename Valid\+System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_autotoc_md33}{}\doxysection{Implicit Methods}\label{md_pages_components_ode_autotoc_md33}

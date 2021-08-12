@@ -55,9 +55,7 @@ template<
   class ScalarType,
   class StateType,
   class SystemType,
-  class VelocityType,
-  class VelocityPolicyType,
-  bool is_standard_policy
+  class VelocityType
   >
 class ExplicitAdamsBashforth2Stepper
 {
@@ -67,8 +65,7 @@ public:
   static constexpr stepper_order_type order_value = 2;
 
 private:
-  std::reference_wrapper<const SystemType> systemObj_;
-  ::pressio::utils::InstanceOrReferenceWrapper<VelocityPolicyType> policy_;
+  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
   std::array<VelocityType, 2> velocities_;
 
 public:
@@ -80,25 +77,9 @@ public:
   ~ExplicitAdamsBashforth2Stepper() = default;
 
   ExplicitAdamsBashforth2Stepper(const StateType & state,
-                                 const SystemType & systemObj,
-                                 VelocityPolicyType && policy)
-    : systemObj_(systemObj),
-      policy_(std::forward<VelocityPolicyType>(policy)),
-      velocities_{policy.create(systemObj), 
-                  policy.create(systemObj)}
-  {}
-
-  // only enabled if policy standard
-  template <
-    bool _is_standard_policy = is_standard_policy,
-    mpl::enable_if_t<_is_standard_policy, int > = 0
-    >
-  ExplicitAdamsBashforth2Stepper(const StateType & state,
-				                         const SystemType & systemObj)
-    : systemObj_(systemObj),
-      policy_(),
-      velocities_{policy_.get().create(systemObj), 
-                  policy_.get().create(systemObj)}
+                                 SystemType && systemObj)
+    : systemObj_(std::forward<SystemType>(systemObj)),
+      velocities_{systemObj.createVelocity(), systemObj.createVelocity()}
   {}
 
 public:
@@ -122,7 +103,7 @@ public:
     if (stepNumber==1){
       // use Euler forward or we could use something else here maybe RK4
       auto & rhs = velocities_[0];
-      policy_.get().compute(odeSolution, rhs, systemObj_.get(), currentTime);
+      systemObj_.get().velocity(odeSolution, currentTime, rhs);
       doUpdate1(odeSolution, rhs, dt);
     }
     else{
@@ -131,7 +112,7 @@ public:
       // fn -> fnm1
       updateStoredVelocities(fnm1, fn);
 
-      policy_.get().compute(odeSolution, fn, systemObj_.get(), currentTime);
+      systemObj_.get().velocity(odeSolution, currentTime, fn);
       doUpdate2(odeSolution, fn, cfn, fnm1, cfnm1);
     }
   }

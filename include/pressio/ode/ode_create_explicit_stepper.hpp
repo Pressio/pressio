@@ -53,138 +53,67 @@
 
 namespace pressio{ namespace ode{
 
-//
 // Euler forward
-//
 template<
   class SystemType,
   class StateType,
-  class ReturnType = typename impl::ExplicitComposeForDefaultPolicy<
-      explicitmethods::Euler, StateType, SystemType>::type
+  class ReturnType = typename impl::ExplicitCompose<explicitmethods::Euler, StateType, SystemType>::type
   >
-ReturnType create_forward_euler_stepper(const SystemType & system, const StateType & state){
-  return ReturnType(state, system);
+ReturnType create_forward_euler_stepper(SystemType && system, const StateType & state)
+{
+  return ReturnType(state, std::forward<SystemType>(system));
 };
 
-template<
-  class SystemType,
-  class StateType,
-  class PolicyType,
-  class ReturnType = typename impl::ExplicitComposeForCustomPolicy<
-      explicitmethods::Euler, StateType, SystemType, PolicyType>::type
-  >
-ReturnType create_forward_euler_stepper(const SystemType & system, 
-                                    const StateType & state,
-                                   PolicyType && rhsPolicy){
-  return ReturnType(state, system, std::forward<PolicyType>(rhsPolicy));
-};
-
-//
 // Runge-kutta 4th
-//
 template<
   class SystemType,
   class StateType,
-  class ReturnType = typename impl::ExplicitComposeForDefaultPolicy<
-      explicitmethods::RungeKutta4, StateType, SystemType>::type
+  class ReturnType = typename impl::ExplicitCompose<explicitmethods::RungeKutta4, StateType, SystemType>::type
   >
-ReturnType create_runge_kutta4_stepper(const SystemType & system, 
-                                       const StateType & state){
-  return ReturnType(state, system);
-};
-
-template<
-  class SystemType,
-  class StateType,
-  class PolicyType,
-  class ReturnType = typename impl::ExplicitComposeForCustomPolicy<
-      explicitmethods::RungeKutta4, StateType, SystemType, PolicyType>::type
-  >
-ReturnType create_runge_kutta4_stepper(const SystemType & system, 
-                                      const StateType & state,                                  
-                                   PolicyType && rhsPolicy){
-  return ReturnType(state, system, std::forward<PolicyType>(rhsPolicy));
+ReturnType create_runge_kutta4_stepper(SystemType && system, const StateType & state)
+{
+  return ReturnType(state, std::forward<SystemType>(system));
 };
 
 template<class ...Args>
-auto create_rk4_stepper(Args && ... args)
- -> decltype(create_runge_kutta4_stepper(std::forward<Args>(args)...))
+auto create_rk4_stepper(Args && ... args) -> decltype(create_runge_kutta4_stepper(std::forward<Args>(args)...))
 {
   return create_runge_kutta4_stepper(std::forward<Args>(args)...);
 }
 
-//
 // Adams-Bashforth2
-//
 template<
   class SystemType,
   class StateType,
-  class ReturnType = typename impl::ExplicitComposeForDefaultPolicy<
-      explicitmethods::AdamsBashforth2, StateType, SystemType>::type
+  class ReturnType = typename impl::ExplicitCompose<explicitmethods::AdamsBashforth2, StateType, SystemType>::type
   >
-ReturnType create_adams_bashforth2_stepper(const SystemType & system, 
-                                           const StateType & state)
+ReturnType create_adams_bashforth2_stepper(SystemType && system, const StateType & state)
 {
-  return ReturnType(state, system);
-};
-
-template<
-  class SystemType,
-  class StateType,
-  class PolicyType,
-  class ReturnType = typename impl::ExplicitComposeForCustomPolicy<
-      explicitmethods::AdamsBashforth2, StateType, SystemType, PolicyType>::type
-  >
-ReturnType create_adams_bashforth2_stepper(const SystemType & system, 
-                                           const StateType & state,
-                                   PolicyType && rhsPolicy)
-{
-  return ReturnType(state, system, std::forward<PolicyType>(rhsPolicy));
+  return ReturnType(state, std::forward<SystemType>(system));
 };
 
 template<class ...Args>
-auto create_ab2_stepper(Args && ... args)
- -> decltype(create_adams_bashforth2_stepper(std::forward<Args>(args)...))
+auto create_ab2_stepper(Args && ... args) -> decltype(create_adams_bashforth2_stepper(std::forward<Args>(args)...))
 {
   return create_adams_bashforth2_stepper(std::forward<Args>(args)...);
 }
 
-//
 // SSP Runge-kutta3
-//
 template<
   class SystemType,
   class StateType,
-  class ReturnType = typename impl::ExplicitComposeForDefaultPolicy<
-      explicitmethods::SSPRungeKutta3, StateType, SystemType>::type
+  class ReturnType = typename impl::ExplicitCompose<explicitmethods::SSPRungeKutta3, StateType, SystemType>::type
   >
-ReturnType create_ssp_runge_kutta3_stepper(const SystemType & system, 
-                                           const StateType & state)
+ReturnType create_ssp_runge_kutta3_stepper(SystemType && system, const StateType & state)
 {
-  return ReturnType(state, system);
-};
-
-template<
-  class SystemType,
-  class StateType,
-  class PolicyType,
-  class ReturnType = typename impl::ExplicitComposeForCustomPolicy<
-      explicitmethods::SSPRungeKutta3, StateType, SystemType, PolicyType>::type
-  >
-ReturnType create_ssp_runge_kutta3_stepper(const SystemType & system, 
-                                           const StateType & state,
-                                   PolicyType && rhsPolicy)
-{
-  return ReturnType(state, system, std::forward<PolicyType>(rhsPolicy));
+  return ReturnType(state, std::forward<SystemType>(system));
 };
 
 template<class ...Args>
-auto create_ssprk3_stepper(Args && ... args)
- -> decltype(create_ssp_runge_kutta3_stepper(std::forward<Args>(args)...))
+auto create_ssprk3_stepper(Args && ... args) -> decltype(create_ssp_runge_kutta3_stepper(std::forward<Args>(args)...))
 {
   return create_ssp_runge_kutta3_stepper(std::forward<Args>(args)...);
 }
-
 
 }} // end namespace pressio::ode
 #endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_HPP_
