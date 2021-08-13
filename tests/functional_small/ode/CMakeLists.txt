@@ -1,7 +1,7 @@
 
 add_serial_utest(
-	${TESTING_LEVEL}_ode_concepts_common
-	${CMAKE_CURRENT_SOURCE_DIR}/ode_concepts_common.cc)
+	${TESTING_LEVEL}_ode_concepts_advancers
+	${CMAKE_CURRENT_SOURCE_DIR}/ode_concepts_advancers.cc)
 
 add_serial_utest(
 	${TESTING_LEVEL}_ode_concepts_explicit

@@ -73,15 +73,17 @@ e.g., I/O helpers, static constants, etc   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>   </para>
-</entry><entry thead="no"><para>explicit methods <linebreak/>
-implict methods <linebreak/>
+</entry><entry thead="no"><para>explicit steppers <linebreak/>
+implict steppers <linebreak/>
+ advance function <linebreak/>
  all   </para>
-</entry><entry thead="no"><para><linebreak/>
-<linebreak/>
+</entry><entry thead="no"><para><ulink url="md_pages_components_ode_steppers_explicit.html">Documentation</ulink><linebreak/>
+ <ulink url="md_pages_components_ode_steppers_implicit.html">Documentation</ulink> <linebreak/>
 <ulink url="md_pages_components_ode.html">Documentation</ulink><linebreak/>
 <ulink url="https://github.com/Pressio/pressio/tree/main/include/ode">Code</ulink>   </para>
-</entry><entry thead="no"><para><computeroutput>&lt;pressio/ode_explicit.hpp&gt;</computeroutput><linebreak/>
- <computeroutput>&lt;pressio/ode_implicit.hpp&gt;</computeroutput> <linebreak/>
+</entry><entry thead="no"><para><computeroutput>&lt;pressio/ode_steppers_explicit.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput><linebreak/>
+ <computeroutput>&lt;pressio/ode_advance.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>

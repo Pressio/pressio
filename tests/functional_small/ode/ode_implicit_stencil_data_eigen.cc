@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode_implicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_advancers.hpp"
 
 template<class T>
 bool all_equal_to(const T a, double value)

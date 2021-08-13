@@ -1,6 +1,7 @@
 
 #include "gtest/gtest.h"
-#include "pressio/ode_implicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_advancers.hpp"
 
 struct MyApp
 {
@@ -146,103 +147,101 @@ struct MyFakeSolver
   }
 };
 
-TEST(ode, implicit_crank_nicolson_correctness)
+/*
+  check numerics of crank-nicolson is doing the right thing numerically
+  by manufacturing an integration problem where we use
+  artificial numbers and we check insdie the "fake" solver that
+  the operators are correct.
+
+  we integrate: dy/dt = f(y,t)
+
+  - start from t_0 = 0.0
+  - y(t=0) = [1 2 3]
+  - dt = 1.5
+  - f=y+t where t is the time the f is evaluated at
+  - the nonlinear solver fakes updating the solution by simply adding 1
+  - at each time step we call the solver twice
+
+  ********
+  *step 1* from t_0 -> t_1
+  ********
+  - t_0 = 0
+  - t_1 = 1.5
+  this means we are at step = 0 and predicting solution at t_1
+  so n = 0 and n+1 = 1
+
+  - the first call to the solver should have:
+  - R = y_1 - y_0 - 0.5*dt*f_1 - 0.5*dt*f_0, where f_0=f(y_0, t_0) and f_1=f(y_1,t_1)
+  - where y_1 = y_0 because y_0 is the tentative guess
+  so
+  f_0 = y_0+0
+  f_1 = y_1+t_1 = y_1+1.5
+
+  - the second call to the solver should have:
+  - R = y_1 - y_0 - 0.5*dt*f_1 - 0.5*dt*f_0, where f_0=f(y_0, t_0) and f_1=f(y_1,t_1)
+  - y_1 is now the state coming out from the first solve attempt, so now y_1 = y_0+1
+  so
+  f_0 = y_0+0
+  f_1 = y_1+t_1 = y_1+1.5
+
+
+  ********
+  *step 2* from t_1 -> t_2
+  ********
+  - t_1 = 1.5
+  - t_2 = 3.
+  this means we are at step = n = 1 and predicting solution at t_2
+  so n = 1 and n+1 = 2
+
+  at t_1 we should have y_1 = [3 4 5], this is the "result" from previous step
+
+  - the first call to the solver should have:
+  - R = y_2 - y_1 - 0.5*dt*f_2 - 0.5*dt*f_1, where f_1=f(y_1, t_1) and f_2=f(y_2,t_2)
+  - where y_2 = y_1 because y_1 is the tentative guess
+  so
+  f_1 = y_1+t_1 = y_1+1.5
+  f_2 = y_2+t_2 = y_2+3.0
+
+  - the second call to the solver should have:
+  - R = y_2 - y_1 - 0.5*dt*f_2 - 0.5*dt*f_1, where f_1=f(y_1, t_1) and f_2=f(y_2,t_2)
+  - y_2 is now the state coming out from the first solve attempt, so now y_2 = y_1+1
+  so
+  f_1 = y_1+t_1 = y_1+1.5
+  f_2 = y_2+t_2 = y_2+3.0
+
+  ********
+  *step 3* from t_2 -> t_3
+  ********
+  - t_1 = 3.
+  - t_2 = 4.5
+  this means we are at step = n = 2 and predicting solution at t_3
+  so n = 2 and n+1 = 3
+
+  at t_2 we should have y_2 = [5 6 7], this is the "result" from previous step
+
+  - the first call to the solver should have:
+  - R = y_3 - y_2 - 0.5*dt*f_3 - 0.5*dt*f_2,
+  - where f_2=f(y_2, t_2) and f_3=f(y_3,t_3)
+  - where y_3 = y_2 because y_2 is the tentative guess
+  so
+  f_1 = y_2+t_2 = y_2+3.0
+  f_2 = y_3+t_3 = y_3+4.5
+
+  - the second call to the solver should have:
+  - R = y_3 - y_2 - 0.5*dt*f_3 - 0.5*dt*f_2,
+  - y_3 is now the state coming out from the first solve attempt, so now y_3 = y_2+1
+  so
+  f_1 = y_2+t_2 = y_2+3.0
+  f_2 = y_3+t_3 = y_3+4.5
+ */
+
+TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 {
-  /*
-    check numerics of crank-nicolson is doing the right thing numerically
-    by manufacturing an integration problem where we use
-    artificial numbers and we check insdie the "fake" solver that
-    the operators are correct.
-
-    we integrate: dy/dt = f(y,t)
-
-    - start from t_0 = 0.0
-    - y(t=0) = [1 2 3]
-    - dt = 1.5
-    - f=y+t where t is the time the f is evaluated at
-    - the nonlinear solver fakes updating the solution by simply adding 1
-    - at each time step we call the solver twice
-
-    ********
-    *step 1* from t_0 -> t_1
-    ********
-    - t_0 = 0
-    - t_1 = 1.5
-    this means we are at step = 0 and predicting solution at t_1
-    so n = 0 and n+1 = 1
-
-    - the first call to the solver should have:
-    - R = y_1 - y_0 - 0.5*dt*f_1 - 0.5*dt*f_0, where f_0=f(y_0, t_0) and f_1=f(y_1,t_1)
-    - where y_1 = y_0 because y_0 is the tentative guess
-    so
-    f_0 = y_0+0
-    f_1 = y_1+t_1 = y_1+1.5
-
-    - the second call to the solver should have:
-    - R = y_1 - y_0 - 0.5*dt*f_1 - 0.5*dt*f_0, where f_0=f(y_0, t_0) and f_1=f(y_1,t_1)
-    - y_1 is now the state coming out from the first solve attempt, so now y_1 = y_0+1
-    so
-    f_0 = y_0+0
-    f_1 = y_1+t_1 = y_1+1.5
-
-
-    ********
-    *step 2* from t_1 -> t_2
-    ********
-    - t_1 = 1.5
-    - t_2 = 3.
-    this means we are at step = n = 1 and predicting solution at t_2
-    so n = 1 and n+1 = 2
-
-    at t_1 we should have y_1 = [3 4 5], this is the "result" from previous step
-
-    - the first call to the solver should have:
-    - R = y_2 - y_1 - 0.5*dt*f_2 - 0.5*dt*f_1, where f_1=f(y_1, t_1) and f_2=f(y_2,t_2)
-    - where y_2 = y_1 because y_1 is the tentative guess
-    so
-    f_1 = y_1+t_1 = y_1+1.5
-    f_2 = y_2+t_2 = y_2+3.0
-
-    - the second call to the solver should have:
-    - R = y_2 - y_1 - 0.5*dt*f_2 - 0.5*dt*f_1, where f_1=f(y_1, t_1) and f_2=f(y_2,t_2)
-    - y_2 is now the state coming out from the first solve attempt, so now y_2 = y_1+1
-    so
-    f_1 = y_1+t_1 = y_1+1.5
-    f_2 = y_2+t_2 = y_2+3.0
-
-    ********
-    *step 3* from t_2 -> t_3
-    ********
-    - t_1 = 3.
-    - t_2 = 4.5
-    this means we are at step = n = 2 and predicting solution at t_3
-    so n = 2 and n+1 = 3
-
-    at t_2 we should have y_2 = [5 6 7], this is the "result" from previous step
-
-    - the first call to the solver should have:
-    - R = y_3 - y_2 - 0.5*dt*f_3 - 0.5*dt*f_2,
-    - where f_2=f(y_2, t_2) and f_3=f(y_3,t_3)
-    - where y_3 = y_2 because y_2 is the tentative guess
-    so
-    f_1 = y_2+t_2 = y_2+3.0
-    f_2 = y_3+t_3 = y_3+4.5
-
-    - the second call to the solver should have:
-    - R = y_3 - y_2 - 0.5*dt*f_3 - 0.5*dt*f_2,
-    - y_3 is now the state coming out from the first solve attempt, so now y_3 = y_2+1
-    so
-    f_1 = y_2+t_2 = y_2+3.0
-    f_2 = y_3+t_3 = y_3+4.5
-   */
-
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
-  // using res_t	        = typename app_t::velocity_type;
-  // using jac_t	= typename app_t::jacobian_type;
   std::string checkStr= "PASSED";
   app_t appObj;
   MyFakeSolver solver(checkStr);
@@ -250,12 +249,32 @@ TEST(ode, implicit_crank_nicolson_correctness)
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
-  auto stepperObj = pressio::ode::create_cranknicolson_stepper(appObj, y);
-  // using ode_tag = pressio::ode::implicitmethods::CrankNicolson;
-  // using stepper_t = pressio::ode::ImplicitStepper<
-  //   ode_tag, state_t, res_t, jac_t, app_t>;
-  // stepper_t stepperObj(y, appObj);
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(y,appObj);
+  pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
+  std::cout << checkStr << std::endl;
+  pressio::log::finalize();
+}
 
+TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+  using app_t   = MyApp;
+  using state_t = typename app_t::state_type;
+  std::string checkStr= "PASSED";
+  app_t appObj;
+  MyFakeSolver solver(checkStr);
+
+  state_t y(3);
+  y(0)=1.; y(1)=2.; y(2)=3.;
+
+  using res_t  = typename app_t::velocity_type;
+  using jac_t  = typename app_t::jacobian_type;
+  using res_pol_t = pressio::ode::impl::ResidualStandardPolicyCrankNicolson<app_t&, state_t, res_t>;
+  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicyCrankNicolson<app_t&, state_t, jac_t>;
+
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(y, res_pol_t(appObj), jac_pol_t(appObj));
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
   std::cout << checkStr << std::endl;
   pressio::log::finalize();

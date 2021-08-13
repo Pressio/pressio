@@ -1,5 +1,6 @@
 
-#include "pressio/ode_implicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_advancers.hpp"
 
 struct MyApp
 {
@@ -170,7 +171,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
 
-  auto stepperObj = pressio::ode::create_arbitrary_stepper<1,2>(appObj, y);
+  auto stepperObj = pressio::ode::create_arbitrary_stepper<1,2>(y,appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 

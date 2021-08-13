@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode_explicit.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
 #include "testing_apps.hpp"
 
 //
@@ -26,7 +27,7 @@ TEST(ode, explicit_euler_system_reference)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_forward_euler_stepper(appObj, y);
+  auto stepperObj = ode::create_forward_euler_stepper(y, appObj);
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
 }
 
@@ -38,10 +39,9 @@ TEST(ode, explicit_euler_system_move)
   app_t appObj;
 
   state_t y(3);
-  auto stepperObj = ode::create_forward_euler_stepper(std::move(appObj), y);
+  auto stepperObj = ode::create_forward_euler_stepper(y, std::move(appObj));
   TEST_ODE_EULER_NUMERICS(y, stepperObj);
 }
-
 
 //
 // RK4
@@ -63,7 +63,7 @@ TEST(ode, explicit_rk4_system_reference)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_runge_kutta4_stepper(appObj, y);
+  auto stepperObj = ode::create_runge_kutta4_stepper(y,appObj);
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
@@ -74,7 +74,7 @@ TEST(ode, explicit_rk4_system_move)
   using state_t = typename app_t::state_type;
   app_t appObj;
   state_t y(3);
-  auto stepperObj = ode::create_runge_kutta4_stepper(app_t(), y);
+  auto stepperObj = ode::create_runge_kutta4_stepper(y,app_t());
   TEST_ODE_RK4_NUMERICS(y, stepperObj, appObj);
 }
 
@@ -109,7 +109,7 @@ TEST(ode, explicit_ssprk3)
   app_t appObj;
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.; 
-  auto stepperObj = ode::create_ssp_runge_kutta3_stepper(appObj, y);
+  auto stepperObj = ode::create_ssp_runge_kutta3_stepper(y,appObj);
   double dt = 2.; 
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 1);
   EXPECT_DOUBLE_EQ( y(0), 29./3.); 
@@ -200,7 +200,7 @@ TEST(ode, explicit_ab2_system_reference)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(appObj, y);
+  auto stepperObj = ode::create_adams_bashforth2_stepper(y,appObj);
 
   double dt = 2.;
   Collector C;
@@ -216,7 +216,7 @@ TEST(ode, explicit_ab2_custom_system_move)
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
 
-  auto stepperObj = ode::create_adams_bashforth2_stepper(std::move(appObj), y);
+  auto stepperObj = ode::create_adams_bashforth2_stepper(y,std::move(appObj));
   double dt = 2.;
   Collector C;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 3, C);

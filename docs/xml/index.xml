@@ -10,7 +10,11 @@
   </compound>
   <compound refid="nonlinsolvers_8md" kind="file"><name>nonlinsolvers.md</name>
   </compound>
-  <compound refid="ode_8md" kind="file"><name>ode.md</name>
+  <compound refid="ode__advance_8md" kind="file"><name>ode_advance.md</name>
+  </compound>
+  <compound refid="ode__steppers__explicit_8md" kind="file"><name>ode_steppers_explicit.md</name>
+  </compound>
+  <compound refid="ode__steppers__implicit_8md" kind="file"><name>ode_steppers_implicit.md</name>
   </compound>
   <compound refid="ops_8md" kind="file"><name>ops.md</name>
   </compound>
@@ -72,7 +76,11 @@
   </compound>
   <compound refid="md_pages_components_nonlinsolvers" kind="page"><name>md_pages_components_nonlinsolvers</name>
   </compound>
-  <compound refid="md_pages_components_ode" kind="page"><name>md_pages_components_ode</name>
+  <compound refid="md_pages_components_ode_advance" kind="page"><name>md_pages_components_ode_advance</name>
+  </compound>
+  <compound refid="md_pages_components_ode_steppers_explicit" kind="page"><name>md_pages_components_ode_steppers_explicit</name>
+  </compound>
+  <compound refid="md_pages_components_ode_steppers_implicit" kind="page"><name>md_pages_components_ode_steppers_implicit</name>
   </compound>
   <compound refid="md_pages_components_ops" kind="page"><name>md_pages_components_ops</name>
   </compound>

@@ -28,13 +28,15 @@ solvers\+\_\+linear   &linear solvers (wrappers around existing TPLs)   &\href{m
 solvers\+\_\+nonlinear   &non-\/linear solvers ~\newline
  (e.\+g., Newton-\/\+Raphson, Gauss-\/\+Newton, Levenberg-\/\+Marquardt)   &\href{md_pages_components_nonlinsolvers.html}{\texttt{ Documentation}}~\newline
 \href{https://github.com/Pressio/pressio/tree/main/include/solvers_nonlinear}{\texttt{ Code}}   &{\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}    \\\cline{1-4}
-ode   &explicit methods ~\newline
-implict methods ~\newline
- all   &~\newline
-~\newline
+ode   &explicit steppers ~\newline
+implict steppers ~\newline
+ advance function ~\newline
+ all   &\href{md_pages_components_ode_steppers_explicit.html}{\texttt{ Documentation}}~\newline
+ \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ Documentation}} ~\newline
 \href{md_pages_components_ode.html}{\texttt{ Documentation}}~\newline
-\href{https://github.com/Pressio/pressio/tree/main/include/ode}{\texttt{ Code}}   &{\ttfamily $<$pressio/ode\+\_\+explicit.\+hpp$>$}~\newline
- {\ttfamily $<$pressio/ode\+\_\+implicit.\+hpp$>$} ~\newline
+\href{https://github.com/Pressio/pressio/tree/main/include/ode}{\texttt{ Code}}   &{\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+explicit.\+hpp$>$} ~\newline
+ {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+implicit.\+hpp$>$}~\newline
+ {\ttfamily $<$pressio/ode\+\_\+advance.\+hpp$>$} ~\newline
  {\ttfamily $<$pressio/ode.\+hpp$>$}    \\\cline{1-4}
 rom   &Galerkin~\newline
  LSPG~\newline

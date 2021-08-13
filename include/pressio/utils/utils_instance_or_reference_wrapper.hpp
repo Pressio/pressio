@@ -64,6 +64,7 @@ template <class T>
 class InstanceOrReferenceWrapper
 {
   T value_;
+
 public:
   InstanceOrReferenceWrapper(const InstanceOrReferenceWrapper &) = default;
   InstanceOrReferenceWrapper & operator=(const InstanceOrReferenceWrapper &) = default;
@@ -71,27 +72,17 @@ public:
   InstanceOrReferenceWrapper & operator=(InstanceOrReferenceWrapper &&) = default;
   ~InstanceOrReferenceWrapper() = default;
 
-  template<
-    class _T = T,
-    mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0
-    >
+  template< class _T = T, mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0>
   InstanceOrReferenceWrapper(){}
 
-  InstanceOrReferenceWrapper(T & valIn) : value_(valIn){
-    std::cout << "COP C\n";
-  }
-  InstanceOrReferenceWrapper(const T & valIn) : value_(valIn){
-    std::cout << "COP 2 C\n";
-  }
+  explicit InstanceOrReferenceWrapper(T & valIn) 
+    : value_(valIn){ std::cout << "COP C\n"; }
+  
+  explicit InstanceOrReferenceWrapper(const T & valIn) 
+    : value_(valIn){ std::cout << "COP 2 C\n"; }
 
-  // template<
-  //   typename _T = T,
-  //   typename std::enable_if<std::is_move_constructible<_T>::value, int>::type = 0
-  //   >
-  InstanceOrReferenceWrapper(T && valIn) : value_(std::move(valIn))
-  {
-    std::cout << "MOVE C\n";
-  }
+  explicit InstanceOrReferenceWrapper(T && valIn) 
+    : value_(std::move(valIn)) { std::cout << "MOVE C\n"; }
 
   T& get() { return value_; }
   T const& get() const { return value_; }
@@ -101,15 +92,16 @@ template <class T>
 class InstanceOrReferenceWrapper<T&>
 {
   std::reference_wrapper<T> refObj_;
+
 public:
+  InstanceOrReferenceWrapper() = delete;
   InstanceOrReferenceWrapper(const InstanceOrReferenceWrapper &) = default;
   InstanceOrReferenceWrapper & operator=(const InstanceOrReferenceWrapper &) = default;
   InstanceOrReferenceWrapper(InstanceOrReferenceWrapper &&) = default;
   InstanceOrReferenceWrapper & operator=(InstanceOrReferenceWrapper &&) = default;
   ~InstanceOrReferenceWrapper() = default;
 
-  InstanceOrReferenceWrapper() = delete;
-  InstanceOrReferenceWrapper(T & valIn) : refObj_(valIn){}
+  explicit InstanceOrReferenceWrapper(T & valIn) : refObj_(valIn){}
 
   T& get() { return refObj_.get(); }
   T const& get() const { return refObj_.get(); }
@@ -119,15 +111,16 @@ template <class T>
 class InstanceOrReferenceWrapper<T const &>
 {
   std::reference_wrapper<const T> refObj_;
+
 public:
+  InstanceOrReferenceWrapper() = delete;
   InstanceOrReferenceWrapper(const InstanceOrReferenceWrapper &) = default;
   InstanceOrReferenceWrapper & operator=(const InstanceOrReferenceWrapper &) = default;
   InstanceOrReferenceWrapper(InstanceOrReferenceWrapper &&) = default;
   InstanceOrReferenceWrapper & operator=(InstanceOrReferenceWrapper &&) = default;
   ~InstanceOrReferenceWrapper() = default;
 
-  InstanceOrReferenceWrapper() = delete;
-  InstanceOrReferenceWrapper(const T & valIn) : refObj_(valIn){}
+  explicit InstanceOrReferenceWrapper(const T & valIn) : refObj_(valIn){}
 
   T const& get() { return refObj_.get(); }
   T const& get() const { return refObj_.get(); }

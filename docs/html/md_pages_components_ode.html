@@ -34,8 +34,10 @@
                 <li><a href="md_pages_components_expressions.html">expressions</a></li>
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers.html">Nonlinear solvers</a></li>
-                <li><a href="md_pages_components_ode.html">ode</a></li>
+                <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
+                <li><a href="md_pages_components_ode_advance.html">ode advance functions</a></li>
                 <li><a href="md_pages_components_rom.html">rom</a></li>
               </ol>
             </li>
@@ -66,7 +68,7 @@
         <h1>
           ode
         </h1>
-<p>Explicit methods are defined in: <code>&lt;pressio/ode_explicit.hpp&gt;</code></p><p>Implicit methods are defined in: <code>&lt;pressio/ode_implicit.hpp&gt;</code></p><p>Both can be includes via <code>&lt;pressio/ode.hpp&gt;</code>.</p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md28"><h2><a href="#autotoc_md28">Overview</a></h2><p>The ode package provides classes for doing time integration. Specifically, the design of the package is rooted on the following main ideas:</p><ul><li>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</li><li>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</li></ul></section><section id="autotoc_md29"><h2><a href="#autotoc_md29">Explicit Methods</a></h2><p>pressio ode&#x27;s explicit methods aim to solve systems of the form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
+<p>Explicit methods are defined in: <code>&lt;pressio/ode_explicit.hpp&gt;</code></p><p>Implicit methods are defined in: <code>&lt;pressio/ode_implicit.hpp&gt;</code></p><p>Both can be includes via <code>&lt;pressio/ode.hpp&gt;</code>.</p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md28"><h2><a href="#autotoc_md28">Overview</a></h2><p>pressio ode targets systems of the form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 </title>
@@ -130,9 +132,9 @@ $t$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
-</svg> is time. Note that here we do not constraing</p><section id="autotoc_md30"><h3><a href="#autotoc_md30">API:</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">SystemType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="o">&gt;</span>
-<span class="n">ReturnType</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="n">SystemType</span> <span class="o">&amp;&amp;</span> <span class="n">system</span><span class="p">,</span>
-                                  <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>forward_euler</code>, <code>runge_kutta4</code>, <code>adams_bashforth2</code>, <code>ssp_runge_kutta3</code>.</p></section><section id="autotoc_md31"><h3><a href="#autotoc_md31">Parameters</a></h3><ul><li><code>SystemType</code>:<ul><li>class defining the problem: how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
+</svg> is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas:</p><ul><li>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</li><li>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</li></ul><p>The ode package is split into three main subcomponents:</p><ul><li>explicit methods</li><li>implicit methods</li><li>integrators</li></ul></section><section id="autotoc_md29"><h2><a href="#autotoc_md29">Explicit Methods</a></h2><section id="autotoc_md30"><h3><a href="#autotoc_md30">API:</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">SystemType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="o">&gt;</span>
+<span class="n">ReturnType</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
+                                  <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>forward_euler</code>, <code>runge_kutta4</code>, <code>adams_bashforth2</code>, <code>ssp_runge_kutta3</code>.</p></section><section id="autotoc_md31"><h3><a href="#autotoc_md31">Parameters</a></h3><ul><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
 $f$
 </title>
@@ -142,7 +144,7 @@ $f$
 <g id='eq5-page1'>
 <use x='0' y='0' xlink:href='#eq5-g0-102'/>
 </g>
-</svg> and how to compute it;</li><li><p>Requirements: must conform to the following API needed for doing explicit time integration</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidSystemForExplicitOde</span>
+</svg> and how to compute it;</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li><li>Requirements: must be copy constructible</li></ul></li></ul></section><section id="autotoc_md32"><h3><a href="#autotoc_md32">Requirements</a></h3><ul><li><p>The system class must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidSystemForExplicitOde</span>
 <span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
@@ -150,7 +152,14 @@ $f$
 
   <span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li><li>Requirements: must be copy constructible</li></ul></li></ul></section><section id="autotoc_md32"><h3><a href="#autotoc_md32">Requirements</a></h3><ul><li>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be valid types: these typedefs are needed for pressio to collect information</li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename ValidSystemForExplicitOde::state_type&gt;::value == true</code></li></ul></section></section><section id="autotoc_md33"><h2><a href="#autotoc_md33">Implicit Methods</a></h2></section>
+<span class="p">};</span></pre></li><li>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be valid types: these typedefs are needed for pressio to collect information</li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename ValidSystemForExplicitOde::state_type&gt;::value == true</code></li></ul></section></section><section id="autotoc_md33"><h2><a href="#autotoc_md33">Implicit Methods</a></h2><section id="autotoc_md34"><h3><a href="#autotoc_md34">API</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">SystemType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">);</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ResidualPolicyType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">JacobianPolicyType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
+                            <span class="n">ResidualPolicyType</span> <span class="o">&amp;&amp;</span> <span class="n">rPol</span><span class="p">,</span>
+                            <span class="n">JacobianPolicyType</span> <span class="o">&amp;&amp;</span> <span class="n">jPol</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>bdf1</code>, <code>bdf2</code>, <code>cranknicolson</code>.</p></section></section>
       </div>
     </div>
   </div>

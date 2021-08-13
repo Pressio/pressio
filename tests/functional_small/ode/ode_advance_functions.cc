@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode.hpp"
+#include "pressio/ode_advancers.hpp"
 
 using ScalarType = double;
 using VectorType = std::vector<ScalarType>;

@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode_implicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_advancers.hpp"
 
 template <typename state_t>
 struct Observer{
@@ -204,7 +205,7 @@ struct Bdf1Solver
   using app_t		= MyAppContinuousTimeApi;
   using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;
-  using stepper_t = decltype( pressio::ode::create_bdf1_stepper(std::declval<app_t>(), std::declval<state_t>()) );
+  using stepper_t = decltype( pressio::ode::create_bdf1_stepper(std::declval<state_t>(), std::declval<app_t&>()) );
 
   using jac_t	= typename app_t::jacobian_type;
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;
@@ -237,15 +238,7 @@ struct CustomBdf1Solver
   using state_t	= typename app_t::state_type;
   using res_t	= typename app_t::residual_type;
   using jac_t	= typename app_t::jacobian_type;
-
-  using rp = pressio::ode::impl::ResidualStandardDiscreteTimePolicy<state_t, res_t>;
-  using jp = pressio::ode::impl::JacobianStandardDiscreteTimePolicy<state_t, jac_t>;
-
-  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper<1,2>(std::declval<app_t>(), std::declval<state_t>()));
-  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper_partial_deduction<1,2, res_t, jac_t>(std::declval<app_t>(), std::declval<state_t>() ));
-  // using stepper_t = decltype( pressio::ode::create_arbitrary_stepper<1,2>(std::declval<app_t>(), std::declval<state_t>(), std::declval<rp>(), std::declval<jp>()) );
-  using stepper_t = decltype( pressio::ode::create_arbitrary_stepper_partial_deduction<1,2, res_t, jac_t>(std::declval<app_t>(), std::declval<state_t>(), std::declval<rp>(), std::declval<jp>()) );
-
+  using stepper_t = decltype(pressio::ode::create_arbitrary_stepper<1,2>(std::declval<state_t>(),std::declval<app_t&>()));
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;
   using lin_solver_t = ::pressio::linearsolvers::Solver<lin_solver_name, jac_t>;
 
@@ -255,7 +248,7 @@ struct CustomBdf1Solver
   const sc_t dt_	= 0.01;
 
   CustomBdf1Solver(const state_t & yIn)
-    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_, rp(), jp()}
+    : appObj_{}, y_{yIn}, stepperObj_{y_,appObj_}
   {}
 
   void integrateForNSteps(int steps)

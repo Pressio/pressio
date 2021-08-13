@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_ode_advance" kind="page">
+    <compoundname>md_pages_components_ode_advance</compoundname>
+    <title>ode: advance functions</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header: <computeroutput>&lt;pressio/ode_advance.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
+<sect1 id="md_pages_components_ode_advance_1autotoc_md28">
+<title>Overview</title>
+<sect2 id="md_pages_components_ode_advance_1autotoc_md29">
+<title>API:</title>
+</sect2>
+<sect2 id="md_pages_components_ode_advance_1autotoc_md30">
+<title>Parameters</title>
+</sect2>
+<sect2 id="md_pages_components_ode_advance_1autotoc_md31">
+<title>Requirements</title>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/ode_advance.md"/>
+  </compounddef>
+</doxygen>

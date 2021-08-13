@@ -1,5 +1,6 @@
 
-#include "pressio/ode_explicit.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
+#include "pressio/ode_advancers.hpp"
 #include "../testing_apps/apps.hpp"
 #include <array>
 
@@ -24,7 +25,7 @@ int main(int argc, char *argv[]){
   auto & y0n = appObj.getInitialState();
 
   state_t y(y0n);
-  auto stepperObj = pressio::ode::create_forward_euler_stepper(appObj, y);
+  auto stepperObj = pressio::ode::create_forward_euler_stepper(y,appObj);
 
   scalar_t fint = 35;
   scalar_t dt = 0.01;

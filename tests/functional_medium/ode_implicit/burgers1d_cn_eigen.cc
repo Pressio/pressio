@@ -1,5 +1,6 @@
 
-#include "pressio/ode_implicit.hpp"
+#include "pressio/ode_steppers_implicit.hpp"
+#include "pressio/ode_advancers.hpp"
 #include "../testing_apps/apps.hpp"
 
 constexpr double eps = 1e-12;
@@ -51,11 +52,7 @@ int main(int argc, char *argv[]){
   auto & y0n = appObj.getInitialState();
 
   ode_state_t y(y0n);
-  auto stepperObj = pressio::ode::create_cranknicolson_stepper(appObj, y);
-  // using ode_tag = pressio::ode::implicitmethods::CrankNicolson;
-  // using stepper_t = pressio::ode::ImplicitStepper<
-  //   ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t>;
-  // stepper_t stepperObj(y, appObj);
+  auto stepperObj = pressio::ode::create_cranknicolson_stepper(y,appObj);
 
   using ode_jac_t = typename app_t::jacobian_type;
   using lin_solver_t = pressio::linearsolvers::Solver<
