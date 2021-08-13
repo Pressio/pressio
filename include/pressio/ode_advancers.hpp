@@ -58,13 +58,10 @@ using step_count_type = int32_t;
 }}
 
 #include "./ode_advancers/exceptions.hpp"
-#include "./ode_advancers/constraints/ode_collector.hpp"
+#include "./ode_advancers/constraints/ode_observer.hpp"
 #include "./ode_advancers/constraints/ode_guesser.hpp"
 #include "./ode_advancers/constraints/ode_time_step_size_manager.hpp"
-#include "./ode_advancers/constraints/ode_explicitly_steppable.hpp"
-#include "./ode_advancers/constraints/ode_implicitly_steppable.hpp"
-#include "./ode_advancers/constraints/ode_implicitly_steppable_with_guesser.hpp"
-#include "./ode_advancers/constraints/ode_legitimate_solver_for_implicit_stepper.hpp"
+#include "./ode_advancers/constraints/ode_steppable.hpp"
 #include "./ode_advancers/ode_advance_n_steps.hpp"
 #include "./ode_advancers/ode_advance_to_target_time.hpp"
 

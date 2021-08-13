@@ -268,7 +268,7 @@ struct CustomBdf1Solver
 				  dt = dt_;
 				};
 
-    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, dtSetterLambda, steps, solverO);
   };
 
   void integrateForNStepsWithStepSizeManagerLambdaWrongDt(int steps)
@@ -280,7 +280,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_*2.;
 				};
-    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0, steps, dtSetterLambda, solverO);
+    ::pressio::ode::advance_n_steps(stepperObj_, y_, 0.0,  dtSetterLambda, steps, solverO);
   };
 
   void integrateToTimeWithStepSizeManagerLambda(sc_t finalTime)
@@ -292,14 +292,12 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0, finalTime, dtSetterLambda, solverO);
+    ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0,  finalTime, dtSetterLambda, solverO);
   };
 
   template <typename observer_t>
   void integrateToTimeWithStepSizeManagerLambdaAndCollector(sc_t finalTime, observer_t & observer)
   {
-    static_assert( pressio::ode::collector<observer_t, double, state_t>::value, "");
-
     lin_solver_t linSolverObj;
     auto solverO = pressio::nonlinearsolvers::create_newton_raphson(stepperObj_,y_,linSolverObj);
     using step_t = ::pressio::ode::step_count_type;
@@ -307,7 +305,7 @@ struct CustomBdf1Solver
 				  std::cout << " SETTING DT " << std::endl;
 				  dt = dt_;
 				};
-    ::pressio::ode::advance_to_target_time(stepperObj_, y_, 0.0,
+    ::pressio::ode::advance_to_target_time_and_observe(stepperObj_, y_, 0.0,
 					  finalTime, dtSetterLambda, observer, solverO);
   };
 };

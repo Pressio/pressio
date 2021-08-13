@@ -1,43 +1,32 @@
-Defined in\+: {\ttfamily $<$pressio/ode\+\_\+explicit.\+hpp$>$}
+Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+explicit.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md33}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_explicit_autotoc_md33}
-pressio ode targets systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
+Applicable to systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 
-where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas\+:
-\begin{DoxyItemize}
-\item we separate the concept of a \char`\"{}stepper\char`\"{} from the actual \char`\"{}advancer\char`\"{}\+: a stepper class is responsible for knowing how to perform a step in time, while the \char`\"{}advancer\char`\"{} (or integrator) is responbile of knowing how many times the stepper should be called.
-\item we use a policy-\/based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.
-\end{DoxyItemize}
-
-The ode package is split into three main subcomponents\+:
-\begin{DoxyItemize}
-\item explicit methods
-\item implicit methods
-\item integrators
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md34}{}\doxysection{Explicit Methods}\label{md_pages_components_ode_steppers_explicit_autotoc_md34}
-\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md35}{}\doxysubsection{API\+:}\label{md_pages_components_ode_steppers_explicit_autotoc_md35}
+where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.~\newline
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md34}{}\doxysection{API\+:}\label{md_pages_components_ode_steppers_explicit_autotoc_md34}
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} SystemType, \textcolor{keyword}{class} StateType>}
-\DoxyCodeLine{ReturnType create\_keyword\_stepper(\textcolor{keyword}{const} SystemType \& system,}
-\DoxyCodeLine{                                  \textcolor{keyword}{const} StateType \& state);}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
+\DoxyCodeLine{ReturnType create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                                  \textcolor{keyword}{const} SystemType \& system);}
 
 \end{DoxyCode}
 
 
-where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamily runge\+\_\+kutta4}, {\ttfamily adams\+\_\+bashforth2}, {\ttfamily ssp\+\_\+runge\+\_\+kutta3}.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md36}{}\doxysubsection{Parameters}\label{md_pages_components_ode_steppers_explicit_autotoc_md36}
+where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamily runge\+\_\+kutta4}, {\ttfamily adams\+\_\+bashforth2}, {\ttfamily ssp\+\_\+runge\+\_\+kutta3}.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md35}{}\doxysection{Parameters}\label{md_pages_components_ode_steppers_explicit_autotoc_md35}
 
 \begin{DoxyItemize}
-\item {\ttfamily System\+Type}\+:
-\begin{DoxyItemize}
-\item class defining how to create an instance of the velocity $f$ and how to compute it;
-\end{DoxyItemize}
 \item {\ttfamily State\+Type}\+:
 \begin{DoxyItemize}
 \item type of the data structure you use for the state
 \item Requirements\+: must be copy constructible
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md37}{}\doxysubsection{Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md37}
+\item {\ttfamily System\+Type}\+:
+\begin{DoxyItemize}
+\item class defining how to create an instance of the velocity $f$ and how to compute it;
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md36}{}\doxysection{Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md36}
 
 \begin{DoxyItemize}
 \item The system class must conform to the following API\+: 
@@ -54,7 +43,7 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 
 \end{DoxyCode}
 
-\item the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be valid types\+: these typedefs are needed for pressio to collect information
+\item the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be valid types\+: these typedefs are detected by pressio
 \item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
  {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename Valid\+System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true} 
 \end{DoxyItemize}

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_dummy_collector.hpp
+// ode_explicitly_steppable.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,33 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_STEPPABLE_HPP_
+#define ODE_EXPLICIT_CONSTRAINTS_ODE_STEPPABLE_HPP_
 
-namespace pressio{ namespace ode{ namespace impl{
+namespace pressio{ namespace ode{
 
-template <typename TimeType, typename StateType>
-struct NoOpCollector
-{
-    void operator()(const int & step,
-		  const TimeType & time,
-		  const StateType & stateIn)
-  {
-    // no op
-  }
-};
+template <typename T, typename ...Args>
+struct steppable_with : std::false_type{};
 
-}}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+template <typename T, typename StateType, typename TimeType, typename ...Args>
+struct steppable_with<
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T>().doStep
+       (
+	std::declval<StateType &>(),
+	std::declval<TimeType const &>(),
+	std::declval<TimeType const &>(),
+	std::declval<step_count_type const &>(),
+	std::declval<Args>()...
+	)
+       )
+      >::value
+    >,
+    T, StateType, TimeType, Args...
+  > : std::true_type{};
+
+}} // namespace pressio::ode::constraints
+#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_

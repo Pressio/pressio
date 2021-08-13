@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "pressio/ode.hpp"
+#include "pressio/ode_advancers.hpp"
 
 namespace{
 
@@ -46,26 +46,26 @@ struct SteppableClass
 } //end anonym namespace
 
 
-TEST(ode, concepts_explicitly_steppable)
+TEST(ode, concepts_steppable)
 {
   using namespace pressio::ode;
   using state_type = std::vector<float>;
-  static_assert(explicitly_steppable<SteppableClass, state_type, double>::value, "");
+  static_assert(steppable_with<void, SteppableClass, state_type, double>::value, "");
 }
 
 TEST(ode, concepts_collector)
 {
   using state_type = std::vector<double>;
   using time_type = double;
-  static_assert(pressio::ode::collector<ValidCollector1<state_type>, time_type, state_type>::value, "");
-  static_assert(pressio::ode::collector<ValidCollector2<state_type>, time_type, state_type>::value, "");
-  static_assert(pressio::ode::collector<ValidCollector3<state_type>, time_type, state_type>::value, "");
-  static_assert(pressio::ode::collector<ValidCollector4<state_type>, time_type, state_type>::value, "");
-  static_assert(!pressio::ode::collector<InvalidCollector1<state_type>, time_type, state_type>::value, "");
-  static_assert(!pressio::ode::collector<InvalidCollector2<state_type>, time_type, state_type>::value, "");
+  static_assert(pressio::ode::observer<ValidCollector1<state_type>, time_type, state_type>::value, "");
+  static_assert(pressio::ode::observer<ValidCollector2<state_type>, time_type, state_type>::value, "");
+  static_assert(pressio::ode::observer<ValidCollector3<state_type>, time_type, state_type>::value, "");
+  static_assert(pressio::ode::observer<ValidCollector4<state_type>, time_type, state_type>::value, "");
+  static_assert(!pressio::ode::observer<InvalidCollector1<state_type>, time_type, state_type>::value, "");
+  static_assert(!pressio::ode::observer<InvalidCollector2<state_type>, time_type, state_type>::value, "");
 
   auto myc = [](pressio::ode::step_count_type, double time, const state_type &){};
-  static_assert(pressio::ode::collector<decltype(myc), time_type, state_type>::value, "");
+  static_assert(pressio::ode::observer<decltype(myc), time_type, state_type>::value, "");
 }
 
 TEST(ode, concepts_guesser)
@@ -156,71 +156,71 @@ TEST(ode, concepts_time_step_setter)
 
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &){};
-    static_assert( ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &) -> void{};
-    static_assert( ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, const time_t &, time_t &) -> double{ return 11.0; };
-    static_assert( !ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, time_t &, time_t & ){};
-    static_assert( !ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](step_t &, time_t &, time_t & ){};
-    static_assert( !ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](const step_t &, time_t &, const time_t & ){};
-    static_assert( !ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     const auto lambda = [](time_t &, const time_t & ){};
-    static_assert( !ode::time_step_size_manager<decltype(lambda), step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<decltype(lambda), time_t>::value, "" );
   }
 
   {
     struct Setter{
       void operator()(const step_t &, const time_t &, time_t &) const{}
     };    
-    static_assert( ode::time_step_size_manager<Setter, step_t, time_t>::value, "" );
+    static_assert( ode::time_step_size_manager<Setter, time_t>::value, "" );
   }
 
   {
     struct Setter{
       double operator()(const step_t &, const time_t &, time_t &){return 0.0;}
     };    
-    static_assert( !ode::time_step_size_manager<Setter, step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<Setter, time_t>::value, "" );
   }
 
   {
     struct Setter{
       void operator()(const step_t &, time_t &, time_t & ){}
     };    
-    static_assert( !ode::time_step_size_manager<Setter, step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<Setter, time_t>::value, "" );
   }
 
   {
     struct Setter{
       void operator()(step_t &, time_t &, time_t & ){}
     };    
-    static_assert( !ode::time_step_size_manager<Setter, step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<Setter, time_t>::value, "" );
   }
 
   {
     struct Setter{
       void operator()(const step_t &, time_t &, const time_t & ){}
     };    
-    static_assert( !ode::time_step_size_manager<Setter, step_t, time_t>::value, "" );
+    static_assert( !ode::time_step_size_manager<Setter, time_t>::value, "" );
   }
 }

@@ -35,9 +35,9 @@
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
                 <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_ode_advance.html">ode advance functions</a></li>
                 <li><a href="md_pages_components_rom.html">rom</a></li>
               </ol>
             </li>
@@ -68,7 +68,7 @@
         <h1>
           ode: implicit steppers
         </h1>
-<p>Defined in: <code>&lt;pressio/ode_implicit.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md39"><h2><a href="#autotoc_md39">Overview</a></h2><p>pressio ode targets systems of the form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
+<p>Defined in: <code>&lt;pressio/ode_steppers_implicit.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md38"><h2><a href="#autotoc_md38">Overview</a></h2><p>pressio ode targets systems of the form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 </title>
@@ -132,7 +132,7 @@ $t$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
-</svg> is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas:</p><ul><li>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</li><li>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</li></ul><p>The ode package is split into three main subcomponents:</p><ul><li>explicit methods</li><li>implicit methods</li><li>integrators</li></ul></section><section id="autotoc_md40"><h2><a href="#autotoc_md40">Implicit Methods</a></h2><section id="autotoc_md41"><h3><a href="#autotoc_md41">API</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">SystemType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="o">&gt;</span>
+</svg> is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas:</p><ul><li>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</li><li>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</li></ul><p>The ode package is split into three main subcomponents:</p><ul><li>explicit methods</li><li>implicit methods</li><li>integrators</li></ul></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Implicit Methods</a></h2><section id="autotoc_md40"><h3><a href="#autotoc_md40">API</a></h3><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">SystemType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
                             <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">);</span>
 

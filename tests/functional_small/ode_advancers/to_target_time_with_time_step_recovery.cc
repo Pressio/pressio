@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
       // 	       << y(1) << std::endl;
     };
 
-  pressio::ode::advance_to_target_time_with_time_step_recovery
+  pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
     (stepper, y, 0., 0.5, dtManager, collector, solver);
 
   if( std::abs(y(0)-1.575) > 1e-10 or

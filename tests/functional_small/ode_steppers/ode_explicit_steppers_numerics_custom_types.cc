@@ -231,5 +231,5 @@ TEST(ode, explicit_ab2_custom_types)
   auto stepperObj = ode::create_adams_bashforth2_stepper(y,appObj);
   ScalarType dt = 2.;
   CollectorTestAb2 C;
-  ode::advance_n_steps(stepperObj, y, 0.0, dt, 3, C);
+  ode::advance_n_steps_and_observe(stepperObj, y, 0.0, dt, 3, C);
 }

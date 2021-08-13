@@ -6,9 +6,9 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Defined in: <computeroutput>&lt;pressio/ode_implicit.hpp&gt;</computeroutput></para>
+<para>Defined in: <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md39">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md38">
 <title>Overview</title>
 <para>pressio ode targets systems of the form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
 <para>where <formula id="1">$y$</formula> is the state, <formula id="2">$f$</formula> is the RHS (also called velocity below), <formula id="3">$t$</formula> is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas:<itemizedlist>
@@ -23,9 +23,9 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md40">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md39">
 <title>Implicit Methods</title>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md41">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md40">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system,</highlight></codeline>

@@ -49,252 +49,110 @@
 #ifndef ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
 #define ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_
 
-#include "./impl/ode_advance_noop_collector.hpp"
+#include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_n_steps.hpp"
 
 namespace pressio{ namespace ode{
 
-// explicit stepper
-template<class StepperType, class StateType, class TimeType>
-mpl::enable_if_t<
-  ::pressio::ode::explicitly_steppable<StepperType, StateType, TimeType>::value
-  >
+template<class StepperType, class StateType, class TimeType, class ...Args>
+mpl::enable_if_t< std::is_floating_point<TimeType>::value >
 advance_n_steps(StepperType & stepper,
-		StateType & odeStateInOut,
+		StateType & state,
 		const TimeType start_time,
-		const TimeType dt,
-		const ::pressio::ode::step_count_type num_steps)
+		const TimeType time_step_size,
+		const ::pressio::ode::step_count_type num_steps,
+		Args && ... args)
 {
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
 
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
-  collector_t collector;
-  advancer_t::execute(stepper, num_steps, start_time, dt, odeStateInOut, collector);
+  using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
+  observer_t observer;
+  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_time,
+				      time_step_size, state,
+				      observer,
+				      std::forward<Args>(args)...);
 }
 
-// explicit stepper, collector
-template<class StepperType, class StateType, class TimeType, class collector_type>
+template<
+  class StepperType, class StateType, class TimeType, class StepSizeSetterType, class ...Args
+  >
 mpl::enable_if_t<
-  ::pressio::ode::explicitly_steppable<StepperType, StateType, TimeType>::value
+  ::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value
   >
 advance_n_steps(StepperType & stepper,
-	      StateType & odeStateInOut,
-	      const TimeType start_time,
-	      const TimeType dt,
-	      const ::pressio::ode::step_count_type num_steps,
-	      collector_type & collector)
+		StateType & state,
+		const TimeType start_time,
+		StepSizeSetterType && time_step_size_manager,
+		const ::pressio::ode::step_count_type num_steps,
+		Args && ... args)
 {
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
+
+  using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
+  observer_t observer;
+  impl::advance_n_steps_with_dt_setter(stepper, num_steps, start_time,
+				       state,
+				       std::forward<StepSizeSetterType>(time_step_size_manager),
+				       observer,
+				       std::forward<Args>(args)...);
+}
+
+template<class StepperType, class StateType, class TimeType, class ObserverType, class ...Args>
+mpl::enable_if_t< std::is_floating_point<TimeType>::value >
+advance_n_steps_and_observe(StepperType & stepper,
+			    StateType & state,
+			    const TimeType start_time,
+			    const TimeType time_step_size,
+			    const ::pressio::ode::step_count_type num_steps,
+			    ObserverType & observer,
+			    Args && ... args)
+{
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
 
   static_assert
-    (::pressio::ode::collector<collector_type, TimeType, StateType>::value,
-     "You are trying to call advance_n_steps with an explicit stepper \
-and a collector, but the collector type you are using is not admissible. \
-It does not meet the API of a valid collector. \
-See requirements in ode_is_legitimate_collector.hpp");
+    (::pressio::ode::observer<ObserverType,TimeType, StateType>::value,
+     "Invalid observer");
 
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  advancer_t::execute(stepper, num_steps, start_time, dt, odeStateInOut, collector);
+  impl::advance_n_steps_with_fixed_dt(stepper, num_steps, start_time,
+				time_step_size, state,
+				observer, std::forward<Args>(args)...);
 }
 
-
-/*
-  implicit stepper
-*/
 template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class SolverType,
+  class StepperType, class StateType, class TimeType,
+  class StepSizeSetterType, class ObserverType,
   class ...Args
   >
 mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
+  ::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value
   >
-advance_n_steps(StepperType & stepper,
-	      StateType & odeStateInOut,
-	      const TimeType startTime,
-	      const TimeType dt,
-	      const ::pressio::ode::step_count_type numSteps,
-	      SolverType & solver,
-	      Args && ...solver_args)
+advance_n_steps_and_observe(StepperType & stepper,
+			    StateType & state,
+			    const TimeType start_time,
+			    StepSizeSetterType && time_step_size_manager,
+			    const ::pressio::ode::step_count_type num_steps,
+			    ObserverType & observer,
+			    Args && ... args)
 {
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
 
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
-  collector_t collector;
-  advancer_t::execute(stepper, numSteps, startTime, dt,
-		      odeStateInOut, collector,
-		      solver, std::forward<Args>(solver_args)...);
+  static_assert
+    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
+     "Invalid observer");
+
+  impl::advance_n_steps_with_dt_setter(stepper, num_steps, start_time, state,
+				       std::forward<StepSizeSetterType>(time_step_size_manager),
+				       observer,
+				       std::forward<Args>(args)...);
 }
-
-/*
-  implicit stepper and collector
-*/
-template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class CollectorType,
-  class SolverType,
-  class ...Args
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value  and
-  ::pressio::ode::collector<CollectorType, TimeType, StateType>::value
-  >
-advance_n_steps(StepperType & stepper,
-	      StateType & odeStateInOut,
-	      const TimeType startTime,
-	      const TimeType dt,
-	      const ::pressio::ode::step_count_type numSteps,
-	      CollectorType & collector,
-	      SolverType & solver,
-	      Args && ...solver_args)
-{
-
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
-		      collector,
-		      solver, std::forward<Args>(solver_args)...);
-}
-
-/*
-  implicit stepper, solution guesser
-*/
-template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class GuessCallbackType,
-  class SolverType,
-  class ...Args
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable_with_guesser<StepperType, StateType, TimeType, SolverType, GuessCallbackType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value  and
-  ::pressio::ode::is_legitimate_guesser<GuessCallbackType, ::pressio::ode::step_count_type, TimeType, StateType>::value
-  >
-advance_n_steps(StepperType & stepper,
-		StateType & odeStateInOut,
-		const TimeType startTime,
-		const TimeType dt,
-		const ::pressio::ode::step_count_type numSteps,
-		GuessCallbackType && guessCb,
-		SolverType & solver,
-		Args && ...solver_args)
-
-{
-
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
-  collector_t collector;
-  advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
-		      collector, std::forward<GuessCallbackType>(guessCb),
-		      solver, std::forward<Args>(solver_args)...);
-}
-
-/*
-  implicit stepper, collector, guesser
-*/
-template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class CollectorType,
-  class SolverType,
-  class GuessCallbackType,
-  class ...Args
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable_with_guesser<StepperType, StateType, TimeType, SolverType, GuessCallbackType>::value and
-  ::pressio::ode::collector<CollectorType, TimeType, StateType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value and
-  ::pressio::ode::is_legitimate_guesser<GuessCallbackType, ::pressio::ode::step_count_type, TimeType, StateType>::value
-  >
-advance_n_steps(StepperType & stepper,
-	      StateType & odeStateInOut,
-	      const TimeType startTime,
-	      const TimeType dt,
-	      const ::pressio::ode::step_count_type numSteps,
-	      CollectorType & collector,
-	      GuessCallbackType && guessCb,
-	      SolverType & solver,
-	      Args && ...solver_args)
-{
-
-  using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
-		      collector, std::forward<GuessCallbackType>(guessCb),
-		      solver, std::forward<Args>(solver_args)...);
-}
-
-// implicit stepper, dt setter
-template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class SolverType,
-  class StepSizeSetterT,
-  class ...Args
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::time_step_size_manager<StepSizeSetterT, ::pressio::ode::step_count_type, TimeType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
-  >
-advance_n_steps(StepperType & stepper,
-	      StateType & odeStateInOut,
-	      const TimeType start_time,
-	      const ::pressio::ode::step_count_type num_steps,
-	      StepSizeSetterT && dtManager,
-	      SolverType & solver,
-	      Args && ...solver_args)
-{
-
-  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
-  collector_t collector;
-  advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
-		      std::forward<StepSizeSetterT>(dtManager),
-		      collector, solver,
-		      std::forward<Args>(solver_args)...);
-}
-
-// implicit stepper, collector, with dt setter
-template<
-  class StepperType,
-  class StateType,
-  class TimeType,
-  class StepSizeSetterType,
-  class CollectorType,
-  class SolverType,
-  class ...Args
-  >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, ::pressio::ode::step_count_type, TimeType>::value and
-  ::pressio::ode::collector<CollectorType, TimeType, StateType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
-  >
-advance_n_steps(StepperType & stepper,
-		StateType & odeStateInOut,
-		const TimeType start_time,
-		const ::pressio::ode::step_count_type num_steps,
-		StepSizeSetterType && dtManager,
-		CollectorType & collector,
-		SolverType & solver,
-		Args && ...solver_args)
-{
-
-  using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
-		      std::forward<StepSizeSetterType>(dtManager),
-		      collector, solver,
-		      std::forward<Args>(solver_args)...);
-}
-
 
 }}//end namespace pressio::ode
 #endif  // ODE_INTEGRATORS_ODE_ADVANCE_N_STEPS_EXPLICIT_HPP_

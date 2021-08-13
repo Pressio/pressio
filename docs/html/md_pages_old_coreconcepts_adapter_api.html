@@ -35,9 +35,9 @@
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
                 <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_ode_advance.html">ode advance functions</a></li>
                 <li><a href="md_pages_components_rom.html">rom</a></li>
               </ol>
             </li>
@@ -68,7 +68,7 @@
         <h1>
           Adapter API
         </h1>
-<aside class="m-block m-info"><p>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</p></aside><section id="autotoc_md67"><h2><a href="#autotoc_md67">Continuous-time API</a></h2><p>This API is intended for any system expressible in <em>time-continuous</em> form as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
+<aside class="m-block m-info"><p>An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.</p></aside><section id="autotoc_md66"><h2><a href="#autotoc_md66">Continuous-time API</a></h2><p>This API is intended for any system expressible in <em>time-continuous</em> form as</p><div class="m-math"><svg style="width: 18.317em; height: 2.562em;" viewBox="106.946166 -24.590612 175.846162 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]
 </title>
@@ -144,7 +144,7 @@ $t$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
-</svg> is time.  <span class="m-text m-danger">todo</span> finish.</p><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md68"><h3><a href="#autotoc_md68">A: velocity only</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
+</svg> is time.  <span class="m-text m-danger">todo</span> finish.</p><p>We envision two scenarios:</p><ul><li>A: you are only able to expose the right-hand-side (or velocity) of your FOM application</li><li>B: you expose the right-hand-side of your FOM application as well as the action of the velocity&#x27;s Jacobian on some operand</li></ul><section id="autotoc_md67"><h3><a href="#autotoc_md67">A: velocity only</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterA</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -157,7 +157,7 @@ $t$
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span>
                 <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                 <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md69"><h3><a href="#autotoc_md69">B: velocity and Jacobian action</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterA?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.</p></aside></section><section id="autotoc_md68"><h3><a href="#autotoc_md68">B: velocity and Jacobian action</a></h3><pre class="m-code"><span class="k">class</span> <span class="nc">AdapterB</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span>
@@ -180,7 +180,7 @@ $t$
                      <span class="k">const</span> <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">B</span><span class="p">,</span>
                      <span class="k">const</span> <span class="n">scalar_type</span> <span class="o">&amp;</span> <span class="n">time</span><span class="p">,</span>
                      <span class="n">operand_t</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section></section><section id="autotoc_md70"><h2><a href="#autotoc_md70">Discrete-time API</a></h2><p>This API is intended for any system expressible in a discrete-time form as</p><div class="m-math"><svg style="width: 15.338em; height: 1.252em;" viewBox="120.648779 -12.0216 147.245426 12.0216">
+<span class="p">};</span></pre><aside class="m-block m-warning"><h3>Where can you use the AdapterB?</h3><p>This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</p></aside></section></section><section id="autotoc_md69"><h2><a href="#autotoc_md69">Discrete-time API</a></h2><p>This API is intended for any system expressible in a discrete-time form as</p><div class="m-math"><svg style="width: 15.338em; height: 1.252em;" viewBox="120.648779 -12.0216 147.245426 12.0216">
 <title>
 \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]
 </title>

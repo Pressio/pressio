@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicitly_steppable.hpp
+// ode_call_collector_dispatcher.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,32 +46,66 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
-#define ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_CALL_OBSERVER_DISPATCHER_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_CALL_OBSERVER_DISPATCHER_HPP_
 
-namespace pressio{ namespace ode{
+namespace pressio{ namespace ode{ namespace impl{
 
-template <typename T, typename StateType, typename TimeType, typename enable = void>
-struct explicitly_steppable : std::false_type{};
+template <class ObserverType, class TimeType, class StateType, class StepCountType>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::observer_callable_with_step_time_container_return_void<
+    ObserverType, TimeType, StateType
+    >::value
+  >
+call_observer(ObserverType & observer,
+               const StepCountType & step,
+               const TimeType & time,
+               const StateType & odeState)
+{
+  observer(step, time, odeState);
+}
 
-template <typename T, typename StateType, typename TimeType>
-struct explicitly_steppable<
-  T, StateType, TimeType,
-  mpl::enable_if_t<
-    std::is_void<
-      decltype
-      (
-       std::declval<T>().doStep
-       (
-	std::declval<StateType &>(),
-	std::declval<TimeType const &>(),
-	std::declval<TimeType const &>(),
-	std::declval<step_count_type const &>()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+template <class ObserverType, class TimeType, class StateType, class StepCountType>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::observer_callable_with_step_container_time_return_void<
+    ObserverType, TimeType, StateType
+    >::value
+  >
+call_observer(ObserverType & observer,
+               const StepCountType & step,
+               const TimeType & time,
+               const StateType & odeState)
+{
+  observer(step, odeState, time);
+}
 
-}} // namespace pressio::ode::constraints
-#endif  // ODE_EXPLICIT_CONSTRAINTS_ODE_EXPLICITLY_STEPPABLE_HPP_
+template <class ObserverType, class TimeType, class StateType, class StepCountType>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::observer_callable_with_container_step_time_return_void<
+    ObserverType, TimeType, StateType
+    >::value
+  >
+call_observer(ObserverType & observer,
+               const StepCountType & step,
+               const TimeType & time,
+               const StateType & odeState)
+{
+  observer(odeState, step, time);
+}
+
+template <class ObserverType, class TimeType, class StateType, class StepCountType>
+::pressio::mpl::enable_if_t<
+  ::pressio::ode::observer_callable_with_time_container_step_return_void<
+    ObserverType, TimeType, StateType
+    >::value
+  >
+call_observer(ObserverType & observer,
+               const StepCountType & step,
+               const TimeType & time,
+               const StateType & odeState)
+{
+  observer(time, odeState, step);
+}
+
+}}}//end namespace pressio::ode::impl
+#endif  // ODE_INTEGRATORS_IMPL_ODE_CALL_OBSERVER_DISPATCHER_HPP_

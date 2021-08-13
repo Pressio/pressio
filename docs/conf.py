@@ -16,9 +16,9 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_ops.html\">ops</a>",),
      ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
      ("<a href=\"md_pages_components_nonlinsolvers.html\">nonlinear solvers</a>",),
+     ("<a href=\"md_pages_components_ode_advance.html\">ode advancers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_explicit.html\">ode explicit steppers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_implicit.html\">ode implicit steppers</a>",),
-     ("<a href=\"md_pages_components_ode_advance.html\">ode advance functions</a>",),
      ("<a href=\"md_pages_components_rom.html\">rom</a>",)
    ]),
 

@@ -49,7 +49,7 @@
 #ifndef ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 #define ODE_INTEGRATORS_ODE_ADVANCE_TO_TARGET_TIME_HPP_
 
-#include "./impl/ode_advance_noop_collector.hpp"
+#include "./impl/ode_advance_noop_observer.hpp"
 #include "./impl/ode_advance_to_target_time.hpp"
 
 namespace pressio{ namespace ode{
@@ -59,29 +59,29 @@ template<
   class StateType,
   class TimeType,
   class StepSizeSetterType,
-  class SolverType,
   class ...Args
   >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, ::pressio::ode::step_count_type, TimeType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
-  >
-advance_to_target_time(StepperType	& stepper,
-		       StateType		& odeStateInOut,
-		       const TimeType	start_time,
-		       const TimeType	final_time,
-		       StepSizeSetterType	&& dtManager,
-		       SolverType		& solver,
-		       Args&& ... solver_args)
+void advance_to_target_time(StepperType & stepper,
+			    StateType & odeStateInOut,
+			    const TimeType start_time,
+			    const TimeType final_time,
+			    StepSizeSetterType && dtManager,
+			    Args&& ... args)
 {
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
 
-  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
-  collector_t collector;
+  static_assert
+    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
+     "Invalid time step size manger/setter");
+
+  using observer_t = ::pressio::ode::impl::NoOpObserver<TimeType, StateType>;
+  observer_t observer;
   impl::integrate_to_target_time_with_time_step_size_manager<false>
     (stepper, start_time, final_time, odeStateInOut,
-     collector, std::forward<StepSizeSetterType>(dtManager),
-     solver, std::forward<Args>(solver_args)...);
+     observer, std::forward<StepSizeSetterType>(dtManager),
+     std::forward<Args>(args)...);
 }
 
 template<
@@ -89,30 +89,37 @@ template<
   class StateType,
   class TimeType,
   class StepSizeSetterType,
-  class CollectorType,
-  class SolverType,
+  class ObserverType,
   class ...Args
   >
 ::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, ::pressio::ode::step_count_type, TimeType>::value and
-  ::pressio::ode::collector<CollectorType, TimeType, StateType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
+  ::pressio::ode::observer<ObserverType, TimeType, StateType>::value
   >
-advance_to_target_time(StepperType	& stepper,
-		       StateType		& odeStateInOut,
-		       const TimeType	start_time,
-		       const TimeType	final_time,
-		       StepSizeSetterType	&& dtManager,
-		       CollectorType	& collector,
-		       SolverType		& solver,
-		       Args&& ...solver_args)
+advance_to_target_time_and_observe(StepperType & stepper,
+				   StateType & odeStateInOut,
+				   const TimeType	start_time,
+				   const TimeType	final_time,
+				   StepSizeSetterType	&& dtManager,
+				   ObserverType	& observer,
+				   Args&& ...args)
 {
 
+  static_assert
+    (::pressio::ode::steppable_with<void, StepperType, StateType, TimeType, Args...>::value,
+     "The steppable object is not steppable.");
+
+  static_assert
+    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
+     "Invalid time step size manger/setter");
+
+  static_assert
+    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
+     "Invalid observer");
+
   impl::integrate_to_target_time_with_time_step_size_manager<false>
-    (stepper, start_time, final_time, odeStateInOut,
-     collector, std::forward<StepSizeSetterType>(dtManager),
-     solver, std::forward<Args>(solver_args)...);
+    (stepper, start_time, final_time, odeStateInOut, observer,
+     std::forward<StepSizeSetterType>(dtManager),
+     std::forward<Args>(args)...);
 }
 
 template<
@@ -120,30 +127,30 @@ template<
   class StateType,
   class TimeType,
   class StepSizeSetterType,
-  class CollectorType,
-  class SolverType,
+  class ObserverType,
   class ...Args
   >
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::implicitly_steppable<StepperType, StateType, TimeType, SolverType>::value and
-  ::pressio::ode::time_step_size_manager<StepSizeSetterType, ::pressio::ode::step_count_type, TimeType>::value and
-  ::pressio::ode::collector<CollectorType, TimeType, StateType>::value and
-  ::pressio::ode::legitimate_solver_for_implicit_stepper<SolverType, StepperType, StateType>::value
-  >
-advance_to_target_time_with_time_step_recovery(StepperType	& stepper,
-					       StateType	& odeStateInOut,
-					       const TimeType	start_time,
-					       const TimeType	final_time,
-					       StepSizeSetterType	&& dtManager,
-					       CollectorType	& collector,
-					       SolverType	& solver,
-					       Args&& ... solver_args)
+void advance_to_target_time_with_time_step_recovery_and_observe(StepperType & stepper,
+								StateType & odeStateInOut,
+								const TimeType start_time,
+								const TimeType final_time,
+								StepSizeSetterType && dtManager,
+								ObserverType & observer,
+								Args&& ... args)
 {
+
+  static_assert
+    (::pressio::ode::time_step_size_manager<StepSizeSetterType, TimeType>::value,
+     "Invalid time step size manger/setter");
+
+  static_assert
+    (::pressio::ode::observer<ObserverType, TimeType, StateType>::value,
+     "Invalid observer");
 
   impl::integrate_to_target_time_with_time_step_size_manager<true>
     (stepper, start_time, final_time, odeStateInOut,
-     collector, std::forward<StepSizeSetterType>(dtManager),
-     solver, std::forward<Args>(solver_args)...);
+     observer, std::forward<StepSizeSetterType>(dtManager),
+     std::forward<Args>(args)...);
 }
 
 }}//end namespace pressio::ode

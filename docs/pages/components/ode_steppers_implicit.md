@@ -1,7 +1,7 @@
 
 # ode: implicit steppers
 
-Defined in: `<pressio/ode_implicit.hpp>`
+Defined in: `<pressio/ode_steppers_implicit.hpp>`
 
 Public namespace: `pressio::ode`
 

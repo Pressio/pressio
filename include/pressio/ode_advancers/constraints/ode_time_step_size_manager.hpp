@@ -51,19 +51,19 @@
 
 namespace pressio{ namespace ode{ 
 
-template <class T, class StepType, class TimeType, class Enable = void>
+template <class T, class TimeType, class Enable = void>
 struct time_step_size_manager
   : std::false_type{};
 
-template <class T, class StepType, class TimeType>
+template <class T, class TimeType>
 struct time_step_size_manager<
-  T, StepType, TimeType,
+  T, TimeType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>()
 	       (
-		std::declval<StepType const &>(),    //step
+		std::declval<::pressio::ode::step_count_type const &>(),    //step
 		std::declval<TimeType const &>(), //time
 		std::declval<TimeType &>()        //dt
 		)
@@ -72,15 +72,15 @@ struct time_step_size_manager<
     >
   > : std::true_type{};
 
-template <class T, class StepType, class TimeType>
+template <class T, class TimeType>
 struct time_step_size_manager<
-  T, StepType, TimeType,
+  T, TimeType,
   mpl::enable_if_t<
     std::is_void<
       decltype(
 	       std::declval<T const>()
 	       (
-		std::declval<StepType const &>(),    //step
+		std::declval<::pressio::ode::step_count_type const &>(),    //step
 		std::declval<TimeType const &>(), //time
 		std::declval<TimeType &>(),       //dt
 		std::declval<TimeType &>(),       //min dt

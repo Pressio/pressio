@@ -49,7 +49,7 @@
 #ifndef ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
 #define ODE_INTEGRATORS_IMPL_ODE_TO_TARGET_TIME_INTEGRATORS_HPP_
 
-#include "ode_advance_call_collector_dispatcher.hpp"
+#include "ode_advance_call_observer_dispatcher.hpp"
 #include "ode_advance_printing_helpers.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
@@ -84,7 +84,7 @@ template <
   typename StepperType,
   typename TimeType,
   typename StateType,
-  typename CollectorType,
+  typename ObserverType,
   typename TimeStepSizeManagerType,
   typename ... Args>
 void
@@ -92,7 +92,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 					     const TimeType & start_time,
 					     const TimeType & final_time,
 					     StateType	& odeStateInOut,
-					     CollectorType & collector,
+					     ObserverType & observer,
 					     TimeStepSizeManagerType	&& dtManager,
 					     Args && ... args)
 {
@@ -118,8 +118,8 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
   TimeType minDt = pressio::utils::Constants<TimeType>::zero();
   TimeType dtReducFactor = ::pressio::utils::Constants<TimeType>::one();
 
-  // pass initial condition to collector object
-  call_collector(collector, zero, time, odeStateInOut);
+  // pass initial condition to observer object
+  call_observer(observer, zero, time, odeStateInOut);
 
   step_t step = 1;
   PRESSIOLOG_INFO("advance_to_target_timeWithDtCallback");
@@ -190,7 +190,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 #endif
 
       time += dt;
-      call_collector(collector, step, time, odeStateInOut);
+      call_observer(observer, step, time, odeStateInOut);
 
       // use numeric limits to avoid tricky roundoff accumulation
       if ( std::abs(time - final_time) <= eps ) condition = false;

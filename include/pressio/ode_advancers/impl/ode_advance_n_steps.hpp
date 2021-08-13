@@ -49,47 +49,45 @@
 #ifndef ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
 #define ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_
 
-#include "ode_advance_call_collector_dispatcher.hpp"
+#include "ode_advance_call_observer_dispatcher.hpp"
 #include "ode_advance_printing_helpers.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
-struct IntegratorNStepsWithConstDt
+template <
+  class StepperType,
+  class TimeType,
+  class StateType,
+  class ObserverType,
+  class StepCountType,
+  class ... Args
+  >
+void advance_n_steps_with_fixed_dt(StepperType & stepper,
+				   const StepCountType & numSteps,
+				   const TimeType & start_time,
+				   const TimeType & dt,
+				   StateType & odeStateInOut,
+				   ObserverType & observer,
+				   Args && ... args)
 {
 
-  template <
-    typename StepperType,
-    typename TimeType,
-    typename StateType,
-    typename CollectorType,
-    typename StepCountType,
-    typename ... Args
-    >
-  static void execute(StepperType & stepper,
-		      const StepCountType & numSteps,
-		      const TimeType			  & start_time,
-		      const TimeType			  & dt,
-		      StateType			  & odeStateInOut,
-		      CollectorType			  & collector,
-		      Args				  && ... args)
-  {
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time loop");
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("time loop");
 #endif
 
-    using step_t = StepCountType;
+  using step_t = StepCountType;
 
-    // time variable
-    TimeType time = start_time;
-    // pass initial condition to collector object
-    call_collector(collector,
-				::pressio::utils::Constants<step_t>::zero(),
-				time, odeStateInOut);
+  // time variable
+  TimeType time = start_time;
+  // pass initial condition to observer object
+  call_observer(observer,
+		 ::pressio::utils::Constants<step_t>::zero(),
+		 time, odeStateInOut);
 
-    step_t step = 1;
-    PRESSIOLOG_INFO("advance_n_stepsWithConstDt");
-    for( ; step <= numSteps ; ++step)
+  step_t step = 1;
+  PRESSIOLOG_INFO("advance_n_stepsWithConstDt");
+  for( ; step <= numSteps ; ++step)
     {
       print_step_time(step, time, dt);
 
@@ -103,55 +101,50 @@ struct IntegratorNStepsWithConstDt
 #endif
 
       time = start_time + static_cast<TimeType>(step) * dt;
-      call_collector(collector, step, time, odeStateInOut);
+      call_observer(observer, step, time, odeStateInOut);
     }
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("time loop");
+  timer->stop("time loop");
 #endif
-  }//end ()
-};
-
+}
 
 /*
  * time step size setter is passed
  */
-struct IntegratorNStepsWithTimeStepSizeSetter
+template <
+  class StepperType,
+  class TimeType,
+  class dt_setter,
+  class StateType,
+  class ObserverType,
+  class StepCountType,
+  class ... Args
+  >
+void advance_n_steps_with_dt_setter(StepperType & stepper,
+				    const StepCountType & numSteps,
+				    const TimeType & start_time,
+				    StateType & odeStateInOut,
+				    dt_setter && dtManager,
+				    ObserverType & observer,
+				    Args && ... args)
 {
-
-  template <
-    typename StepperType,
-    typename TimeType,
-    typename dt_setter,
-    typename StateType,
-    typename CollectorType,
-    typename StepCountType,
-    typename ... Args
-    >
-  static void execute(StepperType & stepper,
-		      const StepCountType & numSteps,
-		      const TimeType			  & start_time,
-		      StateType			  & odeStateInOut,
-		      dt_setter				  && dtManager,
-		      CollectorType			  & collector,
-		      Args				  && ... args)
-  {
-    using step_t = StepCountType;
+  using step_t = StepCountType;
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    auto timer = Teuchos::TimeMonitor::getStackedTimer();
-    timer->start("time loop");
+  auto timer = Teuchos::TimeMonitor::getStackedTimer();
+  timer->start("time loop");
 #endif
 
-    TimeType time = start_time;
-    // pass initial condition to collector object
-    call_collector(collector,
-				::pressio::utils::Constants<step_t>::zero(),
-				time, odeStateInOut);
+  TimeType time = start_time;
+  // pass initial condition to observer object
+  call_observer(observer,
+		 ::pressio::utils::Constants<step_t>::zero(),
+		 time, odeStateInOut);
 
-    TimeType dt = {};
-    step_t step	   = 1;
-    PRESSIOLOG_INFO("advance_n_stepsWithDtCallBack");
-    for( ; step <= numSteps ; ++step)
+  TimeType dt = {};
+  step_t step	   = 1;
+  PRESSIOLOG_INFO("advance_n_stepsWithDtCallBack");
+  for( ; step <= numSteps ; ++step)
     {
       // call the dt manager to set the dt to use at the beginning
       dtManager(step, time, dt);
@@ -166,14 +159,13 @@ struct IntegratorNStepsWithTimeStepSizeSetter
 #endif
 
       time += dt;
-      call_collector(collector, step, time, odeStateInOut);
+      call_observer(observer, step, time, odeStateInOut);
     }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
-    timer->stop("time loop");
+  timer->stop("time loop");
 #endif
-  }
-};
+}
 
 }}}//end namespace pressio::ode::impl
 #endif  // ODE_INTEGRATORS_IMPL_ODE_N_STEPS_INTEGRATORS_HPP_

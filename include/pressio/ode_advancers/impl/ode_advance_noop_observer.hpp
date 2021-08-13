@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_call_collector_dispatcher.hpp
+// ode_dummy_collector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,66 +46,21 @@
 //@HEADER
 */
 
-#ifndef ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_
-#define ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_
+#ifndef ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
+#define ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template <class CollectorType, class TimeType, class StateType, class StepCountType>
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::collector_callable_with_step_time_container_return_void<
-    CollectorType, TimeType, StateType
-    >::value
-  >
-call_collector(CollectorType & collector, 
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
+template <typename TimeType, typename StateType>
+struct NoOpObserver
 {
-  collector(step, time, odeState);
-}
-
-template <class CollectorType, class TimeType, class StateType, class StepCountType>
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::collector_callable_with_step_container_time_return_void<
-    CollectorType, TimeType, StateType
-    >::value
-  >
-call_collector(CollectorType & collector, 
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
-{
-  collector(step, odeState, time);
-}
-
-template <class CollectorType, class TimeType, class StateType, class StepCountType>
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::collector_callable_with_container_step_time_return_void<
-    CollectorType, TimeType, StateType
-    >::value
-  >
-call_collector(CollectorType & collector, 
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
-{
-  collector(odeState, step, time);
-}
-
-template <class CollectorType, class TimeType, class StateType, class StepCountType>
-::pressio::mpl::enable_if_t<
-  ::pressio::ode::collector_callable_with_time_container_step_return_void<
-    CollectorType, TimeType, StateType
-    >::value
-  >
-call_collector(CollectorType & collector, 
-               const StepCountType & step,
-               const TimeType & time,
-               const StateType & odeState)
-{
-  collector(time, odeState, step);
-}
+    void operator()(const int & step,
+		  const TimeType & time,
+		  const StateType & stateIn)
+  {
+    // no op
+  }
+};
 
 }}}//end namespace pressio::ode::impl
-#endif  // ODE_INTEGRATORS_IMPL_ODE_CALL_COLLECTOR_DISPATCHER_HPP_
+#endif  // ODE_INTEGRATORS_IMPL_ODE_DUMMY_COLLECTOR_HPP_

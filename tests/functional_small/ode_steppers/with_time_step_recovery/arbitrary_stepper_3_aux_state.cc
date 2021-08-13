@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 
   auto stepperObj = pressio::ode::create_arbitrary_stepper<4>(y,appObj);
 
-  pressio::ode::advance_to_target_time_with_time_step_recovery
+  pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
     (stepperObj, y, 0., 0.4, dtManager, collector, solver);
 
   std::cout << checkStr << std::endl;

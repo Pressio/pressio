@@ -55,8 +55,8 @@ namespace pressio{ namespace ode{
 
 // Euler forward
 template<
-  class SystemType,
   class StateType,
+  class SystemType,
   class ReturnType = typename impl::ExplicitCompose<explicitmethods::Euler, StateType, SystemType>::type
   >
 ReturnType create_forward_euler_stepper(const StateType & state, SystemType && system)
@@ -66,8 +66,8 @@ ReturnType create_forward_euler_stepper(const StateType & state, SystemType && s
 
 // Runge-kutta 4th
 template<
-  class SystemType,
   class StateType,
+  class SystemType,
   class ReturnType = typename impl::ExplicitCompose<explicitmethods::RungeKutta4, StateType, SystemType>::type
   >
 ReturnType create_runge_kutta4_stepper(const StateType & state, SystemType && system)
@@ -83,8 +83,8 @@ auto create_rk4_stepper(Args && ... args) -> decltype(create_runge_kutta4_steppe
 
 // Adams-Bashforth2
 template<
-  class SystemType,
   class StateType,
+  class SystemType,
   class ReturnType = typename impl::ExplicitCompose<explicitmethods::AdamsBashforth2, StateType, SystemType>::type
   >
 ReturnType create_adams_bashforth2_stepper(const StateType & state, SystemType && system)
@@ -100,8 +100,8 @@ auto create_ab2_stepper(Args && ... args) -> decltype(create_adams_bashforth2_st
 
 // SSP Runge-kutta3
 template<
-  class SystemType,
   class StateType,
+  class SystemType,
   class ReturnType = typename impl::ExplicitCompose<explicitmethods::SSPRungeKutta3, StateType, SystemType>::type
   >
 ReturnType create_ssp_runge_kutta3_stepper(const StateType & state, SystemType && system)
