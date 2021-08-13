@@ -52,7 +52,7 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template <typename TimeType, typename StateType>
-struct DummyCollector
+struct NoOpCollector
 {
     void operator()(const int & step,
 		  const TimeType & time,

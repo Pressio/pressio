@@ -66,13 +66,8 @@ advance_n_steps(StepperType & stepper,
 		const ::pressio::ode::step_count_type num_steps)
 {
 
-//   static_assert
-//     (::pressio::ode::explicit_state<StateType>::value,
-//      "You are trying to call advance_n_steps with an explicit stepper \
-// but the state type you are using is not admissible for explicit time-stepping.");
-
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::DummyCollector<TimeType, StateType>;
+  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
   collector_t collector;
   advancer_t::execute(stepper, num_steps, start_time, dt, odeStateInOut, collector);
 }
@@ -89,11 +84,6 @@ advance_n_steps(StepperType & stepper,
 	      const ::pressio::ode::step_count_type num_steps,
 	      collector_type & collector)
 {
-
-//   static_assert
-//     (::pressio::ode::explicit_state<StateType>::value,
-//      "You are trying to call advance_n_steps with an explicit stepper \
-// but the state type you are using is not admissible for explicit time-stepping.");
 
   static_assert
     (::pressio::ode::collector<collector_type, TimeType, StateType>::value,
@@ -130,13 +120,8 @@ advance_n_steps(StepperType & stepper,
 	      Args && ...solver_args)
 {
 
-//   static_assert
-//     (::pressio::ode::implicit_state<StateType>::value,
-//      "You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping.");
-
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::DummyCollector<TimeType, StateType>;
+  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
   collector_t collector;
   advancer_t::execute(stepper, numSteps, startTime, dt,
 		      odeStateInOut, collector,
@@ -168,10 +153,6 @@ advance_n_steps(StepperType & stepper,
 	      SolverType & solver,
 	      Args && ...solver_args)
 {
-
-//   static_assert(::pressio::ode::implicit_state<StateType>::value,
-// 		"You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping.");
 
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
   advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
@@ -206,12 +187,8 @@ advance_n_steps(StepperType & stepper,
 
 {
 
-//   static_assert(::pressio::ode::implicit_state<StateType>::value,
-// 		"You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping.");
-
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
-  using collector_t = ::pressio::ode::impl::DummyCollector<TimeType, StateType>;
+  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
   collector_t collector;
   advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
 		      collector, std::forward<GuessCallbackType>(guessCb),
@@ -247,10 +224,6 @@ advance_n_steps(StepperType & stepper,
 	      Args && ...solver_args)
 {
 
-//   static_assert(::pressio::ode::implicit_state<StateType>::value,
-// 		"You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping.");
-
   using advancer_t  = impl::IntegratorNStepsWithConstDt;
   advancer_t::execute(stepper, numSteps, startTime, dt, odeStateInOut,
 		      collector, std::forward<GuessCallbackType>(guessCb),
@@ -280,12 +253,8 @@ advance_n_steps(StepperType & stepper,
 	      Args && ...solver_args)
 {
 
-//   static_assert(::pressio::ode::implicit_state<StateType>::value,
-// 		"You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping. ");
-
   using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
-  using collector_t = ::pressio::ode::impl::DummyCollector<TimeType, StateType>;
+  using collector_t = ::pressio::ode::impl::NoOpCollector<TimeType, StateType>;
   collector_t collector;
   advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
 		      std::forward<StepSizeSetterT>(dtManager),
@@ -318,10 +287,6 @@ advance_n_steps(StepperType & stepper,
 		SolverType & solver,
 		Args && ...solver_args)
 {
-
-//   static_assert(::pressio::ode::implicit_state<StateType>::value,
-// 		"You are trying to call advance_n_steps with an implicit stepper \
-// but the state type you are using is not admissible for implicit time-stepping. ");
 
   using advancer_t  = impl::IntegratorNStepsWithTimeStepSizeSetter;
   advancer_t::execute(stepper, num_steps, start_time, odeStateInOut,
