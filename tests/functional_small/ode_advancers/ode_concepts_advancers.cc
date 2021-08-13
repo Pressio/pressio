@@ -36,7 +36,7 @@ struct InvalidCollector2{
 
 struct SteppableClass
 {
-  void doStep(const std::vector<float> state,
+  void operator()(const std::vector<float> state,
               const double time, 
               const double dt, 
               const int32_t step)

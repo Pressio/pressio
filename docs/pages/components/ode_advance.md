@@ -102,12 +102,13 @@ void advance_n_steps_and_observe(StepperType & stepper,
   ```cpp
   class SteppableClass
   {
-
-    void doStep(const StateType & current_state,
-				const TimeType current_time,
-				const TimeType time_step_size_to_use,
-				const int32_t step_count,
-				/* any other arguments needed */ );
+    public:
+	void operator()(const StateType & current_state,
+					const TimeType current_time,
+					const TimeType time_step_size_to_use,
+					const int32_t step_count
+					/*[, other arguments needed: these will be forwarded to your
+					stepper object by the advance methods as shown above ]*/);
   };
   ```
 
@@ -115,6 +116,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
   ```cpp
   class ObserverClass
   {
+    public:
     void operator()(const int32_t & step_count,
 				    const TimeType current_time,
 					const StateType & current_state) const;
@@ -125,6 +127,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
   ```cpp
   class TimeStepManager
   {
+    public:
     void operator()(const int32_t step_count,
 				    const TimeType time,
 					TimeType & time_step_size_to_set) const;

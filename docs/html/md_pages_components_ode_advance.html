@@ -126,20 +126,23 @@
                                  <span class="n">ObserverType</span> <span class="o">&amp;</span> <span class="n">observer</span><span class="p">,</span>
                                  <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span></pre></section><section id="autotoc_md30"><h2><a href="#autotoc_md30">Parameters</a></h2><ul><li><code>StepperType</code>:<ul><li>represents the type of the object that can be stepped forward</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>TimeType</code>:<ul><li>type of time: typically it is same as the value_type of the state</li></ul></li><li><code>StepSizeSetterType</code><ul><li>type of object responsible for setting the time step size</li></ul></li><li><code>ObserverType</code>:<ul><li>type of the class responsible for &quot;observing&quot; the state during the time integration and potentially collect necessary data/metrics/statistics</li></ul></li><li><code>Args...</code>:<ul><li>any arguments needed to be passed to <code>doStep</code> method of the stepper</li></ul></li></ul></section><section id="autotoc_md31"><h2><a href="#autotoc_md31">Requirements</a></h2><ul><li><p>The stepper class must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">SteppableClass</span>
 <span class="p">{</span>
-
-  <span class="kt">void</span> <span class="nf">doStep</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">current_state</span><span class="p">,</span>
-              <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
-              <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
-              <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span><span class="p">,</span>
-              <span class="cm">/* any other arguments needed */</span> <span class="p">);</span>
+  <span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">current_state</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time_step_size_to_use</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span>
+                  <span class="cm">/*[, other arguments needed: these will be forwarded to your</span>
+<span class="cm">                  stepper object by the advance methods as shown above ]*/</span><span class="p">);</span>
 <span class="p">};</span></pre></li><li><p>The observer class must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">ObserverClass</span>
 <span class="p">{</span>
-  <span class="kt">void</span> <span class="nf">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="o">&amp;</span> <span class="n">step_count</span><span class="p">,</span>
+  <span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="o">&amp;</span> <span class="n">step_count</span><span class="p">,</span>
                   <span class="k">const</span> <span class="n">TimeType</span> <span class="n">current_time</span><span class="p">,</span>
                   <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">current_state</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></li><li><p><code>StepSizeSetterType</code> must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">TimeStepManger</span>
+<span class="p">};</span></pre></li><li><p><code>StepSizeSetterType</code> must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">TimeStepManager</span>
 <span class="p">{</span>
-  <span class="kt">void</span> <span class="nf">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span><span class="p">,</span>
+  <span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">step_count</span><span class="p">,</span>
                   <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
                   <span class="n">TimeType</span> <span class="o">&amp;</span> <span class="n">time_step_size_to_set</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 <span class="p">};</span></pre></li></ul></section>

@@ -136,7 +136,7 @@ public:
   }
 
   template<typename solver_type, typename ...Args>
-  void doStep(state_type & odeState,
+  void operator()(state_type & odeState,
 	      const ScalarType &  currentTime,
 	      const ScalarType &  dt,
 	      const int32_t & stepNumber,
@@ -155,7 +155,7 @@ public:
 
   // overload for when we have a guesser callback
   template<typename solver_type, typename guess_callback_t, typename ...Args>
-  void doStep(state_type & odeState,
+  void operator()(state_type & odeState,
 	      const ScalarType &  currentTime,
 	      const ScalarType &  dt,
 	      const int32_t & stepNumber,

@@ -60,7 +60,7 @@ struct steppable_with<
     std::is_void<
       decltype
       (
-       std::declval<T>().doStep
+       std::declval<T>()
        (
 	std::declval<StateType &>(),
 	std::declval<TimeType const &>(),

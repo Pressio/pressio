@@ -6,7 +6,7 @@ template<typename ode_state_type>
 struct MyFakeStepper
 {
   template<typename solver_type>
-  void doStep(ode_state_type & odeState,
+  void operator()(ode_state_type & odeState,
 	      const double & t,
 	      const double & dt,
 	      const pressio::ode::step_count_type & step,

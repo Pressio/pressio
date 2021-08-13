@@ -165,7 +165,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
 	while(!needStop){
 	  try
 	  {
-	    stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+	    stepper(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
 	    needStop=true;
 	  }
 	  catch (::pressio::eh::TimeStepFailure const & e)
@@ -182,7 +182,7 @@ integrate_to_target_time_with_time_step_size_manager(StepperType & stepper,
       }
       else
       {
-	stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+	stepper(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
       }
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS

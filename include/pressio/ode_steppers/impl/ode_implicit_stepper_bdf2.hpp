@@ -136,7 +136,7 @@ public:
   }
 
   template<typename solver_type, typename ...Args>
-  void doStep(state_type & odeState,
+  void operator()(state_type & odeState,
 	      const ScalarType & currentTime,
 	      const ScalarType & dt,
 	      const int32_t & stepNumber,
@@ -154,7 +154,7 @@ public:
   }
 
   template<typename solver_type, typename guess_callback_t, class ...Args>
-  void doStep(state_type & odeState,
+  void operator()(state_type & odeState,
 	      const ScalarType &  currentTime,
 	      const ScalarType &  dt,
 	      const int32_t & stepNumber,
@@ -223,7 +223,7 @@ private:
       // stencilStates_(0) now holds y_0
       ::pressio::ops::deep_copy(stencilStates_(ode::n()), odeState);
       ::pressio::ops::deep_copy(stencilStates_(ode::nMinusOne()), odeState);
-      auxStepper_.doStep(odeState, currentTime, dt, stepNumber, solver,
+      auxStepper_(odeState, currentTime, dt, stepNumber, solver,
 			 std::forward<Args>(args)...);
     }
     if (stepNumber >= 2)

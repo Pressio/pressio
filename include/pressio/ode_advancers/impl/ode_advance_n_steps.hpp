@@ -94,7 +94,7 @@ void advance_n_steps_with_fixed_dt(StepperType & stepper,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+      stepper(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
 
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
@@ -153,7 +153,7 @@ void advance_n_steps_with_dt_setter(StepperType & stepper,
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->start("time step");
 #endif
-      stepper.doStep(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
+      stepper(odeStateInOut, time, dt, step, std::forward<Args>(args)...);
 #ifdef PRESSIO_ENABLE_TEUCHOS_TIMERS
       timer->stop("time step");
 #endif

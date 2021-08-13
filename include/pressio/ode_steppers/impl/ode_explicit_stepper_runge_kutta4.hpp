@@ -94,7 +94,7 @@ public:
   }
 
   template<class StepCountType>
-  void doStep(StateType & odeSolution,
+  void operator()(StateType & odeSolution,
   	      const ScalarType & t,
   	      const ScalarType & dt,
   	      const StepCountType & step)

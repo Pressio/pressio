@@ -192,7 +192,7 @@ public:
 
 
   template<typename SolverType, class StepCountType, typename ...Args>
-  void doStep(StateType & odeState,
+  void operator()(StateType & odeState,
 	      const ScalarType & currentTime,
 	      const ScalarType & dt,
 	      const StepCountType & step,

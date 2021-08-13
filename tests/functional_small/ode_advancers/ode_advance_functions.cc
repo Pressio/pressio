@@ -7,7 +7,7 @@ using VectorType = std::vector<ScalarType>;
 
 struct MyFakeStepperExplicit
 {
-  void doStep(VectorType & odeState,
+  void operator()(VectorType & odeState,
 	      const ScalarType & time,
 	      const ScalarType & dt,
 	      const pressio::ode::step_count_type & step)  
@@ -35,7 +35,7 @@ TEST(ode, explicit_advance_n_steps_fix_dt)
 // struct MyFakeStepper
 // {
 //   template<typename solver_type>
-//   void doStep(ode_state_type & odeState,
+//   void operator()(ode_state_type & odeState,
 // 	      const double & t,
 // 	      const double & dt,
 // 	      const pressio::ode::step_type & step,

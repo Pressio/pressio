@@ -97,12 +97,13 @@ This component provides functionalities for \char`\"{}advancing\char`\"{} generi
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }SteppableClass}
 \DoxyCodeLine{\{}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} doStep(\textcolor{keyword}{const} StateType \& current\_state,}
-\DoxyCodeLine{              \textcolor{keyword}{const} TimeType current\_time,}
-\DoxyCodeLine{              \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
-\DoxyCodeLine{              \textcolor{keyword}{const} int32\_t step\_count,}
-\DoxyCodeLine{              \textcolor{comment}{/* any other arguments needed */} );}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} StateType \& current\_state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time\_step\_size\_to\_use,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} int32\_t step\_count}
+\DoxyCodeLine{                  \textcolor{comment}{/*[, other arguments needed: these will be forwarded to your}}
+\DoxyCodeLine{\textcolor{comment}{                  stepper object by the advance methods as shown above ]*/});}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
@@ -111,6 +112,7 @@ This component provides functionalities for \char`\"{}advancing\char`\"{} generi
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }ObserverClass}
 \DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} int32\_t \& step\_count,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} TimeType current\_time,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} StateType \& current\_state) \textcolor{keyword}{const};}
@@ -120,8 +122,9 @@ This component provides functionalities for \char`\"{}advancing\char`\"{} generi
 
 \item {\ttfamily Step\+Size\+Setter\+Type} must conform to the following API\+: 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{class }TimeStepManger}
+\DoxyCodeLine{\textcolor{keyword}{class }TimeStepManager}
 \DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{public}:}
 \DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} int32\_t step\_count,}
 \DoxyCodeLine{                  \textcolor{keyword}{const} TimeType time,}
 \DoxyCodeLine{                  TimeType \& time\_step\_size\_to\_set) \textcolor{keyword}{const};}
