@@ -273,7 +273,7 @@ TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<1,2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
@@ -289,7 +289,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime2)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<1,2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);
@@ -305,7 +305,7 @@ TEST(ode, implicit_arbitrary_callWithCorrectTime3)
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
-  auto stepperObj = ode::create_arbitrary_stepper<1,2>(y,appObj);
+  auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);

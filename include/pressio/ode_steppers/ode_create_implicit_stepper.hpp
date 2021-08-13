@@ -112,12 +112,11 @@ auto create_cranknicolson_stepper(const StateType & state, ResidualPolicyType &&
 
 // Arbitrary
 template<
-  int order, 
   int num_states, 
   class SystemType, 
   class StateType, 
   class ReturnType = impl::ImplicitCompose_t<
-    implicitmethods::Arbitrary, StepperOrder<order>, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
+    implicitmethods::Arbitrary, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
   >
 ReturnType create_arbitrary_stepper(const StateType & state, SystemType && system)
 {

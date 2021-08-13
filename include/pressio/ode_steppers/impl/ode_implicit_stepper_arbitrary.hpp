@@ -52,7 +52,6 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
-  int order_in,
   int n_states,
   class ScalarType,
   class StateType,
@@ -102,10 +101,6 @@ public:
     {}
 
 public:
-  ::pressio::ode::stepper_order_type order() const{
-    return order_in;
-  }
-
   residual_type createResidual() const{
     return systemObj_.get().createDiscreteTimeResidual();
   }

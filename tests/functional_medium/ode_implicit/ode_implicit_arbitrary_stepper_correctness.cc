@@ -238,7 +238,7 @@ struct CustomBdf1Solver
   using state_t	= typename app_t::state_type;
   using res_t	= typename app_t::residual_type;
   using jac_t	= typename app_t::jacobian_type;
-  using stepper_t = decltype(pressio::ode::create_arbitrary_stepper<1,2>(std::declval<state_t>(),std::declval<app_t&>()));
+  using stepper_t = decltype(pressio::ode::create_arbitrary_stepper<2>(std::declval<state_t>(),std::declval<app_t&>()));
   using lin_solver_name = ::pressio::linearsolvers::iterative::Bicgstab;
   using lin_solver_t = ::pressio::linearsolvers::Solver<lin_solver_name, jac_t>;
 

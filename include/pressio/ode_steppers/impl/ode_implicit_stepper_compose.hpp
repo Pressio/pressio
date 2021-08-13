@@ -248,9 +248,9 @@ struct ImplicitCompose<
 ////////////////////////////////////////
 /// ImplicitCompose Arbitrary stepper
 ////////////////////////////////////////
-template<class Order, class NStates, class SystemType, class StateType>
+template<class NStates, class SystemType, class StateType>
 struct ImplicitCompose<
-  implicitmethods::Arbitrary, Order, NStates, SystemType, StateType>
+  implicitmethods::Arbitrary, NStates, SystemType, StateType>
 {
   static_assert
   (::pressio::ode::discrete_time_system_with_user_provided_jacobian<mpl::remove_cvref_t<SystemType>>::value,
@@ -275,7 +275,7 @@ struct ImplicitCompose<
 
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
   using type = StepperArbitrary<
-    Order::value, NStates::value, ScalarType, StateType, ResidualType, JacobianType, SystemType 
+    NStates::value, ScalarType, StateType, ResidualType, JacobianType, SystemType 
     >;
 };
 
