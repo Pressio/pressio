@@ -63,5 +63,18 @@ add_to_diagonal(T & o, typename ::pressio::Traits<T>::scalar_type value)
   o += ide;
 }
 
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_dense_matrix_eigen<T>::value
+  >
+add_to_diagonal(T & o, 
+	typename ::pressio::Traits<T>::scalar_type value)
+{
+  assert(o.rows() == o.cols());
+  for (int i=0; i<o.rows(); ++i){
+  	o(i,i) += value;
+  }
+}
+
 }}//end namespace pressio::ops
 #endif  // OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_
