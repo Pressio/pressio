@@ -76,13 +76,13 @@ public:
   InstanceOrReferenceWrapper(){}
 
   explicit InstanceOrReferenceWrapper(T & valIn) 
-    : value_(valIn){ std::cout << "COP C\n"; }
+    : value_(valIn){}
   
   explicit InstanceOrReferenceWrapper(const T & valIn) 
-    : value_(valIn){ std::cout << "COP 2 C\n"; }
+    : value_(valIn){}
 
   explicit InstanceOrReferenceWrapper(T && valIn) 
-    : value_(std::move(valIn)) { std::cout << "MOVE C\n"; }
+    : value_(std::move(valIn)) {}
 
   T& get() { return value_; }
   T const& get() const { return value_; }
