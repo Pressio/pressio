@@ -8,28 +8,14 @@
     <detaileddescription>
 <para>Defined in: <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md38">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md40">
 <title>Overview</title>
-<para>pressio ode targets systems of the form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
-<para>where <formula id="1">$y$</formula> is the state, <formula id="2">$f$</formula> is the RHS (also called velocity below), <formula id="3">$t$</formula> is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas:<itemizedlist>
-<listitem><para>we separate the concept of a &quot;stepper&quot; from the actual &quot;advancer&quot;: a stepper class is responsible for knowing how to perform a step in time, while the &quot;advancer&quot; (or integrator) is responbile of knowing how many times the stepper should be called.</para>
-</listitem><listitem><para>we use a policy-based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.</para>
-</listitem></itemizedlist>
-</para>
-<para>The ode package is split into three main subcomponents:<itemizedlist>
-<listitem><para>explicit methods</para>
-</listitem><listitem><para>implicit methods</para>
-</listitem><listitem><para>integrators</para>
-</listitem></itemizedlist>
-</para>
 </sect1>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md39">
-<title>Implicit Methods</title>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md40">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md41">
 <title>API</title>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Res</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">ualPolicyType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>JacobianPolicyType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
@@ -37,7 +23,6 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>JacobianPolicyType<sp/>&amp;&amp;<sp/>jPol);</highlight></codeline>
 </programlisting></para>
 <para>where <computeroutput>keyword</computeroutput> is one of: <computeroutput>bdf1</computeroutput>, <computeroutput>bdf2</computeroutput>, <computeroutput>cranknicolson</computeroutput>. </para>
-</sect2>
 </sect1>
     </detaileddescription>
     <location file="pages/components/ode_steppers_implicit.md"/>

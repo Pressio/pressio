@@ -99,3 +99,21 @@ TEST(ops_eigen, dense_matrix_deep_copy)
    }
   }
 }
+
+TEST(ops_eigen, add_to_diagonal)
+{
+  using T = Eigen::MatrixXd;
+  T A(6,6);
+  A.setConstant(2.2);
+  pressio::ops::add_to_diagonal(A, 1.1);
+  for (int i=0; i<6; ++i){
+    for (int j=0; j<6; ++j){
+      if (i==j) {
+        EXPECT_DOUBLE_EQ(A(i,j), 3.3);
+      } 
+      else{
+        EXPECT_DOUBLE_EQ(A(i,j), 2.2);
+      }
+    }
+  }
+}

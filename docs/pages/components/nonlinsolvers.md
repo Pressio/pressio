@@ -44,8 +44,8 @@ such that pressio can operate on your data. For the sake of explanation, suppose
 
 ```cpp
 using scalar_type   = double;
-using state_type    = ACustomVectorClass;  //this can be any type
-using jacobian_type = ACustomMatrixClass;  //this can be any type
+using state_type    = ACustomStateType;  //this can be any type
+using jacobian_type = ACustomJacobianType;  //this can be any type
 ```
 
 Then you need to provide the following specializations:
@@ -53,33 +53,38 @@ Then you need to provide the following specializations:
 ```cpp
 namespace pressio{
 
-template<> struct Traits<ACustomVectorClass>{
+template<> struct Traits<ACustomStateType>{
   using scalar_type = double;
 };
 
-template<> struct Traits<ACustomMatrixClass>{
+template<> struct Traits<ACustomJacobianType>{
   using scalar_type = double;
 };
 
 namespace ops{
 
-ACustomVectorClass clone(const ACustomVectorClass & src){ /* return a deep copy of src */ }
-ACustomMatrixClass clone(const ACustomMatrixClass & src){ /* return a deep copy of src */ }
+ACustomStateType    clone(const ACustomStateType & src){
+  /* return a deep copy of src */
+}
 
-void set_zero(ACustomVectorClass & object){ /* set elements zero */ }
-void set_zero(ACustomMatrixClass & object){ /* set elements zero */ }
+ACustomJacobianType clone(const ACustomJacobianType & src){
+  /* return a deep copy of src */
+}
 
-scalar_type norm2(const ACustomVectorClass & object){
+void set_zero(ACustomStateType & object){    /* set elements zero */ }
+void set_zero(ACustomJacobianType & object){ /* set elements zero */ }
+
+scalar_type norm2(const ACustomStateType & object){
   /* return l2-norm of object */
 }
 
-void update(ACustomVectorClass & v,		   scalar_type a,
-			const ACustomVectorClass & v1, scalar_type b)
+void update(ACustomStateType & v,		 scalar_type a,
+			const ACustomStateType & v1, scalar_type b)
 {
   // compute v = a*v + v1*b;
 }
 
-void scale(ACustomVectorClass & v, scalar_type factor){
+void scale(ACustomStateType & v, scalar_type factor){
   /* scale v elementwise by factor
 }
 

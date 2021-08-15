@@ -33,4 +33,7 @@ endif()
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_explicit_steppers_numerics_custom_types.cc)
 add_serial_utest(${TESTPREPENDEX}_numerics_custom_types ${SRC})
 
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/ode_implicit_steppers_numerics_custom_types.cc)
+add_serial_utest(${TESTPREPENDIM}_numerics_custom_types ${SRC})
+
 add_subdirectory(with_time_step_recovery)

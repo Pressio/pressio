@@ -1,26 +1,12 @@
 Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+implicit.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md38}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_implicit_autotoc_md38}
-pressio ode targets systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
-
-where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time. The ode package provides classes for doing time integration. The design is rooted on the following main ideas\+:
-\begin{DoxyItemize}
-\item we separate the concept of a \char`\"{}stepper\char`\"{} from the actual \char`\"{}advancer\char`\"{}\+: a stepper class is responsible for knowing how to perform a step in time, while the \char`\"{}advancer\char`\"{} (or integrator) is responbile of knowing how many times the stepper should be called.
-\item we use a policy-\/based design for evaluating the required operators, such that this allows great flexiblity on using this time integration package.
-\end{DoxyItemize}
-
-The ode package is split into three main subcomponents\+:
-\begin{DoxyItemize}
-\item explicit methods
-\item implicit methods
-\item integrators
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md39}{}\doxysection{Implicit Methods}\label{md_pages_components_ode_steppers_implicit_autotoc_md39}
-\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md40}{}\doxysubsection{API}\label{md_pages_components_ode_steppers_implicit_autotoc_md40}
+Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md40}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_implicit_autotoc_md40}
+\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md41}{}\doxysection{API}\label{md_pages_components_ode_steppers_implicit_autotoc_md41}
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} SystemType, \textcolor{keyword}{class} StateType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} SystemType \& system,}
-\DoxyCodeLine{                            \textcolor{keyword}{const} StateType \& state);}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} SystemType \& system);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} Res\textcolor{keywordtype}{id}ualPolicyType, \textcolor{keyword}{class} JacobianPolicyType>}
 \DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}

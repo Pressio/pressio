@@ -52,8 +52,8 @@ When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{using} scalar\_type   = double;}
-\DoxyCodeLine{\textcolor{keyword}{using} state\_type    = ACustomVectorClass;  \textcolor{comment}{//this can be any type}}
-\DoxyCodeLine{\textcolor{keyword}{using} jacobian\_type = ACustomMatrixClass;  \textcolor{comment}{//this can be any type}}
+\DoxyCodeLine{\textcolor{keyword}{using} state\_type    = ACustomStateType;  \textcolor{comment}{//this can be any type}}
+\DoxyCodeLine{\textcolor{keyword}{using} jacobian\_type = ACustomJacobianType;  \textcolor{comment}{//this can be any type}}
 
 \end{DoxyCode}
 
@@ -64,33 +64,38 @@ Then you need to provide the following specializations\+:
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{namespace }pressio\{}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomVectorClass>\{}
+\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomStateType>\{}
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = double;}
 \DoxyCodeLine{\};}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomMatrixClass>\{}
+\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomJacobianType>\{}
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = double;}
 \DoxyCodeLine{\};}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{namespace }ops\{}
 \DoxyCodeLine{}
-\DoxyCodeLine{ACustomVectorClass clone(\textcolor{keyword}{const} ACustomVectorClass \& src)\{ \textcolor{comment}{/* return a deep copy of src */} \}}
-\DoxyCodeLine{ACustomMatrixClass clone(\textcolor{keyword}{const} ACustomMatrixClass \& src)\{ \textcolor{comment}{/* return a deep copy of src */} \}}
+\DoxyCodeLine{ACustomStateType    clone(\textcolor{keyword}{const} ACustomStateType \& src)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return a deep copy of src */}}
+\DoxyCodeLine{\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomVectorClass \& \textcolor{keywordtype}{object})\{ \textcolor{comment}{/* set elements zero */} \}}
-\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomMatrixClass \& \textcolor{keywordtype}{object})\{ \textcolor{comment}{/* set elements zero */} \}}
+\DoxyCodeLine{ACustomJacobianType clone(\textcolor{keyword}{const} ACustomJacobianType \& src)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return a deep copy of src */}}
+\DoxyCodeLine{\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{scalar\_type norm2(\textcolor{keyword}{const} ACustomVectorClass \& \textcolor{keywordtype}{object})\{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomStateType \& \textcolor{keywordtype}{object})\{    \textcolor{comment}{/* set elements zero */} \}}
+\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomJacobianType \& \textcolor{keywordtype}{object})\{ \textcolor{comment}{/* set elements zero */} \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{scalar\_type norm2(\textcolor{keyword}{const} ACustomStateType \& \textcolor{keywordtype}{object})\{}
 \DoxyCodeLine{  \textcolor{comment}{/* return l2-\/norm of object */}}
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomVectorClass \& v,        scalar\_type a,}
-\DoxyCodeLine{            \textcolor{keyword}{const} ACustomVectorClass \& v1, scalar\_type b)}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, scalar\_type b)}
 \DoxyCodeLine{\{}
 \DoxyCodeLine{  \textcolor{comment}{// compute v = a*v + v1*b;}}
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{void} scale(ACustomVectorClass \& v, scalar\_type factor)\{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} scale(ACustomStateType \& v, scalar\_type factor)\{}
 \DoxyCodeLine{  \textcolor{comment}{/* scale v elementwise by factor}}
 \DoxyCodeLine{\textcolor{comment}{\}}}
 \DoxyCodeLine{\textcolor{comment}{}}

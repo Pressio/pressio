@@ -12,7 +12,7 @@
  <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-info" /></para>
 <para><parblock><para><computeroutput>pressio</computeroutput> is header-only, so to use it one does not need to precompile it into a library and linking to it. However, since we use preprocessor directives to conditionally enable/disable code based on target third-party libraries, one needs to account for this. See below for the details. </para>
 </parblock></para>
-<sect1 id="md_pages_installation_1autotoc_md52">
+<sect1 id="md_pages_installation_1autotoc_md53">
 <title>Dependencies</title>
 <para>Some parts of <computeroutput>pressio</computeroutput> contain code and implementations that are specific to third-party libraries (TPLs). For example, the <computeroutput>containers</computeroutput> and <computeroutput>ops</computeroutput> components of <computeroutput>pressio</computeroutput> contain thin wrappers and kernels that are custom-built for target libraries. The main reason for doing this is that we aim to alleviate the user from writing custom operations and allows <computeroutput>pressio</computeroutput> to decide when and how to leverage the native libraries&apos; operations to obtain the best performance. This should facilitate the integration and use of <computeroutput>pressio</computeroutput> by existing applications. Obviously, this is a growing capability and we currently only provide built-in support to some external HPC libraries (see below). We can distinguish between <emphasis>optional</emphasis> and <emphasis>required</emphasis> dependencies.</para>
 <para><table rows="10" cols="3"><row>
@@ -127,7 +127,7 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 <para>Also, we note that some of the cmake variables listed above are connected and cannot be turned on individualy. For example, if we enable Trilinos then <computeroutput>pressio</computeroutput> automatically enables also Kokkos, BLAS, LAPACK and MPI. The reason for this choice is that in a production scenario<mdash/>which is what pressio mainly targets<mdash/>it is reasonable to expect a user to have Trilinos built with BLAS, LAPACK, MPI and Kokkos support.</para>
 <para>There might be other constraints on the variables one can set. The reason for this is twofold: (a) to simplify what the user needs to provide; and (b) we belive some of these constraints are necessary, like the Trilinos example above or always requiring BLAS and LAPACK to be simulateneously on.</para>
 </sect1>
-<sect1 id="md_pages_installation_1autotoc_md53">
+<sect1 id="md_pages_installation_1autotoc_md54">
 <title>In practice, what are the steps to get, install and use Pressio?</title>
 <para><orderedlist>
 <listitem>
@@ -175,7 +175,7 @@ Obviously, the choice of which TPLs to enable is related to your application&apo
 </simplesect>
 </para>
 </sect1>
-<sect1 id="md_pages_installation_1autotoc_md54">
+<sect1 id="md_pages_installation_1autotoc_md55">
 <title>Where to go from here?</title>
 <para>Navigate <ulink url="./md_pages_getstarted_packages.html">this page</ulink> to learn which packages pressio includes, and how you can have finer-grained access to certain functionalities. </para>
 </sect1>

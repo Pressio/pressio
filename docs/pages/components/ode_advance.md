@@ -8,9 +8,22 @@ Public namespace: `pressio::ode`
 
 ## Overview
 
-This component provides functionalities for "advancing" generic objects.
-The main utility of these functions is for doing time integration
-where one has a "stepper" and wants to use alternative strategies for advancing in time.
+Suppose that you have a generic application/usecase
+involving the concept of a discrete time space or discrete steps,
+a notion of "state" that defines your information at a specific step,
+and a "stepper" object, i.e. an object/abstraction that has accepts a state
+and knows how to take a step forward or backward to update that state.
+Now, suppose that you have such a "steppable" object and might
+need different strategies to advance such objects.
+
+The pressio *advancers* provide functionalities for exactly this purpose,
+i.e. "advancing" a generic object that satisfies the "steppable" concept.
+Obviously, this is not necessarily specific to applied math problems or
+scientific computing applications, but can be something generic.
+In the context of scientific computing, one might immediately recognize
+a usecase for these functions to be *time integration* of
+time-dependent dynamical systems.
+
 
 ## API Synopsis:
 
@@ -93,7 +106,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
   time integration and potentially collect necessary data/metrics/statistics
 
 - `Args...`:
-  - any arguments needed to be passed to `doStep` method of the stepper
+  - any arguments needed to be passed to the stepper to perform one step
 
 
 ## Requirements

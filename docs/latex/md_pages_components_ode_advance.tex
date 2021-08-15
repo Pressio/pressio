@@ -1,7 +1,9 @@
 Defined in header\+: {\ttfamily $<$pressio/ode\+\_\+advancers.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_advance_autotoc_md28}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md28}
-This component provides functionalities for \char`\"{}advancing\char`\"{} generic objects. The main utility of these functions is for doing time integration where one has a \char`\"{}stepper\char`\"{} and wants to use alternative strategies for advancing in time.\hypertarget{md_pages_components_ode_advance_autotoc_md29}{}\doxysection{API Synopsis\+:}\label{md_pages_components_ode_advance_autotoc_md29}
+Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a \char`\"{}steppable\char`\"{} object and might need different strategies to advance such objects.
+
+The pressio {\itshape advancers} provide functionalities for exactly this purpose, i.\+e. \char`\"{}advancing\char`\"{} a generic object that satisfies the \char`\"{}steppable\char`\"{} concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be {\itshape time integration} of time-\/dependent dynamical systems.\hypertarget{md_pages_components_ode_advance_autotoc_md29}{}\doxysection{API Synopsis\+:}\label{md_pages_components_ode_advance_autotoc_md29}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -88,7 +90,7 @@ This component provides functionalities for \char`\"{}advancing\char`\"{} generi
 \end{DoxyItemize}
 \item {\ttfamily Args...}\+:
 \begin{DoxyItemize}
-\item any arguments needed to be passed to {\ttfamily do\+Step} method of the stepper
+\item any arguments needed to be passed to the stepper to perform one step
 \end{DoxyItemize}
 \end{DoxyItemize}\hypertarget{md_pages_components_ode_advance_autotoc_md31}{}\doxysection{Requirements}\label{md_pages_components_ode_advance_autotoc_md31}
 

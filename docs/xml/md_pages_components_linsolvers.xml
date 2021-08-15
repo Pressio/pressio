@@ -10,9 +10,12 @@
 <para>Public namespace: <computeroutput>pressio::linearsolvers</computeroutput></para>
 <sect1 id="md_pages_components_linsolvers_1autotoc_md2">
 <title>Overview</title>
-<para>First, we want to clearly state that this subpackage of pressio does not provide linear solvers classes implemented from scratch that work in general. This is an intentional choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</para>
-<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">The main goal of the pressio&apos;s linear solvers component is to support usecases that are needed for ROMs.</mcss:span> As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense</emphasis> systems that suitably fit on a <emphasis>single compute node</emphasis>. Therefore, pressio&apos;s linear solvers are designed and implemented to be wrappers (exposing a common interface) to existing shared-memory linear solvers libraries.</para>
-<para>Currently, we support solving linear systems that involve either Eigen or Kokkos data structures. The reason for this is that Eigen and Kokkos are the preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed.</para>
+<para>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. This is an <bold>intentional</bold> choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title></title><para>The main goal of the pressio&apos;s linear solvers component is to support usecases that are needed for ROMs.</para>
+</simplesect>
+As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense</emphasis> systems that suitably fit on a <emphasis>single compute node</emphasis>. Pressio&apos;s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-memory linear solvers libraries.</para>
+<para>Currently, we support linear systems involving either Eigen or Kokkos data structures. The reason for this is that Eigen and Kokkos are the preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.</para>
 </sect1>
 <sect1 id="md_pages_components_linsolvers_1autotoc_md3">
 <title>API</title>

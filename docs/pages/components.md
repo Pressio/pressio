@@ -1,8 +1,6 @@
 
 # Components
 
-The pressio C++ library is divided into several components:
-
 | Name                							| Brief Description 													 	  | Links                                                							  | Corresponding header(s)    |
 | ------------------                            | ---------------                                                             | ------------                                                                	  |  						|
 | @m_span{m-text m-success}mpl@m_endspan        | metaprogramming functionalities                                             | [Documentation](md_pages_components_mpl.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/mpl)         	  | `<pressio/mpl.hpp>`  |
@@ -13,7 +11,7 @@ The pressio C++ library is divided into several components:
 | @m_span{m-text m-success}qr@m_endspan         | QR factorization functionalities                                            | [Documentation](md_pages_components_qr.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/qr)                 | `<pressio/qr.hpp>`|
 | @m_span{m-text m-success}solvers_linear@m_endspan    | linear solvers (wrappers around existing TPLs) 					  | [Documentation](md_pages_components_linsolvers.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/solvers_linear)            | `<pressio/solvers_linear.hpp>`|
 | @m_span{m-text m-success}solvers_nonlinear@m_endspan | non-linear solvers <br> (e.g., Newton-Raphson, Gauss-Newton, Levenberg-Marquardt) | [Documentation](md_pages_components_nonlinsolvers.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/solvers_nonlinear) | `<pressio/solvers_nonlinear.hpp>`|
-| @m_span{m-text m-success}ode@m_endspan        | explicit steppers <br/>implict steppers <br/> advance function <br/> all   | [Documentation](md_pages_components_ode_steppers_explicit.html)<br/> [Documentation](md_pages_components_ode_steppers_implicit.html) <br/>[Documentation](md_pages_components_ode.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/ode)   | `<pressio/ode_steppers_explicit.hpp>` <br/> `<pressio/ode_steppers_implicit.hpp>`<br/> `<pressio/ode_advance.hpp>` <br/> `<pressio/ode.hpp>` |
+| @m_span{m-text m-success}ode@m_endspan        | explicit steppers <br/>implict steppers <br/> advancers <br/> all   | [Documentation](md_pages_components_ode_steppers_explicit.html)<br/> [Documentation](md_pages_components_ode_steppers_implicit.html) <br/>[Documentation](md_pages_components_ode_advance.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/ode)   | `<pressio/ode_steppers_explicit.hpp>` <br/> `<pressio/ode_steppers_implicit.hpp>`<br/> `<pressio/ode_advancers.hpp>` <br/> `<pressio/ode.hpp>` |
 | @m_span{m-text m-success}rom@m_endspan        | Galerkin<br/> LSPG<br/> WLS<br/> all      | <br/><br/><br/>[Documentation](md_pages_components_rom.html)<br/>[Code](https://github.com/Pressio/pressio/tree/main/include/rom) | `<pressio/rom_galerkin.hpp>` <br/> `<pressio/rom_lspg.hpp>` <br/> `<pressio/rom_wls.hpp>` <br/> `<pressio/rom.hpp>` |
 
 The top-down order used above is informative of the dependency structure.
@@ -30,11 +28,16 @@ and all the dependencies on the others are enabled automatically.
 @m_class{m-block m-warning}
 
 @par
+We remark that while the main purpose of pressio is to provide functionalities
+for solving ROMs, we emphasize that all of the pressio's components listed above
+can be used independently.
 When you use functionalities from a specific package, you should just include
 the corresponding header and the dependencies (based on the explanation above) are included automatically.
 For example, if you want to use Galerkin, you just need `#include <pressio/rom_galerkin.hpp>`
 because all the needed packages are automatically included. There is not need to manually include all of them yourself.
 In the future, we might refine further the granularity of the headers to allow a finer control.
+
+
 
 
 <!-- @m_class{m-block m-warning} -->

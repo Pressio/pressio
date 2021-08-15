@@ -75,39 +75,44 @@
 <title>Ops</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/>ACustomVectorClass;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/>ACustomMatrixClass;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/>ACustomStateType;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/>ACustomJacobianType;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight></codeline>
 </programlisting></para>
 <para>Then you need to provide the following specializations:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomVectorClass&gt;{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomStateType&gt;{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomMatrixClass&gt;{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomJacobianType&gt;{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">ACustomVectorClass<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomVectorClass<sp/>&amp;<sp/>src){<sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">ACustomMatrixClass<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomMatrixClass<sp/>&amp;<sp/>src){<sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">ACustomStateType<sp/><sp/><sp/><sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomVectorClass<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){<sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>zero<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomMatrixClass<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){<sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>zero<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">ACustomJacobianType<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomJacobianType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">scalar_type<sp/>norm2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomVectorClass<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomStateType<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){<sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>zero<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomJacobianType<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){<sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>zero<sp/>*/</highlight><highlight class="normal"><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">scalar_type<sp/>norm2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>l2-norm<sp/>of<sp/>object<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomVectorClass<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomVectorClass<sp/>&amp;<sp/>v1,<sp/>scalar_type<sp/>b)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/>scalar_type<sp/>b)</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>v1*b;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scale(ACustomVectorClass<sp/>&amp;<sp/>v,<sp/>scalar_type<sp/>factor){</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scale(ACustomStateType<sp/>&amp;<sp/>v,<sp/>scalar_type<sp/>factor){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>scale<sp/>v<sp/>elementwise<sp/>by<sp/>factor</highlight></codeline>
 <codeline><highlight class="comment">}</highlight></codeline>
 <codeline><highlight class="comment"></highlight></codeline>

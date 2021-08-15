@@ -6,7 +6,6 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>The pressio C++ library is divided into several components:</para>
 <para><table rows="11" cols="4"><row>
 <entry thead="yes"><para>Name   </para>
 </entry><entry thead="yes"><para>Brief Description   </para>
@@ -75,15 +74,15 @@ e.g., I/O helpers, static constants, etc   </para>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ode</mcss:span>   </para>
 </entry><entry thead="no"><para>explicit steppers <linebreak/>
 implict steppers <linebreak/>
- advance function <linebreak/>
+ advancers <linebreak/>
  all   </para>
 </entry><entry thead="no"><para><ulink url="md_pages_components_ode_steppers_explicit.html">Documentation</ulink><linebreak/>
  <ulink url="md_pages_components_ode_steppers_implicit.html">Documentation</ulink> <linebreak/>
-<ulink url="md_pages_components_ode.html">Documentation</ulink><linebreak/>
+<ulink url="md_pages_components_ode_advance.html">Documentation</ulink><linebreak/>
 <ulink url="https://github.com/Pressio/pressio/tree/main/include/ode">Code</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/ode_steppers_explicit.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput><linebreak/>
- <computeroutput>&lt;pressio/ode_advance.hpp&gt;</computeroutput> <linebreak/>
+ <computeroutput>&lt;pressio/ode_advancers.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>    </para>
 </entry></row>
 <row>
@@ -110,7 +109,7 @@ implict steppers <linebreak/>
 </listitem></itemizedlist>
 </para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title></title><para>When you use functionalities from a specific package, you should just include the corresponding header and the dependencies (based on the explanation above) are included automatically. For example, if you want to use Galerkin, you just need <computeroutput>#include &lt;pressio/rom_galerkin.hpp&gt;</computeroutput> because all the needed packages are automatically included. There is not need to manually include all of them yourself. In the future, we might refine further the granularity of the headers to allow a finer control. </para>
+<para><simplesect kind="par"><title></title><para>We remark that while the main purpose of pressio is to provide functionalities for solving ROMs, we emphasize that all of the pressio&apos;s components listed above can be used independently. When you use functionalities from a specific package, you should just include the corresponding header and the dependencies (based on the explanation above) are included automatically. For example, if you want to use Galerkin, you just need <computeroutput>#include &lt;pressio/rom_galerkin.hpp&gt;</computeroutput> because all the needed packages are automatically included. There is not need to manually include all of them yourself. In the future, we might refine further the granularity of the headers to allow a finer control. </para>
 </simplesect>
 </para>
     </detaileddescription>

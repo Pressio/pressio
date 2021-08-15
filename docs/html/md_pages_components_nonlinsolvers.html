@@ -72,36 +72,41 @@
 <span class="k">auto</span> <span class="n">create_newton_raphson</span><span class="p">(</span><span class="k">const</span> <span class="n">ProblemClassType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">,</span>
                            <span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                            <span class="n">LinearSolverType</span> <span class="o">&amp;&amp;</span> <span class="n">lsolver</span><span class="p">);</span></pre><ul><li><code>ProblemClassType</code>:<ul><li>type of the class defining the problem to solve</li><li>Requirements: must conform to either the residual-jacobian API or the fused residual-jacobian API</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li><li>Requirements: must be copy constructible</li></ul></li><li><code>LinearSolverType</code>:<ul><li>self-explanatory</li><li>Requirements: must conform to this <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html">API</a></li></ul></li></ul></section><section id="autotoc_md11"><h3><a href="#autotoc_md11">Ops</a></h3><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</p><pre class="m-code"><span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="n">ACustomVectorClass</span><span class="p">;</span>  <span class="c1">//this can be any type</span>
-<span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span> <span class="n">ACustomMatrixClass</span><span class="p">;</span>  <span class="c1">//this can be any type</span></pre><p>Then you need to provide the following specializations:</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
+<span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="n">ACustomStateType</span><span class="p">;</span>  <span class="c1">//this can be any type</span>
+<span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span> <span class="n">ACustomJacobianType</span><span class="p">;</span>  <span class="c1">//this can be any type</span></pre><p>Then you need to provide the following specializations:</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
 
-<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomVectorClass</span><span class="o">&gt;</span><span class="p">{</span>
+<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomStateType</span><span class="o">&gt;</span><span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomMatrixClass</span><span class="o">&gt;</span><span class="p">{</span>
+<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomJacobianType</span><span class="o">&gt;</span><span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">namespace</span> <span class="n">ops</span><span class="p">{</span>
 
-<span class="n">ACustomVectorClass</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span> <span class="cm">/* return a deep copy of src */</span> <span class="p">}</span>
-<span class="n">ACustomMatrixClass</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomMatrixClass</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span> <span class="cm">/* return a deep copy of src */</span> <span class="p">}</span>
+<span class="n">ACustomStateType</span>    <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span>
+  <span class="cm">/* return a deep copy of src */</span>
+<span class="p">}</span>
 
-<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span> <span class="cm">/* set elements zero */</span> <span class="p">}</span>
-<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomMatrixClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span> <span class="cm">/* set elements zero */</span> <span class="p">}</span>
+<span class="n">ACustomJacobianType</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomJacobianType</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span>
+  <span class="cm">/* return a deep copy of src */</span>
+<span class="p">}</span>
 
-<span class="n">scalar_type</span> <span class="nf">norm2</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>
+<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>    <span class="cm">/* set elements zero */</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomJacobianType</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span> <span class="cm">/* set elements zero */</span> <span class="p">}</span>
+
+<span class="n">scalar_type</span> <span class="nf">norm2</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>
   <span class="cm">/* return l2-norm of object */</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="c1">// compute v = a*v + v1*b;</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="nf">scale</span><span class="p">(</span><span class="n">ACustomVectorClass</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">factor</span><span class="p">){</span>
+<span class="kt">void</span> <span class="nf">scale</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">factor</span><span class="p">){</span>
   <span class="cm">/* scale v elementwise by factor</span>
 <span class="cm">}</span>
 

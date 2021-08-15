@@ -8,8 +8,8 @@ where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
-\DoxyCodeLine{ReturnType create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{                                  \textcolor{keyword}{const} SystemType \& system);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} SystemType \& system);}
 
 \end{DoxyCode}
 
@@ -20,7 +20,6 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 \item {\ttfamily State\+Type}\+:
 \begin{DoxyItemize}
 \item type of the data structure you use for the state
-\item Requirements\+: must be copy constructible
 \end{DoxyItemize}
 \item {\ttfamily System\+Type}\+:
 \begin{DoxyItemize}
@@ -29,6 +28,7 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 \end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md36}{}\doxysection{Requirements}\label{md_pages_components_ode_steppers_explicit_autotoc_md36}
 
 \begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+: must be copy constructible
 \item The system class must conform to the following API\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }ValidSystemForExplicitOde}
@@ -45,5 +45,105 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 
 \item the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be valid types\+: these typedefs are detected by pressio
 \item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
- {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename Valid\+System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true} 
-\end{DoxyItemize}
+ {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename Valid\+System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
+\item the create function above returns an instance of the desired stepper. The stepper object returned satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}, so one can use the \char`\"{}advancers\char`\"{} functions to step forward.
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md37}{}\doxysection{Ops}\label{md_pages_components_ode_steppers_explicit_autotoc_md37}
+When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using} scalar\_type   = double;}
+\DoxyCodeLine{\textcolor{keyword}{using} state\_type    = ACustomStateType;  \textcolor{comment}{//this can be any type}}
+
+\end{DoxyCode}
+
+
+Then you need to provide the following specializations\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pressio\{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{template}<> \textcolor{keyword}{struct }Traits<ACustomStateType>\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = double;}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{namespace }ops\{}
+\DoxyCodeLine{}
+\DoxyCodeLine{ACustomStateType clone(\textcolor{keyword}{const} ACustomStateType \& src)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return a deep copy of src */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} set\_zero(ACustomStateType \& \textcolor{keywordtype}{object})\{}
+\DoxyCodeLine{  \textcolor{comment}{/* set elements zero */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = a*v + b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} scalar\_type c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v0, \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = c*v + a*v0 + b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v0, \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v0 + b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} scalar\_type c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} scalar\_type d,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v4, \textcolor{keyword}{const} scalar\_type e)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,          \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} scalar\_type c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} scalar\_type d,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v4, \textcolor{keyword}{const} scalar\_type e)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\}\}\textcolor{comment}{//end namepsace pressio::ops}}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md38}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md38}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// assuming that:}}
+\DoxyCodeLine{  \textcolor{comment}{// stateObj  is the state}}
+\DoxyCodeLine{  \textcolor{comment}{// systemObj is the system instance}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{namespace }pode = pressio::ode;}
+\DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_forward\_euler\_stepper(stateObj, systemObj);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// use the stepper to advance in time,}}
+\DoxyCodeLine{  \textcolor{comment}{// for example using the advancer function}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keywordtype}{double} time0 = 0.;}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keywordtype}{double} dt = 0.1;}
+\DoxyCodeLine{  \textcolor{keyword}{const} pode::step\_count\_type num\_steps = 100;}
+\DoxyCodeLine{  pode::advance\_n\_steps(stepper, stateObj, time0, dt, num\_steps);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
