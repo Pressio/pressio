@@ -1,7 +1,7 @@
 
 #include "pressio/ode_steppers_explicit.hpp"
 #include "pressio/ode_advancers.hpp"
-#include "../testing_apps/apps.hpp"
+#include "../../test_apps/apps.hpp"
 #include <array>
 
 constexpr double eps = 1e-12;
