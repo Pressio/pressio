@@ -224,10 +224,6 @@ private:
 
     try{
       solver.solve(*this, odeSolution, std::forward<Args>(args)...);
-
-      // auto & fn   = stencilStates_.rhsAt(ode::n());
-      // auto & fnp1 = stencilStates_.rhsAt(ode::nPlusOne());
-      // //::pressio::ops::deep_copy(fn, fnp1);
     }
     catch (::pressio::eh::NonlinearSolveFailure const & e)
     {

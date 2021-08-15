@@ -54,7 +54,7 @@
 namespace pressio{ namespace ode{
 
 // bdf1
-template<class SystemType, class StateType>
+template<class StateType, class SystemType>
 auto create_bdf1_stepper(const StateType & state, const SystemType & system)
 ->  decltype(impl::create_stepper_impl<implicitmethods::BDF1>(system, state))
 {
@@ -67,13 +67,13 @@ auto create_bdf1_stepper(const StateType & state, ResidualPolicyType && rPol, Ja
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
   return impl::create_stepper_impl<implicitmethods::BDF1>(
-        state, 
-        std::forward<ResidualPolicyType>(rPol), 
+        state,
+        std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
 };
 
 // bdf2
-template<class SystemType, class StateType>
+template<class StateType, class SystemType>
 auto create_bdf2_stepper(const StateType & state, const SystemType & system)
 ->  decltype(impl::create_stepper_impl<implicitmethods::BDF2>(system, state))
 {
@@ -86,13 +86,13 @@ auto create_bdf2_stepper(const StateType & state, ResidualPolicyType && rPol, Ja
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
   return impl::create_stepper_impl<implicitmethods::BDF2>(
-        state, 
-        std::forward<ResidualPolicyType>(rPol), 
+        state,
+        std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
 };
 
 // CrankNicolson
-template<class SystemType, class StateType>
+template<class StateType, class SystemType>
 auto create_cranknicolson_stepper(const StateType & state, const SystemType & system)
 ->  decltype(impl::create_stepper_impl<implicitmethods::CrankNicolson>(system, state))
 {
@@ -105,16 +105,16 @@ auto create_cranknicolson_stepper(const StateType & state, ResidualPolicyType &&
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
   return impl::create_stepper_impl<implicitmethods::CrankNicolson>(
-        state, 
-        std::forward<ResidualPolicyType>(rPol), 
+        state,
+        std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
 };
 
 // Arbitrary
 template<
-  int num_states, 
-  class SystemType, 
-  class StateType, 
+  int num_states,
+  class StateType,
+  class SystemType,
   class ReturnType = impl::ImplicitCompose_t<
     implicitmethods::Arbitrary, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
   >
