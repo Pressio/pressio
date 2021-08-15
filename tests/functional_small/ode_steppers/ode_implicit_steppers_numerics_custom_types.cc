@@ -92,14 +92,6 @@ void add_to_diagonal(MatrixType & M, ScalarType value)
   }
 }
 
-void update(VectorType & v, 
-            const VectorType & v1, const ScalarType b)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = b*v1[i];
-  }
-}
-
 void update(VectorType & v,        const ScalarType a,
 		        const VectorType & v1, const ScalarType b)
 {
@@ -108,31 +100,12 @@ void update(VectorType & v,        const ScalarType a,
   }
 }
 
-void update(VectorType & v,        const ScalarType c,
-            const VectorType & v0, const ScalarType a,
-            const VectorType & v1, const ScalarType b)
+void update(VectorType & v,        const ScalarType a,
+            const VectorType & v0, const ScalarType b,
+            const VectorType & v1, const ScalarType c)
 {
   for (size_t i=0; i<v.size(); ++i){
-    v[i] = c*v[i] + a*v0[i] + b*v1[i];
-  }
-}
-
-void update(VectorType & v,        
-            const VectorType & v0, const ScalarType a,
-            const VectorType & v1, const ScalarType b)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = a*v0[i] + b*v1[i];
-  }
-}
-
-void update(VectorType & v,
-    const VectorType & v1, const ScalarType b,
-    const VectorType & v2, const ScalarType c,
-    const VectorType & v3, const ScalarType d)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
+    v[i] = a*v[i] + b*v0[i] + c*v1[i];
   }
 }
 
@@ -143,17 +116,6 @@ void update(VectorType & v, const ScalarType a,
 {
   for (size_t i=0; i<v.size(); ++i){
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
-  }
-}
-
-void update(VectorType & v,
-    const VectorType & v1, const ScalarType b,
-    const VectorType & v2, const ScalarType c,
-    const VectorType & v3, const ScalarType d,
-    const VectorType & v4, const ScalarType e)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
   }
 }
 

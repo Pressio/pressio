@@ -245,7 +245,7 @@ TEST(ops_kokkos, diag_update1)
   EXPECT_DOUBLE_EQ( M1_h(1,1), 4.0);
   EXPECT_DOUBLE_EQ( M1_h(2,2), 6.0);
 
-  pressio::ops::update(d1, d2, 1.);
+  pressio::ops::update(d1, 0., d2, 1.);
   Kokkos::deep_copy(M1_h, M1);
   EXPECT_DOUBLE_EQ( M1_h(0,0), 1.0);
   EXPECT_DOUBLE_EQ( M1_h(1,1), 2.0);
@@ -267,7 +267,7 @@ TEST(ops_kokkos, diag_update2)
   EXPECT_DOUBLE_EQ( M1_h(1,1), 6.0);
   EXPECT_DOUBLE_EQ( M1_h(2,2), 9.0);
 
-  pressio::ops::update(v, a, 1., b, 1.);
+  pressio::ops::update(v, 0.,  a, 1., b, 1.);
   Kokkos::deep_copy(M1_h, M1);
   EXPECT_DOUBLE_EQ( M1_h(0,0), 2.0);
   EXPECT_DOUBLE_EQ( M1_h(1,1), 4.0);
@@ -291,7 +291,7 @@ TEST(ops_kokkos, diag_update3)
   EXPECT_DOUBLE_EQ( M1_h(1,1), 8.0);
   EXPECT_DOUBLE_EQ( M1_h(2,2), 12.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
   Kokkos::deep_copy(M1_h, M1);
   EXPECT_DOUBLE_EQ( M1_h(0,0), 3.0);
   EXPECT_DOUBLE_EQ( M1_h(1,1), 6.0);
@@ -317,7 +317,7 @@ TEST(ops_kokkos, diag_update4)
   EXPECT_DOUBLE_EQ( M1_h(1,1), 10.0);
   EXPECT_DOUBLE_EQ( M1_h(2,2), 15.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1., d, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
   Kokkos::deep_copy(M1_h, M1);
   EXPECT_DOUBLE_EQ( M1_h(0,0), 4.0);
   EXPECT_DOUBLE_EQ( M1_h(1,1), 8.0);

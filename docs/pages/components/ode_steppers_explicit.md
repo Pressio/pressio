@@ -27,6 +27,9 @@ auto create_keyword_stepper(const StateType & state,
 ```
 
 where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, `ssp_runge_kutta3`.
+This function returns an instance of the desired stepper.
+The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
+
 
 ## Parameters
 
@@ -43,7 +46,7 @@ where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, 
 
 - The system class must conform to the following API:
   ```cpp
-  struct ValidSystemForExplicitOde
+  struct SystemForExplicitOde
   {
 	using scalar_type   = /* */;
 	using state_type    = /* */;
@@ -54,109 +57,18 @@ where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, 
   };
   ```
 
-- the nested aliases `scalar_type`, `state_type` and `velocity_type` must be valid types:
-these typedefs are detected by pressio
+  the nested aliases `scalar_type`, `state_type` and `velocity_type` must be *valid* types since
+  they are detected by pressio
 
 - if `StateType` is the type deduced for `state` from `create_...`, the following must hold:<br/>
-  `std::is_same<StateType, typename ValidSystemForExplicitOde::state_type>::value == true`
-
-- the create function above returns an instance of the desired stepper.
-  The stepper object returned satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
-
-## Ops
-
-When using custom data types not supported in [pressio ops](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html), you need to specialize a trait class and some operations
-such that pressio can operate on your data. For the sake of explanation, suppose that you use:
-
-```cpp
-using scalar_type   = double;
-using state_type    = ACustomStateType;  //this can be any type
-```
-
-Then you need to provide the following specializations:
-
-```cpp
-namespace pressio{
-
-template<> struct Traits<ACustomStateType>{
-  using scalar_type = double;
-};
-
-namespace ops{
-
-ACustomStateType clone(const ACustomStateType & src){
-  /* return a deep copy of src */
-}
-
-void set_zero(ACustomStateType & object){
-  /* set elements zero */
-}
-
-void update(ACustomStateType & v,
-            const ACustomStateType & v1, const scalar_type b)
-{
-  // elementwise compute : v = b*v1
-}
-
-void update(ACustomStateType & v,        const scalar_type a,
-		    const ACustomStateType & v1, const scalar_type b)
-{
-  // elementwise compute : v = a*v + b*v1
-}
-
-void update(ACustomStateType & v,
-            const ACustomStateType & v0, const scalar_type a,
-            const ACustomStateType & v1, const scalar_type b)
-{
-  // elementwise compute: v = a*v0 + b*v1
-}
-
-void update(ACustomStateType & v,        const scalar_type c,
-            const ACustomStateType & v0, const scalar_type a,
-            const ACustomStateType & v1, const scalar_type b)
-{
-  // elementwise compute : v = c*v + a*v0 + b*v1
-}
-
-void update(ACustomStateType & v,
-			const ACustomStateType & v1, const scalar_type b,
-			const ACustomStateType & v2, const scalar_type c,
-			const ACustomStateType & v3, const scalar_type d)
-{
-  // elementwise compute: v = b*v1 + c*v2 + d*v3
-}
-
-void update(ACustomStateType & v,		 const scalar_type a,
-			const ACustomStateType & v1, const scalar_type b,
-			const ACustomStateType & v2, const scalar_type c,
-			const ACustomStateType & v3, const scalar_type d)
-{
-  // elementwise compute: v = a*v + b*v1 + c*v2 + d*v3
-}
-
-void update(ACustomStateType & v,
-			const ACustomStateType & v1, const scalar_type b,
-			const ACustomStateType & v2, const scalar_type c,
-			const ACustomStateType & v3, const scalar_type d,
-			const ACustomStateType & v4, const scalar_type e)
-{
-  // elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4
-}
-
-void update(ACustomStateType & v,		 const scalar_type a,
-			const ACustomStateType & v1, const scalar_type b,
-			const ACustomStateType & v2, const scalar_type c,
-			const ACustomStateType & v3, const scalar_type d,
-			const ACustomStateType & v4, const scalar_type e)
-{
-  // elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4
-}
-
-}}//end namepsace pressio::ops
-```
+  `std::is_same<StateType, typename SystemForExplicitOde::state_type>::value == true`
 
 ## Example usage
+
 ```cpp
+#include "pressio/type_traits.hpp"
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
 int main()
 {
   // assuming that:
@@ -172,5 +84,94 @@ int main()
   const double dt = 0.1;
   const pode::step_count_type num_steps = 100;
   pode::advance_n_steps(stepper, stateObj, time0, dt, num_steps);
+}
+```
+
+
+## Custom types specializations
+
+When using custom data types not supported in [pressio ops](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html), you need to provide specializations of a trait class and certain operations
+and make them "visible" to the compiler to find them and such that pressio can operate on your data.
+For the sake of explanation, suppose that you use `double`
+as value type and `ACustomStateType` is what you use for the state, then before the `main` function
+you would need to do something like this:
+
+```cpp
+#include "pressio/type_traits.hpp"
+
+// assuming ACustomStateType has already been declared
+
+namespace pressio{
+
+template<> struct Traits<ACustomStateType>{
+  using scalar_type = double;
+};
+
+namespace ops{
+
+void deep_copy(ACustomStateType & dest, const ACustomStateType & src){
+  /* deep copy src into dest */
+}
+
+ACustomStateType clone(const ACustomStateType & src){
+  /* return a deep copy of src */
+}
+
+void set_zero(ACustomStateType & object){
+  /* set elements to zero */
+}
+
+void update(ACustomStateType & v,        const double a,
+		    const ACustomStateType & v1, const double b)
+{
+  // elementwise compute : v = a*v + b*v1
+}
+
+void update(ACustomStateType & v,        const double a,
+            const ACustomStateType & v0, const double b,
+            const ACustomStateType & v1, const double c)
+{
+  // elementwise compute : v = a*v + b*v0 + c*v1
+}
+
+void update(ACustomStateType & v,		 const double a,
+			const ACustomStateType & v1, const double b,
+			const ACustomStateType & v2, const double c,
+			const ACustomStateType & v3, const double d)
+{
+  // elementwise compute: v = a*v + b*v1 + c*v2 + d*v3
+}
+
+void update(ACustomStateType & v,		 const double a,
+			const ACustomStateType & v1, const double b,
+			const ACustomStateType & v2, const double c,
+			const ACustomStateType & v3, const double d,
+			const ACustomStateType & v4, const double e)
+{
+  // elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4
+}
+}}//end namepsace pressio::ops
+
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
+
+int main()
+{
+  // same code as shown above
+}
+```
+
+Note that in the snippet above the order of the include statements matter:
+this is because your `Trait` and kernel specializations need to be found by the compiler.
+However, to make the code cleaner, you can obviously move all kernels specializations
+to a separate header file, but make sure to keep the correct order, for example as follows:
+```cpp
+#include "pressio/type_traits.hpp"
+#include "my_specializations.hpp" // contains all your specializations
+#include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
+int main()
+{
+  // same code as shown above
 }
 ```

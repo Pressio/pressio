@@ -116,7 +116,8 @@ public:
       }
 
       // update : trialState = x_k + alpha*p_k
-      ::pressio::ops::update(trialState_, state, one, p_k, alpha);
+      constexpr auto zero = ::pressio::utils::Constants<ScalarType>::zero();
+      ::pressio::ops::update(trialState_, zero, state, one, p_k, alpha);
 
       // compute rhs_l = alpha_l * beta * dot(g_k, p_k)
       const auto rhs = alpha * beta_ * gkDotpk;

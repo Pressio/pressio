@@ -98,6 +98,7 @@ public:
   {
     PRESSIOLOG_DEBUG("ssprk3 stepper: do step");
 
+    constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
     constexpr auto one   = ::pressio::utils::Constants<ScalarType>::one();
     constexpr auto two   = ::pressio::utils::Constants<ScalarType>::two();
     constexpr auto three = ::pressio::utils::Constants<ScalarType>::three();
@@ -115,19 +116,23 @@ public:
     // rhs(u_n, t_n)
     systemObj_.get().velocity(odeSolution, time, rhs0);
     // u_1 = u_n + dt * rhs(u_n, t_n)
-    ::pressio::ops::update(auxiliaryState_, odeSolution, one, rhs0, dt);
+    ::pressio::ops::update(auxiliaryState_, zero, 
+                           odeSolution,     one, 
+                           rhs0,            dt);
 
     // rhs(u_1, t_n+dt)
     systemObj_.get().velocity(auxiliaryState_, time+dt, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*dt*rhs(u_1, t_n+dt)
     ::pressio::ops::update(auxiliaryState_, fourInv,
-		   odeSolution, threeOvFour, rhs0, fourInv*dt);
+		                       odeSolution,     threeOvFour, 
+                           rhs0,            fourInv*dt);
 
     // rhs(u_2, t_n + 0.5*dt)
     systemObj_.get().velocity(auxiliaryState_, time + oneOvTwo*dt, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*dt*rhs(u_2, t_n+0.5*dt)
-    ::pressio::ops::update(odeSolution, oneOvThree,
-		   auxiliaryState_, twoOvThree, rhs0, twoOvThree*dt);
+    ::pressio::ops::update(odeSolution,     oneOvThree,
+		                       auxiliaryState_, twoOvThree, 
+                           rhs0,            twoOvThree*dt);
   }
 };
 

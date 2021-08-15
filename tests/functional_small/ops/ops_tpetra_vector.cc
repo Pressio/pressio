@@ -257,7 +257,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update1_a)
     pressio::ops::fill(v, 1.);
     auto a = pressio::ops::clone(*myVector_);
     pressio::ops::fill(a, 2.);
-    pressio::ops::update(v, a, 1.);
+    pressio::ops::update(v, 0., a, 1.);
     auto v_h = v.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 2.);
@@ -286,7 +286,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update2_a)
     auto b = pressio::ops::clone(*myVector_);
     pressio::ops::fill(b, 3.);
 
-    pressio::ops::update(v, a, 1., b, 1.);
+    pressio::ops::update(v, 0., a, 1., b, 1.);
     auto v_h = v.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 5.);
@@ -320,7 +320,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update3_a)
     auto c = pressio::ops::clone(*myVector_);
     pressio::ops::fill(c, 4.);
 
-    pressio::ops::update(v, a, 1., b, 1., c, 1.);
+    pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
     auto v_h = v.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 9.);
@@ -358,7 +358,7 @@ TEST_F(tpetraVectorGlobSize15Fixture, vector_update4_a)
     auto d = pressio::ops::clone(*myVector_);
     pressio::ops::fill(d, 5.);
 
-    pressio::ops::update(v, a, 1., b, 1., c, 1., d, 1.);
+    pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
     auto v_h = v.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){
       EXPECT_DOUBLE_EQ(v_h(i,0), 14.);

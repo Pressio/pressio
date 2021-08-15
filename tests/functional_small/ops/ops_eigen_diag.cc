@@ -274,7 +274,7 @@ TEST(ops_eigen, diag_update1)
   EXPECT_DOUBLE_EQ( d1(1), 4.0);
   EXPECT_DOUBLE_EQ( d1(2), 6.0);
 
-  pressio::ops::update(d1, d2, 1.);
+  pressio::ops::update(d1, 0., d2, 1.);
   EXPECT_DOUBLE_EQ( d1(0), 1.0);
   EXPECT_DOUBLE_EQ( d1(1), 2.0);
   EXPECT_DOUBLE_EQ( d1(2), 3.0);
@@ -294,7 +294,7 @@ TEST(ops_eigen, diag_update2)
   EXPECT_DOUBLE_EQ( v(1), 6.0);
   EXPECT_DOUBLE_EQ( v(2), 9.0);
 
-  pressio::ops::update(v, a, 1., b, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1.);
   EXPECT_DOUBLE_EQ( v(0), 2.0);
   EXPECT_DOUBLE_EQ( v(1), 4.0);
   EXPECT_DOUBLE_EQ( v(2), 6.0);
@@ -316,7 +316,7 @@ TEST(ops_eigen, diag_update3)
   EXPECT_DOUBLE_EQ( v(1), 8.0);
   EXPECT_DOUBLE_EQ( v(2), 12.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
   EXPECT_DOUBLE_EQ( v(0), 3.0);
   EXPECT_DOUBLE_EQ( v(1), 6.0);
   EXPECT_DOUBLE_EQ( v(2), 9.0);
@@ -340,7 +340,7 @@ TEST(ops_eigen, diag_update4)
   EXPECT_DOUBLE_EQ( v(1), 10.0);
   EXPECT_DOUBLE_EQ( v(2), 15.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1., d, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
   EXPECT_DOUBLE_EQ( v(0), 4.0);
   EXPECT_DOUBLE_EQ( v(1), 8.0);
   EXPECT_DOUBLE_EQ( v(2), 12.0);

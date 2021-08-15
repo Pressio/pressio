@@ -139,8 +139,9 @@ private:
 		    const rhs_t & rhsIn,
 		    ScalarType dtValue)
   {
+    constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
-    ::pressio::ops::update(yIn, stateIn, one, rhsIn, dtValue);
+    ::pressio::ops::update(yIn, zero, stateIn, one, rhsIn, dtValue);
   }
 
   template<class rhs_t>

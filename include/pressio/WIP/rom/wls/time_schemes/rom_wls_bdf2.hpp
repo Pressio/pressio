@@ -489,14 +489,16 @@ public:
       //only perform computation once since this never changes
       if (arg == 1 && jacobianOneNeedsRecomputing_){
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -4/3
-        ::pressio::ops::update(Jphi, phi, cnm1);
+        constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+        ::pressio::ops::update(Jphi,zero, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       //only perform computation once since this never changes
       if (arg == 2 && jacobianZeroNeedsRecomputing_){
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  2/3
-        ::pressio::ops::update(Jphi, phi, cnm2);
+        constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+        ::pressio::ops::update(Jphi, zero, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
     }
@@ -744,13 +746,15 @@ private:
 
       if (arg == 1 && jacobianOneNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm1   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_; // -4/3
-        ::pressio::ops::update(Jphi, phi, cnm1);
+        constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+        ::pressio::ops::update(Jphi, zero, phi, cnm1);
         jacobianOneNeedsRecomputing_ = true;
       }
 
       if (arg == 2 && jacobianZeroNeedsRecomputing_){//only perform computation once since this never changes
         constexpr auto cnm2   = ::pressio::ode::constants::bdf2<scalar_type>::c_nm1_; //  2/3
-        ::pressio::ops::update(Jphi, phi, cnm2);
+        constexpr auto zero = ::pressio::utils::Constants<scalar_type>::zero();
+        ::pressio::ops::update(Jphi, zero, phi, cnm2);
         jacobianZeroNeedsRecomputing_ = true;
       }
     }

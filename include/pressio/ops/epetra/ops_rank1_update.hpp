@@ -58,24 +58,13 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value
   >
-update(T & v, const scalar_t a, const T & v1, const scalar_t b)
+update(T & v,        const scalar_t a, 
+       const T & v1, const scalar_t b)
 {
   using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
   for (int_t i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i];
 }
-
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
-  >
-update(T & v, const T & v1, const scalar_t  b)
-{
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
-    v[i] = b*v1[i];
-}
-
 
 //----------------------------------------------------------------------
 //  overloads for computing this: V = a * V + b * V1 + c * V2
@@ -84,7 +73,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value
   >
-update(T & v, const scalar_t &a,
+update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c)
 {
@@ -92,20 +81,6 @@ update(T & v, const scalar_t &a,
   for (int_t i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i];
 }
-
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
-  >
-update(T & v,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c)
-{
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
-    v[i] = b*v1[i] + c*v2[i];
-}
-
 
 //----------------------------------------------------------------------
 //  overloads for computing:
@@ -115,7 +90,7 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value
   >
-update(T & v, const scalar_t &a,
+update(T & v,     const scalar_t &a,
 	  const T & v1, const scalar_t &b,
 	  const T & v2, const scalar_t &c,
 	  const T & v3, const scalar_t &d)
@@ -123,20 +98,6 @@ update(T & v, const scalar_t &a,
   using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
   for (int_t i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i];
-}
-
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
-  >
-update(T & v,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c,
-	  const T & v3, const scalar_t &d)
-{
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i];
 }
 
 //----------------------------------------------------------------------
@@ -147,32 +108,16 @@ template<typename T, typename scalar_t>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_vector_epetra<T>::value
   >
-update(T & v, const scalar_t &a,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c,
-	  const T & v3, const scalar_t &d,
-	  const T & v4, const scalar_t &e)
+update(T & v,         const scalar_t &a,
+    	  const T & v1, const scalar_t &b,
+    	  const T & v2, const scalar_t &c,
+    	  const T & v3, const scalar_t &d,
+    	  const T & v4, const scalar_t &e)
 {
   using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
   for (int_t i=0; i<v.MyLength(); ++i)
     v[i] = a*v[i] + b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
 }
-
-template<typename T, typename scalar_t>
-::pressio::mpl::enable_if_t<
-  ::pressio::is_vector_epetra<T>::value
-  >
-update(T & v,
-	  const T & v1, const scalar_t &b,
-	  const T & v2, const scalar_t &c,
-	  const T & v3, const scalar_t &d,
-	  const T & v4, const scalar_t &e)
-{
-  using int_t = typename ::pressio::Traits<T>::local_ordinal_type;
-  for (int_t i=0; i<v.MyLength(); ++i)
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
-}
-
 
 }}//end namespace pressio::ops
 #endif  // OPS_EPETRA_OPS_VECTOR_UPDATE_HPP_

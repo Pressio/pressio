@@ -20,7 +20,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
 </programlisting></para>
-<para>where <computeroutput>keyword</computeroutput> is one of: <computeroutput>forward_euler</computeroutput>, <computeroutput>runge_kutta4</computeroutput>, <computeroutput>adams_bashforth2</computeroutput>, <computeroutput>ssp_runge_kutta3</computeroutput>.</para>
+<para>where <computeroutput>keyword</computeroutput> is one of: <computeroutput>forward_euler</computeroutput>, <computeroutput>runge_kutta4</computeroutput>, <computeroutput>adams_bashforth2</computeroutput>, <computeroutput>ssp_runge_kutta3</computeroutput>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>, so one can use the &quot;advancers&quot; functions to step forward.</para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md35">
 <title>Parameters</title>
@@ -40,7 +40,7 @@
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
-</listitem><listitem><para>The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ValidSystemForExplicitOde</highlight></codeline>
+</listitem><listitem><para>The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitOde</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
@@ -50,102 +50,18 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_type<sp/>time,<sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-</listitem><listitem><para>the nested aliases <computeroutput>scalar_type</computeroutput>, <computeroutput>state_type</computeroutput> and <computeroutput>velocity_type</computeroutput> must be valid types: these typedefs are detected by pressio</para>
+<para>the nested aliases <computeroutput>scalar_type</computeroutput>, <computeroutput>state_type</computeroutput> and <computeroutput>velocity_type</computeroutput> must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
 </listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> from <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
- <computeroutput>std::is_same&lt;StateType, typename ValidSystemForExplicitOde::state_type&gt;::value == true</computeroutput></para>
-</listitem><listitem><para>the create function above returns an instance of the desired stepper. The stepper object returned satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>, so one can use the &quot;advancers&quot; functions to step forward.</para>
+ <computeroutput>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</computeroutput></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md37">
-<title>Ops</title>
-<para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/>ACustomStateType;<sp/><sp/></highlight><highlight class="comment">//this<sp/>can<sp/>be<sp/>any<sp/>type</highlight></codeline>
-</programlisting></para>
-<para>Then you need to provide the following specializations:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomStateType&gt;{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">ACustomStateType<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomStateType<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>zero<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v0<sp/>+<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>c,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>c*v<sp/>+<sp/>a*v0<sp/>+<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>c,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>d)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>c,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>d)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>c,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>d,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v4,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>e)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3<sp/>+<sp/>e*v4</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>a,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>b,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>c,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>d,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v4,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>e)</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3<sp/>+<sp/>e*v4</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">}}</highlight><highlight class="comment">//end<sp/>namepsace<sp/>pressio::ops</highlight></codeline>
-</programlisting></para>
-</sect1>
-<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md38">
 <title>Example usage</title>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_explicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assuming<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>stateObj<sp/><sp/>is<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>
@@ -160,6 +76,82 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dt<sp/>=<sp/>0.1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pode::step_count_type<sp/>num_steps<sp/>=<sp/>100;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>pode::advance_n_steps(stepper,<sp/>stateObj,<sp/>time0,<sp/>dt,<sp/>num_steps);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md38">
+<title>Custom types specializations</title>
+<para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <computeroutput>double</computeroutput> as value type and <computeroutput>ACustomStateType</computeroutput> is what you use for the state, then before the <computeroutput>main</computeroutput> function you would need to do something like this:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assuming<sp/>ACustomStateType<sp/>has<sp/>already<sp/>been<sp/>declared</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomStateType&gt;{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>deep_copy(ACustomStateType<sp/>&amp;<sp/>dest,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>deep<sp/>copy<sp/>src<sp/>into<sp/>dest<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ACustomStateType<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>set_zero(ACustomStateType<sp/>&amp;<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>set<sp/>elements<sp/>to<sp/>zero<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v0<sp/>+<sp/>c*v1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v4,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>e)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3<sp/>+<sp/>e*v4</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal">}}</highlight><highlight class="comment">//end<sp/>namepsace<sp/>pressio::ops</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_explicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>same<sp/>code<sp/>as<sp/>shown<sp/>above</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>Note that in the snippet above the order of the include statements matter: this is because your <computeroutput>Trait</computeroutput> and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows: <programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;my_specializations.hpp&quot;</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>contains<sp/>all<sp/>your<sp/>specializations</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_explicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>same<sp/>code<sp/>as<sp/>shown<sp/>above</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>
 </sect1>

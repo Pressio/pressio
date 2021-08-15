@@ -73,7 +73,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_update1_a)
     pressio::ops::fill(v, 1.);
     auto a = pressio::ops::clone(*myMv_);
     pressio::ops::fill(a, 2.);
-    pressio::ops::update(v, a, 1.);
+    pressio::ops::update(v, 0., a, 1.);
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
       EXPECT_DOUBLE_EQ(v[j][i], 2.);
@@ -87,7 +87,7 @@ TEST_F(epetraMultiVectorGlobSize15Fixture, multi_vector_update1_b)
     pressio::ops::fill(v, 1.);
     auto a = pressio::ops::clone(*myMv_);
     pressio::ops::fill(a, 2.);
-    pressio::ops::update(v, 1.0, a, 1.);
+    pressio::ops::update(v, 1., a, 1.);
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){
       EXPECT_DOUBLE_EQ(v[j][i], 3.);

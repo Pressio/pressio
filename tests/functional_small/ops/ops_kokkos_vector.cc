@@ -227,7 +227,7 @@ TEST(ops_kokkos, vector_update1)
   EXPECT_DOUBLE_EQ( v_h(1), 4.0);
   EXPECT_DOUBLE_EQ( v_h(2), 6.0);
 
-  pressio::ops::update(v, a, 1.);
+  pressio::ops::update(v, 0., a, 1.);
   auto v_h2 = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
   EXPECT_DOUBLE_EQ( v_h2(0), 1.0);
   EXPECT_DOUBLE_EQ( v_h2(1), 2.0);
@@ -249,7 +249,7 @@ TEST(ops_kokkos, vector_update2)
   EXPECT_DOUBLE_EQ( v_h(1), 6.0);
   EXPECT_DOUBLE_EQ( v_h(2), 9.0);
 
-  pressio::ops::update(v, a, 1., b, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1.);
   auto v_h2 = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
   EXPECT_DOUBLE_EQ( v_h2(0), 2.0);
   EXPECT_DOUBLE_EQ( v_h2(1), 4.0);
@@ -273,7 +273,7 @@ TEST(ops_kokkos, vector_update3)
   EXPECT_DOUBLE_EQ( v_h(1), 8.0);
   EXPECT_DOUBLE_EQ( v_h(2), 12.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1.);
   auto v_h2 = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
   EXPECT_DOUBLE_EQ( v_h2(0), 3.0);
   EXPECT_DOUBLE_EQ( v_h2(1), 6.0);
@@ -299,7 +299,7 @@ TEST(ops_kokkos, vector_update4)
   EXPECT_DOUBLE_EQ( v_h(1), 10.0);
   EXPECT_DOUBLE_EQ( v_h(2), 15.0);
 
-  pressio::ops::update(v, a, 1., b, 1., c, 1., d, 1.);
+  pressio::ops::update(v, 0., a, 1., b, 1., c, 1., d, 1.);
   auto v_h2 = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), v);
   EXPECT_DOUBLE_EQ( v_h2(0), 4.0);
   EXPECT_DOUBLE_EQ( v_h2(1), 8.0);

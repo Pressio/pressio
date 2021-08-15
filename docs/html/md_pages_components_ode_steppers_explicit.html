@@ -134,7 +134,7 @@ $t$
 </g>
 </svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times.</p></section><section id="autotoc_md34"><h2><a href="#autotoc_md34">API:</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
-                            <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>forward_euler</code>, <code>runge_kutta4</code>, <code>adams_bashforth2</code>, <code>ssp_runge_kutta3</code>.</p></section><section id="autotoc_md35"><h2><a href="#autotoc_md35">Parameters</a></h2><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
+                            <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>forward_euler</code>, <code>runge_kutta4</code>, <code>adams_bashforth2</code>, <code>ssp_runge_kutta3</code>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</p></section><section id="autotoc_md35"><h2><a href="#autotoc_md35">Parameters</a></h2><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
 $f$
 </title>
@@ -144,7 +144,7 @@ $f$
 <g id='eq5-page1'>
 <use x='0' y='0' xlink:href='#eq5-g0-102'/>
 </g>
-</svg> and how to compute it;</li></ul></li></ul></section><section id="autotoc_md36"><h2><a href="#autotoc_md36">Requirements</a></h2><ul><li><code>StateType</code>: must be copy constructible</li><li><p>The system class must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidSystemForExplicitOde</span>
+</svg> and how to compute it;</li></ul></li></ul></section><section id="autotoc_md36"><h2><a href="#autotoc_md36">Requirements</a></h2><ul><li><code>StateType</code>: must be copy constructible</li><li><p>The system class must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">SystemForExplicitOde</span>
 <span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
@@ -152,84 +152,10 @@ $f$
 
   <span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></li><li>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be valid types: these typedefs are detected by pressio</li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename ValidSystemForExplicitOde::state_type&gt;::value == true</code></li><li>the create function above returns an instance of the desired stepper. The stepper object returned satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</li></ul></section><section id="autotoc_md37"><h2><a href="#autotoc_md37">Ops</a></h2><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</p><pre class="m-code"><span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="n">ACustomStateType</span><span class="p">;</span>  <span class="c1">//this can be any type</span></pre><p>Then you need to provide the following specializations:</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
-
-<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomStateType</span><span class="o">&gt;</span><span class="p">{</span>
-  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">namespace</span> <span class="n">ops</span><span class="p">{</span>
-
-<span class="n">ACustomStateType</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span>
-  <span class="cm">/* return a deep copy of src */</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>
-  <span class="cm">/* set elements zero */</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute : v = b*v1</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute : v = a*v + b*v1</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute: v = a*v0 + b*v1</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute : v = c*v + a*v0 + b*v1</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute: v = b*v1 + c*v2 + d*v3</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v4</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">e</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v4</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">e</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4</span>
-<span class="p">}</span>
-
-<span class="p">}}</span><span class="c1">//end namepsace pressio::ops</span></pre></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Example usage</a></h2><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">};</span></pre><p>the nested aliases <code>scalar_type</code>, <code>state_type</code> and <code>velocity_type</code> must be <em>valid</em> types since they are detected by pressio</p></li><li>if <code>StateType</code> is the type deduced for <code>state</code> from <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</code></li></ul></section><section id="autotoc_md37"><h2><a href="#autotoc_md37">Example usage</a></h2><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_advancers.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_explicit.hpp&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">// assuming that:</span>
   <span class="c1">// stateObj  is the state</span>
@@ -244,6 +170,74 @@ $f$
   <span class="k">const</span> <span class="kt">double</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">pode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
   <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">);</span>
+<span class="p">}</span></pre></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Custom types specializations</a></h2><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type and <code>ACustomStateType</code> is what you use for the state, then before the <code>main</code> function you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+
+<span class="c1">// assuming ACustomStateType has already been declared</span>
+
+<span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">ACustomStateType</span><span class="o">&gt;</span><span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="kt">double</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span> <span class="n">ops</span><span class="p">{</span>
+
+<span class="kt">void</span> <span class="nf">deep_copy</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">dest</span><span class="p">,</span> <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span>
+  <span class="cm">/* deep copy src into dest */</span>
+<span class="p">}</span>
+
+<span class="n">ACustomStateType</span> <span class="nf">clone</span><span class="p">(</span><span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">src</span><span class="p">){</span>
+  <span class="cm">/* return a deep copy of src */</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">set_zero</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">object</span><span class="p">){</span>
+  <span class="cm">/* set elements to zero */</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="kt">double</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute : v = a*v + b*v1</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="kt">double</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">b</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute : v = a*v + b*v0 + c*v1</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="kt">double</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">b</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">c</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">d</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="kt">double</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">b</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">c</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">d</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v4</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">e</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3 + e*v4</span>
+<span class="p">}</span>
+<span class="p">}}</span><span class="c1">//end namepsace pressio::ops</span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_advancers.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_explicit.hpp&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// same code as shown above</span>
+<span class="p">}</span></pre><p>Note that in the snippet above the order of the include statements matter: this is because your <code>Trait</code> and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;my_specializations.hpp&quot;</span><span class="c1"> // contains all your specializations</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_advancers.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_explicit.hpp&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// same code as shown above</span>
 <span class="p">}</span></pre></section>
       </div>
     </div>

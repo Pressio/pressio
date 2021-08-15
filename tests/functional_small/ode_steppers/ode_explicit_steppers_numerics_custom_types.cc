@@ -6,7 +6,6 @@ using VectorType = std::vector<ScalarType>;
 
 namespace
 {
-
 struct MyApp{
   using scalar_type   = ScalarType;
   using state_type    = VectorType;
@@ -49,14 +48,6 @@ VectorType clone(const VectorType & src)
   return VectorType(src.size());
 };
 
-void update(VectorType & v, 
-            const VectorType & v1, const ScalarType b)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = b*v1[i];
-  }
-}
-
 void update(VectorType & v,        const ScalarType a,
 		        const VectorType & v1, const ScalarType b)
 {
@@ -65,32 +56,12 @@ void update(VectorType & v,        const ScalarType a,
   }
 }
 
-void update(VectorType & v,        const ScalarType c,
-            const VectorType & v0, const ScalarType a,
-            const VectorType & v1, const ScalarType b)
+void update(VectorType & v,        const ScalarType a,
+            const VectorType & v1, const ScalarType b,
+            const VectorType & v2, const ScalarType c)
 {
   for (size_t i=0; i<v.size(); ++i){
-    v[i] = c*v[i] + a*v0[i] + b*v1[i];
-  }
-}
-
-void update(VectorType & v,        
-            const VectorType & v0, const ScalarType a,
-            const VectorType & v1, const ScalarType b)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = a*v0[i] + b*v1[i];
-  }
-}
-
-void update(VectorType & v,
-    const VectorType & v1, const ScalarType b,
-    const VectorType & v2, const ScalarType c,
-    const VectorType & v3, const ScalarType d,
-    const VectorType & v4, const ScalarType e)
-{
-  for (size_t i=0; i<v.size(); ++i){
-    v[i] = b*v1[i] + c*v2[i] + d*v3[i] + e*v4[i];
+    v[i] = a*v[i] + b*v1[i] + c*v2[i];
   }
 }
 
@@ -106,8 +77,8 @@ void update(VectorType & v, const ScalarType a,
 }
 }} //end namespace pressio::ops
 
-#include "pressio/ode_steppers_explicit.hpp"
 #include "pressio/ode_advancers.hpp"
+#include "pressio/ode_steppers_explicit.hpp"
 
 TEST(ode, explicit_euler_custom_types)
 {
@@ -144,6 +115,7 @@ TEST(ode, explicit_rk4_custom_types)
   EXPECT_DOUBLE_EQ( y[1], 0.75);
   EXPECT_DOUBLE_EQ( y[2], 1.125);
 }
+
 
 struct MyAppForAb2
 {

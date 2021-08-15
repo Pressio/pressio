@@ -78,7 +78,7 @@ TEST_F(tpetraMultiVectorGlobSize15Fixture, multi_vector_update1_a)
     pressio::ops::fill(v, 1.);
     auto a = pressio::ops::clone(*myMv_);
     pressio::ops::fill(a, 2.);
-    pressio::ops::update(v, a, 1.);
+    pressio::ops::update(v, 0., a, 1.);
     auto v_h = v.getLocalViewHost();
     for (int i=0; i<localSize_; ++i){
      for (int j=0; j<numVecs_; ++j){

@@ -61,7 +61,8 @@ template<typename T, typename T1, typename ScalarType>
   ::pressio::Traits<T>::rank == 1 and
   ::pressio::Traits<T1>::rank == 1 
   >
-update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
+update(T & v,         const ScalarType a, 
+       const T1 & v1, const ScalarType b)
 {
   static_assert
     (::pressio::are_scalar_compatible<T,T1>::value,
@@ -70,24 +71,6 @@ update(T & v, const ScalarType a, const T1 & v1, const ScalarType b)
   auto & v_n = impl::get_native(v);
   const auto & v_n1 = impl::get_native(v1);
   v_n = a*v_n + b*v_n1;
-}
-
-template<typename T, typename T1, typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1
-  >
-update(T & v, const T1 & v1, const ScalarType  b)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1>::value,
-      "Arguments are not scalar compatible");
-
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  v_n = b*v_n1;
 }
 
 //----------------------------------------------------------------------
@@ -102,7 +85,7 @@ template<typename T, typename T1, typename T2, typename ScalarType>
   ::pressio::Traits<T1>::rank == 1 and 
   ::pressio::Traits<T2>::rank == 1 
   >
-update(T & v, const ScalarType &a,
+update(T & v,         const ScalarType &a,
        const T1 & v1, const ScalarType &b,
        const T2 & v2, const ScalarType &c)
 {
@@ -114,29 +97,6 @@ update(T & v, const ScalarType &a,
   const auto & v_n1 = impl::get_native(v1);
   const auto & v_n2 = impl::get_native(v2);
   v_n = a*v_n + b*v_n1 + c*v_n2;
-}
-
-template<typename T, typename T1, typename T2, typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 
-  >
-update(T & v,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2>::value,
-      "Arguments are not scalar compatible");
-
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  v_n = b*v_n1 + c*v_n2;
 }
 
 //----------------------------------------------------------------------
@@ -158,7 +118,7 @@ template<typename T,
   ::pressio::Traits<T2>::rank == 1 and 
   ::pressio::Traits<T3>::rank == 1 
   >
-update(T  & v, const ScalarType &a,
+update(T  & v,        const ScalarType &a,
        const T1 & v1, const ScalarType &b,
        const T2 & v2, const ScalarType &c,
        const T3 & v3, const ScalarType &d)
@@ -172,37 +132,6 @@ update(T  & v, const ScalarType &a,
   const auto & v_n2 = impl::get_native(v2);
   const auto & v_n3 = impl::get_native(v3);
   v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3;
-}
-
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 and 
-  ::pressio::Traits<T3>::rank == 1 
-  >
-update(T & v,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c,
-       const T3 & v3, const ScalarType &d)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2,T3>::value,
-      "Arguments are not scalar compatible");
-
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  const auto & v_n3 = impl::get_native(v3);
-  v_n = b*v_n1 + c*v_n2 + d*v_n3;
 }
 
 //----------------------------------------------------------------------
@@ -227,7 +156,7 @@ template< typename T,
   ::pressio::Traits<T3>::rank == 1 and 
   ::pressio::Traits<T4>::rank == 1 
   >
-update(T & v, const ScalarType &a,
+update(T & v,         const ScalarType &a,
        const T1 & v1, const ScalarType &b,
        const T2 & v2, const ScalarType &c,
        const T3 & v3, const ScalarType &d,
@@ -244,43 +173,6 @@ update(T & v, const ScalarType &a,
   const auto & v_n4 = impl::get_native(v4);
   v_n = a*v_n + b*v_n1 + c*v_n2 + d*v_n3 + e*v_n4;
 }
-
-template<typename T,
-         typename T1,
-         typename T2,
-         typename T3,
-         typename T4,
-         typename ScalarType>
-::pressio::mpl::enable_if_t<
-  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T3>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T4>::package_identifier == PackageIdentifier::Eigen and
-  ::pressio::Traits<T>::rank == 1 and
-  ::pressio::Traits<T1>::rank == 1 and 
-  ::pressio::Traits<T2>::rank == 1 and 
-  ::pressio::Traits<T3>::rank == 1 and 
-  ::pressio::Traits<T4>::rank == 1 
-  >
-update(T & v,
-       const T1 & v1, const ScalarType &b,
-       const T2 & v2, const ScalarType &c,
-       const T3 & v3, const ScalarType &d,
-       const T4 & v4, const ScalarType &e)
-{
-  static_assert
-    (::pressio::are_scalar_compatible<T,T1,T2,T3,T4>::value,
-      "Arguments are not scalar compatible");
-
-  auto & v_n = impl::get_native(v);
-  const auto & v_n1 = impl::get_native(v1);
-  const auto & v_n2 = impl::get_native(v2);
-  const auto & v_n3 = impl::get_native(v3);
-  const auto & v_n4 = impl::get_native(v4);
-  v_n = b*v_n1 + c*v_n2 + d*v_n3 + e*v_n4;
-}
-
 
 }}//end namespace pressio::ops
 #endif  // OPS_EIGEN_OPS_VECTOR_UPDATE_HPP_
