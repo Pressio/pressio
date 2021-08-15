@@ -56,9 +56,10 @@ public:
 
   residual_type create() const{ return residual_type(); }
 
-  template <typename odetag, typename prev_states_type>
+  template <typename odetag, typename prev_states_type, class rhs_container>
   void compute(const StateType & y,
       const prev_states_type & oldYs,
+      rhs_container & rhs,
       const double & t,
       const double & dt,
       int32_t step,

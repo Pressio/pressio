@@ -51,21 +51,19 @@
 
 namespace pressio{ namespace ode{ 
 
-namespace explicitmethods{
-struct Undefined{};
-struct Euler{};
+// namespace explicitmethods{
+struct ForwardEuler{};
 struct RungeKutta4{};
 struct AdamsBashforth2{};
 struct SSPRungeKutta3{};
-}//end namespace explicitmethods
+// }//end namespace explicitmethods
 
-namespace implicitmethods{
-struct Undefined{};
+// namespace implicitmethods{
 struct BDF1{};
 struct BDF2{};
 struct CrankNicolson{};
 struct Arbitrary{};
-}//end namespace implicitmethods
+// }//end namespace implicitmethods
 
 // explicit
 template <typename T> struct is_explicit_stepper_tag : std::false_type{};
@@ -87,7 +85,6 @@ struct is_stepper_tag{
   static constexpr auto value = 
   is_explicit_stepper_tag<T>::value or is_implicit_stepper_tag<T>::value;
 };
-
 
 constexpr int implicit_stencil_size(implicitmethods::BDF1){ return 2; }
 constexpr int implicit_stencil_size(implicitmethods::BDF2){ return 3; }

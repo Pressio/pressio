@@ -272,7 +272,7 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
   using res_t  = typename app_t::velocity_type;
   using jac_t  = typename app_t::jacobian_type;
   using res_pol_t = pressio::ode::impl::ResidualStandardPolicyCrankNicolson<app_t&, state_t, res_t>;
-  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicyCrankNicolson<app_t&, state_t, jac_t>;
+  using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, state_t, jac_t>;
 
   auto stepperObj = pressio::ode::create_cranknicolson_stepper(y, res_pol_t(appObj), jac_pol_t(appObj));
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);

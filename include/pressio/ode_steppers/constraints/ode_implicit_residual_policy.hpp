@@ -62,43 +62,42 @@ template<
   >
 struct implicit_residual_policy : std::false_type{};
 
-// specialize for nVelocities >= 0
-template<
-  typename T,
-  typename TagType,
-  std::size_t nStates,
-  typename StateType,
-  typename ScalarType
-  >
-struct implicit_residual_policy<
-  T, TagType, nStates, 0, StateType, ScalarType,
-  ::pressio::mpl::enable_if_t<
-    ::pressio::has_residual_typedef<T>::value
-    and
-    std::is_same<
-      typename T::residual_type, decltype(std::declval<T const>().create())
-      >::value
-    and
-    //
-    std::is_void<
-      decltype
-      (
-       std::declval<T const>().template compute
-       <TagType>
-       (
-	std::declval<StateType const &>(),
-	std::declval<ImplicitStencilStatesContainer<StateType, nStates> const & >(),
-	std::declval<ScalarType const &>(),
-	std::declval<ScalarType const &>(),
-	std::declval<int>(),
-	std::declval<typename T::residual_type &>()
-	)
-       )
-      >::value
-    >
-  > : std::true_type{};
+// // specialize for nVelocities >= 0
+// template<
+//   typename T,
+//   typename TagType,
+//   std::size_t nStates,
+//   typename StateType,
+//   typename ScalarType
+//   >
+// struct implicit_residual_policy<
+//   T, TagType, nStates, 0, StateType, ScalarType,
+//   ::pressio::mpl::enable_if_t<
+//     ::pressio::has_residual_typedef<T>::value
+//     and
+//     std::is_same<
+//       typename T::residual_type, decltype(std::declval<T const>().create())
+//       >::value
+//     and
+//     //
+//     std::is_void<
+//       decltype
+//       (
+//        std::declval<T const>().template compute
+//        <TagType>
+//        (
+// 	std::declval<StateType const &>(),
+// 	std::declval<ImplicitStencilStatesContainer<StateType, nStates> const & >(),
+// 	std::declval<ScalarType const &>(),
+// 	std::declval<ScalarType const &>(),
+// 	std::declval<int>(),
+// 	std::declval<typename T::residual_type &>()
+// 	)
+//        )
+//       >::value
+//     >
+//   > : std::true_type{};
 
-// specialize for nVelocities >= 1
 template<
   typename T,
   typename TagType,
@@ -110,8 +109,7 @@ template<
 struct implicit_residual_policy<
   T, TagType, nStates, nVelocities, StateType, ScalarType,
   ::pressio::mpl::enable_if_t<
-    nVelocities >= 1 
-    and
+    // nVelocities >= 1 and
     ::pressio::has_residual_typedef<T>::value
     and
     std::is_same<
@@ -131,10 +129,10 @@ struct implicit_residual_policy<
        (
 	std::declval<StateType const &>(),
 	std::declval<ImplicitStencilStatesContainer<StateType, nStates> const & >(),
+  std::declval<ImplicitStencilVelocitiesContainer<typename T::residual_type, nVelocities> & >(),
 	std::declval<ScalarType const &>(),
 	std::declval<ScalarType const &>(),
 	std::declval<int>(),
-	std::declval<ImplicitStencilVelocitiesContainer<typename T::residual_type, nVelocities> & >(),
 	std::declval<typename T::residual_type &>()
 	)
        )

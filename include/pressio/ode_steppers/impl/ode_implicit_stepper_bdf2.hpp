@@ -92,6 +92,9 @@ private:
   ::pressio::utils::InstanceOrReferenceWrapper<ResidualPolicyType> resPolicy_;
   ::pressio::utils::InstanceOrReferenceWrapper<JacobianPolicyType> jacPolicy_;
 
+  // Euler does not need history of the RHS, but this is needed for the API
+  mutable ImplicitStencilVelocitiesContainer<ResidualType, 0> stencilVelocities_;
+
 public:
   StepperBDF2() = delete;
   StepperBDF2(const StepperBDF2 & other)  = default;
@@ -180,7 +183,7 @@ public:
   void residual(const StateType & odeState, ResidualType & R) const
   {
     resPolicy_.get().template compute
-      <tag_name>(odeState, stencilStates_, rhsEvaluationTime_, dt_, stepNumber_, R);
+      <tag_name>(odeState, stencilStates_, stencilVelocities_, rhsEvaluationTime_, dt_, stepNumber_, R);
   }
 
   void jacobian(const StateType & odeState, JacobianType & J) const

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_implicit_jacobian_crank_nicolson_policy.hpp
+// ode_implicit_jacobian_bdf_policy.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,27 +46,27 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
-#define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
+#ifndef ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_
+#define ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class SystemType, class StateType, class JacobianType>
-class JacobianStandardPolicyCrankNicolson
+class JacobianStandardPolicy
 {
 public:
   using jacobian_type = JacobianType;
 
-  JacobianStandardPolicyCrankNicolson() = delete;
-
-  explicit JacobianStandardPolicyCrankNicolson(SystemType && systemIn) 
+public:
+  JacobianStandardPolicy() = delete;
+  explicit JacobianStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
-  JacobianStandardPolicyCrankNicolson(const JacobianStandardPolicyCrankNicolson &) = default;
-  JacobianStandardPolicyCrankNicolson & operator=(const JacobianStandardPolicyCrankNicolson &) = default;
-  JacobianStandardPolicyCrankNicolson(JacobianStandardPolicyCrankNicolson &&) = default;
-  JacobianStandardPolicyCrankNicolson & operator=(JacobianStandardPolicyCrankNicolson &&) = default;
-  ~JacobianStandardPolicyCrankNicolson() = default;
+  JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
+  JacobianStandardPolicy & operator=(const JacobianStandardPolicy &) = default;
+  JacobianStandardPolicy(JacobianStandardPolicy &&) = default;
+  JacobianStandardPolicy & operator=(JacobianStandardPolicy &&) = default;
+  ~JacobianStandardPolicy() = default;
 
 public:
   JacobianType create() const
@@ -75,23 +75,15 @@ public:
     return JJ;
   }
 
-  template <
-    class OdeTag,
-    class StencilStatesContainerType,
-    class ScalarType,
-    class StepType
-    >
-  mpl::enable_if_t<
-    std::is_same<OdeTag, ::pressio::ode::implicitmethods::CrankNicolson>::value
-    >
-  compute(const StateType & odeCurrentState,
-	  const StencilStatesContainerType & stencilStates,
-	  const ScalarType & t_np1,
-	  const ScalarType & dt,
-	  const StepType & step,
-	  JacobianType & J) const
+  template <class OdeTag, class StencilStatesContainerType, class ScalarType, class StepType>
+  void compute(const StateType & odeCurrentState,
+	       const StencilStatesContainerType & stencilStates,
+	       const ScalarType & time,
+	       const ScalarType & dt,
+	       const StepType &  step,
+	       JacobianType & J) const
   {
-    systemObj_.get().jacobian(odeCurrentState, t_np1,J);
+    systemObj_.get().jacobian(odeCurrentState, time, J);
     ::pressio::ode::impl::discrete_time_jacobian(J, dt, OdeTag());
   }
 
@@ -100,4 +92,4 @@ private:
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy
-#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_CRANK_NICOLSON_POLICY_HPP_
+#endif  // ODE_IMPLICIT_IMPL_STANDARD_POLICIES_ODE_IMPLICIT_JACOBIAN_BDF_POLICY_HPP_

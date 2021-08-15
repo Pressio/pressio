@@ -51,11 +51,8 @@
 
 #include "ode_implicit_discrete_time_residual.hpp"
 #include "ode_implicit_discrete_time_jacobian.hpp"
-
-#include "ode_implicit_policy_residual_bdf.hpp"
-#include "ode_implicit_policy_jacobian_bdf.hpp"
-#include "ode_implicit_policy_residual_crank_nicolson.hpp"
-#include "ode_implicit_policy_jacobian_crank_nicolson.hpp"
+#include "ode_implicit_policy_residual.hpp"
+#include "ode_implicit_policy_jacobian.hpp"
 #include "ode_implicit_stepper_euler.hpp"
 #include "ode_implicit_stepper_bdf2.hpp"
 #include "ode_implicit_stepper_cranknicolson.hpp"
@@ -159,19 +156,19 @@ template<class Tag> struct ImplicitComposeConcretePolicies;
 template<>
 struct ImplicitComposeConcretePolicies<implicitmethods::BDF1>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyBdf<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
 
 template<>
 struct ImplicitComposeConcretePolicies<implicitmethods::BDF2>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyBdf<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
 
 template<>
 struct ImplicitComposeConcretePolicies<implicitmethods::CrankNicolson>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyCrankNicolson<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicyCrankNicolson<Args...>;
+  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
 
 

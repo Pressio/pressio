@@ -43,7 +43,7 @@ TEST(ode, implicit_bdf1_custom_policy)
   state_t y = problemObj.getInitCond();
 
   using res_pol_t = ode::impl::ResidualStandardPolicyBdf<problem_t&, state_t, res_t>;
-  using jac_pol_t = ode::impl::JacobianStandardPolicyBdf<problem_t&, state_t, jac_t>;
+  using jac_pol_t = ode::impl::JacobianStandardPolicy<problem_t&, state_t, jac_t>;
   auto stepperObj = ode::create_bdf1_stepper(y, res_pol_t(problemObj), jac_pol_t(problemObj));
 
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;

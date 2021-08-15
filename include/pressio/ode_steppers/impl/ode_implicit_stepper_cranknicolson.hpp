@@ -178,7 +178,7 @@ public:
 
   void residual(const StateType & odeState, ResidualType & R) const{
     resPolicy_.get().template compute
-      <tag_name>(odeState, stencilStates_, t_np1_, dt_, stepNumber_, stencilVelocities_, R);
+      <tag_name>(odeState, stencilStates_, stencilVelocities_, t_np1_, dt_, stepNumber_, R);
   }
 
   void jacobian(const StateType & odeState, JacobianType & J) const{
