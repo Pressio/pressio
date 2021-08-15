@@ -90,6 +90,13 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{  \textcolor{comment}{// elementwise compute : v = a*v + b*v1}}
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v0, \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v0 + b*v1}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} scalar\_type c,}
 \DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v0, \textcolor{keyword}{const} scalar\_type a,}
 \DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
@@ -98,10 +105,19 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
-\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v0, \textcolor{keyword}{const} scalar\_type a,}
-\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b)}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} scalar\_type c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} scalar\_type d)}
 \DoxyCodeLine{\{}
-\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v0 + b*v1}}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = b*v1 + c*v2 + d*v3}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} scalar\_type c,}
+\DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} scalar\_type d)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3}}
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,}
@@ -113,7 +129,7 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{  \textcolor{comment}{// elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4}}
 \DoxyCodeLine{\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,          \textcolor{keyword}{const} scalar\_type a,}
+\DoxyCodeLine{\textcolor{keywordtype}{void} update(ACustomStateType \& v,        \textcolor{keyword}{const} scalar\_type a,}
 \DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v1, \textcolor{keyword}{const} scalar\_type b,}
 \DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v2, \textcolor{keyword}{const} scalar\_type c,}
 \DoxyCodeLine{            \textcolor{keyword}{const} ACustomStateType \& v3, \textcolor{keyword}{const} scalar\_type d,}

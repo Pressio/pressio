@@ -104,6 +104,13 @@ void update(ACustomStateType & v,        const scalar_type a,
   // elementwise compute : v = a*v + b*v1
 }
 
+void update(ACustomStateType & v,
+            const ACustomStateType & v0, const scalar_type a,
+            const ACustomStateType & v1, const scalar_type b)
+{
+  // elementwise compute: v = a*v0 + b*v1
+}
+
 void update(ACustomStateType & v,        const scalar_type c,
             const ACustomStateType & v0, const scalar_type a,
             const ACustomStateType & v1, const scalar_type b)
@@ -112,10 +119,19 @@ void update(ACustomStateType & v,        const scalar_type c,
 }
 
 void update(ACustomStateType & v,
-            const ACustomStateType & v0, const scalar_type a,
-            const ACustomStateType & v1, const scalar_type b)
+			const ACustomStateType & v1, const scalar_type b,
+			const ACustomStateType & v2, const scalar_type c,
+			const ACustomStateType & v3, const scalar_type d)
 {
-  // elementwise compute: v = a*v0 + b*v1
+  // elementwise compute: v = b*v1 + c*v2 + d*v3
+}
+
+void update(ACustomStateType & v,		 const scalar_type a,
+			const ACustomStateType & v1, const scalar_type b,
+			const ACustomStateType & v2, const scalar_type c,
+			const ACustomStateType & v3, const scalar_type d)
+{
+  // elementwise compute: v = a*v + b*v1 + c*v2 + d*v3
 }
 
 void update(ACustomStateType & v,
@@ -127,7 +143,7 @@ void update(ACustomStateType & v,
   // elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4
 }
 
-void update(ACustomStateType & v,		   const scalar_type a,
+void update(ACustomStateType & v,		 const scalar_type a,
 			const ACustomStateType & v1, const scalar_type b,
 			const ACustomStateType & v2, const scalar_type c,
 			const ACustomStateType & v3, const scalar_type d,

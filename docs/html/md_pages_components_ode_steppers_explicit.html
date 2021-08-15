@@ -181,6 +181,13 @@ $f$
   <span class="c1">// elementwise compute : v = a*v + b*v1</span>
 <span class="p">}</span>
 
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute: v = a*v0 + b*v1</span>
+<span class="p">}</span>
+
 <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
@@ -189,10 +196,19 @@ $f$
 <span class="p">}</span>
 
 <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v0</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
-            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">)</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="c1">// elementwise compute: v = a*v0 + b*v1</span>
+  <span class="c1">// elementwise compute: v = b*v1 + c*v2 + d*v3</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// elementwise compute: v = a*v + b*v1 + c*v2 + d*v3</span>
 <span class="p">}</span>
 
 <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>
@@ -204,7 +220,7 @@ $f$
   <span class="c1">// elementwise compute: v = b*v1 + c*v2 + d*v3 + e*v4</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>          <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v</span><span class="p">,</span>        <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">a</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v1</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">b</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v2</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">c</span><span class="p">,</span>
             <span class="k">const</span> <span class="n">ACustomStateType</span> <span class="o">&amp;</span> <span class="n">v3</span><span class="p">,</span> <span class="k">const</span> <span class="n">scalar_type</span> <span class="n">d</span><span class="p">,</span>
