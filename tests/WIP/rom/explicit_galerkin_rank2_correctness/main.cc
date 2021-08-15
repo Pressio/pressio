@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
 
   // create problem
 #ifdef EULER
-  using ode_tag = pressio::ode::explicitmethods::Euler;
+  using ode_tag = pressio::ode::ForwardEuler;
 #endif
 #ifdef RK4
-  using ode_tag = pressio::ode::explicitmethods::RungeKutta4;
+  using ode_tag = pressio::ode::RungeKutta4;
 #endif
   using pressio::rom::galerkin::createDefaultProblem;
   auto Problem = createDefaultProblem<ode_tag>(appobj, decoder, romState, yRef);

@@ -61,7 +61,7 @@ const std::vector<double> bdf1Sol
   // initialize to zero (this has to be done)
   pressio::ops::fill(yROM, 0.0);
 
-  using ode_tag = pressio::ode::explicitmethods::Euler;
+  using ode_tag = pressio::ode::ForwardEuler;
   // using problem_t =
   // pressio::rom::galerkin::composeDefaultProblem<ode_tag, fom_t, decoder_t, rom_state_t>::type;
   // problem_t galerkinProb(appobj, decoderObj, yROM, y0n);

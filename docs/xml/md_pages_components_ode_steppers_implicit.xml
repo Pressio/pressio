@@ -10,11 +10,144 @@
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
 <sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md40">
 <title>Overview</title>
+<para>Represents the concept of a stepper in the context of implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one.</para>
+<para>This package in pressio lets you create a stepper for any system written in <emphasis>continuous-time</emphasis> form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
+<para>and/or in a <emphasis>discrete-time</emphasis> form <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
+<para>Here, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md41">
-<title>API</title>
-<para><programlisting filename=".cpp"></programlisting></para>
-<para>where <computeroutput>keyword</computeroutput> is one of: <computeroutput>bdf1</computeroutput>, <computeroutput>bdf2</computeroutput>, <computeroutput>cranknicolson</computeroutput>. </para>
+<title>API for continuous-time systems</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>overload<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Res</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">ualPolicyType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>JacobianPolicyType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ResidualPolicyType<sp/>&amp;&amp;<sp/>rPol,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>JacobianPolicyType<sp/>&amp;&amp;<sp/>jPol);</highlight></codeline>
+</programlisting></para>
+<para>where:</para>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes"><para><computeroutput>keyword</computeroutput>   </para>
+</entry><entry thead="yes"><para>Method   </para>
+</entry><entry thead="yes"><para>Discrete Residual Formula    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>bdf1</computeroutput>   </para>
+</entry><entry thead="no"><para>Backward Diff 1st order   </para>
+</entry><entry thead="no"><para><formula id="6">$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$</formula>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>bdf2</computeroutput>   </para>
+</entry><entry thead="no"><para>Backward Diff 2nd order   </para>
+</entry><entry thead="no"><para><formula id="7">$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$</formula>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>cranknicolson</computeroutput>   </para>
+</entry><entry thead="no"><para>Crank-Nicolson   </para>
+</entry><entry thead="no"><para><formula id="8">$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$</formula>   </para>
+</entry></row>
+</table>
+</para>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md42">
+<title>Parameters</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
+<listitem><para>type of the data structure you use for the state</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput>:<itemizedlist>
+<listitem><para>class defining how to create an instance of the velocity <formula id="2">$f$</formula> and how to compute it;</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>:<itemizedlist>
+<listitem><para>policy types if you want to use custom ones to compute the discrete operators</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para>Notes:<itemizedlist>
+<listitem><para>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</para>
+</listitem><listitem><para>the second overload allows you to define custom policies to compute the discrete operators</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md43">
+<title>Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
+</listitem><listitem><para>The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForImplicitOde</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/><sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_type<sp/>time,<sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>jacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_time<sp/>time,<sp/>jacobian_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+<para>the nested type aliases must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
+</listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> from <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
+ <computeroutput>std::is_same&lt;StateType, typename SystemForImplicitOde::state_type&gt;::value == true</computeroutput></para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput> must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ResidualPolicy</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>this<sp/>type<sp/>alias<sp/>needs<sp/>to<sp/>be<sp/>found<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>create()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TagType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>AuxStatesType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>AuxRhsType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TimeType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>compute(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>y,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>AuxStatesType<sp/>&amp;<sp/>auxStates,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AuxRhsType<sp/>&amp;<sp/>auxRhs,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>t,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StepType<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>residual_type<sp/>&amp;<sp/>R)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</listitem><listitem><para><computeroutput>JacobianPolicyType</computeroutput>: <emphasis>todo</emphasis></para>
+</listitem></itemizedlist>
+</para>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md44">
+<title>If you use custom policies:</title>
+<para>If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct.</para>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes"><para>TagType   </para>
+</entry><entry thead="yes"><para>Auxiliary States contain:   </para>
+</entry><entry thead="yes"><para>Auxiliary RHS contain:    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>BDF1</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>y_n</computeroutput>   </para>
+</entry><entry thead="no"><para>(no velocities stored)    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>BDF2</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>y_n</computeroutput>, <computeroutput>y_{n-1}</computeroutput>   </para>
+</entry><entry thead="no"><para>(no velocities stored)    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>CrankNicolson</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>y_n</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>f_n</computeroutput>, <computeroutput>f_{n+1}</computeroutput>   </para>
+</entry></row>
+</table>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md45">
+<title>API for discrete-time systems</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_states,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_arbitrary_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SystemType<sp/>&amp;&amp;<sp/>system);</highlight></codeline>
+</programlisting> </para>
 </sect1>
     </detaileddescription>
     <location file="pages/components/ode_steppers_implicit.md"/>

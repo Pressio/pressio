@@ -16,7 +16,7 @@ namespace
 {
 
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::BDF1 odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::BDF1 odeTag, const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF1::get(fomSize, dt, 0.10);
@@ -24,7 +24,7 @@ auto readSol(::pressio::ode::implicitmethods::BDF1 odeTag, const std::size_t fom
 }
 
 template <typename scalar_t>
-auto readSol(::pressio::ode::implicitmethods::BDF2 odeTag, const std::size_t fomSize, const scalar_t dt)
+auto readSol(::pressio::ode::BDF2 odeTag, const std::size_t fomSize, const scalar_t dt)
   -> decltype(pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10))
 {
   auto trueY = pressio::apps::test::Burgers1dImpGoldStatesBDF2::get(fomSize, dt, 0.10);

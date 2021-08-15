@@ -108,7 +108,7 @@ public:
     typename scalar_t
     >
   mpl::enable_if_t<
-    mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    mpl::not_same<stepper_tag, ::pressio::ode::CrankNicolson>::value
     >
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,
@@ -131,7 +131,7 @@ public:
     typename stencil_velocities_t
     >
   mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value
+    std::is_same<stepper_tag, ::pressio::ode::CrankNicolson>::value
     >
   compute(const lspg_state_t & romState,
 	  const stencil_states_t & stencilStates,

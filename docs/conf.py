@@ -14,6 +14,7 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_type_traits.html\">type_traits</a>",),
      ("<a href=\"md_pages_components_expressions.html\">expressions</a>",),
      ("<a href=\"md_pages_components_ops.html\">ops</a>",),
+     ("<a href=\"md_pages_components_qr.html\">qr</a>",),
      ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
      ("<a href=\"md_pages_components_nonlinsolvers.html\">nonlinear solvers</a>",),
      ("<a href=\"md_pages_components_ode_advance.html\">ode advancers</a>",),

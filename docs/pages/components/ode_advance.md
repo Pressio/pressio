@@ -112,6 +112,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
 ## Requirements
 
 - The stepper class must conform to the following API:
+
   ```cpp
   class SteppableClass
   {
@@ -126,6 +127,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
   ```
 
 - The observer class must conform to the following API:
+
   ```cpp
   class ObserverClass
   {
@@ -137,6 +139,7 @@ void advance_n_steps_and_observe(StepperType & stepper,
   ```
 
 - `StepSizeSetterType` must conform to the following API:
+
   ```cpp
   class TimeStepManager
   {

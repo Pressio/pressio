@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
   // prec obj
   Preconditioner precObj;
 
-  using odetag = pressio::ode::implicitmethods::BDF1;
+  using odetag = pressio::ode::BDF1;
   auto problem = pressio::rom::lspg::createPreconditionedHyperReducedProblemUnsteady<odetag>
     (appObj, decoderObj, romState, refState, precObj, hrIndices);
 

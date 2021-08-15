@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
   // prec obj
   precond_t PrecObj;
 
-  // using odetag = pressio::ode::implicitmethods::Arbitrary;
+  // using odetag = pressio::ode::ImplicitArbitrary;
   // using stepper_order    = ::pressio::ode::StepperOrder<1>;
   // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
   // using problem_t =

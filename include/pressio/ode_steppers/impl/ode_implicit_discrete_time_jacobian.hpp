@@ -59,7 +59,7 @@ namespace pressio{ namespace ode{ namespace impl{
 template <typename JacobianType, typename ScalarType>
 void discrete_time_jacobian(JacobianType & jac,
                             const ScalarType & dt,
-                            ::pressio::ode::implicitmethods::BDF1)
+                            ::pressio::ode::BDF1)
 {
   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
   const auto cf   = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
@@ -75,7 +75,7 @@ void discrete_time_jacobian(JacobianType & jac,
 template <typename JacobianType, typename ScalarType>
 void discrete_time_jacobian(JacobianType & jac,
            const ScalarType & dt,
-           ::pressio::ode::implicitmethods::BDF2)
+           ::pressio::ode::BDF2)
 {
   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
   const auto cf   = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
@@ -92,7 +92,7 @@ void discrete_time_jacobian(JacobianType & jac,
 template <typename JacobianType, typename ScalarType>
 void discrete_time_jacobian(JacobianType & jac,
            const ScalarType & dt,
-           ::pressio::ode::implicitmethods::CrankNicolson)
+           ::pressio::ode::CrankNicolson)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
   constexpr auto cnp1  = cnst::c_np1_;
@@ -115,7 +115,7 @@ void discrete_time_jacobian(JacobianType & jac,
 // >
 // discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 //           const ScalarType & dt,
-//           ::pressio::ode::implicitmethods::BDF1)
+//           ::pressio::ode::BDF1)
 // {
 //   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
 //   constexpr auto cnp1   = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
@@ -137,7 +137,7 @@ void discrete_time_jacobian(JacobianType & jac,
 // >
 // discrete_time_jacobian(::pressio::containers::Tensor<2, T> & jac,
 //           const ScalarType & dt,
-//           ::pressio::ode::implicitmethods::BDF2)
+//           ::pressio::ode::BDF2)
 // {
 //   assert(::pressio::ops::extent(jac,0) == ::pressio::ops::extent(jac,1));
 //   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;

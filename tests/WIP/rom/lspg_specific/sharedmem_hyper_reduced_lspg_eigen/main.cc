@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
   hrIndices(3) = 7;
   hrIndices(4) = 8;
 
-  using odetag = pressio::ode::implicitmethods::BDF1;
+  using odetag = pressio::ode::BDF1;
   auto problem = pressio::rom::lspg::createHyperReducedProblemUnsteady<odetag>
     (appObj, decoderObj, romState, refState, hrIndices);
 

@@ -114,8 +114,8 @@ TEST(ode, concepts_policies_arbitrary_stepper)
 TEST(ode, implicit_stencil_size)
 {
   namespace po = pressio::ode;
-  static_assert(po::implicit_stencil_size(po::implicitmethods::BDF1())==2,"" );
-  static_assert(po::implicit_stencil_size(po::implicitmethods::BDF2())==3, "");
-  static_assert(po::implicit_stencil_size(po::implicitmethods::CrankNicolson())==2,"");
+  static_assert(po::implicit_stencil_size(po::BDF1())==2,"" );
+  static_assert(po::implicit_stencil_size(po::BDF2())==3, "");
+  static_assert(po::implicit_stencil_size(po::CrankNicolson())==2,"");
 }
 

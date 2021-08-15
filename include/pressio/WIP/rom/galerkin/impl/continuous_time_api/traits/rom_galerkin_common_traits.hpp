@@ -57,17 +57,17 @@ struct _num_fom_states_needed{
 };
 
 template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF1>{
+struct _num_fom_states_needed<::pressio::ode::BDF1>{
   static constexpr std::size_t value = 1;
 };
 
 template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::BDF2>{
+struct _num_fom_states_needed<::pressio::ode::BDF2>{
   static constexpr std::size_t value = 1;
 };
 
 template<>
-struct _num_fom_states_needed<::pressio::ode::implicitmethods::CrankNicolson>{
+struct _num_fom_states_needed<::pressio::ode::CrankNicolson>{
   static constexpr std::size_t value = 2;
 };
 

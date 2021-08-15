@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 0.0);
 
-  using ode_tag = pressio::ode::explicitmethods::Euler;
+  using ode_tag = pressio::ode::ForwardEuler;
   // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
   //   ode_tag, fom_t, decoder_t, rom_state_t>::type;
   // problem_t galerkinProb(appObj, decoderObj, romState, refState);

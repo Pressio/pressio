@@ -51,7 +51,7 @@ struct EulerLSPGWithResidualApi
     ::pressio::ops::fill(yROM_, 0.0);
 
     // // define LSPG type
-    // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using ode_tag = pressio::ode::ImplicitArbitrary;
     // using stepper_order    = ::pressio::ode::StepperOrder<1>;
     // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
     // using lspg_problem = typename pressio::rom::lspg::composeDefaultProblem<ode_tag, fom_t,
@@ -127,7 +127,7 @@ struct EulerLSPGWithVelocityApi
     ::pressio::ops::fill(yROM_, 0.0);
 
     // define LSPG type
-    using ode_tag = pressio::ode::implicitmethods::BDF1;
+    using ode_tag = pressio::ode::BDF1;
     auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
       appobj, decoderObj, yROM_, yRef);
 

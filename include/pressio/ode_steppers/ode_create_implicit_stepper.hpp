@@ -56,17 +56,17 @@ namespace pressio{ namespace ode{
 // bdf1
 template<class StateType, class SystemType>
 auto create_bdf1_stepper(const StateType & state, const SystemType & system)
-->  decltype(impl::create_stepper_impl<implicitmethods::BDF1>(system, state))
+->  decltype(impl::create_stepper_impl<::pressio::ode::BDF1>(system, state))
 {
-  return impl::create_stepper_impl<implicitmethods::BDF1>(system, state);
+  return impl::create_stepper_impl<::pressio::ode::BDF1>(system, state);
 };
 
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
 auto create_bdf1_stepper(const StateType & state, ResidualPolicyType && rPol, JacobianPolicyType && jPol)
-->  decltype(impl::create_stepper_impl<implicitmethods::BDF1>(
+->  decltype(impl::create_stepper_impl<::pressio::ode::BDF1>(
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
-  return impl::create_stepper_impl<implicitmethods::BDF1>(
+  return impl::create_stepper_impl<::pressio::ode::BDF1>(
         state,
         std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
@@ -75,17 +75,17 @@ auto create_bdf1_stepper(const StateType & state, ResidualPolicyType && rPol, Ja
 // bdf2
 template<class StateType, class SystemType>
 auto create_bdf2_stepper(const StateType & state, const SystemType & system)
-->  decltype(impl::create_stepper_impl<implicitmethods::BDF2>(system, state))
+->  decltype(impl::create_stepper_impl<::pressio::ode::BDF2>(system, state))
 {
-  return impl::create_stepper_impl<implicitmethods::BDF2>(system, state);
+  return impl::create_stepper_impl<::pressio::ode::BDF2>(system, state);
 };
 
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
 auto create_bdf2_stepper(const StateType & state, ResidualPolicyType && rPol, JacobianPolicyType && jPol)
-->  decltype(impl::create_stepper_impl<implicitmethods::BDF2>(
+->  decltype(impl::create_stepper_impl<::pressio::ode::BDF2>(
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
-  return impl::create_stepper_impl<implicitmethods::BDF2>(
+  return impl::create_stepper_impl<::pressio::ode::BDF2>(
         state,
         std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
@@ -94,17 +94,17 @@ auto create_bdf2_stepper(const StateType & state, ResidualPolicyType && rPol, Ja
 // CrankNicolson
 template<class StateType, class SystemType>
 auto create_cranknicolson_stepper(const StateType & state, const SystemType & system)
-->  decltype(impl::create_stepper_impl<implicitmethods::CrankNicolson>(system, state))
+->  decltype(impl::create_stepper_impl<::pressio::ode::CrankNicolson>(system, state))
 {
-  return impl::create_stepper_impl<implicitmethods::CrankNicolson>(system, state);
+  return impl::create_stepper_impl<::pressio::ode::CrankNicolson>(system, state);
 };
 
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
 auto create_cranknicolson_stepper(const StateType & state, ResidualPolicyType && rPol, JacobianPolicyType && jPol)
-->  decltype(impl::create_stepper_impl<implicitmethods::CrankNicolson>(
+->  decltype(impl::create_stepper_impl<::pressio::ode::CrankNicolson>(
         state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol)))
 {
-  return impl::create_stepper_impl<implicitmethods::CrankNicolson>(
+  return impl::create_stepper_impl<::pressio::ode::CrankNicolson>(
         state,
         std::forward<ResidualPolicyType>(rPol),
         std::forward<JacobianPolicyType>(jPol));
@@ -116,7 +116,7 @@ template<
   class StateType,
   class SystemType,
   class ReturnType = impl::ImplicitCompose_t<
-    implicitmethods::Arbitrary, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
+    ImplicitArbitrary, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
   >
 ReturnType create_arbitrary_stepper(const StateType & state, SystemType && system)
 {

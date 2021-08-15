@@ -93,8 +93,8 @@ public:
       "Residual policy for BDF should have 0 velocities");
 
     static_assert(      
-    std::is_same<OdeTag, ::pressio::ode::implicitmethods::BDF1>::value or
-    std::is_same<OdeTag, ::pressio::ode::implicitmethods::BDF2>::value, 
+    std::is_same<OdeTag, ::pressio::ode::BDF1>::value or
+    std::is_same<OdeTag, ::pressio::ode::BDF2>::value, 
     "Invalid tag for BDF residual policy");
 
     try{
@@ -157,7 +157,7 @@ public:
       "Residual policy for CrankNicolson should have 2 velocities");
 
     static_assert(
-      std::is_same<OdeTag, ::pressio::ode::implicitmethods::CrankNicolson>::value, 
+      std::is_same<OdeTag, ::pressio::ode::CrankNicolson>::value, 
       "Invalid tag for BDF residual policy");
 
     if (stepTracker_ != step){

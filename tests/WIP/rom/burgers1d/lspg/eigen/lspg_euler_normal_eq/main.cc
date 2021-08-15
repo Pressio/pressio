@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(yROM, 0.0);
 
   // // define LSPG type
-  using ode_tag  = pressio::ode::implicitmethods::BDF1;
+  using ode_tag  = pressio::ode::BDF1;
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
     appobj, decoderObj, yROM, yRef);
 

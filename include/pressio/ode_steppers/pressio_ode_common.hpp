@@ -51,33 +51,27 @@
 
 namespace pressio{ namespace ode{ 
 
-// namespace explicitmethods{
 struct ForwardEuler{};
 struct RungeKutta4{};
 struct AdamsBashforth2{};
 struct SSPRungeKutta3{};
-// }//end namespace explicitmethods
 
-// namespace implicitmethods{
 struct BDF1{};
 struct BDF2{};
 struct CrankNicolson{};
-struct Arbitrary{};
-// }//end namespace implicitmethods
+struct ImplicitArbitrary{};
 
-// explicit
 template <typename T> struct is_explicit_stepper_tag : std::false_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::Euler> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::RungeKutta4> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::AdamsBashforth2> : std::true_type{};
-template <> struct is_explicit_stepper_tag<explicitmethods::SSPRungeKutta3> : std::true_type{};
+template <> struct is_explicit_stepper_tag<ForwardEuler> : std::true_type{};
+template <> struct is_explicit_stepper_tag<RungeKutta4> : std::true_type{};
+template <> struct is_explicit_stepper_tag<AdamsBashforth2> : std::true_type{};
+template <> struct is_explicit_stepper_tag<SSPRungeKutta3> : std::true_type{};
 
-// implicit
 template <typename T> struct is_implicit_stepper_tag : std::false_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::BDF1> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::BDF2> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::CrankNicolson> : std::true_type{};
-template <> struct is_implicit_stepper_tag<implicitmethods::Arbitrary> : std::true_type{};
+template <> struct is_implicit_stepper_tag<BDF1> : std::true_type{};
+template <> struct is_implicit_stepper_tag<BDF2> : std::true_type{};
+template <> struct is_implicit_stepper_tag<CrankNicolson> : std::true_type{};
+template <> struct is_implicit_stepper_tag<ImplicitArbitrary> : std::true_type{};
 
 // is_stepper_tag
 template <typename T>
@@ -86,9 +80,9 @@ struct is_stepper_tag{
   is_explicit_stepper_tag<T>::value or is_implicit_stepper_tag<T>::value;
 };
 
-constexpr int implicit_stencil_size(implicitmethods::BDF1){ return 2; }
-constexpr int implicit_stencil_size(implicitmethods::BDF2){ return 3; }
-constexpr int implicit_stencil_size(implicitmethods::CrankNicolson){ return 2; }
+constexpr int implicit_stencil_size(::pressio::ode::BDF1){ return 2; }
+constexpr int implicit_stencil_size(::pressio::ode::BDF2){ return 3; }
+constexpr int implicit_stencil_size(::pressio::ode::CrankNicolson){ return 2; }
 
 //! Default type for the order of a stepper
 using stepper_order_type = int32_t;

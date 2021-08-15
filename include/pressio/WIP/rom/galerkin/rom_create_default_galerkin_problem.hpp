@@ -94,7 +94,7 @@ template<
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
@@ -107,7 +107,7 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 {
   using return_t =
     impl::composeDefaultProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
+      ::pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, rom_jacobian_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
@@ -135,7 +135,7 @@ template<
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeDefaultProblemDiscTime_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, void,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
@@ -148,7 +148,7 @@ createDefaultProblem(const fom_system_type & fomSysObj,
 {
   using return_t =
     impl::composeDefaultProblemDiscTime_t<
-      ::pressio::ode::implicitmethods::Arbitrary,
+      ::pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, void,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>

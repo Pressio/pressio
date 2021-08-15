@@ -113,7 +113,7 @@ public:
     typename scalar_t
     >
   mpl::enable_if_t<
-    std::is_same<stepper_tag, ::pressio::ode::implicitmethods::CrankNicolson>::value and
+    std::is_same<stepper_tag, ::pressio::ode::CrankNicolson>::value and
     ::pressio::rom::constraints::most_likely_continuous_time_system<fom_system_t>::value
     >
   compute(const galerkin_state_t & galerkinState,

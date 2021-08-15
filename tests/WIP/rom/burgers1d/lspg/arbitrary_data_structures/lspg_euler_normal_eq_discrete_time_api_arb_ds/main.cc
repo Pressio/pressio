@@ -224,7 +224,7 @@ struct EulerLSPGWithResidualApi
     pressio::ops::fill(yROM_, pressio::utils::Constants<scalar_t>::zero());
 
     // define LSPG type
-    // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+    // using ode_tag = pressio::ode::ImplicitArbitrary;
     // using stepper_order    = ::pressio::ode::StepperOrder<1>;
     // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
     // using lspg_problem	 = typename pressio::rom::lspg::composeDefaultProblem<

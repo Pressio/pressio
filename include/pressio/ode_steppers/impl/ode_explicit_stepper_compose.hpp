@@ -63,22 +63,22 @@ struct ExplicitImplSelector
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::Euler>{
+struct ExplicitImplSelector<::pressio::ode::ForwardEuler>{
   template<typename ...Args> using type = ::pressio::ode::impl::ExplicitEulerStepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::RungeKutta4>{
+struct ExplicitImplSelector<::pressio::ode::RungeKutta4>{
   template<typename ...Args> using type = ::pressio::ode::impl::ExplicitRungeKutta4Stepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::AdamsBashforth2>{
+struct ExplicitImplSelector<::pressio::ode::AdamsBashforth2>{
   template<typename ...Args> using type = ::pressio::ode::impl::ExplicitAdamsBashforth2Stepper<Args...>;
 };
 
 template<>
-struct ExplicitImplSelector<::pressio::ode::explicitmethods::SSPRungeKutta3>{
+struct ExplicitImplSelector<::pressio::ode::SSPRungeKutta3>{
   template<typename ...Args> using type = ::pressio::ode::impl::ExplicitSSPRungeKutta3Stepper<Args...>;
 };
 

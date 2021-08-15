@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
   // masker
   masker_t Masker({0,1,3,4,6});
 
-  using odetag = pressio::ode::implicitmethods::BDF1;
+  using odetag = pressio::ode::BDF1;
   auto problem = pressio::rom::lspg::createMaskedProblemUnsteady<odetag>
     (appObj, decoderObj, romState, refState, Masker);
 

@@ -131,7 +131,7 @@ createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysOb
 // mpl::enable_if_t<
 //   ::pressio::rom::constraints::discrete_time_system_with_user_provided_apply_jacobian<fom_system_type>::value,
 //   impl::composePreconditionedHyperReducedProblem_t<
-//     pressio::ode::implicitmethods::Arbitrary,
+//     pressio::ode::ImplicitArbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
 //     ::pressio::ode::StepperOrder<order>,
 //     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
@@ -146,7 +146,7 @@ createPreconditionedHyperReducedProblemUnsteady(const fom_system_type & fomSysOb
 // 					   Args && ...args)
 // {
 //   using return_t = impl::composePreconditionedHyperReducedProblem_t<
-//     pressio::ode::implicitmethods::Arbitrary,
+//     pressio::ode::ImplicitArbitrary,
 //     fom_system_type, decoder_type, rom_state_type, precond_type,
 //     ::pressio::ode::StepperOrder<order>,
 //     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,

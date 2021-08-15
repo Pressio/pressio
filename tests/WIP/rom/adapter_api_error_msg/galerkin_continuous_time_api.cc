@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
   using decoder_jac_t = pressio::containers::MultiVector<Eigen::MatrixXd>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
-  using ode_name_t = pressio::ode::explicitmethods::Euler;
+  using ode_name_t = pressio::ode::ForwardEuler;
   using problem_t = pressio::rom::galerkin::impl::composeDefaultProblem_t<
     ode_name_t, app_t, decoder_t, lspg_state_t>;
 

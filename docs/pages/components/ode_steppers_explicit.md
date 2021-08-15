@@ -17,6 +17,8 @@ Applicable to systems of the form:
 where @f$y@f$ is the state, @f$f@f$ is the RHS (also called velocity below), @f$t@f$ is time.<br/>
 Explicit methods calculate the state of a system at a later time
 from the state of the system at the current time and potentially previous times.
+In pressio, a "stepper" is an abstraction that represents the "how" to take a step.
+
 
 ## API:
 
@@ -45,6 +47,7 @@ The returned stepper object satisfies the "steppable" concept discussed [here](/
 - `StateType`: must be copy constructible
 
 - The system class must conform to the following API:
+
   ```cpp
   struct SystemForExplicitOde
   {
@@ -88,7 +91,7 @@ int main()
 ```
 
 
-## Custom types specializations
+## Required specializations for custom types
 
 When using custom data types not supported in [pressio ops](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html), you need to provide specializations of a trait class and certain operations
 and make them "visible" to the compiler to find them and such that pressio can operate on your data.
@@ -165,6 +168,7 @@ Note that in the snippet above the order of the include statements matter:
 this is because your `Trait` and kernel specializations need to be found by the compiler.
 However, to make the code cleaner, you can obviously move all kernels specializations
 to a separate header file, but make sure to keep the correct order, for example as follows:
+
 ```cpp
 #include "pressio/type_traits.hpp"
 #include "my_specializations.hpp" // contains all your specializations

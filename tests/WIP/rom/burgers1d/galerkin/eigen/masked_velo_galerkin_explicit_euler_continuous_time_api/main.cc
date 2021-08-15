@@ -96,7 +96,7 @@ struct GalerkinRunnerContinuousTimeApi
     // create masker
     Masker myMask(indices);
 
-    using ode_tag = pressio::ode::explicitmethods::Euler;
+    using ode_tag = pressio::ode::ForwardEuler;
     using pressio::rom::galerkin::createMaskedVelocityProblem;
     auto Problem = createMaskedVelocityProblem<ode_tag>(appobj, decoderObj, yROM_, yRef, myMask, projector);
 

@@ -77,7 +77,7 @@ struct traits<
   >
 {
   static_assert
-  (mpl::not_same<stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (mpl::not_same<stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "Default Galerkin with continuous-time API cannot be run with Arbitrary stepper. \
 To use the arbitrary stepper, you need to use the discrete-time API.");
 

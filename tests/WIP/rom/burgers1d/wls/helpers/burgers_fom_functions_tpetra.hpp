@@ -8,7 +8,7 @@ namespace pressio{ namespace testing{ namespace wls{
 
 template <typename decoder_d_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj,
-		       ::pressio::ode::implicitmethods::BDF1 odeTag,
+		       ::pressio::ode::BDF1 odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {
@@ -20,7 +20,7 @@ decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj,
 
 template <typename decoder_d_t, typename rcpcomm_t>
 decoder_d_t readBasis( pressio::apps::Burgers1dTpetra & appObj,
-		       ::pressio::ode::implicitmethods::BDF2 odeTag,
+		       ::pressio::ode::BDF2 odeTag,
 		       std::size_t romSize, std::size_t fomSize,
 		       rcpcomm_t Comm)
 {

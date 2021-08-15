@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   pressio::ops::fill(yROM, 0.0);
 
   // define LSPG type
-  using ode_tag  = pressio::ode::implicitmethods::CrankNicolson;
+  using ode_tag  = pressio::ode::CrankNicolson;
   auto lspgProblem = pressio::rom::lspg::createDefaultProblemUnsteady<ode_tag>(
     appObj, decoderObj, yROM, yRef);
 

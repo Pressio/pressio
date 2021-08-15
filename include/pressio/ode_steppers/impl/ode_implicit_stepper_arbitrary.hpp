@@ -72,7 +72,7 @@ public:
   static constexpr bool is_explicit = false;
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
   static constexpr std::size_t numAuxStates = n_states - 1;
-  using tag_name = ::pressio::ode::implicitmethods::Arbitrary;
+  using tag_name = ::pressio::ode::ImplicitArbitrary;
   using stencil_states_t = ImplicitStencilStatesContainer<StateType, numAuxStates>;
 
 private:

@@ -77,28 +77,27 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{ namespace 
 template <typename tag>
 struct supported_implicit_stepper_tag{
   static_assert
-  (std::is_same<tag, ::pressio::ode::implicitmethods::BDF1>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
+  (std::is_same<tag, ::pressio::ode::BDF1>::value or
+   std::is_same<tag, ::pressio::ode::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::CrankNicolson>::value,
    "The implicit stepper tag you are passing to create the galerkin problem \
 is not supported: this can be because the Galerkin implementation does \
 not support it, or because you added a new ode scheme in the ode package \
-but forgot to update the list of implicit tags supported by Galerkin which \
-currently contains: BDF1, BDF2 or CrankNicolson");
+but forgot to update the list of implicit tags supported by Galerkin");
   static constexpr auto value = true;
 };
 
 template <typename tag>
 struct supported_explicit_stepper_tag{
   static_assert
-  (std::is_same<tag, ::pressio::ode::explicitmethods::Euler>::value or
-   std::is_same<tag, ::pressio::ode::explicitmethods::RungeKutta4>::value or
-   std::is_same<tag, ::pressio::ode::explicitmethods::AdamsBashforth2>::value,
+  (std::is_same<tag, ::pressio::ode::ForwardEuler>::value or
+   std::is_same<tag, ::pressio::ode::RungeKutta4>::value or
+   std::is_same<tag, ::pressio::ode::SSPRungeKutta3>::value or
+   std::is_same<tag, ::pressio::ode::AdamsBashforth2>::value,
    "The explicit stepper tag you are passing to create the galerkin problem \
 is not supported: this can be because the Galerkin implementation does \
 not support it, or because you added a new ode scheme in the ode package \
-but forgot to update the list of explicit tags supported by Galerkin which \
-currently contains: Forward Euler, RK4, AdamsBashforth2");
+but forgot to update the list of explicit tags supported by Galerkin which");
 
   static constexpr auto value = true;
 };

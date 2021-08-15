@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  // using ode_tag = pressio::ode::implicitmethods::Arbitrary;
+  // using ode_tag = pressio::ode::ImplicitArbitrary;
   // using stepper_order    = ::pressio::ode::StepperOrder<1>;
   // using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
   // using problem_t  = pressio::rom::lspg::composeDefaultProblem<

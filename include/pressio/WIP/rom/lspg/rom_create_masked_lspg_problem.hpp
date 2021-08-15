@@ -128,7 +128,7 @@ template<
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composeMaskedProblem_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>
@@ -141,7 +141,7 @@ createMaskedProblemUnsteady(const fom_system_type & fomSysObj,
 			    const masker_type & masker)
 {
   using return_t = impl::composeMaskedProblem_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, masker_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>

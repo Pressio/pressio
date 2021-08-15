@@ -85,7 +85,7 @@ template<
   class StateType
   >
 struct ImplicitComposeAssertValidPolicies<
-  implicitmethods::BDF1, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
+  ::pressio::ode::BDF1, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
   >
 {
   static_assert(::pressio::ode::implicit_euler_residual_policy<
@@ -104,7 +104,7 @@ template<
   class StateType
   >
 struct ImplicitComposeAssertValidPolicies<
-  implicitmethods::BDF2, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
+  ::pressio::ode::BDF2, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
   >
 {
   static_assert(::pressio::ode::implicit_bdf2_residual_policy<
@@ -123,7 +123,7 @@ template<
   class StateType
   >
 struct ImplicitComposeAssertValidPolicies<
-  implicitmethods::CrankNicolson, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
+  ::pressio::ode::CrankNicolson, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
   >
 {
   static_assert(::pressio::ode::implicit_cranknicolson_residual_policy<
@@ -138,35 +138,35 @@ struct ImplicitComposeAssertValidPolicies<
 
 template<class Tag> struct ImplicitComposeConcreteStepper;
 
-template<> struct ImplicitComposeConcreteStepper<implicitmethods::BDF1>{
+template<> struct ImplicitComposeConcreteStepper<::pressio::ode::BDF1>{
   template<bool b, class ...Args> using type = StepperBDF1<Args..., b>;
 };
 
-template<> struct ImplicitComposeConcreteStepper<implicitmethods::BDF2>{
+template<> struct ImplicitComposeConcreteStepper<::pressio::ode::BDF2>{
   template<bool b, class ...Args> using type = StepperBDF2<Args..., b>;
 };
 
 template<>
-struct ImplicitComposeConcreteStepper<implicitmethods::CrankNicolson>{
+struct ImplicitComposeConcreteStepper<::pressio::ode::CrankNicolson>{
   template<bool b, class ...Args> using type = StepperCrankNicolson<Args..., b>;
 };
 
 template<class Tag> struct ImplicitComposeConcretePolicies;
 
 template<>
-struct ImplicitComposeConcretePolicies<implicitmethods::BDF1>{
+struct ImplicitComposeConcretePolicies<::pressio::ode::BDF1>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
   template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
 
 template<>
-struct ImplicitComposeConcretePolicies<implicitmethods::BDF2>{
+struct ImplicitComposeConcretePolicies<::pressio::ode::BDF2>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
   template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
 
 template<>
-struct ImplicitComposeConcretePolicies<implicitmethods::CrankNicolson>{
+struct ImplicitComposeConcretePolicies<::pressio::ode::CrankNicolson>{
   template<class ...Args> using residual_policy_type = ResidualStandardPolicyCrankNicolson<Args...>;
   template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
 };
@@ -186,9 +186,9 @@ template<class TagType, class SystemType, class StateType>
 struct ImplicitCompose<
   TagType,
   mpl::enable_if_t<
-       std::is_same<TagType, implicitmethods::BDF1>::value 
-    or std::is_same<TagType, implicitmethods::BDF2>::value 
-    or std::is_same<TagType, implicitmethods::CrankNicolson>::value
+       std::is_same<TagType, ::pressio::ode::BDF1>::value 
+    or std::is_same<TagType, ::pressio::ode::BDF2>::value 
+    or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
     >,
   SystemType, StateType>
 {
@@ -222,9 +222,9 @@ template<
 struct ImplicitCompose<
   TagType,
   mpl::enable_if_t<
-       std::is_same<TagType, implicitmethods::BDF1>::value 
-    or std::is_same<TagType, implicitmethods::BDF2>::value 
-    or std::is_same<TagType, implicitmethods::CrankNicolson>::value
+       std::is_same<TagType, ::pressio::ode::BDF1>::value 
+    or std::is_same<TagType, ::pressio::ode::BDF2>::value 
+    or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
     >,
   StateType, ResidualPolicyType, JacobianPolicyType>
 {
@@ -247,7 +247,7 @@ struct ImplicitCompose<
 ////////////////////////////////////////
 template<class NStates, class SystemType, class StateType>
 struct ImplicitCompose<
-  implicitmethods::Arbitrary, NStates, SystemType, StateType>
+  ImplicitArbitrary, NStates, SystemType, StateType>
 {
   static_assert
   (::pressio::ode::discrete_time_system_with_user_provided_jacobian<mpl::remove_cvref_t<SystemType>>::value,

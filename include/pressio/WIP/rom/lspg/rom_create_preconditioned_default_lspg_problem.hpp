@@ -130,7 +130,7 @@ template<
 mpl::enable_if_t<
   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_type>::value,
   impl::composePreconditionedDefaultProblem_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,
@@ -145,7 +145,7 @@ createPreconditionedDefaultProblemUnsteady(const fom_system_type & fomSysObj,
 					   Args && ...args)
 {
   using return_t = impl::composePreconditionedDefaultProblem_t<
-    pressio::ode::implicitmethods::Arbitrary,
+    pressio::ode::ImplicitArbitrary,
     fom_system_type, decoder_type, rom_state_type, precond_type,
     ::pressio::ode::StepperOrder<order>,
     ::pressio::ode::StepperTotalNumberOfStates<totNumStates>,

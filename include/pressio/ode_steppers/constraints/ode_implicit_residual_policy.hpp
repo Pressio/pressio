@@ -145,17 +145,17 @@ struct implicit_residual_policy<
 template<typename T, typename ... Args>
 using implicit_euler_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::BDF1, 1, 0, Args...>;
+  T, ::pressio::ode::BDF1, 1, 0, Args...>;
 
 template<typename T, typename ... Args>
 using implicit_bdf2_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::BDF2, 2, 0, Args...>;
+  T, ::pressio::ode::BDF2, 2, 0, Args...>;
 
 template<typename T, typename ... Args>
 using implicit_cranknicolson_residual_policy =
   implicit_residual_policy<
-  T, ::pressio::ode::implicitmethods::CrankNicolson, 1, 2, Args...>;
+  T, ::pressio::ode::CrankNicolson, 1, 2, Args...>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_RESIDUAL_POLICY_HPP_

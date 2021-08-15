@@ -60,13 +60,13 @@ struct DefaultHelper{
 
 //BDF1 specialization
 template <typename fom_state_t>
-struct DefaultHelper<::pressio::ode::implicitmethods::BDF1, fom_state_t>{
+struct DefaultHelper<::pressio::ode::BDF1, fom_state_t>{
   using type = ::pressio::rom::wls::timeschemes::impl::ImplicitEuler<fom_state_t>;
 };
 
 //BDF2 specialization
 template <typename fom_state_t>
-struct DefaultHelper<::pressio::ode::implicitmethods::BDF2, fom_state_t>{
+struct DefaultHelper<::pressio::ode::BDF2, fom_state_t>{
   using type = ::pressio::rom::wls::timeschemes::impl::BDF2<fom_state_t>;
 };
 

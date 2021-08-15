@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
   // create masker
   Masker myMask(importer);
 
-  using ode_tag = pressio::ode::explicitmethods::Euler;
+  using ode_tag = pressio::ode::ForwardEuler;
   auto galerkinProb = pressio::rom::galerkin::createMaskedVelocityProblem
     <ode_tag>(appobj, decoderObj, yROM, y0n, myMask, projector);
 

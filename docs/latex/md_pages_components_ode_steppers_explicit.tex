@@ -4,7 +4,7 @@ Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_o
 Applicable to systems of the form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 
 where $y$ is the state, $f$ is the RHS (also called velocity below), $t$ is time.~\newline
- Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md34}{}\doxysection{API\+:}\label{md_pages_components_ode_steppers_explicit_autotoc_md34}
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a \char`\"{}stepper\char`\"{} is an abstraction that represents the \char`\"{}how\char`\"{} to take a step.\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md34}{}\doxysection{API\+:}\label{md_pages_components_ode_steppers_explicit_autotoc_md34}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
@@ -29,7 +29,10 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 
 \begin{DoxyItemize}
 \item {\ttfamily State\+Type}\+: must be copy constructible
-\item The system class must conform to the following API\+: 
+\item The system class must conform to the following API\+:
+\end{DoxyItemize}
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }SystemForExplicitOde}
 \DoxyCodeLine{\{}
@@ -45,6 +48,9 @@ where {\ttfamily keyword} is one of\+: {\ttfamily forward\+\_\+euler}, {\ttfamil
 
 
 the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and {\ttfamily velocity\+\_\+type} must be {\itshape valid} types since they are detected by pressio
+
+
+\begin{DoxyItemize}
 \item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
  {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Explicit\+Ode\+::state\+\_\+type$>$\+::value == true}
 \end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md37}{}\doxysection{Example usage}\label{md_pages_components_ode_steppers_explicit_autotoc_md37}
@@ -71,7 +77,7 @@ the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md38}{}\doxysection{Custom types specializations}\label{md_pages_components_ode_steppers_explicit_autotoc_md38}
+\hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md38}{}\doxysection{Required specializations for custom types}\label{md_pages_components_ode_steppers_explicit_autotoc_md38}
 When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type and {\ttfamily ACustom\+State\+Type} is what you use for the state, then before the {\ttfamily main} function you would need to do something like this\+:
 
 
@@ -142,7 +148,9 @@ When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/
 \end{DoxyCode}
 
 
-Note that in the snippet above the order of the include statements matter\+: this is because your {\ttfamily Trait} and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows\+: 
+Note that in the snippet above the order of the include statements matter\+: this is because your {\ttfamily Trait} and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows\+:
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "{}pressio/type\_traits.hpp"{}}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "{}my\_specializations.hpp"{}} \textcolor{comment}{// contains all your specializations}}

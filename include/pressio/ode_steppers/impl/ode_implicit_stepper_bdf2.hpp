@@ -70,7 +70,7 @@ public:
   using residual_type = ResidualType;
   using jacobian_type = JacobianType;
 
-  using tag_name = ::pressio::ode::implicitmethods::BDF2;
+  using tag_name = ::pressio::ode::BDF2;
   static constexpr bool is_implicit = true;
   static constexpr bool is_explicit = false;
   static constexpr stepper_order_type order_value = 2;

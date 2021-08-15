@@ -104,7 +104,7 @@ struct compose<
   stepper_tag, fom_system_type, decoder_type, galerkin_state_type, galerkin_jacobian_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::DefaultProblemDiscreteTimeApi<
@@ -135,7 +135,7 @@ struct compose<
   masker_type, projector_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::MaskedResidualProblemDiscreteTimeApi<
@@ -165,7 +165,7 @@ struct compose<
   projector_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "Galerkin with discrete-time API currently only accepts Arbitrary stepper");
 
   using type = ::pressio::rom::galerkin::impl::HyperReducedResidualProblemDiscreteTimeApi<

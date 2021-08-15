@@ -1,11 +1,136 @@
 Defined in\+: {\ttfamily $<$pressio/ode\+\_\+steppers\+\_\+implicit.\+hpp$>$}
 
 Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md40}{}\doxysection{Overview}\label{md_pages_components_ode_steppers_implicit_autotoc_md40}
-\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md41}{}\doxysection{API}\label{md_pages_components_ode_steppers_implicit_autotoc_md41}
+Represents the concept of a stepper in the context of implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one.
+
+This package in pressio lets you create a stepper for any system written in {\itshape continuous-\/time} form\+: \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
+
+and/or in a {\itshape discrete-\/time} form \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]
+
+Here, $y$ is the full-\/order model (FOM) state, $f$ the FOM velocity, $t$ is time, and $R$ is the residual.\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md41}{}\doxysection{API for continuous-\/time systems}\label{md_pages_components_ode_steppers_implicit_autotoc_md41}
 
 \begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// overload 1}}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} SystemType \& system);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// overload 2}}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} Res\textcolor{keywordtype}{id}ualPolicyType, \textcolor{keyword}{class} JacobianPolicyType>}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                            ResidualPolicyType \&\& rPol,}
+\DoxyCodeLine{                            JacobianPolicyType \&\& jPol);}
 
 \end{DoxyCode}
 
 
-where {\ttfamily keyword} is one of\+: {\ttfamily bdf1}, {\ttfamily bdf2}, {\ttfamily cranknicolson}. 
+where\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\ttfamily keyword}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\ttfamily keyword}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
+\endhead
+{\ttfamily bdf1}   &Backward Diff 1st order   &$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
+{\ttfamily bdf2}   &Backward Diff 2nd order   &$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
+{\ttfamily cranknicolson}   &Crank-\/\+Nicolson   &$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md42}{}\doxysection{Parameters}\label{md_pages_components_ode_steppers_implicit_autotoc_md42}
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+:
+\begin{DoxyItemize}
+\item type of the data structure you use for the state
+\end{DoxyItemize}
+\item {\ttfamily System\+Type}\+:
+\begin{DoxyItemize}
+\item class defining how to create an instance of the velocity $f$ and how to compute it;
+\end{DoxyItemize}
+\item {\ttfamily Residual\+Policy\+Type}, {\ttfamily Jacobian\+Policy\+Type}\+:
+\begin{DoxyItemize}
+\item policy types if you want to use custom ones to compute the discrete operators
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Notes\+:
+\begin{DoxyItemize}
+\item if you use the first overload above, pressio uses default policies to compute the residual and jacobian.
+\item the second overload allows you to define custom policies to compute the discrete operators
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md43}{}\doxysection{Requirements}\label{md_pages_components_ode_steppers_implicit_autotoc_md43}
+
+\begin{DoxyItemize}
+\item {\ttfamily State\+Type}\+: must be copy constructible
+\item The system class must conform to the following API\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }SystemForImplicitOde}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type = \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type =  \textcolor{comment}{/* */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&, scalar\_type time, velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} jacobian(\textcolor{keyword}{const} state\_type \&, scalar\_time time, jacobian\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+the nested type aliases must be {\itshape valid} types since they are detected by pressio
+\item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} from {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
+ {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Implicit\+Ode\+::state\+\_\+type$>$\+::value == true}
+\item {\ttfamily Residual\+Policy\+Type} must conform to\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }ResidualPolicy}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type = \textcolor{comment}{/* this type alias needs to be found */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type create() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class} TagType, \textcolor{keyword}{class} AuxStatesType, \textcolor{keyword}{class} AuxRhsType, \textcolor{keyword}{class} TimeType, \textcolor{keyword}{class} StepType>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} compute(\textcolor{keyword}{const} StateType \& y,}
+\DoxyCodeLine{               \textcolor{keyword}{const} AuxStatesType \& auxStates,}
+\DoxyCodeLine{               AuxRhsType \& auxRhs,}
+\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& t,}
+\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& dt,}
+\DoxyCodeLine{               StepType step,}
+\DoxyCodeLine{               residual\_type \& R) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\item {\ttfamily Jacobian\+Policy\+Type}\+: {\itshape todo}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md44}{}\doxysubsection{If you use custom policies\+:}\label{md_pages_components_ode_steppers_implicit_autotoc_md44}
+If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct.
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Tag\+Type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Auxiliary States contain\+:   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Auxiliary RHS contain\+:    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Tag\+Type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Auxiliary States contain\+:   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Auxiliary RHS contain\+:    }\\\cline{1-3}
+\endhead
+{\ttfamily BDF1}   &{\ttfamily y\+\_\+n}   &(no velocities stored)    \\\cline{1-3}
+{\ttfamily BDF2}   &{\ttfamily y\+\_\+n}, {\ttfamily y\+\_\+\{n-\/1\}}   &(no velocities stored)    \\\cline{1-3}
+{\ttfamily Crank\+Nicolson}   &{\ttfamily y\+\_\+n}   &{\ttfamily f\+\_\+n}, {\ttfamily f\+\_\+\{n+1\}}   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md45}{}\doxysection{API for discrete-\/time systems}\label{md_pages_components_ode_steppers_implicit_autotoc_md45}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keywordtype}{int} num\_states, \textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_arbitrary\_stepper(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                              SystemType \&\& system);}
+
+\end{DoxyCode}
+ 

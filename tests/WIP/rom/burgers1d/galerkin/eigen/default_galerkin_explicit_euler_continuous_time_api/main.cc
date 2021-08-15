@@ -48,7 +48,7 @@ struct GalerkinRunnerContinuousTimeApi
     ::pressio::ops::resize(yROM_, romSize);
     ::pressio::ops::fill(yROM_, 0.0);
 
-    using ode_tag = pressio::ode::explicitmethods::Euler;
+    using ode_tag = pressio::ode::ForwardEuler;
     using pressio::rom::galerkin::createDefaultProblem;
     auto Problem = createDefaultProblem<ode_tag>(appobj, decoderObj, yROM_, yRef);
 

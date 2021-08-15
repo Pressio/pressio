@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
   using decoder_jac_t	= pressio::containers::MultiVector<native_mat_t>;
   using decoder_t	= pressio::rom::LinearDecoder<decoder_jac_t, fom_state_t>;
 
-  using ode_name_t = pressio::ode::implicitmethods::Arbitrary;
+  using ode_name_t = pressio::ode::ImplicitArbitrary;
   using stepper_order    = ::pressio::ode::StepperOrder<1>;
   using stepper_n_states = ::pressio::ode::StepperTotalNumberOfStates<2>;
 

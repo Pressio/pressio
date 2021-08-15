@@ -67,7 +67,7 @@ struct MyFakeSolver
   //Constructor for BDF1 with lower triangular Hessian
   MyFakeSolver(int fomSize, int romSize,
 	       std::string & checkString, 
-               ::pressio::ode::implicitmethods::BDF1 odeTag,
+               ::pressio::ode::BDF1 odeTag,
                ::pressio::matrixLowerTriangular hessianStructureTag)
     : fomSize_(fomSize),
       romSize_(romSize),
@@ -120,7 +120,7 @@ struct MyFakeSolver
   //Constructor for BDF1 with upper triangular Hessian
   MyFakeSolver(int fomSize, int romSize,
 	       std::string & checkString, 
-               ::pressio::ode::implicitmethods::BDF1 odeTag,
+               ::pressio::ode::BDF1 odeTag,
                ::pressio::matrixUpperTriangular hessianStructureTag)
     : fomSize_(fomSize),
       romSize_(romSize),
@@ -174,7 +174,7 @@ struct MyFakeSolver
   //Constructor for BDF2 with lower triangular Hessian
   MyFakeSolver(int fomSize, int romSize,
 	       std::string & checkString, 
-               ::pressio::ode::implicitmethods::BDF2 odeTag,
+               ::pressio::ode::ode::BDF2 odeTag,
                ::pressio::matrixLowerTriangular hessianStructureTag)
     : fomSize_(fomSize),
       romSize_(romSize),
@@ -236,7 +236,7 @@ struct MyFakeSolver
   //Constructor for BDF2 with upper triangular Hessian
   MyFakeSolver(int fomSize, int romSize,
 	       std::string & checkString, 
-               ::pressio::ode::implicitmethods::BDF2 odeTag,
+               ::pressio::ode::ode::BDF2 odeTag,
                ::pressio::matrixUpperTriangular hessianStructureTag)
     : fomSize_(fomSize),
       romSize_(romSize),
@@ -383,14 +383,14 @@ int main(int argc, char *argv[])
   std::string checkStr = "PASSED";
 
   // Test for BDF1 with lower triangular
-  auto checkStr1 = doRun<::pressio::ode::implicitmethods::BDF1,
+  auto checkStr1 = doRun<::pressio::ode::BDF1,
                           ::pressio::matrixLowerTriangular>();
   if (checkStr1 == "FAILED"){
     std::cout << "WLS failed on implicit Euler with lower triangular Hessian" << std::endl;
     checkStr = "FAILED";
   }
   // Test for BDF1 with upper triangular
-  auto checkStr2 = doRun<::pressio::ode::implicitmethods::BDF1,
+  auto checkStr2 = doRun<::pressio::ode::BDF1,
                           ::pressio::matrixUpperTriangular>();
   if (checkStr2 == "FAILED"){
     std::cout << "WLS failed on implicit Euler with upper triangular Hessian" << std::endl;
@@ -398,7 +398,7 @@ int main(int argc, char *argv[])
   }
 
    // Test for BDF2 with lower triangular
-  auto checkStr3 = doRun<::pressio::ode::implicitmethods::BDF2,
+  auto checkStr3 = doRun<::pressio::ode::ode::BDF2,
                           ::pressio::matrixLowerTriangular>();
   if (checkStr3 == "FAILED"){
      std::cout << "WLS failed on BDF2 with lower triangular Hessian" << std::endl;
@@ -406,7 +406,7 @@ int main(int argc, char *argv[])
   }
 
    // Test for BDF2 with upper triangular
-  auto checkStr4 = doRun<::pressio::ode::implicitmethods::BDF2,
+  auto checkStr4 = doRun<::pressio::ode::ode::BDF2,
                           ::pressio::matrixUpperTriangular>();
   if (checkStr4 == "FAILED"){
     std::cout << "WLS failed on BDF2 with upper triangular Hessian" << std::endl;

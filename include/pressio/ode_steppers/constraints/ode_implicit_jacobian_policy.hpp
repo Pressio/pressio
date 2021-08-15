@@ -104,17 +104,17 @@ struct implicit_jacobian_policy<
 template<class T, class ... args>
 using implicit_euler_jacobian_policy =
   implicit_jacobian_policy<
-  T, ::pressio::ode::implicitmethods::BDF1, 1, args...>;
+  T, ::pressio::ode::BDF1, 1, args...>;
 
 template<class T, class ... args>
 using implicit_bdf2_jacobian_policy =
   implicit_jacobian_policy<
-  T, ::pressio::ode::implicitmethods::BDF2, 2, args...>;
+  T, ::pressio::ode::BDF2, 2, args...>;
 
 template<class T, class ... args>
 using implicit_cranknicolson_jacobian_policy =
   implicit_jacobian_policy<
-  T, ::pressio::ode::implicitmethods::CrankNicolson, 1, args...>;
+  T, ::pressio::ode::CrankNicolson, 1, args...>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_

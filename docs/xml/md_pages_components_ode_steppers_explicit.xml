@@ -12,7 +12,7 @@
 <title>Overview</title>
 <para>Applicable to systems of the form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
 <para>where <formula id="1">$y$</formula> is the state, <formula id="2">$f$</formula> is the RHS (also called velocity below), <formula id="3">$t$</formula> is time.<linebreak/>
- Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times.</para>
+ Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md34">
 <title>API:</title>
@@ -40,7 +40,10 @@
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
-</listitem><listitem><para>The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitOde</highlight></codeline>
+</listitem><listitem><para>The system class must conform to the following API:</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitOde</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
@@ -51,7 +54,8 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 <para>the nested aliases <computeroutput>scalar_type</computeroutput>, <computeroutput>state_type</computeroutput> and <computeroutput>velocity_type</computeroutput> must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
-</listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> from <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
+<para><itemizedlist>
+<listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> from <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
  <computeroutput>std::is_same&lt;StateType, typename SystemForExplicitOde::state_type&gt;::value == true</computeroutput></para>
 </listitem></itemizedlist>
 </para>
@@ -80,7 +84,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md38">
-<title>Custom types specializations</title>
+<title>Required specializations for custom types</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <computeroutput>double</computeroutput> as value type and <computeroutput>ACustomStateType</computeroutput> is what you use for the state, then before the <computeroutput>main</computeroutput> function you would need to do something like this:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -145,7 +149,8 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>same<sp/>code<sp/>as<sp/>shown<sp/>above</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Note that in the snippet above the order of the include statements matter: this is because your <computeroutput>Trait</computeroutput> and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows: <programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<para>Note that in the snippet above the order of the include statements matter: this is because your <computeroutput>Trait</computeroutput> and kernel specializations need to be found by the compiler. However, to make the code cleaner, you can obviously move all kernels specializations to a separate header file, but make sure to keep the correct order, for example as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;my_specializations.hpp&quot;</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>contains<sp/>all<sp/>your<sp/>specializations</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_explicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>

@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
   using ode_jac_t   = pressio::containers::SparseMatrix<app_jacob_t>;
 
   ode_state_t y(appObj.getGaussianIC(params[1]));
-  using ode_tag = pressio::ode::implicitmethods::CrankNicolson;
+  using ode_tag = pressio::ode::CrankNicolson;
   using stepper_t = pressio::ode::ImplicitStepper<
     ode_tag, ode_state_t, ode_res_t, ode_jac_t, app_t>;
   stepper_t stepperObj(y, appObj);

@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
   rom_state_t romState(romSize);
   pressio::ops::fill(romState, 1.0);
 
-  using odetag = pressio::ode::implicitmethods::BDF1;
+  using odetag = pressio::ode::BDF1;
   // using problem_t  = pressio::rom::lspg::composeDefaultProblem<
   //   odetag, fom_t, decoder_t, rom_state_t>::type;
   // problem_t problem(appObj, decoderObj, romState, refState);

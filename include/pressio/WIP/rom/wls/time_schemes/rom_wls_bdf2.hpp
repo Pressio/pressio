@@ -695,7 +695,7 @@ private:
       fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						   stencilStates_, dt,
-						   ::pressio::ode::implicitmethods::BDF2());
+						   ::pressio::ode::BDF2());
     }
 
     if (step == 0){
@@ -703,7 +703,7 @@ private:
       fomSystemObj.velocity(*fomState.data(), t, *residual.data());
       ::pressio::ode::impl::discrete_time_residual(fomState, residual,
 						   stencilStates_, dt,
-						   ::pressio::ode::implicitmethods::BDF1());
+						   ::pressio::ode::BDF1());
     }
   }
 

@@ -169,7 +169,7 @@ struct EulerGalerkinWithVelocityApi
     pressio::ops::resize(yROM_, romSize);
     pressio::ops::fill(yROM_, pressio::utils::Constants<scalar_t>::zero());
 
-    using ode_tag = pressio::ode::explicitmethods::Euler;
+    using ode_tag = pressio::ode::ForwardEuler;
     // using problem_t  = pressio::rom::galerkin::composeDefaultProblem<
     //   ode_tag, fom_t, decoder_t, rom_state_t, ops_t>::type;
     // problem_t galerkinProb(fomObj, decoderObj, yROM_, y0n, myOps);

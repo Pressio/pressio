@@ -67,7 +67,7 @@ void discrete_time_residual(const StateType & y_np1,
 			    ResidualType & R,
 			    const StencilStatesContainerType & stencilStates,
 			    const ScalarType & dt,
-			    ::pressio::ode::implicitmethods::BDF1)
+			    ::pressio::ode::BDF1)
 {
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<ScalarType>::c_n_;
@@ -93,7 +93,7 @@ void discrete_time_residual(const StateType	& y_np1,
 			    ResidualType & R,
 			    const StencilStatesContainerType & stencilStates,
 			    const ScalarType & dt,
-			    ::pressio::ode::implicitmethods::BDF2)
+			    ::pressio::ode::BDF2)
 {
   using nm1 = ode::nMinusOne;
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
@@ -127,7 +127,7 @@ void discrete_time_residual(const StateType & y_np1,
 			    const StencilStatesContainerType & stencilStates,
 			    const StencilVelocitiesContainerType & stencilVelocities,
 			    const ScalarType & dt,
-			    ::pressio::ode::implicitmethods::CrankNicolson)
+			    ::pressio::ode::CrankNicolson)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
   constexpr auto cnp1  = cnst::c_np1_;

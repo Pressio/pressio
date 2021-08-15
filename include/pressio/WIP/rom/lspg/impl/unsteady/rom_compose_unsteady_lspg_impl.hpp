@@ -96,9 +96,9 @@ template <typename tag>
 struct valid_stepper_tag_continuous_time_api
 {
   static_assert
-  (std::is_same<tag, ::pressio::ode::implicitmethods::BDF1>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::BDF2>::value or
-   std::is_same<tag, ::pressio::ode::implicitmethods::CrankNicolson>::value,
+  (std::is_same<tag, ::pressio::ode::BDF1>::value or
+   std::is_same<tag, ::pressio::ode::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::CrankNicolson>::value,
    "The implicit stepper tag you are passing to create the LSPG problem \
 is not supported: this can be because the current LSPG implementation does \
 not support it, or because you added a new ode scheme in the ode package \
@@ -467,7 +467,7 @@ struct composeUnsteady<
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
@@ -526,7 +526,7 @@ struct composeUnsteady<
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, precond_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
@@ -554,7 +554,7 @@ struct composeUnsteady<
   stepper_tag, fom_system_type, decoder_type, lspg_state_type, masker_type, Args...>
 {
   static_assert
-  (std::is_same< stepper_tag, ::pressio::ode::implicitmethods::Arbitrary>::value,
+  (std::is_same< stepper_tag, ::pressio::ode::ImplicitArbitrary>::value,
    "LSPG with discrete-time API currently accepts Arbitrary stepper");
 
   using type =
