@@ -49,6 +49,8 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_SSP_RUNGE_KUTTA3_STEPPER_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_SSP_RUNGE_KUTTA3_STEPPER_IMPL_HPP_
 
+#include <array>
+
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
@@ -116,22 +118,22 @@ public:
     // rhs(u_n, t_n)
     systemObj_.get().velocity(odeSolution, time, rhs0);
     // u_1 = u_n + dt * rhs(u_n, t_n)
-    ::pressio::ops::update(auxiliaryState_, zero, 
-                           odeSolution,     one, 
+    ::pressio::ops::update(auxiliaryState_, zero,
+                           odeSolution,     one,
                            rhs0,            dt);
 
     // rhs(u_1, t_n+dt)
     systemObj_.get().velocity(auxiliaryState_, time+dt, rhs0);
     // u_2 = 3/4*u_n + 1/4*u_1 + 1/4*dt*rhs(u_1, t_n+dt)
     ::pressio::ops::update(auxiliaryState_, fourInv,
-		                       odeSolution,     threeOvFour, 
+		                       odeSolution,     threeOvFour,
                            rhs0,            fourInv*dt);
 
     // rhs(u_2, t_n + 0.5*dt)
     systemObj_.get().velocity(auxiliaryState_, time + oneOvTwo*dt, rhs0);
     // u_n+1 = 1/3*u_n + 2/3*u_2 + 2/3*dt*rhs(u_2, t_n+0.5*dt)
     ::pressio::ops::update(odeSolution,     oneOvThree,
-		                       auxiliaryState_, twoOvThree, 
+		                       auxiliaryState_, twoOvThree,
                            rhs0,            twoOvThree*dt);
   }
 };

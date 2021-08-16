@@ -140,7 +140,7 @@ $g$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-103'/>
 </g>
-</svg> is the mapping between the two.</p><section id="autotoc_md76"><h2><a href="#autotoc_md76">Linear</a></h2><p>If <svg class="m-math" style="width: 0.629em; height: 0.778em; vertical-align: -0.243em;" viewBox="0 -5.147373 6.03426 7.47198">
+</svg> is the mapping between the two.</p><section id="autotoc_md80"><h2><a href="#autotoc_md80">Linear</a></h2><p>If <svg class="m-math" style="width: 0.629em; height: 0.778em; vertical-align: -0.243em;" viewBox="0 -5.147373 6.03426 7.47198">
 <title>
 $g$
 </title>
@@ -216,7 +216,7 @@ $\phi$
 <use x='212.65971' y='-10.525258' xlink:href='#eq8-g1-30'/>
 <use x='219.587812' y='-10.525258' xlink:href='#eq8-g1-58'/>
 </g>
-</svg></div><p>Graphically, this corresponds to:</p><img class="m-image" src="decoder.png" alt="Image" style="width: 20%;" /><p>In the C++ library, the class representing the linear decoder is:</p><pre class="m-code"><span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">LinearDecoder</span><span class="o">&lt;</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span></pre></section><section id="autotoc_md77"><h2><a href="#autotoc_md77">Generic decoder API</a></h2><p>If you want to use your own decoder, you can write a custom one that should meet the following API.</p><pre class="m-code"><span class="k">struct</span> <span class="nc">CustomDecoder</span>
+</svg></div><p>Graphically, this corresponds to:</p><img class="m-image" src="decoder.png" alt="Image" style="width: 20%;" /><p>In the C++ library, the class representing the linear decoder is:</p><pre class="m-code"><span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="o">::</span><span class="n">LinearDecoder</span><span class="o">&lt;</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span></pre></section><section id="autotoc_md81"><h2><a href="#autotoc_md81">Generic decoder API</a></h2><p>If you want to use your own decoder, you can write a custom one that should meet the following API.</p><pre class="m-code"><span class="k">struct</span> <span class="nc">CustomDecoder</span>
 <span class="p">{</span>
   <span class="c1">// natives types</span>
   <span class="k">using</span> <span class="n">native_fom_state_type</span> <span class="o">=</span> <span class="p">;</span> 

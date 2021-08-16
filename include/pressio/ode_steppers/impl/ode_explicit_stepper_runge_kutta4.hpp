@@ -49,6 +49,8 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_RUNGE_KUTTA4_STEPPER_IMPL_HPP_
 
+#include <array>
+
 namespace pressio{ namespace ode{ namespace impl{
 
 template<
@@ -80,9 +82,9 @@ public:
   ExplicitRungeKutta4Stepper(const StateType & state,
                                  SystemType && systemObj)
     : systemObj_(std::forward<SystemType>(systemObj)),
-      velocities_{systemObj.createVelocity(), 
-                  systemObj.createVelocity(), 
-                  systemObj.createVelocity(), 
+      velocities_{systemObj.createVelocity(),
+                  systemObj.createVelocity(),
+                  systemObj.createVelocity(),
                   systemObj.createVelocity()},
       auxiliaryState_{::pressio::ops::clone(state)}
   {}
@@ -146,11 +148,11 @@ private:
 
   template<class rhs_t>
   void stage_update_impl(StateType & stateIn,
-		    const rhs_t & rhsIn0, 
+		    const rhs_t & rhsIn0,
         const rhs_t & rhsIn1,
-		    const rhs_t & rhsIn2, 
+		    const rhs_t & rhsIn2,
         const rhs_t & rhsIn3,
-		    ScalarType dt6, 
+		    ScalarType dt6,
         ScalarType dt3)
   {
     constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();

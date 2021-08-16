@@ -96,8 +96,7 @@ int main()
 When using custom data types not supported in [pressio ops](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html), you need to provide specializations of a trait class and certain operations
 and make them "visible" to the compiler to find them and such that pressio can operate on your data.
 For the sake of explanation, suppose that you use `double`
-as value type and `ACustomStateType` is what you use for the state, then before the `main` function
-you would need to do something like this:
+as value type and `ACustomStateType` is what you use for the state, then you would need to do something like this:
 
 ```cpp
 #include "pressio/type_traits.hpp"

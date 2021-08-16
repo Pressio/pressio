@@ -49,6 +49,8 @@
 #ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 #define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
 
+#include <array>
+
 namespace pressio{ namespace ode{ namespace impl{
 
 template<

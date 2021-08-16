@@ -8,7 +8,7 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge projection-based reduced order models (pROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, which is one component of the <ulink url="https://pressio.github.io/">Pressio project</ulink>.</para>
-<sect1 id="index_1autotoc_md62">
+<sect1 id="index_1autotoc_md66">
 <title>In a nutshell</title>
 <para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
 <para>Here, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
@@ -16,7 +16,7 @@
 <para><image type="html" name="frontpageschem.svg" width="70%"></image>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md63">
+<sect1 id="index_1autotoc_md67">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para>learn about the <ulink url="./md_pages_getstarted_build_and_install.html">installation process</ulink></para>
@@ -26,12 +26,12 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md64">
+<sect1 id="index_1autotoc_md68">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md65">
+<sect1 id="index_1autotoc_md69">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

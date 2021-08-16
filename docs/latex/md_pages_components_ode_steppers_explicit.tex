@@ -78,7 +78,7 @@ the nested aliases {\ttfamily scalar\+\_\+type}, {\ttfamily state\+\_\+type} and
 
 \end{DoxyCode}
 \hypertarget{md_pages_components_ode_steppers_explicit_autotoc_md38}{}\doxysection{Required specializations for custom types}\label{md_pages_components_ode_steppers_explicit_autotoc_md38}
-When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type and {\ttfamily ACustom\+State\+Type} is what you use for the state, then before the {\ttfamily main} function you would need to do something like this\+:
+When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type and {\ttfamily ACustom\+State\+Type} is what you use for the state, then you would need to do something like this\+:
 
 
 \begin{DoxyCode}{0}
