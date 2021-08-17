@@ -1,6 +1,6 @@
 Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md8}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_autotoc_md8}
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md13}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_autotoc_md13}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
@@ -17,8 +17,8 @@ Gauss-\/\+Newton (via QR)   &Nonlinear least-\/squares problem.   &\href{https:/
 Levenberg–\+Marquardt   &Nonlinear least-\/squares problem.   &\href{https://en.wikipedia.org/wiki/Levenberg\%E2\%80\%93Marquardt_algorithm}{\texttt{ l1}}    \\\cline{1-3}
 Iteratively reweighted least squares   &optimization problem formulated in a p-\/norm   &\href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ l1}}   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md9}{}\doxysection{Newthon-\/\+Raphson}\label{md_pages_components_nonlinsolvers_autotoc_md9}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md10}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md10}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md14}{}\doxysection{Newthon-\/\+Raphson}\label{md_pages_components_nonlinsolvers_autotoc_md14}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md15}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md15}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} ProblemClassType, \textcolor{keyword}{class} StateType, \textcolor{keyword}{class} LinearSolverType>}
@@ -46,7 +46,7 @@ Iteratively reweighted least squares   &optimization problem formulated in a p-\
 \item self-\/explanatory
 \item Requirements\+: must conform to this \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_linsolvers.html}{\texttt{ API}}
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md11}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md11}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md16}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md16}
 When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use\+:
 
 
@@ -102,7 +102,7 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{\textcolor{comment}{\}\}//end namepsace pressio::ops}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md12}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md12}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md17}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md17}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
@@ -125,25 +125,25 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md13}{}\doxysection{Gauss-\/\+Newton via Normal-\/\+Equations}\label{md_pages_components_nonlinsolvers_autotoc_md13}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md14}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md14}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md15}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md15}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md16}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md16}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md17}{}\doxysection{Gauss-\/\+Newton via QR factorization}\label{md_pages_components_nonlinsolvers_autotoc_md17}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md18}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md18}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md19}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md19}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md20}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md20}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md21}{}\doxysection{Levenberg–\+Marquardt}\label{md_pages_components_nonlinsolvers_autotoc_md21}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md22}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md22}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md23}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md23}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md24}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md24}
-\hypertarget{md_pages_components_nonlinsolvers_autotoc_md25}{}\doxysection{General solver settings}\label{md_pages_components_nonlinsolvers_autotoc_md25}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md18}{}\doxysection{Gauss-\/\+Newton via Normal-\/\+Equations}\label{md_pages_components_nonlinsolvers_autotoc_md18}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md19}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md19}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md20}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md20}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md21}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md21}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md22}{}\doxysection{Gauss-\/\+Newton via QR factorization}\label{md_pages_components_nonlinsolvers_autotoc_md22}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md23}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md23}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md24}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md24}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md25}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md25}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md26}{}\doxysection{Levenberg–\+Marquardt}\label{md_pages_components_nonlinsolvers_autotoc_md26}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md27}{}\doxysubsection{API, Parameters and Requirements}\label{md_pages_components_nonlinsolvers_autotoc_md27}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md28}{}\doxysubsection{Ops}\label{md_pages_components_nonlinsolvers_autotoc_md28}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md29}{}\doxysubsection{Example usage}\label{md_pages_components_nonlinsolvers_autotoc_md29}
+\hypertarget{md_pages_components_nonlinsolvers_autotoc_md30}{}\doxysection{General solver settings}\label{md_pages_components_nonlinsolvers_autotoc_md30}
 
 \begin{DoxyItemize}
 \item convergence criterion
 \item logging
 \item updating step, choices and custom
-\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md26}{}\doxysection{Problem Classes}\label{md_pages_components_nonlinsolvers_autotoc_md26}
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_autotoc_md31}{}\doxysection{Problem Classes}\label{md_pages_components_nonlinsolvers_autotoc_md31}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }ProblemResJac}

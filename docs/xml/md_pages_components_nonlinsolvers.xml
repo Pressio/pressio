@@ -8,7 +8,7 @@
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md8">
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md13">
 <title>Overview</title>
 <para><table rows="6" cols="3"><row>
 <entry thead="yes"><para>Name   </para>
@@ -43,9 +43,9 @@
 </table>
 </para>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md9">
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md14">
 <title>Newthon-Raphson</title>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md10">
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md15">
 <title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ProblemClassType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>LinearSolverType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_newton_raphson(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProblemClassType<sp/>&amp;<sp/>system,</highlight></codeline>
@@ -71,7 +71,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md11">
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md16">
 <title>Ops</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
@@ -119,7 +119,7 @@
 <codeline><highlight class="comment">}}//end<sp/>namepsace<sp/>pressio::ops</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md12">
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md17">
 <title>Example usage</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
@@ -142,43 +142,43 @@
 </programlisting></para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md13">
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md18">
 <title>Gauss-Newton via Normal-Equations</title>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md14">
-<title>API, Parameters and Requirements</title>
-</sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md15">
-<title>Ops</title>
-</sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md16">
-<title>Example usage</title>
-</sect2>
-</sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md17">
-<title>Gauss-Newton via QR factorization</title>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md18">
-<title>API, Parameters and Requirements</title>
-</sect2>
 <sect2 id="md_pages_components_nonlinsolvers_1autotoc_md19">
-<title>Ops</title>
+<title>API, Parameters and Requirements</title>
 </sect2>
 <sect2 id="md_pages_components_nonlinsolvers_1autotoc_md20">
-<title>Example usage</title>
-</sect2>
-</sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md21">
-<title>Levenberg–Marquardt</title>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md22">
-<title>API, Parameters and Requirements</title>
-</sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md23">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md24">
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md21">
 <title>Example usage</title>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md25">
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md22">
+<title>Gauss-Newton via QR factorization</title>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md23">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md24">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md25">
+<title>Example usage</title>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md26">
+<title>Levenberg–Marquardt</title>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md27">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md28">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_1autotoc_md29">
+<title>Example usage</title>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md30">
 <title>General solver settings</title>
 <para><itemizedlist>
 <listitem><para>convergence criterion</para>
@@ -187,7 +187,7 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md26">
+<sect1 id="md_pages_components_nonlinsolvers_1autotoc_md31">
 <title>Problem Classes</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemResJac</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "pressio/mpl.hpp"
 
-TEST(containers_meta_basic, isDefaultConstructible){
+TEST(mpl, isDefaultConstructible){
   using namespace pressio;
 
   class A{
@@ -24,7 +24,7 @@ TEST(containers_meta_basic, isDefaultConstructible){
   EXPECT_EQ( mpl::is_default_constructible<C>::value, false);
 }
 
-TEST(containers_meta_basic, isComplexNumber){
+TEST(mpl, isComplexNumber){
   using namespace pressio;
 
   using t1 = std::complex<float>;
@@ -35,5 +35,13 @@ TEST(containers_meta_basic, isComplexNumber){
   static_assert( mpl::is_std_complex<t3>::value, "should be complex" );
   using t4 = double;
   static_assert( !mpl::is_std_complex<t4>::value, "should not be complex" );
+}
+
+TEST(mpl, subscriptable)
+{
+  using namespace pressio;
+
+  using T = std::vector<double>;
+  static_assert( mpl::is_subscriptable_as<T, int>::value, "" );
 }
 

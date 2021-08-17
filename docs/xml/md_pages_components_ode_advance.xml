@@ -8,12 +8,12 @@
     <detaileddescription>
 <para>Defined in header: <computeroutput>&lt;pressio/ode_advancers.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md28">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md33">
 <title>Overview</title>
 <para>Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of &quot;state&quot; that defines your information at a specific step, and a &quot;stepper&quot; object, i.e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a &quot;steppable&quot; object and might need different strategies to advance such objects.</para>
 <para>The pressio <emphasis>advancers</emphasis> provide functionalities for exactly this purpose, i.e. &quot;advancing&quot; a generic object that satisfies the &quot;steppable&quot; concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be <emphasis>time integration</emphasis> of time-dependent dynamical systems.</para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md29">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md34">
 <title>API Synopsis:</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepperType,</highlight></codeline>
@@ -74,7 +74,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Args<sp/>&amp;&amp;<sp/>...<sp/>args);</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md30">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md35">
 <title>Parameters</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StepperType</computeroutput>:<itemizedlist>
@@ -104,7 +104,7 @@
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="md_pages_components_ode_advance_1autotoc_md31">
+<sect1 id="md_pages_components_ode_advance_1autotoc_md36">
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para>The stepper class must conform to the following API:</para>

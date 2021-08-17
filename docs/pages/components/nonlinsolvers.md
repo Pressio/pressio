@@ -10,13 +10,13 @@ Public namespace: `pressio::nonlinearsolvers`
 
 | Name                                	| Use for:                                         	| Useful math links   	|
 |--------------------------------------	|---------------------------------------------	|----------------	|
-| Newthon-Raphson                      	| Systems of nonlinear equations              	| [l1](https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf), [l2](https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf) 	|
+| Newton-Raphson                      	| Systems of nonlinear equations              	| [l1](https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf), [l2](https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf) 	|
 | Gauss-Newton (normal equations)      	| Nonlinear least-squares problem.            	| [l1](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm)               	|
 | Gauss-Newton (via QR)                	| Nonlinear least-squares problem.            	| [l1](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm)               	|
 | Levenberg–Marquardt                  	| Nonlinear least-squares problem.            	| [l1](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm)               	|
 | Iteratively reweighted least squares 	| optimization problem formulated in a p-norm 	| [l1](https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares) |
 
-## Newthon-Raphson
+## Newton-Raphson
 
 ### API, Parameters and Requirements
 ```cpp
