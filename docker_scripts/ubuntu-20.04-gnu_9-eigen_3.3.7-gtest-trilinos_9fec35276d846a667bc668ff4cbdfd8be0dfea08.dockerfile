@@ -3,7 +3,7 @@ FROM ubuntu:focal
 ARG TZ=Europe/Warsaw
 ARG CMAKE_VERSION=3.16.8
 ARG GNU_VER=9
-ARG GCC=gcc-$GNU_VER
+ARG CC=gcc-$GNU_VER
 ARG CXX=g++-$GNU_VER
 ARG GFORTRAN=gfortran-$GNU_VER
 
@@ -28,8 +28,8 @@ RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_
 RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
 
 # Compilers installation
-RUN apt-get install -y $GCC $CXX $GFORTRAN
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/$GCC 10
+RUN apt-get install -y $CC $CXX $GFORTRAN
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/$CC 10
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/$CXX 10
 RUN update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/$GFORTRAN 10
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20
