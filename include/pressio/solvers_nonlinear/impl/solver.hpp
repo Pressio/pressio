@@ -49,6 +49,7 @@
 #ifndef SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 #define SOLVERS_NONLINEAR_IMPL_SOLVER_HPP_
 
+#include <array>
 #include "solvers_iterative_base.hpp"
 #include <typeinfo>
 
