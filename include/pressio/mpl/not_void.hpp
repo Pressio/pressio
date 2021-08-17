@@ -52,10 +52,11 @@
 namespace pressio { namespace mpl {
 
 template<class T>
-struct not_void: std::true_type {};
-
-template<>
-struct not_void<void> : std::false_type {};
+struct not_void
+{
+  static constexpr bool value =
+    !std::is_same<void, typename std::remove_cv<T>>::value;
+};
 
 }} // end namespace pressio::mpl
 

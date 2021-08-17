@@ -63,12 +63,6 @@
 #include "remove_cvref.hpp"
 #include "remove_reference.hpp"
 #include "not_void.hpp"
-
-#include "has_addition_assign_operator.hpp"
-#include "has_addition_operator.hpp"
-#include "has_multiplication_operator.hpp"
-#include "has_subscript_operator.hpp"
-#include "has_subtraction_assign_operator.hpp"
-#include "has_subtraction_operator.hpp"
+#include "is_subscriptable_as.hpp"
 
 #endif  // MPL_MPL_NON_VARIADIC_HPP_

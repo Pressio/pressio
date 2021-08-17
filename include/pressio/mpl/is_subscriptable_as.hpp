@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// has_addition_operator.hpp
+// has_subscript_operator.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,24 +46,26 @@
 //@HEADER
 */
 
-#ifndef MPL_HAS_ADDITION_OPERATOR_HPP_
-#define MPL_HAS_ADDITION_OPERATOR_HPP_
+#ifndef MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
+#define MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
 
 namespace pressio{ namespace mpl{
 
-template<typename T, typename U=T, typename enable = void>
-struct has_addition_op : std::false_type { };
+template<class T, class ord_t, class enable = void>
+struct is_subscriptable_as : std::false_type{};
 
-template<typename T, typename U>
-struct has_addition_op<
-  T,U,
+template<class T, class ord_t>
+struct is_subscriptable_as<
+  T,
+  ord_t,
   typename
   std::enable_if<
-    !std::is_void<decltype(std::declval<T>() +
-			   std::declval<U>())
+    !std::is_void<decltype(
+			   std::declval<T>()[std::declval<ord_t>()]
+			   )
 		  >::value
     >::type
-  > : std::true_type{};
+  > : std::true_type { };
 
 }} // namespace
-#endif  // MPL_HAS_ADDITION_OPERATOR_HPP_
+#endif  // MPL_HAS_SUBSCRIPT_OPERATOR_HPP_
