@@ -182,7 +182,7 @@ product(::pressio::transpose modeA,
 template <typename C_type, typename A_type, typename scalar_type>
 ::pressio::mpl::enable_if_t<
   ::pressio::is_multi_vector_tpetra<A_type>::value and
-  ::pressio::is_dense_dynamic_matrix_eigen<C_type>::value,
+  ::pressio::is_dynamic_dense_matrix_eigen<C_type>::value,
   C_type
   >
 product(::pressio::transpose modeA,

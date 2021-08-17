@@ -54,14 +54,14 @@
 namespace pressio{ 
 
 template <typename T, typename enable = void>
-struct is_dense_static_matrix_eigen : std::false_type {};
+struct is_static_dense_matrix_eigen : std::false_type {};
 
 /* T is a dense STATIC eigen matrix if
  * T is not an eigen vector
  * rows and cols are not = Eigen:Dynamic
  */
 template<typename T>
-struct is_dense_static_matrix_eigen<
+struct is_static_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
@@ -76,7 +76,7 @@ struct is_dense_static_matrix_eigen<
 //----------------------------------------------------------------------
 
 template <typename T, typename enable = void>
-struct is_dense_dynamic_matrix_eigen : std::false_type {};
+struct is_dynamic_dense_matrix_eigen : std::false_type {};
 
 /* T is a dense DYNAMIC eigen matrix if
  * is not an eigen vector
@@ -84,11 +84,11 @@ struct is_dense_dynamic_matrix_eigen : std::false_type {};
  * both # rows and cols are dynamic
 */
 template<typename T>
-struct is_dense_dynamic_matrix_eigen<
+struct is_dynamic_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
-    !is_dense_static_matrix_eigen<T>::value and
+    !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
       typename std::remove_cv<T>::type,
       Eigen::Matrix<
@@ -107,11 +107,11 @@ struct is_dense_dynamic_matrix_eigen<
  * # of rows is static but cols are dynamic
 */
 template<typename T>
-struct is_dense_dynamic_matrix_eigen<
+struct is_dynamic_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
-    !is_dense_static_matrix_eigen<T>::value and
+    !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
       typename std::remove_cv<T>::type,
       Eigen::Matrix<
@@ -131,11 +131,11 @@ struct is_dense_dynamic_matrix_eigen<
  * # of rows is dynamic but cols are static
 */
 template<typename T>
-struct is_dense_dynamic_matrix_eigen<
+struct is_dynamic_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
     !is_vector_eigen<T>::value and
-    !is_dense_static_matrix_eigen<T>::value and
+    !is_static_dense_matrix_eigen<T>::value and
     std::is_same<
       typename std::remove_cv<T>::type,
       Eigen::Matrix<
@@ -157,8 +157,8 @@ template<typename T>
 struct is_dense_row_major_matrix_eigen<
   T,
   mpl::enable_if_t<
-    (is_dense_static_matrix_eigen<T>::value or
-    is_dense_dynamic_matrix_eigen<T>::value) and
+    (is_static_dense_matrix_eigen<T>::value or
+    is_dynamic_dense_matrix_eigen<T>::value) and
     int(T::IsRowMajor)==1
     >
   > : std::true_type{};
@@ -171,8 +171,8 @@ template<typename T>
 struct is_dense_matrix_eigen<
   T,
   mpl::enable_if_t<
-    is_dense_static_matrix_eigen<T>::value or
-    is_dense_dynamic_matrix_eigen<T>::value
+    is_static_dense_matrix_eigen<T>::value or
+    is_dynamic_dense_matrix_eigen<T>::value
     >
   > : std::true_type{};
 

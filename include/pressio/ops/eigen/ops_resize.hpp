@@ -73,7 +73,7 @@ resize(T & o, const typename ::pressio::Traits<T>::size_type newRows,
   const typename ::pressio::Traits<T>::size_type newCols)
 {
   static_assert(
-    ::pressio::is_dense_dynamic_matrix_eigen<T>::value,
+    ::pressio::is_dynamic_dense_matrix_eigen<T>::value,
     "You cannot resize a static Eigen.");
 
   o.resize(newRows, newCols);
