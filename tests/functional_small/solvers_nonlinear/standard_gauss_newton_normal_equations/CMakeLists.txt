@@ -2,6 +2,11 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../problems)
 
 if(PRESSIO_ENABLE_TPL_EIGEN)
+  # this test is here because uses Eigen vector/matrix for least-squares operators
+  # while using custom types for the system residual/jacobian
+  set(fname gn_normal_eq_res_jac_api_rosenbrock4_custom_types)
+  add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
+
   set(fname gn_normal_eq_exp_data_fit_n2_eigen)
   add_serial_exe_and_test(${fname} ${ROOTNAME} ${CMAKE_CURRENT_SOURCE_DIR}/${fname}.cc "PASSED")
 
