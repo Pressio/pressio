@@ -10,7 +10,7 @@ jobs:
         pressio_dir: /__w/pressio/pressio
         target_dir: /out
         eigen_path: /usr/local/eigen
-        gtest_path: /usr/local/gtest
+        gtest_path: /usr/local/gtest/install
       steps:
         - uses: actions/checkout@v2
         - name: Run pressio tests
