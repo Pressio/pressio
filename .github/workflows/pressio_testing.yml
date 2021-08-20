@@ -17,5 +17,8 @@ jobs:
             echo $(pwd)
             which gcc
             ls
+            echo =======================
             ls ../
+            echo =======================
+            ls /__w
           name: Checking path
