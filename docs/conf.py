@@ -8,29 +8,34 @@ LINKS_NAVBAR1 = [
 
   ("<a href=\"md_pages_installation.html\">Installation and Dependencies</a>", []),
 
-  ("<a href=\"md_pages_components.html\">Components</a>",
+  # ("<a href=\"md_pages_components.html\">Components</a>",
+  ("<a>Documentation</a>",
    [
      ("<a href=\"md_pages_components_mpl.html\">mpl</a>",),
+     ("<a href=\"md_pages_components_utils.html\">utils</a>",),
      ("<a href=\"md_pages_components_type_traits.html\">type_traits</a>",),
      ("<a href=\"md_pages_components_expressions.html\">expressions</a>",),
      ("<a href=\"md_pages_components_ops.html\">ops</a>",),
      ("<a href=\"md_pages_components_qr.html\">qr</a>",),
      ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
-     ("<a href=\"md_pages_components_nonlinsolvers.html\">nonlinear solvers</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_general.html\">nonlinear solvers: general</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_nr.html\">nonlinear solvers: Newton-Raphson</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_gn.html\">nonlinear solvers: Gauss-Newton</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_lm.html\">nonlinear solvers: Levenberg-Marquardt</a>",),
      ("<a href=\"md_pages_components_ode_advance.html\">ode advancers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_explicit.html\">ode explicit steppers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_implicit.html\">ode implicit steppers</a>",),
-     ("<a href=\"md_pages_components_rom.html\">rom</a>",)
+     ("<a href=\"md_pages_components_rom_general.html\">rom: general</a>",),
+     ("<a href=\"md_pages_components_rom_decoder.html\">rom: decoder</a>",),
+     ("<a href=\"md_pages_components_rom_galerkin.html\">rom: Galerkin </a>",),
+     ("<a href=\"md_pages_components_rom_lspg.html\">rom: LSPG</a>",),
+     ("<a href=\"md_pages_components_rom_wls.html\">rom: WLS</a>",),
+     ("<a href=\"md_pages_components_rom_hyperreduction.html\">rom: hyper-reduction</a>",),
    ]),
 
   ("<a href=\"md_pages_tutorials.html\">Tutorials</a>", []),
 
-  ("<a href=\"md_pages_hyperreduction.html\">Hyper-reduction</a>",
-   [
-     ("<a href=\"md_pages_hyperreduction_hyperred_how_to_enable.html\">How to enable hyperreduction</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_eigen_example.html\">Eigen example</a>",),
-     ("<a href=\"md_pages_hyperreduction_hyperred_tpetra_example.html\">Tpetra example</a>",)
-   ]),
+  ("<a href=\"https://github.com/Pressio/pressio\">Github Page</a>", []),
 
   # # core concepts
   # ("<a>Core Concepts</a>",

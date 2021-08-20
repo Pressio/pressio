@@ -1,0 +1,117 @@
+Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md13}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_general_autotoc_md13}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Use for\+:   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Useful math links    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Use for\+:   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Useful math links    }\\\cline{1-3}
+\endhead
+Newton-\/\+Raphson   &Systems of nonlinear equations   &\href{https://link.springer.com/content/pdf/bbm\%3A978-3-319-69407-8\%2F1.pdf}{\texttt{ l1}}, \href{https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf}{\texttt{ l2}}    \\\cline{1-3}
+Gauss-\/\+Newton   &Nonlinear least-\/squares problem.   &\href{https://en.wikipedia.org/wiki/Gauss\%E2\%80\%93Newton_algorithm}{\texttt{ l1}}    \\\cline{1-3}
+Levenberg–\+Marquardt   &Nonlinear least-\/squares problem.   &\href{https://en.wikipedia.org/wiki/Levenberg\%E2\%80\%93Marquardt_algorithm}{\texttt{ l1}}    \\\cline{1-3}
+Iteratively reweighted least squares   &optimization problem formulated in a p-\/norm   &\href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ l1}}   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md14}{}\doxysection{General solver settings}\label{md_pages_components_nonlinsolvers_general_autotoc_md14}
+
+\begin{DoxyItemize}
+\item convergence criterion
+\item logging
+\item updating step, choices and custom
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md15}{}\doxysection{Problem APIs}\label{md_pages_components_nonlinsolvers_general_autotoc_md15}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }ProblemResJac}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* your type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residual(\textcolor{keyword}{const} state\_type\& x, residual\_type \& res) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} jacobian(\textcolor{keyword}{const} state\_type\& x, jacobian\_type \& jac) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }ProblemFusedResJac}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type    = \textcolor{comment}{/* your type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type     = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} residual\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  residual\_type createResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residualAndJacobian(\textcolor{keyword}{const} state\_type\& x,}
+\DoxyCodeLine{                           residual\_type \& res,}
+\DoxyCodeLine{                           jacobian\_type \& jac,}
+\DoxyCodeLine{                           \textcolor{keywordtype}{bool} recomputeJacobian) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }ProblemHessGrad}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* your type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} hessian\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} gradient\_type = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  hessian\_type createHessian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  gradient\_type createGradient() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residualNorm(\textcolor{keyword}{const} state\_type \& state,}
+\DoxyCodeLine{                    pressio::Norm normKind,}
+\DoxyCodeLine{                    scalar\_type \& resNorm) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} gradient(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                gradient\_type \&,}
+\DoxyCodeLine{                pressio::Norm normKind,}
+\DoxyCodeLine{                scalar\_type \& normResidual,}
+\DoxyCodeLine{                \textcolor{keywordtype}{bool} recomputeJacobian) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} hessian(\textcolor{keyword}{const} state\_type \&, hessian\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }ProblemHessGradFused}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* your type */}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} hessian\_type  = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} gradient\_type = \textcolor{comment}{/* your type */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  hessian\_type createHessian() \textcolor{keyword}{const};}
+\DoxyCodeLine{  gradient\_type createGradient() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} residualNorm(\textcolor{keyword}{const} state\_type \& state,}
+\DoxyCodeLine{                    pressio::Norm normKind,}
+\DoxyCodeLine{                    scalar\_type \& resNorm) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} hessianAndGradient(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                          hessian\_type \&,}
+\DoxyCodeLine{                          gradient\_type \&,}
+\DoxyCodeLine{                          pressio::Norm normKind,}
+\DoxyCodeLine{                          scalar\_type \& normResidual,}
+\DoxyCodeLine{                          \textcolor{keywordtype}{bool} recomputeJacobian) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ 

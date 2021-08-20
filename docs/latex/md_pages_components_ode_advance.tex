@@ -1,9 +1,9 @@
 Defined in header\+: {\ttfamily $<$pressio/ode\+\_\+advancers.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_advance_autotoc_md33}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md33}
+Public namespace\+: {\ttfamily pressio\+::ode}\hypertarget{md_pages_components_ode_advance_autotoc_md36}{}\doxysection{Overview}\label{md_pages_components_ode_advance_autotoc_md36}
 Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of \char`\"{}state\char`\"{} that defines your information at a specific step, and a \char`\"{}stepper\char`\"{} object, i.\+e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a \char`\"{}steppable\char`\"{} object and might need different strategies to advance such objects.
 
-The pressio {\itshape advancers} provide functionalities for exactly this purpose, i.\+e. \char`\"{}advancing\char`\"{} a generic object that satisfies the \char`\"{}steppable\char`\"{} concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be {\itshape time integration} of time-\/dependent dynamical systems.\hypertarget{md_pages_components_ode_advance_autotoc_md34}{}\doxysection{API Synopsis\+:}\label{md_pages_components_ode_advance_autotoc_md34}
+The pressio {\itshape advancers} provide functionalities for exactly this purpose, i.\+e. \char`\"{}advancing\char`\"{} a generic object that satisfies the \char`\"{}steppable\char`\"{} concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be {\itshape time integration} of time-\/dependent dynamical systems.\hypertarget{md_pages_components_ode_advance_autotoc_md37}{}\doxysection{API Synopsis\+:}\label{md_pages_components_ode_advance_autotoc_md37}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<}
@@ -65,7 +65,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \DoxyCodeLine{                                 Args \&\& ... args);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_advance_autotoc_md35}{}\doxysection{Parameters}\label{md_pages_components_ode_advance_autotoc_md35}
+\hypertarget{md_pages_components_ode_advance_autotoc_md38}{}\doxysection{Parameters}\label{md_pages_components_ode_advance_autotoc_md38}
 
 \begin{DoxyItemize}
 \item {\ttfamily Stepper\+Type}\+:
@@ -92,7 +92,7 @@ The pressio {\itshape advancers} provide functionalities for exactly this purpos
 \begin{DoxyItemize}
 \item any arguments needed to be passed to the stepper to perform one step
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_advance_autotoc_md36}{}\doxysection{Requirements}\label{md_pages_components_ode_advance_autotoc_md36}
+\end{DoxyItemize}\hypertarget{md_pages_components_ode_advance_autotoc_md39}{}\doxysection{Requirements}\label{md_pages_components_ode_advance_autotoc_md39}
 
 \begin{DoxyItemize}
 \item The stepper class must conform to the following API\+:

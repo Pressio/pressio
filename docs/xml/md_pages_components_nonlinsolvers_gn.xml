@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_nonlinsolvers_gn" kind="page">
+    <compoundname>md_pages_components_nonlinsolvers_gn</compoundname>
+    <title>Nonlinear Solvers: Gauss-Newton</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md17">
+<title>Gauss-Newton via Normal-Equations</title>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md18">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md19">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md20">
+<title>Example usage</title>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md21">
+<title>Gauss-Newton via QR factorization</title>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
+<title>API, Parameters and Requirements</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
+<title>Ops</title>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
+<title>Example usage</title>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/nonlinsolvers_gn.md"/>
+  </compounddef>
+</doxygen>

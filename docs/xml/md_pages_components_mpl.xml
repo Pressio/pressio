@@ -10,7 +10,7 @@
 <para>Public namespace: <computeroutput>pressio::mpl</computeroutput></para>
 <sect1 id="md_pages_components_mpl_1autotoc_md7">
 <title>Overview</title>
-<para>This component includes metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too.</para>
+<para>Provides metaprogramming functionalities that are useful for a variety of purposes and are one of the fundamental building blocks for the other parts of the pressio library. If you are familiar with the <computeroutput>&lt;type_traits&gt;</computeroutput> header from the standard library, the <computeroutput>pressio/mpl</computeroutput> will look familiar too.</para>
 <para>Some parts of <computeroutput>pressio/mpl</computeroutput> have been adapted/extended/forked from the tinympl project, forked from <ulink url="http://sbabbi.github.io/tinympl">http://sbabbi.github.io/tinympl</ulink>. The tinympl project appears to be no longer maintained.</para>
 </sect1>
 <sect1 id="md_pages_components_mpl_1autotoc_md8">

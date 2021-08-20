@@ -27,30 +27,32 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation and Dependencies</a></li>
             <li>
-              <a href="md_pages_components.html">Components</a>
+              <a>Documentation</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
                 <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
                 <li><a href="md_pages_components_expressions.html">expressions</a></li>
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
                 <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom.html">rom</a></li>
+                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">rom: decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+                <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
-            <li>
-              <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
-              <ol>
-                <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
@@ -125,7 +127,7 @@
     <span class="c1">// when running on CPU, here you can assume that</span>
     <span class="c1">// y is subscriptable on host as: y(i)</span>
   <span class="p">}</span>
-<span class="p">};</span></pre><section id="autotoc_md91"><h2><a href="#autotoc_md91">Where does one need to use this?</a></h2><p>An object of the class template above needs to be passed to the constructor of the Galerkin problem as explained in <a href="./md_pages_tutorials_tutorial2.html">this tutorial</a>.</p></section>
+<span class="p">};</span></pre><section id="autotoc_md98"><h2><a href="#autotoc_md98">Where does one need to use this?</a></h2><p>An object of the class template above needs to be passed to the constructor of the Galerkin problem as explained in <a href="./md_pages_tutorials_tutorial2.html">this tutorial</a>.</p></section>
       </div>
     </div>
   </div>

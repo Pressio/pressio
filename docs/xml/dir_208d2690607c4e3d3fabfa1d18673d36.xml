@@ -3,7 +3,6 @@
   <compounddef id="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir">
     <compoundname>pages</compoundname>
     <innerdir refid="dir_4af40c8677da60eb4c6f7c14f8103d72">pages/components</innerdir>
-    <innerdir refid="dir_c47e5d700743d14fcf5d1e609c4d899d">pages/hyperreduction</innerdir>
     <innerdir refid="dir_892f060392cd1136ee591a13ca8e58c8">pages/old</innerdir>
     <briefdescription>
     </briefdescription>

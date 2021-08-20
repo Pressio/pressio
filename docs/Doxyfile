@@ -262,7 +262,8 @@ TAB_SIZE               = 4
 # a double escape (\\{ and \\})
 
 ALIASES                = pressioproj=<b><i>Pressio</i></b> \
-		       proms=pROMs
+		       proms=pROMs \
+		       roms=ROMs
 
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources

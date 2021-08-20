@@ -27,30 +27,32 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation and Dependencies</a></li>
             <li>
-              <a href="md_pages_components.html">Components</a>
+              <a>Documentation</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
                 <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
                 <li><a href="md_pages_components_expressions.html">expressions</a></li>
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
                 <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom.html">rom</a></li>
+                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">rom: decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+                <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
-            <li>
-              <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
-              <ol>
-                <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
@@ -69,21 +71,21 @@
         <h1>
           Build Tests with Eigen only
         </h1>
-<aside class="m-block m-info"><p>This page shows the steps to build the unit and regression tests in <code>pressio</code> depending only on Eigen (and GoogleTest). By the end, you should be able to have pressio built with GoogleTest and Eigen enabled, run the test suite inside.</p></aside><aside class="m-note m-default"><h4>Why can this be useful?</h4><p>If you just want a quick way to get the code up-and-running and ready to play around with, these steps are what you want. Once you have the build ready, you can easily test/play/explore.</p></aside><aside class="m-note m-default"><h4>Disclaimer</h4><p>The guide below does <strong>not</strong> assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to you!</p></aside><section id="autotoc_md99"><h2><a href="#autotoc_md99">Prerequisites</a></h2><ul><li>C and C++11 compilers: either Clang or GNU</li><li>CMake &gt;= 3.11.0</li><li>Bash &gt;= 3.2.57</li></ul></section><section id="autotoc_md100"><h2><a href="#autotoc_md100">1. Prep</a></h2><p>Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories:</p><pre class="m-code">mkdir <span class="nv">$HOME</span>/pressio_repos
+<aside class="m-block m-info"><p>This page shows the steps to build the unit and regression tests in <code>pressio</code> depending only on Eigen (and GoogleTest). By the end, you should be able to have pressio built with GoogleTest and Eigen enabled, run the test suite inside.</p></aside><aside class="m-note m-default"><h4>Why can this be useful?</h4><p>If you just want a quick way to get the code up-and-running and ready to play around with, these steps are what you want. Once you have the build ready, you can easily test/play/explore.</p></aside><aside class="m-note m-default"><h4>Disclaimer</h4><p>The guide below does <strong>not</strong> assume you are a Unix/CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/CS/coding ninja, some steps will be fairly obvious to you!</p></aside><section id="autotoc_md106"><h2><a href="#autotoc_md106">Prerequisites</a></h2><ul><li>C and C++11 compilers: either Clang or GNU</li><li>CMake &gt;= 3.11.0</li><li>Bash &gt;= 3.2.57</li></ul></section><section id="autotoc_md107"><h2><a href="#autotoc_md107">1. Prep</a></h2><p>Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories:</p><pre class="m-code">mkdir <span class="nv">$HOME</span>/pressio_repos
 mkdir <span class="nv">$HOME</span>/pressio_builds
 <span class="nb">export</span> <span class="nv">PRESSIO_REPOS</span><span class="o">=</span><span class="nv">$HOME</span>/pressio_repos
 <span class="nb">export</span> <span class="nv">PRESSIO_BUILDS</span><span class="o">=</span><span class="nv">$HOME</span>/pressio_builds</pre><p>Unless you already have them, set the following compilers environment variable:</p><pre class="m-code"><span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>&lt;path-to-your-C-compiler&gt;
-<span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>&lt;path-to-your-CXX-compiler&gt;</pre><p>These are needed because <code>CC</code> and <code>CXX</code> are used to do all the builds.</p></section><section id="autotoc_md101"><h2><a href="#autotoc_md101">2. Cloning</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>
+<span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>&lt;path-to-your-CXX-compiler&gt;</pre><p>These are needed because <code>CC</code> and <code>CXX</code> are used to do all the builds.</p></section><section id="autotoc_md108"><h2><a href="#autotoc_md108">2. Cloning</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>
 git clone git@github.com:Pressio/pressio-builder.git
-git clone git@github.com:Pressio/pressio.git</pre></section><section id="autotoc_md102"><h2><a href="#autotoc_md102">3. Install TPLs</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio-builder
-./main_tpls.sh -dryrun<span class="o">=</span>no -tpls<span class="o">=</span>eigen,gtest -target-dir<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span></pre></section><section id="autotoc_md103"><h2><a href="#autotoc_md103">4. Build the tests</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio-builder
+git clone git@github.com:Pressio/pressio.git</pre></section><section id="autotoc_md109"><h2><a href="#autotoc_md109">3. Install TPLs</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio-builder
+./main_tpls.sh -dryrun<span class="o">=</span>no -tpls<span class="o">=</span>eigen,gtest -target-dir<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span></pre></section><section id="autotoc_md110"><h2><a href="#autotoc_md110">4. Build the tests</a></h2><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio-builder
 ./main_pressio.sh <span class="se">\</span>
     -dryrun<span class="o">=</span>no <span class="se">\</span>
     -pressio-src<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_REPOS</span><span class="si">}</span>/pressio <span class="se">\</span>
     -target-dir<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span> <span class="se">\</span>
     -gtest-path<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/gtest/install <span class="se">\</span>
     -eigen-path<span class="o">=</span><span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/eigen/install
-    -cmake-generator-name<span class="o">=</span>default_with_tests</pre></section><section id="autotoc_md104"><h2><a href="#autotoc_md104">5. Running the tests</a></h2><p>To run the tests, you can follow this:</p><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/pressio/build
+    -cmake-generator-name<span class="o">=</span>default_with_tests</pre></section><section id="autotoc_md111"><h2><a href="#autotoc_md111">5. Running the tests</a></h2><p>To run the tests, you can follow this:</p><pre class="m-code"><span class="nb">cd</span> <span class="si">${</span><span class="nv">PRESSIO_BUILDS</span><span class="si">}</span>/pressio/build
 ctest</pre><p>To learn more about ctest, you can do <code>ctest --help</code>.</p></section>
       </div>
     </div>

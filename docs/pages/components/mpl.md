@@ -7,9 +7,8 @@ Public namespace: `pressio::mpl`
 
 ## Overview
 
-This component includes metaprogramming functionalities
-that are useful for a variety of purposes and are one of the
-fundamental building blocks for the other parts of the pressio library.
+Provides metaprogramming functionalities that are useful for a variety of purposes
+and are one of the fundamental building blocks for the other parts of the pressio library.
 If you are familiar with the `<type_traits>` header from
 the standard library, the `pressio/mpl` will look familiar too.
 

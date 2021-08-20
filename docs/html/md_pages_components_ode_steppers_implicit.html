@@ -27,30 +27,32 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation and Dependencies</a></li>
             <li>
-              <a href="md_pages_components.html">Components</a>
+              <a>Documentation</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
                 <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
                 <li><a href="md_pages_components_expressions.html">expressions</a></li>
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
                 <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom.html">rom</a></li>
+                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">rom: decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+                <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
-            <li>
-              <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
-              <ol>
-                <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
@@ -69,7 +71,7 @@
         <h1>
           ode: implicit steppers
         </h1>
-<p>Defined in: <code>&lt;pressio/ode_steppers_implicit.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md45"><h2><a href="#autotoc_md45">Overview</a></h2><p>Provides functionalities to create a stepper suitable for implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one. An implicit stepper is an object that knows how to take one <em>implicit</em> step.</p><p>Pressio implicit steppers are applicable to any system written in <em>continuous-time</em> form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
+<p>Defined in: <code>&lt;pressio/ode_steppers_implicit.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md48"><h2><a href="#autotoc_md48">Overview</a></h2><p>Provides functionalities to create a stepper suitable for implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one. An implicit stepper is an object that knows how to take one <em>implicit</em> step.</p><p>Pressio implicit steppers are applicable to any system written in <em>continuous-time</em> form:</p><div class="m-math"><svg style="width: 8.303em; height: 2.562em;" viewBox="155.014186 -24.590612 79.71012 24.590612">
 <title>
 \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]
 </title>
@@ -192,7 +194,7 @@ $R$
 <g id='eq6-page1'>
 <use x='0' y='0' xlink:href='#eq6-g0-82'/>
 </g>
-</svg> is the residual.</p></section><section id="autotoc_md46"><h2><a href="#autotoc_md46">API for continuous-time systems</a></h2><pre class="m-code"><span class="c1">// overload 1</span>
+</svg> is the residual.</p></section><section id="autotoc_md49"><h2><a href="#autotoc_md49">API for continuous-time systems</a></h2><pre class="m-code"><span class="c1">// overload 1</span>
 <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                             <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span>
@@ -368,7 +370,7 @@ $R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n
 <use x='224.108415' y='0' xlink:href='#eq9-g4-41'/>
 <use x='228.660741' y='0' xlink:href='#eq9-g4-41'/>
 </g>
-</svg></td></tr></tbody></table><p>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</p><section id="autotoc_md47"><h3><a href="#autotoc_md47">Parameters</a></h3><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
+</svg></td></tr></tbody></table><p>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</p><section id="autotoc_md50"><h3><a href="#autotoc_md50">Parameters</a></h3><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
 $f$
 </title>
@@ -378,7 +380,7 @@ $f$
 <g id='eq10-page1'>
 <use x='0' y='0' xlink:href='#eq10-g0-102'/>
 </g>
-</svg> and how to compute it;</li></ul></li><li><code>ResidualPolicyType</code>, <code>JacobianPolicyType</code>:<ul><li>policy types if you want to use custom ones to compute the discrete operators</li></ul></li></ul><p>Notes:</p><ul><li>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</li><li>the second overload allows you to define custom policies to compute the discrete operators</li></ul></section><section id="autotoc_md48"><h3><a href="#autotoc_md48">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible</li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">SystemForImplicitOde</span>
+</svg> and how to compute it;</li></ul></li><li><code>ResidualPolicyType</code>, <code>JacobianPolicyType</code>:<ul><li>policy types if you want to use custom ones to compute the discrete operators</li></ul></li></ul><p>Notes:</p><ul><li>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</li><li>the second overload allows you to define custom policies to compute the discrete operators</li></ul></section><section id="autotoc_md51"><h3><a href="#autotoc_md51">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible</li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">SystemForImplicitOde</span>
 <span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
@@ -418,7 +420,7 @@ $f$
                <span class="k">const</span> <span class="n">TimeType</span> <span class="o">&amp;</span> <span class="n">dt</span><span class="p">,</span>
                <span class="n">StepType</span> <span class="n">step</span><span class="p">,</span>
                <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">J</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre></li></ul></section><section id="autotoc_md49"><h3><a href="#autotoc_md49">If you use custom policies:</a></h3><p>If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct. In particular, you should be aware of the following:</p><ul><li><code>State</code>: argument passed to <code>compute</code> method contains the prediction at <code>n+1</code>.</li><li><code>auxStates</code>, <code>auxRhs</code> (whose type you don&#x27;t need to know) contain the needed auxiliary states and RHS evaluations, respectively, needed to compute the operators for a certain scheme. All you need to know about these containers is the following:</li></ul><table class="m-table"><thead><tr><th>TagType</th><th>Description/Info</th></tr></thead><tbody><tr><td><code>BDF1</code></td><td><code>auxStates</code>: contains: state at n-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br /><code>auxRhs</code>: Empty</td></tr><tr><td><code>BDF2</code></td><td><code>auxStates</code>: contains: states at n-th and (n-1)-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br />&emsp; &emsp; &emsp; &emsp; &ensp; <code>const auto &amp; ynm1 = auxStates(pressio::ode::nMinusOne());</code><br /><code>auxRhs</code>: Empty</td></tr><tr><td><code>CrankNicolson</code></td><td><code>auxStates</code>: contains: states at n-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br /><code>auxRhs</code>: contains evaluations of the RHS are n-th and (n+1)-th steps<br />&emsp; &emsp; &emsp; Use: <code>auto &amp; fn = auxRhs(pressio::ode::n());</code><br />&ensp; &ensp; &ensp; &emsp; <code>auto &amp; fnp1 = auxRhs(pressio::ode::nPlusOne());</code></td></tr></tbody></table></section><section id="autotoc_md50"><h3><a href="#autotoc_md50">Example usage</a></h3><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="p">};</span></pre></li></ul></section><section id="autotoc_md52"><h3><a href="#autotoc_md52">If you use custom policies:</a></h3><p>If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct. In particular, you should be aware of the following:</p><ul><li><code>State</code>: argument passed to <code>compute</code> method contains the prediction at <code>n+1</code>.</li><li><code>auxStates</code>, <code>auxRhs</code> (whose type you don&#x27;t need to know) contain the needed auxiliary states and RHS evaluations, respectively, needed to compute the operators for a certain scheme. All you need to know about these containers is the following:</li></ul><table class="m-table"><thead><tr><th>TagType</th><th>Description/Info</th></tr></thead><tbody><tr><td><code>BDF1</code></td><td><code>auxStates</code>: contains: state at n-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br /><code>auxRhs</code>: Empty</td></tr><tr><td><code>BDF2</code></td><td><code>auxStates</code>: contains: states at n-th and (n-1)-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br />&emsp; &emsp; &emsp; &emsp; &ensp; <code>const auto &amp; ynm1 = auxStates(pressio::ode::nMinusOne());</code><br /><code>auxRhs</code>: Empty</td></tr><tr><td><code>CrankNicolson</code></td><td><code>auxStates</code>: contains: states at n-th step<br />&emsp; &emsp; &emsp; &emsp; &ensp; Use: <code>const auto &amp; yn = auxStates(pressio::ode::n());</code><br /><code>auxRhs</code>: contains evaluations of the RHS are n-th and (n+1)-th steps<br />&emsp; &emsp; &emsp; Use: <code>auto &amp; fn = auxRhs(pressio::ode::n());</code><br />&ensp; &ensp; &ensp; &emsp; <code>auto &amp; fnp1 = auxRhs(pressio::ode::nPlusOne());</code></td></tr></tbody></table></section><section id="autotoc_md53"><h3><a href="#autotoc_md53">Example usage</a></h3><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_solvers_nonlinear.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_advancers.hpp&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_implicit.hpp&quot;</span><span class="cp"></span>
@@ -444,7 +446,7 @@ $f$
   <span class="k">const</span> <span class="kt">double</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">pode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
   <span class="n">pode</span><span class="o">::</span><span class="n">advance_n_steps</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">stateObj</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">nonLinearSolver</span><span class="p">);</span>
-<span class="p">}</span></pre></section><section id="autotoc_md51"><h3><a href="#autotoc_md51">Required specializations for custom types</a></h3><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type and <code>ACustomStateType</code> is what you use for the state, <code>ACustomMatrixType</code> is what you use for matrix, then you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="p">}</span></pre></section><section id="autotoc_md54"><h3><a href="#autotoc_md54">Required specializations for custom types</a></h3><p>When using custom data types not supported in <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type and <code>ACustomStateType</code> is what you use for the state, <code>ACustomMatrixType</code> is what you use for matrix, then you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
 
 <span class="c1">// assuming ACustomStateType has already been declared</span>
 <span class="c1">// assuming ACustomMatrixType has already been declared</span>
@@ -513,9 +515,9 @@ $f$
 <span class="cp">#include</span> <span class="cpf">&quot;pressio/ode_steppers_implicit.hpp&quot;</span><span class="cp"></span>
 
 <span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-<span class="p">{}</span></pre><p>Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described <a href="md_pages_components_nonlinsolvers.html">here</a>.</p></section></section><section id="autotoc_md52"><h2><a href="#autotoc_md52">API for discrete-time systems</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">num_states</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
+<span class="p">{}</span></pre><p>Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described <a href="md_pages_components_nonlinsolvers.html">here</a>.</p></section></section><section id="autotoc_md55"><h2><a href="#autotoc_md55">API for discrete-time systems</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">num_states</span><span class="p">,</span> <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_arbitrary_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
-                              <span class="n">SystemType</span> <span class="o">&amp;&amp;</span> <span class="n">system</span><span class="p">);</span></pre><section id="autotoc_md53"><h3><a href="#autotoc_md53">Parameters</a></h3><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create and compute the residual and Jacobian</li></ul></li></ul></section><section id="autotoc_md54"><h3><a href="#autotoc_md54">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible</li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">ValidDiscreteTimeSystem</span>
+                              <span class="n">SystemType</span> <span class="o">&amp;&amp;</span> <span class="n">system</span><span class="p">);</span></pre><section id="autotoc_md56"><h3><a href="#autotoc_md56">Parameters</a></h3><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create and compute the residual and Jacobian</li></ul></li></ul></section><section id="autotoc_md57"><h3><a href="#autotoc_md57">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible</li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">ValidDiscreteTimeSystem</span>
 <span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="cm">/* whatever you need */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>

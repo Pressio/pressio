@@ -1,7 +1,7 @@
 Defined in header\+: {\ttfamily $<$pressio/type\+\_\+traits.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio}\hypertarget{md_pages_components_type_traits_autotoc_md59}{}\doxysection{Overview}\label{md_pages_components_type_traits_autotoc_md59}
-This component includes functionalities for type support and detection. One of the main design features of pressio is that it supports arbitrary types via generic programming and type introspection, but also provides special support for some data types commonly used.\hypertarget{md_pages_components_type_traits_autotoc_md60}{}\doxysection{Type detection and identification}\label{md_pages_components_type_traits_autotoc_md60}
+Public namespace\+: {\ttfamily pressio}\hypertarget{md_pages_components_type_traits_autotoc_md69}{}\doxysection{Overview}\label{md_pages_components_type_traits_autotoc_md69}
+This component includes functionalities for type support and detection. One of the main design features of pressio is that it supports arbitrary types via generic programming and type introspection, but also provides special support for some data types commonly used.\hypertarget{md_pages_components_type_traits_autotoc_md70}{}\doxysection{Type detection and identification}\label{md_pages_components_type_traits_autotoc_md70}
 We support several metafunctions for detecting data types commonly used from existing TPLs. The following list is partial, and more will be added as we continue the development.
 
 \tabulinesep=1mm
@@ -24,9 +24,9 @@ We support several metafunctions for detecting data types commonly used from exi
 {\ttfamily template$<$class T$>$} ~\newline
  {\ttfamily struct is\+\_\+sparse\+\_\+matrix\+\_\+eigen;}   &Self-\/explanatory   &Eigen    \\\cline{1-3}
 {\ttfamily template$<$class T$>$} ~\newline
- {\ttfamily struct is\+\_\+dense\+\_\+static\+\_\+matrix\+\_\+eigen;}   &Self-\/explanatory   &Eigen    \\\cline{1-3}
+ {\ttfamily struct is\+\_\+static\+\_\+dense\+\_\+matrix\+\_\+eigen;}   &Self-\/explanatory   &Eigen    \\\cline{1-3}
 {\ttfamily template$<$class T$>$} ~\newline
- {\ttfamily struct is\+\_\+dense\+\_\+dynamic\+\_\+matrix\+\_\+eigen;}   &Self-\/explanatory   &Eigen    \\\cline{1-3}
+ {\ttfamily struct is\+\_\+dynamic\+\_\+dense\+\_\+matrix\+\_\+eigen;}   &Self-\/explanatory   &Eigen    \\\cline{1-3}
 {\ttfamily template$<$class T$>$} ~\newline
  {\ttfamily struct is\+\_\+dense\+\_\+matrix\+\_\+eigen;}   &True if T is ~\newline
  a static or dynamic dense matrix   &Eigen    \\\cline{1-3}
@@ -61,7 +61,7 @@ We support several metafunctions for detecting data types commonly used from exi
  {\ttfamily struct is\+\_\+dense\+\_\+matrix\+\_\+kokkos;}   &True if T is ~\newline
  a static or dynamic dense matrix   &Kokkos   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_pages_components_type_traits_autotoc_md61}{}\doxysection{Traits class}\label{md_pages_components_type_traits_autotoc_md61}
+\hypertarget{md_pages_components_type_traits_autotoc_md71}{}\doxysection{Traits class}\label{md_pages_components_type_traits_autotoc_md71}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{namespace }pressio\{}
@@ -71,4 +71,6 @@ We support several metafunctions for detecting data types commonly used from exi
 \end{DoxyCode}
 
 
-This class contains compile-\/time information enabling pressio to reason about types. To understand the purpose and usage of the traits pattern in C++ there are several resources online. Quoting Bjarne Stroustrup\+: "{}Think of a trait as a small object whose main purpose is to carry information used by another object or algorithm to determine \char`\"{}policy\char`\"{} or \char`\"{}implementation details\char`\"{}. 
+This class contains compile-\/time information enabling pressio to reason about types. To understand the purpose and usage of the traits pattern in C++ there are several resources online. Quoting Bjarne Stroustrup\+: "{}Think of a trait as a small object whose main purpose is to carry information used by another object or algorithm to determine \char`\"{}policy\char`\"{} or \char`\"{}implementation details\char`\"{}.
+
+{\bfseries{need to add much more to this}} 

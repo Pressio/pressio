@@ -24,8 +24,8 @@ The following list is partial, and more will be added as we continue the develop
 | `template<class T>` <br/> `struct is_dynamic_vector_eigen;`        | Self-explanatory                                    | Eigen              |
 | `template<class T>` <br/> `struct is_vector_eigen;`                | True if T is <br/> a static or dynamic vector       | Eigen              |
 | `template<class T>` <br/> `struct is_sparse_matrix_eigen;`         | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_dense_static_matrix_eigen;`   | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_dense_dynamic_matrix_eigen;`  | Self-explanatory                                    | Eigen              |
+| `template<class T>` <br/> `struct is_static_dense_matrix_eigen;`   | Self-explanatory                                    | Eigen              |
+| `template<class T>` <br/> `struct is_dynamic_dense_matrix_eigen;`  | Self-explanatory                                    | Eigen              |
 | `template<class T>` <br/> `struct is_dense_matrix_eigen;`          | True if T is <br/> a static or dynamic dense matrix | Eigen              |
 | `template<class T>` <br/> `struct is_dense_vector_teuchos;`        | Self-explanatory                                    | Trilinos           |
 | `template<class T>` <br/> `struct is_dense_matrix_teuchos;`        | Self-explanatory                                    | Trilinos           |
@@ -55,3 +55,5 @@ To understand the purpose and usage of the traits pattern in C++ there are sever
 Quoting Bjarne Stroustrup: "Think of a trait as a small object whose main purpose
 is to carry information used by another object or algorithm
 to determine "policy" or "implementation details".
+
+**need to add much more to this**

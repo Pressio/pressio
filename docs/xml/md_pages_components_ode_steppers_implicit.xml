@@ -8,14 +8,14 @@
     <detaileddescription>
 <para>Defined in: <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md45">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md48">
 <title>Overview</title>
 <para>Provides functionalities to create a stepper suitable for implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one. An implicit stepper is an object that knows how to take one <emphasis>implicit</emphasis> step.</para>
 <para>Pressio implicit steppers are applicable to any system written in <emphasis>continuous-time</emphasis> form: <formula id="0">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
 <para>and/or in a <emphasis>discrete-time</emphasis> form <formula id="4">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
 <para>Here, <formula id="1">$y$</formula> is the full-order model (FOM) state, <formula id="2">$f$</formula> the FOM velocity, <formula id="3">$t$</formula> is time, and <formula id="5">$R$</formula> is the residual.</para>
 </sect1>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md46">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md49">
 <title>API for continuous-time systems</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
@@ -51,7 +51,7 @@
 </table>
 </para>
 <para>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</para>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md47">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md50">
 <title>Parameters</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
@@ -74,7 +74,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md48">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md51">
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
@@ -130,7 +130,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md49">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md52">
 <title>If you use custom policies:</title>
 <para>If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct. In particular, you should be aware of the following:</para>
 <para><itemizedlist>
@@ -166,7 +166,7 @@
 </table>
 </para>
 </sect2>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md50">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md53">
 <title>Example usage</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_solvers_nonlinear.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
@@ -197,7 +197,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md51">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md54">
 <title>Required specializations for custom types</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <computeroutput>double</computeroutput> as value type and <computeroutput>ACustomStateType</computeroutput> is what you use for the state, <computeroutput>ACustomMatrixType</computeroutput> is what you use for matrix, then you would need to do something like this:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
@@ -273,13 +273,13 @@
 </programlisting> Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described <ulink url="md_pages_components_nonlinsolvers.html">here</ulink>.</para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md52">
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md55">
 <title>API for discrete-time systems</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_states,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_arbitrary_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SystemType<sp/>&amp;&amp;<sp/>system);</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md53">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md56">
 <title>Parameters</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
@@ -293,7 +293,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md54">
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md57">
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>

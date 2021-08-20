@@ -27,30 +27,32 @@
             <li><a href="md_pages_introduction.html">Introduction</a></li>
             <li><a href="md_pages_installation.html">Installation and Dependencies</a></li>
             <li>
-              <a href="md_pages_components.html">Components</a>
+              <a>Documentation</a>
               <ol>
                 <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
                 <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
                 <li><a href="md_pages_components_expressions.html">expressions</a></li>
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers.html">nonlinear solvers</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
                 <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom.html">rom</a></li>
+                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">rom: decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+                <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
-            <li>
-              <a href="md_pages_hyperreduction.html">Hyper-reduction</a>
-              <ol>
-                <li><a href="md_pages_hyperreduction_hyperred_how_to_enable.html">How to enable hyperreduction</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_eigen_example.html">Eigen example</a></li>
-                <li><a href="md_pages_hyperreduction_hyperred_tpetra_example.html">Tpetra example</a></li>
-              </ol>
-            </li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="6">
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
@@ -69,7 +71,7 @@
         <h1>
           ode advancers
         </h1>
-<p>Defined in header: <code>&lt;pressio/ode_advancers.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md33"><h2><a href="#autotoc_md33">Overview</a></h2><p>Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of &quot;state&quot; that defines your information at a specific step, and a &quot;stepper&quot; object, i.e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a &quot;steppable&quot; object and might need different strategies to advance such objects.</p><p>The pressio <em>advancers</em> provide functionalities for exactly this purpose, i.e. &quot;advancing&quot; a generic object that satisfies the &quot;steppable&quot; concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be <em>time integration</em> of time-dependent dynamical systems.</p></section><section id="autotoc_md34"><h2><a href="#autotoc_md34">API Synopsis:</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
+<p>Defined in header: <code>&lt;pressio/ode_advancers.hpp&gt;</code></p><p>Public namespace: <code>pressio::ode</code></p><section id="autotoc_md36"><h2><a href="#autotoc_md36">Overview</a></h2><p>Suppose that you have a generic application/usecase involving the concept of a discrete time space or discrete steps, a notion of &quot;state&quot; that defines your information at a specific step, and a &quot;stepper&quot; object, i.e. an object/abstraction that has accepts a state and knows how to take a step forward or backward to update that state. Now, suppose that you have such a &quot;steppable&quot; object and might need different strategies to advance such objects.</p><p>The pressio <em>advancers</em> provide functionalities for exactly this purpose, i.e. &quot;advancing&quot; a generic object that satisfies the &quot;steppable&quot; concept. Obviously, this is not necessarily specific to applied math problems or scientific computing applications, but can be something generic. In the context of scientific computing, one might immediately recognize a usecase for these functions to be <em>time integration</em> of time-dependent dynamical systems.</p></section><section id="autotoc_md37"><h2><a href="#autotoc_md37">API Synopsis:</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
   <span class="k">class</span> <span class="nc">StepperType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span>
   <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span>
@@ -125,7 +127,7 @@
                                  <span class="n">StepSizeSetterType</span> <span class="o">&amp;&amp;</span> <span class="n">time_step_size_manager</span><span class="p">,</span>
                                  <span class="k">const</span> <span class="o">::</span><span class="n">pressio</span><span class="o">::</span><span class="n">ode</span><span class="o">::</span><span class="n">step_count_type</span> <span class="n">num_steps</span><span class="p">,</span>
                                  <span class="n">ObserverType</span> <span class="o">&amp;</span> <span class="n">observer</span><span class="p">,</span>
-                                 <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span></pre></section><section id="autotoc_md35"><h2><a href="#autotoc_md35">Parameters</a></h2><ul><li><code>StepperType</code>:<ul><li>represents the type of the object that can be stepped forward</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>TimeType</code>:<ul><li>type of time: typically it is same as the value_type of the state</li></ul></li><li><code>StepSizeSetterType</code><ul><li>type of object responsible for setting the time step size</li></ul></li><li><code>ObserverType</code>:<ul><li>type of the class responsible for &quot;observing&quot; the state during the time integration and potentially collect necessary data/metrics/statistics</li></ul></li><li><code>Args...</code>:<ul><li>any arguments needed to be passed to the stepper to perform one step</li></ul></li></ul></section><section id="autotoc_md36"><h2><a href="#autotoc_md36">Requirements</a></h2><ul><li>The stepper class must conform to the following API:</li></ul><pre class="m-code"><span class="k">class</span> <span class="nc">SteppableClass</span>
+                                 <span class="n">Args</span> <span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span></pre></section><section id="autotoc_md38"><h2><a href="#autotoc_md38">Parameters</a></h2><ul><li><code>StepperType</code>:<ul><li>represents the type of the object that can be stepped forward</li></ul></li><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>TimeType</code>:<ul><li>type of time: typically it is same as the value_type of the state</li></ul></li><li><code>StepSizeSetterType</code><ul><li>type of object responsible for setting the time step size</li></ul></li><li><code>ObserverType</code>:<ul><li>type of the class responsible for &quot;observing&quot; the state during the time integration and potentially collect necessary data/metrics/statistics</li></ul></li><li><code>Args...</code>:<ul><li>any arguments needed to be passed to the stepper to perform one step</li></ul></li></ul></section><section id="autotoc_md39"><h2><a href="#autotoc_md39">Requirements</a></h2><ul><li>The stepper class must conform to the following API:</li></ul><pre class="m-code"><span class="k">class</span> <span class="nc">SteppableClass</span>
 <span class="p">{</span>
   <span class="k">public</span><span class="o">:</span>
   <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">current_state</span><span class="p">,</span>
