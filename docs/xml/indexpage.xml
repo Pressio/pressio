@@ -126,7 +126,7 @@ general info <linebreak/>
 </table>
 </para>
 <para>This structure benefits:<itemizedlist>
-<listitem><para>Maintability/Modularity: the components depend on one another through well-defined public interfaces, and appropriate namespaces are used to properly scope the code.</para>
+<listitem><para>Maintability: the components depend on one another through well-defined public interfaces, and appropriate namespaces are used to properly scope the code.</para>
 </listitem><listitem><para>Selective usability: users can leverage invidual functionalities. This allows finer-grained control on what you include and use.</para>
 </listitem></itemizedlist>
 </para>

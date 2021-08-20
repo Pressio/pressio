@@ -23,7 +23,7 @@ The library is currently structured as follows:
 | @m_span{m-text m-success}rom@m_endspan        | <br/>general info <br/> decoder <br/> Galerkin<br/> LSPG<br/> WLS<br/>       | [Code](https://github.com/Pressio/pressio/tree/main/include/rom) <br/>[Documentation](md_pages_components_rom_general.html) <br/>[Documentation](md_pages_components_rom_decoder.html) <br/> [Documentation](md_pages_components_rom_galerkin.html) <br/> [Documentation](md_pages_components_rom_lspg.html) <br/>  [Documentation](md_pages_components_rom_wls.html) <br/> | <br/> <br/> `<pressio/rom_decoder.hpp>` <br/> `<pressio/rom_galerkin.hpp>` <br/> `<pressio/rom_lspg.hpp>` <br/> `<pressio/rom_wls.hpp>` <br/> Everything with: `<pressio/rom.hpp>` |
 
 This structure benefits:
-* Maintability/Modularity: the components depend on one another through well-defined public interfaces,
+* Maintability: the components depend on one another through well-defined public interfaces,
 and appropriate namespaces are used to properly scope the code.
 
 * Selective usability: users can leverage invidual functionalities.
