@@ -9,7 +9,7 @@ jobs:
       env:
         pressio_dir: /__w/pressio/pressio
         target_dir: /out
-        eigen_path: /usr/local/eigen
+        eigen_path: /usr/local/eigen/install
         gtest_path: /usr/local/gtest/install
       steps:
         - uses: actions/checkout@v2
