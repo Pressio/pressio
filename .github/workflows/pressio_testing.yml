@@ -14,7 +14,7 @@ jobs:
         config:
           - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest }
           - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest }
-          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest }
+#          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest }
           - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest }
           - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest }
 
