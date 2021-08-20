@@ -3,7 +3,7 @@ name: Pressio Testing
 on: [push]
 
 jobs:
-  container:
+  pressio_tests:
       runs-on: ubuntu-latest
       container: pressiomodelreduction/ubuntu-20.04-gnu_9-eigen_3.3.7-gtest
       env:

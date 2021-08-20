@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 # Declaring build variables
 ARG TZ=Europe/Warsaw
-ARG CMAKE_VERSION=3.16.8
+ARG CMAKE_VERSION=3.18.6
 ARG GNU_VER=9
 ARG CC=gcc-$GNU_VER
 ARG CXX=g++-$GNU_VER
