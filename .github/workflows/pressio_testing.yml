@@ -13,12 +13,14 @@ jobs:
         gtest_path: /usr/local/gtest/install
       steps:
         - uses: actions/checkout@v2
-        - name: Run pressio tests
+        - name: Build pressio tests
           run: |
             cd /pressio-builder
             git pull
             git status
             sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_pressio.sh
             ./main_pressio.sh -dryrun=no -build-mode=Release -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests -pressio-src=${{env.pressio_dir}}
-            cd ${{env.target_dir}}
-            ctest -V
+        - name: Run pressio tests
+          run: |
+              cd ${{env.target_dir}}/pressio/build
+              ctest -V
