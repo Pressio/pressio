@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 # Declaring build variables
 ARG TZ=Europe/Warsaw
-ARG CMAKE_VERSION=3.16.8
+ARG CMAKE_VERSION=3.18.6
 ARG CLANG_VER=9
 ARG CC=clang-$CLANG_VER
 ARG CXX=clang++-$CLANG_VER
@@ -25,6 +25,7 @@ RUN apt-get install -y libopenblas-dev liblapack-dev
 # CMake installation
 RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-Linux-x86_64.sh
 RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
+RUN rm cmake.sh
 
 # Compilers installation
 RUN apt-get install -y $CC $CC-doc
