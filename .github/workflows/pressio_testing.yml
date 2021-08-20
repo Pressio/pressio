@@ -7,18 +7,17 @@ jobs:
       runs-on: ubuntu-latest
       container: pressiomodelreduction/ubuntu-20.04-gnu_9-eigen_3.3.7-gtest
       env:
-        pressio_dir: /pressio
+        pressio_dir: /__w/pressio/pressio
         target_dir: /out
         eigen_path: /usr/local/eigen
         gtest_path: /usr/local/gtest
       steps:
         - uses: actions/checkout@v2
-        - run: |
-            echo $(pwd)
-            which gcc
-            ls
-            echo =======================
-            ls ../
-            echo =======================
-            ls /__w
-          name: Checking path
+        - name: Run pressio tests
+          run: |
+            cd /pressio-builder
+            git pull
+            git status
+            ./main_pressio.sh -dryrun=no -build-mode=Release -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests -pressio-src=${{env.pressio_dir}}
+            cd ${{env.target_dir}}
+            ctest -V
