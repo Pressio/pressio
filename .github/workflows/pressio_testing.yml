@@ -18,6 +18,7 @@ jobs:
             cd /pressio-builder
             git pull
             git status
+            sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_pressio.sh
             ./main_pressio.sh -dryrun=no -build-mode=Release -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests -pressio-src=${{env.pressio_dir}}
             cd ${{env.target_dir}}
             ctest -V
