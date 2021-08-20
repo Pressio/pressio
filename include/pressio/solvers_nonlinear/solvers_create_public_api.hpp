@@ -53,58 +53,55 @@
 
 namespace pressio{ namespace nonlinearsolvers{
 
-template<typename SystemType, typename StateType, typename ...Args>
+template<class SystemType, class StateType, class ...Args>
 auto create_newton_raphson(const SystemType & system,
        const StateType & state,
        Args && ...args)
-  -> impl::ComposeNewtonRaphson_t<SystemType, Args...>
+  -> impl::ComposeNewtonRaphson_t<StateType, SystemType, Args...>
 {
-  return impl::ComposeNewtonRaphson_t<SystemType, Args...>
+  return impl::ComposeNewtonRaphson_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 
-//***** GN with NEQ *******
-template<typename SystemType, typename StateType, typename ...Args>
+template<class SystemType, class StateType, class ...Args>
 auto create_gauss_newton(const SystemType & system,
 		       const StateType & state,
 		       Args && ... args)
-  -> impl::ComposeGaussNewton_t<SystemType, Args...>
+  -> impl::ComposeGaussNewton_t<StateType, SystemType, Args...>
 {
-  return impl::ComposeGaussNewton_t<SystemType, Args...>
+  return impl::ComposeGaussNewton_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 
-//***** GN with QR *******
-template<typename SystemType, typename StateType, typename ...Args>
+template<class SystemType, class StateType, class ...Args>
 auto create_gauss_newtonQR(const SystemType & system,
 			 const StateType & state,
 			 Args && ...args)
-  -> impl::ComposeGaussNewtonQR_t<SystemType, Args...>
+  -> impl::ComposeGaussNewtonQR_t<StateType, SystemType, Args...>
 {
-  return impl::ComposeGaussNewtonQR_t<SystemType, Args...>
+  return impl::ComposeGaussNewtonQR_t<StateType, SystemType, Args...>
     (system, state, std::forward<Args>(args)...);
 }
 
-template<typename SystemType, typename StateType, typename ...Args>
+template<class SystemType, class StateType, class ...Args>
 auto create_levenberg_marquardt(const SystemType & system,
             const StateType & state,
             Args && ...args)
-  -> impl::ComposeLevenbergMarquardt_t<SystemType, Args...>
+  -> impl::ComposeLevenbergMarquardt_t<StateType, SystemType, Args...>
 {
-  return impl::ComposeLevenbergMarquardt_t<SystemType, Args...>
+  return impl::ComposeLevenbergMarquardt_t<StateType, SystemType, Args...>
   ( system, state, std::forward<Args>(args)...);
 }
 
-
 namespace experimental{
 //***** IRWGN *******
-template<typename SystemType, typename StateType, typename linear_solver_t>
+template<class SystemType, class StateType, class linear_solver_t>
 auto create_irls_gauss_newton(const SystemType & system,
         const StateType & state,
         linear_solver_t && linSolver)
-  -> typename impl::ComposeIrwGaussNewton<SystemType, linear_solver_t>::type
+  -> typename impl::ComposeIrwGaussNewton<StateType, SystemType, linear_solver_t>::type
 {
-  using c_t = impl::ComposeIrwGaussNewton<SystemType, linear_solver_t>;
+  using c_t = impl::ComposeIrwGaussNewton<StateType, SystemType, linear_solver_t>;
   using w_t = typename c_t::weighting_t;
   using return_t = typename c_t::type;
 
