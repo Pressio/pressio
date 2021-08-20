@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 # Declaring build variables
 ARG TZ=Europe/Warsaw
-ARG CMAKE_VERSION=3.16.8
+ARG CMAKE_VERSION=3.18.6
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Setting timezone
@@ -21,6 +21,7 @@ RUN apt-get install -y openmpi-bin openmpi-doc
 # CMake installation
 RUN wget -O cmake.sh https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-Linux-x86_64.sh
 RUN sh cmake.sh --skip-license --exclude-subdir --prefix=/usr/local/
+RUN rm cmake.sh
 
 # Compilers installation
 RUN wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
