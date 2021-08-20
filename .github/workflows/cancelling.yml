@@ -1,5 +1,7 @@
 name: cancel-builds-on-update
+
 on:
+  push:
   workflow_run:
     workflows: ['Build-and-Run-tests']
     types: ['requested']
