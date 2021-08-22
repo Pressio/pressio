@@ -295,7 +295,7 @@ int main(int argc, char *argv[])
   // GaussNewton solver with normal equations
   auto solver = pressio::rom::lspg::create_gauss_newtonSolver(problem, romState, linSolverObj);
   solver.setMaxIterations(2);
-  solver.setStoppingCriterion(pressio::solvers::nonlinear::Stop::afterMaxIters);
+  solver.setStoppingCriterion(pressio::solvers::nonlinear::Stop::AfterMaxIters);
 
   pressio::rom::lspg::solveNSequentialMinimizations(problem,romState, 0.0, 0.2, 1, solver);
 

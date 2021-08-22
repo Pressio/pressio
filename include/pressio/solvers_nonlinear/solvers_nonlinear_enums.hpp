@@ -53,22 +53,22 @@ namespace pressio{ namespace nonlinearsolvers{
 
 enum class Stop
   {
-   whenCorrectionAbsoluteNormBelowTolerance, // this is the default
-   whenCorrectionRelativeNormBelowTolerance,
-   whenResidualAbsoluteNormBelowTolerance,
-   whenResidualRelativeNormBelowTolerance,
-   whenGradientAbsoluteNormBelowTolerance,
-   whenGradientRelativeNormBelowTolerance,
-   afterMaxIters
+   WhenCorrectionAbsoluteNormBelowTolerance, // this is the default
+   WhenCorrectionRelativeNormBelowTolerance,
+   WhenResidualAbsoluteNormBelowTolerance,
+   WhenResidualRelativeNormBelowTolerance,
+   WhenGradientAbsoluteNormBelowTolerance,
+   WhenGradientRelativeNormBelowTolerance,
+   AfterMaxIters
   };
 
 enum class Update
   {
-   standard, // default
-   armijo,
+   Standard, // default
+   Armijo,
    LMSchedule1,
    LMSchedule2,
-   custom
+   Custom
   };
 
 }}

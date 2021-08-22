@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// solvers_armijo_updater.hpp
+// solvers_Armijo_updater.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -80,7 +80,7 @@ public:
 		  StateType & state,
 		  solver_mixin_t & solver)
   {
-    PRESSIOLOG_DEBUG("armijo update");
+    PRESSIOLOG_DEBUG("Armijo update");
 
     constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
     auto alpha = static_cast<ScalarType>(1);
@@ -95,7 +95,7 @@ public:
     //
     // where
     // k = the GN step
-    // l = indexes the armijo backtracking stages
+    // l = indexes the Armijo backtracking stages
     // p_k is the correction at GN k-th step
     // g_k is the gradient at GN k-th step
 

@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
   qr_solver_type qrSolver;
 
   auto solver = pressio::rom::lspg::create_gauss_newtonQRSolver(lspgProblem, yROM, qrSolver);
-  solver.setUpdatingCriterion(pressio::solvers::nonlinear::Update::armijo);
+  solver.setUpdatingCriterion(pressio::solvers::nonlinear::Update::Armijo);
   solver.setTolerance(1e-13);
     // I know this should converge in few iters at every step
   solver.setMaxIterations(5);

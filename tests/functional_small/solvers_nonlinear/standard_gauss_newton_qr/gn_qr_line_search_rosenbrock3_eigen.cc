@@ -24,7 +24,7 @@ int main()
   auto GNSolver = pressio::nonlinearsolvers::create_gauss_newtonQR(problem,x,qrSolver);
   GNSolver.setTolerance(1e-8);
   GNSolver.setMaxIterations(10);
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::Armijo);
 
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << std::endl;

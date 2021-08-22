@@ -22,7 +22,7 @@ void testC2(std::string & sentinel,
             state_t & x,
             solver & GNSolver)
 {
-  auto criterion = pressio::nonlinearsolvers::Stop::whenGradientAbsoluteNormBelowTolerance;
+  auto criterion = pressio::nonlinearsolvers::Stop::WhenGradientAbsoluteNormBelowTolerance;
   GNSolver.setStoppingCriterion(criterion);
   // 1e3 is chosen to test the convergence condition
   GNSolver.setTolerance(1e3);
@@ -40,7 +40,7 @@ void testC3(std::string & sentinel,
             state_t & x,
             solver & GNSolver)
 {
-  auto criterion = pressio::nonlinearsolvers::Stop::whenGradientRelativeNormBelowTolerance;
+  auto criterion = pressio::nonlinearsolvers::Stop::WhenGradientRelativeNormBelowTolerance;
   GNSolver.setStoppingCriterion(criterion);
   GNSolver.setTolerance(1e-5);
   GNSolver.solve(problem, x);

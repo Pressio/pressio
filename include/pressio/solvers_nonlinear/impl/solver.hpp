@@ -92,7 +92,7 @@ class Solver
     public IterativeBase<Solver<TagType, T>>
 {
 public:
-  using sc_type		 = typename T::scalar_type;
+  using scalar_type		 = typename T::scalar_type;
   using solver_tag	 = TagType;
   using this_type		 = Solver<solver_tag, T>;
   using state_type		 = typename T::state_type;
@@ -101,7 +101,7 @@ public:
   using typename iterative_base_type::iteration_type;
 
 private:
-  const sc_type defaultTol_  = static_cast<sc_type>(0.000001);
+  const scalar_type defaultTol_  = static_cast<scalar_type>(0.000001);
 
   iteration_type iStep_ = {};
   iteration_type jacobianUpdateFreq_ = 1;
@@ -112,7 +112,7 @@ private:
   //3: ResidualRelativeNorm
   //4: GradientAbsoluteNorm
   //5: GradientRelativeNorm
-  std::array<sc_type, 6> norms_ = {};
+  std::array<scalar_type, 6> norms_ = {};
 
   //0: tol for CorrectionAbsoluteNorm
   //1: tol for CorrectionRelativeNorm
@@ -120,14 +120,14 @@ private:
   //3: tol for ResidualRelativeNorm
   //4: tol for GradientAbsoluteNorm
   //5: tol for GradientRelativeNorm
-  std::array<sc_type, 6> tolerances_ = {};
+  std::array<scalar_type, 6> tolerances_ = {};
 
   // updating criterion enum
-  Update updatingE_ = Update::standard;
+  Update updatingE_ = Update::Standard;
   std::unique_ptr<impl::BaseUpdater> updater_ = nullptr;
 
   // stopping creterion enum
-  Stop stoppingE_   = Stop::whenCorrectionAbsoluteNormBelowTolerance;
+  Stop stoppingE_   = Stop::WhenCorrectionAbsoluteNormBelowTolerance;
 
   // size of system object is used to check if system changes
   // this might not be a great solution, but we will work on this
@@ -168,8 +168,8 @@ public:
 	 const StateType & state,
 	 Args &&... args)
     : Solver(system, state,
-	     Stop::whenCorrectionAbsoluteNormBelowTolerance,
-	     Update::standard,
+	     Stop::WhenCorrectionAbsoluteNormBelowTolerance,
+	     Update::Standard,
 	     std::forward<Args>(args)...)
   {}
 
@@ -244,22 +244,22 @@ public:
   // *** set or query tolerances ***
 
   // this is used to set a single tol for all
-  void setTolerance(sc_type tolerance){ tolerances_.fill(std::move(tolerance)); }
+  void setTolerance(scalar_type tolerance){ tolerances_.fill(std::move(tolerance)); }
 
   // finer-grained methods for tolerances
-  void setCorrectionAbsoluteTolerance(sc_type value){ tolerances_[0] = std::move(value); }
-  void setCorrectionRelativeTolerance(sc_type value){ tolerances_[1] = std::move(value); }
-  void setResidualAbsoluteTolerance(sc_type value)	 { tolerances_[2] = std::move(value); }
-  void setResidualRelativeTolerance(sc_type value)  { tolerances_[3] = std::move(value); }
-  void setGradientAbsoluteTolerance(sc_type value)  { tolerances_[4] = std::move(value); }
-  void setGradientRelativeTolerance(sc_type value)  { tolerances_[5] = std::move(value); }
+  void setCorrectionAbsoluteTolerance(scalar_type value){ tolerances_[0] = std::move(value); }
+  void setCorrectionRelativeTolerance(scalar_type value){ tolerances_[1] = std::move(value); }
+  void setResidualAbsoluteTolerance(scalar_type value)	 { tolerances_[2] = std::move(value); }
+  void setResidualRelativeTolerance(scalar_type value)  { tolerances_[3] = std::move(value); }
+  void setGradientAbsoluteTolerance(scalar_type value)  { tolerances_[4] = std::move(value); }
+  void setGradientRelativeTolerance(scalar_type value)  { tolerances_[5] = std::move(value); }
 
-  sc_type correctionAbsoluteTolerance()const { return tolerances_[0]; }
-  sc_type correctionRelativeTolerance()const { return tolerances_[1]; }
-  sc_type residualAbsoluteTolerance()const   { return tolerances_[2]; }
-  sc_type residualRelativeTolerance()const   { return tolerances_[3]; }
-  sc_type gradientAbsoluteTolerance()const   { return tolerances_[4]; }
-  sc_type gradientRelativeTolerance()const   { return tolerances_[5]; }
+  scalar_type correctionAbsoluteTolerance()const { return tolerances_[0]; }
+  scalar_type correctionRelativeTolerance()const { return tolerances_[1]; }
+  scalar_type residualAbsoluteTolerance()const   { return tolerances_[2]; }
+  scalar_type residualRelativeTolerance()const   { return tolerances_[3]; }
+  scalar_type gradientAbsoluteTolerance()const   { return tolerances_[4]; }
+  scalar_type gradientRelativeTolerance()const   { return tolerances_[5]; }
 
 
   // *** solve ***
@@ -285,7 +285,7 @@ public:
     // we don't know if the updater changes or not
 
     PRESSIOLOG_INFO("nonlinsolver: custom updater");
-    updatingE_ = ::pressio::nonlinearsolvers::Update::custom;
+    updatingE_ = ::pressio::nonlinearsolvers::Update::Custom;
 
     using u_t =
       mpl::conditional_t<
@@ -347,9 +347,9 @@ private:
   {
     PRESSIOLOG_INFO("nonlinsolver: solve");
 
-    sc_type residualNorm0 = {};
-    sc_type correctionNorm0 = {};
-    sc_type gradientNorm0 = {};
+    scalar_type residualNorm0 = {};
+    scalar_type correctionNorm0 = {};
+    scalar_type gradientNorm0 = {};
     bool recomputeSystemJacobian = true;
 
     iStep_ = 0;
@@ -429,22 +429,22 @@ private:
   {
     switch (stoppingE_)
       {
-      case Stop::afterMaxIters:
+      case Stop::AfterMaxIters:
     	return iStep == iterative_base_type::maxIters_;
 
-      case Stop::whenCorrectionAbsoluteNormBelowTolerance:
+      case Stop::WhenCorrectionAbsoluteNormBelowTolerance:
     	return norms_[0] < tolerances_[0];
-      case Stop::whenCorrectionRelativeNormBelowTolerance:
+      case Stop::WhenCorrectionRelativeNormBelowTolerance:
     	return norms_[1] < tolerances_[1];
 
-      case Stop::whenResidualAbsoluteNormBelowTolerance:
+      case Stop::WhenResidualAbsoluteNormBelowTolerance:
     	return norms_[2] < tolerances_[2];
-      case Stop::whenResidualRelativeNormBelowTolerance:
+      case Stop::WhenResidualRelativeNormBelowTolerance:
     	return norms_[3] < tolerances_[3];
 
-      case Stop::whenGradientAbsoluteNormBelowTolerance:
+      case Stop::WhenGradientAbsoluteNormBelowTolerance:
     	return norms_[4] < tolerances_[4];
-      case Stop::whenGradientRelativeNormBelowTolerance:
+      case Stop::WhenGradientRelativeNormBelowTolerance:
     	return norms_[5] < tolerances_[5];
 
       default:

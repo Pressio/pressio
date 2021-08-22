@@ -82,7 +82,7 @@ void resetUpdater(BaseUpdater* updater)
 }
 
 /*
-  GaussNewton only admits: standard, armijo
+  GaussNewton only admits: standard, Armijo
 */
 template<class SolverType, class SystemType, typename StateType>
 mpl::enable_if_t<
@@ -98,7 +98,7 @@ createUpdater(const StateType & state,
 
   switch (updateE)
     {
-    case Update::standard:{
+    case Update::Standard:{
       using f_t = DefaultUpdater<scalar_t>;
       using u_t = Updater<SystemType, StateType, SolverType, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
@@ -107,7 +107,7 @@ createUpdater(const StateType & state,
       return result;
     }
 
-    case Update::armijo:{
+    case Update::Armijo:{
       using f_t = ArmijoUpdater<StateType, scalar_t>;
       f_t F(state);
       using u_t = Updater<SystemType, StateType, SolverType, f_t>;
@@ -139,7 +139,7 @@ createUpdater(const StateType & state,
 
   switch (updateE)
     {
-    case Update::standard:{
+    case Update::Standard:{
       using f_t = DefaultUpdater<scalar_t>;
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});
@@ -190,7 +190,7 @@ createUpdater(const StateType & state,
 
   switch (updateE)
     {
-    case Update::standard:{
+    case Update::Standard:{
       using f_t = DefaultUpdater<scalar_t>;
       using u_t = Updater<SystemType, StateType, solver_t, f_t>;
       res_t result = pressio::utils::make_unique<u_t>(f_t{});

@@ -72,7 +72,7 @@ int main()
   FakeLinS<hessian_t> linSolver;
 
   auto GNSolver = nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
-  auto criterion = nonlinearsolvers::Stop::afterMaxIters;
+  auto criterion = nonlinearsolvers::Stop::AfterMaxIters;
   GNSolver.setStoppingCriterion(criterion);
   GNSolver.setMaxIterations(2);
   CustomUpdate U;

@@ -212,7 +212,7 @@ TEST(solvers_nonlinear, irwls_gauss_newton)
   using pressio::nonlinearsolvers::experimental::create_irls_gauss_newton;
   auto solver = create_irls_gauss_newton(sysObj, x, linSolverObj);
   solver.setMaxIterations(3);
-  solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
+  solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
   solver.solve(sysObj, x);
 
 }

@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
   auto GNSolver = pressio::nonlinearsolvers::create_gauss_newton(problem,x,linSolver);
 
-  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::armijo);
+  GNSolver.setUpdatingCriterion(pressio::nonlinearsolvers::Update::Armijo);
   GNSolver.setTolerance(1e-8);
   GNSolver.solve(problem, x);
   std::cout << std::setprecision(14) << *x.data() << " ";

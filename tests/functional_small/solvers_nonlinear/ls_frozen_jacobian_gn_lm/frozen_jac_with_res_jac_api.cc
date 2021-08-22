@@ -106,7 +106,7 @@ int main()
 #if defined USE_GN_QR
     auto solver = pressio::nonlinearsolvers::create_gauss_newtonQR(sysObj, x, solverObjQR);    
     solver.setMaxIterations(6);
-    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
+    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
     solver.solve(sysObj, x);
 
@@ -116,7 +116,7 @@ int main()
 #if defined USE_GN_NEQ
     auto solver = pressio::nonlinearsolvers::create_gauss_newton(sysObj, x, linSolverObj);    
     solver.setMaxIterations(6);
-    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
+    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
     solver.solve(sysObj, x);
 #endif
@@ -125,7 +125,7 @@ int main()
 #if defined USE_LM_NEQ
     auto solver = pressio::nonlinearsolvers::create_levenberg_marquardt(sysObj, x, linSolverObj);    
     solver.setMaxIterations(6);
-    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::afterMaxIters);
+    solver.setStoppingCriterion(pressio::nonlinearsolvers::Stop::AfterMaxIters);
     solver.setSystemJacobianUpdateFreq(3);
     solver.solve(sysObj, x);
 #endif
