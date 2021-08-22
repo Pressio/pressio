@@ -8,9 +8,9 @@
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_nr_1autotoc_md31">
+<sect1 id="md_pages_components_nonlinsolvers_nr_1autotoc_md40">
 <title>Newton-Raphson</title>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md32">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md41">
 <title>API, Parameters and Requirements</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ProblemClassType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>LinearSolverType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_newton_raphson(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProblemClassType<sp/>&amp;<sp/>system,</highlight></codeline>
@@ -36,7 +36,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md33">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md42">
 <title>Ops</title>
 <para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to specialize a trait class and some operations such that pressio can operate on your data. For the sake of explanation, suppose that you use:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/>double;</highlight></codeline>
@@ -84,7 +84,7 @@
 <codeline><highlight class="comment">}}//end<sp/>namepsace<sp/>pressio::ops</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md34">
+<sect2 id="md_pages_components_nonlinsolvers_nr_1autotoc_md43">
 <title>Example usage</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>

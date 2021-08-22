@@ -8,16 +8,16 @@
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_linear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::linearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_linsolvers_1autotoc_md2">
+<sect1 id="md_pages_components_linsolvers_1autotoc_md3">
 <title>Overview</title>
-<para>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. This is an <bold>intentional</bold> choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</para>
+<para>We clearly state upfront that this component of pressio is not a self-contained, general purpose library of linear solvers implemented from scratch. In the future, we might revise this, but for now it is an <bold>intentional</bold> choice: there exist already many open-source highly-optimized libraries that do so in both a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK, and distributed environment, e.g. Trilinos, PETSc, HYPRE.</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title></title><para>The main goal of the pressio&apos;s linear solvers component is to support usecases that are needed for ROMs.</para>
+<para><simplesect kind="par"><title></title><para>The primary goal of the pressio&apos;s linear solvers is to support usecases that are needed for ROMs.</para>
 </simplesect>
 As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense</emphasis> systems that suitably fit on a <emphasis>single compute node</emphasis>. Pressio&apos;s linear solvers are thus designed and implemented to be wrappers (exposing a common interface) to existing shared-memory linear solvers libraries.</para>
 <para>Currently, we support linear systems involving either Eigen or Kokkos data structures. The reason for this is that Eigen and Kokkos are the preferred choices (for now) to implement ROMs operators. Kokkos, in particular, allows to operate both on host and GPUs. Later on, we can easily extend support to other libraries if needed. Note that even if the scope of the linear solvers is limited, we still emphasize that, like all of the others subpackages in pressio, it can be used idenpendetly.</para>
 </sect1>
-<sect1 id="md_pages_components_linsolvers_1autotoc_md3">
+<sect1 id="md_pages_components_linsolvers_1autotoc_md4">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">pressio::linearsolvers::Solver&lt;Tag,<sp/>MatrixType&gt;;</highlight></codeline>
 </programlisting></para>
@@ -85,7 +85,7 @@ As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense
 </table>
 </para>
 </sect1>
-<sect1 id="md_pages_components_linsolvers_1autotoc_md4">
+<sect1 id="md_pages_components_linsolvers_1autotoc_md5">
 <title>Class Synopsis</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>MatrixType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">LinearSolver</highlight></codeline>
@@ -98,7 +98,7 @@ As discussed in the introduction, ROMs involve &quot;small&quot; <emphasis>dense
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="md_pages_components_linsolvers_1autotoc_md5">
+<sect1 id="md_pages_components_linsolvers_1autotoc_md6">
 <title>Example Usage</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>want<sp/>to<sp/>solve<sp/>`Ax<sp/>=<sp/>b`</highlight><highlight class="normal"></highlight></codeline>

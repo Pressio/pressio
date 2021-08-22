@@ -10,9 +10,13 @@
   </compound>
   <compound refid="nonlinsolvers__gn_8md" kind="file"><name>nonlinsolvers_gn.md</name>
   </compound>
+  <compound refid="nonlinsolvers__irls_8md" kind="file"><name>nonlinsolvers_irls.md</name>
+  </compound>
   <compound refid="nonlinsolvers__lm_8md" kind="file"><name>nonlinsolvers_lm.md</name>
   </compound>
   <compound refid="nonlinsolvers__nr_8md" kind="file"><name>nonlinsolvers_nr.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__system__api_8md" kind="file"><name>nonlinsolvers_system_api.md</name>
   </compound>
   <compound refid="ode__advance_8md" kind="file"><name>ode_advance.md</name>
   </compound>
@@ -86,9 +90,13 @@
   </compound>
   <compound refid="md_pages_components_nonlinsolvers_gn" kind="page"><name>md_pages_components_nonlinsolvers_gn</name>
   </compound>
+  <compound refid="md_pages_components_nonlinsolvers_irls" kind="page"><name>md_pages_components_nonlinsolvers_irls</name>
+  </compound>
   <compound refid="md_pages_components_nonlinsolvers_lm" kind="page"><name>md_pages_components_nonlinsolvers_lm</name>
   </compound>
   <compound refid="md_pages_components_nonlinsolvers_nr" kind="page"><name>md_pages_components_nonlinsolvers_nr</name>
+  </compound>
+  <compound refid="md_pages_components_nonlinsolvers_system_api" kind="page"><name>md_pages_components_nonlinsolvers_system_api</name>
   </compound>
   <compound refid="md_pages_components_ode_advance" kind="page"><name>md_pages_components_ode_advance</name>
   </compound>

@@ -8,27 +8,27 @@
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md17">
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
 <title>Gauss-Newton via Normal-Equations</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md18">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md19">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md20">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md25">
 <title>Example usage</title>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md21">
+<sect1 id="md_pages_components_nonlinsolvers_gn_1autotoc_md26">
 <title>Gauss-Newton via QR factorization</title>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md22">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md27">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md23">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md28">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md24">
+<sect2 id="md_pages_components_nonlinsolvers_gn_1autotoc_md29">
 <title>Example usage</title>
 </sect2>
 </sect1>

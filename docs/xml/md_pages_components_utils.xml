@@ -8,7 +8,7 @@
     <detaileddescription>
 <para>Defined in header: <computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput></para>
 <para>Public namespaces: <computeroutput>pressio</computeroutput> and <computeroutput>pressio::utils</computeroutput>.</para>
-<sect2 id="md_pages_components_utils_1autotoc_md73">
+<sect2 id="md_pages_components_utils_1autotoc_md85">
 <title>Logging functionalities</title>
 <para>Probably the most important functionality inside utils is the logger. </para>
 </sect2>

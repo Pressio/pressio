@@ -4,17 +4,14 @@
 
 This is the documentation of the [C++ library](https://github.com/Pressio/pressio), one component of the [Pressio ecosystem](https://pressio.github.io/).
 
-## Overview
-
-The library is currently structured as follows:
-
+<br/>
 
 | Name                							| Description/Content 													 	  | Links                                                							  | Corresponding header(s)    |
 | ------------------                            | ---------------                                                             | ------------                                                                	  |  						|
 | @m_span{m-text m-success}mpl@m_endspan        | metaprogramming functionalities                                             | [Code](https://github.com/Pressio/pressio/tree/main/include/mpl) <br/> [Documentation](md_pages_components_mpl.html)     	  | `<pressio/mpl.hpp>`  |
-| @m_span{m-text m-success}utils@m_endspan      | common functionalities<br/>e.g., I/O helpers, static constants, etc         | [Code](https://github.com/Pressio/pressio/tree/main/include/utils)<br/>[Documentation](md_pages_components_utils.html)   	  | `<pressio/utils.hpp>` |
+| @m_span{m-text m-success}utils@m_endspan      | I/O helpers, static constants, etc         | [Code](https://github.com/Pressio/pressio/tree/main/include/utils)<br/>[Documentation](md_pages_components_utils.html)   	  | `<pressio/utils.hpp>` |
 | @m_span{m-text m-success}type_traits@m_endspan| traits/detection classes   												  | [Code](https://github.com/Pressio/pressio/tree/main/include/type_traits)<br/>[Documentation](md_pages_components_type_traits.html)  	  | `<pressio/type_traits.hpp>`|
-| @m_span{m-text m-success}expressions@m_endspan| expression classes for useful abstractions (span, diagonal, subspan, etc.)  | [Code](https://github.com/Pressio/pressio/tree/main/include/expressions)<br/>[Documentation](md_pages_components_expressions.html)        | `<pressio/expressions.hpp>`|
+| @m_span{m-text m-success}expressions@m_endspan| classes for various abstractions (span, diagonal, subspan, etc.)  | [Code](https://github.com/Pressio/pressio/tree/main/include/expressions)<br/>[Documentation](md_pages_components_expressions.html)        | `<pressio/expressions.hpp>`|
 | @m_span{m-text m-success}ops@m_endspan        | shared-memory and distributed linear algebra kernels specializations        | [Code](https://github.com/Pressio/pressio/tree/main/include/ops)<br/>[Documentation](md_pages_components_ops.html)  | `<pressio/ops.hpp>`|
 | @m_span{m-text m-success}qr@m_endspan         | QR factorization functionalities                                            | [Code](https://github.com/Pressio/pressio/tree/main/include/qr)<br/>[Documentation](md_pages_components_qr.html)                 | `<pressio/qr.hpp>`|
 | @m_span{m-text m-success}solvers_linear@m_endspan    | linear solvers (wrappers around existing TPLs) 					  | [Code](https://github.com/Pressio/pressio/tree/main/include/solvers_linear)<br/>[Documentation](md_pages_components_linsolvers.html)            | `<pressio/solvers_linear.hpp>`|
@@ -22,12 +19,12 @@ The library is currently structured as follows:
 | @m_span{m-text m-success}ode@m_endspan        | <br/> explicit steppers <br/>implict steppers <br/> advancers <br/>               | [Code](https://github.com/Pressio/pressio/tree/main/include/ode) <br/> [Documentation](md_pages_components_ode_steppers_explicit.html)<br/> [Documentation](md_pages_components_ode_steppers_implicit.html) <br/>[Documentation](md_pages_components_ode_advance.html)   | <br/> `<pressio/ode_steppers_explicit.hpp>` <br/> `<pressio/ode_steppers_implicit.hpp>`<br/> `<pressio/ode_advancers.hpp>` <br/> Everything with: `<pressio/ode.hpp>` |
 | @m_span{m-text m-success}rom@m_endspan        | <br/>general info <br/> decoder <br/> Galerkin<br/> LSPG<br/> WLS<br/>       | [Code](https://github.com/Pressio/pressio/tree/main/include/rom) <br/>[Documentation](md_pages_components_rom_general.html) <br/>[Documentation](md_pages_components_rom_decoder.html) <br/> [Documentation](md_pages_components_rom_galerkin.html) <br/> [Documentation](md_pages_components_rom_lspg.html) <br/>  [Documentation](md_pages_components_rom_wls.html) <br/> | <br/> <br/> `<pressio/rom_decoder.hpp>` <br/> `<pressio/rom_galerkin.hpp>` <br/> `<pressio/rom_lspg.hpp>` <br/> `<pressio/rom_wls.hpp>` <br/> Everything with: `<pressio/rom.hpp>` |
 
-This structure benefits:
-* Maintability: the components depend on one another through well-defined public interfaces,
-and appropriate namespaces are used to properly scope the code.
+<!-- This structure benefits: -->
+<!-- * Maintability: the components depend on one another through well-defined public interfaces, -->
+<!-- and appropriate namespaces are used to properly scope the code. -->
 
-* Selective usability: users can leverage invidual functionalities.
-This allows finer-grained control on what you include and use.
+<!-- * Selective usability: users can leverage invidual functionalities. -->
+<!-- This allows finer-grained control on what you include and use. -->
 
 ## Getting Started
 
@@ -37,7 +34,7 @@ This allows finer-grained control on what you include and use.
 
 * explore the [tutorials](./md_pages_tutorials.html);
 
-* we maintain a test suite! Interested in browing it? [here they are](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d).
+* we maintain a test suite! Interested in browing it? [See here](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d).
 
 
 <!-- ## What if your types are not natively supported in pressio? -->

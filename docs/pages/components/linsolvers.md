@@ -11,7 +11,8 @@ Public namespace: `pressio::linearsolvers`
 We clearly state upfront that this component of pressio
 is not a self-contained, general purpose library of linear solvers
 implemented from scratch.
-This is an **intentional** choice: there exist already many
+In the future, we might revise this, but for now it is
+an **intentional** choice: there exist already many
 open-source highly-optimized libraries that do so in both
 a shared-memory, e.g. Armadillo, Eigen, Blaze, Magma, LAPACK,
 and distributed environment, e.g. Trilinos, PETSc, HYPRE.
@@ -19,8 +20,7 @@ and distributed environment, e.g. Trilinos, PETSc, HYPRE.
 @m_class{m-block m-warning}
 
 @par
-The main goal of the pressio's linear solvers component
-is to support usecases that are needed for ROMs.
+The primary goal of the pressio's linear solvers is to support usecases that are needed for ROMs.
 
 As discussed in the introduction, ROMs involve "small"
 *dense* systems that suitably fit on a *single compute node*.

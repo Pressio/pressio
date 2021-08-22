@@ -8,9 +8,8 @@
     <detaileddescription>
 <para><anchor id="index_1md_pages_main"/> <emphasis>Leading-edge reduced order models (ROMs) for dynamical systems in science and engineering.</emphasis></para>
 <para>This is the documentation of the <ulink url="https://github.com/Pressio/pressio">C++ library</ulink>, one component of the <ulink url="https://pressio.github.io/">Pressio ecosystem</ulink>.</para>
-<sect1 id="index_1autotoc_md81">
-<title>Overview</title>
-<para>The library is currently structured as follows:</para>
+<para><linebreak/>
+</para>
 <para><table rows="11" cols="4"><row>
 <entry thead="yes"><para>Name   </para>
 </entry><entry thead="yes"><para>Description/Content   </para>
@@ -26,8 +25,7 @@
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
-</entry><entry thead="no"><para>common functionalities<linebreak/>
-e.g., I/O helpers, static constants, etc   </para>
+</entry><entry thead="no"><para>I/O helpers, static constants, etc   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/utils">Code</ulink><linebreak/>
 <ulink url="md_pages_components_utils.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput>    </para>
@@ -41,7 +39,7 @@ e.g., I/O helpers, static constants, etc   </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">expressions</mcss:span>   </para>
-</entry><entry thead="no"><para>expression classes for useful abstractions (span, diagonal, subspan, etc.)   </para>
+</entry><entry thead="no"><para>classes for various abstractions (span, diagonal, subspan, etc.)   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/expressions">Code</ulink><linebreak/>
 <ulink url="md_pages_components_expressions.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/expressions.hpp&gt;</computeroutput>    </para>
@@ -125,28 +123,22 @@ general info <linebreak/>
 </entry></row>
 </table>
 </para>
-<para>This structure benefits:<itemizedlist>
-<listitem><para>Maintability: the components depend on one another through well-defined public interfaces, and appropriate namespaces are used to properly scope the code.</para>
-</listitem><listitem><para>Selective usability: users can leverage invidual functionalities. This allows finer-grained control on what you include and use.</para>
-</listitem></itemizedlist>
-</para>
-</sect1>
-<sect1 id="index_1autotoc_md82">
+<sect1 id="index_1autotoc_md93">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
 </listitem><listitem><para><ulink url="./md_pages_installation.html">installation</ulink>: it is a header-only library, should be trivial;</para>
 </listitem><listitem><para>explore the <ulink url="./md_pages_tutorials.html">tutorials</ulink>;</para>
-</listitem><listitem><para>we maintain a test suite! Interested in browing it? <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">here they are</ulink>.</para>
+</listitem><listitem><para>we maintain a test suite! Interested in browing it? <ulink url="https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d">See here</ulink>.</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md83">
+<sect1 id="index_1autotoc_md94">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md84">
+<sect1 id="index_1autotoc_md95">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

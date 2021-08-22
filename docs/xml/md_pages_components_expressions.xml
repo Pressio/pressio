@@ -6,6 +6,11 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
+<para>Defined in header: <computeroutput>&lt;pressio/expressions.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio</computeroutput></para>
+<sect1 id="md_pages_components_expressions_1autotoc_md1">
+<title>Overview</title>
+</sect1>
     </detaileddescription>
     <location file="pages/components/expressions.md"/>
   </compounddef>

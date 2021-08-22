@@ -2,126 +2,256 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_components_nonlinsolvers_general" kind="page">
     <compoundname>md_pages_components_nonlinsolvers_general</compoundname>
-    <title>Nonlinear Solvers - General</title>
+    <title>Nonlinear Solvers - General Info</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md13">
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md14">
 <title>Overview</title>
+<para>The pressio nonlinear solvers have been developed from the ground up using generic programming. It is intended to be a library that can be used independently and with support for arbitrary data types. It is not fully complete, and it can obviously be extended. If you are interested in contributing or you need other methods, open an issue and/or PR.</para>
+<para>Currently, we support the following algorithms:</para>
 <para><table rows="5" cols="3"><row>
 <entry thead="yes"><para>Name   </para>
-</entry><entry thead="yes"><para>Use for:   </para>
-</entry><entry thead="yes"><para>Useful math links    </para>
+</entry><entry thead="yes"><para>Doc   </para>
+</entry><entry thead="yes"><para>Purpose:    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Newton-Raphson   </para>
-</entry><entry thead="no"><para>Systems of nonlinear equations   </para>
-</entry><entry thead="no"><para><ulink url="https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf">l1</ulink>, <ulink url="https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf">l2</ulink>    </para>
+</entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_nr.html">Link</ulink>   </para>
+</entry><entry thead="no"><para>Systems of nonlinear equations (see e.g. <ulink url="https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf">link</ulink>, <ulink url="https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf">link</ulink> )    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Gauss-Newton   </para>
-</entry><entry thead="no"><para>Nonlinear least-squares problem.   </para>
-</entry><entry thead="no"><para><ulink url="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">l1</ulink>    </para>
+</entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_gn.html">Link</ulink>   </para>
+</entry><entry thead="no"><para>Nonlinear least-squares problem. (see <ulink url="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">link</ulink> )    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Levenberg–Marquardt   </para>
-</entry><entry thead="no"><para>Nonlinear least-squares problem.   </para>
-</entry><entry thead="no"><para><ulink url="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">l1</ulink>    </para>
+</entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_lm.html">Link</ulink>   </para>
+</entry><entry thead="no"><para>Nonlinear least-squares problem. (see <ulink url="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">link</ulink> )    </para>
 </entry></row>
 <row>
 <entry thead="no"><para>Iteratively reweighted least squares   </para>
-</entry><entry thead="no"><para>optimization problem formulated in a p-norm   </para>
-</entry><entry thead="no"><para><ulink url="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">l1</ulink>   </para>
+</entry><entry thead="no"><para><ulink url="./md_pages_components_nonlinsolvers_irls.html">Link</ulink>   </para>
+</entry><entry thead="no"><para>optimization problem formulated in a p-norm (see <ulink url="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">link</ulink> )   </para>
 </entry></row>
 </table>
 </para>
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md15">
+<title>A glimpse of the API</title>
+<para>To create a solver, we expose specific factory functions for each algorithm. <programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pnonls<sp/>=<sp/>pressio::nonlinearsolvers;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_newton_raphson(....);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_gauss_newton(....);</highlight></codeline>
+</programlisting></para>
+<para>Please refer to each method&apos;s documentation for the details on the API and arguments.</para>
+</sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md14">
-<title>General solver settings</title>
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md16">
+<title>What are users responsible of?</title>
+<para>If you want to use the pressio nonlinear solvers, you are responsible of three main things:</para>
 <para><itemizedlist>
-<listitem><para>convergence criterion</para>
-</listitem><listitem><para>logging</para>
-</listitem><listitem><para>updating step, choices and custom</para>
+<listitem><para>A: providing a problem object</para>
+</listitem><listitem><para>B: specifying the convergence criterion</para>
+</listitem><listitem><para>C: specifying the update method</para>
 </listitem></itemizedlist>
 </para>
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md17">
+<title>A: problem class</title>
+<para>The problem class is what you use to <emphasis>define your problem</emphasis>. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.</para>
+<para>The pressio nonlinear solvers define four main types of problem APIs, namely the &quot;residual-jacobian&quot;, &quot;fused residual-jacobian&quot;, &quot;hessian-gradient&quot; , and &quot;fused hessian-gradient&quot;. These problem concepts are discussed on <ulink url="md_pages_components_nonlinsolvers_system_api.html">this page</ulink>. Depending on which concepts your problem meets, you can access certain algorithms but not necessarily others. The following table helps clarifying the problem API/algorithms admissibility:</para>
+<para><table rows="6" cols="5"><row>
+<entry thead="yes"><para>Algorithm   </para>
+</entry><entry thead="yes"><para>Residual-Jacobian API   </para>
+</entry><entry thead="yes"><para>Fused Residual-Jacobian API   </para>
+</entry><entry thead="yes"><para>Hessian-Gradient API   </para>
+</entry><entry thead="yes"><para>Fused Hessian-Gradient API    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Newton-Raphson   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para></para>
+</entry></row>
+<row>
+<entry thead="no"><para>Gauss-Newton Normal-Equations   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Gauss-Newton QR   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para></para>
+</entry></row>
+<row>
+<entry thead="no"><para>Levenberg-Marquardt   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>irls   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para>admissible   </para>
+</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para></para>
+</entry></row>
+</table>
+</para>
+<para>Please refer to each method&apos;s documentation for the details on how you provide a problem instance to pressio.</para>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md18">
+<title>B: Convergence and tolerance</title>
+<para>The convergence criterion and associated tolerance are used to decide why and when the solver needs to terminate. We currently support these termination criteria:</para>
+<para><table rows="8" cols="3"><row>
+<entry thead="yes"><para>Enum value   </para>
+</entry><entry thead="yes"><para>Description   </para>
+</entry><entry thead="yes"><para>Currently supported for:    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::AfterMaxIters</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenCorrectionAbsoluteNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenCorrectionRelativeNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenResidualAbsoluteNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenResidualRelativeNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenGradientAbsoluteNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>least-squares solvers    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Stop::WhenGradientRelativeNormBelowTolerance</computeroutput>   </para>
+</entry><entry thead="no"><para>self-explanatory   </para>
+</entry><entry thead="no"><para>least-squares solvers   </para>
+</entry></row>
+</table>
+</para>
+<para>which you set/query along with corresponding tolerances using the following methods: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>set/query<sp/>stopping<sp/>criterion</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setStoppingCriterion(Stop<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Stop<sp/>stoppingCriterion()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>set/query<sp/>max<sp/>number<sp/>of<sp/>iterations</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setMaxIterations(iteration_type<sp/>maxIters);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>iteration_type<sp/>maxIterations()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>is<sp/>used<sp/>to<sp/>set<sp/>a<sp/>single<sp/>tol<sp/>for<sp/>all</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setTolerance(scalar_type<sp/>tolerance){<sp/>tolerances_.fill(std::move(tolerance));<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>finer-grained<sp/>methods<sp/>for<sp/>setting<sp/>tolerances</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setCorrectionAbsoluteTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setCorrectionRelativeTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setResidualAbsoluteTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setResidualRelativeTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setGradientAbsoluteTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setGradientRelativeTolerance(scalar_type<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>querying<sp/>tolerances</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>correctionAbsoluteTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>correctionRelativeTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>residualAbsoluteTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>residualRelativeTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>gradientAbsoluteTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>scalar_type<sp/>gradientRelativeTolerance()</highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md19">
+<title>C: Setting the update</title>
+<para>The update stage represents the <emphasis>how</emphasis> the current correction term is combined with state to update the latter. We currently support the following:</para>
+<para><table rows="5" cols="4"><row>
+<entry thead="yes"><para>Name   </para>
+</entry><entry thead="yes"><para>Enum value   </para>
+</entry><entry thead="yes"><para>Description   </para>
+</entry><entry thead="yes"><para>Currently supported for:    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Default   </para>
+</entry><entry thead="no"><para><computeroutput>Update::Standard</computeroutput>   </para>
+</entry><entry thead="no"><para><formula id="0">$x_{n+1} = x_{n} + \lambda_{n}$</formula>   </para>
+</entry><entry thead="no"><para>all algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>Armijo   </para>
+</entry><entry thead="no"><para><computeroutput>Update::Armijo</computeroutput>   </para>
+</entry><entry thead="no"><para>[see this]()   </para>
+</entry><entry thead="no"><para>Gauss-Newton    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>LM-schedule1   </para>
+</entry><entry thead="no"><para><computeroutput>Update::LMSchedule1</computeroutput>   </para>
+</entry><entry thead="no"><para>[see this]()   </para>
+</entry><entry thead="no"><para>Levenberg–Marquardt    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>LM-schedule2   </para>
+</entry><entry thead="no"><para><computeroutput>Update::LMSchedule2</computeroutput>   </para>
+</entry><entry thead="no"><para>[see this]()   </para>
+</entry><entry thead="no"><para>Levenberg–Marquardt   </para>
+</entry></row>
+</table>
+</para>
+<para>where <formula id="1">$\lambda_{n}$</formula> is the correction computed at the n-th iteration of the solver.</para>
+<para>To set or query the update method, you use the following methods of the solver class:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setUpdatingCriterion(Update<sp/>value);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>Update<sp/>updatingCriterion()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-success" /></para>
+<para><simplesect kind="par"><title>By default, a nonlinear solver uses:</title><para><itemizedlist>
+<listitem><para>update: <computeroutput>Update::Standard</computeroutput>;</para>
+</listitem><listitem><para>stopping: <computeroutput>Stop::WhenCorrectionAbsoluteNormBelowTolerance</computeroutput>;</para>
+</listitem><listitem><para>max number of iterations = 100</para>
+</listitem><listitem><para>tolerance = 0.000001 (for everything)</para>
+</listitem></itemizedlist>
+</para>
+</simplesect>
+</para>
+</sect2>
 </sect1>
-<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md15">
-<title>Problem APIs</title>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemResJac</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>createResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residual(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>residual_type<sp/>&amp;<sp/>res)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>jacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,<sp/>jacobian_type<sp/>&amp;<sp/>jac)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting></para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemFusedResJac</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>createResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residualAndJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type&amp;<sp/>x,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>residual_type<sp/>&amp;<sp/>res,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>jacobian_type<sp/>&amp;<sp/>jac,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>recomputeJacobian)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting></para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemHessGrad</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>hessian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>gradient_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>hessian_type<sp/>createHessian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>gradient_type<sp/>createGradient()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residualNorm(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>state,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pressio::Norm<sp/>normKind,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>&amp;<sp/>resNorm)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>gradient(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gradient_type<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pressio::Norm<sp/>normKind,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>&amp;<sp/>normResidual,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>recomputeJacobian)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>hessian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>hessian_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting></para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ProblemHessGradFused</highlight></codeline>
-<codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>hessian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>gradient_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>hessian_type<sp/>createHessian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>gradient_type<sp/>createGradient()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>residualNorm(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>state,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pressio::Norm<sp/>normKind,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>&amp;<sp/>resNorm)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>hessianAndGradient(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hessian_type<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gradient_type<sp/>&amp;,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pressio::Norm<sp/>normKind,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>&amp;<sp/>normResidual,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>recomputeJacobian)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-</programlisting> </para>
+<sect1 id="md_pages_components_nonlinsolvers_general_1autotoc_md20">
+<title>A note on the solvers&apos; design</title>
+<para>If you are interested, here we provide a brief note describing the our design idea. The design of the nonlinear solvers has been based on recognizing that, at a very high level, a nonlinear solver operates by repeatedly updating a given &quot;state&quot; until a certain criterion is met, and each &quot;iteration&quot; involves the following stages:</para>
+<para><itemizedlist>
+<listitem><para>A: computing/updating the operators</para>
+</listitem><listitem><para>B: computing the new correction term</para>
+</listitem><listitem><para>C: assessing convergence</para>
+</listitem><listitem><para>D: updating the state using the correction</para>
+</listitem></itemizedlist>
+</para>
+<para>This view forms the basis of our design approach: when a solver object is instantiated, depending on the chosen algorithm, pressio behind the scenes instantiates the proper classes needed for each of the stages above, and properly composes them to instantiate the desired solver object. </para>
 </sect1>
     </detaileddescription>
     <location file="pages/components/nonlinsolvers_general.md"/>

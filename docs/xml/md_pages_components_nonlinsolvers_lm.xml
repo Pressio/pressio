@@ -8,15 +8,15 @@
     <detaileddescription>
 <para>Defined in header <computeroutput>&lt;pressio/solvers_nonlinear.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::nonlinearsolvers</computeroutput></para>
-<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md26">
+<sect1 id="md_pages_components_nonlinsolvers_lm_1autotoc_md35">
 <title>Levenberg–Marquardt</title>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md27">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md36">
 <title>API, Parameters and Requirements</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md28">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md37">
 <title>Ops</title>
 </sect2>
-<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md29">
+<sect2 id="md_pages_components_nonlinsolvers_lm_1autotoc_md38">
 <title>Example usage</title>
 </sect2>
 </sect1>

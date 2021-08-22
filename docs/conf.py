@@ -6,7 +6,7 @@ LINKS_NAVBAR1 = [
 
   ("<a href=\"md_pages_introduction.html\">Introduction</a>", []),
 
-  ("<a href=\"md_pages_installation.html\">Installation and Dependencies</a>", []),
+  ("<a href=\"md_pages_installation.html\">Installation/Dependencies</a>", []),
 
   # ("<a href=\"md_pages_components.html\">Components</a>",
   ("<a>Documentation</a>",
@@ -18,10 +18,12 @@ LINKS_NAVBAR1 = [
      ("<a href=\"md_pages_components_ops.html\">ops</a>",),
      ("<a href=\"md_pages_components_qr.html\">qr</a>",),
      ("<a href=\"md_pages_components_linsolvers.html\">linear solvers</a>",),
-     ("<a href=\"md_pages_components_nonlinsolvers_general.html\">nonlinear solvers: general</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_general.html\">nonlinear solvers: general info</a>",),
      ("<a href=\"md_pages_components_nonlinsolvers_nr.html\">nonlinear solvers: Newton-Raphson</a>",),
      ("<a href=\"md_pages_components_nonlinsolvers_gn.html\">nonlinear solvers: Gauss-Newton</a>",),
      ("<a href=\"md_pages_components_nonlinsolvers_lm.html\">nonlinear solvers: Levenberg-Marquardt</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_irls.html\">nonlinear solvers: irls</a>",),
+     ("<a href=\"md_pages_components_nonlinsolvers_system_api.html\">nonlinear solvers: problem class API</a>",),
      ("<a href=\"md_pages_components_ode_advance.html\">ode advancers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_explicit.html\">ode explicit steppers</a>",),
      ("<a href=\"md_pages_components_ode_steppers_implicit.html\">ode implicit steppers</a>",),
