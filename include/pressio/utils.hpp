@@ -78,10 +78,21 @@
 #define PRESSIO_LOG_LEVEL_CRITICAL	5
 #define PRESSIO_LOG_LEVEL_OFF		6
 
+
+// if DEBUG_PRINT is on but MIN_LEVEL off, then set min level to trace
 #if defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+
 #define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_TRACE
+
+// if DEBUG_PRINT=off and MIN_LEVEL=off, then set logging off
 #elif !defined(PRESSIO_ENABLE_DEBUG_PRINT) && !defined(PRESSIO_LOG_ACTIVE_MIN_LEVEL)
+
 #define PRESSIO_LOG_ACTIVE_MIN_LEVEL	PRESSIO_LOG_LEVEL_OFF
+
+#else //DEBUG_PRINT=off, but LOG_ACTIVE_MIN_LEVEL=on
+
+// nothing to do
+
 #endif
 
 #include "./utils/logger/utils_logger_enums.hpp"

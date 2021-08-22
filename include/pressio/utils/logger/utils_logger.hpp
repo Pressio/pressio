@@ -126,7 +126,7 @@ void getLogger()
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
   return get("pressioLogger");
 #else
-#endif  
+#endif
 }
 
 template <class T= void>
@@ -275,7 +275,7 @@ inline void critical(const FormatString &fmt, Args&&...args)
 
 ///// ERROR /////
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL <= PRESSIO_LOG_LEVEL_ERROR
-#define PRESSIOLOGGER_ERROR(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::error, __VA_ARGS__)
+#define PRESSIOLOGGER_ERROR(logger, ...) PRESSIO_LOGGER_NOSRCLOC_CALL(logger, spdlog::level::err, __VA_ARGS__)
 #define PRESSIOLOG_ERROR(...) PRESSIOLOGGER_ERROR(spdlog::default_logger(), __VA_ARGS__)
 #else
 #define PRESSIOLOG_ERROR(...) (void)0
