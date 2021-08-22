@@ -10,15 +10,17 @@
 <para>Public namespaces: <computeroutput>pressio</computeroutput> and <computeroutput>pressio::utils</computeroutput>.</para>
 <sect1 id="md_pages_components_utils_1autotoc_md85">
 <title>Logger</title>
-<para>One of the main functionalities inside <computeroutput>utils</computeroutput> is the logger. To implement the pressio logging functionalities, we have used <ulink url="https://github.com/gabime/spdlog">spdlog</ulink>, and rewritten a subset of it, for example to work seamlessly with MPI.</para>
+<para>One of the main functionalities inside <computeroutput>utils</computeroutput> is the logger. To implement the pressio logging functionalities, we have used <ulink url="https://github.com/gabime/spdlog">spdlog</ulink>, rewriting a subset of it, for example to work seamlessly with MPI.</para>
 <para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>By default all logging is disabled.</title><para>If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> and expect logging, you will be disappointed! By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things:<orderedlist>
+<para><simplesect kind="par"><title>By default the logger is disabled, here is how to enable it.</title><para></para>
+</simplesect>
+If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> and expect logging, you will be disappointed! <linebreak/>
+ By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things:<orderedlist>
 <listitem><para>place a <computeroutput>define</computeroutput> statement to set the desired level: note that this define statement <emphasis>must</emphasis> be placed <emphasis>before</emphasis> including the utils header.</para>
-</listitem><listitem><para>you need to start and finalize the logger singleton.</para>
+</listitem><listitem><para>you need to initialize and finalize the logger singleton.</para>
 </listitem></orderedlist>
 </para>
-</simplesect>
-As follows: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>this<sp/>sets<sp/>the<sp/>default<sp/>min<sp/>level</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>this<sp/>sets<sp/>the<sp/>default<sp/>min<sp/>level</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_ACTIVE_MIN_LEVEL<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>this<sp/>is<sp/>needed<sp/>to<sp/>include<sp/>the<sp/>logger<sp/>code</highlight><highlight class="normal"></highlight></codeline>
@@ -26,14 +28,50 @@ As follows: <programlisting filename=".cpp"><codeline><highlight class="comment"
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">plog<sp/><sp/><sp/>=<sp/>pressio::log;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>plog::initialize(pressio::logto::terminal);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>alias<sp/>for<sp/>readability</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">plog<sp/>=<sp/>pressio::log;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>your<sp/>code</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>logger<sp/>(see<sp/>below<sp/>for<sp/>details)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>plog::finalize();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>your<sp/>code,<sp/>use<sp/>logger</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>finalize<sp/>logger<sp/>(see<sp/>below<sp/>for<sp/>details)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> In this case, we set the level to 2, which means &quot;info&quot;-level logging. The supported levels are:</para>
+</programlisting></para>
+<sect2 id="md_pages_components_utils_1autotoc_md86">
+<title>Initializing</title>
+<para>You have these choices: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>only<sp/>log<sp/>messages<sp/>to<sp/>terminal</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">plog::initialize(pressio::logto::terminal);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>log<sp/>messages<sp/>to<sp/>terminal<sp/>and<sp/>a<sp/>file<sp/>named,<sp/>e.g.,<sp/>&quot;my_log.txt&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">plog::initialize(pressio::logto::fileAndTerminal,<sp/></highlight><highlight class="stringliteral">&quot;my_log.txt&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>only<sp/>log<sp/>messages<sp/>to<sp/>a<sp/>file<sp/>named,<sp/>e.g.,<sp/>&quot;my_log.txt&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">plog::initialize(pressio::logto::file,<sp/></highlight><highlight class="stringliteral">&quot;my_log.txt&quot;</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>If you are running with MPI, the logger prints to the terminal <emphasis>only from rank==0</emphasis>. However, it automatically creates a per-rank log file if you choose the file output. For example, the following code: <programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**argv)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>MPI_Init(&amp;argc,<sp/>&amp;argv);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>my_rank<sp/>=<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>MPI_Comm_rank(MPI_COMM_WORLD,<sp/>&amp;my_rank);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">plog<sp/>=<sp/>pressio::log;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>plog::initialize(pressio::logto::file,<sp/></highlight><highlight class="stringliteral">&quot;log_file.txt&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_INFO(</highlight><highlight class="stringliteral">&quot;print<sp/>from<sp/>rank<sp/>{:2}&quot;</highlight><highlight class="normal">,<sp/>my_rank);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>plog::finalize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>MPI_Finalize();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> If we were to run this with N ranks, we would obtain two files <computeroutput>log_file.txt_0</computeroutput>, and <computeroutput>log_file.txt_1</computeroutput>. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.</para>
+</sect2>
+<sect2 id="md_pages_components_utils_1autotoc_md87">
+<title>Finalizing</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">plog::finalize();</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_utils_1autotoc_md88">
+<title>Levels</title>
+<para>The supported levels are:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_TRACE<sp/><sp/><sp/><sp/><sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_DEBUG<sp/><sp/><sp/><sp/><sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_INFO<sp/><sp/><sp/><sp/><sp/><sp/>2</highlight><highlight class="normal"></highlight></codeline>
@@ -42,28 +80,37 @@ As follows: <programlisting filename=".cpp"><codeline><highlight class="comment"
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_CRITICAL<sp/><sp/>5</highlight></codeline>
 <codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_OFF<sp/><sp/><sp/><sp/><sp/><sp/><sp/>6</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_utils_1autotoc_md86">
+</sect2>
+<sect2 id="md_pages_components_utils_1autotoc_md89">
 <title>Resetting the level</title>
-<para>If you want, you can use the define statement to set the min level, but then are runtime reset it as follows: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>your<sp/>code</highlight><highlight class="normal"></highlight></codeline>
+<para>If you want, you can use the define statement to set the min level, but then at runtime reset it as follows: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>your<sp/>code</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">plog::setVerbosity({plog::level::info});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md87">
+<sect2 id="md_pages_components_utils_1autotoc_md90">
 <title>The loggin macros</title>
-<para>To actually issue log statements, you use the macros as in the following example: <programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<para>To actually issue log statements, you use the macros as in the following example:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>initialize<sp/>logger</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a<sp/>=<sp/>1.1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_TRACE(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is&quot;</highlight><highlight class="normal">,<sp/>a,<sp/></highlight><highlight class="stringliteral">&quot;);</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/>PRESSIOLOG_DEBUG(&quot;</highlight><highlight class="normal">my<sp/>value<sp/>is</highlight><highlight class="stringliteral">&quot;,<sp/>a,<sp/>&quot;</highlight><highlight class="normal"><sp/>but<sp/>I<sp/>am<sp/>debug</highlight><highlight class="stringliteral">&quot;);</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/>PRESSIOLOG_INFO(&quot;</highlight><highlight class="normal">my<sp/>value<sp/>is</highlight><highlight class="stringliteral">&quot;,<sp/>a,<sp/>&quot;</highlight><highlight class="normal"><sp/>but<sp/>I<sp/>am<sp/>info</highlight><highlight class="stringliteral">&quot;);</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/>PRESSIOLOG_WARN(&quot;</highlight><highlight class="normal">my<sp/>value<sp/>is</highlight><highlight class="stringliteral">&quot;,<sp/>a,<sp/>&quot;</highlight><highlight class="normal"><sp/>but<sp/>I<sp/>am<sp/>warn</highlight><highlight class="stringliteral">&quot;);</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/>PRESSIOLOG_ERROR(&quot;</highlight><highlight class="normal">my<sp/>value<sp/>is</highlight><highlight class="stringliteral">&quot;,<sp/>a,<sp/>&quot;</highlight><highlight class="normal"><sp/>but<sp/>I<sp/>am<sp/>an<sp/>error<sp/>level</highlight><highlight class="stringliteral">&quot;);</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/>PRESSIOLOG_CRITICAL(&quot;</highlight><highlight class="normal">my<sp/>value<sp/>is</highlight><highlight class="stringliteral">&quot;,<sp/>55.6,<sp/>&quot;</highlight><highlight class="normal"><sp/>but<sp/>don</highlight><highlight class="stringliteral">&apos;t<sp/>forget<sp/>);</highlight></codeline>
-<codeline><highlight class="stringliteral">}</highlight></codeline>
-</programlisting></para>
-<para>The log statements issued for a specific level will be printed <emphasis>only if</emphasis> <computeroutput>PRESSIO_LOG_ACTIVE_MIN_LEVEL</computeroutput> is greater or equal than that level. </para>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_TRACE(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_DEBUG(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_INFO(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_WARN(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_ERROR(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>PRESSIOLOG_CRITICAL(</highlight><highlight class="stringliteral">&quot;my<sp/>value<sp/>is<sp/>{:.6f}&quot;</highlight><highlight class="normal">,<sp/>55.6);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>finalize<sp/>logger</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> where we note that you can use the <ulink url="https://github.com/fmtlib/fmt">{fmt} library</ulink> to properly format the print statements.</para>
+<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
+<para><simplesect kind="par"><title>Keep in mind:</title><para>The log statements issued for a specific level will be printed <emphasis>only if</emphasis> <computeroutput>PRESSIO_LOG_ACTIVE_MIN_LEVEL</computeroutput> is greater or equal than that level. If the logger is disabled, the macros are expanded to a no-op. So it does not cost you anything to place log statements in your code, because in production mode you can just compile to no-op. </para>
+</simplesect>
+</para>
 </sect2>
 </sect1>
     </detaileddescription>

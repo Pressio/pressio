@@ -1,18 +1,21 @@
 Defined in header\+: {\ttfamily $<$pressio/utils.\+hpp$>$}
 
 Public namespaces\+: {\ttfamily pressio} and {\ttfamily pressio\+::utils}.\hypertarget{md_pages_components_utils_autotoc_md85}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md85}
-One of the main functionalities inside {\ttfamily utils} is the logger. To implement the pressio logging functionalities, we have used \href{https://github.com/gabime/spdlog}{\texttt{ spdlog}}, and rewritten a subset of it, for example to work seamlessly with MPI.
+One of the main functionalities inside {\ttfamily utils} is the logger. To implement the pressio logging functionalities, we have used \href{https://github.com/gabime/spdlog}{\texttt{ spdlog}}, rewriting a subset of it, for example to work seamlessly with MPI.
 
 
 
-\begin{DoxyParagraph}{By default all logging is disabled.}
-If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed! By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things\+:
+\begin{DoxyParagraph}{By default the logger is disabled, here is how to enable it.}
+
+\end{DoxyParagraph}
+If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed! ~\newline
+ By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things\+:
 \begin{DoxyEnumerate}
 \item place a {\ttfamily define} statement to set the desired level\+: note that this define statement {\itshape must} be placed {\itshape before} including the utils header.
-\item you need to start and finalize the logger singleton.
+\item you need to initialize and finalize the logger singleton.
 \end{DoxyEnumerate}
-\end{DoxyParagraph}
-As follows\+: 
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// this sets the default min level}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#define PRESSIO\_LOG\_ACTIVE\_MIN\_LEVEL 2}}
@@ -22,16 +25,57 @@ As follows\+:
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
 \DoxyCodeLine{\{}
-\DoxyCodeLine{  \textcolor{keyword}{namespace }plog   = pressio::log;}
-\DoxyCodeLine{  plog::initialize(pressio::logto::terminal);}
+\DoxyCodeLine{  \textcolor{comment}{// namespace alias for readability}}
+\DoxyCodeLine{  \textcolor{keyword}{namespace }plog = pressio::log;}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// your code}}
+\DoxyCodeLine{  \textcolor{comment}{// initialize logger (see below for details)}}
 \DoxyCodeLine{}
-\DoxyCodeLine{  plog::finalize();}
+\DoxyCodeLine{  \textcolor{comment}{// your code, use logger}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// finalize logger (see below for details)}}
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
- In this case, we set the level to 2, which means \char`\"{}info\char`\"{}-\/level logging. The supported levels are\+:
+\hypertarget{md_pages_components_utils_autotoc_md86}{}\doxysubsection{Initializing}\label{md_pages_components_utils_autotoc_md86}
+You have these choices\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// only log messages to terminal}}
+\DoxyCodeLine{plog::initialize(pressio::logto::terminal);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// log messages to terminal and a file named, e.g., "{}my\_log.txt"{}}}
+\DoxyCodeLine{plog::initialize(pressio::logto::fileAndTerminal, \textcolor{stringliteral}{"{}my\_log.txt"{}});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// only log messages to a file named, e.g., "{}my\_log.txt"{}}}
+\DoxyCodeLine{plog::initialize(pressio::logto::file, \textcolor{stringliteral}{"{}my\_log.txt"{}});}
+
+\end{DoxyCode}
+
+
+If you are running with MPI, the logger prints to the terminal {\itshape only from rank==0}. However, it automatically creates a per-\/rank log file if you choose the file output. For example, the following code\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} **argv)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  MPI\_Init(\&argc, \&argv);}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} my\_rank = \{\};}
+\DoxyCodeLine{  MPI\_Comm\_rank(MPI\_COMM\_WORLD, \&my\_rank);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{namespace }plog = pressio::log;}
+\DoxyCodeLine{  plog::initialize(pressio::logto::file, \textcolor{stringliteral}{"{}log\_file.txt"{}});}
+\DoxyCodeLine{  PRESSIOLOG\_INFO(\textcolor{stringliteral}{"{}print from rank \{:2\}"{}}, my\_rank);}
+\DoxyCodeLine{  plog::finalize();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  MPI\_Finalize();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ If we were to run this with N ranks, we would obtain two files {\ttfamily log\+\_\+file.\+txt\+\_\+0}, and {\ttfamily log\+\_\+file.\+txt\+\_\+1}. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.\hypertarget{md_pages_components_utils_autotoc_md87}{}\doxysubsection{Finalizing}\label{md_pages_components_utils_autotoc_md87}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{plog::finalize();}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_utils_autotoc_md88}{}\doxysubsection{Levels}\label{md_pages_components_utils_autotoc_md88}
+The supported levels are\+:
 
 
 \begin{DoxyCode}{0}
@@ -44,8 +88,8 @@ As follows\+:
 \DoxyCodeLine{\textcolor{preprocessor}{\#define PRESSIO\_LOG\_LEVEL\_OFF       6}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md86}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md86}
-If you want, you can use the define statement to set the min level, but then are runtime reset it as follows\+: 
+\hypertarget{md_pages_components_utils_autotoc_md89}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md89}
+If you want, you can use the define statement to set the min level, but then at runtime reset it as follows\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// your code}}
 \DoxyCodeLine{\textcolor{comment}{// ...}}
@@ -53,21 +97,31 @@ If you want, you can use the define statement to set the min level, but then are
 \DoxyCodeLine{\textcolor{comment}{// ...}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md87}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md87}
-To actually issue log statements, you use the macros as in the following example\+: 
+\hypertarget{md_pages_components_utils_autotoc_md90}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md90}
+To actually issue log statements, you use the macros as in the following example\+:
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keywordtype}{int} main()}
 \DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// initialize logger}}
+\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keywordtype}{double} a = 1.1;}
-\DoxyCodeLine{  PRESSIOLOG\_TRACE(\textcolor{stringliteral}{"{}my value is"{}}, a, \textcolor{stringliteral}{"{});}}
-\DoxyCodeLine{\textcolor{stringliteral}{  PRESSIOLOG\_DEBUG("{}}my value is\textcolor{stringliteral}{"{}, a, "{}} but I am debug\textcolor{stringliteral}{"{});}}
-\DoxyCodeLine{\textcolor{stringliteral}{  PRESSIOLOG\_INFO("{}}my value is\textcolor{stringliteral}{"{}, a, "{}} but I am info\textcolor{stringliteral}{"{});}}
-\DoxyCodeLine{\textcolor{stringliteral}{  PRESSIOLOG\_WARN("{}}my value is\textcolor{stringliteral}{"{}, a, "{}} but I am warn\textcolor{stringliteral}{"{});}}
-\DoxyCodeLine{\textcolor{stringliteral}{  PRESSIOLOG\_ERROR("{}}my value is\textcolor{stringliteral}{"{}, a, "{}} but I am an error level\textcolor{stringliteral}{"{});}}
-\DoxyCodeLine{\textcolor{stringliteral}{  PRESSIOLOG\_CRITICAL("{}}my value is\textcolor{stringliteral}{"{}, 55.6, "{}} but don\textcolor{stringliteral}{'t forget );}}
-\DoxyCodeLine{\textcolor{stringliteral}{\}}}
+\DoxyCodeLine{  PRESSIOLOG\_TRACE(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, a);}
+\DoxyCodeLine{  PRESSIOLOG\_DEBUG(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, a);}
+\DoxyCodeLine{  PRESSIOLOG\_INFO(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, a);}
+\DoxyCodeLine{  PRESSIOLOG\_WARN(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, a);}
+\DoxyCodeLine{  PRESSIOLOG\_ERROR(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, a);}
+\DoxyCodeLine{  PRESSIOLOG\_CRITICAL(\textcolor{stringliteral}{"{}my value is \{:.6f\}"{}}, 55.6);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// finalize logger}}
+\DoxyCodeLine{\}}
 
 \end{DoxyCode}
+ where we note that you can use the \href{https://github.com/fmtlib/fmt}{\texttt{ \{fmt\} library}} to properly format the print statements.
 
 
-The log statements issued for a specific level will be printed {\itshape only if} {\ttfamily PRESSIO\+\_\+\+LOG\+\_\+\+ACTIVE\+\_\+\+MIN\+\_\+\+LEVEL} is greater or equal than that level. 
+
+\begin{DoxyParagraph}{Keep in mind\+:}
+The log statements issued for a specific level will be printed {\itshape only if} {\ttfamily PRESSIO\+\_\+\+LOG\+\_\+\+ACTIVE\+\_\+\+MIN\+\_\+\+LEVEL} is greater or equal than that level. If the logger is disabled, the macros are expanded to a no-\/op. So it does not cost you anything to place log statements in your code, because in production mode you can just compile to no-\/op. 
+\end{DoxyParagraph}
