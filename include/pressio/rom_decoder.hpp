@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_has_dense_matrix_typedef.hpp
+// pressio_rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,26 @@
 //@HEADER
 */
 
-#ifndef ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
-#define ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
+#ifndef PRESSIO_ROM_GALERKIN_HPP_
+#define PRESSIO_ROM_GALERKIN_HPP_
 
-namespace pressio{ namespace rom{ namespace predicates {
+/*
+   this header includes everything needed for GALERKIN.
+   NOTE that the order below matters!
+   - Includes are ordered properly to avoid a tangled system.
+   - don't rely on files inside impl, these might change
+*/
 
-template <typename T, typename enable = void>
-struct has_dense_matrix_typedef : std::false_type{};
+// need all of the dependent packages
+#include "pressio/mpl.hpp"
+#include "pressio/utils.hpp"
+#include "pressio/type_traits.hpp"
+#include "pressio/ops.hpp"
+#include "pressio/qr.hpp"
+#include "pressio/solvers_linear.hpp"
+#include "pressio/solvers_nonlinear.hpp"
+#include "pressio/ode.hpp"
 
-template <typename T>
-struct has_dense_matrix_typedef<
-  T,
-  ::pressio::mpl::enable_if_t<
-    !std::is_void<typename T::dense_matrix_type>::value
-    >
-  > : std::true_type{};
+#include "./rom/rom_public_api_decoder.hpp"
 
-}}}//end namespace pressio::rom::predicates
-#endif  // ROM_PREDICATES_TYPEDEFS_ROM_HAS_DENSE_MATRIX_TYPEDEF_HPP_
+#endif

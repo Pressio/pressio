@@ -32,6 +32,8 @@
   </compound>
   <compound refid="rom__decoder_8md" kind="file"><name>rom_decoder.md</name>
   </compound>
+  <compound refid="rom__decoder__linear_8md" kind="file"><name>rom_decoder_linear.md</name>
+  </compound>
   <compound refid="rom__galerkin_8md" kind="file"><name>rom_galerkin.md</name>
   </compound>
   <compound refid="rom__general_8md" kind="file"><name>rom_general.md</name>
@@ -111,6 +113,8 @@
   <compound refid="md_pages_components_qr" kind="page"><name>md_pages_components_qr</name>
   </compound>
   <compound refid="md_pages_components_rom_decoder" kind="page"><name>md_pages_components_rom_decoder</name>
+  </compound>
+  <compound refid="md_pages_components_rom_decoder_linear" kind="page"><name>md_pages_components_rom_decoder_linear</name>
   </compound>
   <compound refid="md_pages_components_rom_galerkin" kind="page"><name>md_pages_components_rom_galerkin</name>
   </compound>

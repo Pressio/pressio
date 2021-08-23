@@ -51,62 +51,51 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template <typename jacobian_matrix_type, typename fom_state_t>
-struct LinearDecoderWithPressioOps
+template <class FomStateType, class JacobianMatrixType>
+struct LinearDecoder
 {
   static_assert
-  (::pressio::rom::constraints::decoder_jacobian<jacobian_matrix_type>::value,
+  (::pressio::rom::decoder_jacobian< mpl::remove_cvref_t<JacobianMatrixType> >::value,
    "Invalid decoder's jacobian type");
+
   static_assert
-  (::pressio::containers::predicates::is_wrapper<fom_state_t>::value,
-   "Invalid fom_state type passed to decoder");
+  (::pressio::rom::fom_state< mpl::remove_cvref_t<FomStateType> >::value,
+   "Invalid FomStateType");
 
-  // these aliases must be here because ROM classes detect them
-  using jacobian_type  = jacobian_matrix_type;
-  using fom_state_type = fom_state_t;
-
-private:
-  const jacobian_type jacobianOfDecoder_ = {};
+  // these aliases are required because other ROM classes detect them
+  using jacobian_type  = mpl::remove_cvref_t<JacobianMatrixType>;
+  using fom_state_type = FomStateType;
 
 public:
-  LinearDecoderWithPressioOps() = delete;
-  LinearDecoderWithPressioOps(const LinearDecoderWithPressioOps &) = default;
-  LinearDecoderWithPressioOps & operator=(const LinearDecoderWithPressioOps &) = default;
-  LinearDecoderWithPressioOps(LinearDecoderWithPressioOps &&) = default;
-  LinearDecoderWithPressioOps & operator=(LinearDecoderWithPressioOps &&) = default;
-  ~LinearDecoderWithPressioOps() = default;
+  LinearDecoder() = delete;
+  LinearDecoder(const LinearDecoder &) = default;
+  LinearDecoder & operator=(const LinearDecoder &) = default;
+  LinearDecoder(LinearDecoder &&) = default;
+  LinearDecoder & operator=(LinearDecoder &&) = default;
+  ~LinearDecoder() = default;
 
-  /* the constructor is templated such that we can pass either
-     the pressio wrapper type 'jacobian_matrix_type' or
-     the native type wrapped by it 'jacobian_native_t'.
-     By templating this constructor we enable universal references
-     so that it is forwarded accordingly.
-   */
-  template<typename T>
-  LinearDecoderWithPressioOps(T && matIn)
-    : jacobianOfDecoder_(std::forward<T>(matIn))
-  {
-    // PRESSIOLOG_DEBUG
-    //   ("cnstr: possibly allocating matrix with size = ({},{}), addr = {}",
-    //    &jacobianOfDecoder_,
-    //    jacobianOfDecoder_.extent(0), jacobianOfDecoder_.extent(1));
-  }
+  LinearDecoder(jacobian_type && matIn) 
+    : jacobianOfDecoder_(std::move(matIn)){}
+
+  LinearDecoder(const jacobian_type & matIn) 
+    : jacobianOfDecoder_(matIn){}
 
 public:
   // applyMapping must be templated because the type of the
-  // generalized coordinates is not necessarily know.
-  // In fact, its type is something that behaves like a vector
-  // but not strictly a vector type.
-  // For example, for WLS the operand here is a pressio expression, e.g. span.
-  template <typename gen_coords_t>
-  mpl::enable_if_t<::pressio::containers::details::traits<gen_coords_t>::rank == 1>
+  // generalized coordinates is not necessarily known.
+  // In fact, its type is something that behaves like a vector.
+  // For example, for WLS the operand here is an expression, e.g. span.
+
+  // specialize for when gen_coords_t is a rank=1 
+  template <class gen_coords_t>
+  mpl::enable_if_t<::pressio::Traits<gen_coords_t>::rank == 1>
   applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
     static_assert
-      (::pressio::containers::predicates::are_scalar_compatible<
-       gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
-    using scalar_t = typename ::pressio::containers::details::traits<
-      fom_state_type>::scalar_t;
+      (::pressio::are_scalar_compatible<gen_coords_t, fom_state_type>::value, 
+        "Types are not scalar compatible");
+
+    using scalar_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
 
     constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
@@ -114,15 +103,16 @@ public:
 			    jacobianOfDecoder_, operand, zero, result);
   }
 
-  template <typename gen_coords_t>
-  mpl::enable_if_t<::pressio::containers::details::traits<gen_coords_t>::rank >= 2>
+  // specialize for when gen_coords_t is a rank=1 
+  template <class gen_coords_t>
+  mpl::enable_if_t<::pressio::Traits<gen_coords_t>::rank >= 2>
   applyMapping(const gen_coords_t & operand, fom_state_type & result) const
   {
     static_assert
-      (::pressio::containers::predicates::are_scalar_compatible<
-       gen_coords_t, fom_state_type>::value, "Types are not scalar compatible");
-    using scalar_t = typename ::pressio::containers::details::traits<
-      fom_state_type>::scalar_t;
+      (::pressio::are_scalar_compatible<gen_coords_t, fom_state_type>::value, 
+        "Types are not scalar compatible");
+
+    using scalar_t = typename ::pressio::Traits<fom_state_type>::scalar_type;
 
     constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
     constexpr auto one  = ::pressio::utils::Constants<scalar_t>::one();
@@ -134,11 +124,15 @@ public:
     return jacobianOfDecoder_;
   }
 
-  template<typename gen_coords_t>
+  template<class gen_coords_t>
   void updateJacobian(const gen_coords_t & genCoordinates)
   {
     //no op: the Jacobian is constant
   }
+
+private:
+  const jacobian_type jacobianOfDecoder_ = {};
+
 };
 
 }}}//end namespace pressio::rom::impl

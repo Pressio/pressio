@@ -68,33 +68,48 @@
 
 //----------------------------------------------
 // common predicates
-#include "./predicates/rom_predicates_include.hpp"
+#include "./predicates/decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
+#include "./predicates/decoder/rom_has_const_get_reference_to_jacobian.hpp"
+#include "./predicates/decoder/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
+#include "./predicates/decoder/rom_has_nonconst_update_jacobian_method_accept_operand_return_void.hpp"
+
+// #include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_result_return_void.hpp"
+// #include "./masking_methods/rom_has_const_apply_mask_method_accept_operand_time_result_return_void.hpp"
+// #include "./masking_methods/rom_has_const_create_apply_mask_result_method_accept_operand_return_result.hpp"
+// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_time_result_return_void.hpp"
+// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
+// #include "./residual_methods/rom_has_const_create_residual_method_return_result.hpp"
+// #include "./residual_methods/rom_has_const_residual_method_accept_state_result_return_void.hpp"
+// #include "./apply_jacobian_methods/rom_has_const_create_apply_jacobian_result_method_accept_operand_return_result.hpp"
+// #include "./apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_time_result_return_void.hpp"
+// #include "./apply_jacobian_methods/rom_has_const_apply_jacobian_method_accept_state_operand_result_return_void.hpp"
+// #include "./apply_discrete_time_jacobian_methods/rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
+// #include "./apply_discrete_time_jacobian_methods/rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
+// #include "./galerkin_projector/rom_has_const_apply_method_accept_operand_result_return_void.hpp"
+
 
 //----------------------------------------------
 // common constraints (depend on predicates)
 #include "./constraints/rom_decoder_jacobian.hpp"
 #include "./constraints/rom_decoder.hpp"
-#include "./constraints/rom_custom_ops_for_linear_decoder.hpp"
-#include "./constraints/rom_custom_ops_for_fom_state_reconstructor.hpp"
-
-#include "./constraints/system/rom_steady_system_with_user_provided_apply_jacobian.hpp"
-#include "./constraints/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./constraints/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
-#include "./constraints/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
-#include "./constraints/system/rom_continuous_time_system_with_at_least_velocity.hpp"
-#include "./constraints/system/rom_continuous_time_system.hpp"
-#include "./constraints/system/rom_most_likely_continuous_time_system.hpp"
-#include "./constraints/system/rom_most_likely_discrete_time_system.hpp"
-#include "./constraints/system/rom_most_likely_steady_system.hpp"
+// #include "./constraints/system/rom_steady_system_with_user_provided_apply_jacobian.hpp"
+// #include "./constraints/system/rom_discrete_time_system_with_user_provided_apply_jacobian.hpp"
+// #include "./constraints/system/rom_continuous_time_system_without_user_provided_apply_jacobian.hpp"
+// #include "./constraints/system/rom_continuous_time_system_with_user_provided_apply_jacobian.hpp"
+// #include "./constraints/system/rom_continuous_time_system_with_at_least_velocity.hpp"
+// #include "./constraints/system/rom_continuous_time_system.hpp"
+// #include "./constraints/system/rom_most_likely_continuous_time_system.hpp"
+// #include "./constraints/system/rom_most_likely_discrete_time_system.hpp"
+// #include "./constraints/system/rom_most_likely_steady_system.hpp"
 
 //----------------------------------------------
 // decoder classes (depend on constraints)
 #include "./decoder/rom_linear_decoder.hpp"
 
-//----------------------------------------------
-// fom states management classes (depend on the decoder)
-#include "./fom_states_management/rom_manager_fom_states_static.hpp"
-#include "./fom_states_management/rom_reconstructor_fom_state.hpp"
-#include "./fom_states_management/impl/rom_fom_state_reconstructor_helper.hpp"
+// //----------------------------------------------
+// // fom states management classes (depend on the decoder)
+// #include "./fom_states_management/rom_manager_fom_states_static.hpp"
+// #include "./fom_states_management/rom_reconstructor_fom_state.hpp"
+// #include "./fom_states_management/impl/rom_fom_state_reconstructor_helper.hpp"
 
 #endif  // ROM_PRESSIO_ROM_COMMON_HPP_

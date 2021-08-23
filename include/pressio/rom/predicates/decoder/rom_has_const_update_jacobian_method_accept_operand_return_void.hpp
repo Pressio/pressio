@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// rom_has_const_update_jacobian_method_accept_operand_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,15 +46,26 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-
-#include "./impl/rom_linear_decoder_specializer.hpp"
+#ifndef ROM_PREDICATES_DECODER_ROM_HAS_CONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
+#define ROM_PREDICATES_DECODER_ROM_HAS_CONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_
 
 namespace pressio{ namespace rom{
 
-template <typename ... Args>
-using LinearDecoder = typename impl::LinearDecoderSpecializer<void, Args...>::type;
+template <class T, class RomStateType, class = void>
+struct has_const_update_jacobian_method_accept_operand_return_void : std::false_type{};
 
-}} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+template <class T, class RomStateType>
+struct has_const_update_jacobian_method_accept_operand_return_void<
+  T, RomStateType,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const &>().updateJacobian(std::declval<RomStateType const &>())
+       )
+      >::value
+    >
+  > : std::true_type{};
+
+}} // namespace pressio::rom
+#endif  // ROM_PREDICATES_DECODER_ROM_HAS_CONST_UPDATE_JACOBIAN_METHOD_ACCEPT_OPERAND_RETURN_VOID_HPP_

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder_specializer.hpp
+// rom_has_const_apply_mapping_accept_operand_result_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,50 +46,30 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
-#define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
+#ifndef ROM_PREDICATES_DECODER_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
+#define ROM_PREDICATES_DECODER_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_
 
-#include "rom_linear_decoder_pressio_ops.hpp"
-#include "rom_linear_decoder_custom_ops.hpp"
+namespace pressio{ namespace rom{
 
-namespace pressio{ namespace rom{ namespace impl{
+template <class T, class OperandType, class ResultType, class = void>
+struct has_const_apply_mapping_accept_operand_result_return_void : std::false_type{};
 
-template <typename ... Args>
-struct LinearDecoderSpecializer;
+template <class T, class OperandType, class ResultType>
+struct has_const_apply_mapping_accept_operand_result_return_void<
+  T, OperandType, ResultType,
+  mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const &>().applyMapping
+       (
+	std::declval<OperandType const &>(),
+	std::declval<ResultType &>()
+	)
+       )
+      >::value
+    >
+  > : std::true_type{};
 
-// matrix_type, fom_state_type
-template <typename matrix_type, typename fom_state_type>
-struct LinearDecoderSpecializer<
-  void, matrix_type, fom_state_type
-  >
-{
-  static_assert
-  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
-   "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
-
-  static_assert
-  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-   "Fom state type template arg passed to the LinearDecoder class must be a wrapper");
-
-  using type = LinearDecoderWithPressioOps<matrix_type, fom_state_type>;
-};
-
-// matrix_type, fom_state_type, ud_ops
-template <typename matrix_type, typename fom_state_type, typename ud_ops_t>
-struct LinearDecoderSpecializer<
-  void, matrix_type, fom_state_type, ud_ops_t
-  >
-{
-  static_assert
-  (::pressio::rom::constraints::decoder_jacobian<matrix_type>::value,
-   "Template arg passed to the LinearDecoder not a valid decoder's Jacobian type.");
-
-  static_assert
-  (::pressio::containers::predicates::is_wrapper<fom_state_type>::value,
-   "Fom state type template arg passed to the LinearDecoder class must be a wrapper");
-
-  using type = LinearDecoderWithCustomOps<matrix_type, fom_state_type,ud_ops_t>;
-};
-
-}}}//end namespace pressio::rom::impl
-#endif  // ROM_DECODER_IMPL_ROM_LINEAR_DECODER_SPECIALIZER_HPP_
+}} // namespace pressio::rom
+#endif  // ROM_PREDICATES_DECODER_ROM_HAS_CONST_APPLY_MAPPING_ACCEPT_OPERAND_RESULT_RETURN_VOID_HPP_

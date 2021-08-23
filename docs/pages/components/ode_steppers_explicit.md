@@ -20,7 +20,7 @@ from the state of the system at the current time and potentially previous times.
 In pressio, a "stepper" is an abstraction that represents the "how" to take a step.
 
 
-## API:
+## API
 
 ```cpp
 template<class StateType, class SystemType>

@@ -80,7 +80,7 @@ struct MyCustomMatrix
   const double & operator()(int i, int j) const { return d_[num_cols_*i+j]; }
 
   void fill(double value){
-    std::for_each(d_.begin(), d_.end(), [](double & v){ v= 0.; });
+    std::for_each(d_.begin(), d_.end(), [=](double & v){ v=value; });
   }
 
 private:
@@ -182,7 +182,7 @@ void product(pressio::transpose,
 	     const double beta,
 	     GradientType & g)
 {
-  for (std::size_t i=0; i<g.rows(); ++i){
+  for (int i=0; i<g.rows(); ++i){
     g(i) *= beta;
     for (std::size_t k=0; k<A.extent(0); ++k){
       g(i) += alpha * A(k,i) * b(k);

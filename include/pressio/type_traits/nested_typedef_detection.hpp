@@ -186,5 +186,27 @@ struct has_discrete_time_jacobian_typedef<
   mpl::enable_if_t< !std::is_void<typename T::discrete_time_jacobian_type>::value >
   > : std::true_type{};
 
+template <typename T, typename enable = void>
+struct has_dense_matrix_typedef : std::false_type{};
+
+template <typename T>
+struct has_dense_matrix_typedef<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<typename T::dense_matrix_type>::value
+    >
+  > : std::true_type{};
+
+template <typename T, typename enable = void>
+struct has_fom_state_typedef : std::false_type{};
+
+template <typename T>
+struct has_fom_state_typedef<
+  T,
+  ::pressio::mpl::enable_if_t<
+    !std::is_void<typename T::fom_state_type>::value
+    >
+  > : std::true_type{};
+
 }//end namespace
 #endif  // CONTAINERS_PREDICATES_TYPEDEFS_CONTAINERS_HAS_COMMUNICATOR_TYPEDEF_HPP_

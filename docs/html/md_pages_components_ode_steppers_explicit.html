@@ -46,7 +46,8 @@
                 <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
                 <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">rom: decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">rom: generic decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder_linear.html">rom: linear decoder</a></li>
                 <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
                 <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
                 <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
@@ -137,7 +138,7 @@ $t$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-116'/>
 </g>
-</svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</p></section><section id="autotoc_md55"><h2><a href="#autotoc_md55">API:</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
+</svg> is time.<br />Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</p></section><section id="autotoc_md55"><h2><a href="#autotoc_md55">API</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">StateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">SystemType</span><span class="o">&gt;</span>
 <span class="k">auto</span> <span class="n">create_keyword_stepper</span><span class="p">(</span><span class="k">const</span> <span class="n">StateType</span> <span class="o">&amp;</span> <span class="n">state</span><span class="p">,</span>
                             <span class="k">const</span> <span class="n">SystemType</span> <span class="o">&amp;</span> <span class="n">system</span><span class="p">);</span></pre><p>where <code>keyword</code> is one of: <code>forward_euler</code>, <code>runge_kutta4</code>, <code>adams_bashforth2</code>, <code>ssp_runge_kutta3</code>. This function returns an instance of the desired stepper. The returned stepper object satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>, so one can use the &quot;advancers&quot; functions to step forward.</p></section><section id="autotoc_md56"><h2><a href="#autotoc_md56">Parameters</a></h2><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>

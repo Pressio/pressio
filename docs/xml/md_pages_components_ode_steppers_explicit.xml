@@ -15,7 +15,7 @@
  Explicit methods calculate the state of a system at a later time from the state of the system at the current time and potentially previous times. In pressio, a &quot;stepper&quot; is an abstraction that represents the &quot;how&quot; to take a step.</para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md55">
-<title>API:</title>
+<title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
