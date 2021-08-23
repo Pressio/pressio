@@ -48,6 +48,7 @@ int main()
 ### Initializing
 
 You have these choices:
+
 ```cpp
 // only log messages to terminal
 plog::initialize(pressio::logto::terminal);
@@ -62,6 +63,7 @@ plog::initialize(pressio::logto::file, "my_log.txt");
 If you are running with MPI, the logger prints to the terminal *only from rank==0*.
 However, it automatically creates a per-rank log file if you choose the file output.
 For example, the following code:
+
 ```cpp
 int main(int argc, char **argv)
 {
@@ -77,6 +79,7 @@ int main(int argc, char **argv)
   MPI_Finalize();
 }
 ```
+
 If we were to run this with N ranks, we would obtain two
 files `log_file.txt_0`, and `log_file.txt_1`.
 Currently, the logger works only for the world communicator.
@@ -108,6 +111,7 @@ The supported levels are:
 
 If you want, you can use the define statement to set the min level,
 but then at runtime reset it as follows:
+
 ```cpp
   // your code
   // ...
@@ -136,6 +140,7 @@ int main()
   // finalize logger
 }
 ```
+
 where we note that you can use the [{fmt} library](https://github.com/fmtlib/fmt)
 to properly format the print statements.
 

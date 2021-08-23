@@ -18,29 +18,29 @@ We support several metafunctions for detecting
 data types commonly used from existing TPLs.
 The following list is partial, and more will be added as we continue the development.
 
-| Name                                                               | Description                                         | Associated Library |
-|--------------------------------------------------------------------|-----------------------------------------------------|--------------------|
-| `template<class T>` <br/> `struct is_static_vector_eigen;`         | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_dynamic_vector_eigen;`        | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_vector_eigen;`                | True if T is <br/> a static or dynamic vector       | Eigen              |
-| `template<class T>` <br/> `struct is_sparse_matrix_eigen;`         | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_static_dense_matrix_eigen;`   | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_dynamic_dense_matrix_eigen;`  | Self-explanatory                                    | Eigen              |
-| `template<class T>` <br/> `struct is_dense_matrix_eigen;`          | True if T is <br/> a static or dynamic dense matrix | Eigen              |
-| `template<class T>` <br/> `struct is_dense_vector_teuchos;`        | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_dense_matrix_teuchos;`        | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_vector_epetra;`               | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_multi_vector_epetra;`         | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_vector_tpetra;`               | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_multi_vector_tpetra;`         | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_vector_tpetra_block;`         | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_multi_vector_tpetra_block;`   | Self-explanatory                                    | Trilinos           |
-| `template<class T>` <br/> `struct is_static_vector_kokkos;`        | Self-explanatory                                    | Kokkos             |
-| `template<class T>` <br/> `struct is_dynamic_vector_kokkos;`       | Self-explanatory                                    | Kokkos             |
-| `template<class T>` <br/> `struct is_vector_kokkos;`               | True if T is <br/> a static or dynamic vector       | Kokkos             |
-| `template<class T>` <br/> `struct is_static_dense_matrix_kokkos;`  | Self-explanatory                                    | Kokkos             |
-| `template<class T>` <br/> `struct is_dynamic_dense_matrix_kokkos;` | Self-explanatory                                    | Kokkos             |
-| `template<class T>` <br/> `struct is_dense_matrix_kokkos;`         | True if T is <br/> a static or dynamic dense matrix | Kokkos             |
+| Name                                                               | Description                                                                                   | Enabled if:                       |
+|--------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------|
+| `template<class T>` <br/> `struct is_static_vector_eigen;`         | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_dynamic_vector_eigen;`        | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_vector_eigen;`                | Static member constant `value` is true <br/> if `T` is a static or dynamic vector             | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_sparse_matrix_eigen;`         | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_static_dense_matrix_eigen;`   | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_dynamic_dense_matrix_eigen;`  | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_dense_matrix_eigen;`          | Static member constant `value` is true <br/> if `T` is <br/> a static or dynamic dense matrix | `PRESSIO_ENABLE_TPL_EIGEN==On`    |
+| `template<class T>` <br/> `struct is_dense_vector_teuchos;`        | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_dense_matrix_teuchos;`        | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_vector_epetra;`               | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_multi_vector_epetra;`         | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_vector_tpetra;`               | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_multi_vector_tpetra;`         | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_vector_tpetra_block;`         | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_multi_vector_tpetra_block;`   | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_TRILINOS==On` |
+| `template<class T>` <br/> `struct is_static_vector_kokkos;`        | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
+| `template<class T>` <br/> `struct is_dynamic_vector_kokkos;`       | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
+| `template<class T>` <br/> `struct is_vector_kokkos;`               | Static member constant `value` is true <br/> if `T` is a static or dynamic vector             | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
+| `template<class T>` <br/> `struct is_static_dense_matrix_kokkos;`  | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
+| `template<class T>` <br/> `struct is_dynamic_dense_matrix_kokkos;` | Self-explanatory                                                                              | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
+| `template<class T>` <br/> `struct is_dense_matrix_kokkos;`         | Static member constant `value` is true <br/> if `T` is a static or dynamic dense matrix       | `PRESSIO_ENABLE_TPL_KOKKOS==On`   |
 
 ## Traits class
 

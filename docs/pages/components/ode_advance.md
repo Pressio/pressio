@@ -25,7 +25,7 @@ a usecase for these functions to be *time integration* of
 time-dependent dynamical systems.
 
 
-## API Synopsis:
+## API Synopsis: advancing for fixed number of steps
 
 ```cpp
 template<
@@ -85,6 +85,40 @@ void advance_n_steps_and_observe(StepperType & stepper,
 								 const ::pressio::ode::step_count_type num_steps,
 								 ObserverType & observer,
 								 Args && ... args);
+```
+
+## API Synopsis: advancing to target time
+
+```cpp
+template<
+  class StepperType,
+  class StateType,
+  class TimeType,
+  class StepSizeSetterType,
+  class ...Args
+  >
+void advance_to_target_time(StepperType & stepper,
+                            StateType & odeStateInOut,
+                            const TimeType start_time,
+                            const TimeType final_time,
+                            StepSizeSetterType && time_step_size_manager,
+                            Args && ... args);
+
+template<
+  class StepperType,
+  class StateType,
+  class TimeType,
+  class StepSizeSetterType,
+  class ObserverType,
+  class ...Args
+  >
+void advance_to_target_time_and_observe(StepperType & stepper,
+                                        StateType & odeStateInOut,
+                                        const TimeType start_time,
+                                        const TimeType final_time,
+                                        StepSizeSetterType && time_step_size_manager,
+                                        ObserverType & observer,
+                                        Args && ...args);
 ```
 
 ## Parameters

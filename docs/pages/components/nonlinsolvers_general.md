@@ -34,6 +34,7 @@ Currently, we support the following algorithms:
 ### A glimpse of the API
 
 To create a solver, we expose specific factory functions for each algorithm.
+
 ```cpp
 namespace pnonls = pressio::nonlinearsolvers;
 auto solver = pnonls::create_newton_raphson(....);
@@ -98,6 +99,7 @@ We currently support these termination criteria:
 
 
 which you set/query along with corresponding tolerances using the following methods:
+
 ```cpp
 class Solver{
   ...

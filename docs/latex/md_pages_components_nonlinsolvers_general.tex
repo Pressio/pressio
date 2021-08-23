@@ -21,7 +21,9 @@ Levenberg–\+Marquardt   &\href{./md_pages_components_nonlinsolvers_lm.html}{\t
 Iteratively reweighted least squares   &\href{./md_pages_components_nonlinsolvers_irls.html}{\texttt{ Link}}   &optimization problem formulated in a p-\/norm (see \href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ link}} )   \\\cline{1-3}
 \end{longtabu}
 \hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md15}{}\doxysubsection{A glimpse of the API}\label{md_pages_components_nonlinsolvers_general_autotoc_md15}
-To create a solver, we expose specific factory functions for each algorithm. 
+To create a solver, we expose specific factory functions for each algorithm.
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{namespace }pnonls = pressio::nonlinearsolvers;}
 \DoxyCodeLine{\textcolor{keyword}{auto} solver = pnonls::create\_newton\_raphson(....);}
@@ -84,7 +86,9 @@ The convergence criterion and associated tolerance are used to decide why and wh
 \end{longtabu}
 
 
-which you set/query along with corresponding tolerances using the following methods\+: 
+which you set/query along with corresponding tolerances using the following methods\+:
+
+
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }Solver\{}
 \DoxyCodeLine{  ...}

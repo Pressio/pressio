@@ -41,7 +41,8 @@
 </para>
 <sect2 id="md_pages_components_nonlinsolvers_general_1autotoc_md15">
 <title>A glimpse of the API</title>
-<para>To create a solver, we expose specific factory functions for each algorithm. <programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pnonls<sp/>=<sp/>pressio::nonlinearsolvers;</highlight></codeline>
+<para>To create a solver, we expose specific factory functions for each algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pnonls<sp/>=<sp/>pressio::nonlinearsolvers;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_newton_raphson(....);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>solver<sp/>=<sp/>pnonls::create_gauss_newton(....);</highlight></codeline>
 </programlisting></para>
@@ -152,7 +153,8 @@
 </entry></row>
 </table>
 </para>
-<para>which you set/query along with corresponding tolerances using the following methods: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
+<para>which you set/query along with corresponding tolerances using the following methods:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Solver{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>...</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>set/query<sp/>stopping<sp/>criterion</highlight><highlight class="normal"></highlight></codeline>

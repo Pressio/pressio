@@ -25,7 +25,7 @@
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">utils</mcss:span>   </para>
-</entry><entry thead="no"><para>I/O helpers, static constants, etc   </para>
+</entry><entry thead="no"><para>logging, static constants, crtp helper, etc   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/utils">Code</ulink><linebreak/>
 <ulink url="md_pages_components_utils.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput>    </para>
@@ -123,7 +123,7 @@ general info <linebreak/>
 </entry></row>
 </table>
 </para>
-<sect1 id="index_1autotoc_md98">
+<sect1 id="index_1autotoc_md99">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
@@ -133,12 +133,12 @@ general info <linebreak/>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md99">
+<sect1 id="index_1autotoc_md100">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md100">
+<sect1 id="index_1autotoc_md101">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

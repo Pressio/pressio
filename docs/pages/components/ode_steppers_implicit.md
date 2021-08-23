@@ -30,7 +30,7 @@ Here, @f$y@f$ is the full-order model (FOM) state,
 
 ## API for continuous-time systems
 
-```cpp
+@code{.cpp}
 // overload 1
 template<class StateType, class SystemType>
 auto create_keyword_stepper(const StateType & state,
@@ -41,7 +41,8 @@ template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
 auto create_keyword_stepper(const StateType & state,
 							ResidualPolicyType && rPol,
 							JacobianPolicyType && jPol);
-```
+@endcode
+
 where the currently choices are:
 
 | `keyword`         	| Method                  	| Discrete Residual Formula                                                                                      	|
@@ -80,7 +81,7 @@ Notes:
 - `StateType`: must be copy constructible
 
 - `SystemType` must conform to the following API:
-  ```cpp
+  @code{.cpp}
   struct SystemForImplicitOde
   {
 	using scalar_type   = /* */;
@@ -93,7 +94,7 @@ Notes:
 	void velocity(const state_type &, scalar_type time, velocity_type &) const;
     void jacobian(const state_type &, scalar_time time, jacobian_type &) const;
   };
-  ```
+  @endcode
 
   the nested type aliases must be *valid* types since they are detected by pressio
 
@@ -101,7 +102,7 @@ Notes:
   `std::is_same<StateType, typename SystemForImplicitOde::state_type>::value == true`
 
 - `ResidualPolicyType` must conform to:
-  ```cpp
+  @code{.cpp}
   class ResidualPolicy
   {
   public:
@@ -118,10 +119,10 @@ Notes:
 				 StepType step,
 				 residual_type & R) const;
   };
-  ```
+  @endcode
 
 - `JacobianPolicyType`:
-  ```cpp
+  @code{.cpp}
   class JacobianPolicy
   {
   public:
@@ -137,11 +138,11 @@ Notes:
 				 StepType step,
 				 jacobian_type & J) const;
   };
-  ```
+  @endcode
 
 
 <!-- ### Implicit stepper class synopsis -->
-<!-- ```cpp -->
+<!-- @code{.cpp} -->
 <!-- class Stepper -->
 <!-- { -->
 <!-- public: -->
@@ -168,7 +169,7 @@ Notes:
 <!--   void residual(const StateType & odeState, ResidualType & R) const; -->
 <!--   void jacobian(const StateType & odeState, JacobianType & J) const; -->
 <!-- }; -->
-<!-- ``` -->
+<!-- @endcode -->
 
 
 ### If you use custom policies:
@@ -193,7 +194,7 @@ for a certain scheme. All you need to know about these containers is the followi
 
 ### Example usage
 
-```cpp
+@code{.cpp}
 #include "pressio/type_traits.hpp"
 #include "pressio/ode_solvers_nonlinear.hpp"
 #include "pressio/ode_advancers.hpp"
@@ -221,7 +222,7 @@ int main()
   const pode::step_count_type num_steps = 100;
   pode::advance_n_steps(stepper, stateObj, time0, dt, num_steps, nonLinearSolver);
 }
-```
+@endcode
 
 
 ### Required specializations for custom types
@@ -232,7 +233,7 @@ For the sake of explanation, suppose that you use `double`
 as value type and `ACustomStateType` is what you use for the state, `ACustomMatrixType` is what you
 use for matrix, then you would need to do something like this:
 
-```cpp
+@code{.cpp}
 #include "pressio/type_traits.hpp"
 
 // assuming ACustomStateType has already been declared
@@ -303,17 +304,18 @@ void update(ACustomStateType & v,		 const double a,
 
 int main()
 {}
-```
+@endcode
+
 Obviously, if you want to use pressio nonlinear solvers, then you need provide
 also the specializations described [here](md_pages_components_nonlinsolvers.html).
 
 ## API for discrete-time systems
 
-```cpp
+@code{.cpp}
 template<int num_states, class StateType, class SystemType>
 auto create_arbitrary_stepper(const StateType & state,
 						      SystemType && system);
-```
+@endcode
 
 ### Parameters
 
@@ -328,7 +330,7 @@ auto create_arbitrary_stepper(const StateType & state,
 - `StateType`: must be copy constructible
 
 - `SystemType` must conform to the following API:
-  ```cpp
+  @code{.cpp}
   class ValidDiscreteTimeSystem
   {
 	using scalar_type = /* whatever you need */;
@@ -373,5 +375,4 @@ auto create_arbitrary_stepper(const StateType & state,
 								const state_type &,
 								const state_type &) const;
   };
-
-  ```
+  @endcode
