@@ -12,11 +12,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest }
-          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest }
-#          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest }
-          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest }
-          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release }
+#          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug }
+#          - { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest, mode: Debug }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest, mode: Debug }
     runs-on: ${{ matrix.config.os }}
     container: pressiomodelreduction/${{ matrix.config.image }}
     env:
@@ -32,7 +37,7 @@ jobs:
           git pull
           git status
           sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_pressio.sh
-          ./main_pressio.sh -dryrun=no -build-mode=Release -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests -pressio-src=${{env.pressio_dir}}
+          ./main_pressio.sh -dryrun=no -build-mode=${{ matrix.config.mode }} -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests -pressio-src=${{env.pressio_dir}}
       - name: Run pressio tests
         run: |
             cd ${{ env.target_dir }}/pressio/build
