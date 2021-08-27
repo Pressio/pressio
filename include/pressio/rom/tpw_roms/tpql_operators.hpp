@@ -149,7 +149,6 @@ std::vector< std::vector< std::vector< scalar_t > > > computeBasisTransposeTimes
         //appObj.updateParams(muP);
         ::pressio::ops::set_zero(ftmp);
         appObj.velocity(y,t,ftmp);
-        workingVector -= ftmp;
         ::pressio::ops::update(workingVector,1.,ftmp,-1.);
         muP(i) += 2.*eps;
         ::pressio::ops::scale(workingVector, 1./(12.*(eps*eps)));
@@ -390,7 +389,7 @@ std::vector< std::vector< std::vector< scalar_t > > > computeBasisTransposeTimes
         appObj.velocity(yp,t,ftmp);
         ::pressio::ops::update(workingVector,1.,ftmp,-1.);
        
-        yp = y - eps*PhiCol_i - eps*PhiCol_j;
+        //yp = y - eps*PhiCol_i - eps*PhiCol_j;
         ::pressio::ops::update(yp,1.,PhiCol_j,-2.*eps);
         ::pressio::ops::set_zero(ftmp);
         appObj.velocity(yp,t,ftmp);
