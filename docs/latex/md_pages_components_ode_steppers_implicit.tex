@@ -45,18 +45,9 @@ where the currently choices are\+:
 The create functions above return an instance of the desired stepper, which satisfies the \char`\"{}steppable\char`\"{} concept discussed \href{/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html}{\texttt{ here}}. Therefore, one can use the \char`\"{}advancers\char`\"{} functions to step forward.\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md63}{}\doxysubsection{Parameters}\label{md_pages_components_ode_steppers_implicit_autotoc_md63}
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
-\begin{DoxyItemize}
-\item type of the data structure you use for the state
-\end{DoxyItemize}
-\item {\ttfamily System\+Type}\+:
-\begin{DoxyItemize}
-\item class defining how to create an instance of the velocity $f$ and how to compute it;
-\end{DoxyItemize}
-\item {\ttfamily Residual\+Policy\+Type}, {\ttfamily Jacobian\+Policy\+Type}\+:
-\begin{DoxyItemize}
-\item policy types if you want to use custom ones to compute the discrete operators
-\end{DoxyItemize}
+\item {\ttfamily State\+Type}\+: data type of the state
+\item {\ttfamily System\+Type}\+: class defining how to create an instance of the velocity $f$ and how to compute it;
+\item {\ttfamily Residual\+Policy\+Type}, {\ttfamily Jacobian\+Policy\+Type}\+: policy types if you want to use custom ones to compute the discrete operators.
 \end{DoxyItemize}
 
 Notes\+:
@@ -66,7 +57,7 @@ Notes\+:
 \end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md64}{}\doxysubsection{Requirements}\label{md_pages_components_ode_steppers_implicit_autotoc_md64}
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+: must be copy constructible
+\item {\ttfamily State\+Type}\+: must be copy constructible and the following condition must be true\+: {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+Type\+::state\+\_\+type$>$\+::value == true}
 \item {\ttfamily System\+Type} must conform to the following API\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{struct }SystemForImplicitOde}
@@ -74,7 +65,7 @@ Notes\+:
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type = \textcolor{comment}{/* */};}
-\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type =  \textcolor{comment}{/* */};}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type = \textcolor{comment}{/* */};}
 \DoxyCodeLine{}
 \DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
 \DoxyCodeLine{  jacobian\_type createJacobian() \textcolor{keyword}{const};}
@@ -86,8 +77,6 @@ Notes\+:
 
 
 the nested type aliases must be {\itshape valid} types since they are detected by pressio
-\item if {\ttfamily State\+Type} is the type deduced for {\ttfamily state} passed to {\ttfamily create\+\_\+...}, the following must hold\+:~\newline
- {\ttfamily std\+::is\+\_\+same$<$State\+Type, typename System\+For\+Implicit\+Ode\+::state\+\_\+type$>$\+::value == true}
 \item {\ttfamily Residual\+Policy\+Type} must conform to\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }ResidualPolicy}

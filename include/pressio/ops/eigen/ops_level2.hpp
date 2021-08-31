@@ -119,6 +119,35 @@ product(::pressio::transpose mode,
   y_n = beta * y_n + alpha * A_n.transpose() * x_n;
 }
 
+//-------------------------------
+// op(A) = A^T, construct result
+//-------------------------------
+template <typename y_type, typename A_type, typename x_type, typename ScalarType>
+::pressio::mpl::enable_if_t<
+  ::pressio::Traits<A_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<x_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<y_type>::package_identifier == PackageIdentifier::Eigen and
+  ::pressio::Traits<A_type>::rank == 2 and
+  ::pressio::Traits<x_type>::rank == 1 and
+  ::pressio::Traits<y_type>::rank == 1,
+  y_type
+  >
+product(::pressio::transpose mode,
+  const ScalarType alpha,
+  const A_type & A,
+  const x_type & x)
+{
+  static_assert
+    (::pressio::are_scalar_compatible<A_type, x_type, y_type>::value,
+     "Types are not scalar compatible");
+
+  assert( ::pressio::ops::extent(x, 0) == ::pressio::ops::extent(A, 0) );
+  y_type y(::pressio::ops::extent(A, 1));
+
+  product(mode, alpha, A, x, ScalarType(0), y);
+  return y;
+}
+
 
 }}//end namespace pressio::ops
 #endif  // OPS_EIGEN_OPS_LEVEL2_HPP_

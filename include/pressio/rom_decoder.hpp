@@ -49,14 +49,6 @@
 #ifndef PRESSIO_ROM_GALERKIN_HPP_
 #define PRESSIO_ROM_GALERKIN_HPP_
 
-/*
-   this header includes everything needed for GALERKIN.
-   NOTE that the order below matters!
-   - Includes are ordered properly to avoid a tangled system.
-   - don't rely on files inside impl, these might change
-*/
-
-// need all of the dependent packages
 #include "pressio/mpl.hpp"
 #include "pressio/utils.hpp"
 #include "pressio/type_traits.hpp"

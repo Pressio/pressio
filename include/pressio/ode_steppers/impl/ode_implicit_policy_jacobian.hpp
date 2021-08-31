@@ -55,6 +55,7 @@ template<class SystemType, class StateType, class JacobianType>
 class JacobianStandardPolicy
 {
 public:
+  // required
   using jacobian_type = JacobianType;
 
 public:

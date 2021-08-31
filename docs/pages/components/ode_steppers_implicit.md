@@ -58,14 +58,11 @@ the "advancers" functions to step forward.
 
 ### Parameters
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `StateType`: data type of the state
 
-- `SystemType`:
-  - class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
+- `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
 
-- `ResidualPolicyType`, `JacobianPolicyType`:
-  - policy types if you want to use custom ones to compute the discrete operators
+- `ResidualPolicyType`, `JacobianPolicyType`: policy types if you want to use custom ones to compute the discrete operators.
 
 
 Notes:
@@ -78,7 +75,9 @@ Notes:
 
 ### Requirements
 
-- `StateType`: must be copy constructible
+- `StateType`: must be copy constructible and the following condition must be true:
+  `std::is_same<StateType, typename SystemType::state_type>::value == true`
+
 
 - `SystemType` must conform to the following API:
   @code{.cpp}
@@ -87,7 +86,7 @@ Notes:
 	using scalar_type   = /* */;
 	using state_type    = /* */;
 	using velocity_type = /* */;
-	using jacobian_type =  /* */;
+	using jacobian_type = /* */;
 
 	velocity_type createVelocity() const;
     jacobian_type createJacobian() const;
@@ -98,8 +97,6 @@ Notes:
 
   the nested type aliases must be *valid* types since they are detected by pressio
 
-- if `StateType` is the type deduced for `state` passed to `create_...`, the following must hold:<br/>
-  `std::is_same<StateType, typename SystemForImplicitOde::state_type>::value == true`
 
 - `ResidualPolicyType` must conform to:
   @code{.cpp}

@@ -56,6 +56,14 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::size_t<sp/>extent(ACustomStateType<sp/>&amp;,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>extent<sp/>along<sp/>i-th<sp/>dimension<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::size_t<sp/>extent(ACustomJacobianType<sp/>&amp;,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>extent<sp/>along<sp/>i-th<sp/>dimension<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">ACustomStateType<sp/><sp/><sp/><sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

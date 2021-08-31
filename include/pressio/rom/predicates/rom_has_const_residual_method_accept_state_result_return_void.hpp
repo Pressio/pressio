@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_fom_state.hpp
+// rom_has_const_residual_method_accept_state_result_return_void.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,28 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
-#define ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#ifndef ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
+#define ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_
 
 namespace pressio{ namespace rom{
 
-template<typename T, typename enable = void>
-struct fom_state : std::false_type{};
+template <class T, class StateType, class ResultType, class = void>
+struct has_const_residual_method_accept_state_result_return_void
+  : std::false_type{};
 
-template<typename T>
-struct fom_state<
-  T,
-  ::pressio::mpl::enable_if_t< 
-    std::is_copy_constructible<T>::value
-   >
-  > : std::true_type{};
+template <class T,class StateType,class ResultType>
+struct has_const_residual_method_accept_state_result_return_void<
+  T, StateType, ResultType,
+  ::pressio::mpl::void_t<
+    decltype(
+	     std::declval<T const>().residual
+	     (
+	      std::declval<StateType const&>(),
+	      std::declval<ResultType &>()
+	      )
+	     )
+    >
+  >: std::true_type{};
 
 }}
-#endif  // ROM_GALERKIN_CONSTRAINTS_ROM_FOM_STATE_HPP_
+#endif  // ROM_PREDICATES_RESIDUAL_METHODS_ROM_HAS_CONST_RESIDUAL_METHOD_ACCEPT_STATE_RESULT_RETURN_VOID_HPP_

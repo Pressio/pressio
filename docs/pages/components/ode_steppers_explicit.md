@@ -130,10 +130,10 @@ void update(ACustomStateType & v,        const double a,
 }
 
 void update(ACustomStateType & v,        const double a,
-            const ACustomStateType & v0, const double b,
-            const ACustomStateType & v1, const double c)
+            const ACustomStateType & v1, const double b,
+            const ACustomStateType & v2, const double c)
 {
-  // elementwise compute : v = a*v + b*v0 + c*v1
+  // elementwise compute : v = a*v + b*v1 + c*v2
 }
 
 void update(ACustomStateType & v,		 const double a,

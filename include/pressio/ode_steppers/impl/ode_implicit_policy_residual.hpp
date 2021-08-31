@@ -55,11 +55,12 @@ template<class SystemType, class StateType, class ResidualType>
 class ResidualStandardPolicyBdf
 {
 public:
+  // required
   using residual_type = ResidualType;
 
 public:
   ResidualStandardPolicyBdf() = delete;
-  explicit ResidualStandardPolicyBdf(SystemType && systemIn) 
+  explicit ResidualStandardPolicyBdf(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
   ResidualStandardPolicyBdf(const ResidualStandardPolicyBdf &) = default;
@@ -75,27 +76,27 @@ public:
   }
 
   template <
-    class OdeTag, 
-    class StencilStatesContainerType, 
-    class StencilVelocitiesContainerType, 
-    class ScalarType, 
+    class OdeTag,
+    class StencilStatesContainerType,
+    class StencilVelocitiesContainerType,
+    class ScalarType,
     class StepType
     >
   void compute(const StateType & predictedState,
-	  const StencilStatesContainerType & stencilStatesManager,
-    StencilVelocitiesContainerType & stencilVelocities,
-	  const ScalarType & rhsEvaluationTime,
-	  const ScalarType & dt,
-	  const StepType & step,
-	  ResidualType & R) const
+	       const StencilStatesContainerType & stencilStatesManager,
+	       StencilVelocitiesContainerType & stencilVelocities,
+	       const ScalarType & rhsEvaluationTime,
+	       const ScalarType & dt,
+	       const StepType & step,
+	       ResidualType & R) const
   {
-    static_assert(StencilVelocitiesContainerType::size() == 0, 
-      "Residual policy for BDF should have 0 velocities");
+    static_assert(StencilVelocitiesContainerType::size() == 0,
+		  "Residual policy for BDF should have 0 velocities");
 
-    static_assert(      
-    std::is_same<OdeTag, ::pressio::ode::BDF1>::value or
-    std::is_same<OdeTag, ::pressio::ode::BDF2>::value, 
-    "Invalid tag for BDF residual policy");
+    static_assert(
+		  std::is_same<OdeTag, ::pressio::ode::BDF1>::value or
+		  std::is_same<OdeTag, ::pressio::ode::BDF2>::value,
+		  "Invalid tag for BDF residual policy");
 
     try{
       systemObj_.get().velocity(predictedState, rhsEvaluationTime, R);
@@ -119,11 +120,12 @@ class ResidualStandardPolicyCrankNicolson
   mutable int stepTracker_ = -1;
 
 public:
+  // required
   using residual_type = ResidualType;
 
   ResidualStandardPolicyCrankNicolson() = delete;
 
-  explicit ResidualStandardPolicyCrankNicolson(SystemType && systemIn) 
+  explicit ResidualStandardPolicyCrankNicolson(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
   ResidualStandardPolicyCrankNicolson(const ResidualStandardPolicyCrankNicolson &) = default;
@@ -153,11 +155,11 @@ public:
     const StepType & step,
     ResidualType & R) const
   {
-    static_assert(StencilVelocitiesContainerType::size() == 2, 
+    static_assert(StencilVelocitiesContainerType::size() == 2,
       "Residual policy for CrankNicolson should have 2 velocities");
 
     static_assert(
-      std::is_same<OdeTag, ::pressio::ode::CrankNicolson>::value, 
+      std::is_same<OdeTag, ::pressio::ode::CrankNicolson>::value,
       "Invalid tag for BDF residual policy");
 
     if (stepTracker_ != step){

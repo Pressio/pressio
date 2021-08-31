@@ -51,6 +51,7 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
+
 template<typename T, class = void>
 struct select_galerkin_types
 {

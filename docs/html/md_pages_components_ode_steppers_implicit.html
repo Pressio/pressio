@@ -36,19 +36,27 @@
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general info</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_irls.html">nonlinear solvers: irls</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_system_api.html">nonlinear solvers: problem class API</a></li>
-                <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
-                <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
-                <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">rom: generic decoder</a></li>
-                <li><a href="md_pages_components_rom_decoder_linear.html">rom: linear decoder</a></li>
-                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
+                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_general.html"> &emsp; &emsp; - general info </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
                 <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
                 <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
@@ -373,7 +381,7 @@ $R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n
 <use x='224.108415' y='0' xlink:href='#eq9-g4-41'/>
 <use x='228.660741' y='0' xlink:href='#eq9-g4-41'/>
 </g>
-</svg></td></tr></tbody></table><p>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</p><section id="autotoc_md63"><h3><a href="#autotoc_md63">Parameters</a></h3><ul><li><code>StateType</code>:<ul><li>type of the data structure you use for the state</li></ul></li><li><code>SystemType</code>:<ul><li>class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
+</svg></td></tr></tbody></table><p>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <a href="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</a>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</p><section id="autotoc_md63"><h3><a href="#autotoc_md63">Parameters</a></h3><ul><li><code>StateType</code>: data type of the state</li><li><code>SystemType</code>: class defining how to create an instance of the velocity <svg class="m-math" style="width: 0.734em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 7.046437 10.626798">
 <title>
 $f$
 </title>
@@ -383,18 +391,18 @@ $f$
 <g id='eq10-page1'>
 <use x='0' y='0' xlink:href='#eq10-g0-102'/>
 </g>
-</svg> and how to compute it;</li></ul></li><li><code>ResidualPolicyType</code>, <code>JacobianPolicyType</code>:<ul><li>policy types if you want to use custom ones to compute the discrete operators</li></ul></li></ul><p>Notes:</p><ul><li>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</li><li>the second overload allows you to define custom policies to compute the discrete operators</li></ul></section><section id="autotoc_md64"><h3><a href="#autotoc_md64">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible</li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">SystemForImplicitOde</span>
+</svg> and how to compute it;</li><li><code>ResidualPolicyType</code>, <code>JacobianPolicyType</code>: policy types if you want to use custom ones to compute the discrete operators.</li></ul><p>Notes:</p><ul><li>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</li><li>the second overload allows you to define custom policies to compute the discrete operators</li></ul></section><section id="autotoc_md64"><h3><a href="#autotoc_md64">Requirements</a></h3><ul><li><code>StateType</code>: must be copy constructible and the following condition must be true: <code>std::is_same&lt;StateType, typename SystemType::state_type&gt;::value == true</code></li><li><p><code>SystemType</code> must conform to the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">SystemForImplicitOde</span>
 <span class="p">{</span>
   <span class="k">using</span> <span class="n">scalar_type</span>   <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">state_type</span>    <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">velocity_type</span> <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
-  <span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span>  <span class="cm">/* */</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">jacobian_type</span> <span class="o">=</span> <span class="cm">/* */</span><span class="p">;</span>
 
   <span class="n">velocity_type</span> <span class="nf">createVelocity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="n">jacobian_type</span> <span class="nf">createJacobian</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">velocity</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_type</span> <span class="n">time</span><span class="p">,</span> <span class="n">velocity_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
   <span class="kt">void</span> <span class="nf">jacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">state_type</span> <span class="o">&amp;</span><span class="p">,</span> <span class="n">scalar_time</span> <span class="n">time</span><span class="p">,</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><p>the nested type aliases must be <em>valid</em> types since they are detected by pressio</p></li><li>if <code>StateType</code> is the type deduced for <code>state</code> passed to <code>create_...</code>, the following must hold:<br /><code>std::is_same&lt;StateType, typename SystemForImplicitOde::state_type&gt;::value == true</code></li><li><p><code>ResidualPolicyType</code> must conform to:</p><pre class="m-code"><span class="k">class</span> <span class="nc">ResidualPolicy</span>
+<span class="p">};</span></pre><p>the nested type aliases must be <em>valid</em> types since they are detected by pressio</p></li><li><p><code>ResidualPolicyType</code> must conform to:</p><pre class="m-code"><span class="k">class</span> <span class="nc">ResidualPolicy</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="k">using</span> <span class="n">residual_type</span> <span class="o">=</span> <span class="cm">/* this type alias needs to be found */</span><span class="p">;</span>

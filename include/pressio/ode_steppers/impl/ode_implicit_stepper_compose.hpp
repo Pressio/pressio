@@ -186,13 +186,13 @@ template<class TagType, class SystemType, class StateType>
 struct ImplicitCompose<
   TagType,
   mpl::enable_if_t<
-       std::is_same<TagType, ::pressio::ode::BDF1>::value 
-    or std::is_same<TagType, ::pressio::ode::BDF2>::value 
+       std::is_same<TagType, ::pressio::ode::BDF1>::value
+    or std::is_same<TagType, ::pressio::ode::BDF2>::value
     or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
     >,
   SystemType, StateType>
 {
-  static_assert( std::is_lvalue_reference<SystemType>::value, 
+  static_assert( std::is_lvalue_reference<SystemType>::value,
   "The system instance must be an lvalue reference");
 
   static_assert
@@ -222,8 +222,8 @@ template<
 struct ImplicitCompose<
   TagType,
   mpl::enable_if_t<
-       std::is_same<TagType, ::pressio::ode::BDF1>::value 
-    or std::is_same<TagType, ::pressio::ode::BDF2>::value 
+       std::is_same<TagType, ::pressio::ode::BDF1>::value
+    or std::is_same<TagType, ::pressio::ode::BDF2>::value
     or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
     >,
   StateType, ResidualPolicyType, JacobianPolicyType>
@@ -272,7 +272,7 @@ struct ImplicitCompose<
 
   using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
   using type = StepperArbitrary<
-    NStates::value, ScalarType, StateType, ResidualType, JacobianType, SystemType 
+    NStates::value, ScalarType, StateType, ResidualType, JacobianType, SystemType
     >;
 };
 

@@ -14,14 +14,14 @@
 </sect1>
 <sect1 id="md_pages_components_rom_decoder_1autotoc_md77">
 <title>Decoder Concept</title>
-<para>A valid decoder is any C++ object whose type meets the following API:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Decoder</highlight></codeline>
+<para>In pressio, a valid decoder is any C++ object whose type meets the following API:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Decoder</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>these<sp/>nested<sp/>typedefs<sp/>are<sp/>mandatory<sp/>because<sp/>pressio<sp/>detects<sp/>them</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyMapping(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>romOperand,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fom_state_type<sp/>&amp;<sp/>fomState)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
@@ -32,8 +32,8 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>In<sp/>general,<sp/>we<sp/>advise<sp/>to<sp/>keep<sp/>it<sp/>as<sp/>a<sp/>template.</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>To<sp/>use<sp/>romOperand,<sp/>you<sp/>need<sp/>to<sp/>know<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>if<sp/>romOperand<sp/>is<sp/>rank-1,<sp/>it<sp/>supports<sp/>the<sp/>(i)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>if<sp/>romOperand<sp/>is<sp/>rank-2,<sp/>it<sp/>supports<sp/>the<sp/>(i,j)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i,j-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>rank-1<sp/>romOperand:<sp/>supports<sp/>the<sp/>(i)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>rank-2<sp/>romOperand:<sp/>supports<sp/>the<sp/>(i,j)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i,j-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -41,7 +41,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>romOperand);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>a<sp/>const<sp/>reference<sp/>to<sp/>the<sp/>Jacobian<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>a<sp/>const<sp/>reference<sp/>to<sp/>the<sp/>Jacobian<sp/>object</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>jacobian_type<sp/>&amp;<sp/>jacobianCRef()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
@@ -49,7 +49,7 @@
 <title>Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>fom_state_type</computeroutput>: must be copy constructible</para>
-</listitem><listitem><para><computeroutput>jacobian_matrix_type</computeroutput>: must be copy constructible</para>
+</listitem><listitem><para><computeroutput>jacobian_type</computeroutput>: must be copy constructible</para>
 </listitem></itemizedlist>
 </para>
 </sect2>

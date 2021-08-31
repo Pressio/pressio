@@ -36,19 +36,27 @@
                 <li><a href="md_pages_components_ops.html">ops</a></li>
                 <li><a href="md_pages_components_qr.html">qr</a></li>
                 <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_general.html">nonlinear solvers: general info</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_nr.html">nonlinear solvers: Newton-Raphson</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_gn.html">nonlinear solvers: Gauss-Newton</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_lm.html">nonlinear solvers: Levenberg-Marquardt</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_irls.html">nonlinear solvers: irls</a></li>
-                <li><a href="md_pages_components_nonlinsolvers_system_api.html">nonlinear solvers: problem class API</a></li>
-                <li><a href="md_pages_components_ode_advance.html">ode advancers</a></li>
-                <li><a href="md_pages_components_ode_steppers_explicit.html">ode explicit steppers</a></li>
-                <li><a href="md_pages_components_ode_steppers_implicit.html">ode implicit steppers</a></li>
-                <li><a href="md_pages_components_rom_general.html">rom: general</a></li>
-                <li><a href="md_pages_components_rom_decoder.html">rom: generic decoder</a></li>
-                <li><a href="md_pages_components_rom_decoder_linear.html">rom: linear decoder</a></li>
-                <li><a href="md_pages_components_rom_galerkin.html">rom: Galerkin </a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
+                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_general.html"> &emsp; &emsp; - general info </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
                 <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
                 <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
                 <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
@@ -145,13 +153,13 @@ $g$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-103'/>
 </g>
-</svg> is the mapping between the two.</p><p>Note that there is no explicit constraint on what the mapping is, it can be anything.</p></section><section id="autotoc_md77"><h2><a href="#autotoc_md77">Decoder Concept</a></h2><p>A valid decoder is any C++ object whose type meets the following API:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">Decoder</span>
+</svg> is the mapping between the two.</p><p>Note that there is no explicit constraint on what the mapping is, it can be anything.</p></section><section id="autotoc_md77"><h2><a href="#autotoc_md77">Decoder Concept</a></h2><p>In pressio, a valid decoder is any C++ object whose type meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">Decoder</span>
 <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
   <span class="c1">// these nested typedefs are mandatory because pressio detects them</span>
   <span class="k">using</span> <span class="n">jacobian_type</span>  <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">fom_state_type</span> <span class="o">=</span> <span class="cm">/* your type */</span><span class="p">;</span>
 
-<span class="k">public</span><span class="o">:</span>
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">OperandType</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">applyMapping</span><span class="p">(</span><span class="k">const</span> <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">romOperand</span><span class="p">,</span>
                     <span class="n">fom_state_type</span> <span class="o">&amp;</span> <span class="n">fomState</span><span class="p">)</span> <span class="k">const</span>
@@ -162,8 +170,8 @@ $g$
     <span class="c1">//  In general, we advise to keep it as a template.</span>
     <span class="c1">//</span>
     <span class="c1">//  To use romOperand, you need to know that:</span>
-    <span class="c1">//  - if romOperand is rank-1, it supports the (i) operator to reference the i-th element</span>
-    <span class="c1">//  - if romOperand is rank-2, it supports the (i,j) operator to reference the i,j-th element</span>
+    <span class="c1">//  - rank-1 romOperand: supports the (i) operator to reference the i-th element</span>
+    <span class="c1">//  - rank-2 romOperand: supports the (i,j) operator to reference the i,j-th element</span>
     <span class="c1">// ...</span>
   <span class="p">}</span>
 
@@ -171,9 +179,9 @@ $g$
   <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">OperandType</span><span class="o">&gt;</span>
   <span class="kt">void</span> <span class="n">updateJacobian</span><span class="p">(</span><span class="k">const</span> <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">romOperand</span><span class="p">);</span>
 
-  <span class="c1">// return a const reference to the Jacobian matrix</span>
+  <span class="c1">// return a const reference to the Jacobian object</span>
   <span class="k">const</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jacobianCRef</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><section id="autotoc_md78"><h3><a href="#autotoc_md78">Requirements</a></h3><ul><li><code>fom_state_type</code>: must be copy constructible</li><li><code>jacobian_matrix_type</code>: must be copy constructible</li></ul></section><section id="autotoc_md79"><h3><a href="#autotoc_md79">Special case: linear decoder</a></h3><p>The special case of a linear decoder is natively supported in pressio, see <a href="./md_pages_components_rom_decoder_linear.html">this page</a>.</p></section></section>
+<span class="p">};</span></pre><section id="autotoc_md78"><h3><a href="#autotoc_md78">Requirements</a></h3><ul><li><code>fom_state_type</code>: must be copy constructible</li><li><code>jacobian_type</code>: must be copy constructible</li></ul></section><section id="autotoc_md79"><h3><a href="#autotoc_md79">Special case: linear decoder</a></h3><p>The special case of a linear decoder is natively supported in pressio, see <a href="./md_pages_components_rom_decoder_linear.html">this page</a>.</p></section></section>
       </div>
     </div>
   </div>

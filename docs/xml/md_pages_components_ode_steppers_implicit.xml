@@ -55,18 +55,9 @@
 <sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md63">
 <title>Parameters</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
-<listitem><para>type of the data structure you use for the state</para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para><computeroutput>SystemType</computeroutput>:<itemizedlist>
-<listitem><para>class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it;</para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>:<itemizedlist>
-<listitem><para>policy types if you want to use custom ones to compute the discrete operators</para>
-</listitem></itemizedlist>
-</para>
+<listitem><para><computeroutput>StateType</computeroutput>: data type of the state</para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it;</para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>: policy types if you want to use custom ones to compute the discrete operators.</para>
 </listitem></itemizedlist>
 </para>
 <para>Notes:<itemizedlist>
@@ -78,13 +69,13 @@
 <sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md64">
 <title>Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
+<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible and the following condition must be true: <computeroutput>std::is_same&lt;StateType, typename SystemType::state_type&gt;::value == true</computeroutput></para>
 </listitem><listitem><para><computeroutput>SystemType</computeroutput> must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForImplicitOde</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/><sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
@@ -93,8 +84,6 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 <para>the nested type aliases must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
-</listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> passed to <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
- <computeroutput>std::is_same&lt;StateType, typename SystemForImplicitOde::state_type&gt;::value == true</computeroutput></para>
 </listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput> must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ResidualPolicy</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
