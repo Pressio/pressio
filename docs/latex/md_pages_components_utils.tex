@@ -3,17 +3,14 @@ Defined in header\+: {\ttfamily $<$pressio/utils.\+hpp$>$}
 Public namespaces\+: {\ttfamily pressio} and {\ttfamily pressio\+::utils}.\hypertarget{md_pages_components_utils_autotoc_md114}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md114}
 One of the main functionalities inside {\ttfamily utils} is the logger. To implement the pressio logging functionalities, we have used \href{https://github.com/gabime/spdlog}{\texttt{ spdlog}}, rewriting a subset of it, for example to work seamlessly with MPI.
 
-
-
-\begin{DoxyParagraph}{By default the logger is disabled, here is how to enable it.}
-
-\end{DoxyParagraph}
-If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed! ~\newline
- By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things\+:
+If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed!~\newline
+ By default, for performance reasons, the logger is disabled. To enable and use it, you need to do two things\+:
 \begin{DoxyEnumerate}
-\item place a {\ttfamily define} statement to set the desired level\+: note that this define statement {\itshape must} be placed {\itshape before} including the utils header.
-\item you need to initialize and finalize the logger singleton.
+\item {\itshape before} including the utils header, place a {\ttfamily define} statement to set the {\itshape minimum} level
+\item you need to initialize and finalize the logger singleton
 \end{DoxyEnumerate}
+
+as shown below\+:
 
 
 \begin{DoxyCode}{0}
@@ -95,7 +92,7 @@ The supported levels are\+:
 
 \end{DoxyCode}
 \hypertarget{md_pages_components_utils_autotoc_md118}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md118}
-If you want, you can use the define statement to set the min level, but then at runtime reset it as follows\+:
+If you want, you can use the define statement to set the min level, but then at runtime you can reset for a {\itshape higher} level (see below). Note that you cannot reset the level to something that is {\itshape lower} than the one you set via the {\ttfamily define} statement.
 
 
 \begin{DoxyCode}{0}

@@ -76,6 +76,7 @@ void initialize(::pressio::logto en, Args && ... args)
 
   // set the singleton
   spdlog::set_default_logger(logger);
+  logger->log(spdlog::level::info, "Initializing pressio logger");
 #endif
 }
 
@@ -95,6 +96,7 @@ void initialize(::pressio::logto en, std::string fileName = "log")
 
   // set the singleton
   spdlog::set_default_logger(logger);
+  logger->log(spdlog::level::info, "Initializing pressio logger");
 #endif
 }
 
@@ -133,6 +135,7 @@ template <class T= void>
 void finalize()
 {
 #if PRESSIO_LOG_ACTIVE_MIN_LEVEL != PRESSIO_LOG_LEVEL_OFF
+  getLogger()->log(spdlog::level::info, "Finalizing pressio logger");
   spdlog::shutdown();
 #endif
 }

@@ -12,18 +12,13 @@ One of the main functionalities inside `utils` is the logger.
 To implement the pressio logging functionalities, we have used [spdlog](https://github.com/gabime/spdlog),
 rewriting a subset of it, for example to work seamlessly with MPI.
 
-
-@m_class{m-block m-warning}
-
-@par By default the logger is disabled, here is how to enable it.
-
-If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed! <br/>
-By default, all logging is disabled for performance reasons.
+If you just `#include<pressio/utils.hpp>` and expect logging, you will be disappointed!<br/>
+@m_span{m-text m-warning}By default, for performance reasons, the logger is disabled.@m_endspan
 To enable and use it, you need to do two things:
-1. place a `define` statement to set the desired level: note that
-this define statement *must* be placed *before* including the utils header.
+1. *before* including the utils header, place a `define` statement to set the *minimum* level
+2. you need to initialize and finalize the logger singleton
 
-2. you need to initialize and finalize the logger singleton.
+as shown below:
 
 ```cpp
 // this sets the default min level
@@ -110,7 +105,9 @@ The supported levels are:
 ### Resetting the level
 
 If you want, you can use the define statement to set the min level,
-but then at runtime reset it as follows:
+but then at runtime you can reset for a *higher* level (see below).
+Note that you cannot reset the level to something that is *lower* than the
+one you set via the `define` statement.
 
 ```cpp
   // your code
