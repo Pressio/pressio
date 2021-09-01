@@ -79,43 +79,43 @@ template <
   class OdeTag,
   class FomSystemType,
   class RomStateType,
-  class decoder_type
+  class DecoderType
   >
 struct CommonTraitsContinuousTimeApi
 {
-  using fom_system_t	 = FomSystemType;
-  using scalar_t	 = typename fom_system_t::scalar_type;
-  using galerkin_state_t = RomStateType;
+  using fom_system_type	 = FomSystemType;
+  using scalar_type	 = typename fom_system_type::scalar_type;
+  using galerkin_state_type = RomStateType;
 
   static_assert
-  (::pressio::rom::admissible_galerkin_state<galerkin_state_t>::value,
+  (::pressio::rom::admissible_galerkin_state<galerkin_state_type>::value,
    "Invalid galerkin state type");
 
-  using decoder_t = decoder_type;
-  using decoder_jac_t = typename decoder_type::jacobian_type;
+  using decoder_type = DecoderType;
+  using decoder_jac_type = typename decoder_type::jacobian_type;
 
   // ---------------------
   // detect fom state type from decoder
   // ensure it is consistent with the fom_state_type from the app
-  using fom_state_from_decoder_t = typename decoder_type::fom_state_type;
-  using fom_state_from_adapter_t = typename fom_system_t::state_type;
+  using fom_state_from_decoder_type = typename decoder_type::fom_state_type;
+  using fom_state_from_adapter_type = typename fom_system_type::state_type;
   static_assert
-  (std::is_same<fom_state_from_decoder_t, fom_state_from_adapter_t>::value,
+  (std::is_same<fom_state_from_decoder_type, fom_state_from_adapter_type>::value,
    "The fom state type detected from the fom adapter must match the fom state type used in the decoder");
-  using fom_state_t = fom_state_from_decoder_t;
+  using fom_state_type = fom_state_from_decoder_type;
 
   // ---------------------
   // we don't allow fom state and fom velocity to have different types
   // but need to make sure this assumption is consistent with fom class
-  using fom_velocity_t = fom_state_t;
-  using fom_velocity_from_adapter_t = typename fom_system_t::velocity_type;
+  using fom_velocity_type = fom_state_type;
+  using fom_velocity_from_adapter_type = typename fom_system_type::velocity_type;
   static_assert
-  (std::is_same<fom_state_t, fom_velocity_from_adapter_t>::value,
+  (std::is_same<fom_state_type, fom_velocity_from_adapter_type>::value,
    "Currently, the fom state and velocity must be of the same type");
 
   // ---------------------
   // fom state reconstructor
-  using fom_state_reconstr_t = ::pressio::rom::FomStateReconstructor<decoder_t>;
+  using fom_state_reconstr_type = ::pressio::rom::FomStateReconstructor<decoder_type>;
 
   // ---------------------------------------------------------------
   /* fom states manager
@@ -132,12 +132,12 @@ struct CommonTraitsContinuousTimeApi
      at n and n+1, so we need two FOM states.
    */
   static constexpr auto nstates = _num_fom_states_needed<OdeTag>::value;
-  using fom_states_manager_t = mpl::conditional_t<
+  using fom_states_manager_type = mpl::conditional_t<
     ::pressio::ode::is_explicit_stepper_tag<OdeTag>::value,
     ::pressio::rom::ManagerFomStatesUnsteadyExplicit<
-      fom_state_t, fom_state_reconstr_t, nstates>,
+      fom_state_type, fom_state_reconstr_type, nstates>,
     ::pressio::rom::ManagerFomStatesUnsteadyImplicit<
-      fom_state_t, fom_state_reconstr_t, nstates>
+      fom_state_type, fom_state_reconstr_type, nstates>
     >;
 
   // ---------------------
@@ -168,42 +168,42 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
-  using fom_system_t		= typename common_types_t::fom_system_t;
-  using scalar_t		= typename common_types_t::scalar_t;
-  using fom_state_t		= typename common_types_t::fom_state_t;
-  using fom_velocity_t		= typename common_types_t::fom_velocity_t;
-  using galerkin_state_t	= typename common_types_t::galerkin_state_t;
+  using fom_system_type		= typename common_types::fom_system_type;
+  using scalar_type		= typename common_types::scalar_type;
+  using fom_state_type		= typename common_types::fom_state_type;
+  using fom_velocity_type		= typename common_types::fom_velocity_type;
+  using galerkin_state_type	= typename common_types::galerkin_state_type;
   // for now, the velocity type is same as state
-  using galerkin_velocity_t = galerkin_state_t;
+  using galerkin_velocity_type = galerkin_state_type;
 
-  using decoder_t		= typename common_types_t::decoder_t;
-  using decoder_jac_t		= typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t	= typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t	= typename common_types_t::fom_states_manager_t;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using decoder_type		= typename common_types::decoder_type;
+  using decoder_jac_type		= typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type	= typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type	= typename common_types::fom_states_manager_type;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
   // default galerkin uses default projector, so decoderJac^T
-  using projector_t = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_t>;
+  using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
 
-  using rom_system_t =
+  using rom_system_type =
     ::pressio::rom::galerkin::impl::VelocityOnlySystemUsing<
-    scalar_t, galerkin_state_t, galerkin_velocity_t,
+    scalar_type, galerkin_state_type, galerkin_velocity_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-        fom_states_manager_t, fom_velocity_t, fom_system_t>
+        fom_states_manager_type, fom_velocity_type, fom_system_type>
       >
     >;
 
   // two things to fix here:
   // 1. use the public API not impl
-  // 2. we need to use const rom_sytem_t & because the ROM problem
+  // 2. we need to use const rom_sytem_type & because the ROM problem
   // owns the system and the stepper only references it
-  using stepper_t = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_t, const rom_system_t &>::type;
+  using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
+    StepperTag, galerkin_state_type, const rom_system_type &>::type;
 };
 
 template <
@@ -222,49 +222,49 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
 
-  using fom_system_t    = typename common_types_t::fom_system_t;
-  using scalar_t    = typename common_types_t::scalar_t;
-  using fom_state_t   = typename common_types_t::fom_state_t;
-  using fom_velocity_t    = typename common_types_t::fom_velocity_t;
-  using galerkin_state_t  = typename common_types_t::galerkin_state_t;
-  using decoder_t   = typename common_types_t::decoder_t;
-  using decoder_jac_t   = typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t  = typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t  = typename common_types_t::fom_states_manager_t;
-  using galerkin_residual_t = RomResidualType;
-  using galerkin_jacobian_t = RomJacobianType;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_velocity_type    = typename common_types::fom_velocity_type;
+  using galerkin_state_type  = typename common_types::galerkin_state_type;
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+  using galerkin_residual_type = RomResidualType;
+  using galerkin_jacobian_type = RomJacobianType;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
 
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
   // default galerkin uses default projector, so decoderJac^T
-  using projector_t = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_t>;
+  using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
 
-  using residual_policy_t =
+  using residual_policy_type =
     ::pressio::rom::galerkin::impl::ResidualPolicy<
-    galerkin_residual_t,
+    galerkin_residual_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-	fom_states_manager_t, fom_velocity_t, fom_system_t>
+	fom_states_manager_type, fom_velocity_type, fom_system_type>
       >
     >;
 
-  using jacobian_policy_t =
+  using jacobian_policy_type =
     ::pressio::rom::galerkin::impl::JacobianPolicy<
-    galerkin_jacobian_t,
+    galerkin_jacobian_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 2,
+      projector_type, size_type, 2,
       ::pressio::rom::galerkin::impl::DefaultFomApplyJacobianEvaluator<
-	fom_states_manager_t, decoder_jac_t, decoder_t, fom_system_t>
+	fom_states_manager_type, decoder_jac_type, decoder_type, fom_system_type>
       >
     >;
 
-  using stepper_t = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_t, residual_policy_t &, jacobian_policy_t &>;
+  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
+    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
 };
 
 
@@ -285,44 +285,44 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
 
-  using fom_system_t    = typename common_types_t::fom_system_t;
-  using scalar_t    = typename common_types_t::scalar_t;
-  using fom_state_t   = typename common_types_t::fom_state_t;
-  using fom_velocity_t    = typename common_types_t::fom_velocity_t;
-  using galerkin_state_t  = typename common_types_t::galerkin_state_t;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_velocity_type    = typename common_types::fom_velocity_type;
+  using galerkin_state_type  = typename common_types::galerkin_state_type;
   // for now, the velocity type is same as state
-  using galerkin_velocity_t = galerkin_state_t;
-  using decoder_t   = typename common_types_t::decoder_t;
-  using decoder_jac_t   = typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t  = typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t  = typename common_types_t::fom_states_manager_t;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using galerkin_velocity_type = galerkin_state_type;
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
-  using masker_t = MaskerType;
-  using projector_t = ProjectorType;
+  using masker_type = MaskerType;
+  using projector_type = ProjectorType;
 
   static_assert
-  (::pressio::rom::masker_explicit_galerkin<masker_t, scalar_t, fom_velocity_t>::value,
+  (::pressio::rom::masker_explicit_galerkin<masker_type, scalar_type, fom_velocity_type>::value,
    "Invalid masker passed to masked Galerkin with explicit time stepping");
 
   static_assert
   (::pressio::rom::projector_explicit_galerkin<ProjectorType,
-      fom_velocity_t, galerkin_velocity_t>::value,
+      fom_velocity_type, galerkin_velocity_type>::value,
    "Invalid projector passed to masked Galerkin with explicit time stepping");
 
-  using rom_system_t =
+  using rom_system_type =
     ::pressio::rom::galerkin::impl::VelocityOnlySystemUsing<
-    scalar_t, galerkin_state_t, galerkin_velocity_t,
+    scalar_type, galerkin_state_type, galerkin_velocity_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::Masked<
-	fom_velocity_t, MaskerType,
+	fom_velocity_type, MaskerType,
         ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-          fom_states_manager_t, fom_velocity_t, fom_system_t>
+          fom_states_manager_type, fom_velocity_type, fom_system_type>
         >
       >
     >;
@@ -331,8 +331,8 @@ struct Traits<
   // 1. use the public API not impl
   // 2. we need to use const rom_sytem_t & because the ROM problem
   // owns the system and the stepper only references it
-  using stepper_t = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_t, const rom_system_t &>::type;
+  using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
+    StepperTag, galerkin_state_type, const rom_system_type &>::type;
 };
 
 template <
@@ -353,54 +353,54 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
 
-  using fom_system_t    = typename common_types_t::fom_system_t;
-  using scalar_t    = typename common_types_t::scalar_t;
-  using fom_state_t   = typename common_types_t::fom_state_t;
-  using fom_velocity_t    = typename common_types_t::fom_velocity_t;
-  using galerkin_state_t  = typename common_types_t::galerkin_state_t;
-  using decoder_t   = typename common_types_t::decoder_t;
-  using decoder_jac_t   = typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t  = typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t  = typename common_types_t::fom_states_manager_t;
-  using galerkin_residual_t = RomResidualType;
-  using galerkin_jacobian_t = RomJacobianType;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_velocity_type    = typename common_types::fom_velocity_type;
+  using galerkin_state_type  = typename common_types::galerkin_state_type;
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+  using galerkin_residual_type = RomResidualType;
+  using galerkin_jacobian_type = RomJacobianType;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
-  using masker_t = MaskerType;
-  using projector_t = ProjectorType;
+  using masker_type = MaskerType;
+  using projector_type = ProjectorType;
 
-  using residual_policy_t =
+  using residual_policy_type =
     ::pressio::rom::galerkin::impl::ResidualPolicy<
-    galerkin_residual_t,
+    galerkin_residual_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::Masked<
-	fom_velocity_t, MaskerType,
+	fom_velocity_type, MaskerType,
         ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-	  fom_states_manager_t, fom_velocity_t, fom_system_t>
+	  fom_states_manager_type, fom_velocity_type, fom_system_type>
         >
       >
     >;
 
-  using jacobian_policy_t =
+  using jacobian_policy_type =
     ::pressio::rom::galerkin::impl::JacobianPolicy<
-    galerkin_jacobian_t,
+    galerkin_jacobian_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 2,
+      projector_type, size_type, 2,
       ::pressio::rom::galerkin::impl::Masked<
-	decoder_jac_t, MaskerType,
+	decoder_jac_type, MaskerType,
         ::pressio::rom::galerkin::impl::DefaultFomApplyJacobianEvaluator<
-	  fom_states_manager_t, decoder_jac_t, decoder_t, fom_system_t>
+	  fom_states_manager_type, decoder_jac_type, decoder_type, fom_system_type>
         >
       >
     >;
 
-  using stepper_t = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_t, residual_policy_t &, jacobian_policy_t &>;
+  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
+    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
 };
 
 
@@ -420,36 +420,36 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
 
-  using fom_system_t    = typename common_types_t::fom_system_t;
-  using scalar_t    = typename common_types_t::scalar_t;
-  using fom_state_t   = typename common_types_t::fom_state_t;
-  using fom_velocity_t    = typename common_types_t::fom_velocity_t;
-  using galerkin_state_t  = typename common_types_t::galerkin_state_t;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_velocity_type    = typename common_types::fom_velocity_type;
+  using galerkin_state_type  = typename common_types::galerkin_state_type;
   // for now, the velocity type is same as state
-  using galerkin_velocity_t = galerkin_state_t;
-  using decoder_t   = typename common_types_t::decoder_t;
-  using decoder_jac_t   = typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t  = typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t  = typename common_types_t::fom_states_manager_t;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using galerkin_velocity_t = galerkin_state_type;
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
-  using projector_t = ProjectorType;
+  using projector_type = ProjectorType;
   static_assert
   (::pressio::rom::projector_explicit_galerkin<ProjectorType,
-      fom_velocity_t, galerkin_velocity_t>::value,
+      fom_velocity_type, galerkin_velocity_t>::value,
    "Invalid projector passed to hypred velo Galerkin with explicit time stepping");
 
-  using rom_system_t =
+  using rom_system_type =
     ::pressio::rom::galerkin::impl::VelocityOnlySystemUsing<
-    scalar_t, galerkin_state_t, galerkin_velocity_t,
+    scalar_type, galerkin_state_type, galerkin_velocity_t,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-        fom_states_manager_t, fom_velocity_t, fom_system_t>
+        fom_states_manager_type, fom_velocity_type, fom_system_type>
       >
     >;
 
@@ -457,8 +457,8 @@ struct Traits<
   // 1. use the public API not impl
   // 2. we need to use const rom_sytem_t & because the ROM problem
   // owns the system and the stepper only references it
-  using stepper_t = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_t, const rom_system_t &>::type;
+  using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
+    StepperTag, galerkin_state_type, const rom_system_type &>::type;
 };
 
 template <
@@ -477,47 +477,47 @@ struct Traits<
     >
   >
 {
-  using common_types_t = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
+  using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
     StepperTag, FomSystemType, RomStateType, DecoderType>;
 
-  using fom_system_t    = typename common_types_t::fom_system_t;
-  using scalar_t    = typename common_types_t::scalar_t;
-  using fom_state_t   = typename common_types_t::fom_state_t;
-  using fom_velocity_t    = typename common_types_t::fom_velocity_t;
-  using galerkin_state_t  = typename common_types_t::galerkin_state_t;
-  using decoder_t   = typename common_types_t::decoder_t;
-  using decoder_jac_t   = typename common_types_t::decoder_jac_t;
-  using fom_state_reconstr_t  = typename common_types_t::fom_state_reconstr_t;
-  using fom_states_manager_t  = typename common_types_t::fom_states_manager_t;
-  using galerkin_residual_t = RomResidualType;
-  using galerkin_jacobian_t = RomJacobianType;
-  static constexpr auto binding_sentinel = common_types_t::binding_sentinel;
-  using size_type = typename ::pressio::Traits<galerkin_state_t>::size_type;
+  using fom_system_type    = typename common_types::fom_system_type;
+  using scalar_type    = typename common_types::scalar_type;
+  using fom_state_type   = typename common_types::fom_state_type;
+  using fom_velocity_type    = typename common_types::fom_velocity_type;
+  using galerkin_state_type  = typename common_types::galerkin_state_type;
+  using decoder_type   = typename common_types::decoder_type;
+  using decoder_jac_type   = typename common_types::decoder_jac_type;
+  using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
+  using fom_states_manager_type  = typename common_types::fom_states_manager_type;
+  using galerkin_residual_type = RomResidualType;
+  using galerkin_jacobian_type = RomJacobianType;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
-  using projector_t = ProjectorType;
+  using projector_type = ProjectorType;
 
-  using residual_policy_t =
+  using residual_policy_type =
     ::pressio::rom::galerkin::impl::ResidualPolicy<
-    galerkin_residual_t,
+    galerkin_residual_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 1,
+      projector_type, size_type, 1,
       ::pressio::rom::galerkin::impl::DefaultFomVelocityEvaluator<
-	fom_states_manager_t, fom_velocity_t, fom_system_t>
+	fom_states_manager_type, fom_velocity_type, fom_system_type>
       >
     >;
 
-  using jacobian_policy_t =
+  using jacobian_policy_type =
     ::pressio::rom::galerkin::impl::JacobianPolicy<
-    galerkin_jacobian_t,
+    galerkin_jacobian_type,
     ::pressio::rom::galerkin::impl::Projected<
-      projector_t, size_type, 2,
+      projector_type, size_type, 2,
       ::pressio::rom::galerkin::impl::DefaultFomApplyJacobianEvaluator<
-	fom_states_manager_t, decoder_jac_t, decoder_t, fom_system_t>
+	fom_states_manager_type, decoder_jac_type, decoder_type, fom_system_type>
       >
     >;
 
-  using stepper_t = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_t, residual_policy_t &, jacobian_policy_t &>;
+  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
+    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
 };
 
 

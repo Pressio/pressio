@@ -12,7 +12,7 @@
 </listitem><listitem><para>pressio was designed with that in mind</para>
 </listitem></itemizedlist>
 </para>
-<sect1 id="md_pages_introduction_1autotoc_md125">
+<sect1 id="md_pages_introduction_1autotoc_md128">
 <title>In a nutshell</title>
 <para>Pressio can be applied to any dynamical system expressible in a <emphasis>continuous-time</emphasis> form as <formula id="2">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula> and/or in a <emphasis>discrete-time</emphasis> form <formula id="6">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
 <para>Here, <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="4">$f$</formula> the FOM velocity, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.</para>

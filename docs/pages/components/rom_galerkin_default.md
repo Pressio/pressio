@@ -8,10 +8,26 @@ Public namespace: `pressio::rom`, `pressio::rom::galerkin`.
 
 
 ## Overview
-bla bla
+
+At a high level, using a Galerkin problem involces three steps:
+1. *create*: you create an instance of a "default Galerkin problem"
+2. *extract*: you extract the underlying stepper object owned by the problem
+3. *solve*: you use the stepper to solve in time the Galerkin problem
 
 
-## API
+You should now pause and think for a second about the steps above.
+What does a stepper have to do with a Galerkin ROM?
+The answer is that practically speaking, at the lowest-level,
+a Galerkin problem can be reduced to simply a "custom" stepper to advance in time.
+This is exactly how pressio implements this and the reason why a Galerkin
+problem contains a stepper object inside: when you create the
+problem, pressio creates the appropriate custom stepper
+object that you can use. You don't need to know how this is done,
+or rely on the details, because these are problem- and implementation-dependent,
+and we reserve the right to change this in the future.
+
+
+## 1. Creating a problem instance
 
 ```cpp
 template<
@@ -30,7 +46,7 @@ auto create_default_problem(const FomSystemType & fomSysObj,
 where `StepperTag` is a tag type from the ode to specify which time scheme to use.
 This function returns an instance of the desired Galerkin problem.
 
-## Parameters and Requirements
+### Parameters and Requirements
 
 - `StepperTag`:
   - tag type to specify the time scheme
@@ -46,7 +62,7 @@ This function returns an instance of the desired Galerkin problem.
 
 - `RomStateType`:
   - ROM state type
-  - currently, it must be either an Eigen or Kokkos type
+  - currently, it must be either an Eigen vector or a Kokkos 1D view
 
 - `FomReferenceStateType`:
   - your FOM reference state that is used when reconstructing the FOM state
@@ -55,25 +71,16 @@ This function returns an instance of the desired Galerkin problem.
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
 
-## What is a problem and how to use it?
+### Problem class API
 
-When you create a problem object, pressio behind
-the scenes checks types, and instantiates everything that is needed
-to define a problem. Practically speaking, at the lowest-level,
-a Galerkin problem reduces to creating a "custom" stepper to advance in time.
-This is exactly how pressio implements this: when you create a Galerkin
-problem, pressio behind the scenes creates this custom stepper
-object that you can use. You don't know to know or rely on
-the details of the stepper or how this is done,
-because these are problem-dependent and we reserve the right
-to change this in the future.
-
-All you need to know to use a problem is that it has the following interface:
+A problem meets the following API:
 
 ```cpp
 class DefaultGalerkinProblem
 {
 public:
+  using traits = /* nested typedef with trait class */;
+
   // returns the underlying stepper to use to solve the problem
   auto & stepper();
 
@@ -82,12 +89,47 @@ public:
 };
 ```
 
-where the stepper is an [explicit stepper](md_pages_components_ode_steppers_explicit.html)
-if you used an explicit `StepperTag` or an [implicit stepper](md_pages_components_ode_steppers_implicit.html)
-if you used an implicit `StepperTag`.
-Once you have the stepper, you can then use it to solve your problem like
-you would with any other stepper object.
-An example usage is as follows:
+The `stepper` method is, practically, what you would use
+to retrieve the stepper and then use it to solve the problem.
+The stepper method returns a non-const reference to an
+[explicit stepper](md_pages_components_ode_steppers_explicit.html)
+if, when you created the problem, you used an explicit `StepperTag`,
+or an [implicit stepper](md_pages_components_ode_steppers_implicit.html)
+if you use an implicit `StepperTag`.
+Once you retrieve the stepper, you can then use it like
+you would with any other stepper object (more on this below).
+
+As almost every important type in pressio, a Galerkin problem
+too has traits:
+
+```cpp
+auto problem = create_default_problem(...);
+using traits = pressio::Traits<decltype(problem)>;
+
+// for the explicit case, one can access the following traits:
+typename traits::fom_system_type;
+typename traits::scalar_type;
+typename traits::decoder_type;
+typename traits::decoder_jac_type;
+typename traits::galerkin_state_type;
+typename traits::galerkin_velocity_type;
+typename traits::stepper_type;
+
+// for the implicit case one has:
+typename traits::fom_system_type;
+typename traits::scalar_type;
+typename traits::decoder_type;
+typename traits::decoder_jac_type;
+typename traits::galerkin_state_type;
+typename traits::galerkin_residual_type;
+typename traits::galerkin_jacobian_type;
+typename traits::stepper_type;
+```
+
+## 2.,3. Extract and Solve
+
+### Explicit Case
+An example usage for explicit stepper is as follows:
 
 ```cpp
 int main()
@@ -100,6 +142,27 @@ namespace pgal = pressio::rom::galerkin;
 using ode_tag  = pode::ForwardEuler;
 auto problem   = pgal::create_default_problem<ode_tag>(fom_system, decoder, rom_state, fom_reference_state);
 auto & stepper = problem.stepper();
+
+pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
+}
+```
+
+### Implicit Case
+An example usage for implicit stepper is as follows:
+
+```cpp
+int main()
+{
+// we assume the rom_state, decoder, fom_system, fom_reference_state already exist
+
+namespace pode = pressio::ode;
+namespace pgal = pressio::rom::galerkin;
+
+using ode_tag  = pode::ForwardEuler;
+auto problem   = pgal::create_default_problem<ode_tag>(fom_system, decoder, rom_state, fom_reference_state);
+auto & stepper = problem.stepper();
+
+!!!!!!!! fill !!!!!!!!!
 
 pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
 }

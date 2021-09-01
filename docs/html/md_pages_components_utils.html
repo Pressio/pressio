@@ -82,7 +82,7 @@
         <h1>
           utils
         </h1>
-<p>Defined in header: <code>&lt;pressio/utils.hpp&gt;</code></p><p>Public namespaces: <code>pressio</code> and <code>pressio::utils</code>.</p><section id="autotoc_md114"><h2><a href="#autotoc_md114">Logger</a></h2><p>One of the main functionalities inside <code>utils</code> is the logger. To implement the pressio logging functionalities, we have used <a href="https://github.com/gabime/spdlog">spdlog</a>, rewriting a subset of it, for example to work seamlessly with MPI.</p><p>If you just <code>#include&lt;pressio/utils.hpp&gt;</code> and expect logging, you will be disappointed!<br /><span class="m-text m-warning">By default, for performance reasons, the logger is disabled.</span> To enable and use it, you need to do two things:</p><ol><li><em>before</em> including the utils header, place a <code>define</code> statement to set the <em>minimum</em> level</li><li>you need to initialize and finalize the logger singleton</li></ol><p>as shown below:</p><pre class="m-code"><span class="c1">// this sets the default min level</span>
+<p>Defined in header: <code>&lt;pressio/utils.hpp&gt;</code></p><p>Public namespaces: <code>pressio</code> and <code>pressio::utils</code>.</p><section id="autotoc_md117"><h2><a href="#autotoc_md117">Logger</a></h2><p>One of the main functionalities inside <code>utils</code> is the logger. To implement the pressio logging functionalities, we have used <a href="https://github.com/gabime/spdlog">spdlog</a>, rewriting a subset of it, for example to work seamlessly with MPI.</p><p>If you just <code>#include&lt;pressio/utils.hpp&gt;</code> and expect logging, you will be disappointed!<br /><span class="m-text m-warning">By default, for performance reasons, the logger is disabled.</span> To enable and use it, you need to do two things:</p><ol><li><em>before</em> including the utils header, place a <code>define</code> statement to set the <em>minimum</em> level</li><li>you need to initialize and finalize the logger singleton</li></ol><p>as shown below:</p><pre class="m-code"><span class="c1">// this sets the default min level</span>
 <span class="cp">#define PRESSIO_LOG_ACTIVE_MIN_LEVEL 2</span>
 
 <span class="c1">// this is needed to include the logger code</span>
@@ -98,7 +98,7 @@
   <span class="c1">// your code, use logger</span>
 
   <span class="c1">// finalize logger (see below for details)</span>
-<span class="p">}</span></pre><section id="autotoc_md115"><h3><a href="#autotoc_md115">Initializing</a></h3><p>You have these choices:</p><pre class="m-code"><span class="c1">// only log messages to terminal</span>
+<span class="p">}</span></pre><section id="autotoc_md118"><h3><a href="#autotoc_md118">Initializing</a></h3><p>You have these choices:</p><pre class="m-code"><span class="c1">// only log messages to terminal</span>
 <span class="n">plog</span><span class="o">::</span><span class="n">initialize</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">logto</span><span class="o">::</span><span class="n">terminal</span><span class="p">);</span>
 
 <span class="c1">// log messages to terminal and a file named, e.g., &quot;my_log.txt&quot;</span>
@@ -117,16 +117,16 @@
   <span class="n">plog</span><span class="o">::</span><span class="n">finalize</span><span class="p">();</span>
 
   <span class="n">MPI_Finalize</span><span class="p">();</span>
-<span class="p">}</span></pre><p>If we were to run this with N ranks, we would obtain two files <code>log_file.txt_0</code>, and <code>log_file.txt_1</code>. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.</p></section><section id="autotoc_md116"><h3><a href="#autotoc_md116">Finalizing</a></h3><pre class="m-code"><span class="n">plog</span><span class="o">::</span><span class="n">finalize</span><span class="p">();</span></pre></section><section id="autotoc_md117"><h3><a href="#autotoc_md117">Levels</a></h3><p>The supported levels are:</p><pre class="m-code"><span class="cp">#define PRESSIO_LOG_LEVEL_TRACE     0</span>
+<span class="p">}</span></pre><p>If we were to run this with N ranks, we would obtain two files <code>log_file.txt_0</code>, and <code>log_file.txt_1</code>. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.</p></section><section id="autotoc_md119"><h3><a href="#autotoc_md119">Finalizing</a></h3><pre class="m-code"><span class="n">plog</span><span class="o">::</span><span class="n">finalize</span><span class="p">();</span></pre></section><section id="autotoc_md120"><h3><a href="#autotoc_md120">Levels</a></h3><p>The supported levels are:</p><pre class="m-code"><span class="cp">#define PRESSIO_LOG_LEVEL_TRACE     0</span>
 <span class="cp">#define PRESSIO_LOG_LEVEL_DEBUG     1</span>
 <span class="cp">#define PRESSIO_LOG_LEVEL_INFO      2</span>
 <span class="cp">#define PRESSIO_LOG_LEVEL_WARN      3</span>
 <span class="cp">#define PRESSIO_LOG_LEVEL_ERROR     4</span>
 <span class="cp">#define PRESSIO_LOG_LEVEL_CRITICAL  5</span>
-<span class="cp">#define PRESSIO_LOG_LEVEL_OFF       6</span></pre></section><section id="autotoc_md118"><h3><a href="#autotoc_md118">Resetting the level</a></h3><p>If you want, you can use the define statement to set the min level, but then at runtime you can reset for a <em>higher</em> level (see below). Note that you cannot reset the level to something that is <em>lower</em> than the one you set via the <code>define</code> statement.</p><pre class="m-code"><span class="c1">// your code</span>
+<span class="cp">#define PRESSIO_LOG_LEVEL_OFF       6</span></pre></section><section id="autotoc_md121"><h3><a href="#autotoc_md121">Resetting the level</a></h3><p>If you want, you can use the define statement to set the min level, but then at runtime you can reset for a <em>higher</em> level (see below). Note that you cannot reset the level to something that is <em>lower</em> than the one you set via the <code>define</code> statement.</p><pre class="m-code"><span class="c1">// your code</span>
 <span class="c1">// ...</span>
 <span class="n">plog</span><span class="o">::</span><span class="n">setVerbosity</span><span class="p">({</span><span class="n">plog</span><span class="o">::</span><span class="n">level</span><span class="o">::</span><span class="n">info</span><span class="p">});</span>
-<span class="c1">// ...</span></pre></section><section id="autotoc_md119"><h3><a href="#autotoc_md119">The loggin macros</a></h3><p>To actually issue log statements, you use the macros as in the following example:</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="c1">// ...</span></pre></section><section id="autotoc_md122"><h3><a href="#autotoc_md122">The loggin macros</a></h3><p>To actually issue log statements, you use the macros as in the following example:</p><pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
   <span class="c1">// initialize logger</span>
 

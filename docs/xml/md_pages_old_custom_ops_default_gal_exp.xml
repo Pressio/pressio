@@ -66,7 +66,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
-<sect1 id="md_pages_old_custom_ops_default_gal_exp_1autotoc_md143">
+<sect1 id="md_pages_old_custom_ops_default_gal_exp_1autotoc_md146">
 <title>Where does one need to use this?</title>
 <para>An object of the class template above needs to be passed to the constructor of the Galerkin problem as explained in <ulink url="./md_pages_tutorials_tutorial2.html">this tutorial</ulink>. </para>
 </sect1>
