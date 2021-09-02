@@ -72,10 +72,10 @@ public:
   }
 
 public:
-  template<class galerkin_state_t, class scalar_t, class at_tag>
-  void compute(const galerkin_state_t & galerkinState,
-	       const scalar_t & velocityEvalTime,
-	       at_tag tag) const
+  template<class GalerkinStateType, class ScalarType, class AtTag>
+  void compute(const GalerkinStateType & galerkinState,
+	       const ScalarType & velocityEvalTime,
+	       AtTag tag) const
   {
     fomStatesMngr_.get().reconstructAt(galerkinState, tag);
     const auto & fomState = fomStatesMngr_.get().fomStateAt(tag);

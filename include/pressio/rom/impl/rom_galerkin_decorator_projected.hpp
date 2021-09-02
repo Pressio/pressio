@@ -101,17 +101,18 @@ public:
     return result;
   }
 
-  template<class GalerkinOperatorType, class GalerkinStateType, class ...Args>
+  template<class GalerkinOperatorType, class GalerkinStateType, class TimeType, class ...Args>
   void compute(GalerkinOperatorType & galerkinOperator,
 	       const GalerkinStateType & galerkinState,
+	       TimeType evalTime,
 	       Args && ...args) const
   {
-    ProjectableType::compute(galerkinState, std::forward<Args>(args)...);
+    ProjectableType::compute(galerkinState, evalTime, std::forward<Args>(args)...);
     // fomOperand = fom velocity or the fom apply jacobain object
     const auto & fomOperand = ProjectableType::get();
 
     // galerkinOperator is either galrkin rhs or jacobian
-    projector_.get().apply(fomOperand, galerkinOperator);
+    projector_(fomOperand, evalTime, galerkinOperator);
   }
 
 private:

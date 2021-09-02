@@ -36,7 +36,7 @@
   romState[2]=2.;\
 
 
-TEST(rom_galerkin_test, hypred_velo_explicit_correctness_eigen)
+TEST(rom_galerkin, cont_time_hypred_explicit_correctness_eigen)
 {
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -53,7 +53,7 @@ TEST(rom_galerkin_test, hypred_velo_explicit_correctness_eigen)
 
   using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_hyperreduced_velocity_problem<ode_tag>(
+  auto problem = gal::create_hyperreduced_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj);
 
   const scalar_t dt = 1.; 
@@ -69,7 +69,7 @@ TEST(rom_galerkin_test, hypred_velo_explicit_correctness_eigen)
   pressio::log::finalize();
 }
 
-TEST(rom_galerkin_test, hypred_velo_implicit_correctness_eigen)
+TEST(rom_galerkin, cont_time_hypred_implicit_correctness_eigen)
 {
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -85,11 +85,41 @@ TEST(rom_galerkin_test, hypred_velo_implicit_correctness_eigen)
   ProjectorExplicitEigen proj(matForProj);
 
   using ode_tag = pressio::ode::BDF1;
-  auto problem = pressio::rom::galerkin::create_hyperreduced_velocity_problem<ode_tag>(
+  auto problem = pressio::rom::galerkin::create_hyperreduced_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj);
   auto & stepperObj = problem.stepper();
 
-  FakeNonLinSolver nonLinSolver;
+  FakeNonLinSolverContTime nonLinSolver;
+  scalar_t dt = 2.;
+  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  std::cout << romState << std::endl;
+  EXPECT_DOUBLE_EQ(romState[0], 4.);
+  EXPECT_DOUBLE_EQ(romState[1], 5.);
+  EXPECT_DOUBLE_EQ(romState[2], 6.);
+
+  pressio::log::finalize();
+}
+
+TEST(rom_galerkin, discrete_time_hypred_implicit_correctness_eigen)
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+  using fom_t = TrivialFomDiscreteTimeEigen;
+  HYPRED_VELO_GALERKIN_COMMON_PART();
+
+  // projector must be applicable to the *sample* operand
+  phi_t matForProj(nSample, 3);
+  matForProj.col(0).setConstant(0.);\
+  matForProj.col(1).setConstant(1.);\
+  matForProj.col(2).setConstant(2.);\
+  ProjectorExplicitEigen proj(matForProj);
+
+  auto problem = pressio::rom::galerkin::create_hyperreduced_problem<2>(
+    fomSystem, decoder, romState, fomReferenceState, proj);
+  auto & stepperObj = problem.stepper();
+
+  FakeNonLinSolverForDiscreteTime nonLinSolver;
   scalar_t dt = 2.;
   pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
   std::cout << romState << std::endl;

@@ -3,7 +3,7 @@
 #include "common.hpp"
 #include "pressio/rom_galerkin.hpp"
 
-TEST(rom_galerkin_test, default_explicit_correctness_eigen)
+TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
 {
   /*
     check correctness of Galerkin with Euler forward
@@ -61,7 +61,7 @@ TEST(rom_galerkin_test, default_explicit_correctness_eigen)
   const int num_steps = 2;
   ObserverA obs;
   pressio::ode::advance_n_steps_and_observe(problem.stepper(), romState, 0., dt, num_steps, obs);
-
+  std::cout << romState << std::endl;
   EXPECT_DOUBLE_EQ(romState[0], 0.);
   EXPECT_DOUBLE_EQ(romState[1], 2611.);
   EXPECT_DOUBLE_EQ(romState[2], 5222.);
@@ -69,7 +69,7 @@ TEST(rom_galerkin_test, default_explicit_correctness_eigen)
   pressio::log::finalize();
 }
 
-TEST(rom_galerkin, default_implicit_correctness_eigen)
+TEST(rom_galerkin, cont_time_default_implicit_correctness_eigen)
 {
   /*
     check correctness of Galerkin with BDF1
@@ -115,7 +115,49 @@ TEST(rom_galerkin, default_implicit_correctness_eigen)
   auto problem = pressio::rom::galerkin::create_default_problem<ode_tag>(fomSystem, decoder, romState, fomReferenceState);
   auto & stepperObj = problem.stepper();
 
-  FakeNonLinSolver nonLinSolver;
+  FakeNonLinSolverContTime nonLinSolver;
+
+  scalar_t dt = 2.;
+  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  std::cout << romState << std::endl;
+  EXPECT_DOUBLE_EQ(romState[0], 4.);
+  EXPECT_DOUBLE_EQ(romState[1], 5.);
+  EXPECT_DOUBLE_EQ(romState[2], 6.);
+
+  pressio::log::finalize();
+}
+
+
+TEST(rom_galerkin, discrete_time_default_implicit_correctness_eigen)
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+  using fom_t = TrivialFomDiscreteTimeEigen;
+  using scalar_t    = typename fom_t::scalar_type;
+  using fom_state_t = typename fom_t::state_type;
+
+  constexpr int N = 10;
+  fom_t fomSystem(N);
+  fom_state_t fomReferenceState(N);
+  fomReferenceState.setZero();
+
+  using phi_t = Eigen::MatrixXd;
+  phi_t phi(N, 3);
+  phi.col(0).setConstant(0.);
+  phi.col(1).setConstant(1.);
+  phi.col(2).setConstant(2.);
+  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);
+
+  Eigen::VectorXd romState(3);
+  romState[0]=0.;
+  romState[1]=1.;
+  romState[2]=2.;
+
+  auto problem = pressio::rom::galerkin::create_default_problem<2>(fomSystem, decoder, romState, fomReferenceState);
+  auto & stepperObj = problem.stepper();
+
+  FakeNonLinSolverForDiscreteTime nonLinSolver;
 
   scalar_t dt = 2.;
   pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);

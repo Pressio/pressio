@@ -144,30 +144,6 @@ public:
 	(galerkinState, galerkinResidual, galerkinStencilStates,
 	 galerkinStencilVelocities, dt, StepperTag());
   }
-
-  // template <
-  //   class StepperTag,
-  //   class GalerkinStateType,
-  //   class galerkin_stencil_states_t,
-  //   class fom_system_t,
-  //   class ScalarType
-  //   >
-  // mpl::enable_if_t<
-  //   ::pressio::rom::most_likely_discrete_time_system<fom_system_t>::value
-  // >
-  // compute(const GalerkinStateType & galerkinState,
-  // 	  const galerkin_stencil_states_t & galerkinStencilStates,
-  // 	  const fom_system_t & fomSystemObj,
-  // 	  const ScalarType & t_np1,
-  // 	  const ScalarType & dt,
-  // 	  const ::pressio::ode::step_count_type & currentStepNumber,
-  // 	  GalerkinResidualType & galerkinResidual) const
-  // {
-  //   ProjectionPolicyType::compute(galerkinResidual, galerkinState, fomSystemObj,
-  // 				 t_np1, dt, currentStepNumber,
-  // 				 galerkinStencilStates);
-  // }
-
 };
 
 }}}}

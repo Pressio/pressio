@@ -201,12 +201,13 @@ public:
     return J;
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t>
   void discreteTimeResidual(const step_t & step,
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_residual_type & R,
-                            Args && ... args) const
+                            const state_type &,
+                            const state_type &) const
   {
     ++count_;
     std::cout << count_ << " " << time << " " << dt << std::endl;
@@ -227,12 +228,13 @@ public:
     }
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_jacobian_type & J,
-                            Args && ... states) const
+                            const state_type &,
+                            const state_type &) const
   {
     EXPECT_DOUBLE_EQ(dt, 2.5);
     if(count_==1){
@@ -268,12 +270,13 @@ TEST(ode, mplicit_arbitrary_callWithCorrectTime1)
   using namespace pressio;
   using app_t = MyApp3;
   using state_t  = typename app_t::state_type;
-  using res_t  = typename app_t::discrete_time_residual_type;
-  using jac_t = typename app_t::discrete_time_jacobian_type;
   app_t appObj;
   state_t y(3); y.setConstant(1.);
 
   auto stepperObj = ode::create_arbitrary_stepper<2>(y,appObj);
+
+  using res_t  = typename app_t::discrete_time_residual_type;
+  using jac_t = typename app_t::discrete_time_jacobian_type;
   MyFakeSolver3<res_t, jac_t> solver;
   double dt = 2.5;
   ode::advance_n_steps(stepperObj, y, 0.0, dt, 2, solver);

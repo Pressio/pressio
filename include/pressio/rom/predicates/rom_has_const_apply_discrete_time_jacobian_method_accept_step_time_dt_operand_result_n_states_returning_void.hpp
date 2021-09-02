@@ -126,5 +126,30 @@ struct has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand
     >
   > : std::true_type{};
 
+
+template <class T, class step_t, class ScalarType, class StateType, class OperandType, class ResultType>
+struct has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
+  T, 4, step_t, ScalarType, StateType, OperandType, ResultType,
+  ::pressio::mpl::enable_if_t<
+    std::is_void<
+      decltype
+      (
+       std::declval<T const>().applyDiscreteTimeJacobian
+       (
+  std::declval<step_t const &>(),
+  std::declval<ScalarType const &>(),
+  std::declval<ScalarType const &>(),
+  std::declval<OperandType const &>(),
+  std::declval<ResultType &>(),
+  std::declval<StateType const&>(),
+  std::declval<StateType const&>(),
+  std::declval<StateType const&>(),
+  std::declval<StateType const&>()
+  )
+       )
+      >::value
+    >
+  > : std::true_type{};
+
 }}
 #endif  // ROM_PREDICATES_APPLY_DISCRETE_TIME_JACOBIAN_METHODS_ROM_HAS_CONST_APPLY_DISCRETE_TIME_JACOBIAN_METHOD_ACCEPT_STEP_TIME_DT_OPERAND_RESULT_N_STATES_RETURNING_VOID_HPP_

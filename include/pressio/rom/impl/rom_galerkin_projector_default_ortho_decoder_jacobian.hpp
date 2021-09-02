@@ -67,10 +67,10 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
    Add overloads for phi and B of same type, if needed extend
 */
 
-template <typename decoder_type>
+template <typename DecoderType>
 struct DefaultProjector
 {
-  using dec_jac_t = typename decoder_type::jacobian_type;
+  using dec_jac_t = typename DecoderType::jacobian_type;
 
   DefaultProjector() = delete;
   DefaultProjector(const DefaultProjector &) = default;
@@ -79,44 +79,35 @@ struct DefaultProjector
   DefaultProjector & operator=(DefaultProjector &&) = delete;
   ~DefaultProjector() = default;
 
-  DefaultProjector(const decoder_type & decoder)
+  DefaultProjector(const DecoderType & decoder)
     : decoderJacobian_(decoder.jacobianCRef()){}
 
-  template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::Traits<result_t>::rank == 1>
-  apply(const operand_t & operand, result_t & result) const
+  template<class OperandType, class TimeType, class ResultType>
+  mpl::enable_if_t<::pressio::Traits<ResultType>::rank == 1>
+  operator()(const OperandType & operand, const TimeType time, ResultType & result) const
   {
-    using scalar_t = typename ::pressio::Traits<result_t>::scalar_type;
+    (void)time;
+    using scalar_t = typename ::pressio::Traits<ResultType>::scalar_type;
     using cnst = ::pressio::utils::Constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), cnst::one(),
 			    decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
   }
 
-  template<typename operand_t, typename result_t>
-  mpl::enable_if_t<::pressio::Traits<result_t>::rank >= 2>
-  apply(const operand_t & operand, result_t & result) const
+  template<class OperandType, class TimeType, class ResultType>
+  mpl::enable_if_t<::pressio::Traits<ResultType>::rank >= 2>
+  operator()(const OperandType & operand, const TimeType time, ResultType & result) const
   {
-    using scalar_t = typename ::pressio::Traits<result_t>::scalar_type;
+    (void)time;
+    using scalar_t = typename ::pressio::Traits<ResultType>::scalar_type;
     using cnst = ::pressio::utils::Constants<scalar_t>;
     ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
 			    cnst::one(), decoderJacobian_.get(), operand,
 			    cnst::zero(), result);
   }
 
-  // template<typename result_t>
-  // mpl::enable_if_t<::pressio::rom::galerkin::constraints::galerkin_jacobian<result_t>::value>
-  // apply(const dec_jac_t & operand, result_t & result) const
-  // {
-  //   // using scalar_t = typename ::pressio::containers::details::traits<result_t>::scalar_t;
-  //   // using cnst = ::pressio::utils::Constants<scalar_t>;
-  //   // ::pressio::ops::product(::pressio::transpose(), ::pressio::nontranspose(),
-  //   //  			    cnst::one(), decoderJacobian_.get(), operand,
-  //   // 			    cnst::zero(), result);
-  // }
-
 private:
-  std::reference_wrapper<const typename decoder_type::jacobian_type> decoderJacobian_;
+  std::reference_wrapper<const typename DecoderType::jacobian_type> decoderJacobian_;
 };
 
 }}}}//end  namespace pressio::rom::galerkin::impl

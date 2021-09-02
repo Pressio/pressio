@@ -36,7 +36,7 @@
   romState[2]=2.;\
 
 
-TEST(rom_galerkin_test, masked_explicit_correctness_eigen)
+TEST(rom_galerkin_test, const_time_masked_explicit_correctness_eigen)
 {
   /*
     check correctness of masked Galerkin 
@@ -66,7 +66,7 @@ TEST(rom_galerkin_test, masked_explicit_correctness_eigen)
 
   using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_masked_velocity_problem<ode_tag>(
+  auto problem = gal::create_masked_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 
@@ -82,7 +82,7 @@ TEST(rom_galerkin_test, masked_explicit_correctness_eigen)
   pressio::log::finalize();
 }
 
-TEST(rom_galerkin_test, masked_implicit_correctness_eigen)
+TEST(rom_galerkin_test, const_time_masked_implicit_correctness_eigen)
 {
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -104,11 +104,11 @@ TEST(rom_galerkin_test, masked_implicit_correctness_eigen)
   ProjectorImplicitEigen proj(phiSample);
 
   using ode_tag = pressio::ode::BDF1;
-  auto problem = pressio::rom::galerkin::create_masked_velocity_problem<ode_tag>(
+  auto problem = pressio::rom::galerkin::create_masked_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
   auto & stepperObj = problem.stepper();
 
-  FakeNonLinSolver nonLinSolver;
+  FakeNonLinSolverContTime nonLinSolver;
   scalar_t dt = 2.;
   pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
   std::cout << romState << std::endl;
@@ -118,3 +118,42 @@ TEST(rom_galerkin_test, masked_implicit_correctness_eigen)
 
   pressio::log::finalize();
 }
+
+
+TEST(rom_galerkin_test, discrete_time_masked_implicit_correctness_eigen)
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+  using fom_t = TrivialFomDiscreteTimeEigen;
+  MASKED_GALERKIN_COMMON_PART();
+
+  // create masker
+  MaskerImplicitEigen masker(sample_indices);
+
+  // projector must be applicable to the *masked* operand
+  // so we need to use only certain rows of phi
+  phi_t phiSample(nMasked, 3);
+  for (int i = 0; i < nMasked; ++i){
+    phiSample(i, 0) = phiFull(sample_indices[i],0);
+    phiSample(i, 1) = phiFull(sample_indices[i],1);
+    phiSample(i, 2) = phiFull(sample_indices[i],2);
+  }
+  ProjectorImplicitEigen proj(phiSample);
+
+  auto problem = pressio::rom::galerkin::create_masked_problem<2>(
+    fomSystem, decoder, romState, fomReferenceState, proj, masker);
+  auto & stepperObj = problem.stepper();
+
+  FakeNonLinSolverForDiscreteTime nonLinSolver;
+  scalar_t dt = 2.;
+  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  std::cout << romState << std::endl;
+  EXPECT_DOUBLE_EQ(romState[0], 4.);
+  EXPECT_DOUBLE_EQ(romState[1], 5.);
+  EXPECT_DOUBLE_EQ(romState[2], 6.);
+
+  pressio::log::finalize();
+}
+
+

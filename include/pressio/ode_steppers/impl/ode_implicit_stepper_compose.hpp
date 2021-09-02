@@ -242,40 +242,6 @@ struct ImplicitCompose<
 };
 
 
-////////////////////////////////////////
-/// ImplicitCompose Arbitrary stepper
-////////////////////////////////////////
-template<class NStates, class SystemType, class StateType>
-struct ImplicitCompose<
-  ImplicitArbitrary, NStates, SystemType, StateType>
-{
-  static_assert
-  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<mpl::remove_cvref_t<SystemType>>::value,
-   "The system passed does not meet the required API");
-
-  static_assert
-  (::pressio::ode::implicit_state<StateType>::value,
-   "Invalid state type for implicit stepper");
-
-  static_assert
-  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
-   "Incompatible StateType and state_type alias deduced from the system class");
-
-  using ResidualType = typename mpl::remove_cvref_t<SystemType>::discrete_time_residual_type;
-  using JacobianType = typename mpl::remove_cvref_t<SystemType>::discrete_time_jacobian_type;
-  static_assert(::pressio::ode::implicit_residual<ResidualType>::value,
-    "Invalid residual type for implicit time stepping");
-  static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
-    "Invalid jacobian type for implicit time stepping");
-  static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
-   "state, residual and jacobian are not scalar compatible ");
-
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  using type = StepperArbitrary<
-    NStates::value, ScalarType, StateType, ResidualType, JacobianType, SystemType
-    >;
-};
-
 template<typename ...Args>
 using ImplicitCompose_t = typename ImplicitCompose<Args...>::type;
 
@@ -300,6 +266,41 @@ ReturnType create_stepper_impl(const StateType & state, ResidualPolicyType && rP
 {
   return ReturnType(state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol));
 };
+
+////////////////////////////////////////
+/// ImplicitCompose Arbitrary stepper
+////////////////////////////////////////
+template<int num_states, class SystemType, class StateType>
+struct ImplicitComposeArb
+{
+  static_assert
+  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
+   mpl::remove_cvref_t<SystemType>, num_states>::value,
+   "The system passed does not meet the required API");
+
+  static_assert
+  (::pressio::ode::implicit_state<StateType>::value,
+   "Invalid state type for implicit stepper");
+
+  static_assert
+  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
+   "Incompatible StateType and state_type alias deduced from the system class");
+
+  using ResidualType = typename mpl::remove_cvref_t<SystemType>::discrete_time_residual_type;
+  using JacobianType = typename mpl::remove_cvref_t<SystemType>::discrete_time_jacobian_type;
+  static_assert(::pressio::ode::implicit_residual<ResidualType>::value,
+    "Invalid residual type for implicit time stepping");
+  static_assert(::pressio::ode::implicit_jacobian<JacobianType>::value,
+    "Invalid jacobian type for implicit time stepping");
+  static_assert(::pressio::are_scalar_compatible<StateType, ResidualType, JacobianType>::value,
+   "state, residual and jacobian are not scalar compatible ");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using type = StepperArbitrary<
+    num_states, ScalarType, StateType, ResidualType, JacobianType, SystemType
+    >;
+};
+
 
 }}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ImplicitCompose_IMPL_HPP_

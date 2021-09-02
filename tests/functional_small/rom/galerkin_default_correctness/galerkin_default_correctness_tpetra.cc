@@ -3,7 +3,7 @@
 #include "common.hpp"
 #include "pressio/rom_galerkin.hpp"
 
-TEST(rom_galerkin_test, default_explicit_correctness_tpetra)
+TEST(rom_galerkin, cont_time_default_explicit_correctness_tpetra)
 {
   // refer to eigen test for description
 
@@ -49,7 +49,7 @@ TEST(rom_galerkin_test, default_explicit_correctness_tpetra)
 }
 
 
-TEST(rom_galerkin, default_implicit_correctness_tpetra)
+TEST(rom_galerkin, cont_time_default_implicit_correctness_tpetra)
 {
   // refer to eigen test for description
 
@@ -83,7 +83,7 @@ TEST(rom_galerkin, default_implicit_correctness_tpetra)
   auto problem = pressio::rom::galerkin::create_default_problem<ode_tag>(fomSystem, decoder, romState, fomReferenceState);
   auto & stepperObj = problem.stepper();
 
-  FakeNonLinSolver nonLinSolver;
+  FakeNonLinSolverContTime nonLinSolver;
 
   scalar_t dt = 2.;
   pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);

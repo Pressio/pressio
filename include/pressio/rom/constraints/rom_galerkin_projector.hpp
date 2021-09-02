@@ -51,15 +51,65 @@
 
 namespace pressio{ namespace rom{
 
-template<typename T, typename fom_velocity_t, typename result_t, typename enable = void>
+template<
+  class T, class TimeType,
+  class FomVelocityType, class ResultType,
+  class enable = void
+  >
 struct projector_explicit_galerkin : std::false_type{};
 
-template<typename T, typename fom_velocity_t, typename result_t>
+template<class T, class TimeType, class FomVelocityType, class ResultType>
 struct projector_explicit_galerkin<
-  T, fom_velocity_t, result_t,
-  mpl::enable_if_t<
-    ::pressio::rom::has_const_apply_method_accept_operand_result_return_void<
-      T, fom_velocity_t, result_t>::value
+  T, TimeType, FomVelocityType, ResultType,
+  ::pressio::mpl::void_t<
+    decltype(
+	     std::declval<T const>()
+	     (
+	      std::declval<FomVelocityType const&>(),
+	      std::declval<TimeType>(), // this is time
+	      std::declval<ResultType &>()
+	      )
+	     )
+    >
+  > : std::true_type{};
+
+template<
+  class T,
+  class TimeType,
+  class FomVelocityType,
+  class JacType,
+  class ResultType1,
+  class ResultType2,
+  class enable = void>
+struct projector_implicit_galerkin : std::false_type{};
+
+template<
+  class T,
+  class TimeType,
+  class FomVelocityType,
+  class JacType,
+  class ResultType1,
+  class ResultType2
+  >
+struct projector_implicit_galerkin<
+  T, TimeType, FomVelocityType, JacType, ResultType1, ResultType2,
+  ::pressio::mpl::void_t<
+    decltype(
+	     std::declval<T const>()
+	     (
+	      std::declval<FomVelocityType const&>(),
+	      std::declval<TimeType>(),
+	      std::declval<ResultType1 &>()
+	      )
+	     ),
+    decltype(
+	     std::declval<T const>()
+	     (
+	      std::declval<JacType const&>(),
+	      std::declval<TimeType>(),
+	      std::declval<ResultType2 &>()
+	      )
+	     )
     >
   > : std::true_type{};
 

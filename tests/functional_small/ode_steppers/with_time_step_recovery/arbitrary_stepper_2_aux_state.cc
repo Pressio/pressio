@@ -23,19 +23,8 @@ public:
     return J;
   }
 
-  template <typename step_t, typename ...Args>
-  void discreteTimeResidual(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            discrete_time_residual_type & R,
-			    Args && ...args) const
-  {
-    this->timeDiscreteResidualImpl( step, time, dt, R,
-				    std::forward<Args>(args)... );
-  }
-
   template <typename step_t, typename state_type>
-  void timeDiscreteResidualImpl(const step_t & step,
+  void discreteTimeResidual(const step_t & step,
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
@@ -89,12 +78,14 @@ public:
     }
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_jacobian_type & J,
-                            Args && ... states) const
+                            const state_type & yn,
+        const state_type & ynm1,
+        const state_type & ynm2) const
   {
     // dummy, not used for this test
   }

@@ -48,18 +48,18 @@
                 <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
                 <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
                 <li><a> rom: </a></li>
-                <li><a href="md_pages_components_rom_general.html"> &emsp; - general info</a></li>
                 <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
                 <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
                 <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
                 <li><a> &emsp; - Galerkin </a></li>
-                <li><a href="md_pages_components_rom_galerkin_general.html"> &emsp; &emsp; - general info </a></li>
                 <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
-                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
                 <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
-                <li><a href="md_pages_components_rom_lspg.html">rom: LSPG</a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
                 <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
-                <li><a href="md_pages_components_rom_hyperreduction.html">rom: hyper-reduction</a></li>
               </ol>
             </li>
             <li><a href="md_pages_tutorials.html">Tutorials</a></li>
@@ -82,7 +82,67 @@
         <h1>
           rom: Galerkin: hyper-reduced problem
         </h1>
-        <p><span></span></p>
+<p>Defined in: <code>&lt;pressio/rom_galerkin.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom</code>, <code>pressio::rom::galerkin</code>.</p><section id="autotoc_md107"><h2><a href="#autotoc_md107">Overview</a></h2><p>At a high level, using a Galerkin problem involces three steps:</p><ol><li><em>create</em>: you create an instance of a &quot;default Galerkin problem&quot;</li><li><em>extract</em>: you extract the underlying stepper object owned by the problem</li><li><em>solve</em>: you use the stepper to solve in time the Galerkin problem</li></ol><p>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&#x27;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</p></section><section id="autotoc_md108"><h2><a href="#autotoc_md108">1. Creating a problem instance</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperTag</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">FomReferenceStateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">ProjectorType</span>
+  <span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_hyperreduced_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSysObj</span><span class="p">,</span>
+                                 <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span> <span class="n">stateIn</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRef</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">ProjectorType</span> <span class="o">&amp;</span> <span class="n">probjector</span><span class="p">);</span></pre><p>where <code>StepperTag</code> is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.</p><section id="autotoc_md109"><h3><a href="#autotoc_md109">Parameters and Requirements</a></h3><ul><li><code>StepperTag</code>:<ul><li>tag type to specify the time scheme</li><li>must be one of the explicit or implicit tag types supported in <code>pressio::ode</code></li></ul></li><li><code>FomSystemType</code>:<ul><li>your adapter class type specifying the FOM problem</li><li>must satisfy one of the APIs suitable for Galerkin, see <a href="./md_pages_components_rom_fom_apis.html">API list</a></li></ul></li><li><code>DecoderType</code>:<ul><li>decoder class type</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>RomStateType</code>:<ul><li>ROM state type</li><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>FomReferenceStateType</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li><li><code>ProjectorType</code>:<ul><li>an operator is responsible for projectng the FOM operators onto the reduced space</li><li>must be a functor with a specific API, see details below</li></ul></li></ul></section><section id="autotoc_md110"><h3><a href="#autotoc_md110">Problem class API</a></h3><p>An instance of the hyper-reduced Galerkin problem meets the same API as the <a href="md_pages_components_rom_galerkin_default.html">default problem</a>.</p><p>A hyper-reduced Galerkin problem has these traits:</p><pre class="m-code"><span class="k">auto</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">create_default_problem</span><span class="p">(...);</span>
+<span class="k">using</span> <span class="n">traits</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">Traits</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="c1">// for the explicit case, one can access the following traits:</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">scalar_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_velocity_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">projector_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span>
+
+<span class="c1">// for the implicit case one has:</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">fom_system_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">scalar_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">decoder_jac_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_state_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_residual_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">galerkin_jacobian_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">projector_type</span><span class="p">;</span>
+<span class="k">typename</span> <span class="nc">traits</span><span class="o">::</span><span class="n">stepper_type</span><span class="p">;</span></pre></section><section id="autotoc_md111"><h3><a href="#autotoc_md111">Projector</a></h3><p><span class="m-text m-danger">todo</span>: explain what projectos is for since it is critical.</p><p>The projector must be a functor as follows:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidProjector</span>
+<span class="p">{</span>
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">operand_type</span><span class="p">,</span> <span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ResultType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">operand_type</span> <span class="o">&amp;</span> <span class="n">operand</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                  <span class="n">ResultType</span> <span class="o">&amp;</span> <span class="n">result</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// apply the projection to the operand, store into result</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre><p>Note that here the <code>operator()</code> is templated on the operand because the projector can be called with different arguments depending on whether you are selected an explicit or implicit Galerkin problem:</p><ul><li>for explicit: the projector <em>always</em> receives as operand argument an instance of your FOM velocity</li><li>for implicit: the operand is an instance of your FOM velocity as well as an instance of the decoder&#x27;s Jacobian.</li></ul><p>You are responsible to handle the various cases. Obviously, you are not required to template the operand. If you are working with specific types, you can simply specialize it. For example, suppose that you are working with an application that uses for the velocity a type named <code>FomVelocityType</code>, and for the decoder&#x27;s Jacobian you are using a type named <code>ADenseMatrixType</code>. In such case, a valid projector can be written as:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidProjector</span>
+<span class="p">{</span>
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ResultType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">FomVelocityType</span> <span class="o">&amp;</span> <span class="n">operand</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                  <span class="n">ResultType</span> <span class="o">&amp;</span> <span class="n">result</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// apply the projection to the operand, store into result</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ResultType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">ADenseMatrixType</span> <span class="o">&amp;</span> <span class="n">operand</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                  <span class="n">ResultType</span> <span class="o">&amp;</span> <span class="n">result</span><span class="p">)</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="c1">// apply the projection to the operand, store into result</span>
+  <span class="p">}</span>
+<span class="p">};</span></pre><p>The compiler will select the best match. Note that the result is NOT templated. In general, you can safely assume that <code>result</code> is indexable as <code>(i,...)</code>.  <span class="m-text m-danger">todo</span> describe this more</p></section></section>
       </div>
     </div>
   </div>

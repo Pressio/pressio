@@ -10,5 +10,5 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
 endif()
 
 add_subdirectory(galerkin_default_correctness)
-add_subdirectory(galerkin_masked_velocity_correctness)
-add_subdirectory(galerkin_hypred_velocity_correctness)
+add_subdirectory(galerkin_masked_correctness)
+add_subdirectory(galerkin_hypred_correctness)

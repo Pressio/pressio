@@ -51,26 +51,33 @@
 
 namespace pressio{ namespace rom{
 
-template<class T, class ScalarType, class FomVelocityType, class enable = void>
+template<class T, class TimeType, class FomVelocityType, class enable = void>
 struct masker_explicit_galerkin : std::false_type{};
 
-template<class T, class ScalarType, class FomVelocityType>
+template<class T, class TimeType, class FomVelocityType>
 struct masker_explicit_galerkin<
-  T, ScalarType, FomVelocityType,
+  T, TimeType, FomVelocityType,
   mpl::enable_if_t<
     // createApplyMaskResult for FomVelocityType
     ::pressio::rom::has_const_create_apply_mask_result_method_accept_operand_return_result<
       T, FomVelocityType, FomVelocityType>::value
     and
-    // applyMask for FomVelocityType
-    ::pressio::rom::has_const_apply_mask_method_accept_operand_time_result_return_void<
-      T, FomVelocityType, ScalarType, FomVelocityType>::value
+    // callable for FomVelocityType
+    std::is_same<
+      decltype(std::declval<T const>()
+	       (
+		std::declval<FomVelocityType const&>(),
+		std::declval<TimeType>(),
+		std::declval<FomVelocityType &>()
+		)
+	       ), void
+      >::value
     >
   > : std::true_type{};
 
 template<
   class T,
-  class ScalarType,
+  class TimeType,
   class Operand1Type,
   class Operand2Type,
   class enable = void
@@ -79,12 +86,12 @@ struct masker_implicit_galerkin : std::false_type{};
 
 template<
   class T,
-  class ScalarType,
+  class TimeType,
   class Operand1Type,
   class Operand2Type
   >
 struct masker_implicit_galerkin<
-  T, ScalarType, Operand1Type, Operand2Type,
+  T, TimeType, Operand1Type, Operand2Type,
   mpl::enable_if_t<
     // createApplyMaskResult for Operand1Type
     ::pressio::rom::has_const_create_apply_mask_result_method_accept_operand_return_result<
@@ -94,13 +101,27 @@ struct masker_implicit_galerkin<
     ::pressio::rom::has_const_create_apply_mask_result_method_accept_operand_return_result<
       T, Operand2Type, Operand2Type>::value
     and
-    // applyMask for Operand1Type
-    ::pressio::rom::has_const_apply_mask_method_accept_operand_time_result_return_void<
-      T,Operand1Type, ScalarType, Operand1Type>::value
+    // callable for operand1
+    std::is_same<
+      decltype(std::declval<T const>()
+	       (
+		std::declval<Operand1Type const&>(),
+		std::declval<TimeType>(),
+		std::declval<Operand1Type &>()
+		)
+	       ), void
+      >::value
     and
-    // applyMask for Operand2Type
-    ::pressio::rom::has_const_apply_mask_method_accept_operand_time_result_return_void<
-    T, Operand1Type, ScalarType, Operand1Type>::value
+    // callable for operand1
+    std::is_same<
+      decltype(std::declval<T const>()
+	       (
+		std::declval<Operand2Type const&>(),
+		std::declval<TimeType>(),
+		std::declval<Operand2Type &>()
+		)
+	       ), void
+      >::value
    >
   > : std::true_type{};
 

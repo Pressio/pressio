@@ -95,29 +95,6 @@ public:
     ProjectionPolicyType::compute(galerkinJacobian, galerkinState, time_np1);
     ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt, OdeTag());
   }
-
-  // template <
-  //   typename stepper_tag,
-  //   typename galerkin_state_t,
-  //   typename stencil_states_t,
-  //   typename fom_system_t,
-  //   typename ScalarType
-  //   >
-  // mpl::enable_if_t<
-  //   ::pressio::rom::constraints::most_likely_discrete_time_system<fom_system_t>::value
-  //   >
-  // compute(const galerkin_state_t & galerkinState,
-  // 	  const stencil_states_t & stencilStates,
-  // 	  const fom_system_t & fomSystemObj,
-  // 	  const ScalarType & time_np1,
-  // 	  const ScalarType & dt,
-  // 	  const ::pressio::ode::step_count_type & currentStepNumber,
-  // 	  GalerkinJacobianType & galerkinJacobian) const
-  // {
-  //   ProjectionPolicyType::compute(galerkinJacobian, galerkinState,
-  // 				 fomSystemObj, time_np1,
-  // 				 dt, currentStepNumber, stencilStates);
-  // }
 };
 
 }}}}

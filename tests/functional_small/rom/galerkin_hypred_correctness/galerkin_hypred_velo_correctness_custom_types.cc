@@ -134,67 +134,62 @@ void product(pressio::transpose,
 
 #include "pressio/rom_galerkin.hpp"
 
-#define MASKED_GALERKIN_COMMON_PART() \
+#define HYPRED_VELO_GALERKIN_COMMON_PART() \
   using scalar_t    = typename fom_t::scalar_type;\
   using fom_state_t = typename fom_t::state_type;\
 \
-  constexpr int nFull = 20;\
-  const std::vector<int> sample_indices = {0,2,4,6,8,10,12,14,16,18};\
-  const int nMasked = sample_indices.size();\
-  /* corrupt indices are those that we mess up on purpose */\
-  const std::vector<int> corrupt_indices = {1,7,13,19};\
-\
-  fom_t fomSystem(nFull, corrupt_indices);\
-  fom_state_t fomReferenceState(nFull);\
+  const int nstencil = 20;\
+  const int nSample  = 10;\
+  fom_t fomSystem(nSample);\
+  fom_state_t fomReferenceState(nstencil);\
   fomReferenceState.fill(0);\
 \
-  /* the decoder must be valid to reconstruct fhe full fom */\
   using phi_t = ::pressiotests::MyCustomMatrix<scalar_t>; \
-  phi_t phiFull(nFull, 3);\
-  for (std::size_t i=0; i<phiFull.extent(0); ++i){ \
-    phiFull(i,0) = 0;\
-    phiFull(i,1) = 1;\
-    phiFull(i,2) = 2;\
+  phi_t phi(nstencil, 3);\
+  for (std::size_t i=0; i<phi.extent(0); ++i){ \
+    phi(i,0) = 0;\
+    phi(i,1) = 1;\
+    phi(i,2) = 2;\
   }\
-  for (std::size_t j=0; j<phiFull.extent(1); ++j){ \
-    phiFull(1, j) = -111.;\
-    phiFull(7, j) = 111.;\
-    phiFull(11, j) = 423.;\
-    phiFull(17, j) = -21.;\
+  for (std::size_t j=0; j<phi.extent(1); ++j){ \
+    phi(0, j) = -111.;\
+    phi(2, j) = -111.;\
+    phi(4, j) = 111.;\
+    phi(6, j) = 423.;\
+    phi(8, j) = -21.;\
+    phi(10, j) = 423.;\
+    phi(12, j) = -21.;\
+    phi(14, j) = 423.;\
+    phi(16, j) = -21.;\
+    phi(18, j) = -21.;\
   } \
-  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phiFull);\
+  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);\
   Eigen::VectorXd romState(3);\
   romState[0]=0.;\
   romState[1]=1.;\
   romState[2]=2.;\
+  \
+  phi_t phiSample(nSample, 3);\
+  for (int i = 0; i < nSample; ++i){\
+    phiSample(i, 0) = 0;\
+    phiSample(i, 1) = 1;\
+    phiSample(i, 2) = 2;\
+  }\
 
-TEST(rom_galerkin, masked_explicit_correctness_custom_types)
+TEST(rom_galerkin, cont_time_hypred_explicit_correctness_custom_types)
 {
-  // refer to eigen test for description
-
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using fom_t	= TrivialFomOnlyVelocityCustomTypes;
-  MASKED_GALERKIN_COMMON_PART();
+  HYPRED_VELO_GALERKIN_COMMON_PART();
 
-  // create masker
-  MaskerExplicitCustomTypes masker(sample_indices);
-
-  // projector must be applicable to the *masked* operand
-  // so we need to use only certain rows of phi
-  phi_t phiSample(nMasked, 3);
-  for (int i = 0; i < nMasked; ++i){
-    phiSample(i, 0) = phiFull(sample_indices[i],0);
-    phiSample(i, 1) = phiFull(sample_indices[i],1);
-    phiSample(i, 2) = phiFull(sample_indices[i],2);
-  }
   ProjectorExplicitCustomTypes<scalar_t> proj(phiSample);
 
   using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_masked_velocity_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj, masker);
+  auto problem = gal::create_hyperreduced_problem<ode_tag>(
+    fomSystem, decoder, romState, fomReferenceState, proj);
 
   const scalar_t dt = 1.; 
   const int num_steps = 2;
@@ -209,35 +204,47 @@ TEST(rom_galerkin, masked_explicit_correctness_custom_types)
   pressio::log::finalize();
 }
 
-TEST(rom_galerkin, masked_implicit_correctness_custom_types)
+TEST(rom_galerkin, cont_time_hypred_implicit_correctness_custom_types)
 {
-  // refer to eigen test for description
-
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using fom_t = TrivialFomVelocityAndJacobianCustomTypes;
-  MASKED_GALERKIN_COMMON_PART();
+  HYPRED_VELO_GALERKIN_COMMON_PART();
 
-  // create masker
-  MaskerImplicitCustomTypes<scalar_t> masker(sample_indices);
-
-  // projector must be applicable to the *masked* operand
-  // so we need to use only certain rows of phi
-  phi_t phiSample(nMasked, 3);
-  for (int i = 0; i < nMasked; ++i){
-    phiSample(i, 0) = phiFull(sample_indices[i],0);
-    phiSample(i, 1) = phiFull(sample_indices[i],1);
-    phiSample(i, 2) = phiFull(sample_indices[i],2);
-  }
   ProjectorImplicitCustomTypes<scalar_t> proj(phiSample);
 
   using ode_tag = pressio::ode::BDF1;
-  auto problem = pressio::rom::galerkin::create_masked_velocity_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj, masker);
+  auto problem = pressio::rom::galerkin::create_hyperreduced_problem<ode_tag>(
+    fomSystem, decoder, romState, fomReferenceState, proj);
   auto & stepperObj = problem.stepper();
 
-  FakeNonLinSolver nonLinSolver;
+  FakeNonLinSolverContTime nonLinSolver;
+  scalar_t dt = 2.;
+  pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
+  std::cout << romState << std::endl;
+  EXPECT_DOUBLE_EQ(romState[0], 4.);
+  EXPECT_DOUBLE_EQ(romState[1], 5.);
+  EXPECT_DOUBLE_EQ(romState[2], 6.);
+
+  pressio::log::finalize();
+}
+
+TEST(rom_galerkin, discrete_time_hypred_implicit_correctness_custom_types)
+{
+  pressio::log::initialize(pressio::logto::terminal);
+  pressio::log::setVerbosity({pressio::log::level::debug});
+
+  using fom_t = TrivialFomDiscreteTimeCustomTypes;
+  HYPRED_VELO_GALERKIN_COMMON_PART();
+
+  ProjectorImplicitCustomTypes<scalar_t> proj(phiSample);
+
+  auto problem = pressio::rom::galerkin::create_hyperreduced_problem<2>(
+    fomSystem, decoder, romState, fomReferenceState, proj);
+  auto & stepperObj = problem.stepper();
+
+  FakeNonLinSolverForDiscreteTime nonLinSolver;
   scalar_t dt = 2.;
   pressio::ode::advance_n_steps(stepperObj, romState, 0.0, dt, 2, nonLinSolver);
   std::cout << romState << std::endl;

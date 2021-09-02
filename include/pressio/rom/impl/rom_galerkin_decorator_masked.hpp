@@ -81,12 +81,12 @@ public:
   {
     MaskableType::compute(galerkinState, time, std::forward<Args>(args)...);
     const auto & unmaskedObject = MaskableType::get();
-    masker_.get().applyMask(unmaskedObject, time, maskedObj_);
+    masker_(unmaskedObject, time, maskedObj_);
   }
 
 private:
   std::reference_wrapper<const MaskerType> masker_;
-  mutable DataType maskedObj_;  
+  mutable DataType maskedObj_;
 };
 
 }}}}

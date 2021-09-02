@@ -2,7 +2,7 @@
 # Overview
 
 Pressio is an open-source computational framework aimed at enabling
-leading-edge projection-based reduced-order models (pROMs) capabilties
+leading-edge reduced-order models (ROMs) capabilties
 for dynamical systems in science and engineering.
 
 <!-- [![Codecove](https://codecov.io/gh/Pressio/pressio/branch/master/graphs/badge.svg?precision=2)](https://codecov.io/gh/Pressio/pressio/branch/master) -->

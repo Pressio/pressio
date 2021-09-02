@@ -174,5 +174,25 @@ struct ImplicitStepperMixin : T
   {}
 };
 
+//---------------------------------------------------
+template <class T, class stepper_t>
+struct ImplicitArbStepperMixin : T
+{
+  stepper_t stepperObj_;
+
+  ImplicitArbStepperMixin() = delete;
+  ImplicitArbStepperMixin(const ImplicitArbStepperMixin &) = default;
+  ImplicitArbStepperMixin & operator=(const ImplicitArbStepperMixin &) = delete;
+  ImplicitArbStepperMixin(ImplicitArbStepperMixin &&) = default;
+  ImplicitArbStepperMixin & operator=(ImplicitArbStepperMixin &&) = delete;
+  ~ImplicitArbStepperMixin() = default;
+
+  template<class T1, class...Args>
+  ImplicitArbStepperMixin(const T1 & romStateIn, Args && ...args)
+    : T(romStateIn, std::forward<Args>(args)...),
+      stepperObj_(romStateIn, T::romCRef())
+  {}
+};
+
 }}}
 #endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_

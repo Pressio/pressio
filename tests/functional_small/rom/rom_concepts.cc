@@ -63,7 +63,63 @@ public:
   void applyJacobian(const state_type &,const MyArbFomMatrix &,const scalar_type &, MyArbFomMatrix &) const;
 };
 
-struct ValidFomSystemDiscreteTime{
+struct ValidFomSystemDiscreteTimeTwoStates{
+  using scalar_type                 = double;
+  using state_type                  = MyArbFomVector;
+  using discrete_time_residual_type = state_type;
+
+public:
+  discrete_time_residual_type createDiscreteTimeResidual() const;
+  MyArbFomMatrix createApplyDiscreteTimeJacobianResult(const MyArbFomMatrix & B) const;
+
+  template <typename step_t>
+  void discreteTimeResidual(const step_t & step,
+            const scalar_type & time,
+            const scalar_type & dt,
+            discrete_time_residual_type & R,
+            const state_type &,
+            const state_type &) const;
+
+  template <typename step_t>
+  void applyDiscreteTimeJacobian(const step_t & step,
+           const scalar_type & time,
+           const scalar_type & dt,
+           const MyArbFomMatrix & B,
+           MyArbFomMatrix & A,
+           const state_type &,
+           const state_type &) const;
+};
+
+struct ValidFomSystemDiscreteTimeThreeStates{
+  using scalar_type                 = double;
+  using state_type                  = MyArbFomVector;
+  using discrete_time_residual_type = state_type;
+
+public:
+  discrete_time_residual_type createDiscreteTimeResidual() const;
+  MyArbFomMatrix createApplyDiscreteTimeJacobianResult(const MyArbFomMatrix & B) const;
+
+  template <typename step_t>
+  void discreteTimeResidual(const step_t & step,
+            const scalar_type & time,
+            const scalar_type & dt,
+            discrete_time_residual_type & R,
+            const state_type &,
+            const state_type &,
+            const state_type &) const;
+
+  template <typename step_t, typename ... Args>
+  void applyDiscreteTimeJacobian(const step_t & step,
+           const scalar_type & time,
+           const scalar_type & dt,
+           const MyArbFomMatrix & B,
+           MyArbFomMatrix & A,
+           const state_type &,
+           const state_type &,
+           const state_type &) const;
+};
+
+struct ValidFomSystemDiscreteTimeFourStates{
   using scalar_type                 = double;
   using state_type                  = MyArbFomVector;
   using discrete_time_residual_type = state_type;
@@ -77,7 +133,10 @@ public:
             const scalar_type & time,
             const scalar_type & dt,
             discrete_time_residual_type & R,
-            Args && ... states) const;
+            const state_type &,
+            const state_type &,
+            const state_type &,
+            const state_type &) const;
 
   template <typename step_t, typename ... Args>
   void applyDiscreteTimeJacobian(const step_t & step,
@@ -85,7 +144,10 @@ public:
            const scalar_type & dt,
            const MyArbFomMatrix & B,
            MyArbFomMatrix & A,
-           Args && ... states) const;
+           const state_type &,
+           const state_type &,
+           const state_type &,
+           const state_type &) const;
 };
 
 }//end namespace anonim
@@ -134,7 +196,9 @@ TEST(rom, concepts_fom_system_steady)
     static_assert( !prom::continuous_time_fom_system<
       fom_t, MyArbFomMatrix>::value, "");
     static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
-      fom_t, MyArbFomMatrix>::value, "");
+      fom_t, 1, MyArbFomMatrix>::value, "");
+    static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 2, MyArbFomMatrix>::value, "");
   }
 
   ///////////////////////////////////
@@ -162,7 +226,9 @@ TEST(rom, concepts_fom_system_steady)
     static_assert( !prom::most_likely_discrete_time_fom_system<
       fom_t>::value, "");
     static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
-      fom_t, MyArbFomMatrix>::value, "");
+      fom_t, 1, MyArbFomMatrix>::value, "");
+    static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 2, MyArbFomMatrix>::value, "");
   }
 
   ////////////////////////////////////////////////
@@ -190,19 +256,78 @@ TEST(rom, concepts_fom_system_steady)
     static_assert( !prom::most_likely_discrete_time_fom_system<
       fom_t>::value, "");
     static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
-      fom_t, MyArbFomMatrix>::value, "");
+      fom_t, 1, MyArbFomMatrix>::value, "");
+    static_assert( !prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 2, MyArbFomMatrix>::value, "");
   }
 
   ////////////////////////////////////////////////
-  // a FOM class with discrete api should
+  // a FOM class with discrete api 2 states should
   {
-    using fom_t = ValidFomSystemDiscreteTime;
+    using fom_t = ValidFomSystemDiscreteTimeTwoStates;
 
     // - satisfy these
     static_assert(prom::most_likely_discrete_time_fom_system<
       fom_t>::value, "");
     static_assert(prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 2, MyArbFomMatrix>::value, "");
+
+    // fail all these
+    static_assert( !prom::most_likely_continuous_time_fom_system<
+      fom_t>::value, "");
+    static_assert( !prom::continuous_time_fom_system_with_at_least_velocity<
+      fom_t>::value, "");
+    static_assert( !prom::continuous_time_fom_system_with_user_provided_apply_jacobian<
       fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::continuous_time_fom_system<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::continuous_time_fom_system_without_user_provided_apply_jacobian<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::steady_fom_system_with_user_provided_apply_jacobian<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::most_likely_steady_fom_system<
+      fom_t>::value, "");
+  }
+
+
+  ////////////////////////////////////////////////
+  // a FOM class with discrete api 3 states should
+  {
+    using fom_t = ValidFomSystemDiscreteTimeThreeStates;
+
+    // - satisfy these
+    static_assert(prom::most_likely_discrete_time_fom_system<
+      fom_t>::value, "");
+    static_assert(prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 3, MyArbFomMatrix>::value, "");
+
+    // fail all these
+    static_assert( !prom::most_likely_continuous_time_fom_system<
+      fom_t>::value, "");
+    static_assert( !prom::continuous_time_fom_system_with_at_least_velocity<
+      fom_t>::value, "");
+    static_assert( !prom::continuous_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::continuous_time_fom_system<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::continuous_time_fom_system_without_user_provided_apply_jacobian<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::steady_fom_system_with_user_provided_apply_jacobian<
+      fom_t, MyArbFomMatrix>::value, "");
+    static_assert( !prom::most_likely_steady_fom_system<
+      fom_t>::value, "");
+  }
+
+  ////////////////////////////////////////////////
+  // a FOM class with discrete api 4 states should
+  {
+    using fom_t = ValidFomSystemDiscreteTimeFourStates;
+
+    // - satisfy these
+    static_assert(prom::most_likely_discrete_time_fom_system<
+      fom_t>::value, "");
+    static_assert(prom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+      fom_t, 4, MyArbFomMatrix>::value, "");
 
     // fail all these
     static_assert( !prom::most_likely_continuous_time_fom_system<

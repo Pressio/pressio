@@ -17,6 +17,14 @@
 #include <Tpetra_Import_decl.hpp>
 #endif
 
+// ==============================================
+// ==============================================
+//
+//  FOM CLASSES
+//
+// ==============================================
+// ==============================================
+
 struct TrivialFomOnlyVelocityCustomTypes
 {
   using scalar_type       = double;
@@ -133,8 +141,7 @@ struct TrivialFomVelocityAndJacobianEigen
   template<class OperandType>
   OperandType createApplyJacobianResult(const OperandType & B) const
   {
-    OperandType A(B.rows(), B.cols());
-    return A;
+    return OperandType(B.rows(), B.cols());
   }
 
   // computes: A = Jac B
@@ -160,6 +167,72 @@ struct TrivialFomVelocityAndJacobianEigen
     // corrupt some to ensure masking works
     for (auto & it : indices_to_corrupt_){
      f(it) = -1114;
+    }
+  }
+};
+
+struct TrivialFomDiscreteTimeEigen
+{
+  using scalar_type = double;
+  using state_type = Eigen::VectorXd;
+  using discrete_time_residual_type = state_type;
+  using phi_type = Eigen::MatrixXd;
+  int N_ = {};
+  const std::vector<int> indices_to_corrupt_ = {};
+
+  TrivialFomDiscreteTimeEigen(int N, std::vector<int> ind)
+    : N_(N), indices_to_corrupt_(ind){}
+
+  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+    return discrete_time_residual_type(N_);
+  }
+
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+    return phi_type(N_, B.cols());
+  }
+
+  template<class StepCountType>
+  void discreteTimeResidual(StepCountType, 
+                              double time, 
+                              double dt, 
+                              discrete_time_residual_type & R, 
+                              const state_type & y_np1,
+                              const state_type & y_n) const
+  {
+    EXPECT_TRUE(y_np1.size()==y_n.size());
+    EXPECT_TRUE(y_np1.size()==R.size());
+    EXPECT_TRUE(R.size()==N_);
+
+    for (int i=0; i<N_; ++i)
+    {
+     auto f = y_np1(i) + time;
+     R(i) = y_np1(i) -y_n(i) - dt*f;
+    }
+
+    // corrupt some to ensure masking works
+    for (auto & it : indices_to_corrupt_){
+     R(it) = -1114;
+    }
+  }
+
+  template<class StepCountType>
+  void applyDiscreteTimeJacobian(StepCountType, 
+                              double time, 
+                              double dt, 
+                              const phi_type & B, 
+                              phi_type & A,
+                              const state_type & y_np1,
+                              const state_type & y_n) const
+  {
+    EXPECT_TRUE(y_np1.size()==N_);
+    EXPECT_TRUE(y_n.size()==N_);
+    EXPECT_TRUE(A.rows()==N_);
+
+    A = B;
+    A.array() += time;
+    // corrupt some to ensure masking works
+    for (auto & it : indices_to_corrupt_){
+     A.row(it).setConstant(-1114);
     }
   }
 };
@@ -218,7 +291,134 @@ struct TrivialFomOnlyVelocityTpetra
     }
   }
 };
+#endif
 
+
+
+// ==============================================
+// ==============================================
+//
+//  MASKERS 
+//
+// ==============================================
+// ==============================================
+
+// for explicit, masker acts on FOM velicity
+struct MaskerExplicitEigen
+{
+  const std::vector<int> sample_indices_ = {};
+  using operand_type = typename TrivialFomOnlyVelocityEigen::velocity_type;
+
+  MaskerExplicitEigen(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  operand_type createApplyMaskResult(const operand_type & operand) const{
+    return operand_type(sample_indices_.size());
+  }
+
+  template<class TimeType>
+  void operator()(const operand_type & operand, TimeType time, operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      result(i) = operand(sample_indices_[i]);
+    }
+  }
+};
+
+// for implicit, masker acts on FOM velicity and FOM apply jac result
+struct MaskerImplicitEigen
+{
+  const std::vector<int> sample_indices_ = {};
+  using vec_operand_type = Eigen::VectorXd;
+  using mat_operand_type = Eigen::MatrixXd;
+
+  MaskerImplicitEigen(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
+    return vec_operand_type(sample_indices_.size());
+  }
+
+  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
+    return mat_operand_type(sample_indices_.size(), operand.cols());
+  }
+
+  template<class TimeType>
+  void operator()(const vec_operand_type & operand, TimeType time, vec_operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      result(i) = operand(sample_indices_[i]);
+    }
+  }
+
+  template<class TimeType>
+  void operator()(const mat_operand_type & operand, TimeType time, mat_operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      for (int j=0; j<operand.cols(); ++j){
+        result(i,j) = operand(sample_indices_[i],j);
+      }
+    }
+  }
+};
+
+// for explicit, masker acts on FOM velicity
+struct MaskerExplicitCustomTypes
+{
+  const std::vector<int> sample_indices_ = {};
+  using operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
+
+  MaskerExplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  operand_type createApplyMaskResult(const operand_type & operand) const{
+    return operand_type(sample_indices_.size());
+  }
+
+  template<class TimeType>
+  void operator()(const operand_type & operand, TimeType time, operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      result(i) = operand(sample_indices_[i]);
+    }
+  }
+};
+
+// for implicit, masker acts on FOM velicity and FOM apply jac result
+template<class ScalarType>
+struct MaskerImplicitCustomTypes
+{
+  const std::vector<int> sample_indices_ = {};
+  using vec_operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
+  using mat_operand_type = ::pressiotests::MyCustomMatrix<ScalarType>;
+
+  MaskerImplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
+
+  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
+    return vec_operand_type(sample_indices_.size());
+  }
+
+  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
+    return mat_operand_type(sample_indices_.size(), operand.extent(1));
+  }
+
+  template<class TimeType>
+  void operator()(const vec_operand_type & operand, TimeType time, vec_operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      result(i) = operand(sample_indices_[i]);
+    }
+  }
+
+  template<class TimeType>
+  void operator()(const mat_operand_type & operand, TimeType time, mat_operand_type & result) const
+  {
+    for (std::size_t i=0; i<sample_indices_.size(); ++i){
+      for (std::size_t j=0; j<operand.extent(1); ++j){
+        result(i,j) = operand(sample_indices_[i],j);
+      }
+    }
+  }
+};
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
 // for explicit, masker acts on FOM velicity
 struct MaskerExplicitTpetra
 {
@@ -258,51 +458,25 @@ struct MaskerExplicitTpetra
   }
 
   template<class TimeType>
-  void applyMask(const operand_type & operand, TimeType time, operand_type & result) const
+  void operator()(const operand_type & operand, TimeType time, operand_type & result) const
   {
     using importer_t = Tpetra::Import<LO, GO>;
     importer_t importer(operand.getMap(), maskedMap_);
     result.doImport(operand, importer, Tpetra::CombineMode::REPLACE);
   }
 };
-
-// for explicit, projector acts on FOM velicity
-struct ProjectorExplicitTpetra
-{
-  using operator_type = Tpetra::MultiVector<>; 
-  operator_type matrix_;
-
-  ProjectorExplicitTpetra(const operator_type & phi) : matrix_(phi){}
-
-  template<class operand_type, class ResultType>
-  void apply(const operand_type & operand, ResultType & result) const
-  {
-    pressio::ops::product(pressio::transpose{}, 1, matrix_, operand, 0, result);
-  }
-};
 #endif
 
 
-// for explicit, masker acts on FOM velicity
-struct MaskerExplicitEigen
-{
-  const std::vector<int> sample_indices_ = {};
-  using operand_type = typename TrivialFomOnlyVelocityEigen::velocity_type;
 
-  MaskerExplicitEigen(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
-  operand_type createApplyMaskResult(const operand_type & operand) const{
-    return operand_type(sample_indices_.size());
-  }
-
-  template<class TimeType>
-  void applyMask(const operand_type & operand, TimeType time, operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
-  }
-};
+// ==============================================
+// ==============================================
+//
+//  PROJECTORS
+//
+// ==============================================
+// ==============================================
 
 // for explicit, projector acts on FOM velicity
 struct ProjectorExplicitEigen
@@ -312,108 +486,14 @@ struct ProjectorExplicitEigen
 
   ProjectorExplicitEigen(const operator_type & phi) : matrix_(phi){}
 
-  template<class operand_type, class ResultType>
-  void apply(const operand_type & operand, ResultType & result) const
+  template<class operand_type, class ScalarType,  class ResultType>
+  void operator()(const operand_type & operand, const ScalarType time, ResultType & result) const
   {
     result = matrix_.transpose() * operand;
   }
 };
 
 using ProjectorImplicitEigen = ProjectorExplicitEigen;
-
-// for implicit, masker acts on FOM velicity and FOM apply jac result
-struct MaskerImplicitEigen
-{
-  const std::vector<int> sample_indices_ = {};
-  using vec_operand_type = typename TrivialFomOnlyVelocityEigen::velocity_type;
-  using mat_operand_type = Eigen::MatrixXd;
-
-  MaskerImplicitEigen(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
-    return vec_operand_type(sample_indices_.size());
-  }
-
-  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
-    return mat_operand_type(sample_indices_.size(), operand.cols());
-  }
-
-  template<class TimeType>
-  void applyMask(const vec_operand_type & operand, TimeType time, vec_operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
-  }
-
-  template<class TimeType>
-  void applyMask(const mat_operand_type & operand, TimeType time, mat_operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      for (int j=0; j<operand.cols(); ++j){
-        result(i,j) = operand(sample_indices_[i],j);
-      }
-    }
-  }
-};
-
-// for explicit, masker acts on FOM velicity
-struct MaskerExplicitCustomTypes
-{
-  const std::vector<int> sample_indices_ = {};
-  using operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
-
-  MaskerExplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-  operand_type createApplyMaskResult(const operand_type & operand) const{
-    return operand_type(sample_indices_.size());
-  }
-
-  template<class TimeType>
-  void applyMask(const operand_type & operand, TimeType time, operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
-  }
-};
-
-// for implicit, masker acts on FOM velicity and FOM apply jac result
-template<class ScalarType>
-struct MaskerImplicitCustomTypes
-{
-  const std::vector<int> sample_indices_ = {};
-  using vec_operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
-  using mat_operand_type = ::pressiotests::MyCustomMatrix<ScalarType>;
-
-  MaskerImplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
-
-  vec_operand_type createApplyMaskResult(const vec_operand_type & operand) const{
-    return vec_operand_type(sample_indices_.size());
-  }
-
-  mat_operand_type createApplyMaskResult(const mat_operand_type & operand) const{
-    return mat_operand_type(sample_indices_.size(), operand.extent(1));
-  }
-
-  template<class TimeType>
-  void applyMask(const vec_operand_type & operand, TimeType time, vec_operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      result(i) = operand(sample_indices_[i]);
-    }
-  }
-
-  template<class TimeType>
-  void applyMask(const mat_operand_type & operand, TimeType time, mat_operand_type & result) const
-  {
-    for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      for (std::size_t j=0; j<operand.extent(1); ++j){
-        result(i,j) = operand(sample_indices_[i],j);
-      }
-    }
-  }
-};
 
 // for explicit, projector acts on FOM velicity
 template<class ScalarType>
@@ -426,7 +506,7 @@ struct ProjectorExplicitCustomTypes
 
   // result is the projected RHS, so it is a rom type
   template<class operand_type>
-  void apply(const operand_type & operand, Eigen::VectorXd & result) const
+  void operator()(const operand_type & operand, ScalarType time, Eigen::VectorXd & result) const
   {
     // obviously not efficient, just for demonstration
     for (std::size_t k=0; k<matrix_.extent(1); ++k)
@@ -448,7 +528,8 @@ struct ProjectorImplicitCustomTypes
 
   ProjectorImplicitCustomTypes(const operator_type & phi) : matrix_(phi){}
 
-  void apply(const ::pressiotests::MyCustomVector<ScalarType> & operand, 
+  void operator()(const ::pressiotests::MyCustomVector<ScalarType> & operand, 
+             ScalarType time,
              Eigen::VectorXd & result) const
   {
     // obviously not efficient, just for demonstration
@@ -461,7 +542,8 @@ struct ProjectorImplicitCustomTypes
     }
   }
 
-  void apply(const ::pressiotests::MyCustomMatrix<ScalarType> & operand, 
+  void operator()(const ::pressiotests::MyCustomMatrix<ScalarType> & operand, 
+             ScalarType time,
              Eigen::MatrixXd & result) const
   {
     for (std::size_t i=0; i<matrix_.extent(1); ++i){
@@ -475,6 +557,33 @@ struct ProjectorImplicitCustomTypes
     }
   }
 };
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// for explicit, projector acts on FOM velicity
+struct ProjectorExplicitTpetra
+{
+  using operator_type = Tpetra::MultiVector<>; 
+  operator_type matrix_;
+
+  ProjectorExplicitTpetra(const operator_type & phi) : matrix_(phi){}
+
+  template<class operand_type, class ScalarType, class ResultType>
+  void operator()(const operand_type & operand, const ScalarType time, ResultType & result) const
+  {
+    pressio::ops::product(pressio::transpose{}, 1, matrix_, operand, 0, result);
+  }
+};
+#endif
+
+
+
+// ==============================================
+// ==============================================
+//
+//  REST
+//
+// ==============================================
+// ==============================================
 
 struct ObserverA
 {
@@ -501,7 +610,7 @@ struct ObserverA
 };
 
 
-struct FakeNonLinSolver
+struct FakeNonLinSolverContTime
 {
   int call_count_ = 0;
 
@@ -604,6 +713,115 @@ struct FakeNonLinSolver
       EXPECT_DOUBLE_EQ(J(2,0), -160.);
       EXPECT_DOUBLE_EQ(J(2,1), -200.);
       EXPECT_DOUBLE_EQ(J(2,2), -239.);
+
+      for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
+    }
+  }
+};
+
+struct FakeNonLinSolverForDiscreteTime
+{
+  int call_count_ = 0;
+
+  template<class SystemType, class StateType>
+  void solve(const SystemType & system, StateType & state)
+  {
+    ++call_count_;
+    auto R = system.createResidual();
+    auto J = system.createJacobian();
+
+    //
+    // call_count == 1
+    //
+    if(call_count_==1)
+    {
+      // do solver iterator 1
+      system.residual(state, R);
+      system.jacobian(state, J);
+      // std::cout << "S " << call_count_ << " \n" << R << std::endl;
+      // std::cout << "S " << call_count_ << " \n" << J << std::endl;
+      EXPECT_DOUBLE_EQ(R[0], 0.);
+      EXPECT_DOUBLE_EQ(R[1], -140.);
+      EXPECT_DOUBLE_EQ(R[2], -280.);
+
+      EXPECT_DOUBLE_EQ(J(0,0),  0.);
+      EXPECT_DOUBLE_EQ(J(0,1),  0.);
+      EXPECT_DOUBLE_EQ(J(0,2),  0.);
+      EXPECT_DOUBLE_EQ(J(1,0), 20.);
+      EXPECT_DOUBLE_EQ(J(1,1), 30.);
+      EXPECT_DOUBLE_EQ(J(1,2), 40.);
+      EXPECT_DOUBLE_EQ(J(2,0), 40.);
+      EXPECT_DOUBLE_EQ(J(2,1), 60.);
+      EXPECT_DOUBLE_EQ(J(2,2), 80.);
+
+      for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
+
+      // do solver iterator 2
+      system.residual(state, R);
+      system.jacobian(state, J);
+      // std::cout << "S " << call_count_ << " \n" << R << std::endl;
+      // std::cout << "S " << call_count_ << " \n" << J << std::endl;
+      EXPECT_DOUBLE_EQ(R[0], 0.);
+      EXPECT_DOUBLE_EQ(R[1], -170.);
+      EXPECT_DOUBLE_EQ(R[2], -340.);
+
+      EXPECT_DOUBLE_EQ(J(0,0),  0.);
+      EXPECT_DOUBLE_EQ(J(0,1),  0.);
+      EXPECT_DOUBLE_EQ(J(0,2),  0.);
+      EXPECT_DOUBLE_EQ(J(1,0), 20.);
+      EXPECT_DOUBLE_EQ(J(1,1), 30.);
+      EXPECT_DOUBLE_EQ(J(1,2), 40.);
+      EXPECT_DOUBLE_EQ(J(2,0), 40.);
+      EXPECT_DOUBLE_EQ(J(2,1), 60.);
+      EXPECT_DOUBLE_EQ(J(2,2), 80.);
+
+      for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
+    }
+
+    //
+    // call_count == 2
+    //
+    if(call_count_==2)
+    {
+      // do solver iterator 1
+      system.residual(state, R);
+      system.jacobian(state, J);
+      // std::cout << "S " << call_count_ << " \n" << R << std::endl;
+      // std::cout << "S " << call_count_ << " \n" << J << std::endl;
+      EXPECT_DOUBLE_EQ(R[0],    0.);
+      EXPECT_DOUBLE_EQ(R[1], -300.);
+      EXPECT_DOUBLE_EQ(R[2], -600.);
+
+      EXPECT_DOUBLE_EQ(J(0,0),  0.);
+      EXPECT_DOUBLE_EQ(J(0,1),  0.);
+      EXPECT_DOUBLE_EQ(J(0,2),  0.);
+      EXPECT_DOUBLE_EQ(J(1,0), 40.);
+      EXPECT_DOUBLE_EQ(J(1,1), 50.);
+      EXPECT_DOUBLE_EQ(J(1,2), 60.);
+      EXPECT_DOUBLE_EQ(J(2,0), 80.);
+      EXPECT_DOUBLE_EQ(J(2,1), 100.);
+      EXPECT_DOUBLE_EQ(J(2,2), 120.);
+
+      for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
+
+      // do solver iterator 2
+      system.residual(state, R);
+      system.jacobian(state, J);
+      // std::cout << "S " << call_count_ << " \n" << R << std::endl;
+      // std::cout << "S " << call_count_ << " \n" << J << std::endl;
+      EXPECT_DOUBLE_EQ(R[0],    0.);
+      EXPECT_DOUBLE_EQ(R[1], -330.);
+      EXPECT_DOUBLE_EQ(R[2], -660.);
+
+      EXPECT_DOUBLE_EQ(J(0,0),  0.);
+      EXPECT_DOUBLE_EQ(J(0,1),  0.);
+      EXPECT_DOUBLE_EQ(J(0,2),  0.);
+      EXPECT_DOUBLE_EQ(J(1,0), 40.);
+      EXPECT_DOUBLE_EQ(J(1,1), 50.);
+      EXPECT_DOUBLE_EQ(J(1,2), 60.);
+      EXPECT_DOUBLE_EQ(J(2,0), 80.);
+      EXPECT_DOUBLE_EQ(J(2,1), 100.);
+      EXPECT_DOUBLE_EQ(J(2,2), 120.);
 
       for (int i=0; i<state.size(); ++i){ state(i) += 1.; }
     }

@@ -71,8 +71,6 @@
 
 #include "./rom/rom_reconstructor_fom_state.hpp"
 #include "./rom/rom_manager_fom_states.hpp"
-
-#include "./rom/impl/rom_galerkin_projector_arbitrary.hpp"
 #include "./rom/impl/rom_galerkin_projector_default_ortho_decoder_jacobian.hpp"
 
 #include "./rom/rom_public_api_galerkin.hpp"

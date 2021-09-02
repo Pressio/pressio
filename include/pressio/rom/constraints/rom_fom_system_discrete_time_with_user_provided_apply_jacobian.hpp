@@ -49,14 +49,14 @@
 #ifndef ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 #define ROM_CONSTRAINTS_SYSTEM_ROM_DISCRETE_TIME_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ 
+namespace pressio{ namespace rom{
 
-template<typename T, typename ApplyJacOperand_t, typename enable = void>
+template<typename T, int num_states, typename ApplyJacOperand_t, typename enable = void>
 struct discrete_time_fom_system_with_user_provided_apply_jacobian : std::false_type{};
 
-template<typename T, typename ApplyJacOperandType>
+template<typename T, int num_states, typename ApplyJacOperandType>
 struct discrete_time_fom_system_with_user_provided_apply_jacobian<
-  T, ApplyJacOperandType,
+  T, num_states, ApplyJacOperandType,
   mpl::enable_if_t<
     ::pressio::has_scalar_typedef<T>::value and
     ::pressio::has_state_typedef<T>::value and
@@ -66,25 +66,17 @@ struct discrete_time_fom_system_with_user_provided_apply_jacobian<
       T, typename T::discrete_time_residual_type
       >::value and
     ::pressio::ode::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-      T, 2,
+      T, num_states,
       ::pressio::ode::step_count_type,
       typename T::scalar_type, typename T::state_type, typename T::discrete_time_residual_type
-      >::value and
-    ::pressio::ode::has_const_discrete_time_residual_method_accept_step_time_dt_result_n_states_return_void<
-      T, 3, ::pressio::ode::step_count_type, typename T::scalar_type,
-      typename T::state_type, typename T::discrete_time_residual_type
       >::value and
     //
     ::pressio::rom::has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result<
       T, ApplyJacOperandType>::value and
     ::pressio::rom::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-      T, 2, ::pressio::ode::step_count_type, typename T::scalar_type,
+      T, num_states, ::pressio::ode::step_count_type, typename T::scalar_type,
       typename T::state_type, ApplyJacOperandType, ApplyJacOperandType
-     >::value and
-    ::pressio::rom::has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void<
-      T, 3, ::pressio::ode::step_count_type, typename T::scalar_type, 
-      typename T::state_type, ApplyJacOperandType, ApplyJacOperandType
-    >::value
+     >::value
   >
   > : std::true_type{};
 

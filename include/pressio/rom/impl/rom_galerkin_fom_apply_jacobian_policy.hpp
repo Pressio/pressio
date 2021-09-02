@@ -46,12 +46,18 @@
 //@HEADER
 */
 
-#ifndef ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
-#define ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_POLICIES_ROM_GALERKIN_FOM_APPLY_JACOBIAN_POLICY_HPP_
+#ifndef ROM_GALERKIN_IMPL_FOM_APPLY_JACOBIAN_POLICY_HPP_
+#define ROM_GALERKIN_IMPL_FOM_APPLY_JACOBIAN_POLICY_HPP_
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
-template <class FomStatesManagerType, class fom_apply_jac_type, class DecoderType, class FomSystemType>
+template <
+  bool is_continuous_time,
+  class FomStatesManagerType,
+  class fom_apply_jac_type,
+  class DecoderType,
+  class FomSystemType
+  >
 class DefaultFomApplyJacobianEvaluator
 {
 
@@ -63,6 +69,10 @@ public:
   DefaultFomApplyJacobianEvaluator & operator=(DefaultFomApplyJacobianEvaluator &&) = delete;
   ~DefaultFomApplyJacobianEvaluator() = default;
 
+  template<
+    bool _is_cont_time = is_continuous_time,
+    mpl::enable_if_t<_is_cont_time, int> = 0
+    >
   DefaultFomApplyJacobianEvaluator(const FomSystemType & fomSystem,
 				   FomStatesManagerType & fomStatesMngr,
 				   const DecoderType & decoder)
@@ -74,10 +84,28 @@ public:
     ::pressio::ops::set_zero(fomApplyJac_);
   }
 
+  template<
+    bool _is_cont_time = is_continuous_time,
+    mpl::enable_if_t<!_is_cont_time, int> = 0
+    >
+  DefaultFomApplyJacobianEvaluator(const FomSystemType & fomSystem,
+				   FomStatesManagerType & fomStatesMngr,
+				   const DecoderType & decoder)
+    : fomStatesMngr_(fomStatesMngr),
+      fomSystem_(fomSystem),
+      phi_(decoder.jacobianCRef()),
+      fomApplyJac_(fomSystem.createApplyDiscreteTimeJacobianResult(phi_.get()))
+  {
+    ::pressio::ops::set_zero(fomApplyJac_);
+  }
+
 public:
-  template<class galerkin_state_t, typename scalar_t>
-  void compute(const galerkin_state_t & galerkinState,
-	       const scalar_t & evaluationTime) const
+  const fom_apply_jac_type & get() const{ return fomApplyJac_; }
+
+  template<class GalerkinStateType, class ScalarType, bool _is_cont_time = is_continuous_time>
+  mpl::enable_if_t<_is_cont_time>
+  compute(const GalerkinStateType & galerkinState,
+	  const ScalarType & evaluationTime) const
   {
     /* here we assume that current FOM state has been reconstructd
        by the residual policy. So we do not recompute the FOM state.
@@ -89,7 +117,66 @@ public:
     fomSystem_.get().applyJacobian(fomState, phi_.get(), evaluationTime, fomApplyJac_);
   }
 
-  const fom_apply_jac_type & get() const{ return fomApplyJac_; }
+
+  template<class galerkin_state_t,  class scalar_t, bool _is_cont_time = is_continuous_time>
+  mpl::enable_if_t< !_is_cont_time >
+  compute(const galerkin_state_t & galerkin_state_np1,
+	  const scalar_t & timeAtNextStep,
+	  const scalar_t & dt,
+	  const int32_t & currentStepNumber) const
+  {
+    // we don't use gal_states because we assume the residual policy
+    // already used them to reconstuct the FOM states
+    // (to fix that at some point)
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    fomSystem_.get().applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
+					   dt, phi_.get(),
+					   fomApplyJac_,
+					   ynp1);
+  }
+
+  template<class galerkin_state_t,  class scalar_t, bool _is_cont_time = is_continuous_time>
+  mpl::enable_if_t< !_is_cont_time >
+  compute(const galerkin_state_t & galerkin_state_np1,
+	  const scalar_t & timeAtNextStep,
+	  const scalar_t & dt,
+	  const int32_t & currentStepNumber,
+	  const galerkin_state_t & galerkin_state_n) const
+  {
+    // we don't use gal_states because we assume the residual policy
+    // already used them to reconstuct the FOM states
+    // (to fix that at some point)
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    fomSystem_.get().applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
+					   dt, phi_.get(),
+					   fomApplyJac_,
+					   ynp1, yn);
+  }
+
+  template<class galerkin_state_t,  class scalar_t, bool _is_cont_time = is_continuous_time>
+  mpl::enable_if_t< !_is_cont_time >
+  compute(const galerkin_state_t & galerkin_state_np1,
+	  const scalar_t & timeAtNextStep,
+	  const scalar_t & dt,
+	  const int32_t & currentStepNumber,
+	  const galerkin_state_t & galerkin_state_n,
+	  const galerkin_state_t & galerkin_state_nm1) const
+  {
+    // we don't use gal_states because we assume the residual policy
+    // already used them to reconstuct the FOM states
+    // (to fix that at some point)
+
+    const auto & ynp1 = fomStatesMngr_(::pressio::ode::nPlusOne());
+    const auto & yn   = fomStatesMngr_(::pressio::ode::n());
+    const auto & ynm1 = fomStatesMngr_(::pressio::ode::nMinusOne());
+    fomSystem_.get().applyDiscreteTimeJacobian(currentStepNumber, timeAtNextStep,
+					   dt, phi_.get(),
+					   fomApplyJac_,
+					   ynp1, yn);
+  }
 
 private:
   std::reference_wrapper<FomStatesManagerType> fomStatesMngr_;

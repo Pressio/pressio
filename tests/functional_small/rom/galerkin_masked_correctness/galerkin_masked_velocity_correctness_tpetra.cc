@@ -40,7 +40,7 @@
   romState[2]=2.;\
 
 
-TEST(rom_galerkin_test, masked_explicit_correctness_tpetra)
+TEST(rom_galerkin_test, const_time_masked_explicit_correctness_tpetra)
 {
   pressio::log::initialize(pressio::logto::terminal);
   pressio::log::setVerbosity({pressio::log::level::debug});
@@ -58,7 +58,7 @@ TEST(rom_galerkin_test, masked_explicit_correctness_tpetra)
   ProjectorExplicitTpetra proj(phiSample);
 
   using ode_tag = pressio::ode::ForwardEuler;
-  auto problem = pressio::rom::galerkin::create_masked_velocity_problem<ode_tag>(
+  auto problem = pressio::rom::galerkin::create_masked_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 

@@ -109,6 +109,81 @@ struct MaskerMixin : T
 };
 
 template <class T, class rom_sys_t>
+struct DefaultDiscreteTimeSystemMixin : T
+{
+  const rom_sys_t romSys_;
+
+  DefaultDiscreteTimeSystemMixin() = delete;
+  DefaultDiscreteTimeSystemMixin(const DefaultDiscreteTimeSystemMixin &) = default;
+  DefaultDiscreteTimeSystemMixin & operator=(const DefaultDiscreteTimeSystemMixin &) = delete;
+  DefaultDiscreteTimeSystemMixin(DefaultDiscreteTimeSystemMixin &&) = default;
+  DefaultDiscreteTimeSystemMixin & operator=(DefaultDiscreteTimeSystemMixin &&) = delete;
+  ~DefaultDiscreteTimeSystemMixin() = default;
+
+  template<class T1, class T2, class T3, class T4>
+  DefaultDiscreteTimeSystemMixin(const T1 & romStateIn,
+				 const T2 & fomObj,
+				 const T3 & decoder,
+				 const T4 & fomNominalState)
+    : T(romStateIn, fomObj, decoder, fomNominalState),
+      romSys_(romStateIn, T::projector_, T::fomCRef(), decoder, T::fomStatesMngr_)
+  {}
+
+  const rom_sys_t & romCRef() const{ return romSys_; }
+};
+
+template <class T, class rom_sys_t>
+struct HypRedDiscreteTimeSystemMixin : T
+{
+  const rom_sys_t romSys_;
+
+  HypRedDiscreteTimeSystemMixin() = delete;
+  HypRedDiscreteTimeSystemMixin(const HypRedDiscreteTimeSystemMixin &) = default;
+  HypRedDiscreteTimeSystemMixin & operator=(const HypRedDiscreteTimeSystemMixin &) = delete;
+  HypRedDiscreteTimeSystemMixin(HypRedDiscreteTimeSystemMixin &&) = default;
+  HypRedDiscreteTimeSystemMixin & operator=(HypRedDiscreteTimeSystemMixin &&) = delete;
+  ~HypRedDiscreteTimeSystemMixin() = default;
+
+  template<class T1, class T2, class T3, class T4, class T5>
+  HypRedDiscreteTimeSystemMixin(const T1 & romStateIn,
+				const T2 & fomObj,
+				const T3 & decoder,
+				const T4 & fomNominalState,
+				const T5 & projector)
+    : T(romStateIn, fomObj, decoder, fomNominalState, projector),
+      romSys_(romStateIn, T::projector_, T::fomCRef(), decoder, T::fomStatesMngr_)
+  {}
+
+  const rom_sys_t & romCRef() const{ return romSys_; }
+};
+
+template <class T, class rom_sys_t>
+struct MaskedDiscreteTimeSystemMixin : T
+{
+  const rom_sys_t romSys_;
+
+  MaskedDiscreteTimeSystemMixin() = delete;
+  MaskedDiscreteTimeSystemMixin(const MaskedDiscreteTimeSystemMixin &) = default;
+  MaskedDiscreteTimeSystemMixin & operator=(const MaskedDiscreteTimeSystemMixin &) = delete;
+  MaskedDiscreteTimeSystemMixin(MaskedDiscreteTimeSystemMixin &&) = default;
+  MaskedDiscreteTimeSystemMixin & operator=(MaskedDiscreteTimeSystemMixin &&) = delete;
+  ~MaskedDiscreteTimeSystemMixin() = default;
+
+  template<class T1, class T2, class T3, class T4, class T5, class T6>
+  MaskedDiscreteTimeSystemMixin(const T1 & romStateIn,
+				const T2 & fomObj,
+				const T3 & decoder,
+				const T4 & fomNominalState,
+				const T5 & projector,
+				const T6 & masker)
+    : T(romStateIn, fomObj, decoder, fomNominalState, projector, masker),
+      romSys_(romStateIn, T::projector_, T::masker_, T::fomCRef(), decoder, T::fomStatesMngr_)
+  {}
+
+  const rom_sys_t & romCRef() const{ return romSys_; }
+};
+
+template <class T, class rom_sys_t>
 struct DefaultExplicitSystemMixin : T
 {
   const rom_sys_t romSys_;
@@ -123,7 +198,7 @@ struct DefaultExplicitSystemMixin : T
   template<class T1, typename ...Args>
   DefaultExplicitSystemMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      romSys_(::pressio::ops::extent(romStateIn,0), T::projector_, T::fomCRef(), T::fomStatesMngr_)
+      romSys_(romStateIn, T::projector_, T::fomCRef(), T::fomStatesMngr_)
   {}
 
   const rom_sys_t & romCRef() const{ return romSys_; }
@@ -144,34 +219,14 @@ struct MaskedVeloExplicitSystemMixin : T
   template<class T1, typename ...Args>
   MaskedVeloExplicitSystemMixin(const T1 & romStateIn, Args && ...args)
     : T(romStateIn, std::forward<Args>(args)...),
-      romSys_(::pressio::ops::extent(romStateIn,0),
-              T::projector_, T::masker_, T::fomCRef(), T::fomStatesMngr_)
+      romSys_(romStateIn, T::projector_, T::masker_, T::fomCRef(), T::fomStatesMngr_)
   {}
 
   const rom_sys_t & romCRef() const{ return romSys_; }
 };
 
 template <class T, class rom_sys_t>
-struct HypRedVeloExplicitSystemMixin : T
-{
-  const rom_sys_t romSys_;
-
-  HypRedVeloExplicitSystemMixin() = delete;
-  HypRedVeloExplicitSystemMixin(const HypRedVeloExplicitSystemMixin &) = default;
-  HypRedVeloExplicitSystemMixin & operator=(const HypRedVeloExplicitSystemMixin &) = delete;
-  HypRedVeloExplicitSystemMixin(HypRedVeloExplicitSystemMixin &&) = default;
-  HypRedVeloExplicitSystemMixin & operator=(HypRedVeloExplicitSystemMixin &&) = delete;
-  ~HypRedVeloExplicitSystemMixin() = default;
-
-  template<class T1, typename ...Args>
-  HypRedVeloExplicitSystemMixin(const T1 & romStateIn, Args && ...args)
-    : T(romStateIn, std::forward<Args>(args)...),
-      romSys_(::pressio::ops::extent(romStateIn,0),
-              T::projector_, T::fomCRef(), T::fomStatesMngr_)
-  {}
-
-  const rom_sys_t & romCRef() const{ return romSys_; }
-};
+using HypRedVeloExplicitSystemMixin = DefaultExplicitSystemMixin<T, rom_sys_t>;
 
 //---------------------------------------------------
 // implicit policies

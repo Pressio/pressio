@@ -54,9 +54,11 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 template <int flag, class traits>
 struct Members{ using type = void; };
 
-// default explicit
-template <class traits>
-struct Members<0, traits>
+// --------
+// default
+// --------
+// cont-time explicit
+template <class traits> struct Members<0, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -74,9 +76,8 @@ struct Members<0, traits>
     Dt, typename traits::stepper_type>;
 };
 
-// default implicit
-template <class traits>
-struct Members<1, traits>
+// cont-time implicit
+template <class traits> struct Members<1, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -97,9 +98,29 @@ struct Members<1, traits>
     Dt, typename traits::stepper_type>;
 };
 
-// masked explicit
-template <class traits>
-struct Members<2, traits>
+// disc-time implicit
+template <class traits> struct Members<2, traits>
+{
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
+  using At = ::pressio::rom::impl::FomObjMixin<
+    typename traits::fom_system_type, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+    At,
+    typename traits::fom_state_type,
+    typename traits::fom_state_reconstr_type,
+    typename traits::fom_states_manager_type>;
+  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
+
+  using Dt  = DefaultDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+    Dt, typename traits::stepper_type>;
+};
+
+// --------
+// masked
+// --------
+// cont-time explicit
+template <class traits> struct Members<3, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -117,9 +138,8 @@ struct Members<2, traits>
     Et, typename traits::stepper_type>;
 };
 
-// masked implicit
-template <class traits>
-struct Members<3, traits>
+// cont-time implicit
+template <class traits> struct Members<4, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -138,10 +158,31 @@ struct Members<3, traits>
     Et, typename traits::stepper_type>;
 };
 
+// disc-time masked
+template <class traits> struct Members<5, traits>
+{
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
+  using At = ::pressio::rom::impl::FomObjMixin<
+    typename traits::fom_system_type, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+    At,
+    typename traits::fom_state_type,
+    typename traits::fom_state_reconstr_type,
+    typename traits::fom_states_manager_type>;
 
-// hypred explicit
-template <class traits>
-struct Members<4, traits>
+  using Ct  = MaskerMixin<Bt, typename traits::masker_type>;
+  using Dt  = ProjectorMixin<Ct, typename traits::projector_type>;
+  using Et  = MaskedDiscreteTimeSystemMixin<Dt, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+    Et, typename traits::stepper_type>;
+};
+
+
+// --------
+// hyp-red
+// --------
+// cont-time explicit
+template <class traits> struct Members<6, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -158,9 +199,8 @@ struct Members<4, traits>
     Dt, typename traits::stepper_type>;
 };
 
-// hypred implicit
-template <class traits>
-struct Members<5, traits>
+// cont-time implicit
+template <class traits> struct Members<7, traits>
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -178,18 +218,39 @@ struct Members<5, traits>
     Dt, typename traits::stepper_type>;
 };
 
+// disc-time implicit
+template <class traits> struct Members<8, traits>
+{
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
+  using At = ::pressio::rom::impl::FomObjMixin<
+    typename traits::fom_system_type, binding_sentinel>;
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+    At,
+    typename traits::fom_state_type,
+    typename traits::fom_state_reconstr_type,
+    typename traits::fom_states_manager_type>;
+  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
+
+  using Dt  = HypRedDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+    Dt, typename traits::stepper_type>;
+};
+
+///////////////////
+// problem class //
+///////////////////
 template <int flag, typename ...Args>
-class ProblemContinuousTimeApi
+class Problem
 {
 public:
-  using traits = ::pressio::Traits<ProblemContinuousTimeApi<flag, Args...>>;
+  using traits = ::pressio::Traits<Problem<flag, Args...>>;
 
 private:
-  using fom_system_type	     = typename traits::fom_system_type;
-  using decoder_type	     = typename traits::decoder_type;
-  using galerkin_state_type     = typename traits::galerkin_state_type;
-  using stepper_type	     = typename traits::stepper_type;
-  using fom_state_type	     = typename traits::fom_state_type;
+  using fom_system_type	 = typename traits::fom_system_type;
+  using decoder_type	 = typename traits::decoder_type;
+  using galerkin_state_type = typename traits::galerkin_state_type;
+  using stepper_type     = typename traits::stepper_type;
+  using fom_state_type	 = typename traits::fom_state_type;
   using fom_state_reconstr_type = typename traits::fom_state_reconstr_type;
   typename Members<flag, traits>::type members_;
 
@@ -205,35 +266,46 @@ public:
   }
 
 public:
-  ProblemContinuousTimeApi() = delete;
-  ProblemContinuousTimeApi(const ProblemContinuousTimeApi &) = default;
-  ProblemContinuousTimeApi & operator=(const ProblemContinuousTimeApi &) = delete;
-  ProblemContinuousTimeApi(ProblemContinuousTimeApi &&) = default;
-  ProblemContinuousTimeApi & operator=(ProblemContinuousTimeApi &&) = delete;
-  ~ProblemContinuousTimeApi() = default;
+  Problem() = delete;
+  Problem(const Problem &) = default;
+  Problem & operator=(const Problem &) = delete;
+  Problem(Problem &&) = default;
+  Problem & operator=(Problem &&) = delete;
+  ~Problem() = default;
 
   template<
     int _flag = flag,
-    mpl::enable_if_t<_flag==0 or _flag==1, int> = 0
+    mpl::enable_if_t<_flag<=2, int> = 0
     >
-  ProblemContinuousTimeApi(const fom_system_type & fomObj,
-			   decoder_type & decoder,
-			   const galerkin_state_type & romState,
-			   const fom_state_type & fomNominalState)
+  Problem(const fom_system_type & fomObj,
+	  decoder_type & decoder,
+	  const galerkin_state_type & romState,
+	  const fom_state_type & fomNominalState)
     : members_(romState, fomObj, decoder, fomNominalState){}
 
   template<
     int _flag = flag, class ...Args2,
-    mpl::enable_if_t<_flag >=2 and _flag <= 5, int> = 0
+    mpl::enable_if_t<_flag>=3 and _flag<=5, int> = 0
     >
-  ProblemContinuousTimeApi(const fom_system_type & fomObj,
-			   decoder_type & decoder,
-			   const galerkin_state_type & romState,
-			   const fom_state_type & fomNominalState,
-			   const typename traits::projector_type & projector,
-			   Args2 && ...args)
+  Problem(const fom_system_type & fomObj,
+	  decoder_type & decoder,
+	  const galerkin_state_type & romState,
+	  const fom_state_type & fomNominalState,
+	  const typename traits::projector_type & projector,
+	  Args2 && ...args)
     : members_(romState, fomObj, decoder, fomNominalState,
 	       projector, std::forward<Args2>(args) ...){}
+
+  template<
+    int _flag = flag, class ...Args2,
+    mpl::enable_if_t<_flag>=6 and _flag<=8, int> = 0
+    >
+  Problem(const fom_system_type & fomObj,
+	  decoder_type & decoder,
+	  const galerkin_state_type & romState,
+	  const fom_state_type & fomNominalState,
+	  const typename traits::projector_type & projector)
+    : members_(romState, fomObj, decoder, fomNominalState, projector){}
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

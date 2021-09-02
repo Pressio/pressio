@@ -54,12 +54,7 @@
 #include "./rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
 #include "./rom_has_nonconst_update_jacobian_method_accept_operand_return_void.hpp"
 
-#include "./rom_has_const_apply_mask_method_accept_operand_result_return_void.hpp"
-#include "./rom_has_const_apply_mask_method_accept_operand_time_result_return_void.hpp"
 #include "./rom_has_const_create_apply_mask_result_method_accept_operand_return_result.hpp"
-
-// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_time_result_return_void.hpp"
-// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
 
 #include "./rom_has_const_create_residual_method_return_result.hpp"
 #include "./rom_has_const_residual_method_accept_state_result_return_void.hpp"
@@ -69,6 +64,8 @@
 #include "./rom_has_const_apply_discrete_time_jacobian_method_accept_step_time_dt_operand_result_n_states_returning_void.hpp"
 #include "./rom_has_const_create_apply_discrete_time_jacobian_result_method_accept_operand_return_result.hpp"
 
-#include "./rom_has_const_apply_method_accept_operand_result_return_void.hpp"
+// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_time_result_return_void.hpp"
+// #include "./preconditioning_methods/rom_has_const_apply_preconditioner_method_accept_state_result_return_void.hpp"
+//#include "./rom_has_const_apply_method_accept_operand_result_return_void.hpp"
 
 #endif  // ROM_PREDICATES_ROM_PREDICATES_INCLUDE_HPP_

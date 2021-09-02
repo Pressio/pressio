@@ -23,19 +23,8 @@ public:
     return J;
   }
 
-  template <typename step_t, typename ...Args>
+  template <typename step_t>
   void discreteTimeResidual(const step_t & step,
-                            const scalar_type & time,
-                            const scalar_type & dt,
-                            discrete_time_residual_type & R,
-			    Args && ...args) const
-  {
-    this->timeDiscreteResidualImpl( step, time, dt, R,
-				    std::forward<Args>(args)... );
-  }
-
-  template <typename step_t, typename state_type>
-  void timeDiscreteResidualImpl(const step_t & step,
 				const scalar_type & time,
 				const scalar_type & dt,
 				discrete_time_residual_type & R,
@@ -101,12 +90,13 @@ public:
     }
   }
 
-  template <typename step_t, typename ... Args>
+  template <typename step_t>
   void discreteTimeJacobian(const step_t & step,
                             const scalar_type & time,
                             const scalar_type & dt,
                             discrete_time_jacobian_type & J,
-                            Args && ... states) const
+                            const state_type & yn,
+                            const state_type & ynm1) const
   {
     // dummy, not used for this test
   }
@@ -170,6 +160,10 @@ int main(int argc, char *argv[])
   state_t y(3);
   pressio::ops::fill(y, 1);
   MyFakeSolver solver;
+
+  static_assert
+  (::pressio::ode::discrete_time_system_with_user_provided_jacobian<
+   app_t, 2>::value,"");
 
   auto stepperObj = pressio::ode::create_arbitrary_stepper<2>(y,appObj);
   pressio::ode::advance_to_target_time_with_time_step_recovery_and_observe
