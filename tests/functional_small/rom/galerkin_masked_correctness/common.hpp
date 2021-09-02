@@ -101,6 +101,78 @@ struct TrivialFomVelocityAndJacobianCustomTypes
   }
 };
 
+
+struct TrivialFomDiscreteTimeCustomTypes
+{
+  using scalar_type = double;
+  using state_type = ::pressiotests::MyCustomVector<scalar_type>;
+  using discrete_time_residual_type = state_type;
+  using phi_type = ::pressiotests::MyCustomMatrix<scalar_type>;
+  int N_ = {};
+  const std::vector<int> indices_to_corrupt_ = {};
+
+  TrivialFomDiscreteTimeCustomTypes(int N, std::vector<int> ind)
+    : N_(N), indices_to_corrupt_(ind){}
+
+  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+    return discrete_time_residual_type(N_);
+  }
+
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+    return phi_type(N_, B.extent(1));
+  }
+
+  template<class StepCountType>
+  void discreteTimeResidual(StepCountType, 
+                              double time, 
+                              double dt, 
+                              discrete_time_residual_type & R, 
+                              const state_type & y_np1,
+                              const state_type & y_n) const
+  {
+    EXPECT_TRUE(y_np1.extent(0)==y_n.extent(0));
+    EXPECT_TRUE(y_np1.extent(0)==R.extent(0));
+    EXPECT_TRUE(R.extent(0)==N_);
+
+    for (int i=0; i<N_; ++i){
+     auto f = y_np1(i) + time;
+     R(i) = y_np1(i) -y_n(i) - dt*f;
+    }
+
+    // corrupt some to ensure masking works
+    for (auto & it : indices_to_corrupt_){
+     R(it) = -1114;
+    }
+  }
+
+  template<class StepCountType>
+  void applyDiscreteTimeJacobian(StepCountType, 
+                              double time, 
+                              double dt, 
+                              const phi_type & B, 
+                              phi_type & A,
+                              const state_type & y_np1,
+                              const state_type & y_n) const
+  {
+    EXPECT_TRUE(y_np1.extent(0)==N_);
+    EXPECT_TRUE(y_n.extent(0)==N_);
+    EXPECT_TRUE(A.extent(0)==N_);
+
+    A = B;
+    for (std::size_t i=0; i< A.extent(0); ++i){
+      for (std::size_t j=0; j< A.extent(1); ++j){
+        A(i,j) += time;
+      }
+    }
+    for (auto & it : indices_to_corrupt_){
+      for (std::size_t j=0; j< A.extent(1); ++j){
+        A(it,j) = -4232;
+      }
+    }
+  }
+};
+
+
 struct TrivialFomOnlyVelocityEigen
 {
   using scalar_type       = double;
@@ -361,10 +433,11 @@ struct MaskerImplicitEigen
 };
 
 // for explicit, masker acts on FOM velicity
+template<class ScalarType>
 struct MaskerExplicitCustomTypes
 {
   const std::vector<int> sample_indices_ = {};
-  using operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
+  using operand_type = ::pressiotests::MyCustomVector<ScalarType>;
 
   MaskerExplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
 
@@ -386,7 +459,7 @@ template<class ScalarType>
 struct MaskerImplicitCustomTypes
 {
   const std::vector<int> sample_indices_ = {};
-  using vec_operand_type = typename TrivialFomOnlyVelocityCustomTypes::velocity_type;
+  using vec_operand_type = ::pressiotests::MyCustomVector<ScalarType>;
   using mat_operand_type = ::pressiotests::MyCustomMatrix<ScalarType>;
 
   MaskerImplicitCustomTypes(std::vector<int> sample_indices) : sample_indices_(sample_indices){}
