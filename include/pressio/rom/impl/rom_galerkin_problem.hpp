@@ -51,6 +51,19 @@
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
+template <class traits> struct MembersCommon
+{
+  static constexpr auto binding_sentinel = traits::binding_sentinel;
+  using At = ::pressio::rom::impl::FomObjMixin<
+    typename traits::fom_system_type, binding_sentinel>;
+
+  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+    At,
+    typename traits::fom_state_type,
+    typename traits::fom_state_reconstr_type,
+    typename traits::fom_states_manager_type>;
+};
+
 template <int flag, class traits>
 struct Members{ using type = void; };
 
@@ -58,18 +71,12 @@ struct Members{ using type = void; };
 // default
 // --------
 // cont-time explicit
-template <class traits> struct Members<0, traits>
+template <class traits> struct Members<0, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
-
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
   using Ct = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt = DefaultExplicitSystemMixin<Ct, typename traits::rom_system_type>;
   using type = ::pressio::rom::impl::ExplicitStepperMixin<
@@ -77,17 +84,12 @@ template <class traits> struct Members<0, traits>
 };
 
 // cont-time implicit
-template <class traits> struct Members<1, traits>
+template <class traits> struct Members<1, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt  = DefaultImplicitPoliciesMixin<
@@ -99,18 +101,14 @@ template <class traits> struct Members<1, traits>
 };
 
 // disc-time implicit
-template <class traits> struct Members<2, traits>
+template <class traits> struct Members<2, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
+  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt  = DefaultDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
   using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
     Dt, typename traits::stepper_type>;
@@ -120,16 +118,12 @@ template <class traits> struct Members<2, traits>
 // masked
 // --------
 // cont-time explicit
-template <class traits> struct Members<3, traits>
+template <class traits> struct Members<3, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct   = MaskerMixin<Bt, typename traits::masker_type>;
   using Dt   = ProjectorMixin<Ct, typename traits::projector_type>;
@@ -139,16 +133,12 @@ template <class traits> struct Members<3, traits>
 };
 
 // cont-time implicit
-template <class traits> struct Members<4, traits>
+template <class traits> struct Members<4, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct  = MaskerMixin<Bt, typename traits::masker_type>;
   using Dt  = ProjectorMixin<Ct, typename traits::projector_type>;
@@ -159,16 +149,12 @@ template <class traits> struct Members<4, traits>
 };
 
 // disc-time masked
-template <class traits> struct Members<5, traits>
+template <class traits> struct Members<5, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct  = MaskerMixin<Bt, typename traits::masker_type>;
   using Dt  = ProjectorMixin<Ct, typename traits::projector_type>;
@@ -177,21 +163,16 @@ template <class traits> struct Members<5, traits>
     Et, typename traits::stepper_type>;
 };
 
-
 // --------
 // hyp-red
 // --------
 // cont-time explicit
-template <class traits> struct Members<6, traits>
+template <class traits> struct Members<6, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct   = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt = HypRedVeloExplicitSystemMixin<Ct, typename traits::rom_system_type>;
@@ -200,16 +181,12 @@ template <class traits> struct Members<6, traits>
 };
 
 // cont-time implicit
-template <class traits> struct Members<7, traits>
+template <class traits> struct Members<7, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
   using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt  = HypRedVeloImplicitPoliciesMixin<
@@ -219,18 +196,14 @@ template <class traits> struct Members<7, traits>
 };
 
 // disc-time implicit
-template <class traits> struct Members<8, traits>
+template <class traits> struct Members<8, traits> : MembersCommon<traits>
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
-    At,
-    typename traits::fom_state_type,
-    typename traits::fom_state_reconstr_type,
-    typename traits::fom_states_manager_type>;
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
+  using base_t = MembersCommon<traits>;
+  using typename base_t::At;
+  using typename base_t::Bt;
+  using base_t::binding_sentinel;
 
+  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
   using Dt  = HypRedDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
   using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
     Dt, typename traits::stepper_type>;
