@@ -87,9 +87,9 @@ public:
     else{
 
       auto relativeError = CheckGalerkinVelocity(currentState,workingStateVector,currentParam,currentTime,currentCoords);
-
+        std::cout << " error = " << relativeError << ", passing point " << std::endl; 
       if (relativeError >= velocityErrorTolerance){
-        std::cout << " adding new point " << std::endl; 
+        std::cout << " error = " << relativeError << ", adding new point " << std::endl; 
         // Add point to coordinate list
         ListOfStatesAtLinearizationPoints_.push_back( currentState );  
         ListOfParamsAtLinearizationPoints_.push_back( currentParam );  
@@ -189,16 +189,16 @@ private:
   template <typename fom_state_t, typename params_t, typename coords_t>
   double CheckGalerkinVelocity(const rom_state_t & xhat,const fom_state_t & x, const params_t & mu,const scalar_t t,const coords_t & PointCoords)
   {
-    auto f = GalerkinVelocity(xhat,mu,t,PointCoords);
+    auto fTpwq = GalerkinVelocity(xhat,mu,t,PointCoords);
     auto fTrue = appObj_.createVelocity();
     //appObj.updateParams(mu);
     appObj_.velocity(x,t,fTrue);
 
-    rom_velocity_t fTrueProject( xhat.size());
-    ::pressio::ops::product(::pressio::transpose(),1., Phi_,fTrue, 0.,fTrueProject);    
-    auto error = fTrue - fTrueProject;
-    auto errorNorm = error.norm(); 
-    return errorNorm;
+    rom_velocity_t fGalerkin( xhat.size());
+    ::pressio::ops::product(::pressio::transpose(),1., Phi_,fTrue, 0.,fGalerkin);    
+    auto error = fTpwq - fGalerkin;
+    auto errorNorm = error.norm() / fGalerkin.norm(); 
+    return errorNorm; 
   }
 
   template<typename coords_t>
