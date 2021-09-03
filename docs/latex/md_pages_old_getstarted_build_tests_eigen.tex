@@ -13,13 +13,13 @@ If you just want a quick way to get the code up-\/and-\/running and ready to pla
 \begin{DoxyParagraph}{Disclaimer}
 The guide below does {\bfseries{not}} assume you are a Unix/\+CS/coding ninja, rather the opposite. It is written with the goal to provide a detailed guide without taking any step for granted. As such, if you are a Unix/\+CS/coding ninja, some steps will be fairly obvious to you!
 \end{DoxyParagraph}
-\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md133}{}\doxysection{Prerequisites}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md133}
+\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md165}{}\doxysection{Prerequisites}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md165}
 
 \begin{DoxyItemize}
 \item C and C++11 compilers\+: either Clang or GNU
 \item CMake $>$= 3.\+11.\+0
 \item Bash $>$= 3.\+2.\+57
-\end{DoxyItemize}\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md134}{}\doxysection{1. Prep}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md134}
+\end{DoxyItemize}\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md166}{}\doxysection{1. Prep}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md166}
 Create (or choose) a directory where you want to clone all repos needed and where to put all builds, and to make things easier below, create environment variables to refer to these directories\+:
 
 
@@ -42,7 +42,7 @@ Unless you already have them, set the following compilers environment variable\+
 \end{DoxyCode}
 
 
-These are needed because {\ttfamily CC} and {\ttfamily CXX} are used to do all the builds.\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md135}{}\doxysection{2. Cloning}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md135}
+These are needed because {\ttfamily CC} and {\ttfamily CXX} are used to do all the builds.\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md167}{}\doxysection{2. Cloning}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md167}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}}
@@ -50,14 +50,14 @@ These are needed because {\ttfamily CC} and {\ttfamily CXX} are used to do all t
 \DoxyCodeLine{git clone git@github.com:Pressio/pressio.git}
 
 \end{DoxyCode}
-\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md136}{}\doxysection{3. Install TPLs}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md136}
+\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md168}{}\doxysection{3. Install TPLs}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md168}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
 \DoxyCodeLine{./main\_tpls.sh -\/dryrun=no -\/tpls=eigen,gtest -\/target-\/dir=\$\{PRESSIO\_BUILDS\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md137}{}\doxysection{4. Build the tests}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md137}
+\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md169}{}\doxysection{4. Build the tests}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md169}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{cd \$\{PRESSIO\_REPOS\}/pressio-\/builder}
@@ -70,7 +70,7 @@ These are needed because {\ttfamily CC} and {\ttfamily CXX} are used to do all t
 \DoxyCodeLine{    -\/cmake-\/generator-\/name=default\_with\_tests}
 
 \end{DoxyCode}
-\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md138}{}\doxysection{5. Running the tests}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md138}
+\hypertarget{md_pages_old_getstarted_build_tests_eigen_autotoc_md170}{}\doxysection{5. Running the tests}\label{md_pages_old_getstarted_build_tests_eigen_autotoc_md170}
 To run the tests, you can follow this\+:
 
 

@@ -1,0 +1,155 @@
+Defined in\+: {\ttfamily $<$pressio/rom\+\_\+galerkin.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::rom}, {\ttfamily pressio\+::rom\+::galerkin}.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md98}{}\doxysection{Overview}\label{md_pages_components_rom_galerkin_default_autotoc_md98}
+At a high level, using a Galerkin problem involces three steps\+:
+\begin{DoxyEnumerate}
+\item {\itshape create}\+: you create an instance of a \char`\"{}default Galerkin problem\char`\"{}
+\item {\itshape extract}\+: you extract the underlying stepper object owned by the problem
+\item {\itshape solve}\+: you use the stepper to solve in time the Galerkin problem
+\end{DoxyEnumerate}
+
+You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-\/level, a Galerkin problem can be reduced to simply a \char`\"{}custom\char`\"{} stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside\+: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don\textquotesingle{}t need to know how this is done, or rely on the details, because these are problem-\/ and implementation-\/dependent, and we reserve the right to change this in the future.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md99}{}\doxysection{1. Creating a problem instance}\label{md_pages_components_rom_galerkin_default_autotoc_md99}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<}
+\DoxyCodeLine{  \textcolor{keyword}{class }StepperTag,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomSystemType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }DecoderType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }RomStateType,}
+\DoxyCodeLine{  \textcolor{keyword}{class }FomReferenceStateType}
+\DoxyCodeLine{  >}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_default\_problem(\textcolor{keyword}{const} FomSystemType \& fomSysObj,}
+\DoxyCodeLine{                            DecoderType \& decoder,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} RomStateType \& stateIn,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} FomReferenceStateType \& fomRef);}
+
+\end{DoxyCode}
+
+
+where {\ttfamily Stepper\+Tag} is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md100}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_rom_galerkin_default_autotoc_md100}
+
+\begin{DoxyItemize}
+\item {\ttfamily Stepper\+Tag}\+:
+\begin{DoxyItemize}
+\item tag type to specify the time scheme
+\item must be one of the explicit or implicit tag types supported in {\ttfamily pressio\+::ode}
+\end{DoxyItemize}
+\item {\ttfamily Fom\+System\+Type}\+:
+\begin{DoxyItemize}
+\item your adapter class type specifying the FOM problem
+\item must satisfy one of the APIs suitable for Galerkin, see \href{./md_pages_components_rom_fom_apis.html}{\texttt{ API list}}
+\end{DoxyItemize}
+\item {\ttfamily Decoder\+Type}\+:
+\begin{DoxyItemize}
+\item decoder class type
+\item must satify the requirements listed \href{md_pages_components_rom_decoder.html}{\texttt{ here}}
+\end{DoxyItemize}
+\item {\ttfamily Rom\+State\+Type}\+:
+\begin{DoxyItemize}
+\item ROM state type
+\item currently, it must be either an Eigen vector or a Kokkos 1D view
+\end{DoxyItemize}
+\item {\ttfamily Fom\+Reference\+State\+Type}\+:
+\begin{DoxyItemize}
+\item your FOM reference state that is used when reconstructing the FOM state
+\item must be copy-\/constructible and the following must be true\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::is\_same<FomReferenceStateType, typename DecoderType::fom\_state\_type>::value == \textcolor{keyword}{true}}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md101}{}\doxysubsection{Problem class API}\label{md_pages_components_rom_galerkin_default_autotoc_md101}
+A problem meets the following API\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }DefaultGalerkinProblem}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} traits = \textcolor{comment}{/* nested typedef with trait class */};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// returns the underlying stepper to use to solve the problem}}
+\DoxyCodeLine{  \textcolor{keyword}{auto} \& stepper();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// const ref to the object knowing how to reconstruct a FOM state}}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} \& fomStateReconstructor() \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+The {\ttfamily stepper} method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-\/const reference to an \href{md_pages_components_ode_steppers_explicit.html}{\texttt{ explicit stepper}} if, when you created the problem, you used an explicit {\ttfamily Stepper\+Tag}, or an \href{md_pages_components_ode_steppers_implicit.html}{\texttt{ implicit stepper}} if you use an implicit {\ttfamily Stepper\+Tag}. Once you retrieve the stepper, you can then use it like you would with any other stepper object (more on this below).
+
+As almost every important type in pressio, a Galerkin problem too has traits\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem = create\_default\_problem(...);}
+\DoxyCodeLine{\textcolor{keyword}{using} traits = pressio::Traits<decltype(problem)>;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// for the explicit case, one can access the following traits:}}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_jac\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_velocity\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// for the implicit case one has:}}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::fom\_system\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::scalar\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::decoder\_jac\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_state\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_residual\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::galerkin\_jacobian\_type;}
+\DoxyCodeLine{\textcolor{keyword}{typename} traits::stepper\_type;}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md102}{}\doxysection{2.,3. Extract and Solve}\label{md_pages_components_rom_galerkin_default_autotoc_md102}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md103}{}\doxysubsection{Explicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md103}
+An example usage for explicit stepper is as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{comment}{// we assume the rom\_state, decoder, fom\_system, fom\_reference\_state already exist}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pode = pressio::ode;}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pgal = pressio::rom::galerkin;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{using} ode\_tag  = pode::ForwardEuler;}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem   = pgal::create\_default\_problem<ode\_tag>(fom\_system, decoder, rom\_state, fom\_reference\_state);}
+\DoxyCodeLine{\textcolor{keyword}{auto} \& stepper = problem.stepper();}
+\DoxyCodeLine{}
+\DoxyCodeLine{pressio::ode::advance\_n\_steps\_and\_observe(stepper, rom\_state, \textcolor{comment}{/* any other args */});}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_rom_galerkin_default_autotoc_md104}{}\doxysubsection{Implicit Case}\label{md_pages_components_rom_galerkin_default_autotoc_md104}
+An example usage for implicit stepper is as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{comment}{// we assume the rom\_state, decoder, fom\_system, fom\_reference\_state already exist}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pode = pressio::ode;}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pgal = pressio::rom::galerkin;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{using} ode\_tag  = pode::ForwardEuler;}
+\DoxyCodeLine{\textcolor{keyword}{auto} problem   = pgal::create\_default\_problem<ode\_tag>(fom\_system, decoder, rom\_state, fom\_reference\_state);}
+\DoxyCodeLine{\textcolor{keyword}{auto} \& stepper = problem.stepper();}
+\DoxyCodeLine{}
+\DoxyCodeLine{!!!!!!!! fill !!!!!!!!!}
+\DoxyCodeLine{}
+\DoxyCodeLine{pressio::ode::advance\_n\_steps\_and\_observe(stepper, rom\_state, \textcolor{comment}{/* any other args */});}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 

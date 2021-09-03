@@ -49,29 +49,17 @@
 #ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
 #define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
 
-// predicates
-#include "./predicates/decoder/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
-#include "./predicates/decoder/rom_has_const_get_reference_to_jacobian.hpp"
-#include "./predicates/decoder/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
-#include "./predicates/decoder/rom_has_nonconst_update_jacobian_method_accept_operand_return_void.hpp"
-
-// constraints
-#include "./constraints/rom_decoder_jacobian.hpp"
-#include "./constraints/rom_decoder.hpp"
-#include "./constraints/rom_fom_state.hpp"
-
-#include "./impl_decoder/rom_linear_decoder.hpp"
+#include "./impl/rom_decoder_linear.hpp"
 
 namespace pressio{ namespace rom{
 
 template<
-  class FomStateType, 
-  class JacobianMatrixType, 
+  class FomStateType, class JacobianMatrixType,
   class ReturnType = impl::LinearDecoder<FomStateType, JacobianMatrixType>
   >
 ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix)
 {
-	return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
+  return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
 }
 
 }} // end namespace pressio::rom

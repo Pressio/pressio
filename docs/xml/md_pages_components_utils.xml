@@ -8,18 +8,16 @@
     <detaileddescription>
 <para>Defined in header: <computeroutput>&lt;pressio/utils.hpp&gt;</computeroutput></para>
 <para>Public namespaces: <computeroutput>pressio</computeroutput> and <computeroutput>pressio::utils</computeroutput>.</para>
-<sect1 id="md_pages_components_utils_1autotoc_md96">
+<sect1 id="md_pages_components_utils_1autotoc_md128">
 <title>Logger</title>
 <para>One of the main functionalities inside <computeroutput>utils</computeroutput> is the logger. To implement the pressio logging functionalities, we have used <ulink url="https://github.com/gabime/spdlog">spdlog</ulink>, rewriting a subset of it, for example to work seamlessly with MPI.</para>
-<para> <mcss:class xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-block m-warning" /></para>
-<para><simplesect kind="par"><title>By default the logger is disabled, here is how to enable it.</title><para></para>
-</simplesect>
-If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> and expect logging, you will be disappointed! <linebreak/>
- By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things:<orderedlist>
-<listitem><para>place a <computeroutput>define</computeroutput> statement to set the desired level: note that this define statement <emphasis>must</emphasis> be placed <emphasis>before</emphasis> including the utils header.</para>
-</listitem><listitem><para>you need to initialize and finalize the logger singleton.</para>
+<para>If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> and expect logging, you will be disappointed!<linebreak/>
+  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">By default, for performance reasons, the logger is disabled.</mcss:span> To enable and use it, you need to do two things:<orderedlist>
+<listitem><para><emphasis>before</emphasis> including the utils header, place a <computeroutput>define</computeroutput> statement to set the <emphasis>minimum</emphasis> level</para>
+</listitem><listitem><para>you need to initialize and finalize the logger singleton</para>
 </listitem></orderedlist>
 </para>
+<para>as shown below:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>this<sp/>sets<sp/>the<sp/>default<sp/>min<sp/>level</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_ACTIVE_MIN_LEVEL<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -38,7 +36,7 @@ If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> a
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>finalize<sp/>logger<sp/>(see<sp/>below<sp/>for<sp/>details)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<sect2 id="md_pages_components_utils_1autotoc_md97">
+<sect2 id="md_pages_components_utils_1autotoc_md129">
 <title>Initializing</title>
 <para>You have these choices:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>only<sp/>log<sp/>messages<sp/>to<sp/>terminal</highlight><highlight class="normal"></highlight></codeline>
@@ -67,12 +65,12 @@ If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> a
 </programlisting></para>
 <para>If we were to run this with N ranks, we would obtain two files <computeroutput>log_file.txt_0</computeroutput>, and <computeroutput>log_file.txt_1</computeroutput>. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.</para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md98">
+<sect2 id="md_pages_components_utils_1autotoc_md130">
 <title>Finalizing</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">plog::finalize();</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md99">
+<sect2 id="md_pages_components_utils_1autotoc_md131">
 <title>Levels</title>
 <para>The supported levels are:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_TRACE<sp/><sp/><sp/><sp/><sp/>0</highlight><highlight class="normal"></highlight></codeline>
@@ -84,16 +82,16 @@ If you just <computeroutput>#include&lt;pressio/utils.hpp&gt;</computeroutput> a
 <codeline><highlight class="preprocessor">#define<sp/>PRESSIO_LOG_LEVEL_OFF<sp/><sp/><sp/><sp/><sp/><sp/><sp/>6</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md100">
+<sect2 id="md_pages_components_utils_1autotoc_md132">
 <title>Resetting the level</title>
-<para>If you want, you can use the define statement to set the min level, but then at runtime reset it as follows:</para>
+<para>If you want, you can use the define statement to set the min level, but then at runtime you can reset for a <emphasis>higher</emphasis> level (see below). Note that you cannot reset the level to something that is <emphasis>lower</emphasis> than the one you set via the <computeroutput>define</computeroutput> statement.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>your<sp/>code</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">plog::setVerbosity({plog::level::info});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_utils_1autotoc_md101">
+<sect2 id="md_pages_components_utils_1autotoc_md133">
 <title>The loggin macros</title>
 <para>To actually issue log statements, you use the macros as in the following example:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>

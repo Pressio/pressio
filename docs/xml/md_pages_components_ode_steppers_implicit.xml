@@ -10,13 +10,14 @@
 <para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
 <sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md61">
 <title>Overview</title>
-<para>Provides functionalities to create a stepper suitable for implicit methods. Recall that implicit methods calculate the state of a system at the next time by solving a system of equations involving both the current state of the system and the later one. An implicit stepper is an object that knows how to take one <emphasis>implicit</emphasis> step.</para>
+<para>Provides functionalities to create steppers for implicit methods. Recall that implicit methods update the state of a system by solving a system of equations involving both the current and next state. An implicit stepper is an object that knows how to do one such <emphasis>implicit</emphasis> step.</para>
 <para>Pressio implicit steppers are applicable to any system written in <emphasis>continuous-time</emphasis> form: <formula id="2">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
 <para>and/or in a <emphasis>discrete-time</emphasis> form <formula id="6">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
-<para>Here, <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="4">$f$</formula> the FOM velocity, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.</para>
+<para>Here, <formula id="3">$y$</formula> is the state, <formula id="4">$f$</formula> the velocity, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.</para>
 </sect1>
 <sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md62">
 <title>API for continuous-time systems</title>
+<para>In this case, pressio exposes the following functions to create an instance of a desired stepper:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_keyword_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
@@ -28,45 +29,35 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ResidualPolicyType<sp/>&amp;&amp;<sp/>rPol,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>JacobianPolicyType<sp/>&amp;&amp;<sp/>jPol);</highlight></codeline>
 </programlisting></para>
-<para>where the currently choices are:</para>
+<para>Currently, the choices are:</para>
 <para><table rows="4" cols="3"><row>
 <entry thead="yes"><para><computeroutput>keyword</computeroutput>   </para>
 </entry><entry thead="yes"><para>Method   </para>
 </entry><entry thead="yes"><para>Discrete Residual Formula    </para>
 </entry></row>
 <row>
-<entry thead="no"><para><computeroutput>bdf1</computeroutput>   </para>
+<entry thead="no"><para>bdf1   </para>
 </entry><entry thead="no"><para>Backward Diff 1st order   </para>
 </entry><entry thead="no"><para><formula id="8">$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$</formula>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para><computeroutput>bdf2</computeroutput>   </para>
+<entry thead="no"><para>bdf2   </para>
 </entry><entry thead="no"><para>Backward Diff 2nd order   </para>
 </entry><entry thead="no"><para><formula id="9">$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$</formula>    </para>
 </entry></row>
 <row>
-<entry thead="no"><para><computeroutput>cranknicolson</computeroutput>   </para>
+<entry thead="no"><para>cranknicolson   </para>
 </entry><entry thead="no"><para>Crank-Nicolson   </para>
 </entry><entry thead="no"><para><formula id="10">$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$</formula>   </para>
 </entry></row>
 </table>
 </para>
-<para>The create functions above return an instance of the desired stepper, which satisfies the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>. Therefore, one can use the &quot;advancers&quot; functions to step forward.</para>
 <sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md63">
 <title>Parameters</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>:<itemizedlist>
-<listitem><para>type of the data structure you use for the state</para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para><computeroutput>SystemType</computeroutput>:<itemizedlist>
-<listitem><para>class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it;</para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>:<itemizedlist>
-<listitem><para>policy types if you want to use custom ones to compute the discrete operators</para>
-</listitem></itemizedlist>
-</para>
+<listitem><para><computeroutput>StateType</computeroutput>: data type of the state</para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it;</para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>: policy types if you want to use custom ones to compute the discrete operators.</para>
 </listitem></itemizedlist>
 </para>
 <para>Notes:<itemizedlist>
@@ -78,13 +69,13 @@
 <sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md64">
 <title>Requirements</title>
 <para><itemizedlist>
-<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible</para>
+<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible and the following condition must be true: <computeroutput>std::is_same&lt;StateType, typename SystemType::state_type&gt;::value == true</computeroutput></para>
 </listitem><listitem><para><computeroutput>SystemType</computeroutput> must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForImplicitOde</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/><sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
@@ -93,8 +84,6 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 <para>the nested type aliases must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
-</listitem><listitem><para>if <computeroutput>StateType</computeroutput> is the type deduced for <computeroutput>state</computeroutput> passed to <computeroutput>create_...</computeroutput>, the following must hold:<linebreak/>
- <computeroutput>std::is_same&lt;StateType, typename SystemForImplicitOde::state_type&gt;::value == true</computeroutput></para>
 </listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput> must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ResidualPolicy</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
@@ -168,7 +157,9 @@
 </para>
 </sect2>
 <sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md66">
-<title>Example usage</title>
+<title>What to do after a stepper is created?</title>
+<para>Any stepper created using the functions above is guaranteed to satisfy the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>. Therefore, once you create a stepper, you can use the <ulink url="md_pages_components_ode_advance.html">advancers</ulink> to step forward or you can use your own.<linebreak/>
+ An example is below:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_solvers_nonlinear.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>

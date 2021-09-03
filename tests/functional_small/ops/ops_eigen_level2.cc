@@ -26,6 +26,10 @@
   EXPECT_DOUBLE_EQ( myR(0), 14.);  \
   EXPECT_DOUBLE_EQ( myR(1), 11.0); \
   EXPECT_DOUBLE_EQ( myR(2), 8.+6.+6.+12.);  \
+  auto y = pressio::ops::product<Eigen::VectorXd>(pressio::transpose(), alpha, M, VECIN); \
+  EXPECT_DOUBLE_EQ( y(0), 14.);  \
+  EXPECT_DOUBLE_EQ( y(1), 11.0); \
+  EXPECT_DOUBLE_EQ( y(2), 8.+6.+6.+12.);  \
 
 
 TEST(ops_eigen, dense_matrix_vector_prod)

@@ -115,8 +115,7 @@ template<
   int num_states,
   class StateType,
   class SystemType,
-  class ReturnType = impl::ImplicitCompose_t<
-    ImplicitArbitrary, StepperTotalNumberOfStates<num_states>, SystemType, StateType>
+  class ReturnType = typename impl::ImplicitComposeArb<num_states, SystemType, StateType>::type
   >
 ReturnType create_arbitrary_stepper(const StateType & state, SystemType && system)
 {

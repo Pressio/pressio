@@ -65,7 +65,7 @@ TEST(rom, linear_decoder_arbitrary_types)
   decoder.applyMapping(yRom, yFom);
 
   // check solution
-  for (auto i=0; i<yFom.extent(0); ++i){
+  for (std::size_t i=0; i<yFom.extent(0); ++i){
     EXPECT_DOUBLE_EQ(yFom(i), 6.);
   }
 }

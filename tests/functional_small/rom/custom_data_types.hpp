@@ -1,4 +1,7 @@
 
+#ifndef PRESSIO_TESTING_CUSTOM_DATA_TYPES_HPP_
+#define PRESSIO_TESTING_CUSTOM_DATA_TYPES_HPP_
+
 #include "pressio/type_traits.hpp"
 
 namespace pressiotests{
@@ -42,4 +45,5 @@ private:
   std::vector<ScalarType> d_ = {};
 };
 
-}//end namespace
+}//end namespace pressiotests
+#endif

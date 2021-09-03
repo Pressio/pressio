@@ -16,16 +16,16 @@ Note that there is no explicit constraint on what the mapping is, it can be anyt
 
 ## Decoder Concept
 
-A valid decoder is any C++ object whose type meets the following API:
+In pressio, a valid decoder is any C++ object whose type meets the following API:
 
 @code{.cpp}
-struct Decoder
+class Decoder
 {
+public:
   // these nested typedefs are mandatory because pressio detects them
   using jacobian_type  = /* your type */;
   using fom_state_type = /* your type */;
 
-public:
   template <class OperandType>
   void applyMapping(const OperandType & romOperand,
                     fom_state_type & fomState) const
@@ -36,8 +36,8 @@ public:
 	//  In general, we advise to keep it as a template.
 	//
 	//  To use romOperand, you need to know that:
-	//  - if romOperand is rank-1, it supports the (i) operator to reference the i-th element
-	//  - if romOperand is rank-2, it supports the (i,j) operator to reference the i,j-th element
+	//  - rank-1 romOperand: supports the (i) operator to reference the i-th element
+	//  - rank-2 romOperand: supports the (i,j) operator to reference the i,j-th element
     // ...
   }
 
@@ -45,7 +45,7 @@ public:
   template <typename OperandType>
   void updateJacobian(const OperandType & romOperand);
 
-  // return a const reference to the Jacobian matrix
+  // return a const reference to the Jacobian object
   const jacobian_type & jacobianCRef() const;
 };
 @endcode
@@ -54,7 +54,7 @@ public:
 
 - `fom_state_type`: must be copy constructible
 
-- `jacobian_matrix_type`: must be copy constructible
+- `jacobian_type`: must be copy constructible
 
 
 ### Special case: linear decoder

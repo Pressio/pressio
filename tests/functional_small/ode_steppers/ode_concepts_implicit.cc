@@ -90,7 +90,9 @@ public:
 TEST(ode, concepts_discrete_time_system)
 {
   using namespace pressio::ode;
-  static_assert(discrete_time_system_with_user_provided_jacobian<ValidDiscreteTimeSystem>::value, "");
+  static_assert(discrete_time_system_with_user_provided_jacobian<ValidDiscreteTimeSystem,1>::value, "");
+  static_assert(discrete_time_system_with_user_provided_jacobian<ValidDiscreteTimeSystem,2>::value, "");
+  static_assert(!discrete_time_system_with_user_provided_jacobian<ValidDiscreteTimeSystem,3>::value, "");
 }
 
 TEST(ode, concepts_policies_arbitrary_stepper)

@@ -49,6 +49,14 @@
 #ifndef ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
 #define ROM_DECODER_IMPL_ROM_LINEAR_DECODER_PRESSIO_OPS_HPP_
 
+#include "../predicates/rom_has_const_apply_mapping_accept_operand_result_return_void.hpp"
+#include "../predicates/rom_has_const_get_reference_to_jacobian.hpp"
+#include "../predicates/rom_has_const_update_jacobian_method_accept_operand_return_void.hpp"
+#include "../predicates/rom_has_nonconst_update_jacobian_method_accept_operand_return_void.hpp"
+#include "../constraints/rom_decoder_jacobian.hpp"
+#include "../constraints/rom_decoder.hpp"
+#include "../constraints/rom_fom_types.hpp"
+
 namespace pressio{ namespace rom{ namespace impl{
 
 template <class FomStateType, class JacobianMatrixType>

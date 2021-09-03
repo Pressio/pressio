@@ -28,7 +28,7 @@ auto create_keyword_stepper(const StateType & state,
 	                        const SystemType & system);
 ```
 
-where `keyword` is one of: `forward_euler`, `runge_kutta4`, `adams_bashforth2`, `ssp_runge_kutta3`.
+where `keyword` is one of: forward_euler, runge_kutta4, adams_bashforth2, ssp_runge_kutta3.
 This function returns an instance of the desired stepper.
 The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
 
@@ -130,10 +130,10 @@ void update(ACustomStateType & v,        const double a,
 }
 
 void update(ACustomStateType & v,        const double a,
-            const ACustomStateType & v0, const double b,
-            const ACustomStateType & v1, const double c)
+            const ACustomStateType & v1, const double b,
+            const ACustomStateType & v2, const double c)
 {
-  // elementwise compute : v = a*v + b*v0 + c*v1
+  // elementwise compute : v = a*v + b*v1 + c*v2
 }
 
 void update(ACustomStateType & v,		 const double a,

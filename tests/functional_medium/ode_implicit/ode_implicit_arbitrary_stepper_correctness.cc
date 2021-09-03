@@ -232,7 +232,7 @@ struct Bdf1Solver
 struct CustomBdf1Solver
 {
   using app_t		= MyAppDiscreteTimeAPI;
-  static_assert(::pressio::ode::discrete_time_system_with_user_provided_jacobian<app_t>::value, "");
+  static_assert(::pressio::ode::discrete_time_system_with_user_provided_jacobian<app_t,2>::value, "");
 
   using sc_t		= typename app_t::scalar_type;
   using state_t	= typename app_t::state_type;

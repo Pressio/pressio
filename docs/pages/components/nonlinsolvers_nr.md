@@ -1,5 +1,5 @@
 
-# Nonlinear Solvers: Newton-Raphson 
+# Nonlinear Solvers: Newton-Raphson
 
 Defined in header `<pressio/solvers_nonlinear.hpp>`
 
@@ -52,6 +52,14 @@ template<> struct Traits<ACustomJacobianType>{
 };
 
 namespace ops{
+
+std::size_t extent(ACustomStateType &, int i){
+  /* return extent along i-th dimension */
+}
+
+std::size_t extent(ACustomJacobianType &, int i){
+  /* return extent along i-th dimension */
+}
 
 ACustomStateType    clone(const ACustomStateType & src){
   /* return a deep copy of src */

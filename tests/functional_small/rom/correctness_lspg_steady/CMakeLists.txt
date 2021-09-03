@@ -1,0 +1,8 @@
+
+add_subdirectory(default)
+add_subdirectory(preconditioned_default)
+add_subdirectory(masked)
+add_subdirectory(preconditioned_masked)
+add_subdirectory(hypred)
+add_subdirectory(preconditioned_hypred)
+

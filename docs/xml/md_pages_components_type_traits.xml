@@ -8,11 +8,11 @@
     <detaileddescription>
 <para>Defined in header: <computeroutput>&lt;pressio/type_traits.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio</computeroutput></para>
-<sect1 id="md_pages_components_type_traits_1autotoc_md92">
+<sect1 id="md_pages_components_type_traits_1autotoc_md124">
 <title>Overview</title>
 <para>This component includes functionalities for type support and detection. One of the main design features of pressio is that it supports arbitrary types via generic programming and type introspection, but also provides special support for some data types commonly used.</para>
 </sect1>
-<sect1 id="md_pages_components_type_traits_1autotoc_md93">
+<sect1 id="md_pages_components_type_traits_1autotoc_md125">
 <title>Type detection and identification</title>
 <para>We support several metafunctions for detecting data types commonly used from existing TPLs. The following list is partial, and more will be added as we continue the development.</para>
 <para><table rows="22" cols="3"><row>
@@ -154,7 +154,7 @@
 </table>
 </para>
 </sect1>
-<sect1 id="md_pages_components_type_traits_1autotoc_md94">
+<sect1 id="md_pages_components_type_traits_1autotoc_md126">
 <title>Traits class</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>=<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits;</highlight></codeline>

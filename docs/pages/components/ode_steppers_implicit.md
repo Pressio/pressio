@@ -7,11 +7,10 @@ Public namespace: `pressio::ode`
 
 ## Overview
 
-Provides functionalities to create a stepper suitable for implicit methods.
-Recall that implicit methods calculate the state of a system at the next time
-by solving a system of equations involving both the current state of
-the system and the later one. An implicit stepper is an object that knows
-how to take one *implicit* step.
+Provides functionalities to create steppers for implicit methods.
+Recall that implicit methods update the state of a system
+by solving a system of equations involving both the current and next state.
+An implicit stepper is an object that knows how to do one such *implicit* step.
 
 Pressio implicit steppers are applicable to any system written in *continuous-time* form:
 @f[
@@ -24,11 +23,12 @@ and/or in a *discrete-time* form
 \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}
 @f]
 
-Here, @f$y@f$ is the full-order model (FOM) state,
-@f$f@f$ the FOM velocity, @f$t@f$ is time, and @f$R@f$ is the residual.
+Here, @f$y@f$ is the state, @f$f@f$ the velocity, @f$t@f$ is time, and @f$R@f$ is the residual.
 
 
 ## API for continuous-time systems
+
+In this case, pressio exposes the following functions to create an instance of a desired stepper:
 
 @code{.cpp}
 // overload 1
@@ -43,29 +43,22 @@ auto create_keyword_stepper(const StateType & state,
 							JacobianPolicyType && jPol);
 @endcode
 
-where the currently choices are:
+Currently, the choices are:
 
 | `keyword`         	| Method                  	| Discrete Residual Formula                                                                                      	|
 |-----------------	|-------------------------	|----------------------------------------------------------------------------------------------	|
-| `bdf1`          	| Backward Diff 1st order 	| @f$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})@f$                                                      	|
-| `bdf2`          	| Backward Diff 2nd order 	| @f$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})@f$ 	|
-| `cranknicolson` 	| Crank-Nicolson          	| @f$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)@f$  	|
-
-The create functions above return an instance of the desired stepper,
-which satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html). Therefore, one can use
-the "advancers" functions to step forward.
+| bdf1          	| Backward Diff 1st order 	| @f$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})@f$                                                      	|
+| bdf2          	| Backward Diff 2nd order 	| @f$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})@f$ 	|
+| cranknicolson 	| Crank-Nicolson          	| @f$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)@f$  	|
 
 
 ### Parameters
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `StateType`: data type of the state
 
-- `SystemType`:
-  - class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
+- `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
 
-- `ResidualPolicyType`, `JacobianPolicyType`:
-  - policy types if you want to use custom ones to compute the discrete operators
+- `ResidualPolicyType`, `JacobianPolicyType`: policy types if you want to use custom ones to compute the discrete operators.
 
 
 Notes:
@@ -78,7 +71,9 @@ Notes:
 
 ### Requirements
 
-- `StateType`: must be copy constructible
+- `StateType`: must be copy constructible and the following condition must be true:
+  `std::is_same<StateType, typename SystemType::state_type>::value == true`
+
 
 - `SystemType` must conform to the following API:
   @code{.cpp}
@@ -87,7 +82,7 @@ Notes:
 	using scalar_type   = /* */;
 	using state_type    = /* */;
 	using velocity_type = /* */;
-	using jacobian_type =  /* */;
+	using jacobian_type = /* */;
 
 	velocity_type createVelocity() const;
     jacobian_type createJacobian() const;
@@ -97,9 +92,6 @@ Notes:
   @endcode
 
   the nested type aliases must be *valid* types since they are detected by pressio
-
-- if `StateType` is the type deduced for `state` passed to `create_...`, the following must hold:<br/>
-  `std::is_same<StateType, typename SystemForImplicitOde::state_type>::value == true`
 
 - `ResidualPolicyType` must conform to:
   @code{.cpp}
@@ -192,7 +184,12 @@ for a certain scheme. All you need to know about these containers is the followi
 | `CrankNicolson` | `auxStates`: contains: states at n-th step <br/>  &emsp; &emsp; &emsp; &emsp; &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> `auxRhs`: contains evaluations of the RHS are n-th and (n+1)-th steps <br/>  &emsp; &emsp; &emsp; Use: `auto & fn = auxRhs(pressio::ode::n());` <br/> &ensp; &ensp; &ensp; &emsp; `auto & fnp1 = auxRhs(pressio::ode::nPlusOne());` |
 
 
-### Example usage
+### What to do after a stepper is created?
+
+Any stepper created using the functions above is guaranteed to satisfy
+the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html). Therefore, once you create a stepper, you can use
+the [advancers](md_pages_components_ode_advance.html) to step forward or you can use your own.<br/>
+An example is below:
 
 @code{.cpp}
 #include "pressio/type_traits.hpp"

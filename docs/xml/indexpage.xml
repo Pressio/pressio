@@ -46,7 +46,7 @@
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">ops</mcss:span>   </para>
-</entry><entry thead="no"><para>shared-memory and distributed linear algebra kernels specializations   </para>
+</entry><entry thead="no"><para>specializations of shared-memory and distributed linear algebra kernels   </para>
 </entry><entry thead="no"><para><ulink url="https://github.com/Pressio/pressio/tree/main/include/ops">Code</ulink><linebreak/>
 <ulink url="md_pages_components_ops.html">Documentation</ulink>   </para>
 </entry><entry thead="no"><para><computeroutput>&lt;pressio/ops.hpp&gt;</computeroutput>    </para>
@@ -95,7 +95,7 @@ implict steppers <linebreak/>
  <computeroutput>&lt;pressio/ode_steppers_explicit.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput><linebreak/>
  <computeroutput>&lt;pressio/ode_advancers.hpp&gt;</computeroutput> <linebreak/>
- Everything with: <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>    </para>
+ (for everything: <computeroutput>&lt;pressio/ode.hpp&gt;</computeroutput>)    </para>
 </entry></row>
 <row>
 <entry thead="no"><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-success">rom</mcss:span>   </para>
@@ -119,11 +119,11 @@ general info <linebreak/>
  <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput> <linebreak/>
  <computeroutput>&lt;pressio/rom_wls.hpp&gt;</computeroutput> <linebreak/>
- Everything with: <computeroutput>&lt;pressio/rom.hpp&gt;</computeroutput>   </para>
+ (for everything: <computeroutput>&lt;pressio/rom.hpp&gt;</computeroutput>)   </para>
 </entry></row>
 </table>
 </para>
-<sect1 id="index_1autotoc_md109">
+<sect1 id="index_1autotoc_md141">
 <title>Getting Started</title>
 <para><itemizedlist>
 <listitem><para><ulink url="./md_pages_introduction.html">read the introduction</ulink> discussing objectives and design ideas;</para>
@@ -133,12 +133,12 @@ general info <linebreak/>
 </listitem></itemizedlist>
 </para>
 </sect1>
-<sect1 id="index_1autotoc_md110">
+<sect1 id="index_1autotoc_md142">
 <title>License and Citation</title>
 <para>The full license (BSD-3) is available <ulink url="https://pressio.github.io/various/license/">here</ulink>.</para>
 <para>We are working on publishing this: you can find our arXiv preprint at: <ulink url="https://arxiv.org/abs/2003.07798">https://arxiv.org/abs/2003.07798</ulink></para>
 </sect1>
-<sect1 id="index_1autotoc_md111">
+<sect1 id="index_1autotoc_md143">
 <title>Questions?</title>
 <para>Find us on Slack: <ulink url="https://pressioteam.slack.com">https://pressioteam.slack.com</ulink> or open an issue on <ulink url="https://github.com/Pressio/pressio">github</ulink>. </para>
 </sect1>

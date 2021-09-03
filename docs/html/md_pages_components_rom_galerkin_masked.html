@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>rom: Galerkin: masked problem | Pressio|C++</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio|C++</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li>
+              <a>Documentation</a>
+              <ol>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_qr.html">qr</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
+                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+              </ol>
+            </li>
+            <li><a href="md_pages_tutorials.html">Tutorials</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="6">
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          rom: Galerkin: masked problem
+        </h1>
+<p>Defined in: <code>&lt;pressio/rom_galerkin.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom</code>, <code>pressio::rom::galerkin</code>.</p><section id="autotoc_md113"><h2><a href="#autotoc_md113">1. Creating a problem instance</a></h2><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span>
+  <span class="k">class</span> <span class="nc">StepperTag</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">FomSystemType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">DecoderType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">RomStateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">FomReferenceStateType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">ProjectorType</span><span class="p">,</span>
+  <span class="k">class</span> <span class="nc">MaskerType</span>
+  <span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_masked_problem</span><span class="p">(</span><span class="k">const</span> <span class="n">FomSystemType</span> <span class="o">&amp;</span> <span class="n">fomSysObj</span><span class="p">,</span>
+                           <span class="n">DecoderType</span> <span class="o">&amp;</span> <span class="n">decoder</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">RomStateType</span> <span class="o">&amp;</span> <span class="n">stateIn</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">FomReferenceStateType</span> <span class="o">&amp;</span> <span class="n">fomRef</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">ProjectorType</span> <span class="o">&amp;</span> <span class="n">probjector</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="n">MaskerType</span> <span class="o">&amp;</span> <span class="n">masker</span><span class="p">);</span></pre><p>where <code>StepperTag</code> is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.</p><section id="autotoc_md114"><h3><a href="#autotoc_md114">Parameters and Requirements</a></h3><ul><li><code>StepperTag</code>:<ul><li>tag type to specify the time scheme</li><li>must be one of the explicit or implicit tag types supported in <code>pressio::ode</code></li></ul></li><li><code>FomSystemType</code>:<ul><li>your adapter class type specifying the FOM problem</li><li>must satisfy one of the APIs suitable for Galerkin, see <a href="./md_pages_components_rom_fom_apis.html">API list</a></li></ul></li><li><code>DecoderType</code>:<ul><li>decoder class type</li><li>must satify the requirements listed <a href="md_pages_components_rom_decoder.html">here</a></li></ul></li><li><code>RomStateType</code>:<ul><li>ROM state type</li><li>currently, it must be either an Eigen vector or a Kokkos 1D view</li></ul></li><li><code>FomReferenceStateType</code>:<ul><li>your FOM reference state that is used when reconstructing the FOM state</li><li>must be copy-constructible and the following must be true:<br /> <code class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">is_same</span><span class="o">&lt;</span><span class="n">FomReferenceStateType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">DecoderType</span><span class="o">::</span><span class="n">fom_state_type</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">==</span> <span class="nb">true</span></code></li></ul></li><li><code>ProjectorType</code>:<ul><li>an operator is responsible for projectng the FOM operators onto the reduced space</li><li>must be a functor with a specific API, see <a href="md_pages_components_rom_galerkin_hypred.html">this page</a></li></ul></li><li><code>MaskedType</code>:<ul><li>an operator responsible of &quot;masking&quot; the FOM operators</li><li>must be a functor with a specific API, see details below</li></ul></li></ul></section><section id="autotoc_md115"><h3><a href="#autotoc_md115">Masker</a></h3><p><span class="m-text m-danger">todo</span>: explain</p><p>Suppose that <code>fom_velocity_type</code> is the type of your FOM velocity, and that <code>decoder_jacobian_t</code> is the type you use to represent the Jacobian of your decoder function. To be concrete, for the sake of explanation, <code>fom_velocity_type</code> can be for example a Trilinos vector type, or a PETSc vector, or any other thing you want. Similarly for the <code>decoder_jacobian_t</code>.</p><p>The masker must be a functor as follows:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">ValidMasker</span>
+<span class="p">{</span>
+  <span class="n">fom_velocity_type</span> <span class="nf">createApplyMaskResult</span><span class="p">(</span><span class="k">const</span> <span class="n">fom_velocity_type</span> <span class="o">&amp;</span> <span class="n">unmasked_object</span><span class="p">);</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">fom_velocity_type</span> <span class="o">&amp;</span> <span class="n">unmasked_object</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                  <span class="n">fom_velocity_type</span> <span class="o">&amp;</span> <span class="n">result</span><span class="p">);</span>
+
+  <span class="c1">// the two methods below are ONLY needed if you are doing implicit time</span>
+  <span class="n">decoder_jacobian_type</span> <span class="nf">createApplyMaskResult</span><span class="p">(</span><span class="k">const</span> <span class="n">decoder_jacobian_type</span> <span class="o">&amp;</span> <span class="n">unmasked_object</span><span class="p">);</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">TimeType</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">decoder_jacobian_type</span> <span class="o">&amp;</span> <span class="n">unmasked_object</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TimeType</span> <span class="n">time</span><span class="p">,</span>
+                  <span class="n">decoder_jacobian_type</span> <span class="o">&amp;</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">};</span></pre></section></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

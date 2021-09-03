@@ -72,7 +72,7 @@ void discrete_time_residual(const StateType & y_np1,
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<ScalarType>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<ScalarType>::c_n_;
   const auto cf	      = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
-  ::pressio::ops::update(R, cf, 
+  ::pressio::ops::update(R, cf,
         y_np1, cnp1,
 			 stencilStates(::pressio::ode::n()), cn);
 }
@@ -101,7 +101,7 @@ void discrete_time_residual(const StateType	& y_np1,
   constexpr auto cnm1 = ::pressio::ode::constants::bdf2<ScalarType>::c_nm1_;
   const auto cf	      = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
 
-  ::pressio::ops::update(R, cf, 
+  ::pressio::ops::update(R, cf,
                          y_np1, cnp1,
 			                   stencilStates(::pressio::ode::n()), cn,
 			                   stencilStates(nm1()), cnm1);
@@ -137,7 +137,7 @@ void discrete_time_residual(const StateType & y_np1,
   const auto cfnp1Dt = cfn*dt;
 
   constexpr auto zero  = ::pressio::utils::Constants<ScalarType>::zero();
-  ::pressio::ops::update(R, zero, 
+  ::pressio::ops::update(R, zero,
        y_np1, cnp1,
        stencilStates(::pressio::ode::n()), cn,
        stencilVelocities(::pressio::ode::n()), cfnDt,

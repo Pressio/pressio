@@ -57,6 +57,14 @@ Then you need to provide the following specializations\+:
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{keyword}{namespace }ops\{}
 \DoxyCodeLine{}
+\DoxyCodeLine{std::size\_t extent(ACustomStateType \&, \textcolor{keywordtype}{int} i)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return extent along i-\/th dimension */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::size\_t extent(ACustomJacobianType \&, \textcolor{keywordtype}{int} i)\{}
+\DoxyCodeLine{  \textcolor{comment}{/* return extent along i-\/th dimension */}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
 \DoxyCodeLine{ACustomStateType    clone(\textcolor{keyword}{const} ACustomStateType \& src)\{}
 \DoxyCodeLine{  \textcolor{comment}{/* return a deep copy of src */}}
 \DoxyCodeLine{\}}

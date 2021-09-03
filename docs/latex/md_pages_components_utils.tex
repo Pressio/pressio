@@ -1,19 +1,16 @@
 Defined in header\+: {\ttfamily $<$pressio/utils.\+hpp$>$}
 
-Public namespaces\+: {\ttfamily pressio} and {\ttfamily pressio\+::utils}.\hypertarget{md_pages_components_utils_autotoc_md96}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md96}
+Public namespaces\+: {\ttfamily pressio} and {\ttfamily pressio\+::utils}.\hypertarget{md_pages_components_utils_autotoc_md128}{}\doxysection{Logger}\label{md_pages_components_utils_autotoc_md128}
 One of the main functionalities inside {\ttfamily utils} is the logger. To implement the pressio logging functionalities, we have used \href{https://github.com/gabime/spdlog}{\texttt{ spdlog}}, rewriting a subset of it, for example to work seamlessly with MPI.
 
-
-
-\begin{DoxyParagraph}{By default the logger is disabled, here is how to enable it.}
-
-\end{DoxyParagraph}
-If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed! ~\newline
- By default, all logging is disabled for performance reasons. To enable and use it, you need to do two things\+:
+If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, you will be disappointed!~\newline
+ By default, for performance reasons, the logger is disabled. To enable and use it, you need to do two things\+:
 \begin{DoxyEnumerate}
-\item place a {\ttfamily define} statement to set the desired level\+: note that this define statement {\itshape must} be placed {\itshape before} including the utils header.
-\item you need to initialize and finalize the logger singleton.
+\item {\itshape before} including the utils header, place a {\ttfamily define} statement to set the {\itshape minimum} level
+\item you need to initialize and finalize the logger singleton
 \end{DoxyEnumerate}
+
+as shown below\+:
 
 
 \begin{DoxyCode}{0}
@@ -36,7 +33,7 @@ If you just {\ttfamily \#include$<$pressio/utils.\+hpp$>$} and expect logging, y
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md97}{}\doxysubsection{Initializing}\label{md_pages_components_utils_autotoc_md97}
+\hypertarget{md_pages_components_utils_autotoc_md129}{}\doxysubsection{Initializing}\label{md_pages_components_utils_autotoc_md129}
 You have these choices\+:
 
 
@@ -74,13 +71,13 @@ If you are running with MPI, the logger prints to the terminal {\itshape only fr
 \end{DoxyCode}
 
 
-If we were to run this with N ranks, we would obtain two files {\ttfamily log\+\_\+file.\+txt\+\_\+0}, and {\ttfamily log\+\_\+file.\+txt\+\_\+1}. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.\hypertarget{md_pages_components_utils_autotoc_md98}{}\doxysubsection{Finalizing}\label{md_pages_components_utils_autotoc_md98}
+If we were to run this with N ranks, we would obtain two files {\ttfamily log\+\_\+file.\+txt\+\_\+0}, and {\ttfamily log\+\_\+file.\+txt\+\_\+1}. Currently, the logger works only for the world communicator. We will later extend the API to accept a communicator object.\hypertarget{md_pages_components_utils_autotoc_md130}{}\doxysubsection{Finalizing}\label{md_pages_components_utils_autotoc_md130}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{plog::finalize();}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md99}{}\doxysubsection{Levels}\label{md_pages_components_utils_autotoc_md99}
+\hypertarget{md_pages_components_utils_autotoc_md131}{}\doxysubsection{Levels}\label{md_pages_components_utils_autotoc_md131}
 The supported levels are\+:
 
 
@@ -94,8 +91,8 @@ The supported levels are\+:
 \DoxyCodeLine{\textcolor{preprocessor}{\#define PRESSIO\_LOG\_LEVEL\_OFF       6}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md100}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md100}
-If you want, you can use the define statement to set the min level, but then at runtime reset it as follows\+:
+\hypertarget{md_pages_components_utils_autotoc_md132}{}\doxysubsection{Resetting the level}\label{md_pages_components_utils_autotoc_md132}
+If you want, you can use the define statement to set the min level, but then at runtime you can reset for a {\itshape higher} level (see below). Note that you cannot reset the level to something that is {\itshape lower} than the one you set via the {\ttfamily define} statement.
 
 
 \begin{DoxyCode}{0}
@@ -105,7 +102,7 @@ If you want, you can use the define statement to set the min level, but then at 
 \DoxyCodeLine{\textcolor{comment}{// ...}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_utils_autotoc_md101}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md101}
+\hypertarget{md_pages_components_utils_autotoc_md133}{}\doxysubsection{The loggin macros}\label{md_pages_components_utils_autotoc_md133}
 To actually issue log statements, you use the macros as in the following example\+:
 
 
