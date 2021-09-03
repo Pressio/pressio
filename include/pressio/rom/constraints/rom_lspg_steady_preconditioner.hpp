@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// rom_steady_masker.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,49 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-
-#include "./impl/rom_decoder_linear.hpp"
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_STEADY_PRECONDITIONER_HPP_
 
 namespace pressio{ namespace rom{
 
 template<
-  class FomStateType, class JacobianMatrixType,
-  class ReturnType = impl::LinearDecoder<FomStateType, JacobianMatrixType>
+  class T,
+  class state_t,
+  class operand1_t,
+  class operand2_t,
+  class enable = void
   >
-ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix)
-{
-  return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
-}
+struct lspg_steady_preconditioner : std::false_type{};
 
-}} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+template<
+  class T,
+  class state_t,
+  class operand1_t,
+  class operand2_t
+  >
+struct lspg_steady_preconditioner<
+  T, state_t, operand1_t, operand2_t,
+  mpl::enable_if_t<
+    std::is_same<
+      decltype(std::declval<T const>()
+	       (
+		std::declval<state_t const&>(),
+		std::declval<operand1_t &>()
+		)
+	       ), void
+      >::value
+    and
+    std::is_same<
+      decltype(std::declval<T const>()
+	       (
+		std::declval<state_t const&>(),
+		std::declval<operand2_t &>()
+		)
+	       ), void
+      >::value
+    >
+  >
+  : std::true_type{};
+
+}}
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_STEADY_MASKER_HPP_

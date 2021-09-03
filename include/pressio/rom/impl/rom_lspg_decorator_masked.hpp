@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// rom_masked.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,69 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#ifndef ROM_LSPG_DECORATORS_ROM_MASKED_HPP_
+#define ROM_LSPG_DECORATORS_ROM_MASKED_HPP_
 
-#include "./impl/rom_decoder_linear.hpp"
+namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-namespace pressio{ namespace rom{
-
-template<
-  class FomStateType, class JacobianMatrixType,
-  class ReturnType = impl::LinearDecoder<FomStateType, JacobianMatrixType>
-  >
-ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix)
+template <class DataType, class MaskerType, class MaskableType>
+class Masked : public MaskableType
 {
-  return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
-}
 
-}} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+public:
+  Masked() = delete;
+  Masked(const Masked &) = default;
+  Masked & operator=(const Masked &) = default;
+  Masked(Masked &&) = default;
+  Masked & operator=(Masked &&) = default;
+  ~Masked() = default;
+
+  template <class ... Args>
+  Masked(const MaskerType & maskerObj, Args && ... args)
+    : MaskableType(std::forward<Args>(args)...),
+      unmaskedObject_(MaskableType::create()),
+      masker_(maskerObj)
+  {}
+
+public:
+  DataType create() const{
+    return DataType(masker_.get().createApplyMaskResult(unmaskedObject_));
+  }
+
+  // steady calls this
+  template <class LspgStateType>
+  void compute(const LspgStateType & state, DataType & maskedResult) const
+  {
+    MaskableType::compute(state, unmaskedObject_);
+    masker_(unmaskedObject_, maskedResult);
+  }
+
+  // // unsteady calls this
+  // template <
+  //   class stepper_tag,
+  //   class LspgStateType,
+  //   class prev_states_t,
+  //   class fom_system_t,
+  //   class time_type
+  //   >
+  // void compute(const LspgStateType & state,
+  // 	       const prev_states_t & prevStates,
+  // 	       const fom_system_t & systemObj,
+  // 	       const time_type & time,
+  // 	       const time_type & dt,
+  // 	       const ::pressio::ode::step_count_type & step,
+  // 	       DataType & maskedResult) const
+  // {
+  //   MaskableType::template compute<stepper_tag>
+  //     (state, prevStates, systemObj, time, dt, step, unmaskedObject_);
+  //   masker_.get().applyMask(*unmaskedObject_.data(), time, *maskedResult.data());
+  // }
+
+private:
+  mutable DataType unmaskedObject_;
+  std::reference_wrapper<const MaskerType> masker_;
+
+};
+
+}}}}
+#endif  // ROM_LSPG_DECORATORS_ROM_MASKED_HPP_

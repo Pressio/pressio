@@ -1,7 +1,26 @@
 
-#include <gtest/gtest.h>
-#include "common.hpp"
+#include "foms.hpp"
+#include "../checkers.hpp"
 #include "pressio/rom_galerkin.hpp"
+
+#define SHARED_LINES()\
+  using scalar_t    = typename fom_t::scalar_type;\
+  using fom_state_t = typename fom_t::state_type;\
+  constexpr int N = 10;\
+  fom_t fomSystem(N);\
+  fom_state_t fomReferenceState(N);\
+  fomReferenceState.setZero();\
+  using phi_t = Eigen::MatrixXd;\
+  phi_t phi(N, 3);\
+  phi.col(0).setConstant(0.);\
+  phi.col(1).setConstant(1.);\
+  phi.col(2).setConstant(2.);\
+  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);\
+  Eigen::VectorXd romState(3);\
+  romState[0]=0.;\
+  romState[1]=1.;\
+  romState[2]=2.;\
+
 
 TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
 {
@@ -34,25 +53,7 @@ TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using fom_t	= TrivialFomOnlyVelocityEigen;
-  using scalar_t    = typename fom_t::scalar_type;
-  using fom_state_t	= typename fom_t::state_type;
-
-  constexpr int N = 10;
-  fom_t fomSystem(N);
-  fom_state_t fomReferenceState(N);
-  fomReferenceState.setZero();
-
-  using phi_t = Eigen::MatrixXd;
-  phi_t phi(N, 3);
-  phi.col(0).setConstant(0.);
-  phi.col(1).setConstant(1.);
-  phi.col(2).setConstant(2.);
-  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);
-
-  Eigen::VectorXd romState(3);
-  romState[0]=0.;
-  romState[1]=1.;
-  romState[2]=2.;
+  SHARED_LINES();
 
   using ode_tag = pressio::ode::ForwardEuler;
   auto problem = pressio::rom::galerkin::create_default_problem<ode_tag>(fomSystem, decoder, romState, fomReferenceState);
@@ -91,25 +92,7 @@ TEST(rom_galerkin, cont_time_default_implicit_correctness_eigen)
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using fom_t = TrivialFomVelocityAndJacobianEigen;
-  using scalar_t    = typename fom_t::scalar_type;
-  using fom_state_t = typename fom_t::state_type;
-
-  constexpr int N = 10;
-  fom_t fomSystem(N);
-  fom_state_t fomReferenceState(N);
-  fomReferenceState.setZero();
-
-  using phi_t = Eigen::MatrixXd;
-  phi_t phi(N, 3);
-  phi.col(0).setConstant(0.);
-  phi.col(1).setConstant(1.);
-  phi.col(2).setConstant(2.);
-  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);
-
-  Eigen::VectorXd romState(3);
-  romState[0]=0.;
-  romState[1]=1.;
-  romState[2]=2.;
+  SHARED_LINES();
 
   using ode_tag = pressio::ode::BDF1;
   auto problem = pressio::rom::galerkin::create_default_problem<ode_tag>(fomSystem, decoder, romState, fomReferenceState);
@@ -134,25 +117,7 @@ TEST(rom_galerkin, discrete_time_default_implicit_correctness_eigen)
   pressio::log::setVerbosity({pressio::log::level::debug});
 
   using fom_t = TrivialFomDiscreteTimeEigen;
-  using scalar_t    = typename fom_t::scalar_type;
-  using fom_state_t = typename fom_t::state_type;
-
-  constexpr int N = 10;
-  fom_t fomSystem(N);
-  fom_state_t fomReferenceState(N);
-  fomReferenceState.setZero();
-
-  using phi_t = Eigen::MatrixXd;
-  phi_t phi(N, 3);
-  phi.col(0).setConstant(0.);
-  phi.col(1).setConstant(1.);
-  phi.col(2).setConstant(2.);
-  auto decoder = pressio::rom::create_time_invariant_linear_decoder<fom_state_t>(phi);
-
-  Eigen::VectorXd romState(3);
-  romState[0]=0.;
-  romState[1]=1.;
-  romState[2]=2.;
+  SHARED_LINES();
 
   auto problem = pressio::rom::galerkin::create_default_problem<2>(fomSystem, decoder, romState, fomReferenceState);
   auto & stepperObj = problem.stepper();

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// rom_fom_state.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,31 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-
-#include "./impl/rom_decoder_linear.hpp"
+#ifndef ROM_LSPG_CONSTRAINTS_ROM_LSPG_TYPES_HPP_
+#define ROM_LSPG_CONSTRAINTS_ROM_LSPG_TYPES_HPP_
 
 namespace pressio{ namespace rom{
 
-template<
-  class FomStateType, class JacobianMatrixType,
-  class ReturnType = impl::LinearDecoder<FomStateType, JacobianMatrixType>
-  >
-ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix)
-{
-  return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
-}
+template<typename T, typename enable = void>
+struct admissible_lspg_state : std::false_type{};
 
-}} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#ifdef PRESSIO_ENABLE_TPL_EIGEN
+template<typename T>
+struct admissible_lspg_state<T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dynamic_vector_eigen<T>::value
+   >
+  > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
+template<typename T>
+struct admissible_lspg_state<T,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_dynamic_vector_kokkos<T>::value
+   >
+  > : std::true_type{};
+#endif
+
+}}
+#endif  // ROM_LSPG_CONSTRAINTS_ROM_FOM_STATE_HPP_

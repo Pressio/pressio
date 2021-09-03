@@ -67,13 +67,10 @@ struct FomStateReconstructor
   ~FomStateReconstructor() = default;
 
   FomStateReconstructor(const fom_state_type & fomNominalState,
-				                const decoder_type & decoder)
+			const decoder_type & decoder)
     : fomNominalState_(::pressio::ops::clone(fomNominalState)),
       decoderObj_(decoder)
-  {
-    // PRESSIOLOG_DEBUG
-    //   ("cnstr: fomNominalState extent = {}", ::pressio::ops::extent(fomNominalState,0));
-  }
+  {}
 
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 //   template <typename rom_state_t>
@@ -97,7 +94,7 @@ struct FomStateReconstructor
 //      since this should work for rank1 and rank2 rom states.
 //      If we only passed the native array wihtout the template, we would not know
 //      the propper rank of the fom state.
-  
+
 //   template<typename rom_state_t>
 //   native_fom_state_t evaluate(const typename rom_state_t::traits::wrapped_t & romStateIn) const
 //   {
@@ -111,8 +108,9 @@ struct FomStateReconstructor
 // #else
   template <class RomStateType>
   void operator()(const RomStateType & romState,
-		              fom_state_type & fomState) const
+		  fom_state_type & fomState) const
   {
+
     // map current romState to FOM state
     decoderObj_.get().applyMapping(romState, fomState);
     constexpr auto one = ::pressio::utils::Constants<scalar_type>::one();
@@ -123,6 +121,7 @@ struct FomStateReconstructor
   template <class RomStateType>
   fom_state_type operator()(const RomStateType & romState) const
   {
+
     auto fomState = ::pressio::ops::clone(fomNominalState_);
     ::pressio::ops::set_zero(fomState);
     this->operator()(romState,fomState);

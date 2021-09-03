@@ -51,6 +51,7 @@
 
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_galerkin_problem_members.hpp"
+#include "./rom_galerkin_projector_default.hpp"
 #include "./rom_galerkin_decorator_projected.hpp"
 #include "./rom_galerkin_decorator_masked.hpp"
 #include "./rom_galerkin_fom_velocity_policy.hpp"

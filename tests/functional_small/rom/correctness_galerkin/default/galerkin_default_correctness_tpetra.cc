@@ -1,6 +1,6 @@
 
-#include <gtest/gtest.h>
-#include "common.hpp"
+#include "foms.hpp"
+#include "../checkers.hpp"
 #include "pressio/rom_galerkin.hpp"
 
 TEST(rom_galerkin, cont_time_default_explicit_correctness_tpetra)

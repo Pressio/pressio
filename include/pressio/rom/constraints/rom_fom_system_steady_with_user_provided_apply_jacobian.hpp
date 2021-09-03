@@ -49,7 +49,7 @@
 #ifndef ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 #define ROM_CONSTRAINTS_SYSTEM_ROM_STEADY_SYSTEM_WITH_USER_PROVIDED_APPLY_JACOBIAN_HPP_
 
-namespace pressio{ namespace rom{ 
+namespace pressio{ namespace rom{
 
 template<typename T, typename ApplyJacobianOperandType, typename enable = void>
 struct steady_fom_system_with_user_provided_apply_jacobian : std::false_type{};
@@ -61,7 +61,7 @@ struct steady_fom_system_with_user_provided_apply_jacobian<
     //============================
     /// required typedefs
     //============================
-        ::pressio::has_scalar_typedef<T>::value 
+        ::pressio::has_scalar_typedef<T>::value
     and ::pressio::has_state_typedef<T>::value
     and ::pressio::has_residual_typedef<T>::value
     //============================
@@ -72,12 +72,12 @@ struct steady_fom_system_with_user_provided_apply_jacobian<
           >::value
     and ::pressio::rom::has_const_residual_method_accept_state_result_return_void<
           T, typename T::state_type, typename T::residual_type
-          >::value 
+          >::value
     //============================
     /// reuired apply jacobian
     //============================
     and ::pressio::rom::has_const_create_apply_jacobian_result_method_accept_operand_return_result<
-          T, ApplyJacobianOperandType 
+          T, ApplyJacobianOperandType
           >::value
     and ::pressio::rom::has_const_apply_jacobian_method_accept_state_operand_result_return_void<
           T, typename T::state_type, ApplyJacobianOperandType, ApplyJacobianOperandType

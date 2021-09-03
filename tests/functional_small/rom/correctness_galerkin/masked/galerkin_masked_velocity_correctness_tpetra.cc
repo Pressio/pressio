@@ -1,6 +1,9 @@
 
-#include <gtest/gtest.h>
-#include "common.hpp"
+#include "../../custom_data_types.hpp"
+#include "foms.hpp"
+#include "projectors.hpp"
+#include "maskers.hpp"
+#include "../checkers.hpp"
 #include "pressio/rom_galerkin.hpp"
 
 #define MASKED_GALERKIN_COMMON_PART() \

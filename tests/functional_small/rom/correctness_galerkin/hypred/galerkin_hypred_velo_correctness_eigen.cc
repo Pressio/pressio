@@ -1,6 +1,9 @@
 
 #include <gtest/gtest.h>
-#include "common.hpp"
+#include "../../custom_data_types.hpp"
+#include "foms.hpp"
+#include "projectors.hpp"
+#include "../checkers.hpp"
 #include "pressio/rom_galerkin.hpp"
 
 #define HYPRED_VELO_GALERKIN_COMMON_PART() \
@@ -34,6 +37,12 @@
   romState[0]=0.;\
   romState[1]=1.;\
   romState[2]=2.;\
+  /* projector must be applicable to the *sample* operand */\
+  phi_t matForProj(nSample, 3);\
+  matForProj.col(0).setConstant(0.);\
+  matForProj.col(1).setConstant(1.);\
+  matForProj.col(2).setConstant(2.);\
+  ProjectorExplicitEigen proj(matForProj);\
 
 
 TEST(rom_galerkin, cont_time_hypred_explicit_correctness_eigen)
@@ -43,13 +52,6 @@ TEST(rom_galerkin, cont_time_hypred_explicit_correctness_eigen)
 
   using fom_t = TrivialFomOnlyVelocityEigen;
   HYPRED_VELO_GALERKIN_COMMON_PART();
-
-  // projector must be applicable to the *sample* operand
-  phi_t matForProj(nSample, 3);
-  matForProj.col(0).setConstant(0.);\
-  matForProj.col(1).setConstant(1.);\
-  matForProj.col(2).setConstant(2.);\
-  ProjectorExplicitEigen proj(matForProj);
 
   using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
@@ -77,13 +79,6 @@ TEST(rom_galerkin, cont_time_hypred_implicit_correctness_eigen)
   using fom_t = TrivialFomVelocityAndJacobianEigen;
   HYPRED_VELO_GALERKIN_COMMON_PART();
 
-  // projector must be applicable to the *sample* operand
-  phi_t matForProj(nSample, 3);
-  matForProj.col(0).setConstant(0.);\
-  matForProj.col(1).setConstant(1.);\
-  matForProj.col(2).setConstant(2.);\
-  ProjectorExplicitEigen proj(matForProj);
-
   using ode_tag = pressio::ode::BDF1;
   auto problem = pressio::rom::galerkin::create_hyperreduced_problem<ode_tag>(
     fomSystem, decoder, romState, fomReferenceState, proj);
@@ -107,13 +102,6 @@ TEST(rom_galerkin, discrete_time_hypred_implicit_correctness_eigen)
 
   using fom_t = TrivialFomDiscreteTimeEigen;
   HYPRED_VELO_GALERKIN_COMMON_PART();
-
-  // projector must be applicable to the *sample* operand
-  phi_t matForProj(nSample, 3);
-  matForProj.col(0).setConstant(0.);\
-  matForProj.col(1).setConstant(1.);\
-  matForProj.col(2).setConstant(2.);\
-  ProjectorExplicitEigen proj(matForProj);
 
   auto problem = pressio::rom::galerkin::create_hyperreduced_problem<2>(
     fomSystem, decoder, romState, fomReferenceState, proj);

@@ -1,6 +1,9 @@
 
-#include <gtest/gtest.h>
-#include "common.hpp"
+#include "../../custom_data_types.hpp"
+#include "foms.hpp"
+#include "projectors.hpp"
+#include "maskers.hpp"
+#include "../checkers.hpp"
 #include "pressio/rom_galerkin.hpp"
 
 #define MASKED_GALERKIN_COMMON_PART() \
@@ -34,6 +37,14 @@
   romState[0]=0.;\
   romState[1]=1.;\
   romState[2]=2.;\
+  /* projector must be applicable to the *masked* operand*/\
+  /* so we need to use only certain rows of phi*/\
+  phi_t phiSample(nMasked, 3);\
+  for (int i = 0; i < nMasked; ++i){\
+    phiSample(i, 0) = phiFull(sample_indices[i],0);\
+    phiSample(i, 1) = phiFull(sample_indices[i],1);\
+    phiSample(i, 2) = phiFull(sample_indices[i],2);\
+  }\
 
 
 TEST(rom_galerkin_test, const_time_masked_explicit_correctness_eigen)
@@ -51,17 +62,7 @@ TEST(rom_galerkin_test, const_time_masked_explicit_correctness_eigen)
   using fom_t = TrivialFomOnlyVelocityEigen;
   MASKED_GALERKIN_COMMON_PART();
 
-  // create masker
   MaskerExplicitEigen masker(sample_indices);
-
-  // projector must be applicable to the *masked* operand
-  // so we need to use only certain rows of phi
-  phi_t phiSample(nMasked, 3);
-  for (int i = 0; i < nMasked; ++i){
-    phiSample(i, 0) = phiFull(sample_indices[i],0);
-    phiSample(i, 1) = phiFull(sample_indices[i],1);
-    phiSample(i, 2) = phiFull(sample_indices[i],2);
-  }
   ProjectorExplicitEigen proj(phiSample);
 
   using ode_tag = pressio::ode::ForwardEuler;
@@ -90,17 +91,7 @@ TEST(rom_galerkin_test, const_time_masked_implicit_correctness_eigen)
   using fom_t = TrivialFomVelocityAndJacobianEigen;
   MASKED_GALERKIN_COMMON_PART();
 
-  // create masker
   MaskerImplicitEigen masker(sample_indices);
-
-  // projector must be applicable to the *masked* operand
-  // so we need to use only certain rows of phi
-  phi_t phiSample(nMasked, 3);
-  for (int i = 0; i < nMasked; ++i){
-    phiSample(i, 0) = phiFull(sample_indices[i],0);
-    phiSample(i, 1) = phiFull(sample_indices[i],1);
-    phiSample(i, 2) = phiFull(sample_indices[i],2);
-  }
   ProjectorImplicitEigen proj(phiSample);
 
   using ode_tag = pressio::ode::BDF1;
@@ -128,17 +119,7 @@ TEST(rom_galerkin_test, discrete_time_masked_implicit_correctness_eigen)
   using fom_t = TrivialFomDiscreteTimeEigen;
   MASKED_GALERKIN_COMMON_PART();
 
-  // create masker
   MaskerImplicitEigen masker(sample_indices);
-
-  // projector must be applicable to the *masked* operand
-  // so we need to use only certain rows of phi
-  phi_t phiSample(nMasked, 3);
-  for (int i = 0; i < nMasked; ++i){
-    phiSample(i, 0) = phiFull(sample_indices[i],0);
-    phiSample(i, 1) = phiFull(sample_indices[i],1);
-    phiSample(i, 2) = phiFull(sample_indices[i],2);
-  }
   ProjectorImplicitEigen proj(phiSample);
 
   auto problem = pressio::rom::galerkin::create_masked_problem<2>(

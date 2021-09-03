@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// rom_linear_decoder.hpp
+// pressio_rom_galerkin.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,21 +46,23 @@
 //@HEADER
 */
 
-#ifndef ROM_DECODER_ROM_LINEAR_DECODER_HPP_
-#define ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#ifndef PRESSIO_ROM_LSPG_TOPLEVEL_INC_HPP_
+#define PRESSIO_ROM_LSPG_TOPLEVEL_INC_HPP_
 
-#include "./impl/rom_decoder_linear.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
-namespace pressio{ namespace rom{
+#include "./rom/predicates/all.hpp"
+#include "./rom/constraints/all.hpp"
+#include "./rom_decoder.hpp"
+#include "./rom/rom_reconstructor_fom_state.hpp"
+#include "./rom/rom_manager_fom_states.hpp"
+#include "./rom/rom_public_api_lspg.hpp"
 
-template<
-  class FomStateType, class JacobianMatrixType,
-  class ReturnType = impl::LinearDecoder<FomStateType, JacobianMatrixType>
-  >
-ReturnType create_time_invariant_linear_decoder(JacobianMatrixType && jac_matrix)
-{
-  return ReturnType(std::forward<JacobianMatrixType>(jac_matrix));
-}
-
-}} // end namespace pressio::rom
-#endif  // ROM_DECODER_ROM_LINEAR_DECODER_HPP_
+#endif

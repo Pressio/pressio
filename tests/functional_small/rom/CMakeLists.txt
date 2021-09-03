@@ -9,6 +9,5 @@ if(PRESSIO_ENABLE_TPL_EIGEN)
  		${CMAKE_CURRENT_SOURCE_DIR}/linear_decoder_eigen.cc)
 endif()
 
-add_subdirectory(galerkin_default_correctness)
-add_subdirectory(galerkin_masked_correctness)
-add_subdirectory(galerkin_hypred_correctness)
+add_subdirectory(correctness_galerkin)
+add_subdirectory(correctness_lspg_steady)
