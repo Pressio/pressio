@@ -66,11 +66,10 @@ template<
     StepperTag, void, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_default_problem(const FomSystemType & fomSysObj,
-                       DecoderType & decoder,
-                       const RomStateType & stateIn,
-                       const FomReferenceStateType & fomRef)
+ReturnType create_default_problem(const FomSystemType & fomSysObj,
+				  DecoderType & decoder,
+				  const RomStateType & stateIn,
+				  const FomReferenceStateType & fomRef)
 {
   return ReturnType(fomSysObj, decoder, stateIn, fomRef);
 }
@@ -87,12 +86,11 @@ template<
     FomReferenceStateType, ProjectorType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_hyperreduced_problem(const FomSystemType & fomSysObj,
-			    DecoderType & decoder,
-			    const RomStateType & stateIn,
-			    const FomReferenceStateType & fomRef,
-			    const ProjectorType & projector)
+ReturnType create_hyperreduced_problem(const FomSystemType & fomSysObj,
+				       DecoderType & decoder,
+				       const RomStateType & stateIn,
+				       const FomReferenceStateType & fomRef,
+				       const ProjectorType & projector)
 
 {
   return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector);
@@ -111,13 +109,12 @@ template<
     FomReferenceStateType, MaskerType, ProjectorType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_masked_problem(const FomSystemType & fomSysObj,
-		      DecoderType & decoder,
-		      const RomStateType & stateIn,
-		      const FomReferenceStateType & fomRef,
-		      const ProjectorType & projector,
-		      const MaskerType & masker)
+ReturnType create_masked_problem(const FomSystemType & fomSysObj,
+				 DecoderType & decoder,
+				 const RomStateType & stateIn,
+				 const FomReferenceStateType & fomRef,
+				 const ProjectorType & projector,
+				 const MaskerType & masker)
 
 {
   return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector, masker);
