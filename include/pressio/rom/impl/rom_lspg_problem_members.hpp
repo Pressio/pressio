@@ -51,12 +51,6 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-// template <
-//   class T, bool def, bool masked, bool prec, bool hypred,
-//   class ... Args
-//   >
-// struct PoliciesMixin;
-
 template <class T, class r_pol_t, class j_pol_t>
 struct DefaultPoliciesMixin : T
 {
@@ -135,28 +129,6 @@ struct DoublyDecoratedPoliciesMixin : T
     : T(fomObj, decoder, romStateIn, fomNominalState),
       residualPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_),
       jacobianPolicy_(functor1, functor2, T::fomCRef(), T::fomStatesMngr_, decoder)
-  {}
-};
-
-//---------------------------------------------------
-// system mixin (used for steady LSPG)
-//---------------------------------------------------
-template <class T, class system_t>
-struct SystemMixin : T
-{
-  system_t systemObj_;
-
-  SystemMixin() = delete;
-  SystemMixin(const SystemMixin &) = default;
-  SystemMixin & operator=(const SystemMixin &) = delete;
-  SystemMixin(SystemMixin &&) = default;
-  SystemMixin & operator=(SystemMixin &&) = delete;
-  ~SystemMixin() = default;
-
-  template<class...Args>
-  SystemMixin(Args && ...args)
-    : T(std::forward<Args>(args)...),
-      systemObj_(T::residualPolicy_, T::jacobianPolicy_)
   {}
 };
 

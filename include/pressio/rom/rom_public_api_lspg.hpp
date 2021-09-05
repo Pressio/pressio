@@ -50,11 +50,33 @@
 #define ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
 
 #include "./impl/rom_lspg_steady_compose_impl.hpp"
+#include "./impl/rom_lspg_unsteady_compose_impl.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
 // --------------------
-// for steady
+// unsteady
+// --------------------
+template<
+  class StepperTag,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ReturnType = typename impl::ComposeDefaultProblemUnsteadyContTime<
+    StepperTag, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+    >::type
+  >
+ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef)
+{
+  return ReturnType(fomSysObj, decoder, stateIn, fomRef);
+}
+
+// --------------------
+// steady
 // --------------------
 template<
   class FomSystemType,

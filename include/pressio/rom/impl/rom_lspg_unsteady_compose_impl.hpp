@@ -46,30 +46,49 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
+#define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
 
-#include "./rom_lspg_decorator_preconditioner.hpp"
-#include "./rom_lspg_decorator_masked.hpp"
+// #include "./rom_lspg_decorator_preconditioner.hpp"
+// #include "./rom_lspg_decorator_masked.hpp"
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_lspg_problem_members.hpp"
-#include "./rom_lspg_steady_policies.hpp"
-#include "./rom_lspg_steady_system.hpp"
-#include "./rom_lspg_steady_problem_traits.hpp"
-#include "./rom_lspg_steady_problem.hpp"
+#include "./rom_lspg_unsteady_policy_residual.hpp"
+#include "./rom_lspg_unsteady_policy_jacobian.hpp"
+#include "./rom_lspg_unsteady_traits.hpp"
+#include "./rom_lspg_unsteady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
+template <typename tag>
+struct valid_stepper_tag_continuous_time_api
+{
+  static_assert
+  (std::is_same<tag, ::pressio::ode::BDF1>::value or
+   std::is_same<tag, ::pressio::ode::BDF2>::value or
+   std::is_same<tag, ::pressio::ode::CrankNicolson>::value,
+   "Invalid stepper tag for LSPG unsteady problem with continuous-time API: \
+this can be because you used a wrong one, or the current LSPG implementation does \
+not support it, or because you added a new ode scheme in the ode package \
+but forgot to update the list of implicit tags supported by LSPG which \
+currently contains: BDF1, BDF2 or CrankNicolson");
+
+  static constexpr auto value = true;
+};
+
 template<
   int id,
+  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class LspgStateType,
   class FomReferenceState,
   class ...Args
   >
-struct Composer
+struct ComposerContTime
 {
+
+  static_assert(valid_stepper_tag_continuous_time_api<StepperTag>::value,"");
 
   static_assert
   (::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, LspgStateType>::value,
@@ -77,43 +96,43 @@ struct Composer
   using decoder_jacobian_type = typename mpl::remove_cvref_t<DecoderType>::jacobian_type;
 
   static_assert
-  (::pressio::rom::steady_fom_system_with_user_provided_apply_jacobian<
+  (::pressio::rom::continuous_time_fom_system_with_user_provided_apply_jacobian<
    mpl::remove_cvref_t<FomSystemType>, decoder_jacobian_type>::value,
    "The FOM system does not satisfy the steady concept");
 
   static_assert
-    (std::is_same<mpl::remove_cvref_t<FomReferenceState>,
-     typename mpl::remove_cvref_t<DecoderType>::fom_state_type>::value,
+  (std::is_same<mpl::remove_cvref_t<FomReferenceState>,
+   typename mpl::remove_cvref_t<DecoderType>::fom_state_type>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
   compatible with the FOM state type detected from adapter class");
 
-  using type = ::pressio::rom::lspg::impl::SteadyProblem<
-    id, FomSystemType, LspgStateType, DecoderType, Args...>;
+  using type = ::pressio::rom::lspg::impl::UnsteadyProblem<
+    id, StepperTag, FomSystemType, LspgStateType, DecoderType, Args...>;
 };
 
 // default
 template<class ...Args>
-using ComposeDefaultProblemSteady = Composer<0, Args...>;
+using ComposeDefaultProblemUnsteadyContTime = ComposerContTime<0, Args...>;
 
-// preconditioned default
-template<class ...Args>
-using ComposePrecDefaultProblemSteady = Composer<2, Args...>;
+// // preconditioned default
+// template<class ...Args>
+// using ComposePrecDefaultProblemSteady = Composer<2, Args...>;
 
-// hyperreduced (note that impl-wise this is same as default)
-template<class ...Args>
-using ComposeHyperreducedProblemSteady = ComposeDefaultProblemSteady<Args...>;
+// // hyperreduced (note that impl-wise this is same as default)
+// template<class ...Args>
+// using ComposeHyperreducedProblemSteady = ComposeDefaultProblemSteady<Args...>;
 
-// preconditioned hypred
-template<class ...Args>
-using ComposePrecHypredProblemSteady = ComposePrecDefaultProblemSteady<Args...>;
+// // preconditioned hypred
+// template<class ...Args>
+// using ComposePrecHypredProblemSteady = ComposePrecDefaultProblemSteady<Args...>;
 
-// masked
-template<class ...Args>
-using ComposeMaskedProblemSteady = Composer<1, Args...>;
+// // masked
+// template<class ...Args>
+// using ComposeMaskedProblemSteady = Composer<1, Args...>;
 
-// preconditioned masked
-template<class ...Args>
-using ComposePrecMaskedProblemSteady = Composer<3, Args...>;
+// // preconditioned masked
+// template<class ...Args>
+// using ComposePrecMaskedProblemSteady = Composer<3, Args...>;
 
 }}}}
 #endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_

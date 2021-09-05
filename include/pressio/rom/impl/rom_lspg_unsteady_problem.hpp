@@ -46,31 +46,12 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
-#define ROM_LSPG_IMPL_CONTINUOUS_TIME_API_ROM_LSPG_DEFAULT_PROBLEM_EXPLICIT_STEPPING_HPP_
+#ifndef ROM_LSPG_IMPL_UNSTEADY_PROBLEM_HPP_
+#define ROM_LSPG_IMPL_UNSTEADY_PROBLEM_HPP_
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template <class T, class system_t>
-struct SystemMixin : T
-{
-  system_t systemObj_;
-
-  SystemMixin() = delete;
-  SystemMixin(const SystemMixin &) = default;
-  SystemMixin & operator=(const SystemMixin &) = delete;
-  SystemMixin(SystemMixin &&) = default;
-  SystemMixin & operator=(SystemMixin &&) = delete;
-  ~SystemMixin() = default;
-
-  template<class...Args>
-  SystemMixin(Args && ...args)
-    : T(std::forward<Args>(args)...),
-      systemObj_(T::residualPolicy_, T::jacobianPolicy_)
-  {}
-};
-
-template <class traits> struct SteadyMembersCommon
+template <class traits> struct UnsteadyMembersCommon
 {
   static constexpr auto binding_sentinel = traits::binding_sentinel;
   using At = ::pressio::rom::impl::FomObjMixin<
@@ -84,98 +65,44 @@ template <class traits> struct SteadyMembersCommon
 };
 
 template <int flag, class traits>
-struct SteadyMembers{ using type = void; };
+struct UnsteadyMembers{ using type = void; };
 
 // default
-template <class traits> struct SteadyMembers<0, traits>
-  : SteadyMembersCommon<traits>
+template <class traits> struct UnsteadyMembers<0, traits> : UnsteadyMembersCommon<traits>
 {
-  using base_t = SteadyMembersCommon<traits>;
+  using base_t = UnsteadyMembersCommon<traits>;
   using typename base_t::At;
   using typename base_t::Bt;
   using base_t::binding_sentinel;
 
-  using Ct = DefaultPoliciesMixin<
-    Bt, typename traits::residual_policy_type, typename traits::jacobian_policy_type>;
-  using type = SystemMixin<
-    Ct, typename traits::steady_system_type>;
-};
-
-// masked
-template <class traits> struct SteadyMembers<1, traits>
-  : SteadyMembersCommon<traits>
-{
-  using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
-  using typename base_t::Bt;
-  using base_t::binding_sentinel;
-
-  using Ct = SinglyDecoratedPoliciesMixin<
+  using Ct  = DefaultPoliciesMixin<
     Bt,
-    typename traits::masker_type,
     typename traits::residual_policy_type,
     typename traits::jacobian_policy_type>;
-  using type = SystemMixin<
-    Ct, typename traits::steady_system_type>;
-};
-
-// preconditioned default
-template <class traits> struct SteadyMembers<2, traits>
-  : SteadyMembersCommon<traits>
-{
-  using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
-  using typename base_t::Bt;
-  using base_t::binding_sentinel;
-
-  using Ct = SinglyDecoratedPoliciesMixin<
-    Bt,
-    typename traits::preconditioner_type,
-    typename traits::residual_policy_type,
-    typename traits::jacobian_policy_type>;
-  using type = SystemMixin<
-    Ct, typename traits::steady_system_type>;
-};
-
-// preconditioned masked
-template <class traits> struct SteadyMembers<3, traits>
-  : SteadyMembersCommon<traits>
-{
-  using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
-  using typename base_t::Bt;
-  using base_t::binding_sentinel;
-
-  using Ct = DoublyDecoratedPoliciesMixin<
-    Bt,
-    typename traits::preconditioner_type,
-    typename traits::masker_type,
-    typename traits::residual_policy_type,
-    typename traits::jacobian_policy_type>;
-  using type = SystemMixin<
-    Ct, typename traits::steady_system_type>;
+  using type = ::pressio::rom::impl::ImplicitStepperMixin<
+    Ct, typename traits::stepper_type>;
 };
 
 ///////////////////
 // problem class //
 ///////////////////
 template <int flag, typename ...Args>
-class SteadyProblem
+class UnsteadyProblem
 {
 public:
-  using traits = ::pressio::Traits<SteadyProblem<flag, Args...>>;
+  using traits = ::pressio::Traits<UnsteadyProblem<flag, Args...>>;
 
 private:
   using fom_system_type	 = typename traits::fom_system_type;
   using decoder_type	 = typename traits::decoder_type;
   using lspg_state_type = typename traits::lspg_state_type;
-  using steady_system_type = typename traits::steady_system_type;
+  using stepper_type = typename traits::stepper_type;
   using fom_state_type	 = typename traits::fom_state_type;
   using fom_state_reconstr_type = typename traits::fom_state_reconstr_type;
-  typename SteadyMembers<flag, traits>::type members_;
+  typename UnsteadyMembers<flag, traits>::type members_;
 
 public:
-  steady_system_type & system(){ return members_.systemObj_; }
+  stepper_type & stepper(){ return members_.stepperObj_; }
 
   const fom_state_type & currentFomState() const{
     return members_.fomStatesMngr_(::pressio::ode::n());
@@ -186,33 +113,22 @@ public:
   }
 
 public:
-  SteadyProblem() = delete;
-  SteadyProblem(const SteadyProblem &) = default;
-  SteadyProblem & operator=(const SteadyProblem &) = delete;
-  SteadyProblem(SteadyProblem &&) = default;
-  SteadyProblem & operator=(SteadyProblem &&) = delete;
-  ~SteadyProblem() = default;
+  UnsteadyProblem() = delete;
+  UnsteadyProblem(const UnsteadyProblem &) = default;
+  UnsteadyProblem & operator=(const UnsteadyProblem &) = delete;
+  UnsteadyProblem(UnsteadyProblem &&) = default;
+  UnsteadyProblem & operator=(UnsteadyProblem &&) = delete;
+  ~UnsteadyProblem() = default;
 
   template<
     int _flag = flag,
     mpl::enable_if_t<_flag==0, int> = 0
     >
-  SteadyProblem(const fom_system_type & fomObj,
+  UnsteadyProblem(const fom_system_type & fomObj,
 		decoder_type & decoder,
 		const lspg_state_type & romState,
 		const fom_state_type & fomNominalState)
     : members_(romState, fomObj, decoder, fomNominalState){}
-
-  template<
-    int _flag = flag, class ...Args2,
-    mpl::enable_if_t<_flag==1 or _flag==2 or _flag==3, int> = 0
-    >
-  SteadyProblem(const fom_system_type & fomObj,
-		decoder_type & decoder,
-		const lspg_state_type & romState,
-		const fom_state_type & fomNominalState,
-		Args2 && ...args)
-    : members_(romState, fomObj, decoder, fomNominalState, std::forward<Args2>(args) ...){}
 };
 
 }}}}//end namespace pressio::rom::lspg::impl
