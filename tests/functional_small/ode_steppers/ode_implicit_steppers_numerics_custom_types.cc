@@ -170,7 +170,7 @@ struct MySolverForBDF1
   }
 };
 
-TEST(ode, explicit_bdf1_custom_types)
+TEST(ode, implicit_bdf1_custom_types)
 {
   using namespace pressio;
   using app_t	   = MyApp;
@@ -250,7 +250,7 @@ struct MySolverForBDF2
   }
 };
 
-TEST(ode, explicit_bdf2_custom_types)
+TEST(ode, implicit_bdf2_custom_types)
 {
   using namespace pressio;
   using app_t    = MyApp;
@@ -312,7 +312,7 @@ struct MySolverForCrankNic
   }
 };
 
-TEST(ode, explicit_crank_nicolson_custom_types)
+TEST(ode, implicit_crank_nicolson_custom_types)
 {
   using namespace pressio;
   using app_t    = MyApp;

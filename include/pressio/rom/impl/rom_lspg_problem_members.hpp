@@ -51,21 +51,83 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
+template <
+  class T,
+  bool is_static,
+  class FomStateType,
+  class FomStateReconstructorType,
+  class ManagerStencilFomStatesType
+  >
+struct AddFomStatesManager : T
+{
+  const FomStateType  fomNominalState_;
+  const FomStateReconstructorType fomStateReconstructor_;
+  ManagerStencilFomStatesType fomStatesMngr_;
+
+  AddFomStatesManager() = delete;
+  AddFomStatesManager(const AddFomStatesManager &) = default;
+  AddFomStatesManager & operator=(const AddFomStatesManager &) = delete;
+  AddFomStatesManager(AddFomStatesManager &&) = default;
+  AddFomStatesManager & operator=(AddFomStatesManager &&) = delete;
+  ~AddFomStatesManager() = default;
+
+  // template<
+  //   class T1, class T2, class T3, class T4,
+  //   bool _is_static = is_static,
+  //   mpl::enable_if_t<!_is_static, int> = 0
+  //   >
+  // AddFomStatesManager(::pressio::ode::SteppersE name,
+  // 		      const T1 & fomObj,
+  // 		      const T2 & decoder,
+  // 		      const T3 & romStateIn,
+  // 		      const T4 & fomNominalStateNative)
+  //   : T(fomObj),
+  //     fomNominalState_(::pressio::ops::clone(fomNominalStateNative)),
+  //     fomStateReconstructor_(fomNominalState_, decoder),
+  //     fomStatesMngr_(create_manager_stencil_fom_states<
+  // 		     ManagerStencilFomStatesType>(name, fomStateReconstructor_, fomNominalState_)
+  // 		     )
+  // {
+  //   // reconstruct current fom state so that we have something
+  //   // consisten with the current romState
+  //   fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  // }
+
+  template<
+    class T1, class T2, class T3, class T4,
+    bool _is_static = is_static,
+    mpl::enable_if_t<_is_static, int> = 0
+    >
+  AddFomStatesManager(const T1 & fomObj,
+		      const T2 & decoder,
+		      const T3 & romStateIn,
+		      const T4 & fomNominalStateNative)
+    : T(fomObj),
+      fomNominalState_(::pressio::ops::clone(fomNominalStateNative)),
+      fomStateReconstructor_(fomNominalState_, decoder),
+      fomStatesMngr_(fomStateReconstructor_, fomNominalState_)
+  {
+    // reconstruct current fom state so that we have something
+    // consisten with the current romState
+    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
+  }
+};
+
 template <class T, class r_pol_t, class j_pol_t>
-struct DefaultPoliciesMixin : T
+struct AddDefaultPolicies : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
-  DefaultPoliciesMixin() = delete;
-  DefaultPoliciesMixin(const DefaultPoliciesMixin &) = default;
-  DefaultPoliciesMixin & operator=(const DefaultPoliciesMixin &) = delete;
-  DefaultPoliciesMixin(DefaultPoliciesMixin &&) = default;
-  DefaultPoliciesMixin & operator=(DefaultPoliciesMixin &&) = delete;
-  ~DefaultPoliciesMixin() = default;
+  AddDefaultPolicies() = delete;
+  AddDefaultPolicies(const AddDefaultPolicies &) = default;
+  AddDefaultPolicies & operator=(const AddDefaultPolicies &) = delete;
+  AddDefaultPolicies(AddDefaultPolicies &&) = default;
+  AddDefaultPolicies & operator=(AddDefaultPolicies &&) = delete;
+  ~AddDefaultPolicies() = default;
 
   template<class T1, class T2, class T3, class T4>
-  DefaultPoliciesMixin(const T1 & romStateIn,
+  AddDefaultPolicies(const T1 & romStateIn,
 		       const T2 & fomObj,
 		       T3 & decoder,
 		       const T4 & fomNominalState)
@@ -76,20 +138,20 @@ struct DefaultPoliciesMixin : T
 };
 
 template <class T, class UserProvidedFunctor_t, class r_pol_t, class j_pol_t>
-struct SinglyDecoratedPoliciesMixin : T
+struct AddSinglyDecoratedPolicies : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
-  SinglyDecoratedPoliciesMixin() = delete;
-  SinglyDecoratedPoliciesMixin(const SinglyDecoratedPoliciesMixin &) = default;
-  SinglyDecoratedPoliciesMixin & operator=(const SinglyDecoratedPoliciesMixin &) = delete;
-  SinglyDecoratedPoliciesMixin(SinglyDecoratedPoliciesMixin &&) = default;
-  SinglyDecoratedPoliciesMixin & operator=(SinglyDecoratedPoliciesMixin &&) = delete;
-  ~SinglyDecoratedPoliciesMixin() = default;
+  AddSinglyDecoratedPolicies() = delete;
+  AddSinglyDecoratedPolicies(const AddSinglyDecoratedPolicies &) = default;
+  AddSinglyDecoratedPolicies & operator=(const AddSinglyDecoratedPolicies &) = delete;
+  AddSinglyDecoratedPolicies(AddSinglyDecoratedPolicies &&) = default;
+  AddSinglyDecoratedPolicies & operator=(AddSinglyDecoratedPolicies &&) = delete;
+  ~AddSinglyDecoratedPolicies() = default;
 
   template<class T1, class T2, class T3, class T4>
-  SinglyDecoratedPoliciesMixin(const T1 & romStateIn,
+  AddSinglyDecoratedPolicies(const T1 & romStateIn,
 			       const T2 & fomObj,
 			       T3 & decoder,
 			       const T4 & fomNominalState,
@@ -107,20 +169,20 @@ template <
   class r_pol_t,
   class j_pol_t
   >
-struct DoublyDecoratedPoliciesMixin : T
+struct AddDoublyDecoratedPolicies : T
 {
   r_pol_t residualPolicy_;
   j_pol_t jacobianPolicy_;
 
-  DoublyDecoratedPoliciesMixin() = delete;
-  DoublyDecoratedPoliciesMixin(const DoublyDecoratedPoliciesMixin &) = default;
-  DoublyDecoratedPoliciesMixin & operator=(const DoublyDecoratedPoliciesMixin &) = delete;
-  DoublyDecoratedPoliciesMixin(DoublyDecoratedPoliciesMixin &&) = default;
-  DoublyDecoratedPoliciesMixin & operator=(DoublyDecoratedPoliciesMixin &&) = delete;
-  ~DoublyDecoratedPoliciesMixin() = default;
+  AddDoublyDecoratedPolicies() = delete;
+  AddDoublyDecoratedPolicies(const AddDoublyDecoratedPolicies &) = default;
+  AddDoublyDecoratedPolicies & operator=(const AddDoublyDecoratedPolicies &) = delete;
+  AddDoublyDecoratedPolicies(AddDoublyDecoratedPolicies &&) = default;
+  AddDoublyDecoratedPolicies & operator=(AddDoublyDecoratedPolicies &&) = delete;
+  ~AddDoublyDecoratedPolicies() = default;
 
   template<class T1, class T2, class T3, class T4>
-  DoublyDecoratedPoliciesMixin(const T1 & romStateIn,
+  AddDoublyDecoratedPolicies(const T1 & romStateIn,
 			       const T2 & fomObj,
 			       T3 & decoder,
 			       const T4 & fomNominalState,

@@ -55,7 +55,7 @@
 #include "./rom_lspg_problem_members.hpp"
 #include "./rom_lspg_steady_policies.hpp"
 #include "./rom_lspg_steady_system.hpp"
-#include "./rom_lspg_steady_problem_traits.hpp"
+#include "./rom_lspg_steady_traits.hpp"
 #include "./rom_lspg_steady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{

@@ -72,12 +72,12 @@ struct SystemMixin : T
 
 template <class traits> struct SteadyMembersCommon
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
+  using At = ::pressio::rom::impl::FomObjHolder<
+    typename traits::fom_system_type, traits::binding_sentinel>;
 
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+  using Bt = ::pressio::rom::lspg::impl::AddFomStatesManager<
     At,
+    true, // sentinel to inform container is static
     typename traits::fom_state_type,
     typename traits::fom_state_reconstr_type,
     typename traits::fom_states_manager_type>;
@@ -91,11 +91,9 @@ template <class traits> struct SteadyMembers<0, traits>
   : SteadyMembersCommon<traits>
 {
   using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = DefaultPoliciesMixin<
+  using Ct = AddDefaultPolicies<
     Bt, typename traits::residual_policy_type, typename traits::jacobian_policy_type>;
   using type = SystemMixin<
     Ct, typename traits::steady_system_type>;
@@ -106,11 +104,9 @@ template <class traits> struct SteadyMembers<1, traits>
   : SteadyMembersCommon<traits>
 {
   using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = SinglyDecoratedPoliciesMixin<
+  using Ct = AddSinglyDecoratedPolicies<
     Bt,
     typename traits::masker_type,
     typename traits::residual_policy_type,
@@ -124,11 +120,9 @@ template <class traits> struct SteadyMembers<2, traits>
   : SteadyMembersCommon<traits>
 {
   using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = SinglyDecoratedPoliciesMixin<
+  using Ct = AddSinglyDecoratedPolicies<
     Bt,
     typename traits::preconditioner_type,
     typename traits::residual_policy_type,
@@ -142,11 +136,9 @@ template <class traits> struct SteadyMembers<3, traits>
   : SteadyMembersCommon<traits>
 {
   using base_t = SteadyMembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = DoublyDecoratedPoliciesMixin<
+  using Ct = AddDoublyDecoratedPolicies<
     Bt,
     typename traits::preconditioner_type,
     typename traits::masker_type,

@@ -53,12 +53,12 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
 
 template <class traits> struct MembersCommon
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
+  using At = ::pressio::rom::impl::FomObjHolder<
+    typename traits::fom_system_type, traits::binding_sentinel>;
 
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+  using Bt = ::pressio::rom::galerkin::impl::AddFomStatesManager<
     At,
+    traits::is_cont_time,
     typename traits::fom_state_type,
     typename traits::fom_state_reconstr_type,
     typename traits::fom_states_manager_type>;
@@ -74,12 +74,11 @@ struct Members{ using type = void; };
 template <class traits> struct Members<0, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
-  using Ct = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt = DefaultExplicitSystemMixin<Ct, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ExplicitStepperMixin<
+
+  using Ct = AddProjector<Bt, typename traits::projector_type>;
+  using Dt = AddDefaultExplicitSystem<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddExplicitStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -87,16 +86,14 @@ template <class traits> struct Members<0, traits> : MembersCommon<traits>
 template <class traits> struct Members<1, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt  = DefaultImplicitPoliciesMixin<
+  using Ct  = AddProjector<Bt, typename traits::projector_type>;
+  using Dt  = AddDefaultImplicitPolicies<
     Ct,
     typename traits::residual_policy_type,
     typename traits::jacobian_policy_type>;
-  using type = ::pressio::rom::impl::ImplicitStepperMixin<
+  using type = ::pressio::rom::impl::AddImplicitStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -104,13 +101,11 @@ template <class traits> struct Members<1, traits> : MembersCommon<traits>
 template <class traits> struct Members<2, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt  = DefaultDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+  using Ct  = AddProjector<Bt, typename traits::projector_type>;
+  using Dt  = AddDefaultDiscreteTimeSystem<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -121,14 +116,12 @@ template <class traits> struct Members<2, traits> : MembersCommon<traits>
 template <class traits> struct Members<3, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct   = MaskerMixin<Bt, typename traits::masker_type>;
-  using Dt   = ProjectorMixin<Ct, typename traits::projector_type>;
-  using Et   = MaskedVeloExplicitSystemMixin<Dt, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ExplicitStepperMixin<
+  using Ct   = AddMasker<Bt, typename traits::masker_type>;
+  using Dt   = AddProjector<Ct, typename traits::projector_type>;
+  using Et   = AddMaskedVeloExplicitSystem<Dt, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddExplicitStepper<
     Et, typename traits::stepper_type>;
 };
 
@@ -136,15 +129,13 @@ template <class traits> struct Members<3, traits> : MembersCommon<traits>
 template <class traits> struct Members<4, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = MaskerMixin<Bt, typename traits::masker_type>;
-  using Dt  = ProjectorMixin<Ct, typename traits::projector_type>;
-  using Et  = MaskedVeloImplicitPoliciesMixin<
+  using Ct  = AddMasker<Bt, typename traits::masker_type>;
+  using Dt  = AddProjector<Ct, typename traits::projector_type>;
+  using Et  = AddMaskedVeloImplicitPolicies<
     Dt, typename traits::residual_policy_type, typename traits::jacobian_policy_type>;
-  using type= ::pressio::rom::impl::ImplicitStepperMixin<
+  using type= ::pressio::rom::impl::AddImplicitStepper<
     Et, typename traits::stepper_type>;
 };
 
@@ -152,14 +143,12 @@ template <class traits> struct Members<4, traits> : MembersCommon<traits>
 template <class traits> struct Members<5, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = MaskerMixin<Bt, typename traits::masker_type>;
-  using Dt  = ProjectorMixin<Ct, typename traits::projector_type>;
-  using Et  = MaskedDiscreteTimeSystemMixin<Dt, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+  using Ct  = AddMasker<Bt, typename traits::masker_type>;
+  using Dt  = AddProjector<Ct, typename traits::projector_type>;
+  using Et  = AddMaskedDiscreteTimeSystem<Dt, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
     Et, typename traits::stepper_type>;
 };
 
@@ -170,13 +159,11 @@ template <class traits> struct Members<5, traits> : MembersCommon<traits>
 template <class traits> struct Members<6, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct   = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt = HypRedVeloExplicitSystemMixin<Ct, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ExplicitStepperMixin<
+  using Ct = AddProjector<Bt, typename traits::projector_type>;
+  using Dt = AddHypRedVeloExplicitSystem<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddExplicitStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -184,14 +171,12 @@ template <class traits> struct Members<6, traits> : MembersCommon<traits>
 template <class traits> struct Members<7, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt  = HypRedVeloImplicitPoliciesMixin<
+  using Ct  = AddProjector<Bt, typename traits::projector_type>;
+  using Dt  = AddHypRedVeloImplicitPolicies<
     Ct, typename traits::residual_policy_type, typename traits::jacobian_policy_type>;
-  using type= ::pressio::rom::impl::ImplicitStepperMixin<
+  using type= ::pressio::rom::impl::AddImplicitStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -199,13 +184,11 @@ template <class traits> struct Members<7, traits> : MembersCommon<traits>
 template <class traits> struct Members<8, traits> : MembersCommon<traits>
 {
   using base_t = MembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = ProjectorMixin<Bt, typename traits::projector_type>;
-  using Dt  = HypRedDiscreteTimeSystemMixin<Ct, typename traits::rom_system_type>;
-  using type = ::pressio::rom::impl::ImplicitArbStepperMixin<
+  using Ct = AddProjector<Bt, typename traits::projector_type>;
+  using Dt = AddHypRedDiscreteTimeSystem<Ct, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
     Dt, typename traits::stepper_type>;
 };
 
@@ -250,35 +233,38 @@ public:
     int _flag = flag,
     mpl::enable_if_t<_flag<=2, int> = 0
     >
-  Problem(const fom_system_type & fomObj,
+  Problem(::pressio::ode::SteppersE name,
+	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
 	  const fom_state_type & fomNominalState)
-    : members_(romState, fomObj, decoder, fomNominalState){}
+    : members_(name, romState, fomObj, decoder, fomNominalState){}
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=3 and _flag<=5, int> = 0
     >
-  Problem(const fom_system_type & fomObj,
+  Problem(::pressio::ode::SteppersE name,
+	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
 	  const fom_state_type & fomNominalState,
 	  const typename traits::projector_type & projector,
 	  Args2 && ...args)
-    : members_(romState, fomObj, decoder, fomNominalState,
+    : members_(name, romState, fomObj, decoder, fomNominalState,
 	       projector, std::forward<Args2>(args) ...){}
 
   template<
     int _flag = flag, class ...Args2,
     mpl::enable_if_t<_flag>=6 and _flag<=8, int> = 0
     >
-  Problem(const fom_system_type & fomObj,
+  Problem(::pressio::ode::SteppersE name,
+	  const fom_system_type & fomObj,
 	  decoder_type & decoder,
 	  const galerkin_state_type & romState,
 	  const fom_state_type & fomNominalState,
 	  const typename traits::projector_type & projector)
-    : members_(romState, fomObj, decoder, fomNominalState, projector){}
+    : members_(name, romState, fomObj, decoder, fomNominalState, projector){}
 };
 
 }}}}//end namespace pressio::rom::galerkin::impl

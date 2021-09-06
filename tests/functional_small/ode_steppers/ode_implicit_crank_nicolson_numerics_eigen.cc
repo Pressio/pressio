@@ -31,10 +31,9 @@ public:
 
 struct MyFakeSolver
 {
-  std::string & checkStr_;
   int count_={};
 
-  MyFakeSolver(std::string & strin) : checkStr_(strin){}
+  MyFakeSolver(){}
 
   template<typename system_t, typename state_t>
   void solve(const system_t & sys, state_t & state)
@@ -52,92 +51,70 @@ struct MyFakeSolver
 
       if (count_==1 && i==0)
       {
-	if( std::abs(state(0)-1.) > 1e-13 or
-	    std::abs(state(1)-2.) > 1e-13 or
-	    std::abs(state(2)-3.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(1.-1.-0.5*1.5*2.5-0.5*1.5*1.) ) > 1e-13 or
-	    std::abs(R(1)-(2.-2.-0.5*1.5*3.5-0.5*1.5*2.) ) > 1e-13 or
-	    std::abs(R(2)-(3.-3.-0.5*1.5*4.5-0.5*1.5*3.) ) > 1e-13)
-	{
-	  checkStr_ = "FAILED";
-	}
+	EXPECT_TRUE(std::abs(state(0)-1.) < 1e-13 );
+	EXPECT_TRUE(std::abs(state(1)-2.) < 1e-13 );
+	EXPECT_TRUE(std::abs(state(2)-3.) < 1e-13);
+
+	EXPECT_TRUE(std::abs(R(0)-(1.-1.-0.5*1.5*2.5-0.5*1.5*1.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(1)-(2.-2.-0.5*1.5*3.5-0.5*1.5*2.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(2)-(3.-3.-0.5*1.5*4.5-0.5*1.5*3.) ) < 1e-13);
       }
 
       if (count_==1 && i==1)
       {
-	if( std::abs(state(0)-2.) > 1e-13 or
-	    std::abs(state(1)-3.) > 1e-13 or
-	    std::abs(state(2)-4.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(2.-1.-0.5*1.5*3.5-0.5*1.5*1.) ) > 1e-13 or
-	    std::abs(R(1)-(3.-2.-0.5*1.5*4.5-0.5*1.5*2.) ) > 1e-13 or
-	    std::abs(R(2)-(4.-3.-0.5*1.5*5.5-0.5*1.5*3.) ) > 1e-13)
-	{
-	  checkStr_ = "FAILED";
-	}
+	EXPECT_TRUE(std::abs(state(0)-2.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(1)-3.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(2)-4.) < 1e-13);
+
+	EXPECT_TRUE(std::abs(R(0)-(2.-1.-0.5*1.5*3.5-0.5*1.5*1.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(1)-(3.-2.-0.5*1.5*4.5-0.5*1.5*2.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(2)-(4.-3.-0.5*1.5*5.5-0.5*1.5*3.) ) < 1e-13);
+
       }
 
       if (count_==2 && i==0)
-      {
-	if( std::abs(state(0)-3.) > 1e-13 or
-	    std::abs(state(1)-4.) > 1e-13 or
-	    std::abs(state(2)-5.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(3.-3.-0.5*1.5*6. - 0.5*1.5*4.5) ) > 1e-13 or
-	    std::abs(R(1)-(4.-4.-0.5*1.5*7. - 0.5*1.5*5.5) ) > 1e-13 or
-	    std::abs(R(2)-(5.-5.-0.5*1.5*8. - 0.5*1.5*6.5) ) > 1e-13)
 	{
-	  checkStr_ = "FAILED";
-	}
+	  EXPECT_TRUE(std::abs(state(0)-3.) < 1e-13);
+	  EXPECT_TRUE(std::abs(state(1)-4.) < 1e-13);
+	  EXPECT_TRUE(std::abs(state(2)-5.) < 1e-13);
+
+	  EXPECT_TRUE(std::abs(R(0)-(3.-3.-0.5*1.5*6. - 0.5*1.5*4.5) ) < 1e-13);
+	  EXPECT_TRUE(std::abs(R(1)-(4.-4.-0.5*1.5*7. - 0.5*1.5*5.5) ) < 1e-13);
+	  EXPECT_TRUE(std::abs(R(2)-(5.-5.-0.5*1.5*8. - 0.5*1.5*6.5) ) < 1e-13);
       }
 
       if (count_==2 && i==1)
       {
-	if( std::abs(state(0)-4.) > 1e-13 or
-	    std::abs(state(1)-5.) > 1e-13 or
-	    std::abs(state(2)-6.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(4.-3.-0.5*1.5*7. - 0.5*1.5*4.5) ) > 1e-13 or
-	    std::abs(R(1)-(5.-4.-0.5*1.5*8. - 0.5*1.5*5.5) ) > 1e-13 or
-	    std::abs(R(2)-(6.-5.-0.5*1.5*9. - 0.5*1.5*6.5) ) > 1e-13)
-	{
-	  checkStr_ = "FAILED";
-	}
+	EXPECT_TRUE(std::abs(state(0)-4.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(1)-5.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(2)-6.) < 1e-13);
+
+
+	EXPECT_TRUE(std::abs(R(0)-(4.-3.-0.5*1.5*7. - 0.5*1.5*4.5) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(1)-(5.-4.-0.5*1.5*8. - 0.5*1.5*5.5) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(2)-(6.-5.-0.5*1.5*9. - 0.5*1.5*6.5) ) < 1e-13);
       }
 
       if (count_==3 && i==0)
       {
-	if( std::abs(state(0)-5.) > 1e-13 or
-	    std::abs(state(1)-6.) > 1e-13 or
-	    std::abs(state(2)-7.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(5.-5.-0.5*1.5*9.5  - 0.5*1.5*8.) ) > 1e-13 or
-	    std::abs(R(1)-(6.-6.-0.5*1.5*10.5 - 0.5*1.5*9.) ) > 1e-13 or
-	    std::abs(R(2)-(7.-7.-0.5*1.5*11.5 - 0.5*1.5*10.) ) > 1e-13)
-	{
-	  checkStr_ = "FAILED";
-	}
+	EXPECT_TRUE(std::abs(state(0)-5.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(1)-6.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(2)-7.) < 1e-13);
+
+	EXPECT_TRUE(std::abs(R(0)-(5.-5.-0.5*1.5*9.5  - 0.5*1.5*8.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(1)-(6.-6.-0.5*1.5*10.5 - 0.5*1.5*9.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(2)-(7.-7.-0.5*1.5*11.5 - 0.5*1.5*10.) ) < 1e-13);
       }
 
       if (count_==3 && i==1)
       {
-	if( std::abs(state(0)-6.) > 1e-13 or
-	    std::abs(state(1)-7.) > 1e-13 or
-	    std::abs(state(2)-8.) > 1e-13){
-	  checkStr_ = "FAILED";
-	}
-	if( std::abs(R(0)-(6.-5.-0.5*1.5*10.5 - 0.5*1.5*8.) ) > 1e-13 or
-	    std::abs(R(1)-(7.-6.-0.5*1.5*11.5 - 0.5*1.5*9.) ) > 1e-13 or
-	    std::abs(R(2)-(8.-7.-0.5*1.5*12.5 - 0.5*1.5*10.) ) > 1e-13)
-	{
-	  checkStr_ = "FAILED";
-	}
+	EXPECT_TRUE(std::abs(state(0)-6.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(1)-7.) < 1e-13);
+	EXPECT_TRUE(std::abs(state(2)-8.) < 1e-13);
+
+	EXPECT_TRUE(std::abs(R(0)-(6.-5.-0.5*1.5*10.5 - 0.5*1.5*8.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(1)-(7.-6.-0.5*1.5*11.5 - 0.5*1.5*9.) ) < 1e-13);
+	EXPECT_TRUE(std::abs(R(2)-(8.-7.-0.5*1.5*12.5 - 0.5*1.5*10.) ) < 1e-13);
       }
 
       state(0) += 1.;
@@ -242,16 +219,20 @@ TEST(ode, implicit_crank_nicolson_correctness_default_policy)
 
   using app_t		= MyApp;
   using state_t	= typename app_t::state_type;
-  std::string checkStr= "PASSED";
   app_t appObj;
-  MyFakeSolver solver(checkStr);
+  MyFakeSolver solver;
 
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
   auto stepperObj = pressio::ode::create_cranknicolson_stepper(y,appObj);
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
-  std::cout << checkStr << std::endl;
+  std::cout << y << '\n';
+
+  EXPECT_TRUE(y(0)==7.);
+  EXPECT_TRUE(y(1)==8.);
+  EXPECT_TRUE(y(2)==9.);
+
   pressio::log::finalize();
 }
 
@@ -262,20 +243,23 @@ TEST(ode, implicit_crank_nicolson_correctness_custom_policy)
 
   using app_t   = MyApp;
   using state_t = typename app_t::state_type;
-  std::string checkStr= "PASSED";
   app_t appObj;
-  MyFakeSolver solver(checkStr);
+  MyFakeSolver solver;
 
   state_t y(3);
   y(0)=1.; y(1)=2.; y(2)=3.;
 
   using res_t  = typename app_t::velocity_type;
   using jac_t  = typename app_t::jacobian_type;
-  using res_pol_t = pressio::ode::impl::ResidualStandardPolicyCrankNicolson<app_t&, state_t, res_t>;
+  using res_pol_t = pressio::ode::impl::ResidualStandardPolicy<app_t&, state_t, res_t>;
   using jac_pol_t = pressio::ode::impl::JacobianStandardPolicy<app_t&, state_t, jac_t>;
 
   auto stepperObj = pressio::ode::create_cranknicolson_stepper(y, res_pol_t(appObj), jac_pol_t(appObj));
   pressio::ode::advance_n_steps(stepperObj, y, 0., 1.5, 3, solver);
-  std::cout << checkStr << std::endl;
+
+  EXPECT_TRUE(y(0)==7.);
+  EXPECT_TRUE(y(1)==8.);
+  EXPECT_TRUE(y(2)==9.);
+
   pressio::log::finalize();
 }

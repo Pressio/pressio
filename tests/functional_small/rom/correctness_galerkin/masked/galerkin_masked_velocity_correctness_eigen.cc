@@ -65,10 +65,9 @@ TEST(rom_galerkin_test, const_time_masked_explicit_correctness_eigen)
   MaskerExplicitEigen masker(sample_indices);
   ProjectorExplicitEigen proj(phiSample);
 
-  using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_masked_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj, masker);
+  auto problem = gal::create_masked_explicit_problem(
+    pressio::ode::SteppersE::ForwardEuler, fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 
   const int num_steps = 2;
@@ -94,9 +93,8 @@ TEST(rom_galerkin_test, const_time_masked_implicit_correctness_eigen)
   MaskerImplicitEigen masker(sample_indices);
   ProjectorImplicitEigen proj(phiSample);
 
-  using ode_tag = pressio::ode::BDF1;
-  auto problem = pressio::rom::galerkin::create_masked_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj, masker);
+  auto problem = pressio::rom::galerkin::create_masked_implicit_problem(
+    pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, proj, masker);
   auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverContTime nonLinSolver;
@@ -109,7 +107,6 @@ TEST(rom_galerkin_test, const_time_masked_implicit_correctness_eigen)
 
   pressio::log::finalize();
 }
-
 
 TEST(rom_galerkin_test, discrete_time_masked_implicit_correctness_eigen)
 {

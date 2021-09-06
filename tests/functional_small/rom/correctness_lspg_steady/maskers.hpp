@@ -66,7 +66,7 @@ struct MaskerSteadyCustomTypes
   void operator()(const mat_operand_type & operand, mat_operand_type & result) const
   {
     for (std::size_t i=0; i<sample_indices_.size(); ++i){
-      for (int j=0; j<operand.extent(1); ++j){
+      for (std::size_t j=0; j<operand.extent(1); ++j){
         result(i,j) = operand(sample_indices_[i],j);
       }
     }

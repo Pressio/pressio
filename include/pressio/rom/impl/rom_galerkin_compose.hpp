@@ -60,10 +60,22 @@
 #include "./rom_galerkin_systems.hpp"
 #include "./rom_galerkin_policy_residual.hpp"
 #include "./rom_galerkin_policy_jacobian.hpp"
-#include "./rom_galerkin_problem_traits.hpp"
+#include "./rom_galerkin_traits.hpp"
 #include "./rom_galerkin_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
+
+/*
+  NOTE: pay attention below since for implicit time stepping we need to
+  know the type of the reduced residual and jacobian.
+  Obviously, this should be something that is compatible
+  with the galerkin state and such that we can solve the reduced problem
+  easily: typically, the galerkin state is a shared-mem array, e.g. eigen or Kokkos.
+  So for now, we check what type the galerkin_state is and from that, we
+  set the types for the galerkin residual and jacobian.
+  For example, if galerkin_state = eigen_vector, then it would make sense
+  to set galerkin_residual = galerkin_state and galerkin_jacobian = eigen_matrix
+*/
 
 template<typename T, class = void>
 struct select_galerkin_types{
@@ -83,56 +95,15 @@ struct select_galerkin_types<
 };
 #endif
 
-template <typename tag>
-struct supported_explicit_stepper_tag{
-  static_assert
-  (std::is_same<tag, ::pressio::ode::ForwardEuler>::value or
-   std::is_same<tag, ::pressio::ode::RungeKutta4>::value or
-   std::is_same<tag, ::pressio::ode::SSPRungeKutta3>::value or
-   std::is_same<tag, ::pressio::ode::AdamsBashforth2>::value,
-   "The explicit stepper tag you are passing to create the galerkin problem \
-is not supported: this can be because the Galerkin implementation does \
-not support it, or because you added a new ode scheme in the ode package \
-but forgot to update the list of explicit tags supported by Galerkin which");
-
-  static constexpr auto value = true;
-};
-
-template <typename tag>
-struct supported_implicit_stepper_tag{
-  static_assert
-  (std::is_same<tag, ::pressio::ode::BDF1>::value or
-   std::is_same<tag, ::pressio::ode::BDF2>::value or
-   std::is_same<tag, ::pressio::ode::CrankNicolson>::value,
-   "The implicit stepper tag you are passing to create the galerkin problem \
-is not supported: this can be because the Galerkin implementation does \
-not support it, or because you added a new ode scheme in the ode package \
-but forgot to update the list of implicit tags supported by Galerkin");
-
-  static constexpr auto value = true;
-};
-
-
-/*
-  NOTE (A): pay attention below since for implicit time stepping we need to
-  know the type of the reduced residual and jacobian.
-  Obviously, this should be something that is compatible
-  with the galerkin state and such that we can solve the reduced problem
-  easily: typically, the galerkin state is a shared-mem array, e.g. eigen or Kokkos.
-  So when the user does not pass them explicitly, we check what type is
-  the galerkin_state_t and from that set the types for the galerkin residual and jacobian.
-  For example, if galerkin_state = eigen_vector, then it would make sense
-  to set galerkin_residual = galerkin_state and galerkin_jacobian = eigen_matrix
-*/
-
-template<class stepper_tag, class ...Args>
-struct ComposeDefaultProblemContTime;
-
-template<class stepper_tag, class ...Args>
-struct ComposeHypRedVeloProblemContTime;
-
-template<class stepper_tag, class ...Args>
-struct ComposeMaskedProblemContTime;
+template<class ...Args> struct ComposeContTimeExplicit;
+template<class ...Args> struct ComposeContTimeImplicit;
+template<std::size_t, class ...Args> struct ComposeDiscTime;
+template<typename ...Args>
+using ComposeContTimeExplicit_t = typename ComposeContTimeExplicit<Args...>::type;
+template<typename ...Args>
+using ComposeContTimeImplicit_t = typename ComposeContTimeImplicit<Args...>::type;
+template<std::size_t n, class ...Args>
+using ComposeDiscTime_t = typename ComposeDiscTime<n, Args...>::type;
 
 //////////////////////////////////////
 /// default
@@ -140,18 +111,15 @@ struct ComposeMaskedProblemContTime;
 
 /// explicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
   class FomReferenceState
   >
-struct ComposeDefaultProblemContTime<
-  StepperTag,
-  mpl::enable_if_t< ::pressio::ode::is_explicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState>
+struct ComposeContTimeExplicit<
+  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState
+  >
 {
-  static_assert(supported_explicit_stepper_tag<StepperTag>::value, "");
 
   static_assert
   (::pressio::rom::continuous_time_fom_system_with_at_least_velocity<
@@ -168,23 +136,20 @@ struct ComposeDefaultProblemContTime<
    compatible with the FOM state type detected from adapter class");
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    0, StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    0, FomSystemType, GalerkinStateType, DecoderType>;
 };
 
 /// implicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
   class FomReferenceState
   >
-struct ComposeDefaultProblemContTime<
-  StepperTag,
-  mpl::enable_if_t<::pressio::ode::is_implicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState>
+struct ComposeContTimeImplicit<
+  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState
+  >
 {
-  static_assert(supported_implicit_stepper_tag<StepperTag>::value, "");
 
   static_assert(::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
     "Invalid decoder detected");
@@ -206,8 +171,7 @@ struct ComposeDefaultProblemContTime<
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    1, StepperTag, FomSystemType, GalerkinStateType,
-    galerkin_residual_t, galerkin_jacobian_t, DecoderType>;
+    1, FomSystemType, GalerkinStateType, galerkin_residual_t, galerkin_jacobian_t, DecoderType>;
 };
 
 template<
@@ -217,7 +181,9 @@ template<
   class GalerkinStateType,
   class FomReferenceState
   >
-struct ComposeDefaultProblemDiscTime
+struct ComposeDiscTime<
+  num_states, FomSystemType, DecoderType, GalerkinStateType, FomReferenceState
+  >
 {
   static_assert(::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
     "Invalid decoder detected");
@@ -251,7 +217,6 @@ struct ComposeDefaultProblemDiscTime
 
 // explicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
@@ -259,12 +224,10 @@ template<
   class MaskerType,
   class ProjectorType
   >
-struct ComposeMaskedProblemContTime<
-  StepperTag,
-  mpl::enable_if_t< ::pressio::ode::is_explicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, MaskerType, ProjectorType>
+struct ComposeContTimeExplicit<
+  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, MaskerType, ProjectorType
+  >
 {
-  static_assert(supported_explicit_stepper_tag<StepperTag>::value, "");
 
   static_assert
   (::pressio::rom::continuous_time_fom_system_with_at_least_velocity<
@@ -281,12 +244,11 @@ struct ComposeMaskedProblemContTime<
    compatible with the FOM state type detected from decoder");
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    3, StepperTag, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType>;
+    3, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType>;
 };
 
 /// implicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
@@ -294,12 +256,10 @@ template<
   class MaskerType,
   class ProjectorType
   >
-struct ComposeMaskedProblemContTime<
-  StepperTag,
-  mpl::enable_if_t<::pressio::ode::is_implicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, MaskerType, ProjectorType>
+struct ComposeContTimeImplicit<
+  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, MaskerType, ProjectorType
+  >
 {
-  static_assert(supported_implicit_stepper_tag<StepperTag>::value, "");
 
   static_assert(::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
     "Invalid decoder detected");
@@ -321,9 +281,8 @@ struct ComposeMaskedProblemContTime<
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    4, StepperTag, FomSystemType, GalerkinStateType,
-    galerkin_residual_t, galerkin_jacobian_t, DecoderType,
-    MaskerType, ProjectorType>;
+    4, FomSystemType, GalerkinStateType, galerkin_residual_t,
+    galerkin_jacobian_t, DecoderType, MaskerType, ProjectorType>;
 };
 
 template<
@@ -335,7 +294,10 @@ template<
   class ProjectorType,
   class MaskerType
   >
-struct ComposeMaskedProblemDiscTime
+struct ComposeDiscTime<
+  num_states, FomSystemType, DecoderType, GalerkinStateType, FomReferenceState,
+  ProjectorType, MaskerType
+  >
 {
   static_assert
   (::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
@@ -370,19 +332,16 @@ struct ComposeMaskedProblemDiscTime
 
 // explicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
   class FomReferenceState,
   class ProjectorType
   >
-struct ComposeHypRedVeloProblemContTime<
-  StepperTag,
-  mpl::enable_if_t< ::pressio::ode::is_explicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, ProjectorType>
+struct ComposeContTimeExplicit<
+  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, ProjectorType
+  >
 {
-  static_assert(supported_explicit_stepper_tag<StepperTag>::value, "");
 
   static_assert
   (::pressio::rom::continuous_time_fom_system_with_at_least_velocity<
@@ -399,24 +358,21 @@ struct ComposeHypRedVeloProblemContTime<
    compatible with the FOM state type detected from decoder");
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    6, StepperTag, FomSystemType, GalerkinStateType, DecoderType, ProjectorType>;
+    6, FomSystemType, GalerkinStateType, DecoderType, ProjectorType>;
 };
 
 /// implicit stepping
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class GalerkinStateType,
   class FomReferenceState,
   class ProjectorType
   >
-struct ComposeHypRedVeloProblemContTime<
-  StepperTag,
-  mpl::enable_if_t<::pressio::ode::is_implicit_stepper_tag<StepperTag>::value >,
-  FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, ProjectorType>
+struct ComposeContTimeImplicit<
+    FomSystemType, DecoderType, GalerkinStateType, FomReferenceState, ProjectorType
+  >
 {
-  static_assert(supported_implicit_stepper_tag<StepperTag>::value, "");
 
   static_assert(::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
     "Invalid decoder detected");
@@ -438,8 +394,8 @@ struct ComposeHypRedVeloProblemContTime<
   using galerkin_jacobian_t = typename select_galerkin_types<GalerkinStateType>::jacobian_type;
 
   using type = ::pressio::rom::galerkin::impl::Problem<
-    7, StepperTag, FomSystemType, GalerkinStateType,
-    galerkin_residual_t, galerkin_jacobian_t, DecoderType, ProjectorType>;
+    7, FomSystemType, GalerkinStateType, galerkin_residual_t, galerkin_jacobian_t,
+    DecoderType, ProjectorType>;
 };
 
 template<
@@ -449,10 +405,13 @@ template<
   class GalerkinStateType,
   class FomReferenceState,
   class ProjectorType
-
   >
-struct ComposeHypRedProblemDiscTime
+struct ComposeDiscTime<
+  num_states, FomSystemType, DecoderType, GalerkinStateType,
+  FomReferenceState, ProjectorType
+  >
 {
+
   static_assert(::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, GalerkinStateType>::value,
     "Invalid decoder detected");
   using decoder_jacobian_type = typename mpl::remove_cvref_t<DecoderType>::jacobian_type;
@@ -479,17 +438,21 @@ struct ComposeHypRedProblemDiscTime
 };
 
 
-template<typename ...Args>
-using ComposeDefaultProblemContTime_t =
-  typename ComposeDefaultProblemContTime<Args...>::type;
+void ensure_explicit_or_throw(const std::string & str, ::pressio::ode::SteppersE name)
+{
+  const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
+  if (!tmp_b){
+    throw std::runtime_error(str + " requires an explicit stepper");
+  }
+}
 
-template<typename ...Args>
-using ComposeMaskedVelocityProblemContTime_t =
-  typename ComposeMaskedProblemContTime<Args...>::type;
-
-template<typename ...Args>
-using ComposeHypRedVeloProblemContTime_t =
-  typename ComposeHypRedVeloProblemContTime<Args...>::type;
+void ensure_implicit_or_throw(const std::string & str, ::pressio::ode::SteppersE name)
+{
+  const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
+  if (tmp_b){
+    throw std::runtime_error(str + " requires an implicit stepper");
+  }
+}
 
 }}}}
 #endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_

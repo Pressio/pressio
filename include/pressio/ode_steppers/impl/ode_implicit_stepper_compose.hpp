@@ -53,10 +53,8 @@
 #include "ode_implicit_discrete_time_jacobian.hpp"
 #include "ode_implicit_policy_residual.hpp"
 #include "ode_implicit_policy_jacobian.hpp"
-#include "ode_implicit_stepper_euler.hpp"
-#include "ode_implicit_stepper_bdf2.hpp"
-#include "ode_implicit_stepper_cranknicolson.hpp"
 #include "ode_implicit_stepper_arbitrary.hpp"
+#include "ode_implicit_stepper_standard.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
@@ -75,200 +73,27 @@ struct ImplicitComposeAssertValidStateResJac
   static constexpr bool value = true;
 };
 
-template<class ... Args>
-struct ImplicitComposeAssertValidPolicies;
-
 template<
   class ResidualPolicyType,
   class JacobianPolicyType,
   class ScalarType,
   class StateType
   >
-struct ImplicitComposeAssertValidPolicies<
-  ::pressio::ode::BDF1, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
-  >
+struct ImplicitComposeAssertValidPolicies
 {
-  static_assert(::pressio::ode::implicit_euler_residual_policy<
+  static_assert(::pressio::ode::implicit_residual_policy<
 		mpl::remove_cvref_t<ResidualPolicyType>, StateType, ScalarType>::value,
-		"Invalid residual policy for BDF1");
-  static_assert(::pressio::ode::implicit_euler_jacobian_policy<
+		"Invalid residual policy");
+
+  static_assert(::pressio::ode::implicit_jacobian_policy<
 		mpl::remove_cvref_t<JacobianPolicyType>, StateType, ScalarType>::value,
-		"Invalid jacobian policy for BDF1");
+		"Invalid jacobian policy");
+
   static constexpr bool value = true;
 };
 
-template<
-  class ResidualPolicyType,
-  class JacobianPolicyType,
-  class ScalarType,
-  class StateType
-  >
-struct ImplicitComposeAssertValidPolicies<
-  ::pressio::ode::BDF2, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
-  >
-{
-  static_assert(::pressio::ode::implicit_bdf2_residual_policy<
-		mpl::remove_cvref_t<ResidualPolicyType>, StateType, ScalarType>::value,
-		"Invalid residual policy for BDF2");
-  static_assert(::pressio::ode::implicit_bdf2_jacobian_policy<
-		mpl::remove_cvref_t<JacobianPolicyType>, StateType, ScalarType>::value,
-		"Invalid jacobian policy for BDF2");
-  static constexpr bool value = true;
-};
-
-template<
-  class ResidualPolicyType,
-  class JacobianPolicyType,
-  class ScalarType,
-  class StateType
-  >
-struct ImplicitComposeAssertValidPolicies<
-  ::pressio::ode::CrankNicolson, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType
-  >
-{
-  static_assert(::pressio::ode::implicit_cranknicolson_residual_policy<
-		mpl::remove_cvref_t<ResidualPolicyType>, StateType, ScalarType>::value,
-		"Invalid residual policy for CrankNicolson");
-  static_assert(::pressio::ode::implicit_cranknicolson_jacobian_policy<
-		mpl::remove_cvref_t<JacobianPolicyType>, StateType, ScalarType>::value,
-		"Invalid jacobian policy for CrankNicolson");
-  static constexpr bool value = true;
-};
-
-
-template<class Tag> struct ImplicitComposeConcreteStepper;
-
-template<> struct ImplicitComposeConcreteStepper<::pressio::ode::BDF1>{
-  template<bool b, class ...Args> using type = StepperBDF1<Args..., b>;
-};
-
-template<> struct ImplicitComposeConcreteStepper<::pressio::ode::BDF2>{
-  template<bool b, class ...Args> using type = StepperBDF2<Args..., b>;
-};
-
-template<>
-struct ImplicitComposeConcreteStepper<::pressio::ode::CrankNicolson>{
-  template<bool b, class ...Args> using type = StepperCrankNicolson<Args..., b>;
-};
-
-template<class Tag> struct ImplicitComposeConcretePolicies;
-
-template<>
-struct ImplicitComposeConcretePolicies<::pressio::ode::BDF1>{
-  template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
-};
-
-template<>
-struct ImplicitComposeConcretePolicies<::pressio::ode::BDF2>{
-  template<class ...Args> using residual_policy_type = ResidualStandardPolicyBdf<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
-};
-
-template<>
-struct ImplicitComposeConcretePolicies<::pressio::ode::CrankNicolson>{
-  template<class ...Args> using residual_policy_type = ResidualStandardPolicyCrankNicolson<Args...>;
-  template<class ...Args> using jacobian_policy_type = JacobianStandardPolicy<Args...>;
-};
-
-
-template<class ...Args>
-struct ImplicitCompose{
-  using type = void;
-};
-
 ////////////////////////////////////////
-/// BDF1 or BDF2 stepper
-////////////////////////////////////////
-
-// 0. ImplicitCompose<tag, enable, SystemType, StateType>
-template<class TagType, class SystemType, class StateType>
-struct ImplicitCompose<
-  TagType,
-  mpl::enable_if_t<
-       std::is_same<TagType, ::pressio::ode::BDF1>::value
-    or std::is_same<TagType, ::pressio::ode::BDF2>::value
-    or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
-    >,
-  SystemType, StateType>
-{
-  static_assert( std::is_lvalue_reference<SystemType>::value,
-  "The system instance must be an lvalue reference");
-
-  static_assert
-  (::pressio::ode::continuous_time_system_with_user_provided_jacobian<mpl::remove_cvref_t<SystemType>>::value,
-   "The system passed does not meet the required API");
-
-  using ResidualType = typename mpl::remove_cvref_t<SystemType>::velocity_type;
-  using JacobianType = typename mpl::remove_cvref_t<SystemType>::jacobian_type;
-  static_assert
-  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
-
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  using ResidualPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template residual_policy_type<SystemType, StateType, ResidualType>;
-  using JacobianPolicyType = typename ImplicitComposeConcretePolicies<TagType>::template jacobian_policy_type<SystemType, StateType, JacobianType>;
-
-  using type = typename ImplicitComposeConcreteStepper<TagType>::template  type<
-    true, ScalarType, StateType, ResidualType, JacobianType, ResidualPolicyType, JacobianPolicyType>;
-};
-
-// 1. ImplicitCompose<tag, enable, StateType, ResPol,  JacPol>
-template<
-  class TagType,
-  class StateType,
-  class ResidualPolicyType,
-  class JacobianPolicyType
-  >
-struct ImplicitCompose<
-  TagType,
-  mpl::enable_if_t<
-       std::is_same<TagType, ::pressio::ode::BDF1>::value
-    or std::is_same<TagType, ::pressio::ode::BDF2>::value
-    or std::is_same<TagType, ::pressio::ode::CrankNicolson>::value
-    >,
-  StateType, ResidualPolicyType, JacobianPolicyType>
-{
-  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
-  static_assert(ImplicitComposeAssertValidPolicies<
-    TagType, ResidualPolicyType, JacobianPolicyType, ScalarType, StateType>::value, "");
-
-  using ResidualType = typename mpl::remove_cvref_t<ResidualPolicyType>::residual_type;
-  using JacobianType = typename mpl::remove_cvref_t<JacobianPolicyType>::jacobian_type;
-  static_assert
-  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
-
-  using type = typename ImplicitComposeConcreteStepper<TagType>::template  type<
-    false, ScalarType, StateType, ResidualType, JacobianType, ResidualPolicyType, JacobianPolicyType>;
-};
-
-
-template<typename ...Args>
-using ImplicitCompose_t = typename ImplicitCompose<Args...>::type;
-
-template<
-  class TagType,
-  class SystemType,
-  class StateType,
-  class ReturnType = ImplicitCompose_t<TagType, void, SystemType, StateType>
-  >
-ReturnType create_stepper_impl(SystemType && system, const StateType & state){
-  return ReturnType(state, std::forward<SystemType>(system));
-};
-
-template<
-  class TagType,
-  class StateType,
-  class ResidualPolicyType,
-  class JacobianPolicyType,
-  class ReturnType = ImplicitCompose_t<TagType, void, StateType, ResidualPolicyType, JacobianPolicyType>
-  >
-ReturnType create_stepper_impl(const StateType & state, ResidualPolicyType && rPol, JacobianPolicyType && jPol)
-{
-  return ReturnType(state, std::forward<ResidualPolicyType>(rPol), std::forward<JacobianPolicyType>(jPol));
-};
-
-////////////////////////////////////////
-/// ImplicitCompose Arbitrary stepper
+/// Arbitrary stepper
 ////////////////////////////////////////
 template<int num_states, class SystemType, class StateType>
 struct ImplicitComposeArb
@@ -301,6 +126,112 @@ struct ImplicitComposeArb
     >;
 };
 
+////////////////////////////////////////
+/// standard stepper
+////////////////////////////////////////
+template<class ...Args>
+struct ImplicitCompose{
+  using type = void;
+};
+
+template<class SystemType, class StateType>
+struct ImplicitCompose<SystemType, StateType>
+{
+  static_assert( std::is_lvalue_reference<SystemType>::value,
+  "The system instance must be an lvalue reference");
+
+  static_assert
+  (::pressio::ode::continuous_time_system_with_user_provided_jacobian<mpl::remove_cvref_t<SystemType>>::value,
+   "The system passed does not meet the required API");
+
+  using ResidualType = typename mpl::remove_cvref_t<SystemType>::velocity_type;
+  using JacobianType = typename mpl::remove_cvref_t<SystemType>::jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  using ResidualPolicyType = ResidualStandardPolicy<SystemType, StateType, ResidualType>;
+  using JacobianPolicyType = JacobianStandardPolicy<SystemType, StateType, JacobianType>;
+
+  using type = StepperRt<ScalarType, StateType, ResidualType, JacobianType,
+			 ResidualPolicyType, JacobianPolicyType, true>;
+};
+
+template<
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType
+  >
+struct ImplicitCompose<StateType, ResidualPolicyType, JacobianPolicyType>
+{
+  using ScalarType = typename ::pressio::Traits<StateType>::scalar_type;
+  static_assert
+  (ImplicitComposeAssertValidPolicies<
+   ResidualPolicyType, JacobianPolicyType, ScalarType, StateType>::value, "");
+
+  using ResidualType = typename mpl::remove_cvref_t<ResidualPolicyType>::residual_type;
+  using JacobianType = typename mpl::remove_cvref_t<JacobianPolicyType>::jacobian_type;
+  static_assert
+  (ImplicitComposeAssertValidStateResJac<StateType, ResidualType, JacobianType>::value, "");
+
+  using type = StepperRt<ScalarType, StateType, ResidualType, JacobianType,
+			 ResidualPolicyType, JacobianPolicyType, false>;
+};
+
+template<
+  class SystemType,
+  class StateType,
+  class ReturnType = typename ImplicitCompose<SystemType, StateType>::type
+  >
+ReturnType create_implicit_stepper_impl(SteppersE name, SystemType && system, const StateType & state)
+{
+  if (name == SteppersE::BDF1){
+    return ReturnType(::pressio::ode::BDF1(), state, std::forward<SystemType>(system));
+  }
+  else if (name == SteppersE::BDF2){
+    return ReturnType(::pressio::ode::BDF2(), state, std::forward<SystemType>(system));
+  }
+  else if (name == SteppersE::CrankNicolson){
+    return ReturnType(::pressio::ode::CrankNicolson(), state, std::forward<SystemType>(system));
+  }
+  else{
+    throw std::runtime_error("Invalid stepper enum");
+  }
+};
+
+template<
+  class StateType,
+  class ResidualPolicyType,
+  class JacobianPolicyType,
+  class ReturnType = typename ImplicitCompose<StateType, ResidualPolicyType, JacobianPolicyType>::type
+  >
+ReturnType create_implicit_stepper_impl(SteppersE name,
+					const StateType & state,
+					ResidualPolicyType && rPol,
+					JacobianPolicyType && jPol)
+{
+  if (name == SteppersE::BDF1){
+    return ReturnType(::pressio::ode::BDF1(),
+		      state,
+		      std::forward<ResidualPolicyType>(rPol),
+		      std::forward<JacobianPolicyType>(jPol));
+  }
+  else if (name == SteppersE::BDF2){
+    return ReturnType(::pressio::ode::BDF2(),
+		      state,
+		      std::forward<ResidualPolicyType>(rPol),
+		      std::forward<JacobianPolicyType>(jPol));
+  }
+  else if (name == SteppersE::CrankNicolson){
+    return ReturnType(::pressio::ode::CrankNicolson(),
+		      state,
+		      std::forward<ResidualPolicyType>(rPol),
+		      std::forward<JacobianPolicyType>(jPol));
+  }
+  else{
+    throw std::runtime_error("Invalid stepper enum");
+  }
+};
 
 }}}
 #endif  // ODE_IMPLICIT_IMPL_ODE_IMPLICIT_STEPPER_ImplicitCompose_IMPL_HPP_

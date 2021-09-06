@@ -49,7 +49,35 @@
 #ifndef ODE_PRESSIO_ODE_COMMON_HPP_
 #define ODE_PRESSIO_ODE_COMMON_HPP_
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
+
+enum class SteppersE{
+  // explicit
+  ForwardEuler,
+  RungeKutta4,
+  AdamsBashforth2,
+  SSPRungeKutta3,
+  // implicit
+  BDF1,
+  BDF2,
+  CrankNicolson,
+  ImplicitArbitrary
+};
+
+template<class T = bool>
+T is_explicit_scheme(SteppersE name)
+{
+  if (name == SteppersE::ForwardEuler){ return true; }
+  else if (name == SteppersE::RungeKutta4){ return true; }
+  else if (name == SteppersE::AdamsBashforth2){ return true; }
+  else if (name == SteppersE::SSPRungeKutta3){ return true; }
+  else{ return false; }
+}
+
+template<class T = bool>
+T is_implicit_scheme(SteppersE name){
+  return !is_explicit_scheme(name);
+}
 
 struct ForwardEuler{};
 struct RungeKutta4{};
@@ -60,29 +88,6 @@ struct BDF1{};
 struct BDF2{};
 struct CrankNicolson{};
 struct ImplicitArbitrary{};
-
-template <typename T> struct is_explicit_stepper_tag : std::false_type{};
-template <> struct is_explicit_stepper_tag<ForwardEuler> : std::true_type{};
-template <> struct is_explicit_stepper_tag<RungeKutta4> : std::true_type{};
-template <> struct is_explicit_stepper_tag<AdamsBashforth2> : std::true_type{};
-template <> struct is_explicit_stepper_tag<SSPRungeKutta3> : std::true_type{};
-
-template <typename T> struct is_implicit_stepper_tag : std::false_type{};
-template <> struct is_implicit_stepper_tag<BDF1> : std::true_type{};
-template <> struct is_implicit_stepper_tag<BDF2> : std::true_type{};
-template <> struct is_implicit_stepper_tag<CrankNicolson> : std::true_type{};
-template <> struct is_implicit_stepper_tag<ImplicitArbitrary> : std::true_type{};
-
-// is_stepper_tag
-template <typename T>
-struct is_stepper_tag{
-  static constexpr auto value = 
-  is_explicit_stepper_tag<T>::value or is_implicit_stepper_tag<T>::value;
-};
-
-constexpr int implicit_stencil_size(::pressio::ode::BDF1){ return 2; }
-constexpr int implicit_stencil_size(::pressio::ode::BDF2){ return 3; }
-constexpr int implicit_stencil_size(::pressio::ode::CrankNicolson){ return 2; }
 
 //! Default type for the order of a stepper
 using stepper_order_type = int32_t;
@@ -96,8 +101,8 @@ struct StepperOrder{
 // this is used to set the TOTAL number of states
 // when the user chooses the arbitrary one
 template <std::size_t valueIn>
-struct StepperTotalNumberOfStates{ 
-  static constexpr std::size_t value = valueIn; 
+struct StepperTotalNumberOfStates{
+  static constexpr std::size_t value = valueIn;
 };
 
 namespace constants{
@@ -137,17 +142,28 @@ class nMinusFour{};
 
 }}//end namespace pressio::ode
 
-#include "./impl/ode_stencil_data_container.hpp"
+#include "./impl/ode_stencil_data_container_static.hpp"
+#include "./impl/ode_stencil_data_container_dynamic.hpp"
 
-namespace pressio{ namespace ode{ 
+namespace pressio{ namespace ode{
 
+// static one
 template<typename VelocityType, std::size_t N>
-using ImplicitStencilVelocitiesContainer 
-  = impl::StencilDataContainerImpl<VelocityType, N, nPlusOne /*stencil ends with n+1*/>;
+using ImplicitStencilVelocitiesContainerStatic
+  = impl::StencilDataContainerStaticImpl<VelocityType, N, nPlusOne /*stencil ends with n+1*/>;
 
 template<typename StateType, std::size_t N>
-using ImplicitStencilStatesContainer 
-  = impl::StencilDataContainerImpl<StateType, N, n /*starts end at n*/>;
+using ImplicitStencilStatesContainerStatic
+  = impl::StencilDataContainerStaticImpl<StateType, N, n /*stencils ends at n*/>;
+
+// dynamic
+template<typename VelocityType>
+using ImplicitStencilVelocitiesContainerDyn
+  = impl::StencilDataContainerDynImpl<VelocityType, nPlusOne /*stencil ends with n+1*/>;
+
+template<typename StateType>
+using ImplicitStencilStatesContainerDyn
+  = impl::StencilDataContainerDynImpl<StateType, n /*stencils end at n*/>;
 
 }}//end namespace pressio::ode
 

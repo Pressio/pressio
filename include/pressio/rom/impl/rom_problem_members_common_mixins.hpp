@@ -52,29 +52,99 @@
 namespace pressio{ namespace rom{ namespace impl{
 
 template<typename fom_system_t, bool isbinding=false>
-struct FomObjMixin;
+struct FomObjHolder;
 
 template<class fom_system_t>
-struct FomObjMixin<fom_system_t, false>
+struct FomObjHolder<fom_system_t, false>
 {
   std::reference_wrapper<const fom_system_t> fomObj_;
 
-  FomObjMixin() = delete;
-  FomObjMixin(const FomObjMixin &) = default;
-  FomObjMixin & operator=(const FomObjMixin &) = delete;
-  FomObjMixin(FomObjMixin &&) = default;
-  FomObjMixin & operator=(FomObjMixin &&) = delete;
-  ~FomObjMixin() = default;
+  FomObjHolder() = delete;
+  FomObjHolder(const FomObjHolder &) = default;
+  FomObjHolder & operator=(const FomObjHolder &) = delete;
+  FomObjHolder(FomObjHolder &&) = default;
+  FomObjHolder & operator=(FomObjHolder &&) = delete;
+  ~FomObjHolder() = default;
 
-  explicit FomObjMixin(const fom_system_t & fomObjIn)
-    : fomObj_(fomObjIn){}
+  explicit FomObjHolder(const fom_system_t & fomObjIn) : fomObj_(fomObjIn){}
 
   const fom_system_t & fomCRef() const{ return fomObj_.get(); }
 };
 
+template <class T, class StepperType>
+struct AddExplicitStepper : T
+{
+  StepperType stepperObj_;
+
+  AddExplicitStepper() = delete;
+  AddExplicitStepper(const AddExplicitStepper &) = default;
+  AddExplicitStepper & operator=(const AddExplicitStepper &) = delete;
+  AddExplicitStepper(AddExplicitStepper &&) = default;
+  AddExplicitStepper & operator=(AddExplicitStepper &&) = delete;
+  ~AddExplicitStepper() = default;
+
+  template<class T1, class...Args>
+  AddExplicitStepper(::pressio::ode::SteppersE name,
+		       const T1 & romState,
+		       Args && ...args)
+    : T(name, romState, std::forward<Args>(args)...),
+      stepperObj_(::pressio::ode::create_explicit_stepper(name, romState, T::romCRef()))
+  {}
+};
+
+//---------------------------------------------------
+template <class T, class StepperType>
+struct AddImplicitStepper : T
+{
+  StepperType stepperObj_;
+
+  AddImplicitStepper() = delete;
+  AddImplicitStepper(const AddImplicitStepper &) = default;
+  AddImplicitStepper & operator=(const AddImplicitStepper &) = delete;
+  AddImplicitStepper(AddImplicitStepper &&) = default;
+  AddImplicitStepper & operator=(AddImplicitStepper &&) = delete;
+  ~AddImplicitStepper() = default;
+
+  template<class T1, class...Args>
+  AddImplicitStepper(::pressio::ode::SteppersE name,
+		     const T1 & romState,
+		     Args && ...args)
+    : T(name, romState, std::forward<Args>(args)...),
+      stepperObj_(::pressio::ode::create_implicit_stepper(name, romState, T::residualPolicy_, T::jacobianPolicy_))
+  {}
+};
+
+//---------------------------------------------------
+template <class T, class StepperType>
+struct AddImplicitArbStepper : T
+{
+  StepperType stepperObj_;
+
+  AddImplicitArbStepper() = delete;
+  AddImplicitArbStepper(const AddImplicitArbStepper &) = default;
+  AddImplicitArbStepper & operator=(const AddImplicitArbStepper &) = delete;
+  AddImplicitArbStepper(AddImplicitArbStepper &&) = default;
+  AddImplicitArbStepper & operator=(AddImplicitArbStepper &&) = delete;
+  ~AddImplicitArbStepper() = default;
+
+  template<class T1, class...Args>
+  AddImplicitArbStepper(::pressio::ode::SteppersE name,
+			const T1 & romState,
+			Args && ...args)
+    : T(name, romState, std::forward<Args>(args)...),
+      stepperObj_(romState, T::romCRef())
+  {}
+};
+
+}}}
+#endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
+
+
+
+
 // #ifdef PRESSIO_ENABLE_TPL_PYBIND11
 // template<class fom_system_t>
-// struct FomObjMixin<fom_system_t, true>
+// struct FomObjHolder<fom_system_t, true>
 // {
 //   // when dealing with bindings for pressio4py, the fom_system_t
 //   // is a C++ class in pressio4py that wraps the actual FOM python object.
@@ -84,115 +154,14 @@ struct FomObjMixin<fom_system_t, false>
 //   // instead of referencing it.
 //   fom_system_t fomObj_;
 
-//   FomObjMixin() = delete;
-//   FomObjMixin(const FomObjMixin &) = default;
-//   FomObjMixin & operator=(const FomObjMixin &) = delete;
-//   FomObjMixin(FomObjMixin &&) = default;
-//   FomObjMixin & operator=(FomObjMixin &&) = delete;
-//   ~FomObjMixin() = default;
+//   FomObjHolder() = delete;
+//   FomObjHolder(const FomObjHolder &) = default;
+//   FomObjHolder & operator=(const FomObjHolder &) = delete;
+//   FomObjHolder(FomObjHolder &&) = default;
+//   FomObjHolder & operator=(FomObjHolder &&) = delete;
+//   ~FomObjHolder() = default;
 
-//   explicit FomObjMixin(pybind11::object pyFomObj)
-//     : fomObj_(pyFomObj){}
-
+//   explicit FomObjHolder(pybind11::object pyFomObj): fomObj_(pyFomObj){}
 //   const fom_system_t & fomCRef() const{ return fomObj_; }
 // };
 // #endif
-
-//---------------------------------------------------
-template <
-  class T,
-  class fom_state_t,
-  class fom_state_reconstr_t,
-  class fom_states_manager_t
-  >
-struct FomStatesMngrMixin : T
-{
-  const fom_state_t	     fomNominalState_;
-  const fom_state_reconstr_t fomStateReconstructor_;
-  fom_states_manager_t	     fomStatesMngr_;
-
-  FomStatesMngrMixin() = delete;
-  FomStatesMngrMixin(const FomStatesMngrMixin &) = default;
-  FomStatesMngrMixin & operator=(const FomStatesMngrMixin &) = delete;
-  FomStatesMngrMixin(FomStatesMngrMixin &&) = default;
-  FomStatesMngrMixin & operator=(FomStatesMngrMixin &&) = delete;
-  ~FomStatesMngrMixin() = default;
-
-  template<class T1, class T2, class T3, class T4>
-  FomStatesMngrMixin(const T1 & fomObj,
-		     const T2 & decoder,
-		     const T3 & romStateIn,
-		     const T4 & fomNominalStateNative)
-    : T(fomObj),
-      fomNominalState_(::pressio::ops::clone(fomNominalStateNative)),
-      fomStateReconstructor_(fomNominalState_, decoder),
-      fomStatesMngr_(fomStateReconstructor_, fomNominalState_)
-  {
-    // reconstruct current fom state so that we have something
-    // consisten with the current romState
-    fomStatesMngr_.reconstructCurrentFomState(romStateIn);
-  }
-};
-
-//---------------------------------------------------
-template <class T, class stepper_t>
-struct ExplicitStepperMixin : T
-{
-  stepper_t stepperObj_;
-
-  ExplicitStepperMixin() = delete;
-  ExplicitStepperMixin(const ExplicitStepperMixin &) = default;
-  ExplicitStepperMixin & operator=(const ExplicitStepperMixin &) = delete;
-  ExplicitStepperMixin(ExplicitStepperMixin &&) = default;
-  ExplicitStepperMixin & operator=(ExplicitStepperMixin &&) = delete;
-  ~ExplicitStepperMixin() = default;
-
-  template<class T1, class...Args>
-  ExplicitStepperMixin(const T1 & romStateIn, Args && ...args)
-    : T(romStateIn, std::forward<Args>(args)...),
-      stepperObj_(romStateIn, T::romCRef())
-  {}
-};
-
-//---------------------------------------------------
-template <class T, class stepper_t>
-struct ImplicitStepperMixin : T
-{
-  stepper_t stepperObj_;
-
-  ImplicitStepperMixin() = delete;
-  ImplicitStepperMixin(const ImplicitStepperMixin &) = default;
-  ImplicitStepperMixin & operator=(const ImplicitStepperMixin &) = delete;
-  ImplicitStepperMixin(ImplicitStepperMixin &&) = default;
-  ImplicitStepperMixin & operator=(ImplicitStepperMixin &&) = delete;
-  ~ImplicitStepperMixin() = default;
-
-  template<class T1, class...Args>
-  ImplicitStepperMixin(const T1 & romStateIn, Args && ...args)
-    : T(romStateIn, std::forward<Args>(args)...),
-      stepperObj_(romStateIn, T::residualPolicy_, T::jacobianPolicy_)
-  {}
-};
-
-//---------------------------------------------------
-template <class T, class stepper_t>
-struct ImplicitArbStepperMixin : T
-{
-  stepper_t stepperObj_;
-
-  ImplicitArbStepperMixin() = delete;
-  ImplicitArbStepperMixin(const ImplicitArbStepperMixin &) = default;
-  ImplicitArbStepperMixin & operator=(const ImplicitArbStepperMixin &) = delete;
-  ImplicitArbStepperMixin(ImplicitArbStepperMixin &&) = default;
-  ImplicitArbStepperMixin & operator=(ImplicitArbStepperMixin &&) = delete;
-  ~ImplicitArbStepperMixin() = default;
-
-  template<class T1, class...Args>
-  ImplicitArbStepperMixin(const T1 & romStateIn, Args && ...args)
-    : T(romStateIn, std::forward<Args>(args)...),
-      stepperObj_(romStateIn, T::romCRef())
-  {}
-};
-
-}}}
-#endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_

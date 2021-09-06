@@ -72,10 +72,10 @@ struct TrivialFomSteadyCustomTypes
 
   void residual(const state_type & u, residual_type & r) const
   {
-    EXPECT_TRUE(u.extent(0)==r.extent(0));
-    EXPECT_TRUE(u.extent(0)==N_);
+    EXPECT_TRUE((std::size_t)u.extent(0)==(std::size_t)r.extent(0));
+    EXPECT_TRUE((std::size_t)u.extent(0)==(std::size_t)N_);
 
-    for (auto i=0; i<r.extent(0); ++i){
+    for (std::size_t i=0; i<r.extent(0); ++i){
      r(i) = u(i) + 1.;
     }
   }

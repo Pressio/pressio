@@ -73,11 +73,43 @@ public:
     : ProjectionPolicyType(std::forward<Args>(args)...){}
 
 public:
-  GalerkinResidualType create() const
-  {
+  GalerkinResidualType create() const{
     return ProjectionPolicyType::template create<GalerkinResidualType>();
   }
 
+  template <
+    class GalerkinStateType,
+    class GalerkinStencilStatesContainerType,
+    class GalerkinStencilVelocitiesContainerType,
+    class ScalarType
+    >
+  void compute(::pressio::ode::SteppersE name,
+	       const GalerkinStateType & galerkinState,
+	       const GalerkinStencilStatesContainerType & galerkinStencilStates,
+	       GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
+	       const ScalarType & t_np1,
+	       const ScalarType & dt,
+	       const ::pressio::ode::step_count_type & currentStepNumber,
+	       GalerkinResidualType & galerkinResidual) const
+  {
+    if (name == ::pressio::ode::SteppersE::BDF1){
+      (*this).template compute_impl_bdf<ode::BDF1>(galerkinState, galerkinStencilStates,
+						   galerkinStencilVelocities, t_np1, dt,
+						   currentStepNumber, galerkinResidual);
+    }
+    else if (name == ::pressio::ode::SteppersE::BDF2){
+      (*this).template compute_impl_bdf<ode::BDF2>(galerkinState, galerkinStencilStates,
+						   galerkinStencilVelocities, t_np1, dt,
+						   currentStepNumber, galerkinResidual);
+    }
+    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+      (*this).template compute_impl_cn<ode::CrankNicolson>(galerkinState, galerkinStencilStates,
+							    galerkinStencilVelocities, t_np1, dt,
+							    currentStepNumber, galerkinResidual);
+    }
+  }
+
+private:
   template <
     class StepperTag,
     class GalerkinStateType,
@@ -85,17 +117,13 @@ public:
     class GalerkinStencilVelocitiesContainerType,
     class ScalarType
     >
-  mpl::enable_if_t<
-     std::is_same<StepperTag, ::pressio::ode::BDF1>::value or
-     std::is_same<StepperTag, ::pressio::ode::BDF2>::value
-    >
-  compute(const GalerkinStateType & galerkinState,
-	  const GalerkinStencilStatesContainerType & galerkinStencilStates,
-	  GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
-	  const ScalarType & t_np1,
-	  const ScalarType & dt,
-	  const ::pressio::ode::step_count_type & currentStepNumber,
-	  GalerkinResidualType & galerkinResidual) const
+  void compute_impl_bdf(const GalerkinStateType & galerkinState,
+			const GalerkinStencilStatesContainerType & galerkinStencilStates,
+			GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
+			const ScalarType & t_np1,
+			const ScalarType & dt,
+			const ::pressio::ode::step_count_type & currentStepNumber,
+			GalerkinResidualType & galerkinResidual) const
   {
     ProjectionPolicyType::compute(galerkinResidual,
 				  galerkinState,
@@ -115,16 +143,13 @@ public:
     class GalerkinStencilVelocitiesContainerType,
     class ScalarType
     >
-  mpl::enable_if_t<
-    std::is_same<StepperTag, ::pressio::ode::CrankNicolson>::value
-    >
-  compute(const GalerkinStateType & galerkinState,
-	  const GalerkinStencilStatesContainerType & galerkinStencilStates,
-	  GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
-	  const ScalarType & t_np1,
-	  const ScalarType & dt,
-	  const ::pressio::ode::step_count_type & currentStepNumber,
-	  GalerkinResidualType & galerkinResidual) const
+  void compute_impl_cn(const GalerkinStateType & galerkinState,
+		       const GalerkinStencilStatesContainerType & galerkinStencilStates,
+		       GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
+		       const ScalarType & t_np1,
+		       const ScalarType & dt,
+		       const ::pressio::ode::step_count_type & currentStepNumber,
+		       GalerkinResidualType & galerkinResidual) const
   {
 
     // if the step changed, I need to compute f(y_n, t_n)

@@ -73,7 +73,7 @@ public:
   // numAuxStates is the number of auxiliary states needed, so all other beside y_n
   static constexpr std::size_t numAuxStates = n_states - 1;
   using tag_name = ::pressio::ode::ImplicitArbitrary;
-  using stencil_states_t = ImplicitStencilStatesContainer<StateType, numAuxStates>;
+  using stencil_states_t = ImplicitStencilStatesContainerStatic<StateType, numAuxStates>;
 
 private:
   ScalarType rhsEvaluationTime_  = {};
@@ -117,7 +117,7 @@ public:
     const auto & yn = stencilStates_(ode::n());
 
     try{
-    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_,
       dt_, R, odeState, yn);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -130,7 +130,7 @@ public:
   jacobian(const state_type & odeState, jacobian_type & J) const
   {
     const auto & yn = stencilStates_(ode::n());
-    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_,
       dt_, J, odeState, yn);
   }
 
@@ -143,7 +143,7 @@ public:
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
 
     try{
-    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_,
       dt_, R, odeState, yn, ynm1);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -157,7 +157,7 @@ public:
   {
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
-    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_,
       dt_, J, odeState, yn, ynm1);
   }
 
@@ -171,7 +171,7 @@ public:
     const auto & ynm2 = stencilStates_(ode::nMinusTwo());
 
     try{
-    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeResidual(stepNumber_, rhsEvaluationTime_,
       dt_, R, odeState, yn, ynm1, ynm2);
     }
     catch (::pressio::eh::DiscreteTimeResidualFailureUnrecoverable const & e){
@@ -186,7 +186,7 @@ public:
     const auto & yn = stencilStates_(ode::n());
     const auto & ynm1 = stencilStates_(ode::nMinusOne());
     const auto & ynm2 = stencilStates_(ode::nMinusTwo());
-    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_, 
+    systemObj_.get().template discreteTimeJacobian(stepNumber_, rhsEvaluationTime_,
       dt_, J, odeState, yn, ynm1, ynm2);
   }
 

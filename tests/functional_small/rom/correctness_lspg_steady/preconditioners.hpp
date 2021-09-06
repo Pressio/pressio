@@ -36,7 +36,7 @@ struct PreconditionerSteadyCustomTypes
 
   void operator()(const state_type &, vec_operand_type & operand) const
   {
-    for (auto i=0; i<operand.extent(0); ++i){
+    for (std::size_t i=0; i<operand.extent(0); ++i){
      operand(i) += 1.;
     }
   }

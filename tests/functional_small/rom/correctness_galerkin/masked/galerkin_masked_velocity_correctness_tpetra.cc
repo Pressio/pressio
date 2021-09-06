@@ -60,8 +60,8 @@ TEST(rom_galerkin_test, const_time_masked_explicit_correctness_tpetra)
   phiSample.getVectorNonConst(2)->putScalar(2.);
   ProjectorExplicitTpetra proj(phiSample);
 
-  using ode_tag = pressio::ode::ForwardEuler;
-  auto problem = pressio::rom::galerkin::create_masked_problem<ode_tag>(
+  auto problem = pressio::rom::galerkin::create_masked_explicit_problem(
+    pressio::ode::SteppersE::ForwardEuler, 
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 

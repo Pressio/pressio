@@ -52,22 +52,23 @@
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class SystemType, class StateType, class ResidualType>
-class ResidualStandardPolicyBdf
+class ResidualStandardPolicy
 {
 public:
   // required
   using residual_type = ResidualType;
 
 public:
-  ResidualStandardPolicyBdf() = delete;
-  explicit ResidualStandardPolicyBdf(SystemType && systemIn)
+  ResidualStandardPolicy() = delete;
+
+  ResidualStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
-  ResidualStandardPolicyBdf(const ResidualStandardPolicyBdf &) = default;
-  ResidualStandardPolicyBdf & operator=(const ResidualStandardPolicyBdf &) = default;
-  ResidualStandardPolicyBdf(ResidualStandardPolicyBdf &&) = default;
-  ResidualStandardPolicyBdf & operator=(ResidualStandardPolicyBdf &&) = default;
-  ~ResidualStandardPolicyBdf() = default;
+  ResidualStandardPolicy(const ResidualStandardPolicy &) = default;
+  ResidualStandardPolicy & operator=(const ResidualStandardPolicy &) = default;
+  ResidualStandardPolicy(ResidualStandardPolicy &&) = default;
+  ResidualStandardPolicy & operator=(ResidualStandardPolicy &&) = default;
+  ~ResidualStandardPolicy() = default;
 
 public:
   ResidualType create() const{
@@ -76,13 +77,13 @@ public:
   }
 
   template <
-    class OdeTag,
     class StencilStatesContainerType,
     class StencilVelocitiesContainerType,
     class ScalarType,
     class StepType
     >
-  void compute(const StateType & predictedState,
+  void compute(SteppersE name,
+	       const StateType & predictedState,
 	       const StencilStatesContainerType & stencilStatesManager,
 	       StencilVelocitiesContainerType & stencilVelocities,
 	       const ScalarType & rhsEvaluationTime,
@@ -90,77 +91,63 @@ public:
 	       const StepType & step,
 	       ResidualType & R) const
   {
-    static_assert(StencilVelocitiesContainerType::size() == 0,
-		  "Residual policy for BDF should have 0 velocities");
 
-    static_assert(
-		  std::is_same<OdeTag, ::pressio::ode::BDF1>::value or
-		  std::is_same<OdeTag, ::pressio::ode::BDF2>::value,
-		  "Invalid tag for BDF residual policy");
+    if (name == SteppersE::BDF1){
+      (*this).template compute_impl_bdf<ode::BDF1>(predictedState, stencilStatesManager,
+				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+    }
+    else if (name == SteppersE::BDF2){
+      (*this).template compute_impl_bdf<ode::BDF2>(predictedState, stencilStatesManager,
+				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+    }
+    else if (name == SteppersE::CrankNicolson){
+      this->compute_impl_cn(predictedState, stencilStatesManager,
+		      stencilVelocities, rhsEvaluationTime, dt, step, R);
+    }
+  }
 
+private:
+  template <
+  class OdeTag,
+  class StencilStatesContainerType,
+  class StencilVelocitiesContainerType,
+  class ScalarType,
+  class StepType
+  >
+  void compute_impl_bdf(const StateType & predictedState,
+			const StencilStatesContainerType & stencilStatesManager,
+			StencilVelocitiesContainerType & stencilVelocities,
+			const ScalarType & rhsEvaluationTime,
+			const ScalarType & dt,
+			const StepType & step,
+			ResidualType & R) const
+  {
     try{
       systemObj_.get().velocity(predictedState, rhsEvaluationTime, R);
       ::pressio::ode::impl::discrete_time_residual(predictedState,
 						   R, stencilStatesManager,
 						   dt, OdeTag());
+      stepTracker_ = step;
     }
     catch (::pressio::eh::VelocityFailureUnrecoverable const & e){
       throw ::pressio::eh::ResidualEvaluationFailureUnrecoverable();
     }
   }
 
-private:
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
-};
-
-
-template<class SystemType, class StateType, class ResidualType>
-class ResidualStandardPolicyCrankNicolson
-{
-  mutable int stepTracker_ = -1;
-
-public:
-  // required
-  using residual_type = ResidualType;
-
-  ResidualStandardPolicyCrankNicolson() = delete;
-
-  explicit ResidualStandardPolicyCrankNicolson(SystemType && systemIn)
-    : systemObj_( std::forward<SystemType>(systemIn) ){}
-
-  ResidualStandardPolicyCrankNicolson(const ResidualStandardPolicyCrankNicolson &) = default;
-  ResidualStandardPolicyCrankNicolson & operator=(const ResidualStandardPolicyCrankNicolson &) = default;
-  ResidualStandardPolicyCrankNicolson(ResidualStandardPolicyCrankNicolson &&) = default;
-  ResidualStandardPolicyCrankNicolson & operator=(ResidualStandardPolicyCrankNicolson &&) = default;
-  ~ResidualStandardPolicyCrankNicolson() = default;
-
-public:
-  ResidualType create() const{
-    ResidualType R(systemObj_.get().createVelocity());
-    return R;
-  }
-
   template <
-    class OdeTag,
     class StencilStatesContainerType,
     class StencilVelocitiesContainerType,
     class ScalarType,
     class StepType
     >
-  void compute(const StateType & predictedState,
-    const StencilStatesContainerType & stencilStates,
-    StencilVelocitiesContainerType & stencilVelocities,
-    const ScalarType & t_np1,
-    const ScalarType & dt,
-    const StepType & step,
-    ResidualType & R) const
+  void compute_impl_cn(const StateType & predictedState,
+		       const StencilStatesContainerType & stencilStates,
+		       StencilVelocitiesContainerType & stencilVelocities,
+		       const ScalarType & t_np1,
+		       const ScalarType & dt,
+		       const StepType & step,
+		       ResidualType & R) const
   {
-    static_assert(StencilVelocitiesContainerType::size() == 2,
-      "Residual policy for CrankNicolson should have 2 velocities");
-
-    static_assert(
-      std::is_same<OdeTag, ::pressio::ode::CrankNicolson>::value,
-      "Invalid tag for BDF residual policy");
 
     if (stepTracker_ != step){
       auto & f_n = stencilVelocities(::pressio::ode::n());
@@ -172,13 +159,15 @@ public:
     auto & f_np1 = stencilVelocities(::pressio::ode::nPlusOne());
     systemObj_.get().velocity(predictedState, t_np1, f_np1);
     ::pressio::ode::impl::discrete_time_residual
-      (predictedState, R, stencilStates, stencilVelocities, dt, OdeTag());
+      (predictedState, R, stencilStates, stencilVelocities, dt,
+       ode::CrankNicolson());
 
     stepTracker_ = step;
   }
 
 private:
   ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
+  mutable int32_t stepTracker_ = -1;
 };
 
 }}}//end namespace pressio::ode::implicitmethods::policy
