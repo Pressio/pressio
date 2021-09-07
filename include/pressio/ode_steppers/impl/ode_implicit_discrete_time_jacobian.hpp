@@ -74,8 +74,8 @@ void discrete_time_jacobian(JacobianType & jac,
 */
 template <typename JacobianType, typename ScalarType>
 void discrete_time_jacobian(JacobianType & jac,
-           const ScalarType & dt,
-           ::pressio::ode::BDF2)
+			    const ScalarType & dt,
+			    ::pressio::ode::BDF2)
 {
   constexpr auto cnp1   = ::pressio::ode::constants::bdf2<ScalarType>::c_np1_;
   const auto cf   = ::pressio::ode::constants::bdf2<ScalarType>::c_f_ * dt;
@@ -91,8 +91,8 @@ void discrete_time_jacobian(JacobianType & jac,
 */
 template <typename JacobianType, typename ScalarType>
 void discrete_time_jacobian(JacobianType & jac,
-           const ScalarType & dt,
-           ::pressio::ode::CrankNicolson)
+			    const ScalarType & dt,
+			    ::pressio::ode::CrankNicolson)
 {
   using cnst = ::pressio::ode::constants::cranknicolson<ScalarType>;
   constexpr auto cnp1  = cnst::c_np1_;

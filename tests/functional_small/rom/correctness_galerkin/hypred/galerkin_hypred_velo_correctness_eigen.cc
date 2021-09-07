@@ -53,10 +53,9 @@ TEST(rom_galerkin, cont_time_hypred_explicit_correctness_eigen)
   using fom_t = TrivialFomOnlyVelocityEigen;
   HYPRED_VELO_GALERKIN_COMMON_PART();
 
-  using ode_tag = pressio::ode::ForwardEuler;
   namespace gal = pressio::rom::galerkin;
-  auto problem = gal::create_hyperreduced_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj);
+  auto problem = gal::create_hyperreduced_explicit_problem(
+    pressio::ode::SteppersE::ForwardEuler, fomSystem, decoder, romState, fomReferenceState, proj);
 
   const scalar_t dt = 1.; 
   const int num_steps = 2;
@@ -79,9 +78,8 @@ TEST(rom_galerkin, cont_time_hypred_implicit_correctness_eigen)
   using fom_t = TrivialFomVelocityAndJacobianEigen;
   HYPRED_VELO_GALERKIN_COMMON_PART();
 
-  using ode_tag = pressio::ode::BDF1;
-  auto problem = pressio::rom::galerkin::create_hyperreduced_problem<ode_tag>(
-    fomSystem, decoder, romState, fomReferenceState, proj);
+  auto problem = pressio::rom::galerkin::create_hyperreduced_implicit_problem(
+    pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, proj);
   auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverContTime nonLinSolver;

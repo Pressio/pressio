@@ -77,7 +77,7 @@ public:
 
 private:
   using AuxiliaryStepperType =
-    StepperBDF1<ScalarType, StateType, ResidualType, 
+    StepperBDF1<ScalarType, StateType, ResidualType,
     JacobianType, ResidualPolicyType, JacobianPolicyType, using_default_policies>;
   AuxiliaryStepperType auxStepper_;
 
@@ -104,7 +104,7 @@ public:
   ~StepperBDF2() = default;
 
   template <
-    class SystemType, 
+    class SystemType,
     bool _using_default_policies = using_default_policies,
     ::pressio::mpl::enable_if_t<_using_default_policies, int> = 0
     >

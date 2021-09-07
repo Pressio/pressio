@@ -56,8 +56,9 @@ public:
 
   residual_type create() const{ return residual_type(); }
 
-  template <typename odetag, typename prev_states_type, class rhs_container>
-  void compute(const StateType & y,
+  template <typename prev_states_type, class rhs_container>
+  void compute(pressio::ode::SteppersE name, 
+      const StateType & y,
       const prev_states_type & oldYs,
       rhs_container & rhs,
       const double & t,
@@ -74,8 +75,9 @@ class JacobianPolicy
 public:
   using jacobian_type = JacobianType;
 
-  template <typename odetag, typename prev_states_type>
-  void compute(const StateType & y,
+  template <typename prev_states_type>
+  void compute(pressio::ode::SteppersE name,
+      const StateType & y,
       const prev_states_type & oldYs,
       const double &  t,
       const double &  dt,
@@ -112,12 +114,3 @@ TEST(ode, concepts_policies_arbitrary_stepper)
   static_assert(ode::implicit_euler_jacobian_policy<
      jacobian_policy_t, state_t, double>::value, "");
 }
-
-TEST(ode, implicit_stencil_size)
-{
-  namespace po = pressio::ode;
-  static_assert(po::implicit_stencil_size(po::BDF1())==2,"" );
-  static_assert(po::implicit_stencil_size(po::BDF2())==3, "");
-  static_assert(po::implicit_stencil_size(po::CrankNicolson())==2,"");
-}
-

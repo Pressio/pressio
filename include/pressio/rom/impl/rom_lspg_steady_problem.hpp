@@ -51,45 +51,62 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template <class traits> struct MembersCommon
+template <class T, class system_t>
+struct SystemMixin : T
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
+  system_t systemObj_;
 
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+  SystemMixin() = delete;
+  SystemMixin(const SystemMixin &) = default;
+  SystemMixin & operator=(const SystemMixin &) = delete;
+  SystemMixin(SystemMixin &&) = default;
+  SystemMixin & operator=(SystemMixin &&) = delete;
+  ~SystemMixin() = default;
+
+  template<class...Args>
+  SystemMixin(Args && ...args)
+    : T(std::forward<Args>(args)...),
+      systemObj_(T::residualPolicy_, T::jacobianPolicy_)
+  {}
+};
+
+template <class traits> struct SteadyMembersCommon
+{
+  using At = ::pressio::rom::impl::FomObjHolder<
+    typename traits::fom_system_type, traits::binding_sentinel>;
+
+  using Bt = ::pressio::rom::lspg::impl::AddFomStatesManager<
     At,
+    true, // sentinel to inform container is static
     typename traits::fom_state_type,
     typename traits::fom_state_reconstr_type,
     typename traits::fom_states_manager_type>;
 };
 
 template <int flag, class traits>
-struct Members{ using type = void; };
+struct SteadyMembers{ using type = void; };
 
 // default
-template <class traits> struct Members<0, traits> : MembersCommon<traits>
+template <class traits> struct SteadyMembers<0, traits>
+  : SteadyMembersCommon<traits>
 {
-  using base_t = MembersCommon<traits>;
-  using typename base_t::At;
+  using base_t = SteadyMembersCommon<traits>;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = DefaultPoliciesMixin<
+  using Ct = AddDefaultPolicies<
     Bt, typename traits::residual_policy_type, typename traits::jacobian_policy_type>;
   using type = SystemMixin<
     Ct, typename traits::steady_system_type>;
 };
 
 // masked
-template <class traits> struct Members<1, traits> : MembersCommon<traits>
+template <class traits> struct SteadyMembers<1, traits>
+  : SteadyMembersCommon<traits>
 {
-  using base_t = MembersCommon<traits>;
-  using typename base_t::At;
+  using base_t = SteadyMembersCommon<traits>;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = SinglyDecoratedPoliciesMixin<
+  using Ct = AddSinglyDecoratedPolicies<
     Bt,
     typename traits::masker_type,
     typename traits::residual_policy_type,
@@ -99,14 +116,13 @@ template <class traits> struct Members<1, traits> : MembersCommon<traits>
 };
 
 // preconditioned default
-template <class traits> struct Members<2, traits> : MembersCommon<traits>
+template <class traits> struct SteadyMembers<2, traits>
+  : SteadyMembersCommon<traits>
 {
-  using base_t = MembersCommon<traits>;
-  using typename base_t::At;
+  using base_t = SteadyMembersCommon<traits>;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = SinglyDecoratedPoliciesMixin<
+  using Ct = AddSinglyDecoratedPolicies<
     Bt,
     typename traits::preconditioner_type,
     typename traits::residual_policy_type,
@@ -116,14 +132,13 @@ template <class traits> struct Members<2, traits> : MembersCommon<traits>
 };
 
 // preconditioned masked
-template <class traits> struct Members<3, traits> : MembersCommon<traits>
+template <class traits> struct SteadyMembers<3, traits>
+  : SteadyMembersCommon<traits>
 {
-  using base_t = MembersCommon<traits>;
-  using typename base_t::At;
+  using base_t = SteadyMembersCommon<traits>;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct = DoublyDecoratedPoliciesMixin<
+  using Ct = AddDoublyDecoratedPolicies<
     Bt,
     typename traits::preconditioner_type,
     typename traits::masker_type,
@@ -149,7 +164,7 @@ private:
   using steady_system_type = typename traits::steady_system_type;
   using fom_state_type	 = typename traits::fom_state_type;
   using fom_state_reconstr_type = typename traits::fom_state_reconstr_type;
-  typename Members<flag, traits>::type members_;
+  typename SteadyMembers<flag, traits>::type members_;
 
 public:
   steady_system_type & system(){ return members_.systemObj_; }

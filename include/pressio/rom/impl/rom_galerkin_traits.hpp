@@ -55,34 +55,16 @@ namespace rom{ namespace galerkin{ namespace impl{
 //fwd declare problem class
 template <int, class ...> class Problem;
 
-template<typename tag>
-struct _num_fom_states_needed{
-  static constexpr std::size_t value = 1;
-};
-
-template<>
-struct _num_fom_states_needed<::pressio::ode::BDF1>{
-  static constexpr std::size_t value = 1;
-};
-
-template<>
-struct _num_fom_states_needed<::pressio::ode::BDF2>{
-  static constexpr std::size_t value = 1;
-};
-
-template<>
-struct _num_fom_states_needed<::pressio::ode::CrankNicolson>{
-  static constexpr std::size_t value = 2;
-};
-
 template <
-  class OdeTag,
+  bool is_explicit,
   class FomSystemType,
   class GalerkinStateType,
   class DecoderType
   >
 struct CommonTraitsContinuousTimeApi
 {
+  static constexpr bool binding_sentinel = false;
+
   using fom_system_type	 = FomSystemType;
   using scalar_type	 = typename fom_system_type::scalar_type;
   using galerkin_state_type = GalerkinStateType;
@@ -120,7 +102,7 @@ struct CommonTraitsContinuousTimeApi
   // ---------------------------------------------------------------
   /* fom states manager
 
-     - This is Galerkin, so the FOM states are only needed when we query the FOM velocity.
+     - for Galerkin the FOM states are only needed when we query the FOM velocity.
 
      - For explicit time stepping, we only need to store one fom state that
      we reconstruct every time we need to compute the FOM velocity
@@ -131,24 +113,14 @@ struct CommonTraitsContinuousTimeApi
      CrankNicolson needs two evaluations of the FOM velocity
      at n and n+1, so we need two FOM states.
    */
-  static constexpr auto nstates = _num_fom_states_needed<OdeTag>::value;
-  using fom_states_manager_type = mpl::conditional_t<
-    ::pressio::ode::is_explicit_stepper_tag<OdeTag>::value,
-    ::pressio::rom::ManagerFomStatesUnsteadyExplicit<
-      fom_state_type, fom_state_reconstr_type, nstates>,
-    ::pressio::rom::ManagerFomStatesUnsteadyImplicit<
-      fom_state_type, fom_state_reconstr_type, nstates>
+  using fom_states_manager_type =
+    mpl::conditional_t<
+    is_explicit,
+    ::pressio::rom::ManagerStencilFomStatesDynamic<
+    fom_state_type, fom_state_reconstr_type, ::pressio::ode::n>,
+    ::pressio::rom::ManagerStencilFomStatesDynamic<
+    fom_state_type, fom_state_reconstr_type, ::pressio::ode::nPlusOne>
     >;
-
-  // ---------------------
-  // sentinel to tell if we are doing bindings for p4py:
-  // always false if pybind is disabled, otherwise detect from galerkin state
-  static constexpr bool binding_sentinel = false;
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-//     ::pressio::containers::predicates::is_tensor_wrapper_pybind<galerkin_state_t>::value;
-// #else
-//   false;
-// #endif
 };
 
 
@@ -189,15 +161,13 @@ struct CommonTraitsDiscreteTimeApi
   using fom_state_reconstr_type = ::pressio::rom::FomStateReconstructor<decoder_type>;
 
   static constexpr auto nstates = num_states;
-  using fom_states_manager_type = ::pressio::rom::ManagerFomStatesUnsteadyImplicit<
+  using fom_states_manager_type = ::pressio::rom::ManagerStencilFomStatesStatic<
     fom_state_type, fom_state_reconstr_type, nstates>;
 
   static constexpr bool binding_sentinel = false;
 };
 
 }}} // end namespace pressio::rom::galekin::impl
-
-
 
 //=======================
 //
@@ -206,20 +176,19 @@ struct CommonTraitsDiscreteTimeApi
 //=======================
 
 // conttime explicit
-template <
-  class StepperTag,
-  class FomSystemType,
-  class GalerkinStateType,
-  class DecoderType
-  >
+template <class FomSystemType, class GalerkinStateType, class DecoderType>
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    0, StepperTag, FomSystemType, GalerkinStateType, DecoderType
+    0, FomSystemType, GalerkinStateType, DecoderType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    true, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
+
   using fom_system_type		= typename common_types::fom_system_type;
   using scalar_type		= typename common_types::scalar_type;
   using fom_state_type		= typename common_types::fom_state_type;
@@ -232,7 +201,6 @@ struct Traits<
   using decoder_jac_type		= typename common_types::decoder_jac_type;
   using fom_state_reconstr_type	= typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type	= typename common_types::fom_states_manager_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
   // default galerkin uses default projector, so decoderJac^T
@@ -253,12 +221,11 @@ struct Traits<
   // 2. we need to use const rom_sytem_type & because the ROM problem
   // owns the system and the stepper only references it
   using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_type, const rom_system_type &>::type;
+    galerkin_state_type, const rom_system_type &>::type;
 };
 
 // conttime implicit
 template <
-  class StepperTag,
   class FomSystemType,
   class GalerkinStateType,
   class GalerkinResidualType,
@@ -267,14 +234,16 @@ template <
   >
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    1, StepperTag, FomSystemType,
-    GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
+    1, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    false, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
@@ -287,8 +256,6 @@ struct Traits<
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
-  static constexpr auto is_cont_time = true;
 
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
@@ -315,8 +282,8 @@ struct Traits<
       >
     >;
 
-  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
+  using stepper_type = typename ::pressio::ode::impl::ImplicitCompose<
+    galerkin_state_type, residual_policy_type &, jacobian_policy_type &>::type;
 };
 
 // disctime implicit
@@ -339,6 +306,9 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = false;
+
   using fom_system_type = typename common_types::fom_system_type;
   using scalar_type     = typename common_types::scalar_type;
 
@@ -352,10 +322,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
-  static constexpr auto is_cont_time = false;
 
   // default galerkin uses default projector, so decoderJac^T
   using projector_type = ::pressio::rom::galerkin::impl::DefaultProjector<decoder_type>;
@@ -393,7 +360,6 @@ struct Traits<
 
 // conttime explicit
 template <
-  class StepperTag,
   class FomSystemType,
   class GalerkinStateType,
   class DecoderType,
@@ -402,12 +368,15 @@ template <
   >
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    3, StepperTag, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType
+    3, FomSystemType, GalerkinStateType, DecoderType, MaskerType, ProjectorType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    true, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
@@ -420,7 +389,6 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
   using masker_type = MaskerType;
@@ -453,12 +421,11 @@ struct Traits<
   // 2. we need to use const rom_sytem_t & because the ROM problem
   // owns the system and the stepper only references it
   using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_type, const rom_system_type &>::type;
+    galerkin_state_type, const rom_system_type &>::type;
 };
 
 // conttime impiciit
 template <
-  class StepperTag,
   class FomSystemType,
   class GalerkinStateType,
   class GalerkinResidualType,
@@ -469,14 +436,16 @@ template <
   >
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    4, StepperTag, FomSystemType,
-    GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
+    4, FomSystemType, GalerkinStateType, GalerkinResidualType, GalerkinJacobianType,
     DecoderType, MaskerType, ProjectorType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    false, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
@@ -489,9 +458,7 @@ struct Traits<
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
-  static constexpr auto is_cont_time = true;
 
   using masker_type = MaskerType;
   using projector_type = ProjectorType;
@@ -533,8 +500,8 @@ struct Traits<
       >
     >;
 
-  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
+  using stepper_type = typename ::pressio::ode::impl::ImplicitCompose<
+    galerkin_state_type, residual_policy_type &, jacobian_policy_type &>::type;
 };
 
 // disctime implicit
@@ -558,6 +525,8 @@ struct Traits<
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = false;
 
   using fom_system_type = typename common_types::fom_system_type;
   using scalar_type     = typename common_types::scalar_type;
@@ -572,10 +541,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
-  static constexpr auto is_cont_time = false;
 
   using masker_type = MaskerType;
   static_assert
@@ -619,7 +585,6 @@ struct Traits<
 };
 
 
-
 //=======================
 //
 // HYP-REDUCED
@@ -628,7 +593,6 @@ struct Traits<
 
 // contitime explicit
 template <
-  class StepperTag,
   class FomSystemType,
   class GalerkinStateType,
   class DecoderType,
@@ -636,12 +600,15 @@ template <
   >
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    6, StepperTag, FomSystemType, GalerkinStateType, DecoderType, ProjectorType
+    6, FomSystemType, GalerkinStateType, DecoderType, ProjectorType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    true, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
@@ -654,7 +621,6 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
 
   using projector_type = ProjectorType;
@@ -678,12 +644,11 @@ struct Traits<
   // 2. we need to use const rom_sytem_t & because the ROM problem
   // owns the system and the stepper only references it
   using stepper_type = typename ::pressio::ode::impl::ExplicitCompose<
-    StepperTag, galerkin_state_type, const rom_system_type &>::type;
+    galerkin_state_type, const rom_system_type &>::type;
 };
 
 // conttime implicit
 template <
-  class StepperTag,
   class FomSystemType,
   class GalerkinStateType,
   class GalerkinResidualType,
@@ -693,13 +658,16 @@ template <
   >
 struct Traits<
   ::pressio::rom::galerkin::impl::Problem<
-    7, StepperTag, FomSystemType,
-    GalerkinStateType, GalerkinResidualType, GalerkinJacobianType, DecoderType, ProjectorType
+    7, FomSystemType, GalerkinStateType, GalerkinResidualType,
+    GalerkinJacobianType, DecoderType, ProjectorType
     >
   >
 {
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsContinuousTimeApi<
-    StepperTag, FomSystemType, GalerkinStateType, DecoderType>;
+    false, FomSystemType, GalerkinStateType, DecoderType>;
+
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = true;
 
   using fom_system_type    = typename common_types::fom_system_type;
   using scalar_type    = typename common_types::scalar_type;
@@ -712,9 +680,7 @@ struct Traits<
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
   using galerkin_residual_type = GalerkinResidualType;
   using galerkin_jacobian_type = GalerkinJacobianType;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
-  static constexpr auto is_cont_time = true;
 
   using projector_type = ProjectorType;
   static_assert
@@ -742,8 +708,8 @@ struct Traits<
       >
     >;
 
-  using stepper_type = ::pressio::ode::impl::ImplicitCompose_t<
-    StepperTag, void, galerkin_state_type, residual_policy_type &, jacobian_policy_type &>;
+  using stepper_type = typename ::pressio::ode::impl::ImplicitCompose<
+    galerkin_state_type, residual_policy_type &, jacobian_policy_type &>::type;
 };
 
 // disctime implicit
@@ -767,9 +733,11 @@ struct Traits<
   using common_types = ::pressio::rom::galerkin::impl::CommonTraitsDiscreteTimeApi<
     num_states, FomSystemType, GalerkinStateType, DecoderType>;
 
+  static constexpr auto binding_sentinel = common_types::binding_sentinel;
+  static constexpr auto is_cont_time = false;
+
   using fom_system_type = typename common_types::fom_system_type;
   using scalar_type     = typename common_types::scalar_type;
-
   using fom_state_type  = typename common_types::fom_state_type;
   using fom_discrete_time_residual_type = typename common_types::fom_discrete_time_residual_type;
 
@@ -780,10 +748,7 @@ struct Traits<
   using decoder_jac_type   = typename common_types::decoder_jac_type;
   using fom_state_reconstr_type  = typename common_types::fom_state_reconstr_type;
   using fom_states_manager_type  = typename common_types::fom_states_manager_type;
-
   using size_type = typename ::pressio::Traits<galerkin_state_type>::size_type;
-  static constexpr auto binding_sentinel = common_types::binding_sentinel;
-  static constexpr auto is_cont_time = false;
 
   using projector_type = ProjectorType;
   static_assert

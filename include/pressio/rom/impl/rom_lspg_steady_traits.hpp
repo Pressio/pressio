@@ -55,7 +55,6 @@ namespace rom{ namespace lspg{ namespace impl{
 
 //fwd declare problem class
 template <int, class ...> class SteadyProblem;
-template <int, class ...> class UnsteadyProblem;
 
 template <class FomSystemType, class LspgStateType, class DecoderType>
 struct CommonTraitsSteady

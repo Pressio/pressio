@@ -51,6 +51,12 @@
 
 namespace pressio{ namespace rom{
 
+// =================================
+//
+// steady
+//
+// =================================
+
 template <class FomStateType, class ReconstuctorType>
 class ManagerFomStatesSteady
 {
@@ -78,9 +84,8 @@ public:
 
   FomStateType const & currentFomState() const {return data_[0];}
 
-  template <typename rom_state_t>
-  void reconstructCurrentFomState(const rom_state_t & romStateIn)
-  {
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn){
     fomStateReconstrObj_(romStateIn, data_[0]);
   }
 
@@ -95,121 +100,76 @@ private:
 };
 
 
-// explicit stepping
-template <class FomStateType, class ReconstuctorType, std::size_t N>
-class ManagerFomStatesUnsteadyExplicit
-{
-  //
-  // for ROMs with explicit time stepping we define indexing:
-  // "n, n-1, n-2", etc
-  //
+// =================================
+//
+// =================================
+template <class FomStateType, class ReconstuctorType, class StencilEndsAt>
+class ManagerStencilFomStatesDynamic;
 
-  static_assert(N>=1, "ManagerFomStatesUnsteadyExplicit cannot be empty.");
+template <class FomStateType, class ReconstuctorType>
+class ManagerStencilFomStatesDynamic<
+  FomStateType, ReconstuctorType, ::pressio::ode::n>
+{
+  // specialize for: n, n-1, n-2, etc
 
 public:
-  using data_type  = std::array<FomStateType, N>;
+  using data_type  = std::vector<FomStateType>;
   using value_type = FomStateType;
 
-  ManagerFomStatesUnsteadyExplicit() = delete;
-  ManagerFomStatesUnsteadyExplicit(const ManagerFomStatesUnsteadyExplicit &) = default;
-  ManagerFomStatesUnsteadyExplicit & operator=(const ManagerFomStatesUnsteadyExplicit &) = delete;
-  ManagerFomStatesUnsteadyExplicit(ManagerFomStatesUnsteadyExplicit &&) = default;
-  ManagerFomStatesUnsteadyExplicit & operator=(ManagerFomStatesUnsteadyExplicit &&) = delete;
-  ~ManagerFomStatesUnsteadyExplicit() = default;
+  ManagerStencilFomStatesDynamic() = delete;
+  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
+  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
+  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
+  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
+  ~ManagerStencilFomStatesDynamic() = default;
 
-  // constructor for n == 1
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
-  ManagerFomStatesUnsteadyExplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
-    : fomStateReconstrObj_(fomStateReconstr),
-      data_{::pressio::ops::clone(fomState)}
-      {
-        this->setZero();
-      }
-
-  // constructor for n == 2
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
-  ManagerFomStatesUnsteadyExplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
-    : fomStateReconstrObj_(fomStateReconstr),
-      data_{::pressio::ops::clone(fomState),
-            ::pressio::ops::clone(fomState)}
-      {
-        this->setZero();
-      }
-
-  // constructor for n == 3
-  template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
-  ManagerFomStatesUnsteadyExplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
-    : fomStateReconstrObj_(fomStateReconstr),
-      data_{::pressio::ops::clone(fomState),
-            ::pressio::ops::clone(fomState),
-            ::pressio::ops::clone(fomState)}
-      {
-        this->setZero();
-      }
-
+  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
+				   std::initializer_list<FomStateType> il)
+    : fomStateReconstrObj_(fomStateReconstr), data_(il)
+  {
+    this->setZero();
+  }
 
 public:
-  static constexpr std::size_t size(){ return data_type::size(); }
+  const std::size_t size() const { return data_.size(); }
 
   // n
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=1, FomStateType const &>
-  fomStateAt(::pressio::ode::n) const {return data_[0];}
+  FomStateType const & fomStateAt(::pressio::ode::n) const {
+    assert(data_.size() >=1); return data_[0];
+  }
 
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=1, FomStateType const &>
-  operator()(::pressio::ode::n) const {return data_[0];}
+  FomStateType const & operator()(::pressio::ode::n) const {
+    assert(data_.size() >=1); return data_[0];
+  }
 
   // n-1
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=2, FomStateType const &>
-  fomStateAt(::pressio::ode::nMinusOne) const {return data_[1];}
+  FomStateType const & fomStateAt(::pressio::ode::nMinusOne) const {
+    assert(data_.size() >=2); return data_[1];
+  }
 
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=2, FomStateType const &>
-  operator()(::pressio::ode::nMinusOne) const {return data_[1];}
+  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
+    assert(data_.size() >=2);
+    return data_[1];
+  }
 
-  //-----------------------------
-  // ** reconstruction methods **
-  //-----------------------------
-  /* for explicit methods, the current FOM state is the n-th state */
-  template <typename rom_state_t>
-  void reconstructCurrentFomState(const rom_state_t & romStateIn)
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn)
   {
     this->reconstructAt(romStateIn, ::pressio::ode::n());
   }
 
   // n
-  template <typename rom_state_t, std::size_t _N = N>
-  mpl::enable_if_t< _N>=1 >
-  reconstructAt(const rom_state_t & romStateIn, ::pressio::ode::n)
-  {
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
+    assert(data_.size() >=1);
     fomStateReconstrObj_(romStateIn, data_[0]);
   }
 
-  template <typename rom_state_t, std::size_t _N = N>
-  mpl::enable_if_t< _N>=1 >
-  reconstructFomStateAt(const rom_state_t & romStateIn,	::pressio::ode::n tag)
-  {
-    reconstructAt(romStateIn, tag);
-  }
-
   // n-1
-  template <typename rom_state_t, std::size_t _N = N>
-  mpl::enable_if_t< _N>=2 >
-  reconstructAt(const rom_state_t & romStateIn, ::pressio::ode::n)
-  {
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
+    assert(data_.size() >=2);
     fomStateReconstrObj_(romStateIn, data_[1]);
-  }
-
-  template <typename rom_state_t, std::size_t _N = N>
-  mpl::enable_if_t< _N>=2 >
-  reconstructFomStateAt(const rom_state_t & romStateIn, ::pressio::ode::n tag)
-  {
-    reconstructAt(romStateIn, tag);
   }
 
 private:
@@ -224,9 +184,148 @@ private:
 };
 
 
-// for implicit stepping
+// =================================
+//
+// =================================
+template <class FomStateType, class ReconstuctorType>
+class ManagerStencilFomStatesDynamic<
+  FomStateType, ReconstuctorType, ::pressio::ode::nPlusOne>
+{
+  // for "n+1, n, n-1, n-2", etc
+
+public:
+  using data_type  = std::vector<FomStateType>;
+  using value_type = FomStateType;
+
+  ManagerStencilFomStatesDynamic() = delete;
+  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
+  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
+  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
+  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
+  ~ManagerStencilFomStatesDynamic() = default;
+
+  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
+				   std::initializer_list<FomStateType> il)
+    : fomStateReconstrObj_(fomStateReconstr), data_(il)
+  {
+    this->setZero();
+  }
+
+public:
+  const std::size_t size() const { return data_.size(); }
+
+  // n+1
+  FomStateType const & fomStateAt(::pressio::ode::nPlusOne) const {
+        assert(data_.size() >=1); return data_[0];
+  }
+  FomStateType const & operator()(::pressio::ode::nPlusOne) const {
+        assert(data_.size() >=1); return data_[0];
+  }
+
+  // n
+  FomStateType const & fomStateAt(::pressio::ode::n) const {
+        assert(data_.size() >=2); return data_[1];
+  }
+  FomStateType const & operator()(::pressio::ode::n) const {
+        assert(data_.size() >=2); return data_[1];
+  }
+
+  // n-1
+  FomStateType const & fomStateAt(::pressio::ode::nMinusOne) const {
+        assert(data_.size() >=3); return data_[2];
+  }
+  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
+        assert(data_.size() >=3); return data_[2];
+  }
+
+  // ** methods to reconstruct fom state **
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn)
+  {
+    this->reconstructAt(romStateIn, ::pressio::ode::nPlusOne());
+  }
+
+  // n+1
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nPlusOne /*tag*/){
+    assert(data_.size() >=1);
+    fomStateReconstrObj_.get()(romStateIn, data_[0]);
+  }
+
+  // n
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
+    assert(data_.size() >=2);
+    fomStateReconstrObj_.get()(romStateIn, data_[1]);
+  }
+
+
+  // n-1
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
+    assert(data_.size() >=3);
+    fomStateReconstrObj_.get()(romStateIn, data_[2]);
+  }
+
+  // //-----------------------------
+  // // reconstruct with update:
+  // //-----------------------------
+  // // reconstructs at point and shifts back existing FOM states
+  // // so that stencil is updating properly
+  // // we do this from n since n+1 is handled differenetly
+
+  // // n==2 we have y_n+1, y_n
+  // template <class RomStateType>
+  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  // {
+  //   /* when n == 2, it means I only have n+1 and n
+  //    * so to reconstruct at n, I can simply
+  //    * overwrite the data in data_[1] */
+  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
+  // }
+
+  // /* when n == 3, we have y_n+1, y_n, y_n-1 */
+  // template <class RomStateType>
+  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  // {
+  //   /*
+  //    * copy y_n into y_n-1
+  //    * then reconstruct y_n
+  //    */
+  //   ::pressio::ops::deep_copy(data_[2], data_[1]);
+  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
+  // }
+
+  // /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
+  // template <class RomStateType>
+  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  // {
+  //   /*
+  //    * copy y_n-1 into y_n-2
+  //    * copy y_n into y_n-1
+  //    * then reconstruct y_n */
+  //   ::pressio::ops::deep_copy(data_[3], data_[2]);
+  //   ::pressio::ops::deep_copy(data_[2], data_[1]);
+  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
+  // }
+
+private:
+  void setZero(){
+    for (std::size_t i=0; i<data_.size(); i++)
+      ::pressio::ops::set_zero(data_[i]);
+  }
+
+private:
+  std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
+  data_type data_;
+};
+
+
+
+// =================================
+// =================================
 template <class FomStateType, class ReconstuctorType, std::size_t N>
-class ManagerFomStatesUnsteadyImplicit
+class ManagerStencilFomStatesStatic
 {
   static_assert(N>=1, "ManagerFomStates cannot be empty.");
 
@@ -234,17 +333,17 @@ public:
   using data_type  = std::array<FomStateType, N>;
   using value_type = FomStateType;
 
-  ManagerFomStatesUnsteadyImplicit() = delete;
-  ManagerFomStatesUnsteadyImplicit(const ManagerFomStatesUnsteadyImplicit &) = default;
-  ManagerFomStatesUnsteadyImplicit & operator=(const ManagerFomStatesUnsteadyImplicit &) = delete;
-  ManagerFomStatesUnsteadyImplicit(ManagerFomStatesUnsteadyImplicit &&) = default;
-  ManagerFomStatesUnsteadyImplicit & operator=(ManagerFomStatesUnsteadyImplicit &&) = delete;
-  ~ManagerFomStatesUnsteadyImplicit() = default;
+  ManagerStencilFomStatesStatic() = delete;
+  ManagerStencilFomStatesStatic(const ManagerStencilFomStatesStatic &) = default;
+  ManagerStencilFomStatesStatic & operator=(const ManagerStencilFomStatesStatic &) = delete;
+  ManagerStencilFomStatesStatic(ManagerStencilFomStatesStatic &&) = default;
+  ManagerStencilFomStatesStatic & operator=(ManagerStencilFomStatesStatic &&) = delete;
+  ~ManagerStencilFomStatesStatic() = default;
 
   // constructor for n == 1
   template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
-  ManagerFomStatesUnsteadyImplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
+  ManagerStencilFomStatesStatic(const ReconstuctorType & fomStateReconstr,
+				const FomStateType & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
       data_{::pressio::ops::clone(fomState)}
       {
@@ -253,8 +352,8 @@ public:
 
   // constructor for n == 2
   template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
-  ManagerFomStatesUnsteadyImplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
+  ManagerStencilFomStatesStatic(const ReconstuctorType & fomStateReconstr,
+				const FomStateType & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
       data_{::pressio::ops::clone(fomState),
             ::pressio::ops::clone(fomState)}
@@ -264,8 +363,8 @@ public:
 
   // constructor for n == 3
   template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
-  ManagerFomStatesUnsteadyImplicit(const ReconstuctorType & fomStateReconstr,
-                   const FomStateType & fomState)
+  ManagerStencilFomStatesStatic(const ReconstuctorType & fomStateReconstr,
+				const FomStateType & fomState)
     : fomStateReconstrObj_(fomStateReconstr),
       data_{::pressio::ops::clone(fomState),
             ::pressio::ops::clone(fomState),
@@ -277,10 +376,6 @@ public:
 public:
   static constexpr std::size_t size(){ return data_type::size(); }
 
-  // for implicit time stepping it makese sense to
-  // index using "n+1, n, n-1, n-2", etc
-
-  // ** methods to extract const ref to data **
   // n+1
   template <std::size_t _N = N>
   mpl::enable_if_t<_N>=1, FomStateType const &>
@@ -308,45 +403,42 @@ public:
   mpl::enable_if_t<_N>=3, FomStateType const &>
   operator()(::pressio::ode::nMinusOne) const {return data_[2];}
 
-  //----------------------------------------
   // ** methods to reconstruct fom state **
-  //----------------------------------------
-  /* for implicit stepping, the current FOM state is the n+1-th state */
-  template <typename rom_state_t>
-  void reconstructCurrentFomState(const rom_state_t & romStateIn)
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn)
   {
     this->reconstructAt(romStateIn, ::pressio::ode::nPlusOne());
   }
 
   // n+1
-  template <typename rom_state_t, std::size_t _N = N>
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N>=1 >
-  reconstructAt(const rom_state_t & romStateIn,
+  reconstructAt(const RomStateType & romStateIn,
 		::pressio::ode::nPlusOne)
   {
     fomStateReconstrObj_.get()(romStateIn, data_[0]);
   }
 
-  template <typename rom_state_t, std::size_t _N = N>
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N>=1 >
-  reconstructFomStateAt(const rom_state_t & romStateIn,
+  reconstructFomStateAt(const RomStateType & romStateIn,
 			::pressio::ode::nPlusOne tag)
   {
     reconstructAt(romStateIn, tag);
   }
 
   // n
-  template <typename rom_state_t, std::size_t _N = N>
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N>=2 >
-  reconstructAt(const rom_state_t & romStateIn,
+  reconstructAt(const RomStateType & romStateIn,
 		::pressio::ode::n)
   {
     fomStateReconstrObj_.get()(romStateIn, data_[1]);
   }
 
-  template <typename rom_state_t, std::size_t _N = N>
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N>=2 >
-  reconstructFomStateAt(const rom_state_t & romStateIn,
+  reconstructFomStateAt(const RomStateType & romStateIn,
 			::pressio::ode::n tag)
   {
     reconstructAt(romStateIn, tag);
@@ -360,9 +452,9 @@ public:
   // we do this from n since n+1 is handled differenetly
 
   // n==2 we have y_n+1, y_n
-  template <typename rom_state_t, std::size_t _N = N>
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N==2 >
-  reconstructWithStencilUpdate(const rom_state_t & romStateIn)
+  reconstructWithStencilUpdate(const RomStateType & romStateIn)
   {
     /* when n == 2, it means I only have n+1 and n
      * so to reconstruct at n, I can simply
@@ -372,11 +464,11 @@ public:
 
   /* when n == 3, we have y_n+1, y_n, y_n-1 */
   template <
-    typename rom_state_t,
+    class RomStateType,
     std::size_t _N = N
     >
   mpl::enable_if_t< _N==3>
-  reconstructWithStencilUpdate(const rom_state_t & romStateIn)
+  reconstructWithStencilUpdate(const RomStateType & romStateIn)
   {
     /*
      * copy y_n into y_n-1
@@ -388,11 +480,11 @@ public:
 
   /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
   template <
-    typename rom_state_t,
+    class RomStateType,
     std::size_t _N = N
     >
   mpl::enable_if_t< _N==4>
-  reconstructWithStencilUpdate(const rom_state_t & romStateIn)
+  reconstructWithStencilUpdate(const RomStateType & romStateIn)
   {
     /*
      * copy y_n-1 into y_n-2

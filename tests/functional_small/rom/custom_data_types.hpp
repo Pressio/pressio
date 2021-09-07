@@ -9,6 +9,8 @@ namespace pressiotests{
 template<class ScalarType>
 struct MyCustomVector
 {
+  MyCustomVector() = delete;
+
   MyCustomVector(std::size_t ext) : d_(ext){}
 
   ScalarType & operator()(int i){ return d_[i]; }
@@ -27,6 +29,8 @@ private:
 template<class ScalarType>
 struct MyCustomMatrix
 {
+  MyCustomMatrix() = delete;
+
   MyCustomMatrix(std::size_t nr, std::size_t nc)
     : num_rows_(nr), num_cols_(nc), d_(nr*nc){}
 

@@ -46,20 +46,19 @@
 //@HEADER
 */
 
-#ifndef ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_HPP_
-#define ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_HPP_
+#ifndef ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
+#define ODE_IMPLICIT_ODE_STENCIL_DATA_CONTAINER_STATIC_HPP_
 
 namespace pressio{ namespace ode{ namespace impl{
 
 template<class ValueType, std::size_t N, class StencilEndsAtTag>
-class StencilDataContainerImpl;
-
+class StencilDataContainerStaticImpl;
 
 //
 // if start at nPlusOne, we have n+1, n, n-1, ...
-// 
+//
 template<class ValueType, std::size_t N>
-class StencilDataContainerImpl<ValueType, N, ::pressio::ode::nPlusOne>
+class StencilDataContainerStaticImpl<ValueType, N, ::pressio::ode::nPlusOne>
 {
 public:
   using data_type = std::array<ValueType, N>;
@@ -69,89 +68,89 @@ private:
 
 public:
   template <std::size_t _N = N, mpl::enable_if_t<_N == 0, int> = 0>
-  StencilDataContainerImpl(){}
+  StencilDataContainerStaticImpl(){}
 
   // constructor for n == 1
   template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y)}{}
 
   // constructor for n == 2
   template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
   // constructor for n == 3
   template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
   // constructor for n == 4
   template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
-  StencilDataContainerImpl(StencilDataContainerImpl const & other) = default;
-  StencilDataContainerImpl & operator=(StencilDataContainerImpl const & other) = default;
-  StencilDataContainerImpl(StencilDataContainerImpl && other) = default;
-  StencilDataContainerImpl & operator=(StencilDataContainerImpl && other) = default;
-  ~StencilDataContainerImpl() = default;
+  StencilDataContainerStaticImpl(StencilDataContainerStaticImpl const & other) = default;
+  StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl const & other) = default;
+  StencilDataContainerStaticImpl(StencilDataContainerStaticImpl && other) = default;
+  StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl && other) = default;
+  ~StencilDataContainerStaticImpl() = default;
 
 public:
   static constexpr std::size_t size(){ return N; }
 
   ValueType & operator()(::pressio::ode::nPlusOne){
-    static_assert( N>=1, 
+    static_assert( N>=1,
       "Calling operator()(::pressio::ode::nPlusOne) requires N>=1");
-    return data_[0]; 
+    return data_[0];
   }
 
   ValueType & operator()(::pressio::ode::n){
-    static_assert( N>=2, 
+    static_assert( N>=2,
       "Calling operator()(::pressio::ode::n) requires N>=2");
-    return data_[1]; 
+    return data_[1];
   }
 
   ValueType & operator()(::pressio::ode::nMinusOne){
-    static_assert( N>=3, 
+    static_assert( N>=3,
       "Calling operator()(::pressio::ode::nMinusOne) requires N>=3");
-    return data_[2]; 
+    return data_[2];
   }
 
   ValueType & operator()(::pressio::ode::nMinusTwo){
-    static_assert( N>=4, 
+    static_assert( N>=4,
       "Calling operator()(::pressio::ode::nMinusTwo) requires N>=4");
-    return data_[3]; 
+    return data_[3];
   }
 
   ValueType const & operator()(::pressio::ode::nPlusOne) const {
-    static_assert( N>=1, 
+    static_assert( N>=1,
       "Calling operator()(::pressio::ode::nPlusOne) requires N>=1");
-    return data_[0]; 
+    return data_[0];
   }
 
   ValueType const & operator()(::pressio::ode::n) const {
-    static_assert( N>=2, 
+    static_assert( N>=2,
       "Calling operator()(::pressio::ode::n) requires N>=2");
-    return data_[1]; 
+    return data_[1];
   }
 
   ValueType const & operator()(::pressio::ode::nMinusOne) const {
-    static_assert( N>=3, 
+    static_assert( N>=3,
       "Calling operator()(::pressio::ode::nMinusOne) requires N>=3");
-    return data_[2]; 
+    return data_[2];
   }
 
   ValueType const & operator()(::pressio::ode::nMinusTwo) const {
-    static_assert( N>=4, 
+    static_assert( N>=4,
       "Calling operator()(::pressio::ode::nMinusTwo) requires N>=4");
-    return data_[3]; 
+    return data_[3];
   }
 };
 
@@ -160,7 +159,7 @@ public:
 // if we start at n, we have n, n, n-1, ...
 //
 template<class ValueType, std::size_t N>
-class StencilDataContainerImpl<ValueType, N, ::pressio::ode::n>
+class StencilDataContainerStaticImpl<ValueType, N, ::pressio::ode::n>
 {
 public:
   using data_type = std::array<ValueType, N>;
@@ -170,89 +169,89 @@ private:
 
 public:
   template <std::size_t _N = N, mpl::enable_if_t<_N == 0, int> = 0>
-  StencilDataContainerImpl(){}
+  StencilDataContainerStaticImpl(){}
 
   // constructor for n == 1
   template <std::size_t _N = N, mpl::enable_if_t<_N == 1, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y)}{}
 
   // constructor for n == 2
   template <std::size_t _N = N, mpl::enable_if_t<_N == 2, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
   // constructor for n == 3
   template <std::size_t _N = N, mpl::enable_if_t<_N == 3, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
   // constructor for n == 4
   template <std::size_t _N = N, mpl::enable_if_t<_N == 4, int> = 0>
-  StencilDataContainerImpl(ValueType const & y)
+  StencilDataContainerStaticImpl(ValueType const & y)
     : data_{::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y),
             ::pressio::ops::clone(y)}{}
 
-  StencilDataContainerImpl(StencilDataContainerImpl const & other) = default;
-  StencilDataContainerImpl & operator=(StencilDataContainerImpl const & other) = default;
-  StencilDataContainerImpl(StencilDataContainerImpl && other) = default;
-  StencilDataContainerImpl & operator=(StencilDataContainerImpl && other) = default;
-  ~StencilDataContainerImpl() = default;
+  StencilDataContainerStaticImpl(StencilDataContainerStaticImpl const & other) = default;
+  StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl const & other) = default;
+  StencilDataContainerStaticImpl(StencilDataContainerStaticImpl && other) = default;
+  StencilDataContainerStaticImpl & operator=(StencilDataContainerStaticImpl && other) = default;
+  ~StencilDataContainerStaticImpl() = default;
 
 public:
   static constexpr std::size_t size(){ return N; }
 
   ValueType & operator()(::pressio::ode::n){
-    static_assert( N>=1, 
+    static_assert( N>=1,
       "Calling operator()(::pressio::ode::n) requires N>=1");
-    return data_[0]; 
+    return data_[0];
   }
 
   ValueType & operator()(::pressio::ode::nMinusOne){
-    static_assert( N>=2, 
+    static_assert( N>=2,
       "Calling operator()(::pressio::ode::nMinusOne) requires N>=2");
-    return data_[1]; 
+    return data_[1];
   }
 
   ValueType & operator()(::pressio::ode::nMinusTwo){
-    static_assert( N>=3, 
+    static_assert( N>=3,
       "Calling operator()(::pressio::ode::nMinusTwo) requires N>=3");
-    return data_[2]; 
+    return data_[2];
   }
 
   ValueType & operator()(::pressio::ode::nMinusThree){
-    static_assert( N>=4, 
+    static_assert( N>=4,
       "Calling operator()(::pressio::ode::nMinusThree) requires N>=4");
-    return data_[3]; 
+    return data_[3];
   }
 
   ValueType const & operator()(::pressio::ode::n) const {
-    static_assert( N>=1, 
+    static_assert( N>=1,
       "Calling operator()(::pressio::ode::n) requires N>=1");
-    return data_[0]; 
+    return data_[0];
   }
 
   ValueType const & operator()(::pressio::ode::nMinusOne) const {
-    static_assert( N>=2, 
+    static_assert( N>=2,
       "Calling operator()(::pressio::ode::nMinusOne) requires N>=2");
-    return data_[1]; 
+    return data_[1];
   }
 
   ValueType const & operator()(::pressio::ode::nMinusTwo) const {
-    static_assert( N>=3, 
+    static_assert( N>=3,
       "Calling operator()(::pressio::ode::nMinusTwo) requires N>=3");
-    return data_[2]; 
+    return data_[2];
   }
 
   ValueType const & operator()(::pressio::ode::nMinusThree) const {
-    static_assert( N>=4, 
+    static_assert( N>=4,
       "Calling operator()(::pressio::ode::nMinusThree) requires N>=4");
-    return data_[3]; 
+    return data_[3];
   }
 };
 

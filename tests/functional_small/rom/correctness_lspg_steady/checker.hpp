@@ -17,9 +17,9 @@ struct FakeNonLinSolverSteady
     ++call_count_;
     auto R = system.createResidual();
     auto J = system.createJacobian();
-    EXPECT_TRUE(pressio::ops::extent(R,0)==N_);
-    EXPECT_TRUE(pressio::ops::extent(J,0)==N_);
-    EXPECT_TRUE(pressio::ops::extent(J,1)==3);
+    EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
+    EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
+    EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
 
     //
     // call_count == 1

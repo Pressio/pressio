@@ -60,7 +60,8 @@ public:
 
 public:
   JacobianStandardPolicy() = delete;
-  explicit JacobianStandardPolicy(SystemType && systemIn)
+
+  JacobianStandardPolicy(SystemType && systemIn)
     : systemObj_( std::forward<SystemType>(systemIn) ){}
 
   JacobianStandardPolicy(const JacobianStandardPolicy &) = default;
@@ -76,8 +77,9 @@ public:
     return JJ;
   }
 
-  template <class OdeTag, class StencilStatesContainerType, class ScalarType, class StepType>
-  void compute(const StateType & odeCurrentState,
+  template <class StencilStatesContainerType, class ScalarType, class StepType>
+  void compute(SteppersE name,
+	       const StateType & odeCurrentState,
 	       const StencilStatesContainerType & stencilStates,
 	       const ScalarType & time,
 	       const ScalarType & dt,
@@ -85,7 +87,16 @@ public:
 	       JacobianType & J) const
   {
     systemObj_.get().jacobian(odeCurrentState, time, J);
-    ::pressio::ode::impl::discrete_time_jacobian(J, dt, OdeTag());
+
+    if (name == SteppersE::BDF1){
+      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF1());
+    }
+    else if (name == SteppersE::BDF2){
+      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::BDF2());
+    }
+    else if (name == SteppersE::CrankNicolson){
+      ::pressio::ode::impl::discrete_time_jacobian(J, dt, ode::CrankNicolson());
+    }
   }
 
 private:

@@ -217,7 +217,8 @@ struct Bdf1Solver
   const sc_t dt_ = 0.01;
 
   Bdf1Solver(const state_t & yIn)
-    : appObj_{}, y_{yIn}, stepperObj_{y_, appObj_}
+    : appObj_{}, y_{yIn}, 
+    stepperObj_(pressio::ode::create_bdf1_stepper(y_, appObj_))
   {}
 
   void integrateForNSteps(int steps)

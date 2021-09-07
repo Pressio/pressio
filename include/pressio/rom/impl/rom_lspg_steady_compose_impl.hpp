@@ -49,13 +49,13 @@
 #ifndef ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
 #define ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
 
-#include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_lspg_decorator_preconditioner.hpp"
 #include "./rom_lspg_decorator_masked.hpp"
-#include "./rom_lspg_steady_problem_members.hpp"
+#include "./rom_problem_members_common_mixins.hpp"
+#include "./rom_lspg_problem_members.hpp"
 #include "./rom_lspg_steady_policies.hpp"
 #include "./rom_lspg_steady_system.hpp"
-#include "./rom_lspg_steady_problem_traits.hpp"
+#include "./rom_lspg_steady_traits.hpp"
 #include "./rom_lspg_steady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{

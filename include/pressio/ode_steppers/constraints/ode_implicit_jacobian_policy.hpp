@@ -53,8 +53,6 @@ namespace pressio{ namespace ode{
 
 template<
   class T,
-  class TagType,
-  std::size_t nS,
   class StateType,
   class ScalarType,
   class = void
@@ -63,16 +61,14 @@ struct implicit_jacobian_policy : std::false_type{};
 
 template<
   class T,
-  class TagType,
-  std::size_t nS,
   class StateType,
   class ScalarType
   >
 struct implicit_jacobian_policy<
-  T, TagType, nS, StateType, ScalarType,
+  T, StateType, ScalarType,
   ::pressio::mpl::enable_if_t<
     ::pressio::has_jacobian_typedef<T>::value
-    and 
+    and
     std::is_same<
       typename T::jacobian_type,
       decltype
@@ -85,11 +81,11 @@ struct implicit_jacobian_policy<
     std::is_void<
       decltype
       (
-       std::declval<T const>().template compute
-       <TagType>
+       std::declval<T const>().compute
        (
+	std::declval<SteppersE const &>(),
 	std::declval<StateType const &>(),
-	std::declval<ImplicitStencilStatesContainer<StateType, nS> const & >(),
+	std::declval<ImplicitStencilStatesContainerDyn<StateType> const & >(),
 	std::declval<ScalarType const &>(),
 	std::declval<ScalarType const &>(),
 	std::declval<int const &>(),
@@ -103,18 +99,15 @@ struct implicit_jacobian_policy<
 
 template<class T, class ... args>
 using implicit_euler_jacobian_policy =
-  implicit_jacobian_policy<
-  T, ::pressio::ode::BDF1, 1, args...>;
+  implicit_jacobian_policy<T, args...>;
 
 template<class T, class ... args>
 using implicit_bdf2_jacobian_policy =
-  implicit_jacobian_policy<
-  T, ::pressio::ode::BDF2, 2, args...>;
+  implicit_jacobian_policy<T, args...>;
 
 template<class T, class ... args>
 using implicit_cranknicolson_jacobian_policy =
-  implicit_jacobian_policy<
-  T, ::pressio::ode::CrankNicolson, 1, args...>;
+  implicit_jacobian_policy<T, args...>;
 
 }} // namespace pressio::ode::constraints
 #endif  // ODE_IMPLICIT_CONSTRAINTS_ODE_IMPLICIT_JACOBIAN_POLICY_HPP_

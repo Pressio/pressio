@@ -49,99 +49,169 @@
 #ifndef ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
 #define ROM_GALERKIN_ROM_CREATE_DEFAULT_GALERKIN_PROBLEM_HPP_
 
-#include "./impl/rom_galerkin_compose_impl.hpp"
+#include "./impl/rom_galerkin_compose.hpp"
 
 namespace pressio{ namespace rom{ namespace galerkin{
 
-//
-// for cont-time
-//
+// ============================
+// for cont-time, explicit
+// ============================
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType,
-  class ReturnType = impl::ComposeDefaultProblemContTime_t<
-    StepperTag, void, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+  class ReturnType = impl::ComposeContTimeExplicit_t<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_default_problem(const FomSystemType & fomSysObj,
-                       DecoderType & decoder,
-                       const RomStateType & stateIn,
-                       const FomReferenceStateType & fomRef)
+ReturnType create_default_explicit_problem(::pressio::ode::SteppersE name,
+					   const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef)
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef);
+
+  impl::ensure_explicit_or_throw("galerkin_default_explicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef);
 }
 
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType,
-  class ReturnType = impl::ComposeHypRedVeloProblemContTime_t<
-    StepperTag, void, FomSystemType, DecoderType, RomStateType,
-    FomReferenceStateType, ProjectorType
+  class ReturnType = impl::ComposeContTimeExplicit_t<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType, ProjectorType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_hyperreduced_problem(const FomSystemType & fomSysObj,
-			    DecoderType & decoder,
-			    const RomStateType & stateIn,
-			    const FomReferenceStateType & fomRef,
-			    const ProjectorType & projector)
-
+ReturnType create_hyperreduced_explicit_problem(::pressio::ode::SteppersE name,
+						const FomSystemType & fomSysObj,
+						DecoderType & decoder,
+						const RomStateType & stateIn,
+						const FomReferenceStateType & fomRef,
+						const ProjectorType & projector)
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector);
+
+  impl::ensure_explicit_or_throw("galerkin_hyperreduced_explicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, projector);
 }
 
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType,
   class MaskerType,
-  class ReturnType = impl::ComposeMaskedVelocityProblemContTime_t<
-    StepperTag, void, FomSystemType, DecoderType, RomStateType,
+  class ReturnType = impl::ComposeContTimeExplicit_t<
+    FomSystemType, DecoderType, RomStateType,
     FomReferenceStateType, MaskerType, ProjectorType
     >
   >
-mpl::enable_if_t<::pressio::ode::is_stepper_tag<StepperTag>::value, ReturnType>
-create_masked_problem(const FomSystemType & fomSysObj,
-		      DecoderType & decoder,
-		      const RomStateType & stateIn,
-		      const FomReferenceStateType & fomRef,
-		      const ProjectorType & projector,
-		      const MaskerType & masker)
-
+ReturnType create_masked_explicit_problem(::pressio::ode::SteppersE name,
+					  const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const ProjectorType & projector,
+					  const MaskerType & masker)
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector, masker);
+
+  impl::ensure_explicit_or_throw("galerkin_masked_explicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, projector, masker);
 }
 
-//
+// ============================
+// for cont-time, implicit
+// ============================
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ReturnType = impl::ComposeContTimeImplicit_t<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+    >
+  >
+ReturnType create_default_implicit_problem(::pressio::ode::SteppersE name,
+					   const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef)
+{
+
+  impl::ensure_implicit_or_throw("galerkin_default_implicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef);
+}
+
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ProjectorType,
+  class ReturnType = impl::ComposeContTimeImplicit_t<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType, ProjectorType
+    >
+  >
+ReturnType create_hyperreduced_implicit_problem(::pressio::ode::SteppersE name,
+						const FomSystemType & fomSysObj,
+						DecoderType & decoder,
+						const RomStateType & stateIn,
+						const FomReferenceStateType & fomRef,
+						const ProjectorType & projector)
+{
+
+  impl::ensure_implicit_or_throw("galerkin_hyperreduced_implicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, projector);
+}
+
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ProjectorType,
+  class MaskerType,
+  class ReturnType = impl::ComposeContTimeImplicit_t<
+    FomSystemType, DecoderType, RomStateType,
+    FomReferenceStateType, MaskerType, ProjectorType
+    >
+  >
+ReturnType create_masked_implicit_problem(::pressio::ode::SteppersE name,
+					  const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const ProjectorType & projector,
+					  const MaskerType & masker)
+{
+
+  impl::ensure_implicit_or_throw("galerkin_masked_implicit", name);
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, projector, masker);
+}
+
+// ============================
 // for discrete-time
-//
+// ============================
 template<
   std::size_t num_states,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType,
-  class ReturnType = typename impl::ComposeDefaultProblemDiscTime<
+  class ReturnType = impl::ComposeDiscTime_t<
     num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
-    >::type
+    >
   >
 ReturnType create_default_problem(const FomSystemType & fomSysObj,
 				  DecoderType & decoder,
 				  const RomStateType & stateIn,
 				  const FomReferenceStateType & fomRef)
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef);
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary, fomSysObj, decoder, stateIn, fomRef);
 }
 
 template<
@@ -151,18 +221,19 @@ template<
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType,
-  class ReturnType = typename impl::ComposeHypRedProblemDiscTime<
+  class ReturnType = impl::ComposeDiscTime_t<
     num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType, ProjectorType
-    >::type
+    >
   >
 ReturnType create_hyperreduced_problem(const FomSystemType & fomSysObj,
 				       DecoderType & decoder,
 				       const RomStateType & stateIn,
 				       const FomReferenceStateType & fomRef,
 				       const ProjectorType & projector)
-
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector);
+
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef, projector);
 }
 
 template<
@@ -173,10 +244,10 @@ template<
   class FomReferenceStateType,
   class ProjectorType,
   class MaskerType,
-  class ReturnType = typename impl::ComposeMaskedProblemDiscTime<
+  class ReturnType = impl::ComposeDiscTime_t<
     num_states, FomSystemType, DecoderType,
     RomStateType, FomReferenceStateType, ProjectorType, MaskerType
-    >::type
+    >
   >
 ReturnType create_masked_problem(const FomSystemType & fomSysObj,
 				 DecoderType & decoder,
@@ -184,9 +255,10 @@ ReturnType create_masked_problem(const FomSystemType & fomSysObj,
 				 const FomReferenceStateType & fomRef,
 				 const ProjectorType & projector,
 				 const MaskerType & masker)
-
 {
-  return ReturnType(fomSysObj, decoder, stateIn, fomRef, projector, masker);
+
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef, projector, masker);
 }
 
 }}}//end namespace pressio::rom::galerkin

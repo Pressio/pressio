@@ -49,71 +49,77 @@
 #ifndef ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
 #define ODE_EXPLICIT_ODE_EXPLICIT_PUBLIC_API_HPP_
 
-#include "./impl/ode_explicit_stepper_compose.hpp"
+#include "./impl/ode_explicit_compose.hpp"
 
 namespace pressio{ namespace ode{
 
-// Euler forward
 template<
   class StateType,
   class SystemType,
-  class ReturnType = typename impl::ExplicitCompose<::pressio::ode::ForwardEuler, StateType, SystemType>::type
+  class ReturnType = typename impl::ExplicitCompose<StateType, SystemType>::type
   >
-ReturnType create_forward_euler_stepper(const StateType & state, SystemType && system)
+ReturnType create_explicit_stepper(SteppersE name,
+				   const StateType & state,
+				   SystemType && system)
 {
-  return ReturnType(state, std::forward<SystemType>(system));
-};
-
-// Runge-kutta 4th
-template<
-  class StateType,
-  class SystemType,
-  class ReturnType = typename impl::ExplicitCompose<::pressio::ode::RungeKutta4, StateType, SystemType>::type
-  >
-ReturnType create_runge_kutta4_stepper(const StateType & state, SystemType && system)
-{
-  return ReturnType(state, std::forward<SystemType>(system));
-};
-
-template<class ...Args>
-auto create_rk4_stepper(Args && ... args) -> decltype(create_runge_kutta4_stepper(std::forward<Args>(args)...))
-{
-  return create_runge_kutta4_stepper(std::forward<Args>(args)...);
-}
-
-// Adams-Bashforth2
-template<
-  class StateType,
-  class SystemType,
-  class ReturnType = typename impl::ExplicitCompose<::pressio::ode::AdamsBashforth2, StateType, SystemType>::type
-  >
-ReturnType create_adams_bashforth2_stepper(const StateType & state, SystemType && system)
-{
-  return ReturnType(state, std::forward<SystemType>(system));
+  if (name == SteppersE::ForwardEuler){
+    return ReturnType(ode::ForwardEuler(), state, std::forward<SystemType>(system));
+  }
+  else if (name == SteppersE::RungeKutta4){
+    return ReturnType(ode::RungeKutta4(), state, std::forward<SystemType>(system));
+  }
+  else if (name == SteppersE::AdamsBashforth2){
+    return ReturnType(ode::AdamsBashforth2(), state, std::forward<SystemType>(system));
+  }
+  else if (name == SteppersE::SSPRungeKutta3){
+    return ReturnType(ode::SSPRungeKutta3(), state, std::forward<SystemType>(system));
+  }
+  else{
+    throw std::runtime_error("Invalid enum value");
+  }
 };
 
 template<class ...Args>
-auto create_ab2_stepper(Args && ... args) -> decltype(create_adams_bashforth2_stepper(std::forward<Args>(args)...))
+auto create_forward_euler_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::ForwardEuler, std::forward<Args>(args)...))
 {
-  return create_adams_bashforth2_stepper(std::forward<Args>(args)...);
-}
-
-// SSP Runge-kutta3
-template<
-  class StateType,
-  class SystemType,
-  class ReturnType = typename impl::ExplicitCompose<::pressio::ode::SSPRungeKutta3, StateType, SystemType>::type
-  >
-ReturnType create_ssp_runge_kutta3_stepper(const StateType & state, SystemType && system)
-{
-  return ReturnType(state, std::forward<SystemType>(system));
+  return create_explicit_stepper(SteppersE::ForwardEuler, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
-auto create_ssprk3_stepper(Args && ... args) -> decltype(create_ssp_runge_kutta3_stepper(std::forward<Args>(args)...))
+auto create_runge_kutta4_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...))
 {
-  return create_ssp_runge_kutta3_stepper(std::forward<Args>(args)...);
-}
+  return create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...);
+};
+
+template<class ...Args>
+auto create_rk4_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...))
+{
+  return create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...);
+};
+
+template<class ...Args>
+auto create_adams_bashforth2_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::AdamsBashforth2, std::forward<Args>(args)...))
+{
+  return create_explicit_stepper(SteppersE::AdamsBashforth2, std::forward<Args>(args)...);
+};
+
+template<class ...Args>
+auto create_ssp_runge_kutta3_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...))
+{
+  return create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...);
+};
+
+template<class ...Args>
+auto create_ssprk3_stepper(Args && ...args)
+  -> decltype(create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...))
+{
+  return create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...);
+};
 
 }} // end namespace pressio::ode
 #endif  // ODE_EXPLICIT_ODE_EXPLICIT_STEPPER_HPP_

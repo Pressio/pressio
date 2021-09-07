@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_euler_stepper_impl.hpp
+// ode_explicit_stepper_compose_impl.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,66 +46,36 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
-#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
+#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
 
-#include <array>
+#include "ode_explicit_stepper.hpp"
 
 namespace pressio{ namespace ode{ namespace impl{
 
-template<
-  class ScalarType,
-  class StateType,
-  class SystemType,
-  class VelocityType
-  >
-class ExplicitEulerStepper
+template<class StateType, class SystemType>
+struct ExplicitCompose
 {
+  static_assert
+  (::pressio::ode::continuous_time_system_with_at_least_velocity<mpl::remove_cvref_t<SystemType>>::value,
+   "The system passed to the ExplicitStepper does not meet the required API");
 
-public:
-  static constexpr bool is_implicit = false;
-  static constexpr bool is_explicit = true;
-  static constexpr stepper_order_type order_value = 1;
+  static_assert
+  (::pressio::ode::explicit_state<StateType>::value,
+   "Invalid state type for explicit stepper");
 
-private:
-  ::pressio::utils::InstanceOrReferenceWrapper<SystemType> systemObj_;
-  std::array<VelocityType, 1> velocities_;
+  static_assert
+  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
+   "Incompatible StateType and state_type alias deduced from the system class");
 
-public:
-  ExplicitEulerStepper() = delete;
-  ExplicitEulerStepper(const ExplicitEulerStepper &) = default;
-  ExplicitEulerStepper & operator=(const ExplicitEulerStepper &) = delete;
-  ExplicitEulerStepper(ExplicitEulerStepper &&) = default;
-  ExplicitEulerStepper & operator=(ExplicitEulerStepper &&) = delete;
-  ~ExplicitEulerStepper() = default;
+  using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
+  using velocity_type = typename mpl::remove_cvref_t<SystemType>::velocity_type;
+  static_assert
+  (::pressio::ode::explicit_velocity<velocity_type>::value,
+   "Invalid velocity type for explicit time stepping");
 
-  ExplicitEulerStepper(const StateType & state, SystemType && systemObj)
-    : systemObj_(std::forward<SystemType>(systemObj)),
-      velocities_{systemObj.createVelocity()}
-  {}
-
-public:
-  stepper_order_type order() const
-  {
-    return order_value;
-  }
-
-  template<class StepCountType>
-  void operator()(StateType & odeSolution,
-	 const ScalarType & time,
-	 const ScalarType & dt,
-	 const StepCountType & step)
-  {
-    PRESSIOLOG_DEBUG("euler forward stepper: do step");
-
-    auto & rhs = velocities_[0];
-    //eval RHS
-    systemObj_.get().velocity(odeSolution, time, rhs);
-    // y = y + dt * rhs
-    constexpr auto one  = ::pressio::utils::Constants<ScalarType>::one();
-    ::pressio::ops::update(odeSolution, one, rhs, dt);
-  }
+  using type = ExplicitStepper<scalar_type, StateType, SystemType, velocity_type>;
 };
 
-}}}//end namespace pressio::ode::explicitmethods::impl
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_EULER_STEPPER_IMPL_HPP_
+}}}
+#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
