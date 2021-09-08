@@ -52,7 +52,6 @@
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
 template<
-  bool is_cont_time,
   class JacobianType,
   class FomStatesManagerType,
   class DecoderType,
@@ -83,78 +82,63 @@ public:
   {}
 
 public:
-  template<bool _is_cont_time = is_cont_time>
-  mpl::enable_if_t<_is_cont_time, jacobian_type>
-  create() const{
+  jacobian_type create() const{
     jacobian_type J( fomSystem_.get().createApplyJacobianResult(decoderJacobian_.get()) );
     ::pressio::ops::set_zero(J);
     return J;
   }
 
   template <
-    class OdeTag,
     class LspgStateType,
     class StencilStatesContainerType,
     class ScalarType,
     class StepType
     >
-  void compute(const LspgStateType & lspgState,
-	       const StencilStatesContainerType & stencilStates,
-	       const ScalarType & time_np1,
-	       const ScalarType & dt,
-	       const StepType & currentStepNumber,
-	       jacobian_type & lspgJacobian) const
+  void operator()(::pressio::ode::SteppersE name,
+		  const LspgStateType & lspgState,
+		  const StencilStatesContainerType & stencilStates,
+		  const ScalarType & time_np1,
+		  const ScalarType & dt,
+		  const StepType & currentStepNumber,
+		  jacobian_type & lspgJacobian) const
   {
     // here we assume that the current state has already been reconstructd
     // by the residual policy. So we do not recompute the FOM state.
     // Maybe we should find a way to ensure this is the case.
     // fomStatesMngr_.get().reconstructCurrentFomState(romState);
 
-    // update Jacobian of decoder
+    // update Jacobian of decoder (if needed)
     decoderObj_.get().updateJacobian(lspgState);
 
     const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
-    const auto & basis = decoderObj_.get().jacobianCRef();
-    fomSystem_.get().applyJacobian(fomState, basis, time_np1, lspgJacobian);
+    fomSystem_.get().applyJacobian(fomState, decoderJacobian_.get(), time_np1, lspgJacobian);
 
-    //::pressio::rom::ode::impl::discrete_time_jacobian(lspgJacobian, dt, decoderJacobian_.get());
+    // for lspg we have:
+    //
+    //		lspgJac = decoderJac + dt*coeff*J*decoderJac
+    //
+    // where J is the fom jacobian and coeff depends on the scheme.
+    //
+    // Here, lspgJacobian already contains J*decoderJac (see applyJac above),
+    // so we just need to update lspgJacobian properly.
 
-    // this->compute_impl<StepperTag>(lspgState, lspgResidual,
-    // 				   lspgStencilStates, lspgStencilVelocities,
-    // 				   t_np1, dt, currentStepNumber);
-    // this->compute_impl<stepper_tag>(romState, romJac, fomSystemObj,
-    // 				    timeAtNextStep, dt, currentStepNumber);
+    constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
+    if (name == ::pressio::ode::SteppersE::BDF1)
+    {
+      const auto factor = dt*::pressio::ode::constants::bdf1<ScalarType>::c_f_;
+      ::pressio::ops::update(lspgJacobian, factor, decoderJacobian_.get(), one);
+    }
+    else if (name == ::pressio::ode::SteppersE::BDF2)
+    {
+      const auto factor = dt*::pressio::ode::constants::bdf2<ScalarType>::c_f_;
+      ::pressio::ops::update(lspgJacobian, factor, decoderJacobian_.get(), one);
+    }
+    else if (name == ::pressio::ode::SteppersE::CrankNicolson)
+      {
+      const auto factor = dt*::pressio::ode::constants::cranknicolson<ScalarType>::c_fnp1_;
+      ::pressio::ops::update(lspgJacobian, factor, decoderJacobian_.get(), one);
+    }
   }
-
-// private:
-//   template <
-//   class stepper_tag,
-//   class matrix_t,
-//   class scalar_t,
-//   class _ud_ops = ud_ops_type
-//   >
-//   ::pressio::mpl::enable_if_t< std::is_void<_ud_ops>::value >
-//   time_discrete_dispatch(matrix_t & romJac, scalar_t  dt) const
-//   {
-//     ::pressio::rom::lspg::impl::unsteady::time_discrete_jacobian<
-//       stepper_tag>(romJac, dt, decoderJacobian_.get());
-//   }
-//   template <
-//     class stepper_tag,
-//     class lspg_state_t,
-//     class lspg_jac_t,
-//     class fom_system_t,
-//     class scalar_t
-//     >
-//   void compute_impl(const lspg_state_t & romState,
-// 		    lspg_jac_t & romJac,
-// 		    const fom_system_t & fomSystemObj,
-// 		    const scalar_t   & timeAtNextStep,
-// 		    const scalar_t   & dt,
-// 		    const ::pressio::ode::step_count_type & currentStepNumber) const
-//   {
-
-//   }
 
 protected:
   std::reference_wrapper<FomStatesManagerType> fomStatesMngr_;

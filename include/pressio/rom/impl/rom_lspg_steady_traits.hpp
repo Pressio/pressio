@@ -203,7 +203,7 @@ struct Traits<
    "Invalid masker passed for steady LSPG");
 
   using residual_policy_type =
-    ::pressio::rom::lspg::impl::Masked<
+    ::pressio::rom::lspg::impl::MaskDecoratorSteady<
     lspg_residual_type, masker_type,
     ::pressio::rom::lspg::impl::SteadyResidualPolicy<
       fom_states_manager_type, lspg_residual_type, fom_system_type
@@ -211,7 +211,7 @@ struct Traits<
     >;
 
   using jacobian_policy_type =
-    ::pressio::rom::lspg::impl::Masked<
+    ::pressio::rom::lspg::impl::MaskDecoratorSteady<
     lspg_jacobian_type, masker_type,
     ::pressio::rom::lspg::impl::SteadyJacobianPolicy<
       fom_states_manager_type, lspg_jacobian_type, decoder_type,fom_system_type
@@ -265,14 +265,14 @@ struct Traits<
    "Invalid masker passed for steady LSPG");
 
   using residual_policy_type =
-    ::pressio::rom::lspg::impl::Preconditioned<
+    ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
     lspg_residual_type, preconditioner_type,
     ::pressio::rom::lspg::impl::SteadyResidualPolicy<
       fom_states_manager_type, lspg_residual_type, fom_system_type
       >
     >;
 
-  using jacobian_policy_type = ::pressio::rom::lspg::impl::Preconditioned<
+  using jacobian_policy_type = ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
     lspg_jacobian_type, preconditioner_type,
     ::pressio::rom::lspg::impl::SteadyJacobianPolicy<
       fom_states_manager_type, lspg_jacobian_type, decoder_type,fom_system_type
@@ -333,9 +333,9 @@ struct Traits<
    "Invalid masker passed for steady LSPG");
 
   using residual_policy_type =
-    ::pressio::rom::lspg::impl::Preconditioned<
+    ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
     lspg_residual_type, preconditioner_type,
-    ::pressio::rom::lspg::impl::Masked<
+    ::pressio::rom::lspg::impl::MaskDecoratorSteady<
       lspg_residual_type, masker_type,
       ::pressio::rom::lspg::impl::SteadyResidualPolicy<
 	fom_states_manager_type, lspg_residual_type, fom_system_type
@@ -344,9 +344,9 @@ struct Traits<
     >;
 
   using jacobian_policy_type =
-    ::pressio::rom::lspg::impl::Preconditioned<
+    ::pressio::rom::lspg::impl::PreconditionDecoratorSteady<
     lspg_jacobian_type, preconditioner_type,
-    ::pressio::rom::lspg::impl::Masked<
+    ::pressio::rom::lspg::impl::MaskDecoratorSteady<
       lspg_jacobian_type, masker_type,
       ::pressio::rom::lspg::impl::SteadyJacobianPolicy<
 	fom_states_manager_type, lspg_jacobian_type, decoder_type,fom_system_type

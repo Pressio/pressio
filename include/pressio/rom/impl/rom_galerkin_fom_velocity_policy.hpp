@@ -78,7 +78,7 @@ public:
 	       AtTag tag) const
   {
     fomStatesMngr_.get().reconstructAt(galerkinState, tag);
-    const auto & fomState = fomStatesMngr_.get().fomStateAt(tag);
+    const auto & fomState = fomStatesMngr_(tag);
     fomSystem_.get().velocity(fomState, velocityEvalTime, fomVelo_);
   }
 

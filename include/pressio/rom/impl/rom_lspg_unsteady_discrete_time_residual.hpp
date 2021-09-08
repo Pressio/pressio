@@ -67,8 +67,8 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       residual_type & R,
 // 		       const scalar_type & dt)
 // {
-//   const auto & y_np1  = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n    = fomStatesMngr.fomStateAt(::pressio::ode::n());
+//   const auto & y_np1  = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n    = fomStatesMngr(::pressio::ode::n());
 
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
@@ -92,9 +92,9 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       residual_type & R,
 // 		       const scalar_type & dt)
 // {
-//   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-//   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+//   const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+//   const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
@@ -124,8 +124,8 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       const scalar_type & dt,
 // 		       const hyp_ind_t & hypIndices)
 // {
-//   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+//   const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n   = fomStatesMngr(::pressio::ode::n());
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
 //   const auto cfdt     = ::pressio::ode::constants::bdf1<scalar_type>::c_f_ * dt;
@@ -160,9 +160,9 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       const scalar_type & dt,
 // 		       const hyp_ind_t & hypIndices)
 // {
-//   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-//   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+//   const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+//   const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
@@ -203,8 +203,8 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       const scalar_type & dt,
 // 		       const hyp_ind_t & hypIndices)
 // {
-//   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+//   const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n   = fomStatesMngr(::pressio::ode::n());
 
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
@@ -239,9 +239,9 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 // 		       const scalar_type & dt,
 // 		       const hyp_ind_t & hypIndices)
 // {
-//   const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-//   const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-//   const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+//   const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+//   const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+//   const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
 //   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
 //   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
@@ -317,8 +317,8 @@ void _time_discrete_residual_bdf1_nohr_eig_kokkos(const fom_states_manager_t & f
 						  state_type & R,
 						  scalar_type dt)
 {
-  const auto & y_np1  = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n    = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1  = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n    = fomStatesMngr(::pressio::ode::n());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf1<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf1<scalar_type>::c_n_;
@@ -336,9 +336,9 @@ void _time_discrete_residual_bdf2_nohr_eig_kokkos(const fom_states_manager_t & f
 						  state_type & R,
 						  scalar_type dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-  const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+  const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
   constexpr auto cnp1 = ::pressio::ode::constants::bdf2<scalar_type>::c_np1_;
   constexpr auto cn   = ::pressio::ode::constants::bdf2<scalar_type>::c_n_;
@@ -499,8 +499,8 @@ struct time_discrete_single_entry_epetra<::pressio::ode::BDF1>{
 			 int lid,
 			 const fom_states_manager_t & fomStatesMngr)
   {
-    const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-    const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+    const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+    const auto & y_n   = fomStatesMngr(::pressio::ode::n());
 
     constexpr auto cnp1 = ::pressio::ode::constants::bdf1<T>::c_np1_;
     constexpr auto cn = ::pressio::ode::constants::bdf1<T>::c_n_;
@@ -517,9 +517,9 @@ struct time_discrete_single_entry_epetra<::pressio::ode::BDF2>{
 			 int lid,
 			 const fom_states_manager_t & fomStatesMngr)
   {
-    const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-    const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-    const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+    const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+    const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+    const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
     constexpr auto cnp1   = ::pressio::ode::constants::bdf2<T>::c_np1_;
     constexpr auto cn = ::pressio::ode::constants::bdf2<T>::c_n_;
@@ -544,7 +544,7 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
   // On input: R contains the application RHS, i.e. if
   // dudt = f(x,u,...), R contains f(...)
 
-  const auto & y_np1   = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
+  const auto & y_np1   = fomStatesMngr(::pressio::ode::nPlusOne());
 
   // the integral type of the global indices
   using GO_t = typename containers::details::traits<state_type>::global_ordinal_t;
@@ -675,8 +675,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       const scalar_type & dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr(::pressio::ode::n());
   time_discrete_residual_tpetra_impl<stepper_tag>(*y_np1.data(), *R.data(),
 						  dt, *y_n.data());
 }
@@ -695,9 +695,9 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-  const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+  const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
   time_discrete_residual_tpetra_impl<stepper_tag>(*y_np1.data(), *R.data(),
 						  dt, *y_n.data(), *y_nm1.data());
@@ -720,8 +720,8 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       const scalar_type & dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
+  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr(::pressio::ode::n());
 
   auto ynp1_vv = const_cast<state_type &>(y_np1).data()->getVectorView();
   auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();
@@ -744,9 +744,9 @@ time_discrete_residual(const fom_states_manager_t & fomStatesMngr,
 		       state_type & R,
 		       scalar_type dt)
 {
-  const auto & y_np1 = fomStatesMngr.fomStateAt(::pressio::ode::nPlusOne());
-  const auto & y_n   = fomStatesMngr.fomStateAt(::pressio::ode::n());
-  const auto & y_nm1 = fomStatesMngr.fomStateAt(::pressio::ode::nMinusOne());
+  const auto & y_np1 = fomStatesMngr(::pressio::ode::nPlusOne());
+  const auto & y_n   = fomStatesMngr(::pressio::ode::n());
+  const auto & y_nm1 = fomStatesMngr(::pressio::ode::nMinusOne());
 
   auto ynp1_vv = const_cast<state_type &>(y_np1).data()->getVectorView();
   auto yn_vv   = const_cast<state_type &>(y_n).data()->getVectorView();

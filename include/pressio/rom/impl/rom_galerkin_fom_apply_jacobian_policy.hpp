@@ -111,7 +111,7 @@ public:
        by the residual policy. So we do not recompute the FOM state.
        Maybe we should find a way to ensure this is the case.
      */
-    const auto & fomState = fomStatesMngr_.get().fomStateAt(::pressio::ode::nPlusOne());
+    const auto & fomState = fomStatesMngr_(::pressio::ode::nPlusOne());
 
     // call applyJacobian on the fom object
     fomSystem_.get().applyJacobian(fomState, phi_.get(), evaluationTime, fomApplyJac_);

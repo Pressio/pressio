@@ -83,24 +83,27 @@ public:
     class ScalarType,
     class StepType
     >
-  void compute(::pressio::ode::SteppersE name,
-	       const GalerkinStateType & galerkinState,
-	       const StencilStatesContainerType & stencilStates,
-	       const ScalarType & time_np1,
-	       const ScalarType & dt,
-	       const StepType & currentStepNumber,
-	       jacobian_type & galerkinJacobian) const
+  void operator()(::pressio::ode::SteppersE name,
+		  const GalerkinStateType & galerkinState,
+		  const StencilStatesContainerType & stencilStates,
+		  const ScalarType & time_np1,
+		  const ScalarType & dt,
+		  const StepType & currentStepNumber,
+		  jacobian_type & galerkinJacobian) const
   {
     ProjectionPolicyType::compute(galerkinJacobian, galerkinState, time_np1);
 
     if (name == ::pressio::ode::SteppersE::BDF1){
-      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt, ode::BDF1());
+      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
+						   ode::BDF1());
     }
     else if (name == ::pressio::ode::SteppersE::BDF2){
-      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt, ode::BDF2());
+      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
+						   ode::BDF2());
     }
     else if (name == ::pressio::ode::SteppersE::CrankNicolson){
-      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt, ode::CrankNicolson());
+      ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
+						   ode::CrankNicolson());
     }
   }
 

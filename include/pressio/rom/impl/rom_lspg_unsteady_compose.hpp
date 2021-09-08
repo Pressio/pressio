@@ -46,17 +46,18 @@
 //@HEADER
 */
 
-#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
-#define ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
+#ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
+#define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
 
-#include "./rom_lspg_decorator_preconditioner.hpp"
-#include "./rom_lspg_decorator_masked.hpp"
+#include "./rom_lspg_unsteady_discrete_time_decorators.hpp"
+#include "./rom_lspg_unsteady_cont_time_decorators.hpp"
+#include "./rom_lspg_unsteady_discrete_time_default_system.hpp"
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_lspg_problem_members.hpp"
-#include "./rom_lspg_steady_policies.hpp"
-#include "./rom_lspg_steady_system.hpp"
-#include "./rom_lspg_steady_traits.hpp"
-#include "./rom_lspg_steady_problem.hpp"
+#include "./rom_lspg_unsteady_policy_residual.hpp"
+#include "./rom_lspg_unsteady_policy_jacobian.hpp"
+#include "./rom_lspg_unsteady_traits.hpp"
+#include "./rom_lspg_unsteady_problem.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
@@ -68,7 +69,7 @@ template<
   class FomReferenceState,
   class ...Args
   >
-struct Composer
+struct ComposerContTime
 {
 
   static_assert
@@ -77,43 +78,81 @@ struct Composer
   using decoder_jacobian_type = typename mpl::remove_cvref_t<DecoderType>::jacobian_type;
 
   static_assert
-  (::pressio::rom::steady_fom_system_with_user_provided_apply_jacobian<
+  (::pressio::rom::continuous_time_fom_system_with_user_provided_apply_jacobian<
    mpl::remove_cvref_t<FomSystemType>, decoder_jacobian_type>::value,
-   "The FOM system does not satisfy the steady concept");
+   "The FOM system does not satisfy the unsteady concept");
 
   static_assert
-    (std::is_same<mpl::remove_cvref_t<FomReferenceState>,
-     typename mpl::remove_cvref_t<DecoderType>::fom_state_type>::value,
+  (std::is_same<mpl::remove_cvref_t<FomReferenceState>,
+   typename mpl::remove_cvref_t<DecoderType>::fom_state_type>::value,
    "The type deduced for the FOM nominal state passed to the create function is not \
   compatible with the FOM state type detected from adapter class");
 
-  using type = ::pressio::rom::lspg::impl::SteadyProblem<
+  using type = ::pressio::rom::lspg::impl::UnsteadyProblem<
     id, FomSystemType, LspgStateType, DecoderType, Args...>;
+};
+
+template<
+  int id,
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class LspgStateType,
+  class FomReferenceState,
+  class ...Args
+  >
+struct ComposerDiscTime
+{
+
+  static_assert
+  (::pressio::rom::decoder<mpl::remove_cvref_t<DecoderType>, LspgStateType>::value,
+   "Invalid decoder detected");
+  using decoder_jacobian_type = typename mpl::remove_cvref_t<DecoderType>::jacobian_type;
+
+  static_assert
+  (::pressio::rom::discrete_time_fom_system_with_user_provided_apply_jacobian<
+   mpl::remove_cvref_t<FomSystemType>, num_states, decoder_jacobian_type>::value,
+   "The FOM system does not satisfy the discrete-time concept");
+
+  static_assert
+  (std::is_same<mpl::remove_cvref_t<FomReferenceState>,
+   typename mpl::remove_cvref_t<DecoderType>::fom_state_type>::value,
+   "The type deduced for the FOM nominal state passed to the create function is not \
+  compatible with the FOM state type detected from adapter class");
+
+  using type = ::pressio::rom::lspg::impl::UnsteadyProblem<
+    id, FomSystemType, LspgStateType, DecoderType,
+    ::pressio::ode::StepperTotalNumberOfStates<num_states>,  Args...>;
 };
 
 // default
 template<class ...Args>
-using ComposeDefaultProblemSteady = Composer<0, Args...>;
+using ComposeDefaultProblemContTime = ComposerContTime<0, Args...>;
+
+template<std::size_t n, class ...Args>
+using ComposeDefaultProblemDiscTime = ComposerDiscTime<1, n, Args...>;
 
 // preconditioned default
 template<class ...Args>
-using ComposePrecDefaultProblemSteady = Composer<2, Args...>;
+using ComposePrecDefaultProblemContTime = ComposerContTime<2, Args...>;
 
-// hyperreduced (note that impl-wise this is same as default)
-template<class ...Args>
-using ComposeHyperreducedProblemSteady = ComposeDefaultProblemSteady<Args...>;
-
-// preconditioned hypred
-template<class ...Args>
-using ComposePrecHypredProblemSteady = ComposePrecDefaultProblemSteady<Args...>;
+template<std::size_t n, class ...Args>
+using ComposePrecDefaultProblemDiscTime = ComposerDiscTime<3, n, Args...>;
 
 // masked
 template<class ...Args>
-using ComposeMaskedProblemSteady = Composer<1, Args...>;
+using ComposeMaskedProblemContTime = ComposerContTime<4, Args...>;
+
+template<std::size_t n, class ...Args>
+using ComposeMaskedProblemDiscTime = ComposerDiscTime<5, n, Args...>;
 
 // preconditioned masked
 template<class ...Args>
-using ComposePrecMaskedProblemSteady = Composer<3, Args...>;
+using ComposePrecMaskedProblemContTime = ComposerContTime<6, Args...>;
+
+template<std::size_t n, class ...Args>
+using ComposePrecMaskedProblemDiscTime = ComposerDiscTime<7, n, Args...>;
+
 
 }}}}
 #endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_

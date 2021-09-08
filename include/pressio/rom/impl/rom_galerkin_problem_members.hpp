@@ -67,10 +67,14 @@ namespace pressio{ namespace rom{ namespace galerkin{ namespace impl{
    at n and n+1, so we need two FOM states.
 */
 
-template<class ManagerStencilFomStatesType, class FomStateReconstructorType, class FomStateType>
-ManagerStencilFomStatesType create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
-							      const FomStateReconstructorType & fomRec,
-							      const FomStateType & fomNomState)
+template<
+  class ManagerStencilFomStatesType,
+  class FomStateReconstructorType,
+  class FomStateType>
+ManagerStencilFomStatesType
+create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
+				  const FomStateReconstructorType & fomRec,
+				  const FomStateType & fomNomState)
 {
   const auto tmp_b = ::pressio::ode::is_explicit_scheme(name);
   if (tmp_b){

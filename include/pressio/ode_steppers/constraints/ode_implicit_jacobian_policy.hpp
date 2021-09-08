@@ -71,17 +71,14 @@ struct implicit_jacobian_policy<
     and
     std::is_same<
       typename T::jacobian_type,
-      decltype
-      (
-       std::declval<T const>().create()
-       )
+      decltype(std::declval<T const>().create())
       >::value
     and
     //
     std::is_void<
       decltype
       (
-       std::declval<T const>().compute
+       std::declval<T const>()
        (
 	std::declval<SteppersE const &>(),
 	std::declval<StateType const &>(),

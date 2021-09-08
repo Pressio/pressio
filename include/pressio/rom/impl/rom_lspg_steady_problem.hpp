@@ -75,9 +75,8 @@ template <class traits> struct SteadyMembersCommon
   using At = ::pressio::rom::impl::FomObjHolder<
     typename traits::fom_system_type, traits::binding_sentinel>;
 
-  using Bt = ::pressio::rom::lspg::impl::AddFomStatesManager<
+  using Bt = ::pressio::rom::lspg::impl::AddFomStatesManagerSteady<
     At,
-    true, // sentinel to inform container is static
     typename traits::fom_state_type,
     typename traits::fom_state_reconstr_type,
     typename traits::fom_states_manager_type>;
@@ -204,7 +203,8 @@ public:
 		const lspg_state_type & romState,
 		const fom_state_type & fomNominalState,
 		Args2 && ...args)
-    : members_(romState, fomObj, decoder, fomNominalState, std::forward<Args2>(args) ...){}
+    : members_(romState, fomObj, decoder,
+	       fomNominalState, std::forward<Args2>(args) ...){}
 };
 
 }}}}//end namespace pressio::rom::lspg::impl

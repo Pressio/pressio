@@ -51,69 +51,80 @@
 
 namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
-template <class DataType, class PreconditionerType, class preconditionable_policy>
-class Preconditioned : public preconditionable_policy
+template <class DataType, class PreconditionerType, class preconditionable>
+class PreconditionDecoratorSteady : public preconditionable
 {
 public:
-  Preconditioned() = delete;
-  Preconditioned(const Preconditioned &) = default;
-  Preconditioned & operator=(const Preconditioned &) = default;
-  Preconditioned(Preconditioned &&) = default;
-  Preconditioned & operator=(Preconditioned &&) = default;
-  ~Preconditioned() = default;
+  PreconditionDecoratorSteady() = delete;
+  PreconditionDecoratorSteady(const PreconditionDecoratorSteady &) = default;
+  PreconditionDecoratorSteady & operator=(const PreconditionDecoratorSteady &) = default;
+  PreconditionDecoratorSteady(PreconditionDecoratorSteady &&) = default;
+  PreconditionDecoratorSteady & operator=(PreconditionDecoratorSteady &&) = default;
+  ~PreconditionDecoratorSteady() = default;
 
-  Preconditioned(const preconditionable_policy & obj)
-    : preconditionable_policy(obj)
+  PreconditionDecoratorSteady(const preconditionable & obj)
+    : preconditionable(obj)
   {}
 
   template <class ... Args>
-  Preconditioned(const PreconditionerType & preconditionerIn,
-		 Args && ... args)
-    : preconditionable_policy(std::forward<Args>(args)...),
+  PreconditionDecoratorSteady(const PreconditionerType & preconditionerIn,
+			      Args && ... args)
+    : preconditionable(std::forward<Args>(args)...),
       preconditionerObj_(preconditionerIn)
   {}
 
 public:
-  DataType create() const{ return preconditionable_policy::create(); }
+  DataType create() const{ return preconditionable::create(); }
 
-  // steady calls this
   template <class LspgStateType>
-  void compute(const LspgStateType & currentState, DataType & unpreconditionedObj) const
+  void compute(const LspgStateType & currentState,
+	       DataType & unpreconditionedObj) const
   {
-    preconditionable_policy::compute(currentState, unpreconditionedObj);
+    preconditionable::compute(currentState, unpreconditionedObj);
     const auto & fomState = fomStatesMngr_.get().currentFomState();
     preconditionerObj_(fomState, unpreconditionedObj);
   }
 
-  // // unsteady calls this
-  // template <
-  //   class stepper_tag,
-  //   class prev_states_t,
-  //   class fom_system_t,
-  //   class scalar_t,
-  //   class state_t
-  //   >
-  // void compute(const state_t & currentState,
-  // 	       const prev_states_t & prevStates,
-  // 	       const fom_system_t & systemObj,
-  // 	       const scalar_t & time,
-  // 	       const scalar_t & dt,
-  // 	       const ::pressio::ode::step_count_type & step,
-  // 	       DataType & unpreconditionedField) const
-  // {
-  //   preconditionable_policy::template compute<
-  //     stepper_tag>(currentState, prevStates, systemObj,
-  //       time, dt, step, unpreconditionedField);
+private:
+  using preconditionable::fomStatesMngr_;
+  std::reference_wrapper<const PreconditionerType> preconditionerObj_;
+};
 
-  //   const auto & yFom = fomStatesMngr_(::pressio::ode::nPlusOne());
-  //   preconditionerObj_.get().applyPreconditioner(*yFom.data(), time,
-  // 						 *unpreconditionedField.data());
-  // }
+
+template <class DataType, class MaskerType, class MaskableType>
+class MaskDecoratorSteady : public MaskableType
+{
+
+public:
+  MaskDecoratorSteady() = delete;
+  MaskDecoratorSteady(const MaskDecoratorSteady &) = default;
+  MaskDecoratorSteady & operator=(const MaskDecoratorSteady &) = default;
+  MaskDecoratorSteady(MaskDecoratorSteady &&) = default;
+  MaskDecoratorSteady & operator=(MaskDecoratorSteady &&) = default;
+  ~MaskDecoratorSteady() = default;
+
+  template <class ... Args>
+  MaskDecoratorSteady(const MaskerType & maskerObj, Args && ... args)
+    : MaskableType(std::forward<Args>(args)...),
+      unmaskedObject_(MaskableType::create()),
+      masker_(maskerObj)
+  {}
+
+public:
+  DataType create() const{
+    return DataType(masker_.get().createApplyMaskResult(unmaskedObject_));
+  }
+
+  template <class LspgStateType>
+  void compute(const LspgStateType & state, DataType & maskedResult) const
+  {
+    MaskableType::compute(state, unmaskedObject_);
+    masker_(unmaskedObject_, maskedResult);
+  }
 
 private:
-  using preconditionable_policy::fomStatesMngr_;
-  std::reference_wrapper<const PreconditionerType> preconditionerObj_;
-
+  mutable DataType unmaskedObject_;
+  std::reference_wrapper<const MaskerType> masker_;
 };
 
 }}}} //end namespace pressio::rom::lspg::decorator

@@ -49,35 +49,99 @@
 #ifndef ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
 #define ROM_LSPG_ROM_CREATE_DEFAULT_LSPG_PROBLEM_HPP_
 
-#include "./impl/rom_lspg_steady_compose_impl.hpp"
-//#include "./impl/rom_lspg_unsteady_compose_impl.hpp"
+#include "./impl/rom_lspg_steady_compose.hpp"
+#include "./impl/rom_lspg_unsteady_compose.hpp"
 
 namespace pressio{ namespace rom{ namespace lspg{
 
-// // --------------------
-// // unsteady
-// // --------------------
-// template<
-//   class StepperTag,
-//   class FomSystemType,
-//   class DecoderType,
-//   class RomStateType,
-//   class FomReferenceStateType,
-//   class ReturnType = typename impl::ComposeDefaultProblemUnsteadyContTime<
-//     StepperTag, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
-//     >::type
-//   >
-// ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
-// 					   DecoderType & decoder,
-// 					   const RomStateType & stateIn,
-// 					   const FomReferenceStateType & fomRef)
-// {
-//   return ReturnType(fomSysObj, decoder, stateIn, fomRef);
-// }
+// --------------------
+// DEFAULT
+// --------------------
 
-// --------------------
+// unsteady, cont-time
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ReturnType = typename impl::ComposeDefaultProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+    >::type
+  >
+ReturnType create_default_unsteady_problem(::pressio::ode::SteppersE name,
+					   const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef)
+{
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef);
+}
+
+// unsteady, cont-time, with preconditioner
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class PreconditionerType,
+  class ReturnType = typename impl::ComposePrecDefaultProblemContTime<
+    FomSystemType, DecoderType, RomStateType,
+    FomReferenceStateType, PreconditionerType
+    >::type
+  >
+ReturnType create_default_unsteady_problem(::pressio::ode::SteppersE name,
+					   const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef,
+					   const PreconditionerType & prec)
+{
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, prec);
+}
+
+// unsteady, discrete-time
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ReturnType = typename impl::ComposeDefaultProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+    >::type
+  >
+ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef)
+{
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef);
+}
+
+// unsteady, discrete-time, with preconditioner
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class PreconditionerType,
+  class ReturnType = typename impl::ComposePrecDefaultProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType, PreconditionerType
+    >::type
+  >
+ReturnType create_default_unsteady_problem(const FomSystemType & fomSysObj,
+					   DecoderType & decoder,
+					   const RomStateType & stateIn,
+					   const FomReferenceStateType & fomRef,
+					   const PreconditionerType & prec)
+{
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef, prec);
+}
+
 // steady
-// --------------------
 template<
   class FomSystemType,
   class DecoderType,
@@ -95,6 +159,7 @@ ReturnType create_default_steady_problem(const FomSystemType & fomSysObj,
   return ReturnType(fomSysObj, decoder, stateIn, fomRef);
 }
 
+// steady, with preconditioner
 template<
   class FomSystemType,
   class DecoderType,
@@ -114,6 +179,103 @@ ReturnType create_default_steady_problem(const FomSystemType & fomSysObj,
   return ReturnType(fomSysObj, decoder, stateIn, fomRef, prec);
 }
 
+// --------------------
+// MASKED
+// --------------------
+
+// unsteady, cont-time
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType,
+  class ReturnType = typename impl::ComposeMaskedProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType, MaskerType
+    >::type
+  >
+ReturnType create_masked_unsteady_problem(::pressio::ode::SteppersE name,
+					  const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const MaskerType & masker)
+{
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, masker);
+}
+
+// unsteady, cont-time, with preconditioner
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType,
+  class PreconditionerType,
+  class ReturnType = typename impl::ComposePrecMaskedProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType,
+    MaskerType, PreconditionerType
+    >::type
+  >
+ReturnType create_masked_unsteady_problem(::pressio::ode::SteppersE name,
+					  const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const MaskerType & masker,
+					  const PreconditionerType & prec)
+{
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, prec, masker);
+}
+
+// unsteady, discrete-time
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType,
+  class ReturnType = typename impl::ComposeMaskedProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType, MaskerType
+    >::type
+  >
+ReturnType create_masked_unsteady_problem(const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const MaskerType & masker)
+{
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef, masker);
+}
+
+// unsteady, discrete-time, with preconditioner
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType,
+  class PreconditionerType,
+  class ReturnType = typename impl::ComposePrecMaskedProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType,
+    MaskerType, PreconditionerType
+    >::type
+  >
+ReturnType create_masked_unsteady_problem(const FomSystemType & fomSysObj,
+					  DecoderType & decoder,
+					  const RomStateType & stateIn,
+					  const FomReferenceStateType & fomRef,
+					  const MaskerType & masker,
+					  const PreconditionerType & prec)
+{
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef, prec, masker);
+}
+
+// steady
 template<
   class FomSystemType,
   class DecoderType,
@@ -133,6 +295,7 @@ ReturnType create_masked_steady_problem(const FomSystemType & fomSysObj,
   return ReturnType(fomSysObj, decoder, stateIn, fomRef, masker);
 }
 
+// steady, with preconditioner
 template<
   class FomSystemType,
   class DecoderType,
@@ -155,6 +318,11 @@ ReturnType create_masked_steady_problem(const FomSystemType & fomSysObj,
   return ReturnType(fomSysObj, decoder, stateIn, fomRef, prec, masker);
 }
 
+// --------------------
+// HYPRED
+// --------------------
+
+// steady
 template<
   class FomSystemType,
   class DecoderType,
@@ -172,6 +340,7 @@ ReturnType create_hyperreduced_steady_problem(const FomSystemType & fomSysObj,
   return ReturnType(fomSysObj, decoder, stateIn, fomRef);
 }
 
+// steady, with precond
 template<
   class FomSystemType,
   class DecoderType,

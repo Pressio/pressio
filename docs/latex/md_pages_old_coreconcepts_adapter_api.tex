@@ -3,14 +3,14 @@
 \begin{DoxyParagraph}{}
 An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.
 \end{DoxyParagraph}
-\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md149}{}\doxysection{Continuous-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md149}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md148}{}\doxysection{Continuous-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md148}
 This API is intended for any system expressible in {\itshape time-\/continuous} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the full-\/order model (FOM) state, $f$ the FOM velocity, and $t$ is time. todo finish.
 
 We envision two scenarios\+:
 \begin{DoxyItemize}
 \item A\+: you are only able to expose the right-\/hand-\/side (or velocity) of your FOM application
 \item B\+: you expose the right-\/hand-\/side of your FOM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand
-\end{DoxyItemize}\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md150}{}\doxysubsection{A\+: velocity only}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md150}
+\end{DoxyItemize}\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md149}{}\doxysubsection{A\+: velocity only}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md149}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }AdapterA}
@@ -36,7 +36,7 @@ We envision two scenarios\+:
 \begin{DoxyParagraph}{Where can you use the AdapterA?}
 This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.
 \end{DoxyParagraph}
-\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md151}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md151}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md150}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md150}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }AdapterB}
@@ -72,7 +72,7 @@ This version of the adapter can be used for doing Galerkin ROMs with explicit ti
 \begin{DoxyParagraph}{Where can you use the AdapterB?}
 This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).
 \end{DoxyParagraph}
-\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md152}{}\doxysection{Discrete-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md152}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md151}{}\doxysection{Discrete-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md151}
 This API is intended for any system expressible in a discrete-\/time form as \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \] where $y$ is the full-\/order model (FOM) state, $t$ is time, and $R$ is the residual. todo finish.
 
 

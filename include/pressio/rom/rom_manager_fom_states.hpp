@@ -53,10 +53,12 @@ namespace pressio{ namespace rom{
 
 // =================================
 //
-// steady
+// STEADY
+//
+// a notion of time stencil does not apply
+// and we only need a single fom state
 //
 // =================================
-
 template <class FomStateType, class ReconstuctorType>
 class ManagerFomStatesSteady
 {
@@ -102,227 +104,12 @@ private:
 
 // =================================
 //
-// =================================
-template <class FomStateType, class ReconstuctorType, class StencilEndsAt>
-class ManagerStencilFomStatesDynamic;
-
-template <class FomStateType, class ReconstuctorType>
-class ManagerStencilFomStatesDynamic<
-  FomStateType, ReconstuctorType, ::pressio::ode::n>
-{
-  // specialize for: n, n-1, n-2, etc
-
-public:
-  using data_type  = std::vector<FomStateType>;
-  using value_type = FomStateType;
-
-  ManagerStencilFomStatesDynamic() = delete;
-  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
-  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
-  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
-  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
-  ~ManagerStencilFomStatesDynamic() = default;
-
-  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
-				   std::initializer_list<FomStateType> il)
-    : fomStateReconstrObj_(fomStateReconstr), data_(il)
-  {
-    this->setZero();
-  }
-
-public:
-  const std::size_t size() const { return data_.size(); }
-
-  // n
-  FomStateType const & fomStateAt(::pressio::ode::n) const {
-    assert(data_.size() >=1); return data_[0];
-  }
-
-  FomStateType const & operator()(::pressio::ode::n) const {
-    assert(data_.size() >=1); return data_[0];
-  }
-
-  // n-1
-  FomStateType const & fomStateAt(::pressio::ode::nMinusOne) const {
-    assert(data_.size() >=2); return data_[1];
-  }
-
-  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
-    assert(data_.size() >=2);
-    return data_[1];
-  }
-
-  template <class RomStateType>
-  void reconstructCurrentFomState(const RomStateType & romStateIn)
-  {
-    this->reconstructAt(romStateIn, ::pressio::ode::n());
-  }
-
-  // n
-  template <class RomStateType>
-  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
-    assert(data_.size() >=1);
-    fomStateReconstrObj_(romStateIn, data_[0]);
-  }
-
-  // n-1
-  template <class RomStateType>
-  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
-    assert(data_.size() >=2);
-    fomStateReconstrObj_(romStateIn, data_[1]);
-  }
-
-private:
-  void setZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
-      ::pressio::ops::set_zero(data_[i]);
-  }
-
-private:
-  std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
-  data_type data_;
-};
-
-
-// =================================
+// STATIC manager with stencil notion
 //
-// =================================
-template <class FomStateType, class ReconstuctorType>
-class ManagerStencilFomStatesDynamic<
-  FomStateType, ReconstuctorType, ::pressio::ode::nPlusOne>
-{
-  // for "n+1, n, n-1, n-2", etc
-
-public:
-  using data_type  = std::vector<FomStateType>;
-  using value_type = FomStateType;
-
-  ManagerStencilFomStatesDynamic() = delete;
-  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
-  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
-  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
-  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
-  ~ManagerStencilFomStatesDynamic() = default;
-
-  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
-				   std::initializer_list<FomStateType> il)
-    : fomStateReconstrObj_(fomStateReconstr), data_(il)
-  {
-    this->setZero();
-  }
-
-public:
-  const std::size_t size() const { return data_.size(); }
-
-  // n+1
-  FomStateType const & fomStateAt(::pressio::ode::nPlusOne) const {
-        assert(data_.size() >=1); return data_[0];
-  }
-  FomStateType const & operator()(::pressio::ode::nPlusOne) const {
-        assert(data_.size() >=1); return data_[0];
-  }
-
-  // n
-  FomStateType const & fomStateAt(::pressio::ode::n) const {
-        assert(data_.size() >=2); return data_[1];
-  }
-  FomStateType const & operator()(::pressio::ode::n) const {
-        assert(data_.size() >=2); return data_[1];
-  }
-
-  // n-1
-  FomStateType const & fomStateAt(::pressio::ode::nMinusOne) const {
-        assert(data_.size() >=3); return data_[2];
-  }
-  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
-        assert(data_.size() >=3); return data_[2];
-  }
-
-  // ** methods to reconstruct fom state **
-  template <class RomStateType>
-  void reconstructCurrentFomState(const RomStateType & romStateIn)
-  {
-    this->reconstructAt(romStateIn, ::pressio::ode::nPlusOne());
-  }
-
-  // n+1
-  template <class RomStateType>
-  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nPlusOne /*tag*/){
-    assert(data_.size() >=1);
-    fomStateReconstrObj_.get()(romStateIn, data_[0]);
-  }
-
-  // n
-  template <class RomStateType>
-  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
-    assert(data_.size() >=2);
-    fomStateReconstrObj_.get()(romStateIn, data_[1]);
-  }
-
-
-  // n-1
-  template <class RomStateType>
-  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
-    assert(data_.size() >=3);
-    fomStateReconstrObj_.get()(romStateIn, data_[2]);
-  }
-
-  // //-----------------------------
-  // // reconstruct with update:
-  // //-----------------------------
-  // // reconstructs at point and shifts back existing FOM states
-  // // so that stencil is updating properly
-  // // we do this from n since n+1 is handled differenetly
-
-  // // n==2 we have y_n+1, y_n
-  // template <class RomStateType>
-  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
-  // {
-  //   /* when n == 2, it means I only have n+1 and n
-  //    * so to reconstruct at n, I can simply
-  //    * overwrite the data in data_[1] */
-  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
-  // }
-
-  // /* when n == 3, we have y_n+1, y_n, y_n-1 */
-  // template <class RomStateType>
-  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
-  // {
-  //   /*
-  //    * copy y_n into y_n-1
-  //    * then reconstruct y_n
-  //    */
-  //   ::pressio::ops::deep_copy(data_[2], data_[1]);
-  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
-  // }
-
-  // /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
-  // template <class RomStateType>
-  // void reconstructWithStencilUpdate(const RomStateType & romStateIn)
-  // {
-  //   /*
-  //    * copy y_n-1 into y_n-2
-  //    * copy y_n into y_n-1
-  //    * then reconstruct y_n */
-  //   ::pressio::ops::deep_copy(data_[3], data_[2]);
-  //   ::pressio::ops::deep_copy(data_[2], data_[1]);
-  //   fomStateReconstrObj_.get()(romStateIn, data_[1]);
-  // }
-
-private:
-  void setZero(){
-    for (std::size_t i=0; i<data_.size(); i++)
-      ::pressio::ops::set_zero(data_[i]);
-  }
-
-private:
-  std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
-  data_type data_;
-};
-
-
-
-// =================================
+// when we know the # of states at compile time
+// here we currently only support the case
+// where we have y_n+1, y_n, y_n-1, etc
+//
 // =================================
 template <class FomStateType, class ReconstuctorType, std::size_t N>
 class ManagerStencilFomStatesStatic
@@ -379,26 +166,14 @@ public:
   // n+1
   template <std::size_t _N = N>
   mpl::enable_if_t<_N>=1, FomStateType const &>
-  fomStateAt(::pressio::ode::nPlusOne) const {return data_[0];}
-
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=1, FomStateType const &>
   operator()(::pressio::ode::nPlusOne) const {return data_[0];}
 
   // n
   template <std::size_t _N = N>
   mpl::enable_if_t<_N>=2, FomStateType const &>
-  fomStateAt(::pressio::ode::n) const {return data_[1];}
-
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=2, FomStateType const &>
   operator()(::pressio::ode::n) const {return data_[1];}
 
   // n-1
-  template <std::size_t _N = N>
-  mpl::enable_if_t<_N>=3, FomStateType const &>
-  fomStateAt(::pressio::ode::nMinusOne) const {return data_[2];}
-
   template <std::size_t _N = N>
   mpl::enable_if_t<_N>=3, FomStateType const &>
   operator()(::pressio::ode::nMinusOne) const {return data_[2];}
@@ -416,7 +191,7 @@ public:
   reconstructAt(const RomStateType & romStateIn,
 		::pressio::ode::nPlusOne)
   {
-    fomStateReconstrObj_.get()(romStateIn, data_[0]);
+    fomStateReconstrObj_(romStateIn, data_[0]);
   }
 
   template <class RomStateType, std::size_t _N = N>
@@ -433,7 +208,7 @@ public:
   reconstructAt(const RomStateType & romStateIn,
 		::pressio::ode::n)
   {
-    fomStateReconstrObj_.get()(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_[1]);
   }
 
   template <class RomStateType, std::size_t _N = N>
@@ -454,37 +229,34 @@ public:
   // n==2 we have y_n+1, y_n
   template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N==2 >
-  reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  reconstructAtAndUpdatePrevious(const RomStateType & romStateIn,
+				 ::pressio::ode::n /*tag*/)
   {
     /* when n == 2, it means I only have n+1 and n
      * so to reconstruct at n, I can simply
      * overwrite the data in data_[1] */
-    fomStateReconstrObj_.get()(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_[1]);
   }
 
   /* when n == 3, we have y_n+1, y_n, y_n-1 */
-  template <
-    class RomStateType,
-    std::size_t _N = N
-    >
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N==3>
-  reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  reconstructAtAndUpdatePrevious(const RomStateType & romStateIn,
+				 ::pressio::ode::n /*tag*/)
   {
     /*
      * copy y_n into y_n-1
      * then reconstruct y_n
      */
     ::pressio::ops::deep_copy(data_[2], data_[1]);
-    fomStateReconstrObj_.get()(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_[1]);
   }
 
   /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
-  template <
-    class RomStateType,
-    std::size_t _N = N
-    >
+  template <class RomStateType, std::size_t _N = N>
   mpl::enable_if_t< _N==4>
-  reconstructWithStencilUpdate(const RomStateType & romStateIn)
+  reconstructAtAndUpdatePrevious(const RomStateType & romStateIn,
+				 ::pressio::ode::n /*tag*/)
   {
     /*
      * copy y_n-1 into y_n-2
@@ -492,7 +264,7 @@ public:
      * then reconstruct y_n */
     ::pressio::ops::deep_copy(data_[3], data_[2]);
     ::pressio::ops::deep_copy(data_[2], data_[1]);
-    fomStateReconstrObj_.get()(romStateIn, data_[1]);
+    fomStateReconstrObj_(romStateIn, data_[1]);
   }
 
 private:
@@ -505,6 +277,222 @@ private:
   std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
   data_type data_;
 };
+
+
+
+
+// =================================
+//
+// DYNAMIC manager with stencil notion
+//
+// =================================
+template <class FomStateType, class ReconstuctorType, class StencilEndsAt>
+class ManagerStencilFomStatesDynamic;
+
+
+//
+// partial specialize for: n,n-1, n-2, etc
+//
+template <class FomStateType, class ReconstuctorType>
+class ManagerStencilFomStatesDynamic<
+  FomStateType, ReconstuctorType, ::pressio::ode::n>
+{
+
+public:
+  using data_type  = std::vector<FomStateType>;
+  using value_type = FomStateType;
+
+  ManagerStencilFomStatesDynamic() = delete;
+  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
+  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
+  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
+  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
+  ~ManagerStencilFomStatesDynamic() = default;
+
+  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
+				   std::initializer_list<FomStateType> il)
+    : fomStateReconstrObj_(fomStateReconstr), data_(il)
+  {
+    this->setZero();
+  }
+
+public:
+  const std::size_t size() const { return data_.size(); }
+
+  // n
+  FomStateType const & operator()(::pressio::ode::n) const {
+    assert(data_.size() >=1); return data_[0];
+  }
+
+  // n-1
+  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
+    assert(data_.size() >=2);
+    return data_[1];
+  }
+
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn)
+  {
+    this->reconstructAt(romStateIn, ::pressio::ode::n());
+  }
+
+  // n
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
+    assert(data_.size() >=1);
+    fomStateReconstrObj_(romStateIn, data_[0]);
+  }
+
+  // n-1
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
+    assert(data_.size() >=2);
+    fomStateReconstrObj_(romStateIn, data_[1]);
+  }
+
+private:
+  void setZero(){
+    for (std::size_t i=0; i<data_.size(); i++)
+      ::pressio::ops::set_zero(data_[i]);
+  }
+
+private:
+  std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
+  data_type data_;
+};
+
+
+//
+// partial specialize for: n+1, n, n-1, n-2, etc
+//
+template <class FomStateType, class ReconstuctorType>
+class ManagerStencilFomStatesDynamic<
+  FomStateType, ReconstuctorType, ::pressio::ode::nPlusOne>
+{
+
+public:
+  using data_type  = std::vector<FomStateType>;
+  using value_type = FomStateType;
+
+  ManagerStencilFomStatesDynamic() = delete;
+  ManagerStencilFomStatesDynamic(const ManagerStencilFomStatesDynamic &) = default;
+  ManagerStencilFomStatesDynamic & operator=(const ManagerStencilFomStatesDynamic &) = delete;
+  ManagerStencilFomStatesDynamic(ManagerStencilFomStatesDynamic &&) = default;
+  ManagerStencilFomStatesDynamic & operator=(ManagerStencilFomStatesDynamic &&) = delete;
+  ~ManagerStencilFomStatesDynamic() = default;
+
+  ManagerStencilFomStatesDynamic(const ReconstuctorType & fomStateReconstr,
+				   std::initializer_list<FomStateType> il)
+    : fomStateReconstrObj_(fomStateReconstr), data_(il)
+  {
+    this->setZero();
+  }
+
+public:
+  const std::size_t size() const { return data_.size(); }
+
+  // n+1
+  FomStateType const & operator()(::pressio::ode::nPlusOne) const {
+    assert(data_.size() >=1); return data_[0];
+  }
+
+  // n
+  FomStateType const & operator()(::pressio::ode::n) const {
+    assert(data_.size() >=2); return data_[1];
+  }
+
+  // n-1
+  FomStateType const & operator()(::pressio::ode::nMinusOne) const {
+    assert(data_.size() >=3); return data_[2];
+  }
+
+  // n-2
+  FomStateType const & operator()(::pressio::ode::nMinusTwo) const {
+    assert(data_.size() >=4); return data_[3];
+  }
+
+  // ** methods to reconstruct fom state **
+  template <class RomStateType>
+  void reconstructCurrentFomState(const RomStateType & romStateIn)
+  {
+    this->reconstructAt(romStateIn, ::pressio::ode::nPlusOne());
+  }
+
+  // n+1
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nPlusOne /*tag*/){
+    assert(data_.size() >=1);
+    fomStateReconstrObj_(romStateIn, data_[0]);
+  }
+
+  // n
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::n /*tag*/){
+    assert(data_.size() >=2);
+    fomStateReconstrObj_(romStateIn, data_[1]);
+  }
+
+  // n-1
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusOne /*tag*/){
+    assert(data_.size() >=3);
+    fomStateReconstrObj_(romStateIn, data_[2]);
+  }
+
+  // n-2
+  template <class RomStateType>
+  void reconstructAt(const RomStateType & romStateIn, ::pressio::ode::nMinusTwo /*tag*/){
+    assert(data_.size() >=4);
+    fomStateReconstrObj_(romStateIn, data_[4]);
+  }
+
+
+  template <class RomStateType>
+  void reconstructAtAndUpdatePrevious(const RomStateType & romStateIn,
+				      ::pressio::ode::n /*tag*/)
+  {
+
+    assert(data_.size() >=2);
+
+    if (data_.size() == 2){
+      /* when n == 2, it means I only have n+1 and n
+       * so reconstructing at n, we just overwrite data_[1] */
+      fomStateReconstrObj_(romStateIn, data_[1]);
+    }
+    else if (data_.size() == 3){
+      /* when n == 3, we have y_n+1, y_n, y_n-1 */
+      // y_n becomes  y_n-1
+      ::pressio::ops::deep_copy(data_[2], data_[1]);
+      // reconstruct y_n
+      fomStateReconstrObj_(romStateIn, data_[1]);
+    }
+    else if (data_.size() == 4){
+      /* when n == 4, we have y_n+1, y_n, y_n-1, y_n-2 */
+
+      // y_n-1 becomes y_n-2
+      ::pressio::ops::deep_copy(data_[3], data_[2]);
+
+      // y_n   becomes y_n-1
+      ::pressio::ops::deep_copy(data_[2], data_[1]);
+
+      // reconstruct y_n
+      fomStateReconstrObj_(romStateIn, data_[1]);
+    }
+  }
+
+private:
+  void setZero(){
+    for (std::size_t i=0; i<data_.size(); i++)
+      ::pressio::ops::set_zero(data_[i]);
+  }
+
+private:
+  std::reference_wrapper<const ReconstuctorType> fomStateReconstrObj_;
+  data_type data_;
+};
+
+
+
 
 }}//end namespace pressio::rom
 

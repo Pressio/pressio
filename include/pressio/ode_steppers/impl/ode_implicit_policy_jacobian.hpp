@@ -78,13 +78,13 @@ public:
   }
 
   template <class StencilStatesContainerType, class ScalarType, class StepType>
-  void compute(SteppersE name,
-	       const StateType & odeCurrentState,
-	       const StencilStatesContainerType & stencilStates,
-	       const ScalarType & time,
-	       const ScalarType & dt,
-	       const StepType &  step,
-	       JacobianType & J) const
+  void operator()(SteppersE name,
+		  const StateType & odeCurrentState,
+		  const StencilStatesContainerType & stencilStates,
+		  const ScalarType & time,
+		  const ScalarType & dt,
+		  const StepType &  step,
+		  JacobianType & J) const
   {
     systemObj_.get().jacobian(odeCurrentState, time, J);
 

@@ -211,7 +211,8 @@ ReturnType create_default_problem(const FomSystemType & fomSysObj,
 				  const RomStateType & stateIn,
 				  const FomReferenceStateType & fomRef)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary, fomSysObj, decoder, stateIn, fomRef);
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef);
 }
 
 template<

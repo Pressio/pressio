@@ -53,12 +53,12 @@ namespace pressio{ namespace rom{ namespace lspg{ namespace impl{
 
 template <class traits> struct UnsteadyMembersCommon
 {
-  static constexpr auto binding_sentinel = traits::binding_sentinel;
-  using At = ::pressio::rom::impl::FomObjMixin<
-    typename traits::fom_system_type, binding_sentinel>;
+  using At = ::pressio::rom::impl::FomObjHolder<
+    typename traits::fom_system_type, traits::binding_sentinel>;
 
-  using Bt = ::pressio::rom::impl::FomStatesMngrMixin<
+  using Bt = ::pressio::rom::lspg::impl::AddFomStatesManagerUnsteady<
     At,
+    !traits::is_cont_time,
     typename traits::fom_state_type,
     typename traits::fom_state_reconstr_type,
     typename traits::fom_states_manager_type>;
@@ -67,19 +67,121 @@ template <class traits> struct UnsteadyMembersCommon
 template <int flag, class traits>
 struct UnsteadyMembers{ using type = void; };
 
-// default
-template <class traits> struct UnsteadyMembers<0, traits> : UnsteadyMembersCommon<traits>
+// default, cont-time
+template <class traits>
+struct UnsteadyMembers<0, traits> : UnsteadyMembersCommon<traits>
 {
   using base_t = UnsteadyMembersCommon<traits>;
-  using typename base_t::At;
   using typename base_t::Bt;
-  using base_t::binding_sentinel;
 
-  using Ct  = DefaultPoliciesMixin<
+  using Ct  = AddDefaultPolicies<
     Bt,
     typename traits::residual_policy_type,
     typename traits::jacobian_policy_type>;
-  using type = ::pressio::rom::impl::ImplicitStepperMixin<
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// default, disc-time
+template <class traits>
+struct UnsteadyMembers<1, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct  = AddDefaultDiscreteTimeSystem<Bt, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// prec default, cont-time
+template <class traits>
+struct UnsteadyMembers<2, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddSinglyDecoratedPolicies<
+    Bt,
+    typename traits::preconditioner_type,
+    typename traits::residual_policy_type,
+    typename traits::jacobian_policy_type>;
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// prec default, disc-time
+template <class traits>
+struct UnsteadyMembers<3, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddSinglyDecoratedDiscreteTimeSystem<
+    Bt, typename traits::preconditioner_type, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// masked, cont-time
+template <class traits>
+struct UnsteadyMembers<4, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddSinglyDecoratedPolicies<
+    Bt,
+    typename traits::masker_type,
+    typename traits::residual_policy_type,
+    typename traits::jacobian_policy_type>;
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// masked, disc-time
+template <class traits>
+struct UnsteadyMembers<5, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddSinglyDecoratedDiscreteTimeSystem<
+    Bt, typename traits::masker_type, typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// prec masked, cont-time
+template <class traits>
+struct UnsteadyMembers<6, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddDoublyDecoratedPolicies<
+    Bt,
+    typename traits::preconditioner_type,
+    typename traits::masker_type,
+    typename traits::residual_policy_type,
+    typename traits::jacobian_policy_type>;
+  using type = ::pressio::rom::impl::AddImplicitStepper<
+    Ct, typename traits::stepper_type>;
+};
+
+// prec masked, disc-time
+template <class traits>
+struct UnsteadyMembers<7, traits> : UnsteadyMembersCommon<traits>
+{
+  using base_t = UnsteadyMembersCommon<traits>;
+  using typename base_t::Bt;
+
+  using Ct = AddDoublyDecoratedDiscreteTimeSystem<
+    Bt,
+    typename traits::preconditioner_type,
+    typename traits::masker_type,
+    typename traits::rom_system_type>;
+  using type = ::pressio::rom::impl::AddImplicitArbStepper<
     Ct, typename traits::stepper_type>;
 };
 
@@ -122,13 +224,27 @@ public:
 
   template<
     int _flag = flag,
-    mpl::enable_if_t<_flag==0, int> = 0
+    mpl::enable_if_t<_flag<=1, int> = 0
     >
-  UnsteadyProblem(const fom_system_type & fomObj,
-		decoder_type & decoder,
-		const lspg_state_type & romState,
-		const fom_state_type & fomNominalState)
-    : members_(romState, fomObj, decoder, fomNominalState){}
+  UnsteadyProblem(::pressio::ode::SteppersE name,
+		  const fom_system_type & fomObj,
+		  decoder_type & decoder,
+		  const lspg_state_type & romState,
+		  const fom_state_type & fomNominalState)
+    : members_(name, romState, fomObj, decoder, fomNominalState){}
+
+  template<
+    int _flag = flag, class ...Args2,
+    mpl::enable_if_t<_flag>=2, int> = 0
+    >
+  UnsteadyProblem(::pressio::ode::SteppersE name,
+		  const fom_system_type & fomObj,
+		  decoder_type & decoder,
+		  const lspg_state_type & romState,
+		  const fom_state_type & fomNominalState,
+		  Args2 && ...args)
+    : members_(name, romState, fomObj, decoder,
+	       fomNominalState, std::forward<Args2>(args) ...){}
 };
 
 }}}}//end namespace pressio::rom::lspg::impl
