@@ -232,6 +232,34 @@ struct AddDefaultPolicies : T
   {}
 };
 
+
+template <class T, class r_pol_t, class j_pol_t>
+struct AddHypRedPolicies : T
+{
+  r_pol_t residualPolicy_;
+  j_pol_t jacobianPolicy_;
+
+  AddHypRedPolicies() = delete;
+  AddHypRedPolicies(const AddHypRedPolicies &) = default;
+  AddHypRedPolicies & operator=(const AddHypRedPolicies &) = delete;
+  AddHypRedPolicies(AddHypRedPolicies &&) = default;
+  AddHypRedPolicies & operator=(AddHypRedPolicies &&) = delete;
+  ~AddHypRedPolicies() = default;
+
+  template<class T1, class T2, class T3, class T4, class T5>
+  AddHypRedPolicies(::pressio::ode::SteppersE name,
+		    const T1 & romStateIn,
+		    const T2 & fomObj,
+		    T3 & decoder,
+		    const T4 & fomNominalState,
+		    const T5 & combiner)
+    : T(name, fomObj, decoder, romStateIn, fomNominalState),
+      residualPolicy_(T::fomCRef(), T::fomStatesMngr_, combiner),
+      jacobianPolicy_(T::fomCRef(), T::fomStatesMngr_, decoder, combiner)
+  {}
+};
+
+
 template <class T, class UserProvidedFunctor_t, class r_pol_t, class j_pol_t>
 struct AddSinglyDecoratedPolicies : T
 {

@@ -82,7 +82,7 @@
         <h1>
           rom: Arbitrary Decoder
         </h1>
-<section id="autotoc_md75"><h2><a href="#autotoc_md75">Overview</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em; vertical-align: -0.350em;" viewBox="0 -5.147373 22.238045 8.490382">
+<section id="autotoc_md74"><h2><a href="#autotoc_md74">Overview</a></h2><p>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <svg class="m-math" style="width: 2.316em; height: 0.884em; vertical-align: -0.350em;" viewBox="0 -5.147373 22.238045 8.490382">
 <title>
 $y_{fom}$
 </title>
@@ -153,7 +153,7 @@ $g$
 <g id='eq4-page1'>
 <use x='0' y='0' xlink:href='#eq4-g0-103'/>
 </g>
-</svg> is the mapping between the two.</p><p>Note that there is no explicit constraint on what the mapping is, it can be anything.</p></section><section id="autotoc_md76"><h2><a href="#autotoc_md76">Decoder Concept</a></h2><p>In pressio, a valid decoder is any C++ object whose type meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">Decoder</span>
+</svg> is the mapping between the two.</p><p>Note that there is no explicit constraint on what the mapping is, it can be anything.</p></section><section id="autotoc_md75"><h2><a href="#autotoc_md75">Decoder Concept</a></h2><p>In pressio, a valid decoder is any C++ object whose type meets the following API:</p><pre class="m-code"><span class="k">class</span> <span class="nc">Decoder</span>
 <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="c1">// these nested typedefs are mandatory because pressio detects them</span>
@@ -181,7 +181,7 @@ $g$
 
   <span class="c1">// return a const reference to the Jacobian object</span>
   <span class="k">const</span> <span class="n">jacobian_type</span> <span class="o">&amp;</span> <span class="n">jacobianCRef</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-<span class="p">};</span></pre><section id="autotoc_md77"><h3><a href="#autotoc_md77">Requirements</a></h3><ul><li><code>fom_state_type</code>: must be copy constructible</li><li><code>jacobian_type</code>: must be copy constructible</li></ul></section><section id="autotoc_md78"><h3><a href="#autotoc_md78">Special case: linear decoder</a></h3><p>The special case of a linear decoder is natively supported in pressio, see <a href="./md_pages_components_rom_decoder_linear.html">this page</a>.</p></section></section>
+<span class="p">};</span></pre><section id="autotoc_md76"><h3><a href="#autotoc_md76">Requirements</a></h3><ul><li><code>fom_state_type</code>: must be copy constructible</li><li><code>jacobian_type</code>: must be copy constructible</li></ul></section><section id="autotoc_md77"><h3><a href="#autotoc_md77">Special case: linear decoder</a></h3><p>The special case of a linear decoder is natively supported in pressio, see <a href="./md_pages_components_rom_decoder_linear.html">this page</a>.</p></section></section>
       </div>
     </div>
   </div>

@@ -99,7 +99,7 @@ struct TrivialFomSteadyCustomTypes
     EXPECT_TRUE((std::size_t)state.extent(0)!=(std::size_t)N_);
 
     for (std::size_t i=0; i<indices.size(); ++i){
-      for (int j=0; j< A.extent(1); ++j){
+      for (std::size_t j=0; j< A.extent(1); ++j){
         A(i,j) = B(indices[i], j);
       }
     }

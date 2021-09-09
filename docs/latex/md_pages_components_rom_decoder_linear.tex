@@ -1,6 +1,6 @@
 Defined in header\+: {\ttfamily $<$pressio/rom\+\_\+decoder.\+hpp$>$}
 
-Public namespace\+: {\ttfamily pressio\+::rom}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md80}{}\doxysection{Overview}\label{md_pages_components_rom_decoder_linear_autotoc_md80}
+Public namespace\+: {\ttfamily pressio\+::rom}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md79}{}\doxysection{Overview}\label{md_pages_components_rom_decoder_linear_autotoc_md79}
 A linear decoder is a mapping of the form\+: \[ y_{fom} = \phi y_{rom} \]
 
 where $\phi$ is the Jacobian matrix (for the time being, assume it constant). ~\newline
@@ -14,17 +14,17 @@ where $\phi$ is the Jacobian matrix (for the time being, assume it constant). ~\
 \end{DoxyCode}
 
 
-The returned linear decoder object meets the \href{./md_pages_components_rom_decoder.html}{\texttt{ decoder concept}}.\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md81}{}\doxysubsection{Parameters}\label{md_pages_components_rom_decoder_linear_autotoc_md81}
+The returned linear decoder object meets the \href{./md_pages_components_rom_decoder.html}{\texttt{ decoder concept}}.\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md80}{}\doxysubsection{Parameters}\label{md_pages_components_rom_decoder_linear_autotoc_md80}
 
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+State\+Type}\+: data type of your FOM state
 \item {\ttfamily Jacobian\+Matrix\+Type}\+: data type your Jacobian matrix
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md82}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_linear_autotoc_md82}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md81}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_linear_autotoc_md81}
 
 \begin{DoxyItemize}
 \item {\ttfamily Fom\+State\+Type}\+: must be copy constructible
 \item {\ttfamily Jacobian\+Matrix\+Type}\+: must be copy constructible and move constructible.
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md83}{}\doxysection{Example usage for supported types}\label{md_pages_components_rom_decoder_linear_autotoc_md83}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md82}{}\doxysection{Example usage for supported types}\label{md_pages_components_rom_decoder_linear_autotoc_md82}
 When using data types supported in \href{./md_pages_components_ops.html}{\texttt{ pressio ops}}, an example usage is as follows\+:
 
 
@@ -46,7 +46,7 @@ When using data types supported in \href{./md_pages_components_ops.html}{\texttt
 \DoxyCodeLine{\}}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md84}{}\doxysection{Example usage for custom types}\label{md_pages_components_rom_decoder_linear_autotoc_md84}
+\hypertarget{md_pages_components_rom_decoder_linear_autotoc_md83}{}\doxysection{Example usage for custom types}\label{md_pages_components_rom_decoder_linear_autotoc_md83}
 When using custom data types not supported in \href{./md_pages_components_ops.html}{\texttt{ pressio ops}}, you need to provide specializations of a trait class and certain operations and make them \char`\"{}visible\char`\"{} to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use {\ttfamily double} as value type, {\ttfamily My\+Custom\+Vector$<$double$>$} for the FOM state, and {\ttfamily My\+Custom\+Matrix$<$double$>$} for the Jacobian matrix. Then you would need to do something like this\+:
 
 

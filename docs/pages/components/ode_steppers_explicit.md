@@ -42,7 +42,7 @@ The returned stepper object satisfies the "steppable" concept discussed [here](/
 - `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it.<br/>
   The system class must conform to the following API:
   ```cpp
-  struct SystemForExplicitOde
+  struct SystemForExplicitStepper
   {
 	using scalar_type   = /* */;
 	using state_type    = /* */;

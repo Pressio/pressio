@@ -98,19 +98,19 @@ struct TrivialFomDiscreteTimeEigen
     EXPECT_TRUE((std::size_t)N==(std::size_t)indices.size());
   }
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+  discrete_time_residual_type createDiscreteTimeResidual() const{
     return discrete_time_residual_type(N_);
   }
 
-  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{
     return phi_type(N_, B.cols());
   }
 
   template<class StepCountType>
-  void discreteTimeResidual(StepCountType, 
-                              double time, 
-                              double dt, 
-                              discrete_time_residual_type & R, 
+  void discreteTimeResidual(StepCountType,
+                              double time,
+                              double dt,
+                              discrete_time_residual_type & R,
                               const state_type & y_np1,
                               const state_type & y_n) const
   {
@@ -126,10 +126,10 @@ struct TrivialFomDiscreteTimeEigen
   }
 
   template<class StepCountType>
-  void applyDiscreteTimeJacobian(StepCountType, 
-                              double time, 
-                              double dt, 
-                              const phi_type & B, 
+  void applyDiscreteTimeJacobian(StepCountType,
+                              double time,
+                              double dt,
+                              const phi_type & B,
                               phi_type & A,
                               const state_type & y_np1,
                               const state_type & y_n) const
@@ -183,7 +183,7 @@ struct TrivialFomVelocityAndJacobianCustomTypes
   velocity_type createVelocity() const{ return velocity_type(N_); }
 
   template<class scalar_type>
-  pressiotests::MyCustomMatrix<scalar_type> 
+  pressiotests::MyCustomMatrix<scalar_type>
   createApplyJacobianResult(const pressiotests::MyCustomMatrix<scalar_type> & B) const
   {
     pressiotests::MyCustomMatrix<scalar_type> A(N_, B.extent(1));
@@ -223,19 +223,19 @@ struct TrivialFomDiscreteTimeCustomTypes
     EXPECT_TRUE((std::size_t)N==(std::size_t)indices.size());
   }
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+  discrete_time_residual_type createDiscreteTimeResidual() const{
     return discrete_time_residual_type(N_);
   }
 
-  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{
     return phi_type(N_, B.extent(1));
   }
 
   template<class StepCountType>
-  void discreteTimeResidual(StepCountType, 
-                              double time, 
-                              double dt, 
-                              discrete_time_residual_type & R, 
+  void discreteTimeResidual(StepCountType,
+                              double time,
+                              double dt,
+                              discrete_time_residual_type & R,
                               const state_type & y_np1,
                               const state_type & y_n) const
   {
@@ -251,10 +251,10 @@ struct TrivialFomDiscreteTimeCustomTypes
   }
 
   template<class StepCountType>
-  void applyDiscreteTimeJacobian(StepCountType, 
-                              double time, 
-                              double dt, 
-                              const phi_type & B, 
+  void applyDiscreteTimeJacobian(StepCountType,
+                              double time,
+                              double dt,
+                              const phi_type & B,
                               phi_type & A,
                               const state_type & y_np1,
                               const state_type & y_n) const

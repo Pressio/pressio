@@ -322,6 +322,73 @@ ReturnType create_masked_steady_problem(const FomSystemType & fomSysObj,
 // HYPRED
 // --------------------
 
+// unsteady, cont-time
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class HypRedOperatorUpdaterType,
+  class ReturnType = typename impl::ComposeHypRedProblemContTime<
+    FomSystemType, DecoderType, RomStateType, FomReferenceStateType, HypRedOperatorUpdaterType
+    >::type
+  >
+ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::SteppersE name,
+						const FomSystemType & fomSysObj,
+						DecoderType & decoder,
+						const RomStateType & stateIn,
+						const FomReferenceStateType & fomRef,
+						const HypRedOperatorUpdaterType & combiner)
+{
+  return ReturnType(name, fomSysObj, decoder, stateIn, fomRef, combiner);
+}
+
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// // unsteady, cont-time
+// // this overload is specific to trilinos for now, where we can use the underlying
+// // maps of the operators to figure out how to combine them.
+// // if you call this for non-trilinos data types, you get an error
+// template<
+//   class FomSystemType,
+//   class DecoderType,
+//   class RomStateType,
+//   class FomReferenceStateType,
+//   class HypRedOperatorUpdaterType = impl::
+//   class ReturnType = typename impl::ComposeHypRedProblemContTime<
+//     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, HypRedOperatorUpdaterType
+//     >::type
+//   >
+// ReturnType create_hyperreduced_unsteady_problem(::pressio::ode::SteppersE name,
+// 						const FomSystemType & fomSysObj,
+// 						DecoderType & decoder,
+// 						const RomStateType & stateIn,
+// 						const FomReferenceStateType & fomRef)
+// {
+//   return ReturnType(name, fomSysObj, decoder, stateIn, fomRef,
+// 		    HypRedOperatorUpdaterType());
+// }
+// #endif
+
+// unsteady, discrete-time
+template<
+  std::size_t num_states,
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ReturnType = typename impl::ComposeHypRedProblemDiscTime<
+    num_states, FomSystemType, DecoderType, RomStateType, FomReferenceStateType
+    >::type
+  >
+ReturnType create_hyperreduced_unsteady_problem(const FomSystemType & fomSysObj,
+						DecoderType & decoder,
+						const RomStateType & stateIn,
+						const FomReferenceStateType & fomRef)
+{
+  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+		    fomSysObj, decoder, stateIn, fomRef);
+}
+
 // steady
 template<
   class FomSystemType,

@@ -22,7 +22,7 @@ where {\ttfamily name} is one of the following enum class values\+: {\ttfamily F
 \item {\ttfamily System\+Type}\+: class defining how to create an instance of the velocity $f$ and how to compute it.~\newline
  The system class must conform to the following API\+: 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{struct }SystemForExplicitOde}
+\DoxyCodeLine{\textcolor{keyword}{struct }SystemForExplicitStepper}
 \DoxyCodeLine{\{}
 \DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type   = \textcolor{comment}{/* */};}
 \DoxyCodeLine{  \textcolor{keyword}{using} state\_type    = \textcolor{comment}{/* */};}

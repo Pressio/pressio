@@ -28,7 +28,7 @@
 <para><itemizedlist>
 <listitem><para><computeroutput>StateType</computeroutput>: data type of your state, must be copy constructible</para>
 </listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it.<linebreak/>
- The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitOde</highlight></codeline>
+ The system class must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForExplicitStepper</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>

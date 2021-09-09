@@ -8,7 +8,7 @@
     <detaileddescription>
 <para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom</computeroutput>, <computeroutput>pressio::rom::galerkin</computeroutput>.</para>
-<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md106">
+<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md105">
 <title>Overview</title>
 <para>At a high level, using a Galerkin problem involces three steps:<orderedlist>
 <listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;default Galerkin problem&quot;</para>
@@ -18,7 +18,7 @@
 </para>
 <para>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md107">
+<sect1 id="md_pages_components_rom_galerkin_hypred_1autotoc_md106">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepperTag,</highlight></codeline>
@@ -35,7 +35,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ProjectorType<sp/>&amp;<sp/>probjector);</highlight></codeline>
 </programlisting></para>
 <para>where <computeroutput>StepperTag</computeroutput> is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md108">
+<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md107">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StepperTag</computeroutput>:<itemizedlist>
@@ -73,7 +73,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md109">
+<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md108">
 <title>Problem class API</title>
 <para>An instance of the hyper-reduced Galerkin problem meets the same API as the <ulink url="md_pages_components_rom_galerkin_default.html">default problem</ulink>.</para>
 <para>A hyper-reduced Galerkin problem has these traits:</para>
@@ -102,7 +102,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md110">
+<sect2 id="md_pages_components_rom_galerkin_hypred_1autotoc_md109">
 <title>Projector</title>
 <para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>: explain what projectos is for since it is critical.</para>
 <para>The projector must be a functor as follows:</para>

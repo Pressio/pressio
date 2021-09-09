@@ -14,14 +14,16 @@ In this case, pressio exposes the following functions to create an instance of a
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// overload 1}}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{                            \textcolor{keyword}{const} SystemType \& system);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::SteppersE name,}
+\DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                             \textcolor{keyword}{const} SystemType \& system);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// overload 2}}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{class} StateType, \textcolor{keyword}{class} Res\textcolor{keywordtype}{id}ualPolicyType, \textcolor{keyword}{class} JacobianPolicyType>}
-\DoxyCodeLine{\textcolor{keyword}{auto} create\_keyword\_stepper(\textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{                            ResidualPolicyType \&\& rPol,}
-\DoxyCodeLine{                            JacobianPolicyType \&\& jPol);}
+\DoxyCodeLine{\textcolor{keyword}{auto} create\_implicit\_stepper(pressio::ode::SteppersE name,}
+\DoxyCodeLine{                             \textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                             ResidualPolicyType \&\& rPol,}
+\DoxyCodeLine{                             JacobianPolicyType \&\& jPol);}
 
 \end{DoxyCode}
 
@@ -31,16 +33,16 @@ Currently, the choices are\+:
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\ttfamily keyword}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
 \endfirsthead
 \hline
 \endfoot
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\ttfamily keyword}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Method   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Discrete Residual Formula    }\\\cline{1-3}
 \endhead
-bdf1   &Backward Diff 1st order   &$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
-bdf2   &Backward Diff 2nd order   &$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
-cranknicolson   &Crank-\/\+Nicolson   &$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$   \\\cline{1-3}
+BDF1   &Backward Diff 1st order   &$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
+BDF2   &Backward Diff 2nd order   &$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$    \\\cline{1-3}
+Crank\+Nicolson   &Crank-\/\+Nicolson   &$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$   \\\cline{1-3}
 \end{longtabu}
 \hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md62}{}\doxysubsection{Parameters}\label{md_pages_components_ode_steppers_implicit_autotoc_md62}
 
@@ -87,13 +89,13 @@ the nested type aliases must be {\itshape valid} types since they are detected b
 \DoxyCodeLine{  residual\_type create() \textcolor{keyword}{const};}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class} TagType, \textcolor{keyword}{class} AuxStatesType, \textcolor{keyword}{class} AuxRhsType, \textcolor{keyword}{class} TimeType, \textcolor{keyword}{class} StepType>}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} compute(\textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{               \textcolor{keyword}{const} AuxStatesType \& auxStates,}
-\DoxyCodeLine{               AuxRhsType \& auxRhs,}
-\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& time\_at\_n\_plus\_one,}
-\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& dt,}
-\DoxyCodeLine{               StepType step,}
-\DoxyCodeLine{               residual\_type \& R) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} AuxStatesType \& auxStates,}
+\DoxyCodeLine{                  AuxRhsType \& auxRhs,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType \& time\_at\_n\_plus\_one,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType \& dt,}
+\DoxyCodeLine{                  StepType step,}
+\DoxyCodeLine{                  residual\_type \& R) \textcolor{keyword}{const};}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
@@ -108,12 +110,12 @@ the nested type aliases must be {\itshape valid} types since they are detected b
 \DoxyCodeLine{  jacobian\_type create() \textcolor{keyword}{const};}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{class} TagType, \textcolor{keyword}{class} AuxStatesType, \textcolor{keyword}{class} TimeType, \textcolor{keyword}{class} StepType>}
-\DoxyCodeLine{  \textcolor{keywordtype}{void} compute(\textcolor{keyword}{const} StateType \& state,}
-\DoxyCodeLine{               \textcolor{keyword}{const} AuxStatesType \& auxStates,}
-\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& time\_at\_n\_plus\_one,}
-\DoxyCodeLine{               \textcolor{keyword}{const} TimeType \& dt,}
-\DoxyCodeLine{               StepType step,}
-\DoxyCodeLine{               jacobian\_type \& J) \textcolor{keyword}{const};}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} operator()(\textcolor{keyword}{const} StateType \& state,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} AuxStatesType \& auxStates,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType \& time\_at\_n\_plus\_one,}
+\DoxyCodeLine{                  \textcolor{keyword}{const} TimeType \& dt,}
+\DoxyCodeLine{                  StepType step,}
+\DoxyCodeLine{                  jacobian\_type \& J) \textcolor{keyword}{const};}
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
@@ -130,12 +132,12 @@ If you want to use custom policies for computing residual and Jacobian, you need
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Tag\+Type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description/\+Info    }\\\cline{1-2}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Scheme   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description/\+Info    }\\\cline{1-2}
 \endfirsthead
 \hline
 \endfoot
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Tag\+Type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description/\+Info    }\\\cline{1-2}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Scheme   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description/\+Info    }\\\cline{1-2}
 \endhead
 {\ttfamily BDF1}   &{\ttfamily aux\+States}\+: contains\+: state at n-\/th step ~\newline
  \quad{} \quad{} \quad{} \quad{} \enskip{} Use\+: {\ttfamily const auto \& yn = aux\+States(pressio\+::ode\+::n());} ~\newline
@@ -167,7 +169,8 @@ Any stepper created using the functions above is guaranteed to satisfy the \char
 \DoxyCodeLine{  \textcolor{comment}{// systemObj is the system instance}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{namespace }pode = pressio::ode;}
-\DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_bdf1\_stepper(stateObj, systemObj);}
+\DoxyCodeLine{  \textcolor{keyword}{const} \textcolor{keyword}{auto} scheme = pode::SteppersE::BDF1;}
+\DoxyCodeLine{  \textcolor{keyword}{auto} stepper = pode::create\_implicit\_stepper(scheme, stateObj, systemObj);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// create a solver, here for simplicity we show the case where}}
 \DoxyCodeLine{  \textcolor{comment}{// for the types used, we can leverage pressio solvers}}
@@ -264,7 +267,12 @@ When using custom data types not supported in \href{/Users/fnrizzi/Desktop/work/
 \end{DoxyCode}
 
 
-Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described \href{md_pages_components_nonlinsolvers.html}{\texttt{ here}}.\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md67}{}\doxysection{API for discrete-\/time systems}\label{md_pages_components_ode_steppers_implicit_autotoc_md67}
+Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described \href{md_pages_components_nonlinsolvers.html}{\texttt{ here}}.
+
+~\newline
+\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md67}{}\doxysection{API for discrete-\/time systems}\label{md_pages_components_ode_steppers_implicit_autotoc_md67}
+todo FINISH
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keywordtype}{int} num\_states, \textcolor{keyword}{class} StateType, \textcolor{keyword}{class} SystemType>}
@@ -272,22 +280,13 @@ Obviously, if you want to use pressio nonlinear solvers, then you need provide a
 \DoxyCodeLine{                              SystemType \&\& system);}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md68}{}\doxysubsection{Parameters}\label{md_pages_components_ode_steppers_implicit_autotoc_md68}
+\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md68}{}\doxysubsection{Parameters and Requirements}\label{md_pages_components_ode_steppers_implicit_autotoc_md68}
 
 \begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+:
-\begin{DoxyItemize}
-\item type of the data structure you use for the state
-\end{DoxyItemize}
-\item {\ttfamily System\+Type}\+:
-\begin{DoxyItemize}
-\item class defining how to create and compute the residual and Jacobian
-\end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_pages_components_ode_steppers_implicit_autotoc_md69}{}\doxysubsection{Requirements}\label{md_pages_components_ode_steppers_implicit_autotoc_md69}
-
-\begin{DoxyItemize}
-\item {\ttfamily State\+Type}\+: must be copy constructible
-\item {\ttfamily System\+Type} must conform to the following API\+: 
+\item {\ttfamily num\+\_\+states}\+: total number of states you need.
+\item {\ttfamily State\+Type}\+: data type of your state, must be copy constructible
+\item {\ttfamily System\+Type}\+: class defining how to create and compute the residual and Jacobian.~\newline
+ Must conform to the following API\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{class }ValidDiscreteTimeSystem}
 \DoxyCodeLine{\{}

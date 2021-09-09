@@ -49,11 +49,16 @@
 #ifndef ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
 #define ROM_LSPG_IMPL_ROM_COMPOSE_UNSTEADY_IMPL_HPP_
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include "./rom_lspg_unsteady_hypred_updater_trilinos.hpp"
+#endif
 #include "./rom_lspg_unsteady_discrete_time_decorators.hpp"
 #include "./rom_lspg_unsteady_cont_time_decorators.hpp"
 #include "./rom_lspg_unsteady_discrete_time_default_system.hpp"
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_lspg_problem_members.hpp"
+#include "./rom_lspg_unsteady_hypred_policy_residual.hpp"
+#include "./rom_lspg_unsteady_hypred_policy_jacobian.hpp"
 #include "./rom_lspg_unsteady_policy_residual.hpp"
 #include "./rom_lspg_unsteady_policy_jacobian.hpp"
 #include "./rom_lspg_unsteady_traits.hpp"
@@ -152,6 +157,22 @@ using ComposePrecMaskedProblemContTime = ComposerContTime<6, Args...>;
 
 template<std::size_t n, class ...Args>
 using ComposePrecMaskedProblemDiscTime = ComposerDiscTime<7, n, Args...>;
+
+// hyper-reduced
+template<class ...Args>
+using ComposeHypRedProblemContTime = ComposerContTime<8, Args...>;
+
+// for discrete-time hyperreduced, impl is same as default
+template<std::size_t n, class ...Args>
+using ComposeHypRedProblemDiscTime = ComposerDiscTime<1, n, Args...>;
+
+
+// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
+// template<>
+// struct SelectHypRedUpdaterTrilinos
+// {
+// }
+// #endif
 
 
 }}}}
