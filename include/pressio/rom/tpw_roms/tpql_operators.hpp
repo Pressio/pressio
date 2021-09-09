@@ -53,6 +53,27 @@ void setHessianCol(Kokkos::View<scalar_t***,layout_t,exec_space_t> & H,const Kok
   } 
 }
 
+template <typename scalar_t>
+void setSymmetricHessianCol(std::vector<std::vector<std::vector<scalar_t> > > & H , const Eigen::Matrix<scalar_t,-1,1>  & HCol,const int i, const int j )
+{
+  auto dim = ::pressio::ops::extent(HCol,0);
+  for (int k = 0; k < dim; k++){
+    H[k][i][j] = HCol(k);
+    H[k][j][i] = HCol(k);
+  } 
+}
+
+template <typename scalar_t, typename layout_t, typename exec_space_t>
+void setSymmetricHessianCol(Kokkos::View<scalar_t***,layout_t,exec_space_t> & H,const Kokkos::View<scalar_t*,layout_t,exec_space_t> & HCol,const int i,const int j)
+{
+  auto dim = ::pressio::ops::extent(HCol,0);
+  for (int k = 0; k < dim; k++){
+    H(k,i,j) = HCol(k);
+    H(k,j,i) = HCol(k);
+  } 
+}
+
+
 template <typename app_t, typename state_t, typename param_t , typename scalar_t, typename basis_t, typename dense_matrix_t, typename vector_t>
 void computeBasisTransposeTimesMixedHessian_calc(const app_t & appObj,const state_t & y,const param_t & mu,const  scalar_t t,const basis_t & Phi, dense_matrix_t & BasisTransposeTimesMixedHessian, vector_t & BasisTransposeTimesMixedHessianCol)
 
@@ -123,8 +144,6 @@ auto computeBasisTransposeTimesMixedHessianKokkos(const app_t & appObj,const sta
   auto romDim = ::pressio::ops::extent(Phi,1);
   auto numParams = ::pressio::ops::extent(mu,0);
 
-  using execution_space = Kokkos::DefaultExecutionSpace;
-  using kll   = Kokkos::LayoutLeft;
   using vector_t    = typename rom_data_t::vector_t;
   using dense_hessian_t    = typename rom_data_t::dense_hessian_t;
 
@@ -185,7 +204,7 @@ void computeBasisTransposeTimesParameterHessian_calc(const app_t & appObj,const 
   scalar_t scale2 = 0.25/(eps*eps);
 
   for  (int i = 0; i < numParams; i++){
-    for (int j=0; j < numParams; j++){
+    for (int j=0; j <= i; j++){
       ::pressio::ops::set_zero(workingVector);
       if (i == j){
         muP(i) += 2.*eps;
@@ -258,7 +277,7 @@ void computeBasisTransposeTimesParameterHessian_calc(const app_t & appObj,const 
       ::pressio::ops::product(::pressio::transpose(),1., Phi,workingVector , 0.,BasisTransposeTimesParameterHessianCol);
 
 
-      setHessianCol(BasisTransposeTimesParameterHessian,BasisTransposeTimesParameterHessianCol,i,j);
+      setSymmetricHessianCol(BasisTransposeTimesParameterHessian,BasisTransposeTimesParameterHessianCol,i,j);
     }
   }
   //reset parameters
@@ -314,22 +333,19 @@ template <typename app_t, typename state_t, typename param_t , typename scalar_t
 void computeBasisTransposeTimesParameterJacobian_calc(const app_t & appObj,const state_t & y,const param_t & mu,const scalar_t t,const basis_t & Phi, dense_matrix_t & PhiTJPhi, vector_t & PhiTJPhiCol)
 {
   auto ftmp = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
   auto workingVector = appObj.createVelocity();
 
   auto numParams = ::pressio::ops::extent(mu,0);
   auto fomDim = ::pressio::ops::extent(y,0);
   auto romDim = ::pressio::ops::extent(Phi,1);
 
-  scalar_t eps = 1e-5;
+  scalar_t eps = 1e-3;
   scalar_t scale = 0.5/eps;
   auto muP = ::pressio::ops::clone(mu);
-  for (int i = 0; i < numParams; i++){
-    muP(i) = mu(i);
-  }
   for  (int i = 0; i < numParams; i++){
     ::pressio::ops::set_zero(workingVector);
 
-    //Eigen::Matrix<scalar_t, -1, 1>  muP = mu;
     muP(i) += eps;
     appObj.updateScalarParameters(muP); 
     ::pressio::ops::set_zero(ftmp);
@@ -342,7 +358,6 @@ void computeBasisTransposeTimesParameterJacobian_calc(const app_t & appObj,const
     appObj.velocity(y,t,ftmp);
     ::pressio::ops::update(workingVector,1.,ftmp,-1.*scale);
 
-    //PhiTJPhi.col(i) = Phi.transpose() * workingVector;
     ::pressio::ops::product(::pressio::transpose(),1., Phi,workingVector , 0., PhiTJPhiCol);
     setCol(PhiTJPhi,PhiTJPhiCol,i);
   
@@ -399,6 +414,7 @@ Eigen::Matrix<scalar_t,-1,1> computeBasisTransposeTimesVelocityEigen(const app_t
 
   // Create temporary working vectors
   auto f = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
   appObj.velocity(y,t,f);
 
   using vector_t = typename rom_data_t::vector_t;
@@ -416,6 +432,7 @@ auto computeBasisTransposeTimesVelocityKokkos(const app_t & appObj, const state_
 
   // Create temporary working vectors
   auto f = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
   appObj.velocity(y,t,f);
 
   using vector_t		= typename rom_data_t::vector_t;
@@ -436,6 +453,7 @@ void computeBasisTransposeTimesJacobianTimesBasis_calc(const app_t & appObj, con
   auto fp = appObj.createVelocity();
   auto yp = ::pressio::ops::clone(y);
   auto workingVector = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
 
   for  (int i = 0; i < romDim; i++){
     ::pressio::ops::set_zero(workingVector);
@@ -496,6 +514,7 @@ void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & ap
 
   // Create temporary working vectors
   auto f0 = appObj.createVelocity();
+  appObj.updateScalarParameters(mu);
   appObj.velocity( y , t , f0);
   auto ftmp = appObj.createVelocity();
   auto workingVector = appObj.createVelocity();
@@ -506,7 +525,7 @@ void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & ap
   scalar_t scale2 = 0.25/(eps*eps);
 
   for  (int i = 0; i < romDim; i++){
-    for (int j=0; j < romDim; j++){
+    for (int j=0; j <= i; j++){
       ::pressio::ops::set_zero(workingVector);
       if (i == j){
         auto PhiCol = getCol<scalar_t>(Phi,i);
@@ -571,7 +590,7 @@ void computeBasisTransposeTimesHessianTimesBasisTimesBasis_calc(const app_t & ap
  
       }
       ::pressio::ops::product(::pressio::transpose(),1., Phi,workingVector , 0., HCol);
-      setHessianCol(BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,i,j);
+      setSymmetricHessianCol(BasisTransposeTimesHessianTimesBasisTimesBasis,HCol,i,j);
     }
   }
 } 

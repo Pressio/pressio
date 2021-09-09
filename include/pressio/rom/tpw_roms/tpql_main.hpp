@@ -87,7 +87,6 @@ public:
     else{
 
       auto relativeError = CheckGalerkinVelocity(currentState,workingStateVector,currentParam,currentTime,currentCoords);
-        std::cout << " error = " << relativeError << ", passing point " << std::endl; 
       if (relativeError >= velocityErrorTolerance){
         std::cout << " error = " << relativeError << ", adding new point " << std::endl; 
         // Add point to coordinate list
@@ -114,7 +113,9 @@ public:
   
         auto PhiTHMixed = ::pressio::rom::experimental::computeBasisTransposeTimesMixedHessianEigen<rom_data_t>(appObj,workingStateVector,currentParam,currentTime, Phi);
         ListOfMixedHessiansAtLinearizationPoints_.push_back(PhiTHMixed);
-  
+      }
+      else{
+        std::cout << " error = " << relativeError << ", skipping point " << std::endl; 
       }
     }
   } 
@@ -150,6 +151,7 @@ private:
   std::vector< rom_hessian_t  > ListOfParamHessiansAtLinearizationPoints_{0}; 
   std::vector< rom_hessian_t  > ListOfMixedHessiansAtLinearizationPoints_{0}; 
 
+public:
   template <typename params_t, typename coords_t>
   rom_state_t GalerkinVelocity(const rom_state_t & xhat,const params_t & mu,const scalar_t t,const coords_t & PointCoords){
     int linPointIndx = FindClosestLinearizationPoint(PointCoords);
@@ -169,20 +171,22 @@ private:
 
     params_t d_mu(mu);
     ::pressio::ops::update(d_mu,0.,mu,1.,ParamAtLinearizationPoint,-1.);
+
     //auto d_mu = mu - ParamAtLinearizationPoint;
     rom_velocity_t f(romDim);
     ::pressio::ops::update(f,0.,VelocityAtLinearizationPoint,1.);
     ::pressio::ops::product(::pressio::nontranspose(),1., JacobianAtLinearizationPoint,         d_xHat,                    1.,f);
     ::pressio::ops::product(::pressio::nontranspose(),1., ParameterJacobianAtLinearizationPoint,d_mu  ,                    1.,f);
-    //auto f = VelocityAtLinearizationPoint + JacobianAtLinearizationPoint * d_xHat + 
-    //         ParameterJacobianAtLinearizationPoint * d_mu;
+//    f = VelocityAtLinearizationPoint + JacobianAtLinearizationPoint * d_xHat + 
+//             ParameterJacobianAtLinearizationPoint * d_mu;
     tensorMultiply(HessianAtLinearizationPoint, d_xHat,d_xHat,0.5,f); 
     tensorMultiply(ParameterHessianAtLinearizationPoint, d_mu,d_mu,0.5,f); 
     tensorMultiply(MixedHessianAtLinearizationPoint, d_xHat,d_mu,1.,f); 
     return f;
   }
 
-  void tensorMultiply(rom_hessian_t H, rom_state_t a1, rom_state_t a2,scalar_t alpha, rom_velocity_t f){
+private:
+  void tensorMultiply(const rom_hessian_t & H,const rom_state_t & a1,const rom_state_t & a2,const scalar_t alpha, rom_velocity_t & f){
     auto d1 = H.size();
     auto d2 = H[0].size();
     auto d3 = H[0][0].size();
@@ -220,7 +224,7 @@ private:
     int numberOfAddedLinearizationPoints = ListOfCoordsAtLinearizationPoints_.size();
     int coordinateDimension = 2;
     std::vector<scalar_t> distance(numberOfAddedLinearizationPoints);
-    std::cout << "Current coords are " << PointCoords << std::endl;
+    //std::cout << "Current coords are " << PointCoords << std::endl;
 
     for (int i = 0; i < numberOfAddedLinearizationPoints; i++){
       for (int j=0; j < coordinateDimension; j++){
@@ -229,7 +233,7 @@ private:
       distance[i] = std::sqrt(distance[i]);
     }
     int linPointIndex = std::min_element(distance.begin(), distance.end()) - distance.begin();
-    std::cout << "Closest linearization point is " << linPointIndex << std::endl;
+    //std::cout << "Closest linearization point is " << linPointIndex << std::endl;
     return linPointIndex;
   }
 
