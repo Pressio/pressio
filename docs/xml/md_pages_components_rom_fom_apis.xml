@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_rom_fom_apis" kind="page">
+    <compoundname>md_pages_components_rom_fom_apis</compoundname>
+    <title>FOM adapter API</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>In order to use the <computeroutput>presssio/rom</computeroutput> model reduction functionalities, obviously there needs to be a way to exchange data/information between pressio and your FOM application. To do so, pressio requires you to write an <emphasis>adapter class</emphasis> as a minimally intrusive layer to standardize the way pressio interfaces with any application. As explained below, in general, preparing the adapter should only involve <emphasis>exposing</emphasis> from your applications some operators.</para>
+<sect1 id="md_pages_components_rom_fom_apis_1autotoc_md85">
+<title>Continuous-time API: Velocity Only</title>
+<para>Intended for when your FOM application is expressed in <emphasis>time-continuous</emphasis> form as <formula id="17">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \]</formula> where <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="4">$f$</formula> is what we call the FOM velocity (or RHS), and <formula id="5">$t$</formula> is time, and, for some reason, you can/want to only expose the right-hand-side (or velocity) of your FOM application.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md86">
+<title>Synopsis</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomAdapter</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>you<sp/>need<sp/>to<sp/>create<sp/>an<sp/>instance<sp/>of<sp/>the<sp/>velocity<sp/>(or<sp/>RHS)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>a<sp/>state<sp/>and<sp/>time,<sp/>you<sp/>compute<sp/>the<sp/>velocity<sp/>(or<sp/>RHS)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md87">
+<title>Usage</title>
+<para><itemizedlist>
+<listitem><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">This adapter can ONLY be used for doing Galerkin ROMs with explicit time stepping.</mcss:span></para>
+</listitem><listitem><para>See the following examples: ...</para>
+</listitem></itemizedlist>
+</para>
+<para><linebreak/>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_rom_fom_apis_1autotoc_md88">
+<title>Continuous-time API: Velocity and Jacobian action</title>
+<para>This API is intended for any system expressible in <emphasis>time-continuous</emphasis> form as above, but you expose both the right-hand-side of your FOM application as well as the action of the velocity&apos;s Jacobian on some operand (more on this later).</para>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md89">
+<title>Synopsis</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomAdapter</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>OperandType:<sp/>typically<sp/>the<sp/>data<sp/>type<sp/>you<sp/>use<sp/>for<sp/>the<sp/>decoder&apos;s<sp/>jacobian</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>OperandType<sp/>createApplyJacobianResult(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>computes:<sp/>A<sp/>=<sp/>Jac<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>B,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OperandType<sp/>&amp;<sp/>A)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md90">
+<title>Usage</title>
+<para><itemizedlist>
+<listitem><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">can be used for doing Galerkin ROMs with explicit and implicit time stepping</mcss:span>,</para>
+</listitem><listitem><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">can be used for LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).</mcss:span></para>
+</listitem><listitem><para>See the following examples: ...</para>
+</listitem></itemizedlist>
+</para>
+<para><linebreak/>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_rom_fom_apis_1autotoc_md91">
+<title>Discrete-time API</title>
+<para>This API is intended for any system expressible in a discrete-time form as <formula id="18">\[ \boldsymbol{R}(\boldsymbol{y_{n+1}}, \boldsymbol{y_{n}}, \boldsymbol{y_{n-1}}, ..., t_{n+1}, dt_{n+1}; ...) = \boldsymbol{0} \]</formula> where <formula id="3">$y$</formula> is the full-order model (FOM) state, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.  <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> finish.</para>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md92">
+<title>Synopsis</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>discrete_time_residual_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>discrete_time_residual_type<sp/>createDiscreteTimeResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>OperandType:<sp/>typically<sp/>the<sp/>data<sp/>type<sp/>you<sp/>use<sp/>for<sp/>the<sp/>decoder&apos;s<sp/>jacobian</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>operand_t<sp/>createApplyDiscreteTimeJacobianResult(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>step_t,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>...<sp/>Args&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeResidual(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>step_t<sp/>&amp;<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_residual_type<sp/>&amp;<sp/>R,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_np1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_n)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>y_n+1,<sp/>y_n</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>R</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>step_t,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>...<sp/>Args&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeResidual(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>step_t<sp/>&amp;<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_residual_type<sp/>&amp;<sp/>R,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_np1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_n,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_nm1)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>y_n+1,<sp/>y_n,<sp/>y_n-1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>R</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>OperandType:<sp/>typically<sp/>the<sp/>data<sp/>type<sp/>you<sp/>use<sp/>for<sp/>the<sp/>decoder&apos;s<sp/>jacobian</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">step_t,<sp/>OperandType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">...<sp/>Args&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyDiscreteTimeJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>step_t<sp/>&amp;<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>B,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OperandType<sp/>&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_np1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_n)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>y_n+1,<sp/>y_n</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>A<sp/>=<sp/>dR/dy_n+1<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>OperandType:<sp/>typically<sp/>the<sp/>data<sp/>type<sp/>you<sp/>use<sp/>for<sp/>the<sp/>decoder&apos;s<sp/>jacobian</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>step_t,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>...<sp/>Args&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyDiscreteTimeJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>step_t<sp/>&amp;<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>scalar_type<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>B,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OperandType<sp/>&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_np1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_n,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;<sp/>y_nm1)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>y_n+1,<sp/>y_n,<sp/>y_n-1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>A<sp/>=<sp/>dR/dy_n+1<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_rom_fom_apis_1autotoc_md93">
+<title>Usage</title>
+<para><itemizedlist>
+<listitem><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">for doing Galerkin <emphasis>implicit</emphasis> time stepping</mcss:span></para>
+</listitem><listitem><para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-warning">for doing LSPG </mcss:span></para>
+</listitem><listitem><para>See the following examples: ...</para>
+</listitem></itemizedlist>
+</para>
+<para><linebreak/>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_rom_fom_apis_1autotoc_md94">
+<title>Should you prefer the continuous-time or discrete-time API?</title>
+<para>In general, we suggest users to always prefer the continuous-time API because it is more general. However, there are situations where the discrete-time API is more useful or even necessary. For example, <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span>. </para>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/rom_fom_apis.md"/>
+  </compounddef>
+</doxygen>

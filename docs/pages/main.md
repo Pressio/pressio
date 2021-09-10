@@ -1,50 +1,40 @@
-# Pressio C++
+# Pressio C++ Library
 
-*Leading-edge projection-based reduced order models (\proms) for
-dynamical systems in science and engineering.*
+*Leading-edge reduced order models (\roms) for dynamical systems in science and engineering.*
 
-This is the documentation of the [C++ library](https://github.com/Pressio/pressio), which is one component of the [Pressio project](https://pressio.github.io/).
+This is the documentation of the [C++ library](https://github.com/Pressio/pressio), one component of the [Pressio ecosystem](https://pressio.github.io/).
 
-## In a nutshell
+<br/>
 
-Pressio can be applied to any dynamical system expressible in
-a *continuous-time* form as
-@f[
-\frac{d \boldsymbol{y}}{dt} =
-\boldsymbol{f}(\boldsymbol{y},t; ...)
-@f]
-and/or in a *discrete-time* form
-@f[
-\boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0}
-@f]
+| Name                                                 | Description/Content                                                                        | Links                                                                                                                                                                                                                                                                                                                                                                       | Corresponding header(s)                                                                                                                                                            |
+| ------------------                                   | ---------------                                                                            | ------------                                                                                                                                                                                                                                                                                                                                                                |                                                                                                                                                                                    |
+| @m_span{m-text m-success}mpl@m_endspan               | metaprogramming functionalities                                                            | [Code](https://github.com/Pressio/pressio/tree/main/include/mpl) <br/> [Documentation](md_pages_components_mpl.html)                                                                                                                                                                                                                                                        | `<pressio/mpl.hpp>`                                                                                                                                                                |
+| @m_span{m-text m-success}utils@m_endspan             | logging, static constants, crtp helper, etc                                                | [Code](https://github.com/Pressio/pressio/tree/main/include/utils)<br/>[Documentation](md_pages_components_utils.html)                                                                                                                                                                                                                                                      | `<pressio/utils.hpp>`                                                                                                                                                              |
+| @m_span{m-text m-success}type_traits@m_endspan       | traits/detection classes                                                                   | [Code](https://github.com/Pressio/pressio/tree/main/include/type_traits)<br/>[Documentation](md_pages_components_type_traits.html)                                                                                                                                                                                                                                          | `<pressio/type_traits.hpp>`                                                                                                                                                        |
+| @m_span{m-text m-success}expressions@m_endspan       | classes for various abstractions (span, diagonal, subspan, etc.)                           | [Code](https://github.com/Pressio/pressio/tree/main/include/expressions)<br/>[Documentation](md_pages_components_expressions.html)                                                                                                                                                                                                                                          | `<pressio/expressions.hpp>`                                                                                                                                                        |
+| @m_span{m-text m-success}ops@m_endspan               | specializations of shared-memory and distributed linear algebra kernels                    | [Code](https://github.com/Pressio/pressio/tree/main/include/ops)<br/>[Documentation](md_pages_components_ops.html)                                                                                                                                                                                                                                                          | `<pressio/ops.hpp>`                                                                                                                                                                |
+| @m_span{m-text m-success}qr@m_endspan                | QR factorization functionalities                                                           | [Code](https://github.com/Pressio/pressio/tree/main/include/qr)<br/>[Documentation](md_pages_components_qr.html)                                                                                                                                                                                                                                                            | `<pressio/qr.hpp>`                                                                                                                                                                 |
+| @m_span{m-text m-success}solvers_linear@m_endspan    | linear solvers (wrappers around existing TPLs)                                             | [Code](https://github.com/Pressio/pressio/tree/main/include/solvers_linear)<br/>[Documentation](md_pages_components_linsolvers.html)                                                                                                                                                                                                                                        | `<pressio/solvers_linear.hpp>`                                                                                                                                                     |
+| @m_span{m-text m-success}solvers_nonlinear@m_endspan | <br/> general info <br/> Newton-Raphson <br/> Gauss-Newton <br/> Levenberg-Marquardt <br/> | [Code](https://github.com/Pressio/pressio/tree/main/include/solvers_nonlinear) <br/> [Documentation](md_pages_components_nonlinsolvers_general.html) <br/> [Documentation](md_pages_components_nonlinsolvers_nr.html) <br/> [Documentation](md_pages_components_nonlinsolvers_gn.html) <br/> [Documentation](md_pages_components_nonlinsolvers_lm.html)                     | `<pressio/solvers_nonlinear.hpp>`                                                                                                                                                  |
+| @m_span{m-text m-success}ode@m_endspan               | <br/> explicit steppers <br/>implict steppers <br/> advancers <br/>                        | [Code](https://github.com/Pressio/pressio/tree/main/include/ode) <br/> [Documentation](md_pages_components_ode_steppers_explicit.html)<br/> [Documentation](md_pages_components_ode_steppers_implicit.html) <br/>[Documentation](md_pages_components_ode_advance.html)                                                                                                      | <br/> `<pressio/ode_steppers_explicit.hpp>` <br/> `<pressio/ode_steppers_implicit.hpp>`<br/> `<pressio/ode_advancers.hpp>` <br/> (for everything: `<pressio/ode.hpp>`)              |
+| @m_span{m-text m-success}rom@m_endspan               | <br/>general info <br/> decoder <br/> Galerkin<br/> LSPG<br/> WLS<br/>                     | [Code](https://github.com/Pressio/pressio/tree/main/include/rom) <br/>[Documentation](md_pages_components_rom_general.html) <br/>[Documentation](md_pages_components_rom_decoder.html) <br/> [Documentation](md_pages_components_rom_galerkin.html) <br/> [Documentation](md_pages_components_rom_lspg.html) <br/>  [Documentation](md_pages_components_rom_wls.html) <br/> | <br/> <br/> `<pressio/rom_decoder.hpp>` <br/> `<pressio/rom_galerkin.hpp>` <br/> `<pressio/rom_lspg.hpp>` <br/> `<pressio/rom_wls.hpp>` <br/> (for everything: `<pressio/rom.hpp>`) |
 
-Here, @f$y@f$ is the full-order model (FOM) state,
-@f$f@f$ the FOM velocity, @f$t@f$ is time, and @f$R@f$ is the residual.
+<!-- This structure benefits: -->
+<!-- * Maintability: the components depend on one another through well-defined public interfaces, -->
+<!-- and appropriate namespaces are used to properly scope the code. -->
 
-We leverage this expressive mathematical framework as a pivotal
-design choice to enable a minimal application programming interface (API)
-that is natural to dynamical systems: you choose the formulation
-more convenient to you, and interface your application to
-Pressio by creating a corresponding *adapter class* to expose
-the operators needed for the chosen formulation.
-In general, you don't need to support both: there are advantages and disadvantages for both,
-and sometimes the choice is dictated directly by your native application (for example,
-in some cases it might be easier to directly expose the residual).
-Read [the doc page](./md_pages_coreconcepts_adapter_api.html)
-to learn more about the adapter classes and see code templates.
-
-@image html frontpageschem.svg width=85%
-
+<!-- * Selective usability: users can leverage invidual functionalities. -->
+<!-- This allows finer-grained control on what you include and use. -->
 
 ## Getting Started
 
-* learn about the [installation process](./md_pages_getstarted_build_and_install.html)
+* [read the introduction](./md_pages_introduction.html) discussing objectives and design ideas;
 
-* read about the [packages](./md_pages_getstarted_packages.html) composing the pressio C++ library
+* [installation](./md_pages_installation.html): it is a header-only library, should be trivial;
 
-* explore the [tutorials](./md_pages_tutorials.html)
+* explore the [tutorials](./md_pages_tutorials.html);
 
-* dig into the [test subdirectory](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d) of the C++ library
+* we maintain a test suite! Interested in browing it? [See here](https://github.com/Pressio/pressio/tree/master/tests/rom/burgers1d).
 
 
 <!-- ## What if your types are not natively supported in pressio? -->

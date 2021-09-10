@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_ode_steppers_implicit" kind="page">
+    <compoundname>md_pages_components_ode_steppers_implicit</compoundname>
+    <title>ode: implicit steppers</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in: <computeroutput>&lt;pressio/ode_steppers_implicit.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::ode</computeroutput></para>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md60">
+<title>Overview</title>
+<para>Provides functionalities to create steppers for implicit methods. Recall that implicit methods update the state of a system by solving a system of equations involving both the current and next state. An implicit stepper is an object that knows how to do one such <emphasis>implicit</emphasis> step.</para>
+<para>Pressio implicit steppers are applicable to any system written in <emphasis>continuous-time</emphasis> form: <formula id="2">\[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \]</formula></para>
+<para>and/or in a <emphasis>discrete-time</emphasis> form <formula id="6">\[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]</formula></para>
+<para>Here, <formula id="3">$y$</formula> is the state, <formula id="4">$f$</formula> the velocity, <formula id="5">$t$</formula> is time, and <formula id="7">$R$</formula> is the residual.</para>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md61">
+<title>API for continuous-time systems</title>
+<para>In this case, pressio exposes the following functions to create an instance of a desired stepper:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>overload<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_implicit_stepper(pressio::ode::SteppersE<sp/>name,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>overload<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Res</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">ualPolicyType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>JacobianPolicyType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_implicit_stepper(pressio::ode::SteppersE<sp/>name,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ResidualPolicyType<sp/>&amp;&amp;<sp/>rPol,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>JacobianPolicyType<sp/>&amp;&amp;<sp/>jPol);</highlight></codeline>
+</programlisting></para>
+<para>Currently, the choices are:</para>
+<para><table rows="4" cols="3"><row>
+<entry thead="yes"><para>enum value   </para>
+</entry><entry thead="yes"><para>Method   </para>
+</entry><entry thead="yes"><para>Discrete Residual Formula    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>BDF1   </para>
+</entry><entry thead="no"><para>Backward Diff 1st order   </para>
+</entry><entry thead="no"><para><formula id="8">$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})$</formula>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>BDF2   </para>
+</entry><entry thead="no"><para>Backward Diff 2nd order   </para>
+</entry><entry thead="no"><para><formula id="9">$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})$</formula>    </para>
+</entry></row>
+<row>
+<entry thead="no"><para>CrankNicolson   </para>
+</entry><entry thead="no"><para>Crank-Nicolson   </para>
+</entry><entry thead="no"><para><formula id="10">$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)$</formula>   </para>
+</entry></row>
+</table>
+</para>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md62">
+<title>Parameters</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>StateType</computeroutput>: data type of the state</para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create an instance of the velocity <formula id="4">$f$</formula> and how to compute it;</para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput>, <computeroutput>JacobianPolicyType</computeroutput>: policy types if you want to use custom ones to compute the discrete operators.</para>
+</listitem></itemizedlist>
+</para>
+<para>Notes:<itemizedlist>
+<listitem><para>if you use the first overload above, pressio uses default policies to compute the residual and jacobian.</para>
+</listitem><listitem><para>the second overload allows you to define custom policies to compute the discrete operators</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md63">
+<title>Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>StateType</computeroutput>: must be copy constructible and the following condition must be true: <computeroutput>std::is_same&lt;StateType, typename SystemType::state_type&gt;::value == true</computeroutput></para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput> must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">SystemForImplicitOde</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/><sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>velocity_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>velocity_type<sp/>createVelocity()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>createJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>velocity(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_type<sp/>time,<sp/>velocity_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>jacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,<sp/>scalar_time<sp/>time,<sp/>jacobian_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+<para>the nested type aliases must be <emphasis>valid</emphasis> types since they are detected by pressio</para>
+</listitem><listitem><para><computeroutput>ResidualPolicyType</computeroutput> must conform to: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ResidualPolicy</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>residual_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>this<sp/>type<sp/>alias<sp/>needs<sp/>to<sp/>be<sp/>found<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>residual_type<sp/>create()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TagType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>AuxStatesType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>AuxRhsType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TimeType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>AuxStatesType<sp/>&amp;<sp/>auxStates,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AuxRhsType<sp/>&amp;<sp/>auxRhs,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>time_at_n_plus_one,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StepType<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>residual_type<sp/>&amp;<sp/>R)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</listitem><listitem><para><computeroutput>JacobianPolicyType</computeroutput>: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">JacobianPolicy</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>this<sp/>type<sp/>alias<sp/>needs<sp/>to<sp/>be<sp/>found<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>jacobian_type<sp/>create()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TagType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>AuxStatesType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>TimeType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>AuxStatesType<sp/>&amp;<sp/>auxStates,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>time_at_n_plus_one,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>TimeType<sp/>&amp;<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>StepType<sp/>step,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>jacobian_type<sp/>&amp;<sp/>J)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md64">
+<title>If you use custom policies:</title>
+<para>If you want to use custom policies for computing residual and Jacobian, you need are responsible for ensuring things are correct. In particular, you should be aware of the following:</para>
+<para><itemizedlist>
+<listitem><para><computeroutput>State</computeroutput>: argument passed to <computeroutput>compute</computeroutput> method contains the prediction at <computeroutput>n+1</computeroutput>.</para>
+</listitem><listitem><para><computeroutput>auxStates</computeroutput>, <computeroutput>auxRhs</computeroutput> (whose type you don&apos;t need to know) contain the needed auxiliary states and RHS evaluations, respectively, needed to compute the operators for a certain scheme. All you need to know about these containers is the following:</para>
+</listitem></itemizedlist>
+</para>
+<para><table rows="4" cols="2"><row>
+<entry thead="yes"><para>Scheme   </para>
+</entry><entry thead="yes"><para>Description/Info    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>BDF1</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>auxStates</computeroutput>: contains: state at n-th step <linebreak/>
+ <emsp/> <emsp/> <emsp/> <emsp/> <ensp/> Use: <computeroutput>const auto &amp; yn = auxStates(pressio::ode::n());</computeroutput> <linebreak/>
+ <computeroutput>auxRhs</computeroutput>: Empty    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>BDF2</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>auxStates</computeroutput>: contains: states at n-th and (n-1)-th step <linebreak/>
+ <emsp/> <emsp/> <emsp/> <emsp/> <ensp/> Use: <computeroutput>const auto &amp; yn = auxStates(pressio::ode::n());</computeroutput> <linebreak/>
+ <emsp/> <emsp/> <emsp/> <emsp/> <ensp/> <computeroutput>const auto &amp; ynm1 = auxStates(pressio::ode::nMinusOne());</computeroutput> <linebreak/>
+ <computeroutput>auxRhs</computeroutput>: Empty    </para>
+</entry></row>
+<row>
+<entry thead="no"><para><computeroutput>CrankNicolson</computeroutput>   </para>
+</entry><entry thead="no"><para><computeroutput>auxStates</computeroutput>: contains: states at n-th step <linebreak/>
+ <emsp/> <emsp/> <emsp/> <emsp/> <ensp/> Use: <computeroutput>const auto &amp; yn = auxStates(pressio::ode::n());</computeroutput> <linebreak/>
+ <computeroutput>auxRhs</computeroutput>: contains evaluations of the RHS are n-th and (n+1)-th steps <linebreak/>
+ <emsp/> <emsp/> <emsp/> Use: <computeroutput>auto &amp; fn = auxRhs(pressio::ode::n());</computeroutput> <linebreak/>
+ <ensp/> <ensp/> <ensp/> <emsp/> <computeroutput>auto &amp; fnp1 = auxRhs(pressio::ode::nPlusOne());</computeroutput>   </para>
+</entry></row>
+</table>
+</para>
+</sect2>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md65">
+<title>What to do after a stepper is created?</title>
+<para>Any stepper created using the functions above is guaranteed to satisfy the &quot;steppable&quot; concept discussed <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html">here</ulink>. Therefore, once you create a stepper, you can use the <ulink url="md_pages_components_ode_advance.html">advancers</ulink> to step forward or you can use your own.<linebreak/>
+ An example is below:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_solvers_nonlinear.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_implicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assuming<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>stateObj<sp/><sp/>is<sp/>the<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>systemObj<sp/>is<sp/>the<sp/>system<sp/>instance</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pode::SteppersE::BDF1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stepper<sp/>=<sp/>pode::create_implicit_stepper(scheme,<sp/>stateObj,<sp/>systemObj);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>solver,<sp/>here<sp/>for<sp/>simplicity<sp/>we<sp/>show<sp/>the<sp/>case<sp/>where</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>types<sp/>used,<sp/>we<sp/>can<sp/>leverage<sp/>pressio<sp/>solvers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_t<sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>problem_t::jacobian_type;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>lin_solver_t<sp/>=<sp/>pressio::linearsolvers::Solver&lt;</highlight><highlight class="comment">/*some<sp/>tag<sp/>to<sp/>specify<sp/>method*/</highlight><highlight class="normal">,<sp/>jacobian_t&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>lin_solver_t<sp/>linSolverObj;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>nonLinSolver<sp/>=<sp/>nonlinearsolvers::create_newton_raphson(stepperObj,y,linSolverObj);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>the<sp/>stepper<sp/>to<sp/>advance<sp/>in<sp/>time,</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>example<sp/>using<sp/>the<sp/>advancer<sp/>function</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>time0<sp/>=<sp/>0.;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dt<sp/>=<sp/>0.1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pode::step_count_type<sp/>num_steps<sp/>=<sp/>100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pode::advance_n_steps(stepper,<sp/>stateObj,<sp/>time0,<sp/>dt,<sp/>num_steps,<sp/>nonLinearSolver);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md66">
+<title>Required specializations for custom types</title>
+<para>When using custom data types not supported in <ulink url="/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ops.html">pressio ops</ulink>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <computeroutput>double</computeroutput> as value type and <computeroutput>ACustomStateType</computeroutput> is what you use for the state, <computeroutput>ACustomMatrixType</computeroutput> is what you use for matrix, then you would need to do something like this:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assuming<sp/>ACustomStateType<sp/>has<sp/>already<sp/>been<sp/>declared</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assuming<sp/>ACustomMatrixType<sp/>has<sp/>already<sp/>been<sp/>declared</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomStateType&gt;{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;ACustomMatrixType&gt;{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>double;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>deep_copy(ACustomStateType<sp/>&amp;<sp/>dest,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>deep<sp/>copy<sp/>src<sp/>into<sp/>dest<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ACustomStateType<sp/>clone(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>src){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>return<sp/>a<sp/>deep<sp/>copy<sp/>of<sp/>src<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scale(ACustomMatrixType<sp/>&amp;<sp/>M,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>factor){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>scale<sp/>elementwise<sp/>by<sp/>factor<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>add_to_diagonal(ACustomMatrixType<sp/>&amp;<sp/>M,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">/*<sp/>add<sp/>value<sp/>to<sp/>diagonal<sp/>elements<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v0,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute<sp/>:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v0<sp/>+<sp/>c*v1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>update(ACustomStateType<sp/>&amp;<sp/>v,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v2,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v3,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ACustomStateType<sp/>&amp;<sp/>v4,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>e)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>elementwise<sp/>compute:<sp/>v<sp/>=<sp/>a*v<sp/>+<sp/>b*v1<sp/>+<sp/>c*v2<sp/>+<sp/>d*v3<sp/>+<sp/>e*v4</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}}</highlight><highlight class="comment">//end<sp/>namepsace<sp/>pressio::ops</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_advancers.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/ode_steppers_implicit.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{}</highlight></codeline>
+</programlisting></para>
+<para>Obviously, if you want to use pressio nonlinear solvers, then you need provide also the specializations described <ulink url="md_pages_components_nonlinsolvers.html">here</ulink>.</para>
+<para><linebreak/>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_ode_steppers_implicit_1autotoc_md67">
+<title>API for discrete-time systems</title>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> FINISH</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_states,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_arbitrary_stepper(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SystemType<sp/>&amp;&amp;<sp/>system);</highlight></codeline>
+</programlisting></para>
+<sect2 id="md_pages_components_ode_steppers_implicit_1autotoc_md68">
+<title>Parameters and Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>num_states</computeroutput>: total number of states you need.</para>
+</listitem><listitem><para><computeroutput>StateType</computeroutput>: data type of your state, must be copy constructible</para>
+</listitem><listitem><para><computeroutput>SystemType</computeroutput>: class defining how to create and compute the residual and Jacobian.<linebreak/>
+ Must conform to the following API: <programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValidDiscreteTimeSystem</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>whatever<sp/>you<sp/>need<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>state_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>discrete_time_residual_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>discrete_time_jacobian_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>discrete_time_residual_type<sp/>createDiscreteTimeResidual()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>discrete_time_jacobian_type<sp/>createDiscreteTimeJacobian()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>overload<sp/>accepting<sp/>1<sp/>auxiliary<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepCountType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeResidual(StepCountType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_residual_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>overload<sp/>accepting<sp/>2<sp/>auxiliary<sp/>states</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepCountType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeResidual(StepCountType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_residual_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>overload<sp/>accepting<sp/>1<sp/>auxiliary<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepCountType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeJacobian(StepCountType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_jacobian_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>overload<sp/>accepting<sp/>2<sp/>auxiliary<sp/>states</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StepCountType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>discreteTimeJacobian(StepCountType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>time,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>scalar_type<sp/>dt,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>discrete_time_jacobian_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>state_type<sp/>&amp;)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/ode_steppers_implicit.md"/>
+  </compounddef>
+</doxygen>

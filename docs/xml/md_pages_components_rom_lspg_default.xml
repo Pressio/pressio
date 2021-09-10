@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_rom_lspg_default" kind="page">
+    <compoundname>md_pages_components_rom_lspg_default</compoundname>
+    <title>rom: LSPG: default problem</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in: <computeroutput>&lt;pressio/rom_lspg.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom</computeroutput>, <computeroutput>pressio::rom::lspg</computeroutput>.</para>
+<para> <mcss:span xmlns:mcss="http://mcss.mosra.cz/doxygen/" mcss:class="m-text m-danger">todo</mcss:span> </para>
+    </detaileddescription>
+    <location file="pages/components/rom_lspg_default.md"/>
+  </compounddef>
+</doxygen>

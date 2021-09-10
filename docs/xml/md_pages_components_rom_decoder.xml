@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_rom_decoder" kind="page">
+    <compoundname>md_pages_components_rom_decoder</compoundname>
+    <title>rom: Arbitrary Decoder</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<sect1 id="md_pages_components_rom_decoder_1autotoc_md74">
+<title>Overview</title>
+<para>A key assumption of projection-based ROMs is to approximate the full-order model (FOM) state, <formula id="11">$y_{fom}$</formula>, as: <formula id="12">\[ y_{fom} = g(y_{rom}) \]</formula></para>
+<para>where <formula id="13">$y_{rom}$</formula> is the reduced state (or generalized coordinates), and <formula id="14">$g$</formula> is the mapping between the two.</para>
+<para>Note that there is no explicit constraint on what the mapping is, it can be anything.</para>
+</sect1>
+<sect1 id="md_pages_components_rom_decoder_1autotoc_md75">
+<title>Decoder Concept</title>
+<para>In pressio, a valid decoder is any C++ object whose type meets the following API:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">Decoder</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>these<sp/>nested<sp/>typedefs<sp/>are<sp/>mandatory<sp/>because<sp/>pressio<sp/>detects<sp/>them</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>jacobian_type<sp/><sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_type<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>your<sp/>type<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>applyMapping(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>romOperand,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fom_state_type<sp/>&amp;<sp/>fomState)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>romOperand:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>typically,<sp/>this<sp/>is<sp/>the<sp/>ROM<sp/>state<sp/>(or<sp/>generalized<sp/>coordinates),</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>but<sp/>this<sp/>is<sp/>not<sp/>always<sp/>true:<sp/>in<sp/>some<sp/>cases,<sp/>e.g.,<sp/>WLS,<sp/>it<sp/>can<sp/>be<sp/>an<sp/>expression.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>In<sp/>general,<sp/>we<sp/>advise<sp/>to<sp/>keep<sp/>it<sp/>as<sp/>a<sp/>template.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>To<sp/>use<sp/>romOperand,<sp/>you<sp/>need<sp/>to<sp/>know<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>rank-1<sp/>romOperand:<sp/>supports<sp/>the<sp/>(i)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>-<sp/>rank-2<sp/>romOperand:<sp/>supports<sp/>the<sp/>(i,j)<sp/>operator<sp/>to<sp/>reference<sp/>the<sp/>i,j-th<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>if<sp/>applicable,<sp/>update<sp/>the<sp/>Jacobian<sp/>for<sp/>a<sp/>given<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>OperandType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateJacobian(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>romOperand);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>a<sp/>const<sp/>reference<sp/>to<sp/>the<sp/>Jacobian<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>jacobian_type<sp/>&amp;<sp/>jacobianCRef()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+<sect2 id="md_pages_components_rom_decoder_1autotoc_md76">
+<title>Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>fom_state_type</computeroutput>: must be copy constructible</para>
+</listitem><listitem><para><computeroutput>jacobian_type</computeroutput>: must be copy constructible</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md_pages_components_rom_decoder_1autotoc_md77">
+<title>Special case: linear decoder</title>
+<para>The special case of a linear decoder is natively supported in pressio, see <ulink url="./md_pages_components_rom_decoder_linear.html">this page</ulink>. </para>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/rom_decoder.md"/>
+  </compounddef>
+</doxygen>

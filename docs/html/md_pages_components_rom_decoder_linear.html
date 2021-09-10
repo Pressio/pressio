@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>rom: Linear Decoder | Pressio|C++</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio|C++</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li>
+              <a>Documentation</a>
+              <ol>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_qr.html">qr</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - generic decoder</a></li>
+                <li><a href="md_pages_components_rom_decoder_linear.html">  &emsp; - linear decoder</a></li>
+                <li><a> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a> &emsp; - LSPG </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+              </ol>
+            </li>
+            <li><a href="md_pages_tutorials.html">Tutorials</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="6">
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          rom: Linear Decoder
+        </h1>
+<p>Defined in header: <code>&lt;pressio/rom_decoder.hpp&gt;</code></p><p>Public namespace: <code>pressio::rom</code></p><section id="autotoc_md79"><h2><a href="#autotoc_md79">Overview</a></h2><p>A linear decoder is a mapping of the form:</p><div class="m-math"><svg style="width: 6.954em; height: 1.213em;" viewBox="160.643209 -11.6452 66.758464 11.6452">
+<title>
+\[ y_{fom} = \phi y_{rom} \]
+</title>
+<defs>
+<path id='eq1-g0-102' d='M3.052553-3.172105H3.793773C3.953176-3.172105 4.048817-3.172105 4.048817-3.323537C4.048817-3.435118 3.945205-3.435118 3.809714-3.435118H3.100374C3.227895-4.152428 3.307597-4.606725 3.387298-4.96538C3.419178-5.100872 3.443088-5.188543 3.56264-5.284184C3.666252-5.371856 3.730012-5.387796 3.817684-5.387796C3.937235-5.387796 4.064757-5.363885 4.168369-5.300125C4.128518-5.284184 4.080697-5.260274 4.040847-5.236364C3.905355-5.164633 3.809714-5.021171 3.809714-4.861768C3.809714-4.678456 3.953176-4.566874 4.128518-4.566874C4.359651-4.566874 4.574844-4.766127 4.574844-5.045081C4.574844-5.419676 4.192279-5.610959 3.809714-5.610959C3.53873-5.610959 3.036613-5.483437 2.781569-4.750187C2.709838-4.566874 2.709838-4.550934 2.494645-3.435118H1.896887C1.737484-3.435118 1.641843-3.435118 1.641843-3.283686C1.641843-3.172105 1.745455-3.172105 1.880946-3.172105H2.446824L1.872976-.079701C1.721544 .72528 1.601993 1.40274 1.179577 1.40274C1.155666 1.40274 .988294 1.40274 .836862 1.307098C1.203487 1.219427 1.203487 .884682 1.203487 .876712C1.203487 .6934 1.060025 .581818 .884682 .581818C.669489 .581818 .438356 .765131 .438356 1.067995C.438356 1.40274 .781071 1.625903 1.179577 1.625903C1.665753 1.625903 2.000498 1.115816 2.10411 .916563C2.391034 .390535 2.574346-.605729 2.590286-.68543L3.052553-3.172105Z'/>
+<path id='eq1-g0-109' d='M1.594022-1.307098C1.617933-1.42665 1.697634-1.729514 1.721544-1.849066C1.745455-1.928767 1.793275-2.12005 1.809215-2.199751C1.825156-2.239601 2.088169-2.757659 2.438854-3.020672C2.709838-3.227895 2.972852-3.291656 3.196015-3.291656C3.490909-3.291656 3.650311-3.116314 3.650311-2.749689C3.650311-2.558406 3.602491-2.375093 3.514819-2.016438C3.459029-1.809215 3.323537-1.275218 3.275716-1.060025L3.156164-.581818C3.116314-.446326 3.060523-.207223 3.060523-.167372C3.060523 .01594 3.211955 .079701 3.315567 .079701C3.459029 .079701 3.57858-.01594 3.634371-.111582C3.658281-.159402 3.722042-.430386 3.761893-.597758L3.945205-1.307098C3.969116-1.42665 4.048817-1.729514 4.072727-1.849066C4.184309-2.279452 4.184309-2.287422 4.367621-2.550436C4.630635-2.940971 5.00523-3.291656 5.539228-3.291656C5.826152-3.291656 5.993524-3.124284 5.993524-2.749689C5.993524-2.311333 5.65878-1.39477 5.507347-1.012204C5.427646-.804981 5.403736-.749191 5.403736-.597758C5.403736-.143462 5.778331 .079701 6.121046 .079701C6.902117 .079701 7.228892-1.036115 7.228892-1.139726C7.228892-1.219427 7.165131-1.243337 7.10934-1.243337C7.013699-1.243337 6.997758-1.187547 6.973848-1.107846C6.782565-.446326 6.447821-.143462 6.144956-.143462C6.017435-.143462 5.953674-.223163 5.953674-.406476S6.017435-.765131 6.097136-.964384C6.216687-1.267248 6.567372-2.183811 6.567372-2.630137C6.567372-3.227895 6.152927-3.514819 5.579078-3.514819C5.029141-3.514819 4.574844-3.227895 4.216189-2.733748C4.152428-3.371357 3.642341-3.514819 3.227895-3.514819C2.86127-3.514819 2.375093-3.387298 1.936737-2.81345C1.880946-3.291656 1.498381-3.514819 1.123786-3.514819C.844832-3.514819 .645579-3.347447 .510087-3.076463C.318804-2.701868 .239103-2.311333 .239103-2.295392C.239103-2.223661 .294894-2.191781 .358655-2.191781C.462267-2.191781 .470237-2.223661 .526027-2.430884C.621669-2.82142 .765131-3.291656 1.099875-3.291656C1.307098-3.291656 1.354919-3.092403 1.354919-2.917061C1.354919-2.773599 1.315068-2.622167 1.251308-2.359153C1.235367-2.295392 1.115816-1.825156 1.083935-1.713574L.789041-.518057C.757161-.398506 .70934-.199253 .70934-.167372C.70934 .01594 .860772 .079701 .964384 .079701C1.107846 .079701 1.227397-.01594 1.283188-.111582C1.307098-.159402 1.370859-.430386 1.41071-.597758L1.594022-1.307098Z'/>
+<path id='eq1-g0-111' d='M3.969116-2.13599C3.969116-2.917061 3.411208-3.514819 2.582316-3.514819C1.45056-3.514819 .350685-2.414944 .350685-1.299128C.350685-.486177 .924533 .079701 1.737484 .079701C2.87721 .079701 3.969116-1.036115 3.969116-2.13599ZM1.745455-.143462C1.466501-.143462 .996264-.286924 .996264-1.020174C.996264-1.346949 1.147696-2.207721 1.530262-2.701868C1.920797-3.203985 2.359153-3.291656 2.574346-3.291656C2.901121-3.291656 3.323537-3.092403 3.323537-2.422914C3.323537-2.10411 3.180075-1.346949 2.87721-.868742C2.582316-.414446 2.14396-.143462 1.745455-.143462Z'/>
+<path id='eq1-g0-114' d='M1.538232-1.099875C1.625903-1.44259 1.713574-1.785305 1.793275-2.13599C1.801245-2.15193 1.857036-2.383064 1.865006-2.422914C1.888917-2.494645 2.088169-2.82142 2.295392-3.020672C2.550436-3.251806 2.82142-3.291656 2.964882-3.291656C3.052553-3.291656 3.196015-3.283686 3.307597-3.188045C2.964882-3.116314 2.917061-2.82142 2.917061-2.749689C2.917061-2.574346 3.052553-2.454795 3.227895-2.454795C3.443088-2.454795 3.682192-2.630137 3.682192-2.948941C3.682192-3.235866 3.435118-3.514819 2.980822-3.514819C2.438854-3.514819 2.072229-3.156164 1.904857-2.940971C1.745455-3.514819 1.203487-3.514819 1.123786-3.514819C.836862-3.514819 .637609-3.331507 .510087-3.084433C.326775-2.725778 .239103-2.319303 .239103-2.295392C.239103-2.223661 .294894-2.191781 .358655-2.191781C.462267-2.191781 .470237-2.223661 .526027-2.430884C.621669-2.82142 .765131-3.291656 1.099875-3.291656C1.307098-3.291656 1.354919-3.092403 1.354919-2.917061C1.354919-2.773599 1.315068-2.622167 1.251308-2.359153C1.235367-2.295392 1.115816-1.825156 1.083935-1.713574L.789041-.518057C.757161-.398506 .70934-.199253 .70934-.167372C.70934 .01594 .860772 .079701 .964384 .079701C1.243337 .079701 1.299128-.143462 1.362889-.414446L1.538232-1.099875Z'/>
+<path id='eq1-g2-61' d='M8.069738-3.873474C8.237111-3.873474 8.452304-3.873474 8.452304-4.088667C8.452304-4.315816 8.249066-4.315816 8.069738-4.315816H1.028144C.860772-4.315816 .645579-4.315816 .645579-4.100623C.645579-3.873474 .848817-3.873474 1.028144-3.873474H8.069738ZM8.069738-1.649813C8.237111-1.649813 8.452304-1.649813 8.452304-1.865006C8.452304-2.092154 8.249066-2.092154 8.069738-2.092154H1.028144C.860772-2.092154 .645579-2.092154 .645579-1.876961C.645579-1.649813 .848817-1.649813 1.028144-1.649813H8.069738Z'/>
+<path id='eq1-g1-30' d='M5.140722-8.18929C5.140722-8.296887 5.057036-8.296887 5.021171-8.296887C4.913574-8.296887 4.901619-8.272976 4.853798-8.069738L4.208219-5.499377C4.172354-5.34396 4.160399-5.332005 4.148443-5.32005C4.136488-5.296139 4.052802-5.284184 4.028892-5.284184C2.068244-5.116812 .561893-3.502864 .561893-2.008468C.561893-.71731 1.554172 .071731 2.797509 .143462C2.701868 .514072 2.618182 .896638 2.52254 1.267248C2.355168 1.900872 2.259527 2.295392 2.259527 2.343213C2.259527 2.367123 2.259527 2.438854 2.379078 2.438854C2.414944 2.438854 2.462765 2.438854 2.486675 2.391034C2.510585 2.367123 2.582316 2.080199 2.630137 1.924782L3.072478 .143462C5.116812 .035866 6.670984-1.637858 6.670984-3.144209C6.670984-4.351681 5.762391-5.212453 4.435367-5.296139L5.140722-8.18929ZM4.363636-5.057036C5.152677-5.009215 5.941719-4.566874 5.941719-3.395268C5.941719-2.044334 4.99726-.251059 3.132254-.107597L4.363636-5.057036ZM2.857285-.095641C2.271482-.131507 1.291158-.442341 1.291158-1.75741C1.291158-3.263761 2.379078-4.937484 4.100623-5.045081L2.857285-.095641Z'/>
+<path id='eq1-g1-121' d='M3.144209 1.338979C2.82142 1.793275 2.355168 2.199751 1.769365 2.199751C1.625903 2.199751 1.052055 2.175841 .872727 1.625903C.908593 1.637858 .968369 1.637858 .992279 1.637858C1.350934 1.637858 1.590037 1.327024 1.590037 1.052055S1.362889 .681445 1.183562 .681445C.992279 .681445 .573848 .824907 .573848 1.41071C.573848 2.020423 1.08792 2.438854 1.769365 2.438854C2.964882 2.438854 4.172354 1.338979 4.507098 .011955L5.678705-4.65056C5.69066-4.710336 5.71457-4.782067 5.71457-4.853798C5.71457-5.033126 5.571108-5.152677 5.391781-5.152677C5.284184-5.152677 5.033126-5.104857 4.937484-4.746202L4.052802-1.231382C3.993026-1.016189 3.993026-.992279 3.897385-.860772C3.658281-.526027 3.263761-.119552 2.689913-.119552C2.020423-.119552 1.960648-.777086 1.960648-1.099875C1.960648-1.78132 2.283437-2.701868 2.606227-3.56264C2.737733-3.90934 2.809465-4.076712 2.809465-4.315816C2.809465-4.817933 2.450809-5.272229 1.865006-5.272229C.765131-5.272229 .32279-3.53873 .32279-3.443088C.32279-3.395268 .37061-3.335492 .454296-3.335492C.561893-3.335492 .573848-3.383313 .621669-3.550685C.908593-4.554919 1.362889-5.033126 1.829141-5.033126C1.936737-5.033126 2.139975-5.033126 2.139975-4.638605C2.139975-4.327771 2.008468-3.981071 1.829141-3.526775C1.243337-1.960648 1.243337-1.566127 1.243337-1.279203C1.243337-.143462 2.056289 .119552 2.654047 .119552C3.000747 .119552 3.431133 .011955 3.849564-.430386L3.861519-.418431C3.682192 .286924 3.56264 .753176 3.144209 1.338979Z'/>
+</defs>
+<g id='eq1-page1'>
+<use x='160.643209' y='-3.343009' xlink:href='#eq1-g1-121'/>
+<use x='166.350912' y='-1.549746' xlink:href='#eq1-g0-102'/>
+<use x='171.297678' y='-1.549746' xlink:href='#eq1-g0-111'/>
+<use x='175.390728' y='-1.549746' xlink:href='#eq1-g0-109'/>
+<use x='186.700215' y='-3.343009' xlink:href='#eq1-g2-61'/>
+<use x='199.125696' y='-3.343009' xlink:href='#eq1-g1-30'/>
+<use x='206.053798' y='-3.343009' xlink:href='#eq1-g1-121'/>
+<use x='211.761501' y='-1.549746' xlink:href='#eq1-g0-114'/>
+<use x='215.818097' y='-1.549746' xlink:href='#eq1-g0-111'/>
+<use x='219.911146' y='-1.549746' xlink:href='#eq1-g0-109'/>
+</g>
+</svg></div><p>where <svg class="m-math" style="width: 0.722em; height: 1.107em; vertical-align: -0.243em;" viewBox="0 -8.302191 6.928102 10.626798">
+<title>
+$\phi$
+</title>
+<defs>
+<path id='eq2-g0-30' d='M5.140722-8.18929C5.140722-8.296887 5.057036-8.296887 5.021171-8.296887C4.913574-8.296887 4.901619-8.272976 4.853798-8.069738L4.208219-5.499377C4.172354-5.34396 4.160399-5.332005 4.148443-5.32005C4.136488-5.296139 4.052802-5.284184 4.028892-5.284184C2.068244-5.116812 .561893-3.502864 .561893-2.008468C.561893-.71731 1.554172 .071731 2.797509 .143462C2.701868 .514072 2.618182 .896638 2.52254 1.267248C2.355168 1.900872 2.259527 2.295392 2.259527 2.343213C2.259527 2.367123 2.259527 2.438854 2.379078 2.438854C2.414944 2.438854 2.462765 2.438854 2.486675 2.391034C2.510585 2.367123 2.582316 2.080199 2.630137 1.924782L3.072478 .143462C5.116812 .035866 6.670984-1.637858 6.670984-3.144209C6.670984-4.351681 5.762391-5.212453 4.435367-5.296139L5.140722-8.18929ZM4.363636-5.057036C5.152677-5.009215 5.941719-4.566874 5.941719-3.395268C5.941719-2.044334 4.99726-.251059 3.132254-.107597L4.363636-5.057036ZM2.857285-.095641C2.271482-.131507 1.291158-.442341 1.291158-1.75741C1.291158-3.263761 2.379078-4.937484 4.100623-5.045081L2.857285-.095641Z'/>
+</defs>
+<g id='eq2-page1'>
+<use x='0' y='0' xlink:href='#eq2-g0-30'/>
+</g>
+</svg> is the Jacobian matrix (for the time being, assume it constant).<br />Pressio offers a class for this abstraction as described below.</p><pre class="m-code"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">FomStateType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">JacobianMatrixType</span><span class="o">&gt;</span>
+<span class="k">auto</span> <span class="n">create_time_invariant_linear_decoder</span><span class="p">(</span><span class="n">JacobianMatrixType</span> <span class="o">&amp;&amp;</span> <span class="n">jac_matrix</span><span class="p">);</span></pre><p>The returned linear decoder object meets the <a href="./md_pages_components_rom_decoder.html">decoder concept</a>.</p><section id="autotoc_md80"><h3><a href="#autotoc_md80">Parameters</a></h3><ul><li><code>FomStateType</code>: data type of your FOM state</li><li><code>JacobianMatrixType</code>: data type your Jacobian matrix</li></ul></section><section id="autotoc_md81"><h3><a href="#autotoc_md81">Requirements</a></h3><ul><li><code>FomStateType</code>: must be copy constructible</li><li><code>JacobianMatrixType</code>: must be copy constructible and move constructible.</li></ul></section></section><section id="autotoc_md82"><h2><a href="#autotoc_md82">Example usage for supported types</a></h2><p>When using data types supported in <a href="./md_pages_components_ops.html">pressio ops</a>, an example usage is as follows:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/rom_decoder.hpp&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">namespace</span> <span class="n">prom</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="p">;</span>
+
+  <span class="c1">// assuming that:</span>
+  <span class="c1">// all proper initialization has been done</span>
+
+  <span class="k">using</span> <span class="n">fom_state_type</span> <span class="o">=</span> <span class="n">Tpetra</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">matrix_type</span>    <span class="o">=</span> <span class="n">Tpetra</span><span class="o">::</span><span class="n">MultiVector</span><span class="o">&lt;&gt;</span><span class="p">;</span>
+
+  <span class="n">matrix_type</span> <span class="n">matJ</span><span class="p">(</span><span class="cm">/* construct as needed */</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">decoder</span> <span class="o">=</span> <span class="n">prom</span><span class="o">::</span><span class="n">create_time_invariant_linear_decoder</span><span class="o">&lt;</span><span class="n">fom_state_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">matJ</span><span class="p">);</span>
+<span class="p">}</span></pre></section><section id="autotoc_md83"><h2><a href="#autotoc_md83">Example usage for custom types</a></h2><p>When using custom data types not supported in <a href="./md_pages_components_ops.html">pressio ops</a>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <code>double</code> as value type, <code>MyCustomVector&lt;double&gt;</code> for the FOM state, and <code>MyCustomMatrix&lt;double&gt;</code> for the Jacobian matrix. Then you would need to do something like this:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&quot;pressio/type_traits.hpp&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">pressio</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">pressiotests</span><span class="o">::</span><span class="n">MyCustomVector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;&gt;</span><span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="n">ScalarType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="nc">Traits</span><span class="o">&lt;</span><span class="n">pressiotests</span><span class="o">::</span><span class="n">MyCustomMatrix</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;&gt;</span><span class="p">{</span>
+  <span class="k">using</span> <span class="n">scalar_type</span> <span class="o">=</span> <span class="n">ScalarType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span> <span class="n">ops</span><span class="p">{</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">OperandType</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">product</span><span class="p">(</span><span class="n">pressio</span><span class="o">::</span><span class="n">nontranspose</span><span class="p">,</span>
+             <span class="n">ScalarType</span> <span class="n">alpha</span><span class="p">,</span>
+             <span class="k">const</span> <span class="n">pressiotests</span><span class="o">::</span><span class="n">MyCustomMatrix</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">A</span><span class="p">,</span>
+             <span class="k">const</span> <span class="n">OperandType</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span>
+             <span class="n">ScalarType</span> <span class="n">beta</span><span class="p">,</span>
+             <span class="n">pressiotests</span><span class="o">::</span><span class="n">MyCustomVector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">z</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// z = beta*z + alpha * A * x</span>
+  <span class="c1">// you need to compute a standard gemv, but all you know about x</span>
+  <span class="c1">// is that its i-th element can be retrieved as x(i)</span>
+<span class="p">}</span>
+
+<span class="p">}}</span><span class="c1">//end namespace pressio::ops</span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;pressio/rom_decoder.hpp&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">namespace</span> <span class="n">prom</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">rom</span><span class="p">;</span>
+
+  <span class="c1">// assuming that:</span>
+  <span class="c1">// all proper initialization has been done</span>
+
+  <span class="k">using</span> <span class="n">fom_state_t</span> <span class="o">=</span> <span class="n">MyCustomVector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">matrix_t</span>    <span class="o">=</span> <span class="n">MyCustomMatrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+
+  <span class="n">matrix_t</span> <span class="nf">matJ</span><span class="p">(</span><span class="cm">/* construct as needed */</span><span class="p">);</span>
+  <span class="k">auto</span> <span class="n">decoder</span> <span class="o">=</span> <span class="n">prom</span><span class="o">::</span><span class="n">create_time_invariant_linear_decoder</span><span class="o">&lt;</span><span class="n">fom_state_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">matJ</span><span class="p">);</span>
+<span class="p">}</span></pre></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

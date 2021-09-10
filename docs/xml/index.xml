@@ -1,14 +1,76 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
+  <compound refid="expressions_8md" kind="file"><name>expressions.md</name>
+  </compound>
+  <compound refid="linsolvers_8md" kind="file"><name>linsolvers.md</name>
+  </compound>
+  <compound refid="mpl_8md" kind="file"><name>mpl.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__general_8md" kind="file"><name>nonlinsolvers_general.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__gn_8md" kind="file"><name>nonlinsolvers_gn.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__irls_8md" kind="file"><name>nonlinsolvers_irls.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__lm_8md" kind="file"><name>nonlinsolvers_lm.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__nr_8md" kind="file"><name>nonlinsolvers_nr.md</name>
+  </compound>
+  <compound refid="nonlinsolvers__system__api_8md" kind="file"><name>nonlinsolvers_system_api.md</name>
+  </compound>
+  <compound refid="ode__advance_8md" kind="file"><name>ode_advance.md</name>
+  </compound>
+  <compound refid="ode__steppers__explicit_8md" kind="file"><name>ode_steppers_explicit.md</name>
+  </compound>
+  <compound refid="ode__steppers__implicit_8md" kind="file"><name>ode_steppers_implicit.md</name>
+  </compound>
+  <compound refid="ops_8md" kind="file"><name>ops.md</name>
+  </compound>
+  <compound refid="qr_01copy_8md" kind="file"><name>qr copy.md</name>
+  </compound>
+  <compound refid="qr_8md" kind="file"><name>qr.md</name>
+  </compound>
+  <compound refid="rom__decoder_8md" kind="file"><name>rom_decoder.md</name>
+  </compound>
+  <compound refid="rom__decoder__linear_8md" kind="file"><name>rom_decoder_linear.md</name>
+  </compound>
+  <compound refid="rom__fom__apis_8md" kind="file"><name>rom_fom_apis.md</name>
+  </compound>
+  <compound refid="rom__galerkin__default_8md" kind="file"><name>rom_galerkin_default.md</name>
+  </compound>
+  <compound refid="rom__galerkin__general_8md" kind="file"><name>rom_galerkin_general.md</name>
+  </compound>
+  <compound refid="rom__galerkin__hypred_8md" kind="file"><name>rom_galerkin_hypred.md</name>
+  </compound>
+  <compound refid="rom__galerkin__masked_8md" kind="file"><name>rom_galerkin_masked.md</name>
+  </compound>
+  <compound refid="rom__general_8md" kind="file"><name>rom_general.md</name>
+  </compound>
+  <compound refid="rom__hyperreduction_8md" kind="file"><name>rom_hyperreduction.md</name>
+  </compound>
+  <compound refid="rom__lspg__default_8md" kind="file"><name>rom_lspg_default.md</name>
+  </compound>
+  <compound refid="rom__lspg__general_8md" kind="file"><name>rom_lspg_general.md</name>
+  </compound>
+  <compound refid="rom__lspg__hypred_8md" kind="file"><name>rom_lspg_hypred.md</name>
+  </compound>
+  <compound refid="rom__lspg__masked_8md" kind="file"><name>rom_lspg_masked.md</name>
+  </compound>
+  <compound refid="rom__wls_8md" kind="file"><name>rom_wls.md</name>
+  </compound>
+  <compound refid="type__traits_8md" kind="file"><name>type_traits.md</name>
+  </compound>
+  <compound refid="utils_8md" kind="file"><name>utils.md</name>
+  </compound>
+  <compound refid="installation_8md" kind="file"><name>installation.md</name>
+  </compound>
+  <compound refid="introduction_8md" kind="file"><name>introduction.md</name>
+  </compound>
+  <compound refid="main_8md" kind="file"><name>main.md</name>
+  </compound>
   <compound refid="adapter__api_8md" kind="file"><name>adapter_api.md</name>
   </compound>
-  <compound refid="adapting__app_8md" kind="file"><name>adapting_app.md</name>
-  </compound>
-  <compound refid="datatypes_8md" kind="file"><name>datatypes.md</name>
-  </compound>
   <compound refid="decoder_8md" kind="file"><name>decoder.md</name>
-  </compound>
-  <compound refid="densenature_8md" kind="file"><name>densenature.md</name>
   </compound>
   <compound refid="custom__ops_8md" kind="file"><name>custom_ops.md</name>
   </compound>
@@ -22,20 +84,6 @@
   </compound>
   <compound refid="packages_8md" kind="file"><name>packages.md</name>
   </compound>
-  <compound refid="pressio__app_8md" kind="file"><name>pressio_app.md</name>
-  </compound>
-  <compound refid="hyperreduction_8md" kind="file"><name>hyperreduction.md</name>
-  </compound>
-  <compound refid="hyperred__eigen__example_8md" kind="file"><name>hyperred_eigen_example.md</name>
-  </compound>
-  <compound refid="hyperred__how__to__enable_8md" kind="file"><name>hyperred_how_to_enable.md</name>
-  </compound>
-  <compound refid="hyperred__tpetra__example_8md" kind="file"><name>hyperred_tpetra_example.md</name>
-  </compound>
-  <compound refid="main_8md" kind="file"><name>main.md</name>
-  </compound>
-  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
-  </compound>
   <compound refid="various_8md" kind="file"><name>various.md</name>
   </compound>
   <compound refid="formulation__galerkin_8md" kind="file"><name>formulation_galerkin.md</name>
@@ -46,63 +94,117 @@
   </compound>
   <compound refid="license_8md" kind="file"><name>license.md</name>
   </compound>
-  <compound refid="md_pages_coreconcepts_adapter_api" kind="page"><name>md_pages_coreconcepts_adapter_api</name>
+  <compound refid="tutorials_8md" kind="file"><name>tutorials.md</name>
   </compound>
-  <compound refid="md_pages_coreconcepts_adapting_app" kind="page"><name>md_pages_coreconcepts_adapting_app</name>
+  <compound refid="md_pages_components_expressions" kind="page"><name>md_pages_components_expressions</name>
   </compound>
-  <compound refid="md_pages_coreconcepts_datatypes" kind="page"><name>md_pages_coreconcepts_datatypes</name>
+  <compound refid="md_pages_components_linsolvers" kind="page"><name>md_pages_components_linsolvers</name>
   </compound>
-  <compound refid="md_pages_coreconcepts_decoder" kind="page"><name>md_pages_coreconcepts_decoder</name>
+  <compound refid="md_pages_components_mpl" kind="page"><name>md_pages_components_mpl</name>
   </compound>
-  <compound refid="md_pages_coreconcepts_densenature" kind="page"><name>md_pages_coreconcepts_densenature</name>
+  <compound refid="md_pages_components_nonlinsolvers_general" kind="page"><name>md_pages_components_nonlinsolvers_general</name>
   </compound>
-  <compound refid="md_pages_custom_ops_default_gal_exp" kind="page"><name>md_pages_custom_ops_default_gal_exp</name>
+  <compound refid="md_pages_components_nonlinsolvers_gn" kind="page"><name>md_pages_components_nonlinsolvers_gn</name>
   </compound>
-  <compound refid="md_pages_custom_ops" kind="page"><name>md_pages_custom_ops</name>
+  <compound refid="md_pages_components_nonlinsolvers_irls" kind="page"><name>md_pages_components_nonlinsolvers_irls</name>
   </compound>
-  <compound refid="md_pages_examples_example1" kind="page"><name>md_pages_examples_example1</name>
+  <compound refid="md_pages_components_nonlinsolvers_lm" kind="page"><name>md_pages_components_nonlinsolvers_lm</name>
   </compound>
-  <compound refid="md_pages_getstarted_build_and_install" kind="page"><name>md_pages_getstarted_build_and_install</name>
+  <compound refid="md_pages_components_nonlinsolvers_nr" kind="page"><name>md_pages_components_nonlinsolvers_nr</name>
   </compound>
-  <compound refid="md_pages_getstarted_build_tests_eigen" kind="page"><name>md_pages_getstarted_build_tests_eigen</name>
+  <compound refid="md_pages_components_nonlinsolvers_system_api" kind="page"><name>md_pages_components_nonlinsolvers_system_api</name>
   </compound>
-  <compound refid="md_pages_getstarted_packages" kind="page"><name>md_pages_getstarted_packages</name>
+  <compound refid="md_pages_components_ode_advance" kind="page"><name>md_pages_components_ode_advance</name>
   </compound>
-  <compound refid="md_pages_getstarted_pressio_app" kind="page"><name>md_pages_getstarted_pressio_app</name>
+  <compound refid="md_pages_components_ode_steppers_explicit" kind="page"><name>md_pages_components_ode_steppers_explicit</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_eigen_example" kind="page"><name>md_pages_hyperreduction_hyperred_eigen_example</name>
+  <compound refid="md_pages_components_ode_steppers_implicit" kind="page"><name>md_pages_components_ode_steppers_implicit</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_how_to_enable" kind="page"><name>md_pages_hyperreduction_hyperred_how_to_enable</name>
+  <compound refid="md_pages_components_ops" kind="page"><name>md_pages_components_ops</name>
   </compound>
-  <compound refid="md_pages_hyperreduction_hyperred_tpetra_example" kind="page"><name>md_pages_hyperreduction_hyperred_tpetra_example</name>
+  <compound refid="md_pages_components_qr_copy" kind="page"><name>md_pages_components_qr_copy</name>
   </compound>
-  <compound refid="md_pages_hyperreduction" kind="page"><name>md_pages_hyperreduction</name>
+  <compound refid="md_pages_components_qr" kind="page"><name>md_pages_components_qr</name>
+  </compound>
+  <compound refid="md_pages_components_rom_decoder" kind="page"><name>md_pages_components_rom_decoder</name>
+  </compound>
+  <compound refid="md_pages_components_rom_decoder_linear" kind="page"><name>md_pages_components_rom_decoder_linear</name>
+  </compound>
+  <compound refid="md_pages_components_rom_fom_apis" kind="page"><name>md_pages_components_rom_fom_apis</name>
+  </compound>
+  <compound refid="md_pages_components_rom_galerkin_default" kind="page"><name>md_pages_components_rom_galerkin_default</name>
+  </compound>
+  <compound refid="md_pages_components_rom_galerkin_general" kind="page"><name>md_pages_components_rom_galerkin_general</name>
+  </compound>
+  <compound refid="md_pages_components_rom_galerkin_hypred" kind="page"><name>md_pages_components_rom_galerkin_hypred</name>
+  </compound>
+  <compound refid="md_pages_components_rom_galerkin_masked" kind="page"><name>md_pages_components_rom_galerkin_masked</name>
+  </compound>
+  <compound refid="md_pages_components_rom_general" kind="page"><name>md_pages_components_rom_general</name>
+  </compound>
+  <compound refid="md_pages_components_rom_hyperreduction" kind="page"><name>md_pages_components_rom_hyperreduction</name>
+  </compound>
+  <compound refid="md_pages_components_rom_lspg_default" kind="page"><name>md_pages_components_rom_lspg_default</name>
+  </compound>
+  <compound refid="md_pages_components_rom_lspg_general" kind="page"><name>md_pages_components_rom_lspg_general</name>
+  </compound>
+  <compound refid="md_pages_components_rom_lspg_hypred" kind="page"><name>md_pages_components_rom_lspg_hypred</name>
+  </compound>
+  <compound refid="md_pages_components_rom_lspg_masked" kind="page"><name>md_pages_components_rom_lspg_masked</name>
+  </compound>
+  <compound refid="md_pages_components_rom_wls" kind="page"><name>md_pages_components_rom_wls</name>
+  </compound>
+  <compound refid="md_pages_components_type_traits" kind="page"><name>md_pages_components_type_traits</name>
+  </compound>
+  <compound refid="md_pages_components_utils" kind="page"><name>md_pages_components_utils</name>
+  </compound>
+  <compound refid="md_pages_installation" kind="page"><name>md_pages_installation</name>
+  </compound>
+  <compound refid="md_pages_introduction" kind="page"><name>md_pages_introduction</name>
+  </compound>
+  <compound refid="md_pages_old_coreconcepts_adapter_api" kind="page"><name>md_pages_old_coreconcepts_adapter_api</name>
+  </compound>
+  <compound refid="md_pages_old_coreconcepts_decoder" kind="page"><name>md_pages_old_coreconcepts_decoder</name>
+  </compound>
+  <compound refid="md_pages_old_custom_ops_default_gal_exp" kind="page"><name>md_pages_old_custom_ops_default_gal_exp</name>
+  </compound>
+  <compound refid="md_pages_old_custom_ops" kind="page"><name>md_pages_old_custom_ops</name>
+  </compound>
+  <compound refid="md_pages_old_examples_example1" kind="page"><name>md_pages_old_examples_example1</name>
+  </compound>
+  <compound refid="md_pages_old_getstarted_build_and_install" kind="page"><name>md_pages_old_getstarted_build_and_install</name>
+  </compound>
+  <compound refid="md_pages_old_getstarted_build_tests_eigen" kind="page"><name>md_pages_old_getstarted_build_tests_eigen</name>
+  </compound>
+  <compound refid="md_pages_old_getstarted_packages" kind="page"><name>md_pages_old_getstarted_packages</name>
+  </compound>
+  <compound refid="md_pages_old_various_formulation_galerkin" kind="page"><name>md_pages_old_various_formulation_galerkin</name>
+  </compound>
+  <compound refid="md_pages_old_various_formulation_lspg" kind="page"><name>md_pages_old_various_formulation_lspg</name>
+  </compound>
+  <compound refid="md_pages_old_various_formulation_wls" kind="page"><name>md_pages_old_various_formulation_wls</name>
+  </compound>
+  <compound refid="md_pages_old_various_license" kind="page"><name>md_pages_old_various_license</name>
+  </compound>
+  <compound refid="md_pages_old_various" kind="page"><name>md_pages_old_various</name>
   </compound>
   <compound refid="md_pages_tutorials" kind="page"><name>md_pages_tutorials</name>
   </compound>
-  <compound refid="md_pages_various_formulation_galerkin" kind="page"><name>md_pages_various_formulation_galerkin</name>
+  <compound refid="dir_4af40c8677da60eb4c6f7c14f8103d72" kind="dir"><name>pages/components</name>
   </compound>
-  <compound refid="md_pages_various_formulation_lspg" kind="page"><name>md_pages_various_formulation_lspg</name>
+  <compound refid="dir_b6a35cfb91b6b205b94921eefd97b199" kind="dir"><name>pages/old/coreconcepts</name>
   </compound>
-  <compound refid="md_pages_various_formulation_wls" kind="page"><name>md_pages_various_formulation_wls</name>
+  <compound refid="dir_fda7fd0d327460b03eafc052fa3160d7" kind="dir"><name>pages/old/custom_ops</name>
   </compound>
-  <compound refid="md_pages_various_license" kind="page"><name>md_pages_various_license</name>
+  <compound refid="dir_a9099d8738ee5963bcb1a50b578cdb0a" kind="dir"><name>pages/old/examples</name>
   </compound>
-  <compound refid="md_pages_various" kind="page"><name>md_pages_various</name>
+  <compound refid="dir_060de963bcdf381474461f7418e3d2ab" kind="dir"><name>pages/old/getstarted</name>
   </compound>
-  <compound refid="dir_4717976f96b05f9f4cdaf1b62094876b" kind="dir"><name>pages/coreconcepts</name>
-  </compound>
-  <compound refid="dir_4e0155dca2ee8148a495d63774f1631d" kind="dir"><name>pages/custom_ops</name>
-  </compound>
-  <compound refid="dir_c8b5f49f42f70cbb2789196c6be03b08" kind="dir"><name>pages/examples</name>
-  </compound>
-  <compound refid="dir_72e76ac6147c72c291306ebceacd125b" kind="dir"><name>pages/getstarted</name>
-  </compound>
-  <compound refid="dir_c47e5d700743d14fcf5d1e609c4d899d" kind="dir"><name>pages/hyperreduction</name>
+  <compound refid="dir_892f060392cd1136ee591a13ca8e58c8" kind="dir"><name>pages/old</name>
   </compound>
   <compound refid="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir"><name>pages</name>
   </compound>
-  <compound refid="dir_641e6e2d6329e01ae5e5715108e316c1" kind="dir"><name>pages/various</name>
+  <compound refid="dir_71c2f6f30531dfb5877fcb2316615e4e" kind="dir"><name>pages/old/various</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>

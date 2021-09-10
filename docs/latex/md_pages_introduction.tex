@@ -1,0 +1,14 @@
+bla bla
+
+
+\begin{DoxyItemize}
+\item ROMs are dense
+\item pressio was designed with that in mind
+\end{DoxyItemize}\hypertarget{md_pages_introduction_autotoc_md137}{}\doxysection{In a nutshell}\label{md_pages_introduction_autotoc_md137}
+Pressio can be applied to any dynamical system expressible in a {\itshape continuous-\/time} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; ...) \] and/or in a {\itshape discrete-\/time} form \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \]
+
+Here, $y$ is the full-\/order model (FOM) state, $f$ the FOM velocity, $t$ is time, and $R$ is the residual.
+
+We leverage this expressive mathematical framework as a pivotal design choice to enable a minimal application programming interface (API) that is natural to dynamical systems\+: you choose the formulation more convenient to you, and interface your application to Pressio by creating a corresponding {\itshape adapter class} to expose the operators needed for the chosen formulation. In general, you don\textquotesingle{}t need to support both\+: there are advantages and disadvantages for both, and sometimes the choice is dictated directly by your native application (for example, in some cases it might be easier to directly expose the residual). Read \href{./md_pages_coreconcepts_adapter_api.html}{\texttt{ the doc page}} to learn more about the adapter classes and see code templates.
+
+ 

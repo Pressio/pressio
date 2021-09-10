@@ -1,0 +1,164 @@
+
+
+\begin{DoxyParagraph}{}
+An adapter class allows a FOM application to expose data via an API conforming to Pressio requirements.
+\end{DoxyParagraph}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md147}{}\doxysection{Continuous-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md147}
+This API is intended for any system expressible in {\itshape time-\/continuous} form as \[ \frac{d \boldsymbol{y}}{dt} = \boldsymbol{f}(\boldsymbol{y},t; \boldsymbol{\mu}), \quad \boldsymbol{y}(0;\boldsymbol{\mu}) = \boldsymbol{y}(\boldsymbol{\mu}), \] where $y$ is the full-\/order model (FOM) state, $f$ the FOM velocity, and $t$ is time. todo finish.
+
+We envision two scenarios\+:
+\begin{DoxyItemize}
+\item A\+: you are only able to expose the right-\/hand-\/side (or velocity) of your FOM application
+\item B\+: you expose the right-\/hand-\/side of your FOM application as well as the action of the velocity\textquotesingle{}s Jacobian on some operand
+\end{DoxyItemize}\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md148}{}\doxysubsection{A\+: velocity only}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md148}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterA}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type =}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the AdapterA?}
+This version of the adapter can be used for doing Galerkin ROMs with explicit time stepping.
+\end{DoxyParagraph}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md149}{}\doxysubsection{B\+: velocity and Jacobian action}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md149}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }AdapterB}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type =}
+\DoxyCodeLine{  \textcolor{keyword}{using} velocity\_type =}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  velocity\_type createVelocity() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} velocity(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                velocity\_type \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// operand\_type is the data (matrix) type you use}}
+\DoxyCodeLine{  \textcolor{comment}{// to represent the decoder's jacobian}}
+\DoxyCodeLine{  operand\_t createApplyJacobianResult(\textcolor{keyword}{const} operand\_t \&) \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// computes: A = Jac B}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyJacobian(\textcolor{keyword}{const} state\_type \&,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                     \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                     operand\_t \& A) \textcolor{keyword}{const};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the AdapterB?}
+This version of the adapter can be used for doing Galerkin ROMs with explicit and implicit time stepping, LSPG and WLS (note that LSPG and WLS only make sense for implicit time integration).
+\end{DoxyParagraph}
+\hypertarget{md_pages_old_coreconcepts_adapter_api_autotoc_md150}{}\doxysection{Discrete-\/time API}\label{md_pages_old_coreconcepts_adapter_api_autotoc_md150}
+This API is intended for any system expressible in a discrete-\/time form as \[ \boldsymbol{R}(\boldsymbol{y}, \boldsymbol{y_{n-1}}, ..., t_n, dt_n; ...) = \boldsymbol{0} \] where $y$ is the full-\/order model (FOM) state, $t$ is time, and $R$ is the residual. todo finish.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  \textcolor{keyword}{using} scalar\_type = \textcolor{comment}{//..;}}
+\DoxyCodeLine{  \textcolor{keyword}{using} state\_type  = \textcolor{comment}{//...;}}
+\DoxyCodeLine{  \textcolor{keyword}{using} discrete\_time\_residual\_type = \textcolor{comment}{//...;}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  discrete\_time\_residual\_type createDiscreteTimeResidual() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// operand\_type should be the data (matrix) type you used to store the basis.}}
+\DoxyCodeLine{  operand\_t createApplyDiscreteTimeJacobianResult(\textcolor{keyword}{const} operand\_t \&)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// let A =  discreteTimeJac * B}}
+\DoxyCodeLine{    operand\_t A(\textcolor{comment}{/* construct A */});}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} A;}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} discreteTimeResidual(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                            discrete\_time\_residual\_type \& R,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_n)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n}}
+\DoxyCodeLine{    \textcolor{comment}{// compute R}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} discreteTimeResidual(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                            discrete\_time\_residual\_type \& R,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_n,}
+\DoxyCodeLine{                            \textcolor{keyword}{const} state\_type \& y\_nm1)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n, y\_n-\/1}}
+\DoxyCodeLine{    \textcolor{comment}{// compute R}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                                 operand\_t \& A,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_n)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n}}
+\DoxyCodeLine{    \textcolor{comment}{// compute A = dR/dy\_n+1 B}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} step\_t, \textcolor{keyword}{typename} ... Args>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyDiscreteTimeJacobian(\textcolor{keyword}{const} step\_t \& step,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& time,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} scalar\_type \& dt,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} operand\_t \& B,}
+\DoxyCodeLine{                                 operand\_t \& A,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_np1,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_n,}
+\DoxyCodeLine{                                 \textcolor{keyword}{const} state\_type \& y\_nm1)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// given y\_n+1, y\_n, y\_n-\/1}}
+\DoxyCodeLine{    \textcolor{comment}{// compute A = dR/dy\_n+1 B}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{Where can you use the discrete-\/time API?}
+This version of the adapter can be {\bfseries{only}} used for doing Galerkin and LSPG ROMs with {\itshape implicit} time stepping.
+\end{DoxyParagraph}
+
+
+\begin{DoxyParagraph}{Should one prefer the continuous-\/time or discrete-\/time API?}
+In general, we suggest users to always prefer the continuous-\/time API because it is more general. 
+\end{DoxyParagraph}

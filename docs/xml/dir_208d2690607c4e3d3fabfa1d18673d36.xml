@@ -2,12 +2,8 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="dir_208d2690607c4e3d3fabfa1d18673d36" kind="dir">
     <compoundname>pages</compoundname>
-    <innerdir refid="dir_4717976f96b05f9f4cdaf1b62094876b">pages/coreconcepts</innerdir>
-    <innerdir refid="dir_4e0155dca2ee8148a495d63774f1631d">pages/custom_ops</innerdir>
-    <innerdir refid="dir_c8b5f49f42f70cbb2789196c6be03b08">pages/examples</innerdir>
-    <innerdir refid="dir_72e76ac6147c72c291306ebceacd125b">pages/getstarted</innerdir>
-    <innerdir refid="dir_c47e5d700743d14fcf5d1e609c4d899d">pages/hyperreduction</innerdir>
-    <innerdir refid="dir_641e6e2d6329e01ae5e5715108e316c1">pages/various</innerdir>
+    <innerdir refid="dir_4af40c8677da60eb4c6f7c14f8103d72">pages/components</innerdir>
+    <innerdir refid="dir_892f060392cd1136ee591a13ca8e58c8">pages/old</innerdir>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

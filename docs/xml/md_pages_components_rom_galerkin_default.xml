@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="md_pages_components_rom_galerkin_default" kind="page">
+    <compoundname>md_pages_components_rom_galerkin_default</compoundname>
+    <title>rom: Galerkin: default problem</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom</computeroutput>, <computeroutput>pressio::rom::galerkin</computeroutput>.</para>
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md96">
+<title>Overview</title>
+<para>At a high level, using a Galerkin problem involces three steps:<orderedlist>
+<listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;default Galerkin problem&quot;</para>
+</listitem><listitem><para><emphasis>extract</emphasis>: you extract the underlying stepper object owned by the problem</para>
+</listitem><listitem><para><emphasis>solve</emphasis>: you use the stepper to solve in time the Galerkin problem</para>
+</listitem></orderedlist>
+</para>
+<para>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
+</sect1>
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
+<title>1. Creating a problem instance</title>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepperTag,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomSystemType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DecoderType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RomStateType,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FomReferenceStateType</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_default_problem(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomSystemType<sp/>&amp;<sp/>fomSysObj,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DecoderType<sp/>&amp;<sp/>decoder,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RomStateType<sp/>&amp;<sp/>stateIn,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRef);</highlight></codeline>
+</programlisting></para>
+<para>where <computeroutput>StepperTag</computeroutput> is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.</para>
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
+<title>Parameters and Requirements</title>
+<para><itemizedlist>
+<listitem><para><computeroutput>StepperTag</computeroutput>:<itemizedlist>
+<listitem><para>tag type to specify the time scheme</para>
+</listitem><listitem><para>must be one of the explicit or implicit tag types supported in <computeroutput>pressio::ode</computeroutput></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>FomSystemType</computeroutput>:<itemizedlist>
+<listitem><para>your adapter class type specifying the FOM problem</para>
+</listitem><listitem><para>must satisfy one of the APIs suitable for Galerkin, see <ulink url="./md_pages_components_rom_fom_apis.html">API list</ulink></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>DecoderType</computeroutput>:<itemizedlist>
+<listitem><para>decoder class type</para>
+</listitem><listitem><para>must satify the requirements listed <ulink url="md_pages_components_rom_decoder.html">here</ulink></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>RomStateType</computeroutput>:<itemizedlist>
+<listitem><para>ROM state type</para>
+</listitem><listitem><para>currently, it must be either an Eigen vector or a Kokkos 1D view</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para><computeroutput>FomReferenceStateType</computeroutput>:<itemizedlist>
+<listitem><para>your FOM reference state that is used when reconstructing the FOM state</para>
+</listitem><listitem><para>must be copy-constructible and the following must be true:<linebreak/>
+ <programlisting filename=".cpp"><codeline><highlight class="normal">std::is_same&lt;FomReferenceStateType,<sp/>typename<sp/>DecoderType::fom_state_type&gt;::value<sp/>==<sp/></highlight><highlight class="keyword">true</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md99">
+<title>Problem class API</title>
+<para>A problem meets the following API:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">DefaultGalerkinProblem</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>traits<sp/>=<sp/></highlight><highlight class="comment">/*<sp/>nested<sp/>typedef<sp/>with<sp/>trait<sp/>class<sp/>*/</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>the<sp/>underlying<sp/>stepper<sp/>to<sp/>use<sp/>to<sp/>solve<sp/>the<sp/>problem</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>const<sp/>ref<sp/>to<sp/>the<sp/>object<sp/>knowing<sp/>how<sp/>to<sp/>reconstruct<sp/>a<sp/>FOM<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>fomStateReconstructor()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+<para>The <computeroutput>stepper</computeroutput> method is, practically, what you would use to retrieve the stepper and then use it to solve the problem. The stepper method returns a non-const reference to an <ulink url="md_pages_components_ode_steppers_explicit.html">explicit stepper</ulink> if, when you created the problem, you used an explicit <computeroutput>StepperTag</computeroutput>, or an <ulink url="md_pages_components_ode_steppers_implicit.html">implicit stepper</ulink> if you use an implicit <computeroutput>StepperTag</computeroutput>. Once you retrieve the stepper, you can then use it like you would with any other stepper object (more on this below).</para>
+<para>As almost every important type in pressio, a Galerkin problem too has traits:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/>=<sp/>create_default_problem(...);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>traits<sp/>=<sp/>pressio::Traits&lt;decltype(problem)&gt;;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>explicit<sp/>case,<sp/>one<sp/>can<sp/>access<sp/>the<sp/>following<sp/>traits:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::fom_system_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::scalar_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::decoder_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::decoder_jac_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_state_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_velocity_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>for<sp/>the<sp/>implicit<sp/>case<sp/>one<sp/>has:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::fom_system_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::scalar_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::decoder_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::decoder_jac_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_state_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_residual_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::galerkin_jacobian_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>traits::stepper_type;</highlight></codeline>
+</programlisting></para>
+</sect2>
+</sect1>
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md100">
+<title>2.,3. Extract and Solve</title>
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md101">
+<title>Explicit Case</title>
+<para>An example usage for explicit stepper is as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ode_tag<sp/><sp/>=<sp/>pode::ForwardEuler;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/><sp/><sp/>=<sp/>pgal::create_default_problem&lt;ode_tag&gt;(fom_system,<sp/>decoder,<sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md102">
+<title>Implicit Case</title>
+<para>An example usage for implicit stepper is as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>we<sp/>assume<sp/>the<sp/>rom_state,<sp/>decoder,<sp/>fom_system,<sp/>fom_reference_state<sp/>already<sp/>exist</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pgal<sp/>=<sp/>pressio::rom::galerkin;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ode_tag<sp/><sp/>=<sp/>pode::ForwardEuler;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>problem<sp/><sp/><sp/>=<sp/>pgal::create_default_problem&lt;ode_tag&gt;(fom_system,<sp/>decoder,<sp/>rom_state,<sp/>fom_reference_state);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>stepper<sp/>=<sp/>problem.stepper();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">!!!!!!!!<sp/>fill<sp/>!!!!!!!!!</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">pressio::ode::advance_n_steps_and_observe(stepper,<sp/>rom_state,<sp/></highlight><highlight class="comment">/*<sp/>any<sp/>other<sp/>args<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+</sect2>
+</sect1>
+    </detaileddescription>
+    <location file="pages/components/rom_galerkin_default.md"/>
+  </compounddef>
+</doxygen>
