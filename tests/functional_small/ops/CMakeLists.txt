@@ -62,7 +62,6 @@ if(PRESSIO_ENABLE_TPL_TRILINOS)
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_tpetra_level3.cc)
  add_utest_mpi(${TESTING_LEVEL}_ops_level3_tpetra "${SRC1}" gTestMain_tpetra 3)
 
-
  # EPETRA
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/ops_epetra_vector.cc)
  add_utest_mpi(${TESTING_LEVEL}_ops_vector_epetra "${SRC1}" gTestMain_mpi 3)

@@ -15,16 +15,16 @@ struct HypRedUpdaterEigen
   HypRedUpdaterEigen(std::vector<int> rows) : rows_(rows){}
 
   // a = alpha*a + beta*b (a,b potentially non with same distribution)
-  void update_sample_mesh_operand_with_stencil_mesh_one(vec_operand_type & a, ScalarType alpha,
-							const vec_operand_type & b, ScalarType beta) const
+  void updateSampleMeshOperandWithStencilMeshOne(vec_operand_type & a, ScalarType alpha,
+						 const vec_operand_type & b, ScalarType beta) const
   {
     for (std::size_t i=0; i<rows_.size(); ++i){
       a(i) = alpha*a(i) + beta*b(rows_[i]);
     }
   }
 
-  void update_sample_mesh_operand_with_stencil_mesh_one(mat_operand_type & a, ScalarType alpha,
-							const mat_operand_type & b, ScalarType beta) const
+  void updateSampleMeshOperandWithStencilMeshOne(mat_operand_type & a, ScalarType alpha,
+						 const mat_operand_type & b, ScalarType beta) const
   {
     for (std::size_t i=0; i<rows_.size(); ++i){
       for (int j=0; j<b.cols(); ++j){
@@ -44,7 +44,7 @@ struct HypRedUpdaterCustomType
   HypRedUpdaterCustomType(std::vector<int> rows) : rows_(rows){}
 
   // a = alpha*a + beta*b (a,b potentially non with same distribution)
-  void update_sample_mesh_operand_with_stencil_mesh_one(vec_operand_type & a, ScalarType alpha,
+  void updateSampleMeshOperandWithStencilMeshOne(vec_operand_type & a, ScalarType alpha,
                const vec_operand_type & b, ScalarType beta) const
   {
     for (std::size_t i=0; i<rows_.size(); ++i){
@@ -52,8 +52,8 @@ struct HypRedUpdaterCustomType
     }
   }
 
-  void update_sample_mesh_operand_with_stencil_mesh_one(mat_operand_type & a, ScalarType alpha,
-							const mat_operand_type & b, ScalarType beta) const
+  void updateSampleMeshOperandWithStencilMeshOne(mat_operand_type & a, ScalarType alpha,
+						 const mat_operand_type & b, ScalarType beta) const
   {
     for (std::size_t i=0; i<rows_.size(); ++i){
       for (std::size_t j=0; j<b.extent(1); ++j){

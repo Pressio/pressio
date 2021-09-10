@@ -5,6 +5,15 @@
 #include <gtest/gtest.h>
 #include "../../custom_data_types.hpp"
 
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#include <Tpetra_Map.hpp>
+#include <Tpetra_Vector.hpp>
+#include <Tpetra_MultiVector.hpp>
+#include <Tpetra_CrsMatrix.hpp>
+#include <Teuchos_CommHelpers.hpp>
+#include <Tpetra_Map_decl.hpp>
+#endif
+
 struct TrivialFomContTimeEigen
 {
   using scalar_type    = double;
@@ -219,5 +228,71 @@ struct TrivialFomDiscreteTimeCustomTypes
     }
   }
 };
+
+#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+struct TrivialFomVelocityAndJacobianTpetra
+{
+  using scalar_type       = double;
+  using state_type        = Tpetra::Vector<>;
+  using velocity_type     = state_type;
+
+  using tcomm = Teuchos::Comm<int>;
+  using map_t = Tpetra::Map<>;
+  using vec_t = Tpetra::Vector<>;
+  using ST = typename vec_t::scalar_type;
+  using LO = typename vec_t::local_ordinal_type;
+  using GO = typename vec_t::global_ordinal_type;
+  int N_ = {};
+  int rank_;
+  int numProc_;
+  Teuchos::RCP<const tcomm> comm_;
+  Teuchos::RCP<const map_t> contigMap_;
+
+  TrivialFomVelocityAndJacobianTpetra(int N): N_(N)
+  {
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+    comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
+    rank_ = comm_->getRank();
+    numProc_ = comm_->getSize();
+    contigMap_ = Teuchos::rcp(new map_t(N_, 0, comm_));
+  }
+
+  Teuchos::RCP<const tcomm> comm(){ return comm_; }
+  Teuchos::RCP<const map_t> map(){ return contigMap_; }
+
+  velocity_type createVelocity() const
+  {
+    vec_t result(contigMap_);
+    return result;
+  }
+
+  template<class OperandType>
+  OperandType createApplyJacobianResult(const OperandType & B) const
+  {
+    OperandType A(contigMap_, B.getNumVectors());
+    return A;
+  }
+
+  // computes: A = Jac B
+  template<class OperandType>
+  void applyJacobian(const state_type & state,
+                     const OperandType & B,
+                     const scalar_type & time,
+                     OperandType & A) const
+  {
+    auto tmp = pressio::ops::clone(B);
+    tmp.putScalar(time);
+
+    pressio::ops::deep_copy(A,B);
+    pressio::ops::update(A,1,tmp,1);
+  }
+
+  void velocity(const state_type & u, const scalar_type time, velocity_type & f) const
+  {
+    f.putScalar(time);
+    pressio::ops::update(f, 1, u, 1);
+  }
+};
+#endif
 
 #endif

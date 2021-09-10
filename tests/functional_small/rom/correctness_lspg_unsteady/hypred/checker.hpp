@@ -249,4 +249,85 @@ struct FakeNonLinSolver
   }
 };
 
+
+struct FakeNonLinSolverTpetra
+{
+  int call_count_ = 0;
+
+  FakeNonLinSolverTpetra(){}
+
+  template<class SystemType, class StateType>
+  void solve(const SystemType & system, StateType & romState)
+  {
+    ++call_count_;
+    auto R = system.createResidual();
+    auto J = system.createJacobian();
+    // EXPECT_TRUE((std::size_t)pressio::ops::extent(R,0)==(std::size_t)N_);
+    // EXPECT_TRUE((std::size_t)pressio::ops::extent(J,0)==(std::size_t)N_);
+    // EXPECT_TRUE((std::size_t)pressio::ops::extent(J,1)==(std::size_t)3);
+
+    //*******************************
+    //
+    // call_count == 1
+    //
+    //*******************************
+    if(call_count_==1)
+    {
+      //-----------------------
+      // do solver iterator 1
+      //-----------------------
+      {
+	system.residual(romState, R);
+	system.jacobian(romState, J);
+	//std::cout << "S " << call_count_ << " \n" << R << std::endl;
+	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
+
+	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+      }
+
+      //-----------------------
+      // do solver iterator 2
+      //-----------------------
+      {
+	system.residual(romState, R);
+	system.jacobian(romState, J);
+        //std::cout << "S " << call_count_ << " \n" << R << std::endl;
+	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
+	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+      }
+    }
+
+    //*******************************
+    //
+    // call_count == 2
+    //
+    //*******************************
+    if(call_count_==2)
+    {
+      //-----------------------
+      // do solver iterator 1
+      //-----------------------
+      {
+	system.residual(romState, R);
+	system.jacobian(romState, J);
+	//std::cout << "S " << call_count_ << " \n" << R << std::endl;
+	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
+	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+      }
+
+      //-----------------------
+      // do solver iterator 2
+      //-----------------------
+      {
+	system.residual(romState, R);
+	system.jacobian(romState, J);
+        //std::cout << "S " << call_count_ << " \n" << R << std::endl;
+	//std::cout << "S " << call_count_ << " \n" << J << std::endl;
+	for (int i=0; i<romState.size(); ++i){ romState(i) += 1.; }
+      }
+    }
+
+  }
+};
+
 #endif

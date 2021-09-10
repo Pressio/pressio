@@ -44,7 +44,7 @@ struct TrivialFomVelocityAndJacobianCustomTypes
   velocity_type createVelocity() const{ return velocity_type(N_); }
 
   template<class scalar_type>
-  pressiotests::MyCustomMatrix<scalar_type> 
+  pressiotests::MyCustomMatrix<scalar_type>
   createApplyJacobianResult(const pressiotests::MyCustomMatrix<scalar_type> & B) const
   {
     pressiotests::MyCustomMatrix<scalar_type> A(B.extent(0), B.extent(1));
@@ -79,24 +79,24 @@ struct TrivialFomDiscreteTimeCustomTypes
   using scalar_type = double;
   using state_type = ::pressiotests::MyCustomVector<scalar_type>;
   using discrete_time_residual_type = state_type;
-  using phi_type = pressiotests::MyCustomMatrix<scalar_type>; 
+  using phi_type = pressiotests::MyCustomMatrix<scalar_type>;
   int N_ = {};
 
   TrivialFomDiscreteTimeCustomTypes(int N) : N_(N){}
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+  discrete_time_residual_type createDiscreteTimeResidual() const{
     return discrete_time_residual_type(N_);
   }
 
-  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{
     return phi_type(N_, B.extent(1));
   }
 
   template<class StepCountType>
-  void discreteTimeResidual(StepCountType, 
-                              double time, 
-                              double dt, 
-                              discrete_time_residual_type & R, 
+  void discreteTimeResidual(StepCountType,
+                              double time,
+                              double dt,
+                              discrete_time_residual_type & R,
                               const state_type & y_np1,
                               const state_type & y_n) const
   {
@@ -111,10 +111,10 @@ struct TrivialFomDiscreteTimeCustomTypes
   }
 
   template<class StepCountType>
-  void applyDiscreteTimeJacobian(StepCountType, 
-                              double time, 
-                              double dt, 
-                              const phi_type & B, 
+  void applyDiscreteTimeJacobian(StepCountType,
+                              double time,
+                              double dt,
+                              const phi_type & B,
                               phi_type & A,
                               const state_type & y_np1,
                               const state_type & y_n) const
@@ -194,19 +194,19 @@ struct TrivialFomDiscreteTimeEigen
 
   TrivialFomDiscreteTimeEigen(int N) : N_(N){}
 
-  discrete_time_residual_type createDiscreteTimeResidual() const{ 
+  discrete_time_residual_type createDiscreteTimeResidual() const{
     return discrete_time_residual_type(N_);
   }
 
-  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{ 
+  phi_type createApplyDiscreteTimeJacobianResult(const phi_type & B) const{
     return phi_type(N_, B.cols());
   }
 
   template<class StepCountType>
-  void discreteTimeResidual(StepCountType, 
-                              double time, 
-                              double dt, 
-                              discrete_time_residual_type & R, 
+  void discreteTimeResidual(StepCountType,
+                              double time,
+                              double dt,
+                              discrete_time_residual_type & R,
                               const state_type & y_np1,
                               const state_type & y_n) const
   {
@@ -220,10 +220,10 @@ struct TrivialFomDiscreteTimeEigen
   }
 
   template<class StepCountType>
-  void applyDiscreteTimeJacobian(StepCountType, 
-                              double time, 
-                              double dt, 
-                              const phi_type & B, 
+  void applyDiscreteTimeJacobian(StepCountType,
+                              double time,
+                              double dt,
+                              const phi_type & B,
                               phi_type & A,
                               const state_type & y_np1,
                               const state_type & y_n) const
@@ -258,7 +258,7 @@ struct TrivialFomOnlyVelocityTpetra
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
-    numProc_ = comm_->getSize();   
+    numProc_ = comm_->getSize();
     contigMap_ = Teuchos::rcp(new map_t(N_, 0, comm_));
   }
 
@@ -266,9 +266,9 @@ struct TrivialFomOnlyVelocityTpetra
   Teuchos::RCP<const map_t> map(){ return contigMap_; }
 
   velocity_type createVelocity() const
-  {   
+  {
     vec_t result(contigMap_);
-    return result; 
+    return result;
   }
 
   void velocity(const state_type & u, const scalar_type time, velocity_type & f) const
@@ -301,7 +301,7 @@ struct TrivialFomVelocityAndJacobianTpetra
     MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
     comm_ = Teuchos::rcp (new Teuchos::MpiComm<int>(MPI_COMM_WORLD));
     rank_ = comm_->getRank();
-    numProc_ = comm_->getSize();   
+    numProc_ = comm_->getSize();
     contigMap_ = Teuchos::rcp(new map_t(N_, 0, comm_));
   }
 
@@ -309,9 +309,9 @@ struct TrivialFomVelocityAndJacobianTpetra
   Teuchos::RCP<const map_t> map(){ return contigMap_; }
 
   velocity_type createVelocity() const
-  {   
+  {
     vec_t result(contigMap_);
-    return result; 
+    return result;
   }
 
   template<class OperandType>

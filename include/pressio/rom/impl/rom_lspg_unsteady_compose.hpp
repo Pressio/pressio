@@ -166,14 +166,5 @@ using ComposeHypRedProblemContTime = ComposerContTime<8, Args...>;
 template<std::size_t n, class ...Args>
 using ComposeHypRedProblemDiscTime = ComposerDiscTime<1, n, Args...>;
 
-
-// #ifdef PRESSIO_ENABLE_TPL_TRILINOS
-// template<>
-// struct SelectHypRedUpdaterTrilinos
-// {
-// }
-// #endif
-
-
 }}}}
 #endif  // ROM_GALERKIN_IMPL_CONTINUOUS_TIME_API_ROM_COMPOSE_IMPL_HPP_

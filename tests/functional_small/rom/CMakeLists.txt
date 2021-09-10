@@ -15,7 +15,12 @@ add_subdirectory(correctness_lspg_unsteady)
 
 
 if(PRESSIO_ENABLE_TPL_TRILINOS)
- # TPETRA
  set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra.cc)
  add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra "${SRC1}" gTestMain_tpetra 3)
+
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_epetra.cc)
+ add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_epetra "${SRC1}" gTestMain_mpi 3)
+
+ set(SRC1 ${CMAKE_CURRENT_SOURCE_DIR}/hypred_updater_tpetra_block.cc)
+ add_utest_mpi(${TESTING_LEVEL}_rom_hypred_updater_trilinos_tpetra_block "${SRC1}" gTestMain_tpetra 3)
 endif()

@@ -129,19 +129,19 @@ public:
     if (name == ::pressio::ode::SteppersE::BDF1)
     {
       const auto cf = dt * ::pressio::ode::constants::bdf1<ScalarType>::c_f_;
-      hypredOperatorUpdater_.get().update_sample_mesh_operand_with_stencil_mesh_one(lspgJacobian, cf,
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
 								       decoderJacobian_.get(), one);
     }
     else if (name == ::pressio::ode::SteppersE::BDF2)
     {
       const auto cf = dt*::pressio::ode::constants::bdf2<ScalarType>::c_f_;
-      hypredOperatorUpdater_.get().update_sample_mesh_operand_with_stencil_mesh_one(lspgJacobian, cf,
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
 								       decoderJacobian_.get(), one);
     }
     else if (name == ::pressio::ode::SteppersE::CrankNicolson)
     {
       const auto cf = dt*::pressio::ode::constants::cranknicolson<ScalarType>::c_fnp1_;
-      hypredOperatorUpdater_.get().update_sample_mesh_operand_with_stencil_mesh_one(lspgJacobian, cf,
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
 								       decoderJacobian_.get(), one);
     }
   }

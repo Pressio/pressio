@@ -181,7 +181,7 @@ private:
 
       constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
       const auto cf = ::pressio::ode::constants::bdf1<ScalarType>::c_f_ * dt;
-      hypredOperatorUpdater_.get().update_sample_mesh_operand_with_stencil_mesh_one(lspgResidual, cf,
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgResidual, cf,
 								       fomStateHelperInstance_, one);
     }
 
@@ -211,7 +211,7 @@ private:
 			     fomStateAt_nm1, cnm1);
 
       constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
-      hypredOperatorUpdater_.get().update_sample_mesh_operand_with_stencil_mesh_one(lspgResidual, cf,
+      hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgResidual, cf,
 								       fomStateHelperInstance_, one);
     }
   }

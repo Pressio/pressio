@@ -1,9 +1,8 @@
 
 #include <gtest/gtest.h>
+#include <Tpetra_BlockVector.hpp>
+#include <Tpetra_BlockMultiVector.hpp>
 #include <Tpetra_Map.hpp>
-#include <Tpetra_Vector.hpp>
-#include <Tpetra_MultiVector.hpp>
-#include <Tpetra_CrsMatrix.hpp>
 #include <Teuchos_CommHelpers.hpp>
 #include <Tpetra_Map_decl.hpp>
 
@@ -13,7 +12,7 @@ TEST(rom_lspg, hypred_updater_vector)
 {
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
-  using vec_t = Tpetra::Vector<>;
+  using vec_t = Tpetra::BlockVector<>;
   using ST = typename vec_t::scalar_type;
   using LO = typename vec_t::local_ordinal_type;
   using GO = typename vec_t::global_ordinal_type;
@@ -96,45 +95,71 @@ TEST(rom_lspg, hypred_updater_vector)
     my_size_sample = 2;
   }
 
-  Teuchos::RCP<const map_t> stencil_map =
-    Teuchos::rcp(new map_t(-1, my_gids_stencil, my_size_stencil, 0, comm));
+  map_t stencil_map(-1, my_gids_stencil, my_size_stencil, 0, comm);
+  map_t sample_map(-1, my_gids_sample, my_size_sample, 0, comm);
 
-  Teuchos::RCP<const map_t> sample_map =
-    Teuchos::rcp(new map_t(-1, my_gids_sample, my_size_sample, 0, comm));
+  int blocksize = 3;
+  ST rowview[blocksize];
 
-  const LO num_lel_stencil = stencil_map->getNodeNumElements();
-  vec_t vec_stencil(stencil_map);
-  auto vh = vec_stencil.getLocalViewHost();
-  for (LO i=0; i<num_lel_stencil; ++i){
-    vh(i,0) = vec_stencil_std[shift_stencil+i];
+  vec_t vec_stencil(stencil_map, blocksize);
+  for (LO i=0; i<my_size_stencil; ++i){
+    rowview[0] = vec_stencil_std[shift_stencil+i];
+    rowview[1] = rowview[0];
+    rowview[2] = rowview[0];
+    vec_stencil.replaceLocalValues(i, rowview);
   }
 
-  const LO num_lel_sample = sample_map->getNodeNumElements();
-  vec_t vec_sample(sample_map);
-  auto vh2 = vec_sample.getLocalViewHost();
-  for (LO i=0; i<num_lel_sample; ++i){
-    vh2(i,0) = vec_sample_std[shift_sample+i];
+  vec_t vec_sample(sample_map, blocksize);
+  for (LO i=0; i<my_size_sample; ++i){
+    rowview[0] = vec_sample_std[shift_sample+i];
+    rowview[1] = rowview[0];
+    rowview[2] = rowview[0];
+    vec_sample.replaceLocalValues(i, rowview);
   }
 
   pressio::rom::lspg::impl::HypRedUpdaterTrilinos F;
   F.updateSampleMeshOperandWithStencilMeshOne(vec_sample,  2.,
-						     vec_stencil, 3.);
+					      vec_stencil, 3.);
 
-  auto vh3 = vec_sample.getLocalViewHost();
   if (rank==0){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 41.*3.+1.*2.);
-    EXPECT_DOUBLE_EQ(vh3(1,0),  2.*3.+2.*2.);
+    auto row0 = vec_sample.getLocalBlock(0);
+    EXPECT_DOUBLE_EQ(row0(0), 41.*3.+1.*2.);
+    EXPECT_DOUBLE_EQ(row0(1), 41.*3.+1.*2.);
+    EXPECT_DOUBLE_EQ(row0(2), 41.*3.+1.*2.);
+
+    auto row1 = vec_sample.getLocalBlock(1);
+    EXPECT_DOUBLE_EQ(row1(0),  2.*3.+2.*2.);
+    EXPECT_DOUBLE_EQ(row1(1),  2.*3.+2.*2.);
+    EXPECT_DOUBLE_EQ(row1(2),  2.*3.+2.*2.);
   }
 
   else if (rank==1){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 45.*3.+3.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,0), 11.*3.+4.*2);
-    EXPECT_DOUBLE_EQ(vh3(2,0), -8.*3.+5.*2);
+    auto row0 = vec_sample.getLocalBlock(0);
+    EXPECT_DOUBLE_EQ(row0(0), 45.*3.+3.*2);
+    EXPECT_DOUBLE_EQ(row0(1), 45.*3.+3.*2);
+    EXPECT_DOUBLE_EQ(row0(2), 45.*3.+3.*2);
+
+    auto row1 = vec_sample.getLocalBlock(1);
+    EXPECT_DOUBLE_EQ(row1(0), 11.*3.+4.*2);
+    EXPECT_DOUBLE_EQ(row1(1), 11.*3.+4.*2);
+    EXPECT_DOUBLE_EQ(row1(2), 11.*3.+4.*2);
+
+    auto row2 = vec_sample.getLocalBlock(2);
+    EXPECT_DOUBLE_EQ(row2(0), -8.*3.+5.*2);
+    EXPECT_DOUBLE_EQ(row2(1), -8.*3.+5.*2);
+    EXPECT_DOUBLE_EQ(row2(2), -8.*3.+5.*2);
   }
 
   else if (rank==2){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 3.5*3.+6.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,0),  6.*3.+7.*2);
+    auto row0 = vec_sample.getLocalBlock(0);
+    EXPECT_DOUBLE_EQ(row0(0), 3.5*3.+6.*2);
+    EXPECT_DOUBLE_EQ(row0(1), 3.5*3.+6.*2);
+    EXPECT_DOUBLE_EQ(row0(2), 3.5*3.+6.*2);
+
+    auto row1 = vec_sample.getLocalBlock(1);
+    EXPECT_DOUBLE_EQ(row1(0),  6.*3.+7.*2);
+    EXPECT_DOUBLE_EQ(row1(1),  6.*3.+7.*2);
+    EXPECT_DOUBLE_EQ(row1(2),  6.*3.+7.*2);
   }
 }
 
@@ -142,7 +167,7 @@ TEST(rom_lspg, hypred_updater_multi_vector)
 {
   using tcomm = Teuchos::Comm<int>;
   using map_t = Tpetra::Map<>;
-  using mv_t = Tpetra::MultiVector<>;
+  using mv_t = Tpetra::BlockMultiVector<>;
   using ST = typename mv_t::scalar_type;
   using LO = typename mv_t::local_ordinal_type;
   using GO = typename mv_t::global_ordinal_type;
@@ -225,75 +250,19 @@ TEST(rom_lspg, hypred_updater_multi_vector)
     my_size_sample = 2;
   }
 
-  Teuchos::RCP<const map_t> stencil_map =
-    Teuchos::rcp(new map_t(-1, my_gids_stencil, my_size_stencil, 0, comm));
+  (void)shift_stencil;
+  (void)shift_sample;
 
-  Teuchos::RCP<const map_t> sample_map =
-    Teuchos::rcp(new map_t(-1, my_gids_sample, my_size_sample, 0, comm));
+  map_t stencil_map(-1, my_gids_stencil, my_size_stencil, 0, comm);
+  map_t sample_map(-1, my_gids_sample, my_size_sample, 0, comm);
+  int blocksize = 3;
+  //ST rowview[blocksize];
+  mv_t mv_stencil(stencil_map, blocksize, 4);
+  mv_t mv_sample(sample_map, blocksize, 4);
 
-  const LO num_lel_stencil = stencil_map->getNodeNumElements();
-  mv_t mv_stencil(stencil_map, 4);
-  auto vh = mv_stencil.getLocalViewHost();
-  for (LO i=0; i<num_lel_stencil; ++i){
-    vh(i,0) = mv_stencil_std[shift_stencil+i];
-    vh(i,1) = mv_stencil_std[shift_stencil+i]+1;
-    vh(i,2) = mv_stencil_std[shift_stencil+i]+2;
-    vh(i,3) = mv_stencil_std[shift_stencil+i]+3;
-  }
-
-  const LO num_lel_sample = sample_map->getNodeNumElements();
-  mv_t mv_sample(sample_map, 4);
-  auto vh2 = mv_sample.getLocalViewHost();
-  for (LO i=0; i<num_lel_sample; ++i){
-    vh2(i,0) = mv_sample_std[shift_sample+i];
-    vh2(i,1) = mv_sample_std[shift_sample+i]+1;
-    vh2(i,2) = mv_sample_std[shift_sample+i]+2;
-    vh2(i,3) = mv_sample_std[shift_sample+i]+3;
-  }
+  // finish it!
 
   pressio::rom::lspg::impl::HypRedUpdaterTrilinos F;
   F.updateSampleMeshOperandWithStencilMeshOne(mv_sample,  2.,
-						     mv_stencil, 3.);
-
-  auto vh3 = mv_sample.getLocalViewHost();
-  if (rank==0){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 41.*3.+1.*2.);
-    EXPECT_DOUBLE_EQ(vh3(0,1), 42.*3.+2.*2.);
-    EXPECT_DOUBLE_EQ(vh3(0,2), 43.*3.+3.*2.);
-    EXPECT_DOUBLE_EQ(vh3(0,3), 44.*3.+4.*2.);
-
-    EXPECT_DOUBLE_EQ(vh3(1,0),  2.*3.+2.*2.);
-    EXPECT_DOUBLE_EQ(vh3(1,1),  3.*3.+3.*2.);
-    EXPECT_DOUBLE_EQ(vh3(1,2),  4.*3.+4.*2.);
-    EXPECT_DOUBLE_EQ(vh3(1,3),  5.*3.+5.*2.);
-  }
-
-  else if (rank==1){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 45.*3.+3.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,1), 46.*3.+4.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,2), 47.*3.+5.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,3), 48.*3.+6.*2);
-
-    EXPECT_DOUBLE_EQ(vh3(1,0), 11.*3.+4.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,1), 12.*3.+5.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,2), 13.*3.+6.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,3), 14.*3.+7.*2);
-
-    EXPECT_DOUBLE_EQ(vh3(2,0), -8.*3.+5.*2);
-    EXPECT_DOUBLE_EQ(vh3(2,1), -7.*3.+6.*2);
-    EXPECT_DOUBLE_EQ(vh3(2,2), -6.*3.+7.*2);
-    EXPECT_DOUBLE_EQ(vh3(2,3), -5.*3.+8.*2);
-  }
-
-  else if (rank==2){
-    EXPECT_DOUBLE_EQ(vh3(0,0), 3.5*3.+6.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,1), 4.5*3.+7.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,2), 5.5*3.+8.*2);
-    EXPECT_DOUBLE_EQ(vh3(0,3), 6.5*3.+9.*2);
-
-    EXPECT_DOUBLE_EQ(vh3(1,0),  6.*3.+7.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,1),  7.*3.+8.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,2),  8.*3.+9.*2);
-    EXPECT_DOUBLE_EQ(vh3(1,3),  9.*3.+10.*2);
-  }
+					      mv_stencil, 3.);
 }

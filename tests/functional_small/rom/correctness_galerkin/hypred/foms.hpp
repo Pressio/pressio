@@ -2,16 +2,6 @@
 #ifndef PRESSIO_TEST_ROM_GALERKIN_HYRED_CORRECT_FOMS_COMMON_HPP_
 #define PRESSIO_TEST_ROM_GALERKIN_HYRED_CORRECT_FOMS_COMMON_HPP_
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
-#include "pressio/ops.hpp"
-#include <Tpetra_Map.hpp>
-#include <Tpetra_Vector.hpp>
-#include <Tpetra_MultiVector.hpp>
-#include <Tpetra_CrsMatrix.hpp>
-#include <Teuchos_CommHelpers.hpp>
-#include <Tpetra_Map_decl.hpp>
-#endif
-
 const std::vector<int> indices = {1,3,5,7,9,11,13,15,17,19};
 
 struct TrivialFomOnlyVelocityEigen
