@@ -183,15 +183,15 @@ template<
   class StateType,
   class ReturnType = typename ImplicitCompose<SystemType, StateType>::type
   >
-ReturnType create_implicit_stepper_impl(SteppersE name, SystemType && system, const StateType & state)
+ReturnType create_implicit_stepper_impl(StepScheme name, SystemType && system, const StateType & state)
 {
-  if (name == SteppersE::BDF1){
+  if (name == StepScheme::BDF1){
     return ReturnType(::pressio::ode::BDF1(), state, std::forward<SystemType>(system));
   }
-  else if (name == SteppersE::BDF2){
+  else if (name == StepScheme::BDF2){
     return ReturnType(::pressio::ode::BDF2(), state, std::forward<SystemType>(system));
   }
-  else if (name == SteppersE::CrankNicolson){
+  else if (name == StepScheme::CrankNicolson){
     return ReturnType(::pressio::ode::CrankNicolson(), state, std::forward<SystemType>(system));
   }
   else{
@@ -205,24 +205,24 @@ template<
   class JacobianPolicyType,
   class ReturnType = typename ImplicitCompose<StateType, ResidualPolicyType, JacobianPolicyType>::type
   >
-ReturnType create_implicit_stepper_impl(SteppersE name,
+ReturnType create_implicit_stepper_impl(StepScheme name,
 					const StateType & state,
 					ResidualPolicyType && rPol,
 					JacobianPolicyType && jPol)
 {
-  if (name == SteppersE::BDF1){
+  if (name == StepScheme::BDF1){
     return ReturnType(::pressio::ode::BDF1(),
 		      state,
 		      std::forward<ResidualPolicyType>(rPol),
 		      std::forward<JacobianPolicyType>(jPol));
   }
-  else if (name == SteppersE::BDF2){
+  else if (name == StepScheme::BDF2){
     return ReturnType(::pressio::ode::BDF2(),
 		      state,
 		      std::forward<ResidualPolicyType>(rPol),
 		      std::forward<JacobianPolicyType>(jPol));
   }
-  else if (name == SteppersE::CrankNicolson){
+  else if (name == StepScheme::CrankNicolson){
     return ReturnType(::pressio::ode::CrankNicolson(),
 		      state,
 		      std::forward<ResidualPolicyType>(rPol),

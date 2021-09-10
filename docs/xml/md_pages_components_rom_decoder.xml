@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="md_pages_components_rom_decoder" kind="page">
     <compoundname>md_pages_components_rom_decoder</compoundname>
-    <title>rom: Arbitrary Decoder</title>
+    <title>rom: Decoder</title>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -52,10 +52,95 @@
 </listitem><listitem><para><computeroutput>jacobian_type</computeroutput>: must be copy constructible</para>
 </listitem></itemizedlist>
 </para>
+<para><linebreak/>
+</para>
 </sect2>
-<sect2 id="md_pages_components_rom_decoder_1autotoc_md77">
+</sect1>
+<sect1 id="md_pages_components_rom_decoder_1autotoc_md77">
 <title>Special case: linear decoder</title>
-<para>The special case of a linear decoder is natively supported in pressio, see <ulink url="./md_pages_components_rom_decoder_linear.html">this page</ulink>. </para>
+<para>Defined in header: <computeroutput>&lt;pressio/rom_decoder.hpp&gt;</computeroutput></para>
+<para>Public namespace: <computeroutput>pressio::rom</computeroutput></para>
+<para>A linear decoder is a mapping of the form: <formula id="15">\[ y_{fom} = \phi y_{rom} \]</formula></para>
+<para>where <formula id="16">$\phi$</formula> is the Jacobian matrix (for the time being, assume it constant). <linebreak/>
+ Pressio offers a class for this abstraction:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FomStateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>JacobianType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_time_invariant_linear_decoder(JacobianType<sp/>&amp;&amp;);</highlight></codeline>
+</programlisting></para>
+<para>where:<itemizedlist>
+<listitem><para><computeroutput>FomStateType</computeroutput>: type of your FOM state, must be copy constructible</para>
+</listitem><listitem><para><computeroutput>JacobianType</computeroutput>: type of the decoder&apos;s Jacobian, must be copy constructible and move constructible</para>
+</listitem></itemizedlist>
+</para>
+<para>Obviously, the returned linear decoder object meets the decoder concept discussed above.</para>
+<sect2 id="md_pages_components_rom_decoder_1autotoc_md78">
+<title>Example usage for supported types</title>
+<para>When using data types supported in <ulink url="./md_pages_components_ops.html">pressio ops</ulink>, an example usage is as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/rom_decoder.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">prom<sp/>=<sp/>pressio::rom;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assuming<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>proper<sp/>initialization<sp/>has<sp/>been<sp/>done</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_type<sp/>=<sp/>Tpetra::Vector&lt;&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>matrix_type<sp/><sp/><sp/><sp/>=<sp/>Tpetra::MultiVector&lt;&gt;;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>matrix_type<sp/>matJ(</highlight><highlight class="comment">/*<sp/>construct<sp/>as<sp/>needed<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>decoder<sp/>=<sp/>prom::create_time_invariant_linear_decoder&lt;fom_state_type&gt;(matJ);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="md_pages_components_rom_decoder_1autotoc_md79">
+<title>Example usage for custom types</title>
+<para>When using custom data types not supported in <ulink url="./md_pages_components_ops.html">pressio ops</ulink>, you need to provide specializations of a trait class and certain operations and make them &quot;visible&quot; to the compiler to find them and such that pressio can operate on your data. For the sake of explanation, suppose that you use <computeroutput>double</computeroutput> as value type, <computeroutput>MyCustomVector&lt;double&gt;</computeroutput> for the FOM state, and <computeroutput>MyCustomMatrix&lt;double&gt;</computeroutput> for the Jacobian matrix. Then you would need to do something like this:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&quot;pressio/type_traits.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pressio{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ScalarType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;pressiotests::MyCustomVector&lt;ScalarType&gt;&gt;{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>ScalarType;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ScalarType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Traits&lt;pressiotests::MyCustomMatrix&lt;ScalarType&gt;&gt;{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>scalar_type<sp/>=<sp/>ScalarType;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">ops{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OperandType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ScalarType&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>product(pressio::nontranspose,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ScalarType<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>pressiotests::MyCustomMatrix&lt;ScalarType&gt;<sp/>&amp;<sp/>A,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>OperandType<sp/>&amp;<sp/>x,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ScalarType<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pressiotests::MyCustomVector&lt;ScalarType&gt;<sp/>&amp;<sp/>z)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>z<sp/>=<sp/>beta*z<sp/>+<sp/>alpha<sp/>*<sp/>A<sp/>*<sp/>x</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>you<sp/>need<sp/>to<sp/>compute<sp/>a<sp/>standard<sp/>gemv,<sp/>but<sp/>all<sp/>you<sp/>know<sp/>about<sp/>x</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>is<sp/>that<sp/>its<sp/>i-th<sp/>element<sp/>can<sp/>be<sp/>retrieved<sp/>as<sp/>x(i)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}}</highlight><highlight class="comment">//end<sp/>namespace<sp/>pressio::ops</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;pressio/rom_decoder.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">prom<sp/>=<sp/>pressio::rom;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assuming<sp/>that:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>proper<sp/>initialization<sp/>has<sp/>been<sp/>done</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>fom_state_t<sp/>=<sp/>MyCustomVector&lt;double&gt;;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>matrix_t<sp/><sp/><sp/><sp/>=<sp/>MyCustomMatrix&lt;double&gt;;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>matrix_t<sp/>matJ(</highlight><highlight class="comment">/*<sp/>construct<sp/>as<sp/>needed<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>decoder<sp/>=<sp/>prom::create_time_invariant_linear_decoder&lt;fom_state_type&gt;(matJ);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
 </sect2>
 </sect1>
     </detaileddescription>

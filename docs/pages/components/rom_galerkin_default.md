@@ -4,7 +4,7 @@
 
 Defined in: `<pressio/rom_galerkin.hpp>`
 
-Public namespace: `pressio::rom`, `pressio::rom::galerkin`.
+Public namespace: `pressio::rom::galerkin`
 
 
 ## Overview
@@ -31,37 +31,46 @@ and we reserve the right to change this in the future.
 
 ```cpp
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType
   >
-auto create_default_problem(const FomSystemType & fomSysObj,
-                            DecoderType & decoder,
-                            const RomStateType & stateIn,
-                            const FomReferenceStateType & fomRef);
+auto create_default_explicit_problem(pressio::ode::StepScheme,
+								     const FomSystemType &,
+									 DecoderType &,
+									 const RomStateType &,
+									 const FomReferenceStateType &)
+
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType
+  >
+auto create_default_implicit_problem(pressio::ode::StepScheme,
+								     const FomSystemType &,
+									 DecoderType &,
+									 const RomStateType & ,
+									 const FomReferenceStateType &)
 ```
 
-where `StepperTag` is a tag type from the ode to specify which time scheme to use.
 This function returns an instance of the desired Galerkin problem.
 
 ### Parameters and Requirements
 
-- `StepperTag`:
-  - tag type to specify the time scheme
-  - must be one of the explicit or implicit tag types supported in `pressio::ode`
+- `StepScheme`:
+  - enum value to specify the stepper scheme, see [explicit choices](md_pages_components_ode_steppers_explicit.html) and [implicit choices](md_pages_components_ode_steppers_implicit.html)
 
 - `FomSystemType`:
-  - your adapter class type specifying the FOM problem
-  - must satisfy one of the APIs suitable for Galerkin, see [API list](./md_pages_components_rom_fom_apis.html)
+  - your adapter class type specifying the FOM problem. <br/>
+  - Must satisfy one of the APIs suitable for Galerkin, see [API list](./md_pages_components_rom_fom_apis.html)
 
 - `DecoderType`:
   - decoder class type
   - must satify the requirements listed [here](md_pages_components_rom_decoder.html)
 
 - `RomStateType`:
-  - ROM state type
   - currently, it must be either an Eigen vector or a Kokkos 1D view
 
 - `FomReferenceStateType`:
@@ -71,9 +80,9 @@ This function returns an instance of the desired Galerkin problem.
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
 
-### Problem class API
+### Galerkin Problem class API
 
-A problem meets the following API:
+A problem meets the following interface:
 
 ```cpp
 class DefaultGalerkinProblem
@@ -139,8 +148,9 @@ int main()
 namespace pode = pressio::ode;
 namespace pgal = pressio::rom::galerkin;
 
-using ode_tag  = pode::ForwardEuler;
-auto problem   = pgal::create_default_problem<ode_tag>(fom_system, decoder, rom_state, fom_reference_state);
+const auto scheme = pdoe::StepScheme:ForwardEuler;
+auto problem = pgal::create_default_explicit_problem(scheme, fom_system, decoder,
+													 rom_state, fom_reference_state);
 auto & stepper = problem.stepper();
 
 pressio::ode::advance_n_steps_and_observe(stepper, rom_state, /* any other args */);
@@ -158,8 +168,9 @@ int main()
 namespace pode = pressio::ode;
 namespace pgal = pressio::rom::galerkin;
 
-using ode_tag  = pode::ForwardEuler;
-auto problem   = pgal::create_default_problem<ode_tag>(fom_system, decoder, rom_state, fom_reference_state);
+const auto scheme = pdoe::StepScheme:BDF1;
+auto problem = pgal::create_default_implicit_problem(scheme, fom_system, decoder,
+													 rom_state, fom_reference_state);
 auto & stepper = problem.stepper();
 
 !!!!!!!! fill !!!!!!!!!

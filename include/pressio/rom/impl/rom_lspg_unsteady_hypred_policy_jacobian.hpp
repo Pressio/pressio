@@ -97,7 +97,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 		  const LspgStateType & lspgState,
 		  const StencilStatesContainerType & stencilStates,
 		  const ScalarType & time_np1,
@@ -126,19 +126,19 @@ public:
     // so we just need to update lspgJacobian properly.
 
     constexpr auto one = ::pressio::utils::Constants<ScalarType>::one();
-    if (name == ::pressio::ode::SteppersE::BDF1)
+    if (name == ::pressio::ode::StepScheme::BDF1)
     {
       const auto cf = dt * ::pressio::ode::constants::bdf1<ScalarType>::c_f_;
       hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
 								       decoderJacobian_.get(), one);
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2)
+    else if (name == ::pressio::ode::StepScheme::BDF2)
     {
       const auto cf = dt*::pressio::ode::constants::bdf2<ScalarType>::c_f_;
       hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,
 								       decoderJacobian_.get(), one);
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson)
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson)
     {
       const auto cf = dt*::pressio::ode::constants::cranknicolson<ScalarType>::c_fnp1_;
       hypredOperatorUpdater_.get().updateSampleMeshOperandWithStencilMeshOne(lspgJacobian, cf,

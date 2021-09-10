@@ -194,7 +194,7 @@ TEST(rom_galerkin, const_time_masked_explicit_correctness_custom_types)
 
   namespace gal = pressio::rom::galerkin;
   auto problem = gal::create_masked_explicit_problem(
-    pressio::ode::SteppersE::ForwardEuler,
+    pressio::ode::StepScheme::ForwardEuler,
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 
@@ -224,7 +224,7 @@ TEST(rom_galerkin, const_time_masked_implicit_correctness_custom_types)
   ProjectorImplicitCustomTypes<scalar_t> proj(phiSample);
 
   auto problem = pressio::rom::galerkin::create_masked_implicit_problem(
-    pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, proj, masker);
+    pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, proj, masker);
   auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverContTime nonLinSolver;

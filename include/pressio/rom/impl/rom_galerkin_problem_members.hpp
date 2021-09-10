@@ -72,7 +72,7 @@ template<
   class FomStateReconstructorType,
   class FomStateType>
 ManagerStencilFomStatesType
-create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
+create_manager_stencil_fom_states(::pressio::ode::StepScheme name,
 				  const FomStateReconstructorType & fomRec,
 				  const FomStateType & fomNomState)
 {
@@ -82,10 +82,10 @@ create_manager_stencil_fom_states(::pressio::ode::SteppersE name,
     return ManagerStencilFomStatesType(fomRec, {::pressio::ops::clone(fomNomState)});
   }
   else{
-    if (name == ::pressio::ode::SteppersE::BDF1 or name == ::pressio::ode::SteppersE::BDF2){
+    if (name == ::pressio::ode::StepScheme::BDF1 or name == ::pressio::ode::StepScheme::BDF2){
       return ManagerStencilFomStatesType(fomRec, {::pressio::ops::clone(fomNomState)});
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       return ManagerStencilFomStatesType(fomRec,
 					 {::pressio::ops::clone(fomNomState),
 					  ::pressio::ops::clone(fomNomState)}
@@ -122,7 +122,7 @@ struct AddFomStatesManager : T
     bool _is_cont_time = is_cont_time,
     mpl::enable_if_t<_is_cont_time, int> = 0
     >
-  AddFomStatesManager(::pressio::ode::SteppersE name,
+  AddFomStatesManager(::pressio::ode::StepScheme name,
 		      const T1 & fomObj,
 		      const T2 & decoder,
 		      const T3 & romStateIn,
@@ -144,7 +144,7 @@ struct AddFomStatesManager : T
     bool _is_cont_time = is_cont_time,
     mpl::enable_if_t<!_is_cont_time, int> = 0
     >
-  AddFomStatesManager(::pressio::ode::SteppersE name,
+  AddFomStatesManager(::pressio::ode::StepScheme name,
 		      const T1 & fomObj,
 		      const T2 & decoder,
 		      const T3 & romStateIn,
@@ -174,7 +174,7 @@ struct AddProjector : T
   ~AddProjector() = default;
 
   template<class T1, class T2, class T3, class T4>
-  AddProjector(::pressio::ode::SteppersE name,
+  AddProjector(::pressio::ode::StepScheme name,
 		 const T1 & romStateIn,
 		 const T2 & fomObj,
 		 const T3 & decoder,
@@ -184,7 +184,7 @@ struct AddProjector : T
   {}
 
   template<class T1, class T2, class T3, class T4, class T5, class ...Args>
-  AddProjector(::pressio::ode::SteppersE name,
+  AddProjector(::pressio::ode::StepScheme name,
 	       const T1 & romStateIn,
 	       const T2 & fomObj,
 	       const T3 & decoder,
@@ -209,7 +209,7 @@ struct AddMasker : T
   ~AddMasker() = default;
 
   template<class T1, class T2, class T3, class T4, class T5, class ...Args>
-  AddMasker(::pressio::ode::SteppersE name,
+  AddMasker(::pressio::ode::StepScheme name,
 	      const T1 & fomObj,
 	      const T2 & decoder,
 	      const T3 & romStateIn,
@@ -234,7 +234,7 @@ struct AddDefaultExplicitSystem : T
   ~AddDefaultExplicitSystem() = default;
 
   template<class T1, typename ...Args>
-  AddDefaultExplicitSystem(::pressio::ode::SteppersE name,
+  AddDefaultExplicitSystem(::pressio::ode::StepScheme name,
 			   const T1 & romStateIn,
 			   Args && ...args)
     : T(name, romStateIn, std::forward<Args>(args)...),
@@ -257,7 +257,7 @@ struct AddDefaultDiscreteTimeSystem : T
   ~AddDefaultDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4>
-  AddDefaultDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddDefaultDiscreteTimeSystem(::pressio::ode::StepScheme name,
 			       const T1 & romStateIn,
 			       const T2 & fomObj,
 			       const T3 & decoder,
@@ -282,7 +282,7 @@ struct AddHypRedDiscreteTimeSystem : T
   ~AddHypRedDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4, class T5>
-  AddHypRedDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddHypRedDiscreteTimeSystem(::pressio::ode::StepScheme name,
 			      const T1 & romStateIn,
 			      const T2 & fomObj,
 			      const T3 & decoder,
@@ -308,7 +308,7 @@ struct AddMaskedDiscreteTimeSystem : T
   ~AddMaskedDiscreteTimeSystem() = default;
 
   template<class T1, class T2, class T3, class T4, class T5, class T6>
-  AddMaskedDiscreteTimeSystem(::pressio::ode::SteppersE name,
+  AddMaskedDiscreteTimeSystem(::pressio::ode::StepScheme name,
 			      const T1 & romStateIn,
 			      const T2 & fomObj,
 			      const T3 & decoder,
@@ -335,7 +335,7 @@ struct AddMaskedVeloExplicitSystem : T
   ~AddMaskedVeloExplicitSystem() = default;
 
   template<class T1, typename ...Args>
-  AddMaskedVeloExplicitSystem(::pressio::ode::SteppersE name,
+  AddMaskedVeloExplicitSystem(::pressio::ode::StepScheme name,
 			      const T1 & romStateIn,
 			      Args && ...args)
     : T(name, romStateIn, std::forward<Args>(args)...),
@@ -372,7 +372,7 @@ struct ImplicitPoliciesMixin<T, true, false, false, r_pol_t, j_pol_t> : T
   ~ImplicitPoliciesMixin() = default;
 
   template<class T1, class T2, class T3, class T4, class ...Args>
-  ImplicitPoliciesMixin(::pressio::ode::SteppersE name,
+  ImplicitPoliciesMixin(::pressio::ode::StepScheme name,
 			const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
@@ -402,7 +402,7 @@ struct ImplicitPoliciesMixin<T, false, true, false, r_pol_t, j_pol_t> : T
   ~ImplicitPoliciesMixin() = default;
 
   template<class T1, class T2, class T3, class T4, class ...Args>
-  ImplicitPoliciesMixin(::pressio::ode::SteppersE name,
+  ImplicitPoliciesMixin(::pressio::ode::StepScheme name,
 			const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,
@@ -432,7 +432,7 @@ struct ImplicitPoliciesMixin<T, false, false, true, r_pol_t, j_pol_t> : T
   ~ImplicitPoliciesMixin() = default;
 
   template<class T1, class T2, class T3, class T4, class ...Args>
-  ImplicitPoliciesMixin(::pressio::ode::SteppersE name,
+  ImplicitPoliciesMixin(::pressio::ode::StepScheme name,
 			const T1 & romStateIn,
 			const T2 & fomObj,
 			const T3 & decoder,

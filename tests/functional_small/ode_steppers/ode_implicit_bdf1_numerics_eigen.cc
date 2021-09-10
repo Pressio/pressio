@@ -13,7 +13,7 @@ TEST(ode, implicit_bdf1_policy_default_created)
   problem_t problemObj;
   std::cout << &problemObj << std::endl;
   state_t y(problemObj.getInitCond());
-  auto stepperObj = ode::create_implicit_stepper(ode::SteppersE::BDF1, y,problemObj);
+  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF1, y,problemObj);
 
   using jac_t = typename problem_t::jacobian_type;
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
@@ -44,7 +44,7 @@ TEST(ode, implicit_bdf1_custom_policy)
 
   using res_pol_t = ode::impl::ResidualStandardPolicy<problem_t&, state_t, res_t>;
   using jac_pol_t = ode::impl::JacobianStandardPolicy<problem_t&, state_t, jac_t>;
-  auto stepperObj = ode::create_implicit_stepper(ode::SteppersE::BDF1, y, res_pol_t(problemObj), jac_pol_t(problemObj));
+  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF1, y, res_pol_t(problemObj), jac_pol_t(problemObj));
 
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;
   lin_solver_t linSolverObj;
@@ -69,7 +69,7 @@ TEST(ode, implicit_bdf1_policy_default_created_guesserLambda)
   problem_t problemObj;
   state_t y(3);
   y(0) = 1.; y(1) = 2.; y(2) = 3.;
-  auto stepperObj = ode::create_implicit_stepper(ode::SteppersE::BDF1, y,problemObj);
+  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF1, y,problemObj);
 
   using jac_t = typename problem_t::jacobian_type;
   using lin_algo_t = linearsolvers::iterative::Bicgstab;

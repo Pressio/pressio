@@ -61,7 +61,7 @@ TEST(rom_galerkin_test, const_time_masked_explicit_correctness_tpetra)
   ProjectorExplicitTpetra proj(phiSample);
 
   auto problem = pressio::rom::galerkin::create_masked_explicit_problem(
-    pressio::ode::SteppersE::ForwardEuler, 
+    pressio::ode::StepScheme::ForwardEuler, 
     fomSystem, decoder, romState, fomReferenceState, proj, masker);
 
   const scalar_t dt = 1.; 

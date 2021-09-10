@@ -84,7 +84,7 @@ TEST(rom_lspg, cont_time_unsteady_masked_correctness_eigen)
   COMMON_PART1();
   MaskerEigen masker(sample_indices);
   auto problem = pressio::rom::lspg::create_masked_unsteady_problem
-    (pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, masker);
+    (pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, masker);
 
   COMMON_PART2();
 
@@ -102,7 +102,7 @@ TEST(rom_lspg, cont_time_unsteady_masked_correctness_custom_types)
   COMMON_PART1();
   MaskerCustomTypes masker(sample_indices);
   auto problem = pressio::rom::lspg::create_masked_unsteady_problem
-    (pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState, masker);
+    (pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState, masker);
 
   COMMON_PART2();
 

@@ -54,7 +54,7 @@ TEST(rom_lspg, cont_time_unsteady_default_correctness_custom_types)
   romState[2]=2.;
 
   auto problem = pressio::rom::lspg::create_default_unsteady_problem
-    (pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState);
+    (pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState);
 
   const scalar_t dt = 2.;
   FakeNonLinSolver<phi_t> nonLinSolver(N, phi, dt);

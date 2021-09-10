@@ -1,50 +1,53 @@
 
-# rom: LSPG: unsteady default problem
+# rom: LSPG: steady masked problem
 
 
 Defined in: `<pressio/rom_lspg.hpp>`
 
 Public namespace: `pressio::rom::lspg`
 
+
 ## Overview
+\todo
 
 
 ## 1. Creating a problem instance
 
 ```cpp
-// overload for continuous-time systems
 template<
   class FomSystemType,
   class DecoderType,
-  class RomStateType,															  (1)
-  class FomReferenceStateType
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType
   >
-ReturnType create_default_unsteady_problem(pressio::ode::StepScheme,
-										   const FomSystemType &,
-										   DecoderType &,
-										   const RomStateType &,
-										   const FomReferenceStateType &);
+auto create_masked_steady_problem(const FomSystemType &,
+								  DecoderType &,
+								  const RomStateType &,
+								  const FomReferenceStateType &,
+								  const MaskerType &);
 
-// overload for discrete-time systems
 template<
-  std::size_t num_states,
   class FomSystemType,
   class DecoderType,
-  class RomStateType,															  (2)
-  class FomReferenceStateType
+  class RomStateType,
+  class FomReferenceStateType,
+  class MaskerType,
+  class PreconditionerType
   >
-ReturnType create_default_unsteady_problem(const FomSystemType &,
-										   DecoderType &,
-										   const RomStateType &,
-										   const FomReferenceStateType &);
+auto create_masked_steady_problem(const FomSystemType &,
+								  DecoderType &,
+								  const RomStateType &,
+								  const FomReferenceStateType &,
+								  const PreconditionerType &,
+								  const MaskerType &);
 ```
 
 ### Parameters and Requirements
 
 - `FomSystemType`:
   - your adapter class type specifying the FOM problem. <br/>
-  - for 1: must satisfy the [continuous-time API](./md_pages_components_rom_fom_apis.html)
-  - for 2: must satisfy the [discrete-time API](./md_pages_components_rom_fom_apis.html)
+  - Must satisfy the steady API, see [here](./md_pages_components_rom_fom_apis.html)
 
 - `DecoderType`:
   - decoder class type
@@ -60,23 +63,19 @@ ReturnType create_default_unsteady_problem(const FomSystemType &,
   std::is_same<FomReferenceStateType, typename DecoderType::fom_state_type>::value == true
   ```
 
-- `num_states`:
-  - *total* number of states you need to use (must be <= 3), if you need more open issue
-  - only needed for the discrete-time case
-
 
 ### Problem class API
 
 A problem meets the following interface:
 
 ```cpp
-class UnsteadyLspgProblem
+class SteadyLspgProblem
 {
 public:
   using traits = /* nested typedef with trait class */;
 
-  // returns the underlying stepper to use to solve the problem
-  auto & stepper();
+  // returns the underlying system to use to solve the problem
+  auto & system();
 
   // const ref to the object knowing how to reconstruct a FOM state
   const auto & fomStateReconstructor() const;

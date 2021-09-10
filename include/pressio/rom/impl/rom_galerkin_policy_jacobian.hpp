@@ -83,7 +83,7 @@ public:
     class ScalarType,
     class StepType
     >
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 		  const GalerkinStateType & galerkinState,
 		  const StencilStatesContainerType & stencilStates,
 		  const ScalarType & time_np1,
@@ -93,15 +93,15 @@ public:
   {
     ProjectionPolicyType::compute(galerkinJacobian, galerkinState, time_np1);
 
-    if (name == ::pressio::ode::SteppersE::BDF1){
+    if (name == ::pressio::ode::StepScheme::BDF1){
       ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
 						   ode::BDF1());
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2){
+    else if (name == ::pressio::ode::StepScheme::BDF2){
       ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
 						   ode::BDF2());
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       ::pressio::ode::impl::discrete_time_jacobian(galerkinJacobian, dt,
 						   ode::CrankNicolson());
     }

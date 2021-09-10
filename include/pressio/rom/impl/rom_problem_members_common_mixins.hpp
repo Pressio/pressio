@@ -84,7 +84,7 @@ struct AddExplicitStepper : T
   ~AddExplicitStepper() = default;
 
   template<class T1, class...Args>
-  AddExplicitStepper(::pressio::ode::SteppersE name,
+  AddExplicitStepper(::pressio::ode::StepScheme name,
 		       const T1 & romState,
 		       Args && ...args)
     : T(name, romState, std::forward<Args>(args)...),
@@ -106,7 +106,7 @@ struct AddImplicitStepper : T
   ~AddImplicitStepper() = default;
 
   template<class T1, class...Args>
-  AddImplicitStepper(::pressio::ode::SteppersE name,
+  AddImplicitStepper(::pressio::ode::StepScheme name,
 		     const T1 & romState,
 		     Args && ...args)
     : T(name, romState, std::forward<Args>(args)...),
@@ -131,7 +131,7 @@ struct AddImplicitArbStepper : T
   ~AddImplicitArbStepper() = default;
 
   template<class T1, class...Args>
-  AddImplicitArbStepper(::pressio::ode::SteppersE name,
+  AddImplicitArbStepper(::pressio::ode::StepScheme name,
 			const T1 & romState,
 			Args && ...args)
     : T(name, romState, std::forward<Args>(args)...),

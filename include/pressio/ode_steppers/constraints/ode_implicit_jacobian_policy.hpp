@@ -80,7 +80,7 @@ struct implicit_jacobian_policy<
       (
        std::declval<T const>()
        (
-	std::declval<SteppersE const &>(),
+	std::declval<StepScheme const &>(),
 	std::declval<StateType const &>(),
 	std::declval<ImplicitStencilStatesContainerDyn<StateType> const & >(),
 	std::declval<ScalarType const &>(),

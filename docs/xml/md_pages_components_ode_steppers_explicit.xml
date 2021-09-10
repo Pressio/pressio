@@ -17,7 +17,7 @@
 <sect1 id="md_pages_components_ode_steppers_explicit_1autotoc_md55">
 <title>API</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>StateType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SystemType&gt;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_explicit_stepper(pressio::ode::SteppersE<sp/>name,</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>create_explicit_stepper(pressio::ode::StepScheme<sp/>name,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>StateType<sp/>&amp;<sp/>state,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SystemType<sp/>&amp;<sp/>system);</highlight></codeline>
 </programlisting></para>
@@ -56,7 +56,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>systemObj<sp/>is<sp/>the<sp/>system<sp/>instance</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pode<sp/>=<sp/>pressio::ode;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pode::SteppersE::ForwardEuler;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scheme<sp/>=<sp/>pode::StepScheme::ForwardEuler;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stepper<sp/>=<sp/>pode::create_explicit_stepper(scheme,<sp/>stateObj,<sp/>systemObj);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>the<sp/>stepper<sp/>to<sp/>advance<sp/>in<sp/>time,</highlight><highlight class="normal"></highlight></codeline>

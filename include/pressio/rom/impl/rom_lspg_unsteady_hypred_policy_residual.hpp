@@ -92,7 +92,7 @@ public:
     class LspgStencilStatesContainerType,
     class LspgStencilVelocitiesContainerType,
     class ScalarType>
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 		  const LspgStateType & lspgState,
 		  const LspgStencilStatesContainerType & lspgStencilStates,
 		  LspgStencilVelocitiesContainerType & lspgStencilVelocities,
@@ -109,19 +109,19 @@ public:
      */
     fomStatesMngr_.get().reconstructAt(lspgState, ::pressio::ode::nPlusOne());
 
-    if (name == ::pressio::ode::SteppersE::BDF1)
+    if (name == ::pressio::ode::StepScheme::BDF1)
     {
       (*this).template compute_impl_bdf<ode::BDF1>
 	(name, lspgState, lspgStencilStates, lspgStencilVelocities,
 	 t_np1, dt, currentStepNumber, lspgResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2)
+    else if (name == ::pressio::ode::StepScheme::BDF2)
     {
       (*this).template compute_impl_bdf<ode::BDF2>
 	(name, lspgState, lspgStencilStates, lspgStencilVelocities,
 	 t_np1, dt, currentStepNumber, lspgResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       (*this).compute_impl_cn(lspgState, lspgStencilStates,lspgStencilVelocities,
 			      t_np1, dt, currentStepNumber, lspgResidual);
     }
@@ -135,7 +135,7 @@ private:
     class LspgStencilVelocitiesContainerType,
     class ScalarType
     >
-  void compute_impl_bdf(::pressio::ode::SteppersE name,
+  void compute_impl_bdf(::pressio::ode::StepScheme name,
 			const LspgStateType & lspgState,
 			const LspgStencilStatesContainerType & lspgStencilStates,
 			LspgStencilVelocitiesContainerType & lspgStencilVelocities,
@@ -159,7 +159,7 @@ private:
     const auto & fomStateAt_np1 = fomStatesMngr_(::pressio::ode::nPlusOne());
     fomSystem_.get().velocity(fomStateAt_np1, t_np1, lspgResidual);
 
-    if (name == ::pressio::ode::SteppersE::BDF1)
+    if (name == ::pressio::ode::StepScheme::BDF1)
     {
       /*R(y_n+1) = cnp1*y_n+1 + cn*y_n + cf*f(t_n+1, y_n+1)
 
@@ -185,7 +185,7 @@ private:
 								       fomStateHelperInstance_, one);
     }
 
-    else if (name == ::pressio::ode::SteppersE::BDF2)
+    else if (name == ::pressio::ode::StepScheme::BDF2)
     {
       /*R(y_n+1) = cnp1*y_n+1 + cn*y_n + cnm1*y_n-1 + cf*f(t_n+1, y_n+1)
 

@@ -65,7 +65,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType
     >
   >
-ReturnType create_default_explicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_default_explicit_problem(::pressio::ode::StepScheme name,
 					   const FomSystemType & fomSysObj,
 					   DecoderType & decoder,
 					   const RomStateType & stateIn,
@@ -86,7 +86,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, ProjectorType
     >
   >
-ReturnType create_hyperreduced_explicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_hyperreduced_explicit_problem(::pressio::ode::StepScheme name,
 						const FomSystemType & fomSysObj,
 						DecoderType & decoder,
 						const RomStateType & stateIn,
@@ -110,7 +110,7 @@ template<
     FomReferenceStateType, MaskerType, ProjectorType
     >
   >
-ReturnType create_masked_explicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_masked_explicit_problem(::pressio::ode::StepScheme name,
 					  const FomSystemType & fomSysObj,
 					  DecoderType & decoder,
 					  const RomStateType & stateIn,
@@ -135,7 +135,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType
     >
   >
-ReturnType create_default_implicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_default_implicit_problem(::pressio::ode::StepScheme name,
 					   const FomSystemType & fomSysObj,
 					   DecoderType & decoder,
 					   const RomStateType & stateIn,
@@ -156,7 +156,7 @@ template<
     FomSystemType, DecoderType, RomStateType, FomReferenceStateType, ProjectorType
     >
   >
-ReturnType create_hyperreduced_implicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_hyperreduced_implicit_problem(::pressio::ode::StepScheme name,
 						const FomSystemType & fomSysObj,
 						DecoderType & decoder,
 						const RomStateType & stateIn,
@@ -180,7 +180,7 @@ template<
     FomReferenceStateType, MaskerType, ProjectorType
     >
   >
-ReturnType create_masked_implicit_problem(::pressio::ode::SteppersE name,
+ReturnType create_masked_implicit_problem(::pressio::ode::StepScheme name,
 					  const FomSystemType & fomSysObj,
 					  DecoderType & decoder,
 					  const RomStateType & stateIn,
@@ -211,7 +211,7 @@ ReturnType create_default_problem(const FomSystemType & fomSysObj,
 				  const RomStateType & stateIn,
 				  const FomReferenceStateType & fomRef)
 {
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef);
 }
 
@@ -233,7 +233,7 @@ ReturnType create_hyperreduced_problem(const FomSystemType & fomSysObj,
 				       const ProjectorType & projector)
 {
 
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef, projector);
 }
 
@@ -258,7 +258,7 @@ ReturnType create_masked_problem(const FomSystemType & fomSysObj,
 				 const MaskerType & masker)
 {
 
-  return ReturnType(::pressio::ode::SteppersE::ImplicitArbitrary,
+  return ReturnType(::pressio::ode::StepScheme::ImplicitArbitrary,
 		    fomSysObj, decoder, stateIn, fomRef, projector, masker);
 }
 

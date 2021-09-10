@@ -56,7 +56,7 @@ TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
   SHARED_LINES();
 
   auto problem = pressio::rom::galerkin::create_default_explicit_problem(
-    pressio::ode::SteppersE::ForwardEuler, fomSystem, decoder, romState, fomReferenceState);
+    pressio::ode::StepScheme::ForwardEuler, fomSystem, decoder, romState, fomReferenceState);
 
   const scalar_t dt = 1.;
   const int num_steps = 2;
@@ -96,7 +96,7 @@ TEST(rom_galerkin, cont_time_default_implicit_correctness_eigen)
 
   // using ode_tag = pressio::ode::BDF1;
   auto problem = pressio::rom::galerkin::create_default_implicit_problem(
-    pressio::ode::SteppersE::BDF1, fomSystem, decoder, romState, fomReferenceState);
+    pressio::ode::StepScheme::BDF1, fomSystem, decoder, romState, fomReferenceState);
   auto & stepperObj = problem.stepper();
 
   FakeNonLinSolverContTime nonLinSolver;

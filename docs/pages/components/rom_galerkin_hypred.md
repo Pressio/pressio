@@ -3,7 +3,7 @@
 
 Defined in: `<pressio/rom_galerkin.hpp>`
 
-Public namespace: `pressio::rom`, `pressio::rom::galerkin`.
+Public namespace: `pressio::rom::galerkin`
 
 
 ## Overview
@@ -29,28 +29,39 @@ and we reserve the right to change this in the future.
 
 ```cpp
 template<
-  class StepperTag,
   class FomSystemType,
   class DecoderType,
   class RomStateType,
   class FomReferenceStateType,
   class ProjectorType
   >
-auto create_hyperreduced_problem(const FomSystemType & fomSysObj,
-                                 DecoderType & decoder,
-                                 const RomStateType & stateIn,
-                                 const FomReferenceStateType & fomRef,
-								 const ProjectorType & probjector);
-```
+auto create_hyperreduced_explicit_problem(pressio::ode::StepScheme,
+										  const FomSystemType &,
+									      DecoderType &,
+									      const RomStateType &,
+									      const FomReferenceStateType &,
+									      const ProjectorType &);
 
-where `StepperTag` is a tag type from the ode to specify which time scheme to use.
+template<
+  class FomSystemType,
+  class DecoderType,
+  class RomStateType,
+  class FomReferenceStateType,
+  class ProjectorType
+  >
+auto create_hyperreduced_implicit_problem(pressio::ode::StepScheme,
+										  const FomSystemType &,
+									      DecoderType &,
+									      const RomStateType &,
+									      const FomReferenceStateType &,
+									      const ProjectorType &);
+```
 This function returns an instance of the desired Galerkin problem.
 
 ### Parameters and Requirements
 
-- `StepperTag`:
-  - tag type to specify the time scheme
-  - must be one of the explicit or implicit tag types supported in `pressio::ode`
+- `StepScheme`:
+  - enum value to specify stepper
 
 - `FomSystemType`:
   - your adapter class type specifying the FOM problem

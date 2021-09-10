@@ -58,20 +58,20 @@ template<
   class SystemType,
   class ReturnType = typename impl::ExplicitCompose<StateType, SystemType>::type
   >
-ReturnType create_explicit_stepper(SteppersE name,
+ReturnType create_explicit_stepper(StepScheme name,
 				   const StateType & state,
 				   SystemType && system)
 {
-  if (name == SteppersE::ForwardEuler){
+  if (name == StepScheme::ForwardEuler){
     return ReturnType(ode::ForwardEuler(), state, std::forward<SystemType>(system));
   }
-  else if (name == SteppersE::RungeKutta4){
+  else if (name == StepScheme::RungeKutta4){
     return ReturnType(ode::RungeKutta4(), state, std::forward<SystemType>(system));
   }
-  else if (name == SteppersE::AdamsBashforth2){
+  else if (name == StepScheme::AdamsBashforth2){
     return ReturnType(ode::AdamsBashforth2(), state, std::forward<SystemType>(system));
   }
-  else if (name == SteppersE::SSPRungeKutta3){
+  else if (name == StepScheme::SSPRungeKutta3){
     return ReturnType(ode::SSPRungeKutta3(), state, std::forward<SystemType>(system));
   }
   else{
@@ -81,44 +81,44 @@ ReturnType create_explicit_stepper(SteppersE name,
 
 template<class ...Args>
 auto create_forward_euler_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::ForwardEuler, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::ForwardEuler, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::ForwardEuler, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::ForwardEuler, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_runge_kutta4_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::RungeKutta4, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::RungeKutta4, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_rk4_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::RungeKutta4, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::RungeKutta4, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::RungeKutta4, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_adams_bashforth2_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::AdamsBashforth2, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::AdamsBashforth2, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::AdamsBashforth2, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::AdamsBashforth2, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_ssp_runge_kutta3_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::SSPRungeKutta3, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::SSPRungeKutta3, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_ssprk3_stepper(Args && ...args)
-  -> decltype(create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...))
+  -> decltype(create_explicit_stepper(StepScheme::SSPRungeKutta3, std::forward<Args>(args)...))
 {
-  return create_explicit_stepper(SteppersE::SSPRungeKutta3, std::forward<Args>(args)...);
+  return create_explicit_stepper(StepScheme::SSPRungeKutta3, std::forward<Args>(args)...);
 };
 
 }} // end namespace pressio::ode

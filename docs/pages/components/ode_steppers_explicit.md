@@ -24,7 +24,7 @@ In pressio, a "stepper" is an abstraction that represents the "how" to take a st
 
 ```cpp
 template<class StateType, class SystemType>
-auto create_explicit_stepper(pressio::ode::SteppersE name,
+auto create_explicit_stepper(pressio::ode::StepScheme name,
 							 const StateType & state,
 	                         const SystemType & system);
 ```
@@ -72,7 +72,7 @@ int main()
   // systemObj is the system instance
 
   namespace pode = pressio::ode;
-  const auto scheme = pode::SteppersE::ForwardEuler;
+  const auto scheme = pode::StepScheme::ForwardEuler;
   auto stepper = pode::create_explicit_stepper(scheme, stateObj, systemObj);
 
   // use the stepper to advance in time,

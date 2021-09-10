@@ -32,8 +32,6 @@
   </compound>
   <compound refid="rom__decoder_8md" kind="file"><name>rom_decoder.md</name>
   </compound>
-  <compound refid="rom__decoder__linear_8md" kind="file"><name>rom_decoder_linear.md</name>
-  </compound>
   <compound refid="rom__fom__apis_8md" kind="file"><name>rom_fom_apis.md</name>
   </compound>
   <compound refid="rom__galerkin__default_8md" kind="file"><name>rom_galerkin_default.md</name>
@@ -50,11 +48,17 @@
   </compound>
   <compound refid="rom__lspg__default_8md" kind="file"><name>rom_lspg_default.md</name>
   </compound>
+  <compound refid="rom__lspg__default__steady_8md" kind="file"><name>rom_lspg_default_steady.md</name>
+  </compound>
   <compound refid="rom__lspg__general_8md" kind="file"><name>rom_lspg_general.md</name>
   </compound>
   <compound refid="rom__lspg__hypred_8md" kind="file"><name>rom_lspg_hypred.md</name>
   </compound>
+  <compound refid="rom__lspg__hypred__steady_8md" kind="file"><name>rom_lspg_hypred_steady.md</name>
+  </compound>
   <compound refid="rom__lspg__masked_8md" kind="file"><name>rom_lspg_masked.md</name>
+  </compound>
+  <compound refid="rom__lspg__masked__steady_8md" kind="file"><name>rom_lspg_masked_steady.md</name>
   </compound>
   <compound refid="rom__wls_8md" kind="file"><name>rom_wls.md</name>
   </compound>
@@ -128,8 +132,6 @@
   </compound>
   <compound refid="md_pages_components_rom_decoder" kind="page"><name>md_pages_components_rom_decoder</name>
   </compound>
-  <compound refid="md_pages_components_rom_decoder_linear" kind="page"><name>md_pages_components_rom_decoder_linear</name>
-  </compound>
   <compound refid="md_pages_components_rom_fom_apis" kind="page"><name>md_pages_components_rom_fom_apis</name>
   </compound>
   <compound refid="md_pages_components_rom_galerkin_default" kind="page"><name>md_pages_components_rom_galerkin_default</name>
@@ -146,11 +148,17 @@
   </compound>
   <compound refid="md_pages_components_rom_lspg_default" kind="page"><name>md_pages_components_rom_lspg_default</name>
   </compound>
+  <compound refid="md_pages_components_rom_lspg_default_steady" kind="page"><name>md_pages_components_rom_lspg_default_steady</name>
+  </compound>
   <compound refid="md_pages_components_rom_lspg_general" kind="page"><name>md_pages_components_rom_lspg_general</name>
   </compound>
   <compound refid="md_pages_components_rom_lspg_hypred" kind="page"><name>md_pages_components_rom_lspg_hypred</name>
   </compound>
+  <compound refid="md_pages_components_rom_lspg_hypred_steady" kind="page"><name>md_pages_components_rom_lspg_hypred_steady</name>
+  </compound>
   <compound refid="md_pages_components_rom_lspg_masked" kind="page"><name>md_pages_components_rom_lspg_masked</name>
+  </compound>
+  <compound refid="md_pages_components_rom_lspg_masked_steady" kind="page"><name>md_pages_components_rom_lspg_masked_steady</name>
   </compound>
   <compound refid="md_pages_components_rom_wls" kind="page"><name>md_pages_components_rom_wls</name>
   </compound>

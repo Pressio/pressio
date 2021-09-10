@@ -13,7 +13,7 @@ TEST(ode, implicit_bdf2_policy_default_created)
   problem_t problemObj;
   state_t y(3);
   y = problemObj.getInitCond();
-  auto stepperObj = ode::create_implicit_stepper(ode::SteppersE::BDF2, y,problemObj);
+  auto stepperObj = ode::create_implicit_stepper(ode::StepScheme::BDF2, y,problemObj);
 
   using jac_t = typename problem_t::jacobian_type;
   using lin_solver_t = linearsolvers::Solver<linearsolvers::iterative::Bicgstab, jac_t>;

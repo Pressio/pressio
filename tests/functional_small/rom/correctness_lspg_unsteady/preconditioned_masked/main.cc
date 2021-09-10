@@ -85,7 +85,7 @@ TEST(rom_lspg, cont_time_unsteady_prec_masked_correctness_eigen)
   COMMON_PART1();
   MaskerEigen masker(sample_indices);
   PreconditionerEigen prec;
-  constexpr auto scheme = pressio::ode::SteppersE::BDF1;
+  constexpr auto scheme = pressio::ode::StepScheme::BDF1;
   auto problem = pressio::rom::lspg::create_masked_unsteady_problem
     (scheme, fomSystem, decoder, romState, fomReferenceState, masker, prec);
 
@@ -105,7 +105,7 @@ TEST(rom_lspg, cont_time_unsteady_prec_masked_correctness_custom_types)
   COMMON_PART1();
   MaskerCustomTypes masker(sample_indices);
   PreconditionerCustomTypes<scalar_t> prec;
-  constexpr auto scheme = pressio::ode::SteppersE::BDF1;
+  constexpr auto scheme = pressio::ode::StepScheme::BDF1;
   auto problem = pressio::rom::lspg::create_masked_unsteady_problem
     (scheme, fomSystem, decoder, romState, fomReferenceState, masker, prec);
 

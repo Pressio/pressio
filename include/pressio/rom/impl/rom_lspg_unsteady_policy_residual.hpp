@@ -88,7 +88,7 @@ public:
     class LspgStencilStatesContainerType,
     class LspgStencilVelocitiesContainerType,
     class ScalarType>
-  void operator()(::pressio::ode::SteppersE name,
+  void operator()(::pressio::ode::StepScheme name,
 		  const LspgStateType & lspgState,
 		  const LspgStencilStatesContainerType & lspgStencilStates,
 		  LspgStencilVelocitiesContainerType & lspgStencilVelocities,
@@ -98,17 +98,17 @@ public:
 		  residual_type & lspgResidual) const
   {
 
-    if (name == ::pressio::ode::SteppersE::BDF1){
+    if (name == ::pressio::ode::StepScheme::BDF1){
       (*this).template compute_impl_bdf<ode::BDF1>
 	(lspgState, lspgStencilStates, lspgStencilVelocities,
 	 t_np1, dt, currentStepNumber, lspgResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::BDF2){
+    else if (name == ::pressio::ode::StepScheme::BDF2){
       (*this).template compute_impl_bdf<ode::BDF2>
 	(lspgState, lspgStencilStates, lspgStencilVelocities,
 	 t_np1, dt, currentStepNumber, lspgResidual);
     }
-    else if (name == ::pressio::ode::SteppersE::CrankNicolson){
+    else if (name == ::pressio::ode::StepScheme::CrankNicolson){
       (*this).compute_impl_cn(lspgState, lspgStencilStates,lspgStencilVelocities,
 			      t_np1, dt, currentStepNumber, lspgResidual);
     }

@@ -54,7 +54,7 @@
 namespace pressio{ namespace ode{
 
 template<class StateType, class SystemType>
-auto create_implicit_stepper(SteppersE name,
+auto create_implicit_stepper(StepScheme name,
 			     const StateType & state,
 			     const SystemType & system)
   ->  decltype(impl::create_implicit_stepper_impl(name, system, state))
@@ -63,7 +63,7 @@ auto create_implicit_stepper(SteppersE name,
 };
 
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
-auto create_implicit_stepper(SteppersE name,
+auto create_implicit_stepper(StepScheme name,
 			     const StateType & state,
 			     ResidualPolicyType && rPol,
 			     JacobianPolicyType && jPol)
@@ -78,23 +78,23 @@ auto create_implicit_stepper(SteppersE name,
 
 template<class ...Args>
 auto create_bdf1_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(SteppersE::BDF1, std::forward<Args>(args)...))
+  -> decltype(create_implicit_stepper(StepScheme::BDF1, std::forward<Args>(args)...))
 {
-  return create_implicit_stepper(SteppersE::BDF1, std::forward<Args>(args)...);
+  return create_implicit_stepper(StepScheme::BDF1, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_bdf2_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(SteppersE::BDF2, std::forward<Args>(args)...))
+  -> decltype(create_implicit_stepper(StepScheme::BDF2, std::forward<Args>(args)...))
 {
-  return create_implicit_stepper(SteppersE::BDF2, std::forward<Args>(args)...);
+  return create_implicit_stepper(StepScheme::BDF2, std::forward<Args>(args)...);
 };
 
 template<class ...Args>
 auto create_cranknicolson_stepper(Args && ... args)
-  -> decltype(create_implicit_stepper(SteppersE::CrankNicolson, std::forward<Args>(args)...))
+  -> decltype(create_implicit_stepper(StepScheme::CrankNicolson, std::forward<Args>(args)...))
 {
-  return create_implicit_stepper(SteppersE::CrankNicolson, std::forward<Args>(args)...);
+  return create_implicit_stepper(StepScheme::CrankNicolson, std::forward<Args>(args)...);
 };
 
 // Arbitrary
