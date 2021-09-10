@@ -1,0 +1,59 @@
+name: github-linux
+
+on: [push, pull_request]
+
+jobs:
+  CI:
+    continue-on-error: true
+
+    strategy:
+      max-parallel: 10
+      fail-fast: false
+      matrix:
+        config:
+          # note: the os is always ubuntu because that is the os of the github runner
+          # but the code is run via docker
+          #
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest,   mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-gnu_9-eigen_3.3.7-gtest,   mode: Debug }
+          #
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Release }
+          - { os: ubuntu-latest, image: ubuntu-20.04-clang_9-eigen_3.3.7-gtest, mode: Debug }
+          #
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest,     mode: Debug }
+          - { os: ubuntu-latest, image: fedora-34-gnu_11-eigen_3.3.7-gtest,     mode: Release }
+          #
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Debug }
+          - { os: ubuntu-latest, image: fedora-34-clang_12-eigen_3.3.7-gtest,   mode: Release }
+
+          #- { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+          #- { os: ubuntu-latest, image: ubuntu-20.04-intel-eigen_3.3.7-gtest, mode: Release }
+
+    runs-on: ${{ matrix.config.os }}
+    container: pressiomodelreduction/${{ matrix.config.image }}
+
+    env:
+      pressio_dir: /__w/pressio/pressio
+      target_dir: /out
+      eigen_path: /usr/local/eigen/install
+      gtest_path: /usr/local/gtest/install
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cd /pressio-builder
+          git pull
+          git status
+
+          sed -i 's/source .\/shared\/colors.sh/# colors commnted out/g' main_pressio.sh
+
+          ./main_pressio.sh -dryrun=no -build-mode=${{ matrix.config.mode }} \
+          -target-dir=${{env.target_dir}} -eigen-path=${{env.eigen_path}} \
+          -gtest-path=${{env.gtest_path}} -cmake-generator-name=default_with_tests \
+          -pressio-src=${{env.pressio_dir}} -ncpu-for-make=4
+
+      - name: Test
+        run: |
+            cd ${{ env.target_dir }}/pressio/build
+            ctest --output-on-failure
