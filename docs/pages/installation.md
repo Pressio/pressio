@@ -2,18 +2,9 @@
 # Installation and Dependencies
 
 
-@m_class{m-block m-info}
+@m_class{m-block m-success}
 
-@par
-This page describes the dependencies of `pressio` and its installation process.
-By the end, you should be able to clone pressio, install it,
-and point to the installed headers from your application.
-
-
-@m_class{m-block m-info}
-
-@parblock `pressio` is header-only, so to use it one does not need to precompile it
-into a library and linking to it.
+@parblock `pressio` is header-only, so it does not need to be precompiled and linked to.
 However, since we use preprocessor directives to conditionally
 enable/disable code based on target third-party libraries,
 one needs to account for this. See below for the details.
@@ -25,30 +16,18 @@ one needs to account for this. See below for the details.
 
 Some parts of `pressio` contain code and implementations
 that are specific to third-party libraries (TPLs).
-For example, the `containers` and `ops` components of `pressio` contain
-thin wrappers and kernels that are custom-built for target libraries.
-The main reason for doing this is that we aim to alleviate the user from
-writing custom operations and allows `pressio` to decide when and how to leverage
+An example is `pressio/ops`, which contains kernels specializations
+for widely-used HPC libraries (e.g. Trilinos, Kokkos).
+The main reason for doing this is that we aim, where possible,
+to alleviate the user from writing custom operations and allow `pressio` to decide when and how to leverage
 the native libraries' operations to obtain the best performance.
 This should facilitate the integration and use of `pressio` by existing applications.
-Obviously, this is a growing capability and we currently only
+This is a growing capability and we currently only
 provide built-in support to some external HPC libraries (see below).
-We can distinguish between *optional* and *required* dependencies.
+Obviously, these TPLs-specific specializations need to be guarded with
+preprecessor directives, and enabled only if one can access the TPLs.
 
-| TPL Library Name   | Optional/Required | Version Known to Work |
-| ------------------ | ---------------   |                       |
-| Eigen              | Required          | 3.3.7                 |
-| Trilinos           | Optional          | 12.17.00              |
-| MPI                | Optional          | --                    |
-| Kokkos             | Optional          | 3.1.0                 |
-| BLAS               | Optional          | --                    |
-| LAPACK             | Optional          | --                    |
-| Pybind11           | Optional          | v2.6                  |
-| GoogleTest         | Optional          | 1.10.0                |
-|                    |                   |                       |
-
-
-Enabling/disabling specific dependencies is done via the following cmake variables:
+Enabling/disabling specific dependencies can be done via the following cmake variables:
 
 | Variable                        | Description                          | Default Value                                                                                   |
 | ------------------              | ---------------                      | -----------                                                                                     |
@@ -62,13 +41,23 @@ Enabling/disabling specific dependencies is done via the following cmake variabl
 | `PRESSIO_ENABLE_TPL_PYBIND11`   | self-explanatory                     | `OFF`                                                                                           |
 | `PRESSIO_ENABLE_DEBUG_PRINT`    | to enable debugging print statements | `OFF`                                                                                           |
 
-@m_class{m-block m-default}
+### Optional vs Required
 
-@par
-	Eigen is the only required dependency because it is the
-	default choice for instantiating the ROM data structures
-	and solving the (dense) ROM problem.
+Eigen is the only required dependency because it is the
+default choice for instantiating the ROM data structures
+and solving the (dense) ROM problem.
 
+| TPL Library Name   | Optional/Required | Version Known to Work |
+| ------------------ | ---------------   |                       |
+| Eigen              | Required          | 3.3.7                 |
+| Trilinos           | Optional          | 12.17.00              |
+| MPI                | Optional          | --                    |
+| Kokkos             | Optional          | 3.1.0                 |
+| BLAS               | Optional          | --                    |
+| LAPACK             | Optional          | --                    |
+| Pybind11           | Optional          | v2.6                  |
+| GoogleTest         | Optional          | 1.10.0                |
+|                    |                   |                       |
 
 
 Obviously, the choice of which TPLs to enable is related to
@@ -149,10 +138,10 @@ pressio headers, and you can access all pressio functionalities via the C++ incl
 @m_class{m-code-figure}
 
 @code{.cpp}
-#include "pressio.hpp"
+#include "pressio/what_you_need.hpp"
 // ...
 int main(){
-  // do what you need
+  // do something
 }
 @endcode
 </li>
@@ -170,7 +159,3 @@ and use cmake variables directly when building your code.
 However, this could have unexpected consequences since
 you would be resposible to set the variables correctly but you would not
 know exactly all the possible constraints.
-
-## Where to go from here?
-Navigate [this page](./md_pages_getstarted_packages.html) to learn which packages
-pressio includes, and how you can have finer-grained access to certain functionalities.

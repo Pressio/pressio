@@ -49,8 +49,8 @@
 #ifndef PRESSIO_EXPRESSIONS_HPP_
 #define PRESSIO_EXPRESSIONS_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/type_traits.hpp"
+#include "./mpl.hpp"
+#include "./type_traits.hpp"
 
 #include "./expressions/fwd.hpp"
 #include "./expressions/public_functions.hpp"

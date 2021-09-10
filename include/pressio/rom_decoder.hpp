@@ -49,14 +49,14 @@
 #ifndef PRESSIO_ROM_GALERKIN_HPP_
 #define PRESSIO_ROM_GALERKIN_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
-#include "pressio/ops.hpp"
-#include "pressio/qr.hpp"
-#include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
-#include "pressio/ode.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
+#include "./ode.hpp"
 
 #include "./rom/rom_public_api_decoder.hpp"
 

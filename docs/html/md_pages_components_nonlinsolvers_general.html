@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nonlinear Solvers - General Info | Pressio|C++</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">Pressio|C++</a>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-12 m-col-m-none">
+            <li><a href="md_pages_introduction.html">Introduction</a></li>
+            <li><a href="md_pages_installation.html">Installation/Dependencies</a></li>
+            <li>
+              <a>Documentation</a>
+              <ol>
+                <li><a href="md_pages_components_mpl.html">mpl</a></li>
+                <li><a href="md_pages_components_utils.html">utils</a></li>
+                <li><a href="md_pages_components_type_traits.html">type_traits</a></li>
+                <li><a href="md_pages_components_expressions.html">expressions</a></li>
+                <li><a href="md_pages_components_ops.html">ops</a></li>
+                <li><a href="md_pages_components_qr.html">qr</a></li>
+                <li><a href="md_pages_components_linsolvers.html">linear solvers</a></li>
+                <li><a> nonlinear solvers: </a></li>
+                <li><a href="md_pages_components_nonlinsolvers_general.html"> &emsp; - general info</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_system_api.html"> &emsp; - problem class API</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_nr.html"> &emsp; - Newton-Raphson</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_gn.html"> &emsp; - Gauss-Newton</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_lm.html"> &emsp; - Levenberg-Marquardt</a></li>
+                <li><a href="md_pages_components_nonlinsolvers_irls.html"> &emsp; - irls</a></li>
+                <li><a> ode: </a></li>
+                <li><a href="md_pages_components_ode_advance.html"> &emsp; - advancers</a></li>
+                <li><a href="md_pages_components_ode_steppers_explicit.html"> &emsp; - explicit steppers</a></li>
+                <li><a href="md_pages_components_ode_steppers_implicit.html"> &emsp; - implicit steppers</a></li>
+                <li><a> rom: </a></li>
+                <li><a href="md_pages_components_rom_fom_apis.html"> &emsp; - FOM adapter API</a></li>
+                <li><a href="md_pages_components_rom_decoder.html">  &emsp; - decoder</a></li>
+                <li><a href="md_pages_components_rom_galerkin.html"> &emsp; - Galerkin </a></li>
+                <li><a href="md_pages_components_rom_galerkin_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_galerkin_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: steady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default_steady.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred_steady.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked_steady.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_steady.html"> &emsp; - LSPG: unsteady </a></li>
+                <li><a href="md_pages_components_rom_lspg_default.html"> &emsp; &emsp; - default problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_hypred.html"> &emsp; &emsp; - hyper-reduced problem </a></li>
+                <li><a href="md_pages_components_rom_lspg_masked.html"> &emsp; &emsp; - masked problem </a></li>
+                <li><a href="md_pages_components_rom_wls.html">rom: WLS</a></li>
+              </ol>
+            </li>
+            <li><a href="md_pages_tutorials.html">Tutorials</a></li>
+            <li><a href="https://github.com/Pressio/pressio">Github Page</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="6">
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          Nonlinear Solvers - General Info
+        </h1>
+<p>Defined in header <code>&lt;pressio/solvers_nonlinear.hpp&gt;</code></p><p>Public namespace: <code>pressio::nonlinearsolvers</code></p><section id="autotoc_md14"><h2><a href="#autotoc_md14">Overview</a></h2><p>The pressio nonlinear solvers have been developed from the ground up using generic programming. It is intended to be a library that can be used independently and with support for arbitrary data types. It is not fully complete, and it can obviously be extended. If you are interested in contributing or you need other methods, open an issue and/or PR.</p><p>Currently, we support the following algorithms:</p><table class="m-table"><thead><tr><th>Name</th><th>Doc</th><th>Purpose:</th></tr></thead><tbody><tr><td>Newton-Raphson</td><td><a href="./md_pages_components_nonlinsolvers_nr.html">Link</a></td><td>Systems of nonlinear equations (see e.g. <a href="https://link.springer.com/content/pdf/bbm%3A978-3-319-69407-8%2F1.pdf">link</a>, <a href="https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf">link</a> )</td></tr><tr><td>Gauss-Newton</td><td><a href="./md_pages_components_nonlinsolvers_gn.html">Link</a></td><td>Nonlinear least-squares problem. (see <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">link</a> )</td></tr><tr><td>Levenberg–Marquardt</td><td><a href="./md_pages_components_nonlinsolvers_lm.html">Link</a></td><td>Nonlinear least-squares problem. (see <a href="https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">link</a> )</td></tr><tr><td>Iteratively reweighted least squares</td><td><a href="./md_pages_components_nonlinsolvers_irls.html">Link</a></td><td>optimization problem formulated in a p-norm (see <a href="https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares">link</a> )</td></tr></tbody></table><section id="autotoc_md15"><h3><a href="#autotoc_md15">A glimpse of the API</a></h3><p>To create a solver, we expose specific factory functions for each algorithm.</p><pre class="m-code"><span class="k">namespace</span> <span class="n">pnonls</span> <span class="o">=</span> <span class="n">pressio</span><span class="o">::</span><span class="n">nonlinearsolvers</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pnonls</span><span class="o">::</span><span class="n">create_newton_raphson</span><span class="p">(....);</span>
+<span class="k">auto</span> <span class="n">solver</span> <span class="o">=</span> <span class="n">pnonls</span><span class="o">::</span><span class="n">create_gauss_newton</span><span class="p">(....);</span></pre><p>Please refer to each method&#x27;s documentation for the details on the API and arguments.</p></section></section><section id="autotoc_md16"><h2><a href="#autotoc_md16">What are users responsible of?</a></h2><p>If you want to use the pressio nonlinear solvers, you are responsible of three main things:</p><ul><li>A: providing a problem object</li><li>B: specifying the convergence criterion</li><li>C: specifying the update method</li></ul><section id="autotoc_md17"><h3><a href="#autotoc_md17">A: problem class</a></h3><p>The problem class is what you use to <em>define your problem</em>. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.</p><p>The pressio nonlinear solvers define four main types of problem APIs, namely the &quot;residual-jacobian&quot;, &quot;fused residual-jacobian&quot;, &quot;hessian-gradient&quot; , and &quot;fused hessian-gradient&quot;. These problem concepts are discussed on <a href="md_pages_components_nonlinsolvers_system_api.html">this page</a>. Depending on which concepts your problem meets, you can access certain algorithms but not necessarily others. The following table helps clarifying the problem API/algorithms admissibility:</p><table class="m-table"><thead><tr><th>Algorithm</th><th>Residual-Jacobian API</th><th>Fused Residual-Jacobian API</th><th>Hessian-Gradient API</th><th>Fused Hessian-Gradient API</th></tr></thead><tbody><tr><td>Newton-Raphson</td><td>admissible</td><td>admissible</td><td></td><td></td></tr><tr><td>Gauss-Newton Normal-Equations</td><td>admissible</td><td>admissible</td><td>admissible</td><td>admissible</td></tr><tr><td>Gauss-Newton QR</td><td>admissible</td><td>admissible</td><td></td><td></td></tr><tr><td>Levenberg-Marquardt</td><td>admissible</td><td>admissible</td><td>admissible</td><td>admissible</td></tr><tr><td>irls</td><td>admissible</td><td>admissible</td><td></td><td></td></tr></tbody></table><p>Please refer to each method&#x27;s documentation for the details on how you provide a problem instance to pressio.</p></section><section id="autotoc_md18"><h3><a href="#autotoc_md18">B: Convergence and tolerance</a></h3><p>The convergence criterion and associated tolerance are used to decide why and when the solver needs to terminate. We currently support these termination criteria:</p><table class="m-table"><thead><tr><th>Enum value</th><th>Description</th><th>Currently supported for:</th></tr></thead><tbody><tr><td><code>Stop::AfterMaxIters</code></td><td>self-explanatory</td><td>all algorithms</td></tr><tr><td><code>Stop::WhenCorrectionAbsoluteNormBelowTolerance</code></td><td>self-explanatory</td><td>all algorithms</td></tr><tr><td><code>Stop::WhenCorrectionRelativeNormBelowTolerance</code></td><td>self-explanatory</td><td>all algorithms</td></tr><tr><td><code>Stop::WhenResidualAbsoluteNormBelowTolerance</code></td><td>self-explanatory</td><td>all algorithms</td></tr><tr><td><code>Stop::WhenResidualRelativeNormBelowTolerance</code></td><td>self-explanatory</td><td>all algorithms</td></tr><tr><td><code>Stop::WhenGradientAbsoluteNormBelowTolerance</code></td><td>self-explanatory</td><td>least-squares solvers</td></tr><tr><td><code>Stop::WhenGradientRelativeNormBelowTolerance</code></td><td>self-explanatory</td><td>least-squares solvers</td></tr></tbody></table><p>which you set/query along with corresponding tolerances using the following methods:</p><pre class="m-code"><span class="k">class</span> <span class="nc">Solver</span><span class="p">{</span>
+  <span class="p">...</span>
+
+  <span class="c1">// set/query stopping criterion</span>
+  <span class="kt">void</span> <span class="n">setStoppingCriterion</span><span class="p">(</span><span class="n">Stop</span> <span class="n">value</span><span class="p">);</span>
+  <span class="n">Stop</span> <span class="nf">stoppingCriterion</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="c1">// set/query max number of iterations</span>
+  <span class="kt">void</span> <span class="nf">setMaxIterations</span><span class="p">(</span><span class="n">iteration_type</span> <span class="n">maxIters</span><span class="p">);</span>
+  <span class="n">iteration_type</span> <span class="nf">maxIterations</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+  <span class="c1">// this is used to set a single tol for all</span>
+  <span class="kt">void</span> <span class="nf">setTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">tolerance</span><span class="p">){</span> <span class="n">tolerances_</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">tolerance</span><span class="p">));</span> <span class="p">}</span>
+
+  <span class="c1">// finer-grained methods for setting tolerances</span>
+  <span class="kt">void</span> <span class="nf">setCorrectionAbsoluteTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">setCorrectionRelativeTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">setResidualAbsoluteTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">setResidualRelativeTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">setGradientAbsoluteTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">setGradientRelativeTolerance</span><span class="p">(</span><span class="n">scalar_type</span> <span class="n">value</span><span class="p">);</span>
+
+  <span class="c1">// querying tolerances</span>
+  <span class="n">scalar_type</span> <span class="nf">correctionAbsoluteTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="n">scalar_type</span> <span class="nf">correctionRelativeTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="n">scalar_type</span> <span class="nf">residualAbsoluteTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="n">scalar_type</span> <span class="nf">residualRelativeTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="n">scalar_type</span> <span class="nf">gradientAbsoluteTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="n">scalar_type</span> <span class="nf">gradientRelativeTolerance</span><span class="p">()</span><span class="k">const</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">};</span></pre></section><section id="autotoc_md19"><h3><a href="#autotoc_md19">C: Setting the update</a></h3><p>The update stage represents the <em>how</em> the current correction term is combined with state to update the latter. We currently support the following:</p><table class="m-table"><thead><tr><th>Name</th><th>Enum value</th><th>Description</th><th>Currently supported for:</th></tr></thead><tbody><tr><td>Default</td><td><code>Update::Standard</code></td><td><svg class="m-math" style="width: 8.076em; height: 1.138em; vertical-align: -0.274em;" viewBox="0 -8.302191 77.528512 10.925715">
+<title>
+$x_{n+1} = x_{n} + \lambda_{n}$
+</title>
+<defs>
+<path id='eq1-g3-43' d='M4.770112-2.761644H8.069738C8.237111-2.761644 8.452304-2.761644 8.452304-2.976837C8.452304-3.203985 8.249066-3.203985 8.069738-3.203985H4.770112V-6.503611C4.770112-6.670984 4.770112-6.886177 4.554919-6.886177C4.327771-6.886177 4.327771-6.682939 4.327771-6.503611V-3.203985H1.028144C.860772-3.203985 .645579-3.203985 .645579-2.988792C.645579-2.761644 .848817-2.761644 1.028144-2.761644H4.327771V.537983C4.327771 .705355 4.327771 .920548 4.542964 .920548C4.770112 .920548 4.770112 .71731 4.770112 .537983V-2.761644Z'/>
+<path id='eq1-g3-61' d='M8.069738-3.873474C8.237111-3.873474 8.452304-3.873474 8.452304-4.088667C8.452304-4.315816 8.249066-4.315816 8.069738-4.315816H1.028144C.860772-4.315816 .645579-4.315816 .645579-4.100623C.645579-3.873474 .848817-3.873474 1.028144-3.873474H8.069738ZM8.069738-1.649813C8.237111-1.649813 8.452304-1.649813 8.452304-1.865006C8.452304-2.092154 8.249066-2.092154 8.069738-2.092154H1.028144C.860772-2.092154 .645579-2.092154 .645579-1.876961C.645579-1.649813 .848817-1.649813 1.028144-1.649813H8.069738Z'/>
+<path id='eq1-g2-43' d='M3.474969-1.809215H5.818182C5.929763-1.809215 6.105106-1.809215 6.105106-1.992528S5.929763-2.175841 5.818182-2.175841H3.474969V-4.527024C3.474969-4.638605 3.474969-4.813948 3.291656-4.813948S3.108344-4.638605 3.108344-4.527024V-2.175841H.757161C.645579-2.175841 .470237-2.175841 .470237-1.992528S.645579-1.809215 .757161-1.809215H3.108344V.541968C3.108344 .653549 3.108344 .828892 3.291656 .828892S3.474969 .653549 3.474969 .541968V-1.809215Z'/>
+<path id='eq1-g2-49' d='M2.502615-5.076961C2.502615-5.292154 2.486675-5.300125 2.271482-5.300125C1.944707-4.98132 1.522291-4.790037 .765131-4.790037V-4.527024C.980324-4.527024 1.41071-4.527024 1.872976-4.742217V-.653549C1.872976-.358655 1.849066-.263014 1.091905-.263014H.812951V0C1.139726-.02391 1.825156-.02391 2.183811-.02391S3.235866-.02391 3.56264 0V-.263014H3.283686C2.526526-.263014 2.502615-.358655 2.502615-.653549V-5.076961Z'/>
+<path id='eq1-g0-110' d='M1.594022-1.307098C1.617933-1.42665 1.697634-1.729514 1.721544-1.849066C1.833126-2.279452 1.833126-2.287422 2.016438-2.550436C2.279452-2.940971 2.654047-3.291656 3.188045-3.291656C3.474969-3.291656 3.642341-3.124284 3.642341-2.749689C3.642341-2.311333 3.307597-1.40274 3.156164-1.012204C3.052553-.749191 3.052553-.70137 3.052553-.597758C3.052553-.143462 3.427148 .079701 3.769863 .079701C4.550934 .079701 4.877709-1.036115 4.877709-1.139726C4.877709-1.219427 4.813948-1.243337 4.758157-1.243337C4.662516-1.243337 4.646575-1.187547 4.622665-1.107846C4.431382-.454296 4.096638-.143462 3.793773-.143462C3.666252-.143462 3.602491-.223163 3.602491-.406476S3.666252-.765131 3.745953-.964384C3.865504-1.267248 4.216189-2.183811 4.216189-2.630137C4.216189-3.227895 3.801743-3.514819 3.227895-3.514819C2.582316-3.514819 2.16787-3.124284 1.936737-2.82142C1.880946-3.259776 1.530262-3.514819 1.123786-3.514819C.836862-3.514819 .637609-3.331507 .510087-3.084433C.318804-2.709838 .239103-2.311333 .239103-2.295392C.239103-2.223661 .294894-2.191781 .358655-2.191781C.462267-2.191781 .470237-2.223661 .526027-2.430884C.621669-2.82142 .765131-3.291656 1.099875-3.291656C1.307098-3.291656 1.354919-3.092403 1.354919-2.917061C1.354919-2.773599 1.315068-2.622167 1.251308-2.359153C1.235367-2.295392 1.115816-1.825156 1.083935-1.713574L.789041-.518057C.757161-.398506 .70934-.199253 .70934-.167372C.70934 .01594 .860772 .079701 .964384 .079701C1.107846 .079701 1.227397-.01594 1.283188-.111582C1.307098-.159402 1.370859-.430386 1.41071-.597758L1.594022-1.307098Z'/>
+<path id='eq1-g1-21' d='M3.694147-7.44807C3.395268-8.296887 2.450809-8.296887 2.295392-8.296887C2.223661-8.296887 2.092154-8.296887 2.092154-8.177335C2.092154-8.081694 2.163885-8.069738 2.223661-8.057783C2.402989-8.033873 2.546451-8.009963 2.737733-7.663263C2.857285-7.436115 4.088667-3.861519 4.088667-3.837609C4.088667-3.825654 4.076712-3.813699 3.981071-3.718057L.872727-.573848C.729265-.430386 .633624-.334745 .633624-.179328C.633624-.011955 .777086 .131507 .968369 .131507C1.016189 .131507 1.147696 .107597 1.219427 .035866C1.41071-.143462 3.120299-2.235616 4.208219-3.526775C4.519054-2.594271 4.901619-1.494396 5.272229-.490162C5.332005-.310834 5.391781-.143462 5.559153 .011955C5.678705 .119552 5.702615 .119552 6.03736 .119552H6.264508C6.312329 .119552 6.396015 .119552 6.396015 .02391C6.396015-.02391 6.38406-.035866 6.336239-.083686C6.228643-.215193 6.144956-.430386 6.097136-.573848L3.694147-7.44807Z'/>
+<path id='eq1-g1-120' d='M5.66675-4.877709C5.284184-4.805978 5.140722-4.519054 5.140722-4.291905C5.140722-4.004981 5.36787-3.90934 5.535243-3.90934C5.893898-3.90934 6.144956-4.220174 6.144956-4.542964C6.144956-5.045081 5.571108-5.272229 5.068991-5.272229C4.339726-5.272229 3.93325-4.554919 3.825654-4.327771C3.550685-5.224408 2.809465-5.272229 2.594271-5.272229C1.374844-5.272229 .729265-3.706102 .729265-3.443088C.729265-3.395268 .777086-3.335492 .860772-3.335492C.956413-3.335492 .980324-3.407223 1.004234-3.455044C1.41071-4.782067 2.211706-5.033126 2.558406-5.033126C3.096389-5.033126 3.203985-4.531009 3.203985-4.244085C3.203985-3.981071 3.132254-3.706102 2.988792-3.132254L2.582316-1.494396C2.402989-.777086 2.056289-.119552 1.422665-.119552C1.362889-.119552 1.06401-.119552 .812951-.274969C1.243337-.358655 1.338979-.71731 1.338979-.860772C1.338979-1.099875 1.159651-1.243337 .932503-1.243337C.645579-1.243337 .334745-.992279 .334745-.609714C.334745-.107597 .896638 .119552 1.41071 .119552C1.984558 .119552 2.391034-.334745 2.642092-.824907C2.833375-.119552 3.431133 .119552 3.873474 .119552C5.092902 .119552 5.738481-1.446575 5.738481-1.709589C5.738481-1.769365 5.69066-1.817186 5.618929-1.817186C5.511333-1.817186 5.499377-1.75741 5.463512-1.661768C5.140722-.609714 4.447323-.119552 3.90934-.119552C3.490909-.119552 3.263761-.430386 3.263761-.920548C3.263761-1.183562 3.311582-1.374844 3.502864-2.163885L3.921295-3.789788C4.100623-4.507098 4.507098-5.033126 5.057036-5.033126C5.080946-5.033126 5.415691-5.033126 5.66675-4.877709Z'/>
+</defs>
+<g id='eq1-page1'>
+<use x='0' y='0' xlink:href='#eq1-g1-120'/>
+<use x='6.652087' y='1.793263' xlink:href='#eq1-g0-110'/>
+<use x='11.79029' y='1.793263' xlink:href='#eq1-g2-43'/>
+<use x='18.376796' y='1.793263' xlink:href='#eq1-g2-49'/>
+<use x='26.42994' y='0' xlink:href='#eq1-g3-61'/>
+<use x='38.855421' y='0' xlink:href='#eq1-g1-120'/>
+<use x='45.507508' y='1.793263' xlink:href='#eq1-g0-110'/>
+<use x='53.800506' y='0' xlink:href='#eq1-g3-43'/>
+<use x='65.561821' y='0' xlink:href='#eq1-g1-21'/>
+<use x='72.39031' y='1.793263' xlink:href='#eq1-g0-110'/>
+</g>
+</svg></td><td>all algorithms</td></tr><tr><td>Armijo</td><td><code>Update::Armijo</code></td><td>[see this]()</td><td>Gauss-Newton</td></tr><tr><td>LM-schedule1</td><td><code>Update::LMSchedule1</code></td><td>[see this]()</td><td>Levenberg–Marquardt</td></tr><tr><td>LM-schedule2</td><td><code>Update::LMSchedule2</code></td><td>[see this]()</td><td>Levenberg–Marquardt</td></tr></tbody></table><p>where <svg class="m-math" style="width: 1.247em; height: 1.052em; vertical-align: -0.187em;" viewBox="0 -8.302191 11.966691 10.095454">
+<title>
+$\lambda_{n}$
+</title>
+<defs>
+<path id='eq2-g0-110' d='M1.594022-1.307098C1.617933-1.42665 1.697634-1.729514 1.721544-1.849066C1.833126-2.279452 1.833126-2.287422 2.016438-2.550436C2.279452-2.940971 2.654047-3.291656 3.188045-3.291656C3.474969-3.291656 3.642341-3.124284 3.642341-2.749689C3.642341-2.311333 3.307597-1.40274 3.156164-1.012204C3.052553-.749191 3.052553-.70137 3.052553-.597758C3.052553-.143462 3.427148 .079701 3.769863 .079701C4.550934 .079701 4.877709-1.036115 4.877709-1.139726C4.877709-1.219427 4.813948-1.243337 4.758157-1.243337C4.662516-1.243337 4.646575-1.187547 4.622665-1.107846C4.431382-.454296 4.096638-.143462 3.793773-.143462C3.666252-.143462 3.602491-.223163 3.602491-.406476S3.666252-.765131 3.745953-.964384C3.865504-1.267248 4.216189-2.183811 4.216189-2.630137C4.216189-3.227895 3.801743-3.514819 3.227895-3.514819C2.582316-3.514819 2.16787-3.124284 1.936737-2.82142C1.880946-3.259776 1.530262-3.514819 1.123786-3.514819C.836862-3.514819 .637609-3.331507 .510087-3.084433C.318804-2.709838 .239103-2.311333 .239103-2.295392C.239103-2.223661 .294894-2.191781 .358655-2.191781C.462267-2.191781 .470237-2.223661 .526027-2.430884C.621669-2.82142 .765131-3.291656 1.099875-3.291656C1.307098-3.291656 1.354919-3.092403 1.354919-2.917061C1.354919-2.773599 1.315068-2.622167 1.251308-2.359153C1.235367-2.295392 1.115816-1.825156 1.083935-1.713574L.789041-.518057C.757161-.398506 .70934-.199253 .70934-.167372C.70934 .01594 .860772 .079701 .964384 .079701C1.107846 .079701 1.227397-.01594 1.283188-.111582C1.307098-.159402 1.370859-.430386 1.41071-.597758L1.594022-1.307098Z'/>
+<path id='eq2-g1-21' d='M3.694147-7.44807C3.395268-8.296887 2.450809-8.296887 2.295392-8.296887C2.223661-8.296887 2.092154-8.296887 2.092154-8.177335C2.092154-8.081694 2.163885-8.069738 2.223661-8.057783C2.402989-8.033873 2.546451-8.009963 2.737733-7.663263C2.857285-7.436115 4.088667-3.861519 4.088667-3.837609C4.088667-3.825654 4.076712-3.813699 3.981071-3.718057L.872727-.573848C.729265-.430386 .633624-.334745 .633624-.179328C.633624-.011955 .777086 .131507 .968369 .131507C1.016189 .131507 1.147696 .107597 1.219427 .035866C1.41071-.143462 3.120299-2.235616 4.208219-3.526775C4.519054-2.594271 4.901619-1.494396 5.272229-.490162C5.332005-.310834 5.391781-.143462 5.559153 .011955C5.678705 .119552 5.702615 .119552 6.03736 .119552H6.264508C6.312329 .119552 6.396015 .119552 6.396015 .02391C6.396015-.02391 6.38406-.035866 6.336239-.083686C6.228643-.215193 6.144956-.430386 6.097136-.573848L3.694147-7.44807Z'/>
+</defs>
+<g id='eq2-page1'>
+<use x='0' y='0' xlink:href='#eq2-g1-21'/>
+<use x='6.828489' y='1.793263' xlink:href='#eq2-g0-110'/>
+</g>
+</svg> is the correction computed at the n-th iteration of the solver.</p><p>To set or query the update method, you use the following methods of the solver class:</p><pre class="m-code"><span class="k">class</span> <span class="nc">Solver</span><span class="p">{</span>
+  <span class="p">...</span>
+  <span class="kt">void</span> <span class="n">setUpdatingCriterion</span><span class="p">(</span><span class="n">Update</span> <span class="n">value</span><span class="p">);</span>
+  <span class="n">Update</span> <span class="nf">updatingCriterion</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">};</span></pre><aside class="m-block m-success"><h3>By default, a nonlinear solver uses:</h3><ul><li>update: <code>Update::Standard</code>;</li><li>stopping: <code>Stop::WhenCorrectionAbsoluteNormBelowTolerance</code>;</li><li>max number of iterations = 100</li><li>tolerance = 0.000001 (for everything)</li></ul></aside></section></section><section id="autotoc_md20"><h2><a href="#autotoc_md20">A note on the solvers&#x27; design</a></h2><p>If you are interested, here we provide a brief note describing the our design idea. The design of the nonlinear solvers has been based on recognizing that, at a very high level, a nonlinear solver operates by repeatedly updating a given &quot;state&quot; until a certain criterion is met, and each &quot;iteration&quot; involves the following stages:</p><ul><li>A: computing/updating the operators</li><li>B: computing the new correction term</li><li>C: assessing convergence</li><li>D: updating the state using the correction</li></ul><p>This view forms the basis of our design approach: when a solver object is instantiated, depending on the chosen algorithm, pressio behind the scenes instantiates the proper classes needed for each of the stages above, and properly composes them to instantiate the desired solver object.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Pressio|C++. Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

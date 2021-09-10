@@ -1,0 +1,184 @@
+Defined in header {\ttfamily $<$pressio/solvers\+\_\+nonlinear.\+hpp$>$}
+
+Public namespace\+: {\ttfamily pressio\+::nonlinearsolvers}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md14}{}\doxysection{Overview}\label{md_pages_components_nonlinsolvers_general_autotoc_md14}
+The pressio nonlinear solvers have been developed from the ground up using generic programming. It is intended to be a library that can be used independently and with support for arbitrary data types. It is not fully complete, and it can obviously be extended. If you are interested in contributing or you need other methods, open an issue and/or PR.
+
+Currently, we support the following algorithms\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Doc   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose\+:    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Doc   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose\+:    }\\\cline{1-3}
+\endhead
+Newton-\/\+Raphson   &\href{./md_pages_components_nonlinsolvers_nr.html}{\texttt{ Link}}   &Systems of nonlinear equations (see e.\+g. \href{https://link.springer.com/content/pdf/bbm\%3A978-3-319-69407-8\%2F1.pdf}{\texttt{ link}}, \href{https://www.cmu.edu/math/undergrad/suami/pdfs/2014_newton_method.pdf}{\texttt{ link}} )    \\\cline{1-3}
+Gauss-\/\+Newton   &\href{./md_pages_components_nonlinsolvers_gn.html}{\texttt{ Link}}   &Nonlinear least-\/squares problem. (see \href{https://en.wikipedia.org/wiki/Gauss\%E2\%80\%93Newton_algorithm}{\texttt{ link}} )    \\\cline{1-3}
+Levenberg–\+Marquardt   &\href{./md_pages_components_nonlinsolvers_lm.html}{\texttt{ Link}}   &Nonlinear least-\/squares problem. (see \href{https://en.wikipedia.org/wiki/Levenberg\%E2\%80\%93Marquardt_algorithm}{\texttt{ link}} )    \\\cline{1-3}
+Iteratively reweighted least squares   &\href{./md_pages_components_nonlinsolvers_irls.html}{\texttt{ Link}}   &optimization problem formulated in a p-\/norm (see \href{https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares}{\texttt{ link}} )   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md15}{}\doxysubsection{A glimpse of the API}\label{md_pages_components_nonlinsolvers_general_autotoc_md15}
+To create a solver, we expose specific factory functions for each algorithm.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{namespace }pnonls = pressio::nonlinearsolvers;}
+\DoxyCodeLine{\textcolor{keyword}{auto} solver = pnonls::create\_newton\_raphson(....);}
+\DoxyCodeLine{\textcolor{keyword}{auto} solver = pnonls::create\_gauss\_newton(....);}
+
+\end{DoxyCode}
+
+
+Please refer to each method\textquotesingle{}s documentation for the details on the API and arguments.\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md16}{}\doxysection{What are users responsible of?}\label{md_pages_components_nonlinsolvers_general_autotoc_md16}
+If you want to use the pressio nonlinear solvers, you are responsible of three main things\+:
+
+
+\begin{DoxyItemize}
+\item A\+: providing a problem object
+\item B\+: specifying the convergence criterion
+\item C\+: specifying the update method
+\end{DoxyItemize}\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md17}{}\doxysubsection{A\+: problem class}\label{md_pages_components_nonlinsolvers_general_autotoc_md17}
+The problem class is what you use to {\itshape define your problem}. An instance of a problem class is what you provide to pressio to compute the needed operators to operate on. Obivously, this problem class must meet a specific API.
+
+The pressio nonlinear solvers define four main types of problem APIs, namely the \char`\"{}residual-\/jacobian\char`\"{}, \char`\"{}fused residual-\/jacobian\char`\"{}, \char`\"{}hessian-\/gradient\char`\"{} , and \char`\"{}fused hessian-\/gradient\char`\"{}. These problem concepts are discussed on \href{md_pages_components_nonlinsolvers_system_api.html}{\texttt{ this page}}. Depending on which concepts your problem meets, you can access certain algorithms but not necessarily others. The following table helps clarifying the problem API/algorithms admissibility\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{5}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Algorithm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Hessian-\/\+Gradient API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Hessian-\/\+Gradient API    }\\\cline{1-5}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Algorithm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Residual-\/\+Jacobian API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Hessian-\/\+Gradient API   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fused Hessian-\/\+Gradient API    }\\\cline{1-5}
+\endhead
+Newton-\/\+Raphson   &admissible   &admissible   &&\\\cline{1-5}
+Gauss-\/\+Newton Normal-\/\+Equations   &admissible   &admissible   &admissible   &admissible    \\\cline{1-5}
+Gauss-\/\+Newton QR   &admissible   &admissible   &&\\\cline{1-5}
+Levenberg-\/\+Marquardt   &admissible   &admissible   &admissible   &admissible    \\\cline{1-5}
+irls   &admissible   &admissible   &&\\\cline{1-5}
+\end{longtabu}
+
+
+Please refer to each method\textquotesingle{}s documentation for the details on how you provide a problem instance to pressio.\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md18}{}\doxysubsection{B\+: Convergence and tolerance}\label{md_pages_components_nonlinsolvers_general_autotoc_md18}
+The convergence criterion and associated tolerance are used to decide why and when the solver needs to terminate. We currently support these termination criteria\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Currently supported for\+:    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Currently supported for\+:    }\\\cline{1-3}
+\endhead
+{\ttfamily Stop\+::\+After\+Max\+Iters}   &self-\/explanatory   &all algorithms    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Correction\+Absolute\+Norm\+Below\+Tolerance}   &self-\/explanatory   &all algorithms    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Correction\+Relative\+Norm\+Below\+Tolerance}   &self-\/explanatory   &all algorithms    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Residual\+Absolute\+Norm\+Below\+Tolerance}   &self-\/explanatory   &all algorithms    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Residual\+Relative\+Norm\+Below\+Tolerance}   &self-\/explanatory   &all algorithms    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Gradient\+Absolute\+Norm\+Below\+Tolerance}   &self-\/explanatory   &least-\/squares solvers    \\\cline{1-3}
+{\ttfamily Stop\+::\+When\+Gradient\+Relative\+Norm\+Below\+Tolerance}   &self-\/explanatory   &least-\/squares solvers   \\\cline{1-3}
+\end{longtabu}
+
+
+which you set/query along with corresponding tolerances using the following methods\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }Solver\{}
+\DoxyCodeLine{  ...}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// set/query stopping criterion}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setStoppingCriterion(Stop value);}
+\DoxyCodeLine{  Stop stoppingCriterion() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// set/query max number of iterations}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setMaxIterations(iteration\_type maxIters);}
+\DoxyCodeLine{  iteration\_type maxIterations() \textcolor{keyword}{const};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// this is used to set a single tol for all}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setTolerance(scalar\_type tolerance)\{ tolerances\_.fill(std::move(tolerance)); \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// finer-\/grained methods for setting tolerances}}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setCorrectionAbsoluteTolerance(scalar\_type value);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setCorrectionRelativeTolerance(scalar\_type value);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setResidualAbsoluteTolerance(scalar\_type value);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setResidualRelativeTolerance(scalar\_type value);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setGradientAbsoluteTolerance(scalar\_type value);}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setGradientRelativeTolerance(scalar\_type value);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// querying tolerances}}
+\DoxyCodeLine{  scalar\_type correctionAbsoluteTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  scalar\_type correctionRelativeTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  scalar\_type residualAbsoluteTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  scalar\_type residualRelativeTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  scalar\_type gradientAbsoluteTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  scalar\_type gradientRelativeTolerance()\textcolor{keyword}{const};}
+\DoxyCodeLine{  ...}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md19}{}\doxysubsection{C\+: Setting the update}\label{md_pages_components_nonlinsolvers_general_autotoc_md19}
+The update stage represents the {\itshape how} the current correction term is combined with state to update the latter. We currently support the following\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Currently supported for\+:    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Enum value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Currently supported for\+:    }\\\cline{1-4}
+\endhead
+Default   &{\ttfamily Update\+::\+Standard}   &$x_{n+1} = x_{n} + \lambda_{n}$   &all algorithms    \\\cline{1-4}
+Armijo   &{\ttfamily Update\+::\+Armijo}   &\mbox{[}see this\mbox{]}()   &Gauss-\/\+Newton    \\\cline{1-4}
+LM-\/schedule1   &{\ttfamily Update\+::\+LMSchedule1}   &\mbox{[}see this\mbox{]}()   &Levenberg–\+Marquardt    \\\cline{1-4}
+LM-\/schedule2   &{\ttfamily Update\+::\+LMSchedule2}   &\mbox{[}see this\mbox{]}()   &Levenberg–\+Marquardt   \\\cline{1-4}
+\end{longtabu}
+
+
+where $\lambda_{n}$ is the correction computed at the n-\/th iteration of the solver.
+
+To set or query the update method, you use the following methods of the solver class\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }Solver\{}
+\DoxyCodeLine{  ...}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} setUpdatingCriterion(Update value);}
+\DoxyCodeLine{  Update updatingCriterion() \textcolor{keyword}{const};}
+\DoxyCodeLine{  ...}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+
+\begin{DoxyParagraph}{By default, a nonlinear solver uses\+:}
+
+\begin{DoxyItemize}
+\item update\+: {\ttfamily Update\+::\+Standard};
+\item stopping\+: {\ttfamily Stop\+::\+When\+Correction\+Absolute\+Norm\+Below\+Tolerance};
+\item max number of iterations = 100
+\item tolerance = 0.\+000001 (for everything)
+\end{DoxyItemize}
+\end{DoxyParagraph}
+\hypertarget{md_pages_components_nonlinsolvers_general_autotoc_md20}{}\doxysection{A note on the solvers\textquotesingle{} design}\label{md_pages_components_nonlinsolvers_general_autotoc_md20}
+If you are interested, here we provide a brief note describing the our design idea. The design of the nonlinear solvers has been based on recognizing that, at a very high level, a nonlinear solver operates by repeatedly updating a given \char`\"{}state\char`\"{} until a certain criterion is met, and each \char`\"{}iteration\char`\"{} involves the following stages\+:
+
+
+\begin{DoxyItemize}
+\item A\+: computing/updating the operators
+\item B\+: computing the new correction term
+\item C\+: assessing convergence
+\item D\+: updating the state using the correction
+\end{DoxyItemize}
+
+This view forms the basis of our design approach\+: when a solver object is instantiated, depending on the chosen algorithm, pressio behind the scenes instantiates the proper classes needed for each of the stages above, and properly composes them to instantiate the desired solver object. 

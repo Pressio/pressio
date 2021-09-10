@@ -49,10 +49,10 @@
 #ifndef PRESSIO_OPS_HPP_
 #define PRESSIO_OPS_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
-#include "pressio/expressions.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./expressions.hpp"
 
 namespace pressio{
 struct transpose{};

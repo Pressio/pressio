@@ -1,0 +1,59 @@
+todo\+: complete
+
+A key assumption of projection-\/based ROMs is to approximate the full-\/order model (FOM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
+
+where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md181}{}\doxysection{Linear}\label{md_pages_old_coreconcepts_decoder_autotoc_md181}
+If $g$ is linear, then we can write\+: \[ y_{fom} = \phi y_{rom} \] where $\phi$ is a matrix (for the time being, assume it constant). The Jacobian of the mapping is\+: \[ \frac{d y_{fom}}{d y_{rom}} = \phi. \]
+
+Graphically, this corresponds to\+: 
+
+In the C++ library, the class representing the linear decoder is\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pressio::rom::LinearDecoder<...>;}
+
+\end{DoxyCode}
+\hypertarget{md_pages_old_coreconcepts_decoder_autotoc_md182}{}\doxysection{Generic decoder API}\label{md_pages_old_coreconcepts_decoder_autotoc_md182}
+If you want to use your own decoder, you can write a custom one that should meet the following API.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct }CustomDecoder}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// natives types}}
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_fom\_state\_type = ; }
+\DoxyCodeLine{  \textcolor{keyword}{using} native\_dense\_mat\_type = ; }
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// these nested typedefs are mandatory because pressio detects them}}
+\DoxyCodeLine{  \textcolor{keyword}{using} jacobian\_type  = pressio::containers::DenseMatrix<native\_dense\_mat\_type>;}
+\DoxyCodeLine{  \textcolor{keyword}{using} fom\_state\_type = pressio::containers::Vector<native\_fom\_state\_type>;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{  CustomDecoder(\textcolor{comment}{/*constuct as needed*/})\{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} operand\_type>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} applyMapping(\textcolor{keyword}{const} operand\_type \& romOperand,  }
+\DoxyCodeLine{                    fom\_state\_type \& fomState)\textcolor{keyword}{ const}}
+\DoxyCodeLine{\textcolor{keyword}{  }\{}
+\DoxyCodeLine{    \textcolor{comment}{// romOperand: object exposing the (i) operator to reference the i-\/th element}}
+\DoxyCodeLine{    \textcolor{comment}{// result: a pressio wrapper, so use the data() to get a pointer to native object}}
+\DoxyCodeLine{    \textcolor{comment}{// auto \& fomStateNative = *fomState.data();}}
+\DoxyCodeLine{    \textcolor{comment}{// ...}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{template} <\textcolor{keyword}{typename} rom\_state\_type>}
+\DoxyCodeLine{  \textcolor{keywordtype}{void} updateJacobian(\textcolor{keyword}{const} rom\_state\_type \& romStateIn)}
+\DoxyCodeLine{  \{}
+\DoxyCodeLine{    \textcolor{comment}{// update the jacobian as needed}}
+\DoxyCodeLine{    \textcolor{comment}{// ...}}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{const} jacobian\_type \& jacobianCRef()\textcolor{keyword}{ const}\{ \textcolor{keywordflow}{return} m\_jacobian; \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{private}:}
+\DoxyCodeLine{  jacobian\_type m\_jacobian;}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+ 

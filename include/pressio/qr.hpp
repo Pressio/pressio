@@ -49,10 +49,10 @@
 #ifndef PRESSIO_QR_HPP_
 #define PRESSIO_QR_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
-#include "pressio/ops.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./ops.hpp"
 
 #include "qr/qr_fwd.hpp"
 #include "qr/qr_algorithms_tags.hpp"

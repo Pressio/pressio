@@ -49,7 +49,7 @@
 #ifndef PRESSIO_SOLVERS_HPP_
 #define PRESSIO_SOLVERS_HPP_
 
-#include "pressio/solvers_linear.hpp"
-#include "pressio/solvers_nonlinear.hpp"
+#include "./solvers_linear.hpp"
+#include "./solvers_nonlinear.hpp"
 
 #endif

@@ -49,12 +49,12 @@
 #ifndef PRESSIO_NONLINEAR_SOLVERS_HPP_
 #define PRESSIO_NONLINEAR_SOLVERS_HPP_
 
-#include "pressio/mpl.hpp"
-#include "pressio/utils.hpp"
-#include "pressio/type_traits.hpp"
-#include "pressio/expressions.hpp"
-#include "pressio/ops.hpp"
-#include "pressio/qr.hpp"
+#include "./mpl.hpp"
+#include "./utils.hpp"
+#include "./type_traits.hpp"
+#include "./expressions.hpp"
+#include "./ops.hpp"
+#include "./qr.hpp"
 
 #include "solvers_nonlinear/solvers_exceptions.hpp"
 
