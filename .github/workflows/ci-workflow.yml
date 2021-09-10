@@ -180,7 +180,7 @@ jobs:
       run: |
         cd ${{ matrix.config.ctest_build }}
         export LD_LIBRARY_PATH=${{ env.PRESSIO_BUILDS }}/trilinos/install/lib
-        ctest -V
+        ctest --output-on-failure
 
     # - if: ${{ matrix.config.coverage }}
     #   name: Generate code coverage
