@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_ConfigDefs.hpp
+// ops_min_max.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,53 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_CONFIGDEFS_HPP_
-#define MPL_MPL_CONFIGDEFS_HPP_
+#ifndef OPS_PYBIND_OPS_MIN_MAX_HPP_
+#define OPS_PYBIND_OPS_MIN_MAX_HPP_
 
-#include <type_traits>
-#include <memory>
-#include <complex>
-#include <cstddef>
-#include <tuple>
+namespace pressio{ namespace ops{
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  typename ::pressio::Traits<T>::scalar_type
+  >
+max(const T & obj)
+{
+
+  typename ::pressio::Traits<T>::scalar_type result = 0;
+  if (obj.ndim()==1){
+    for (std::size_t i=0; i<extent(obj,0); ++i){
+      result = std::max(result, obj(i));
+    }
+    return result;
+  }
+  else{
+    throw std::runtime_error("max: case not impl");
+  }
+
+  return {};
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind,
+  typename ::pressio::Traits<T>::scalar_type
+  >
+min(const T & obj)
+{
+  typename ::pressio::Traits<T>::scalar_type result = 0;
+  if (obj.ndim()==1){
+    for (std::size_t i=0; i<extent(obj,0); ++i){
+      result = std::min(result, obj(i));
+    }
+    return result;
+  }
+  else{
+    throw std::runtime_error("max: case not impl");
+  }
+
+  return {};
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND_OPS_MIN_MAX_HPP_

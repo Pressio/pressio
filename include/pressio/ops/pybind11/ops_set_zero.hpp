@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_ConfigDefs.hpp
+// ops_set_zero.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,22 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_CONFIGDEFS_HPP_
-#define MPL_MPL_CONFIGDEFS_HPP_
+#ifndef OPS_PYBIND11_OPS_SET_ZERO_HPP_
+#define OPS_PYBIND11_OPS_SET_ZERO_HPP_
 
-#include <type_traits>
-#include <memory>
-#include <complex>
-#include <cstddef>
-#include <tuple>
+namespace pressio{ namespace ops{
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+template<typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value
+  >
+set_zero(T & v)
+{
+  using traits	 = ::pressio::Traits<T>;
+  using scalar_t = typename traits::scalar_type;
+  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
+  ::pressio::ops::fill(v, zero);
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_SET_ZERO_HPP_

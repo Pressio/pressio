@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_set_zero.hpp
+// ops_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,17 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_SET_ZERO_HPP_
-#define OPS_PYBIND11_OPS_SET_ZERO_HPP_
+#ifndef OPS_QUERY_LAYOUT_PYBIND_HPP_
+#define OPS_QUERY_LAYOUT_PYBIND_HPP_
 
 namespace pressio{ namespace ops{
 
-template<typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_tensor_wrapper_pybind<T>::value
-  >
-set_zero(T & v)
+template<class T>
+constexpr bool is_column_major(const T& o)
 {
-  using traits	 = ::pressio::containers::details::traits<T>;
-  using scalar_t = typename traits::scalar_t;
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::pressio::ops::fill(v, zero);
+  (void)o;
+  return (::pressio::Traits<T>::layout == 1);
 }
 
-}}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_SET_ZERO_HPP_
+}} //end namespace
+#endif

@@ -52,9 +52,6 @@
 namespace pressio{
 
 #ifdef PRESSIO_ENABLE_TPL_EIGEN
-//***********************************
-// eigen sparse matrix
-//***********************************
 template <typename T>
 struct Traits<
   T,

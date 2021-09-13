@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_scale.hpp
+// ops_add_to_diagonal.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,65 +46,24 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_SCALE_HPP_
-#define OPS_PYBIND11_OPS_SCALE_HPP_
+#ifndef OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
+#define OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
 
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
-  >
-scale(T & v,
-      typename ::pressio::containers::details::traits<T>::scalar_t value)
+::pressio::mpl::enable_if_t<::pressio::is_array_pybind<T>::value>
+add_to_diagonal(T & o,
+		typename ::pressio::Traits<T>::scalar_type value)
 {
-  for (std::size_t i=0; i<v.extent(0); ++i)
-    v(i) *= value;
-}
+  assert(o.ndim() == 2);
+  assert(extent(o,0) == extent(o,1));
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
-  >
-scale(T & M,
-      typename ::pressio::containers::details::traits<T>::scalar_t value)
-{
-  for (std::size_t j=0; j<M.extent(1); ++j){
-    for (std::size_t i=0; i<M.extent(0); ++i){
-      M(i,j) *= value;
-    }
-  }
-}
-
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
-  >
-scale(T & M,
-      typename ::pressio::containers::details::traits<T>::scalar_t value)
-{
-  for (std::size_t i=0; i<M.extent(0); ++i){
-    for (std::size_t j=0; j<M.extent(1); ++j){
-      M(i,j) *= value;
-    }
-  }
-}
-
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
-  >
-scale(T & M,
-      typename ::pressio::containers::details::traits<T>::scalar_t value)
-{
-  for (std::size_t k=0; k<M.extent(2); ++k){
-    for (std::size_t j=0; j<M.extent(1); ++j){
-      for (std::size_t i=0; i<M.extent(0); ++i){
-	M(i,j,k) *= value;
-      }
-    }
+  using ord_t = typename ::pressio::Traits<T>::size_type;
+  for (ord_t i=0; i<extent(o,0); ++i){
+    o(i,i) += value;
   }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_SCALE_HPP_
+#endif  // OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_

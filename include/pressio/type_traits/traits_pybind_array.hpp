@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_ConfigDefs.hpp
+// containers_vector_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,42 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_CONFIGDEFS_HPP_
-#define MPL_MPL_CONFIGDEFS_HPP_
+#ifndef PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
+#define PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
 
-#include <type_traits>
-#include <memory>
-#include <complex>
-#include <cstddef>
-#include <tuple>
+namespace pressio{
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+template<class ScalarType>
+struct Traits<pybind11::array_t<ScalarType, pybind11::array::c_style>>
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
+{
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+
+  static constexpr TensorIdentifier tensor_identifier
+  = TensorIdentifier::Pybind;
+
+  static constexpr int layout = 0;
+  using scalar_type = ScalarType;
+  using size_type = std::size_t;
+};
+
+template<class ScalarType>
+struct Traits<pybind11::array_t<ScalarType, pybind11::array::f_style>>
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
+{
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+
+  static constexpr TensorIdentifier tensor_identifier
+  = TensorIdentifier::Pybind;
+
+  static constexpr int layout = 1;
+  using scalar_type = ScalarType;
+  using size_type = std::size_t;
+};
+
+}
+#endif  // CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_

@@ -52,19 +52,13 @@
 namespace pressio{ namespace ops{ namespace impl{
 
 template<typename T>
-mpl::enable_if_t<
- !::pressio::is_expression<T>::value, 
- T&
->
+mpl::enable_if_t<!::pressio::is_expression<T>::value, T&>
 get_native(T & objectIn){
   return objectIn;
 }
 
 template<typename T>
-mpl::enable_if_t<
- !::pressio::is_expression<T>::value, 
- const T&
->
+mpl::enable_if_t<!::pressio::is_expression<T>::value, const T&>
 get_native(const T & objectIn){
   return objectIn;
 }
@@ -91,7 +85,7 @@ get_native(T & objectIn){
 template<typename T, class Enable = void>
 struct NativeType;
 
-#ifdef PRESSIO_ENABLE_TPL_TRILINOS
+#ifdef PRESSIO_ENABLE_TPL_KOKKOS
 template<typename T>
 struct NativeType<
   T, mpl::enable_if_t<::pressio::is_vector_kokkos<T>::value>

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_abs.hpp
+// ops_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,29 +46,44 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_ABS_HPP_
-#define OPS_PYBIND11_OPS_ABS_HPP_
+#ifndef OPS_OPS_CLONE_PYBIND_HPP_
+#define OPS_OPS_CLONE_PYBIND_HPP_
 
 namespace pressio{ namespace ops{
 
-// y= abs(x)
-template <typename T0, typename T1>
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
-  >
-abs(T0 & y, const T1 & x)
+template <class T>
+::pressio::mpl::enable_if_t<::pressio::is_array_pybind<T>::value, T>
+clone(const T & src)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "vectors are not scalar compatible");
+  if (src.ndim()==1)
+  {
 
-  using sc_t = typename T0::traits::scalar_t;
-  assert(y.extent(0) == x.extent(0));
-  for (std::size_t i=0; i<y.extent(0); ++i){
-    y(i)=std::abs(x(i));
+    T result(::pressio::ops::extent(src, 0));
+    using ord_t = typename ::pressio::Traits<T>::size_type;
+    for (ord_t i=0; i<::pressio::ops::extent(src, 0); ++i){
+      result(i) = src(i);
+    }
+    return result;
   }
+  else if (src.ndim()==2)
+  {
+
+    T result({::pressio::ops::extent(src, 0), ::pressio::ops::extent(src, 1)});
+    using ord_t = typename ::pressio::Traits<T>::size_type;
+    for (ord_t i=0; i<::pressio::ops::extent(src, 0); ++i){
+      for (ord_t j=0; j<::pressio::ops::extent(src, 1); ++j){
+	result(i,j) = src(i,j);
+      }
+    }
+    return result;
+  }
+  else{
+
+    throw std::runtime_error("clone: rank-3 not impl yet");
+  }
+
+  return T{};
 }
 
-}}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_ABS_HPP_
+}} //end namespace
+#endif

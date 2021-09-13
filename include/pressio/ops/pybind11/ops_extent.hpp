@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_ConfigDefs.hpp
+// ops_fwd.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,20 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_CONFIGDEFS_HPP_
-#define MPL_MPL_CONFIGDEFS_HPP_
+#ifndef OPS_OPS_EXTENT_PYBIND_HPP_
+#define OPS_OPS_EXTENT_PYBIND_HPP_
 
-#include <type_traits>
-#include <memory>
-#include <complex>
-#include <cstddef>
-#include <tuple>
+namespace pressio{ namespace ops{
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+template<class T, class IndexType>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value,
+  typename ::pressio::Traits<T>::size_type
+>
+extent(const T & objectIn, const IndexType i)
+{
+  return objectIn.shape(i);
+}
+
+}}
+#endif

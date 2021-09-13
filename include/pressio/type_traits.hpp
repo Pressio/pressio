@@ -117,5 +117,8 @@ template<class T, class Enable = void> struct Traits;
 #include "type_traits/traits_dense_matrix.hpp"
 #include "type_traits/traits_multi_vector.hpp"
 #include "type_traits/traits_sparse_matrix.hpp"
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "type_traits/traits_pybind_array.hpp"
+#endif
 
 #endif

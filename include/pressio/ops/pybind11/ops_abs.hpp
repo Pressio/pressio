@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_dot.hpp
+// ops_abs.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,37 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_DOT_HPP_
-#define OPS_PYBIND11_OPS_DOT_HPP_
+#ifndef OPS_PYBIND11_OPS_ABS_HPP_
+#define OPS_PYBIND11_OPS_ABS_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T0, typename T1>
+// to = abs(from)
+template <class T2, class T1>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
+  ::pressio::is_array_pybind<T1>::value and
+  ::pressio::is_array_pybind<T2>::value
   >
-dot(const T0 & a,
-    const T1 & b,
-    typename T0::traits::scalar_t & result)
+abs(T1 & to, const T2 & from)
 {
   static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "vectors are not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
+    (::pressio::are_scalar_compatible<T1, T2>::value,
+     "Types are not scalar compatible");
 
-  assert(a.extent(0) == b.extent(0));
-  result = static_cast<sc_t>(0);
-  for (std::size_t i=0; i<a.extent(0); ++i){
-    result += a(i)*b(i);
+  assert(to.ndim() == from.ndim());
+
+  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  if (to.ndim() == 1)
+  {
+    assert(extent(to,0)==extent(from,0));
+    for (ord_t i=0; i<extent(to, 0); ++i){
+      to(i) = std::abs(from(i));
+    }
+  }
+  else{
+    throw std::runtime_error("abs: rank-2, rank-3 not impl yet");
   }
 }
 
-template <typename T0, typename T1>
-::pressio::mpl::enable_if_t<
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value,
-  typename ::pressio::containers::details::traits<T0>::scalar_t
-  >
-dot(const T0 & a, const T1 & b)
-{
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
-  sc_t result = {};
-  dot(a, b, result);
-  return result;
-}
-
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DOT_HPP_
+#endif  // OPS_PYBIND11_OPS_ABS_HPP_

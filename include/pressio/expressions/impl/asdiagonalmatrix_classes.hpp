@@ -65,7 +65,7 @@ struct AsDiagonalMatrixExpr<
     or
 #endif
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-    ::pressio::is_rank1_tensor_pybind<
+    ::pressio::is_array_pybind<
      typename std::remove_cv<VectorType>::type
      >::value
 #endif
@@ -96,7 +96,7 @@ public:
   AsDiagonalMatrixExpr(VectorType & objIn)
     : vecObj_(objIn),
       extent_(objIn.size()),
-      nativeExprObj_(vecObj_.get().asDiagonal())      
+      nativeExprObj_(vecObj_.get().asDiagonal())
   {}
 
 public:
@@ -157,7 +157,7 @@ public:
 //   AsDiagonalMatrixExpr & operator=(AsDiagonalMatrixExpr && other) = delete;
 //   ~AsDiagonalMatrixExpr() = default;
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_epetra<_T>::value
 //     > * = nullptr
@@ -168,7 +168,7 @@ public:
 //       extentLocal_(objIn.MyLength())
 //   {}
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_tpetra<_T>::value
 //     > * = nullptr
@@ -179,7 +179,7 @@ public:
 //       extentLocal_(objIn.getLocalLength())
 //   {}
 
-//   template <typename _T = T, 
+//   template <typename _T = T,
 //     typename mpl::enable_if_t<
 //       ::pressio::is_vector_tpetra_block<_T>::value
 //     > * = nullptr

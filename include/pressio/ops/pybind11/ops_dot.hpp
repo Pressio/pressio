@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_dot.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,51 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
-#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_PYBIND11_OPS_DOT_HPP_
+#define OPS_PYBIND11_OPS_DOT_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  ::pressio::is_array_pybind<T0>::value and
+  ::pressio::is_array_pybind<T1>::value
   >
-norm1(const T & a)
+dot(const T0 & a,
+    const T1 & b,
+    typename ::pressio::Traits<T0>::scalar_type & result)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  sc_t result = ::pressio::utils::Constants<sc_t>::zero();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
-    result += std::abs(a(i));
+  static_assert
+    (::pressio::are_scalar_compatible<T0,T1>::value,
+     "vectors are not scalar compatible");
+  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
+
+  assert(a.ndim() == b.ndim());
+  assert(a.ndim() == 1);
+  assert(a.shape(0) == b.shape(0));
+  if (a.ndim() != 1){
+    throw std::runtime_error("dot: only allowed for rank-1");
   }
+
+  result = static_cast<sc_t>(0);
+  for (std::size_t i=0; i<extent(a, 0); ++i){
+    result += a(i)*b(i);
+  }
+}
+
+template <typename T0, typename T1>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T0>::value and
+  ::pressio::is_array_pybind<T1>::value,
+  typename ::pressio::Traits<T0>::scalar_type
+  >
+dot(const T0 & a, const T1 & b)
+{
+  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
+  sc_t result = {};
+  dot(a, b, result);
   return result;
 }
 
-template <typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
-  >
-norm2(const T & a)
-{
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  auto result = ::pressio::utils::Constants<sc_t>::zero();
-  for (std::size_t i=0; i<a.extent(0); i++){
-    result += a(i)*a(i);
-  }
-  return std::sqrt(result);
-}
-
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_PYBIND11_OPS_DOT_HPP_

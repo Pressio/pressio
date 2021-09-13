@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// mpl_ConfigDefs.hpp
+// ops_norms_vector.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,13 +46,55 @@
 //@HEADER
 */
 
-#ifndef MPL_MPL_CONFIGDEFS_HPP_
-#define MPL_MPL_CONFIGDEFS_HPP_
+#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
 
-#include <type_traits>
-#include <memory>
-#include <complex>
-#include <cstddef>
-#include <tuple>
+namespace pressio{ namespace ops{
 
-#endif  // MPL_MPL_CONFIGDEFS_HPP_
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value,
+  typename ::pressio::Traits<T>::scalar_type
+  >
+norm1(const T & o)
+{
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  using size_t = typename ::pressio::Traits<T>::size_type;
+  sc_t result = ::pressio::utils::Constants<sc_t>::zero();
+
+  if (o.ndim()==1){
+    for (size_t i=0; i<extent(o, 0); i++){
+      result += std::abs(o(i));
+    }
+  }
+  else{
+    throw std::runtime_error("max: case not impl");
+  }
+  return result;
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value,
+  typename ::pressio::Traits<T>::scalar_type
+  >
+norm2(const T & o)
+{
+
+  using sc_t = typename ::pressio::Traits<T>::scalar_type;
+  using size_t = typename ::pressio::Traits<T>::size_type;
+  sc_t result = ::pressio::utils::Constants<sc_t>::zero();
+
+  if (o.ndim()==1){
+    for (size_t i=0; i<extent(o, 0); i++){
+      result += o(i)*o(i);
+    }
+  }
+  else{
+    throw std::runtime_error("max: case not impl");
+  }
+  return std::sqrt(result);
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
