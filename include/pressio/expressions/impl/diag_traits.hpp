@@ -119,35 +119,26 @@ struct DiagTraits<
 };
 #endif
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename MatrixType>
-// struct traits<
-//   ::pressio::expressions::DiagExpr<MatrixType>,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank2_tensor_pybind<MatrixType>::value
-//     >
-//   >
-//   : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
-// {
-//   static constexpr bool is_static = true;
-//   static constexpr bool is_dynamic  = !is_static;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename MatrixType>
+struct DiagTraits<
+  DiagExpr<MatrixType>,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<MatrixType>::value
+    >
+  >
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, 1>
+{
+  static constexpr bool is_static = true;
+  static constexpr bool is_dynamic  = !is_static;
 
-//   using scalar_t  = typename traits<MatrixType>::scalar_t;
-//   using ordinal_t = typename traits<MatrixType>::ordinal_t;
-//   using size_t    = ordinal_t;
-//   using reference_t =  scalar_t &;
-//   using const_reference_t = scalar_t const &;
-
-//   // // type of the native expression
-//   // // this should be a pybind11::array that views the diagonal of the matrix
-//   // // for time being we make this of the same type as the wrapped_type
-//   // // even if this is not fully right I think.
-//   // // it seems to be doing the right thing.
-//   // using native_expr_t = wrapped_t;
-//   // using const_data_return_t = native_expr_t const *;
-//   // using data_return_t = native_expr_t *;
-// };
-// #endif
+  using mat_remove_cv_t = typename std::remove_cv<MatrixType>::type;
+  using scalar_type  = typename ::pressio::Traits<mat_remove_cv_t>::scalar_type;
+  using size_type    = typename ::pressio::Traits<mat_remove_cv_t>::size_type;
+  using reference_type =  scalar_type &;
+  using const_reference_type = scalar_type const &;
+};
+#endif
 
 }}}
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_TRAITS_HPP_

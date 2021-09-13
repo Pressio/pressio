@@ -73,12 +73,12 @@ struct AsDiagonalMatrixExpr<
   >
 {
   using this_t = AsDiagonalMatrixExpr<VectorType>;
-  using mytraits = AsdiagmatrixTraits<this_t>;
-  using sc_t = typename mytraits::scalar_type;
-  using size_t = typename mytraits::size_type;
-  using ref_t = typename mytraits::reference_type;
-  using const_ref_t = typename mytraits::const_reference_type;
-  using native_expr_t = typename mytraits::native_expr_type;
+  using traits = AsdiagmatrixTraits<this_t>;
+  using sc_t = typename traits::scalar_type;
+  using size_t = typename traits::size_type;
+  using ref_t = typename traits::reference_type;
+  using const_ref_t = typename traits::const_reference_type;
+  using native_expr_t = typename traits::native_expr_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
