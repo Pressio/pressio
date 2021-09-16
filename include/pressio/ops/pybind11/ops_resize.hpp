@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_dot.hpp
+// ops_resize.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,45 +46,32 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_DOT_HPP_
-#define OPS_PYBIND11_OPS_DOT_HPP_
+#ifndef OPS_PYBIND_OPS_RESIZE_HPP_
+#define OPS_PYBIND_OPS_RESIZE_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T0, typename T1>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value
+  ::pressio::is_array_pybind<T>::value
   >
-dot(const T0 & a,
-    const T1 & b,
-    typename T0::traits::scalar_t & result)
+resize(T & o, typename ::pressio::Traits<T>::size_type newSize)
 {
-  static_assert
-    (::pressio::containers::predicates::are_scalar_compatible<T0,T1>::value,
-     "vectors are not scalar compatible");
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
-
-  assert(a.extent(0) == b.extent(0));
-  result = static_cast<sc_t>(0);
-  for (std::size_t i=0; i<a.extent(0); ++i){
-    result += a(i)*b(i);
-  }
+  assert(o.ndim() == 1);
+  //o.resize(newSize);
 }
 
-template <typename T0, typename T1>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T0>::value and
-  containers::predicates::is_rank1_tensor_wrapper_pybind<T1>::value,
-  typename ::pressio::containers::details::traits<T0>::scalar_t
+  ::pressio::is_array_pybind<T>::value
   >
-dot(const T0 & a, const T1 & b)
+resize(T & o,
+       const typename ::pressio::Traits<T>::size_type newRows,
+       const typename ::pressio::Traits<T>::size_type newCols)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T0>::scalar_t;
-  sc_t result = {};
-  dot(a, b, result);
-  return result;
+  assert(o.ndim() == 2);
+  //o.resize(newRows, newCols);
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_DOT_HPP_
+#endif  // OPS_EIGEN_OPS_RESIZE_HPP_

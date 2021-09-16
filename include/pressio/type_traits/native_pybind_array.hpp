@@ -49,7 +49,7 @@
 #ifndef CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
 #define CONTAINERS_PREDICATES_NATIVE_TYPES_DETECTION_CONTAINERS_NATIVE_PYBIND_ARRAY_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>

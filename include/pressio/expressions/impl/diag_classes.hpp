@@ -61,11 +61,11 @@ struct DiagExpr<
   >
 {
   using this_t = DiagExpr<MatrixType>;
-  using mytraits = DiagTraits<this_t>;
-  using size_t = typename mytraits::size_type;
-  using ref_t = typename mytraits::reference_type;
-  using const_ref_t = typename mytraits::const_reference_type;
-  using native_expr_t = typename mytraits::native_expr_type;
+  using traits = DiagTraits<this_t>;
+  using size_t = typename traits::size_type;
+  using ref_t = typename traits::reference_type;
+  using const_ref_t = typename traits::const_reference_type;
+  using native_expr_t = typename traits::native_expr_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -132,10 +132,10 @@ struct DiagExpr<
   >
 {
   using this_t		= DiagExpr<MatrixType>;
-  using mytraits	= DiagTraits<this_t>;
-  using size_t		= typename mytraits::size_type;
-  using ref_t		= typename mytraits::reference_type;
-  using native_expr_t	= typename mytraits::native_expr_type;
+  using traits	= DiagTraits<this_t>;
+  using size_t		= typename traits::size_type;
+  using ref_t		= typename traits::reference_type;
+  using native_expr_t	= typename traits::native_expr_type;
 
 private:
   std::reference_wrapper<MatrixType> matObj_;
@@ -181,7 +181,7 @@ public:
 
   template<typename _MatrixType = MatrixType>
   mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value, 
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i) const
@@ -193,72 +193,70 @@ public:
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename MatrixType>
-// struct DiagExpr<
-//   MatrixType,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::is_rank2_tensor_pybind<MatrixType>::value
-//     >
-//   >
-// {
-//   using this_t = DiagExpr<MatrixType>;
-//   using traits = typename traits<this_t>;
-//   using sc_t = typename traits::scalar_t;
-//   using size_t = typename traits::size_t;
-//   using ref_t = typename traits::reference_t;
-//   using const_ref_t = typename traits::const_reference_t;
-//   using pair_t = std::pair<std::size_t, std::size_t>;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename MatrixType>
+struct DiagExpr<
+  MatrixType,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<MatrixType>::value
+    >
+  >
+{
+  using this_t = DiagExpr<MatrixType>;
+  using traits = DiagTraits<this_t>;
+  using sc_t = typename traits::scalar_type;
+  using size_t = typename traits::size_type;
+  using ref_t = typename traits::reference_type;
+  using const_ref_t = typename traits::const_reference_type;
+  using pair_t = std::pair<std::size_t, std::size_t>;
 
-// private:
-//   std::reference_wrapper<MatrixType> matObj_;
-//   size_t extent_ = {};
+private:
+  std::reference_wrapper<MatrixType> matObj_;
+  size_t extent_ = {};
 
-// public:
-//   DiagExpr() = delete;
-//   DiagExpr(const DiagExpr & other) = default;
-//   DiagExpr & operator=(const DiagExpr & other) = delete;
-//   DiagExpr(DiagExpr && other) = default;
-//   DiagExpr & operator=(DiagExpr && other) = delete;
-//   ~DiagExpr() = default;
+public:
+  DiagExpr() = delete;
+  DiagExpr(const DiagExpr & other) = default;
+  DiagExpr & operator=(const DiagExpr & other) = delete;
+  DiagExpr(DiagExpr && other) = default;
+  DiagExpr & operator=(DiagExpr && other) = delete;
+  ~DiagExpr() = default;
 
-//   DiagExpr(MatrixType & matObjIn)
-//     : matObj_(matObjIn),
-//       extent_(matObjIn.extent(0))
-//   {
-//     assert(matObjIn.extent(0) == matObjIn.extent(1));
-//   }
+  DiagExpr(MatrixType & matObjIn)
+    : matObj_(matObjIn),
+      extent_(matObjIn.shape(0))
+  {
+    assert(matObjIn.ndim()==2);
+    assert(matObjIn.shape(0) == matObjIn.shape(1));
+  }
 
-// public:
-//   size_t extent() const{
-//     return extent_;
-//   }
+public:
+  int ndim() const{
+    return 1;
+  }
 
-//   size_t extent(size_t i) const{
-//     assert(i==0);
-//     return extent_;
-//   }
+  size_t extent() const{
+    return extent_;
+  }
 
-//   // non-const subscripting
-//   template<typename _MatrixType = MatrixType>
-//   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_MatrixType>::type>::value,
-//     ref_t
-//     >
-//   operator()(size_t i)
-//   {
-//     assert(i < (size_t)extent_);
-//     return matObj_.get()(i,i);
-//   }
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
 
-//   // const subscripting
-//   const_ref_t operator()(size_t i) const
-//   {
-//     assert(i < (size_t)extent_);
-//     return matObj_.get()(i,i);
-//   }
-// };
-// #endif
+  // non-const subscripting
+  ref_t operator()(size_t i){
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
+
+  // const subscripting
+  const_ref_t operator()(size_t i) const{
+    assert(i < (size_t)extent_);
+    return matObj_(i,i);
+  }
+};
+#endif
 
 }}}
 #endif  // CONTAINERS_EXPRESSIONS_DIAG_CONTAINERS_DIAG_CLASSES_HPP_

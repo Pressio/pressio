@@ -83,7 +83,8 @@ public:
   ~ExplicitStepper() = default;
 
   ExplicitStepper(ode::ForwardEuler,
-		  const StateType & state, SystemType && systemObj)
+		  const StateType & state,
+		  SystemType && systemObj)
     : name_(StepScheme::ForwardEuler),
       order_(1),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -92,7 +93,8 @@ public:
   {}
 
   ExplicitStepper(ode::RungeKutta4,
-		  const StateType & state, SystemType && systemObj)
+		  const StateType & state,
+		  SystemType && systemObj)
     : name_(StepScheme::RungeKutta4),
       order_(4),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -104,7 +106,8 @@ public:
   {}
 
   ExplicitStepper(ode::AdamsBashforth2,
-		  const StateType & state, SystemType && systemObj)
+		  const StateType & state,
+		  SystemType && systemObj)
     : name_(StepScheme::AdamsBashforth2),
       order_(2),
       systemObj_(std::forward<SystemType>(systemObj)),
@@ -113,7 +116,8 @@ public:
   {}
 
   ExplicitStepper(ode::SSPRungeKutta3,
-		  const StateType & state, SystemType && systemObj)
+		  const StateType & state,
+		  SystemType && systemObj)
     : name_(StepScheme::SSPRungeKutta3),
       order_(3),
       systemObj_(std::forward<SystemType>(systemObj)),

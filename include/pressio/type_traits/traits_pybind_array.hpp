@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_set_zero.hpp
+// containers_vector_traits.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,22 +46,42 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_SET_ZERO_HPP_
-#define OPS_PYBIND11_OPS_SET_ZERO_HPP_
+#ifndef PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
+#define PRESSIO_TRAITS_PYBIND_ARRAY_HPP_
 
-namespace pressio{ namespace ops{
+namespace pressio{
 
-template<typename T>
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_tensor_wrapper_pybind<T>::value
-  >
-set_zero(T & v)
+template<class ScalarType>
+struct Traits<pybind11::array_t<ScalarType, pybind11::array::c_style>>
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
 {
-  using traits	 = ::pressio::containers::details::traits<T>;
-  using scalar_t = typename traits::scalar_t;
-  constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
-  ::pressio::ops::fill(v, zero);
-}
 
-}}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_SET_ZERO_HPP_
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+
+  static constexpr TensorIdentifier tensor_identifier
+  = TensorIdentifier::Pybind;
+
+  static constexpr int layout = 0;
+  using scalar_type = ScalarType;
+  using size_type = std::size_t;
+};
+
+template<class ScalarType>
+struct Traits<pybind11::array_t<ScalarType, pybind11::array::f_style>>
+  : public ContainersSharedTraits<PackageIdentifier::Pybind, true, -1>
+{
+
+  static constexpr bool is_static = false;
+  static constexpr bool is_dynamic = !is_static;
+
+  static constexpr TensorIdentifier tensor_identifier
+  = TensorIdentifier::Pybind;
+
+  static constexpr int layout = 1;
+  using scalar_type = ScalarType;
+  using size_type = std::size_t;
+};
+
+}
+#endif  // CONTAINERS_VECTOR_CONTAINERS_VECTOR_TRAITS_HPP_

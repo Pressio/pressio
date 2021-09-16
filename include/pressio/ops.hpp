@@ -146,8 +146,6 @@ template<class ...> struct matching_extents;
 #include "ops/teuchos/ops_level2.hpp"
 #endif //PRESSIO_ENABLE_TPL_TRILINOS
 
-#include "ops/ops_matching_extents.hpp"
-
 // // Tpetra block
 // #include "ops/tpetra_block/ops_abs.hpp"
 // #include "ops/tpetra_block/ops_set_zero.hpp"
@@ -163,23 +161,28 @@ template<class ...> struct matching_extents;
 // #include "ops/tpetra_block/ops_elementwise_multiply.hpp"
 // #endif
 
-// // pybind11
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// #include "ops/constraints/ops_rank1_container_pybind.hpp"
-// #include "ops/pybind11/ops_abs.hpp"
-// #include "ops/pybind11/ops_fill.hpp"
-// #include "ops/pybind11/ops_set_zero.hpp"
-// #include "ops/pybind11/ops_deep_copy.hpp"
-// #include "ops/pybind11/ops_rank1_update.hpp"
-// #include "ops/pybind11/ops_rank2_update.hpp"
-// #include "ops/pybind11/ops_rank3_update.hpp"
-// #include "ops/pybind11/ops_level2.hpp"
-// #include "ops/pybind11/ops_level3.hpp"
-// #include "ops/pybind11/ops_scale.hpp"
-// #include "ops/pybind11/ops_dot.hpp"
-// #include "ops/pybind11/ops_pow.hpp"
-// #include "ops/pybind11/ops_norms_vector.hpp"
-// #include "ops/pybind11/ops_elementwise_multiply.hpp"
-// #endif
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+#include "ops/pybind11/ops_common.hpp"
+#include "ops/pybind11/ops_extent.hpp"
+#include "ops/pybind11/ops_clone.hpp"
+#include "ops/pybind11/ops_deep_copy.hpp"
+#include "ops/pybind11/ops_abs.hpp"
+#include "ops/pybind11/ops_scale.hpp"
+#include "ops/pybind11/ops_fill.hpp"
+#include "ops/pybind11/ops_resize.hpp"
+#include "ops/pybind11/ops_set_zero.hpp"
+#include "ops/pybind11/ops_add_to_diagonal.hpp"
+#include "ops/pybind11/ops_min_max.hpp"
+#include "ops/pybind11/ops_norms.hpp"
+#include "ops/pybind11/ops_dot.hpp"
+#include "ops/pybind11/ops_pow.hpp"
+#include "ops/pybind11/ops_update.hpp"
+#include "ops/pybind11/ops_elementwise_multiply.hpp"
+#include "ops/pybind11/ops_level2.hpp"
+#include "ops/pybind11/ops_level3.hpp"
+#endif
+
+// keep this last
+#include "ops/ops_matching_extents.hpp"
 
 #endif

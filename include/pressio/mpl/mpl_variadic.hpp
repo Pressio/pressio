@@ -58,5 +58,6 @@
 #include "variadic/find_if_quinary_pred.hpp"
 #include "variadic/any_of.hpp"
 #include "variadic/none_of.hpp"
+#include "variadic/all_of.hpp"
 
 #endif  // MPL_MPL_VARIADIC_HPP_

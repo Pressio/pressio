@@ -58,11 +58,11 @@ struct matching_extents<T1, T2>
   {
     using size_type = typename ::pressio::Traits<T1>::size_type;
     for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
-    {
-      if(::pressio::ops::extent(a, i) != ::pressio::ops::extent(b, i)){
-        return false;
+      {
+	if(::pressio::ops::extent(a, i) != ::pressio::ops::extent(b, i)){
+	  return false;
+	}
       }
-    }
     return true;
   }
 };
@@ -74,13 +74,13 @@ struct matching_extents<T1, T2, T3>
   {
     using size_type = typename ::pressio::Traits<T1>::size_type;
     for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
-    {
-      if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
-         ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i))
-        {
-  	return false;
-        }
-    }
+      {
+	if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
+	   ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i))
+	  {
+	    return false;
+	  }
+      }
     return true;
   }
 };
@@ -92,14 +92,14 @@ struct matching_extents<T1, T2, T3, T4>
   {
     using size_type = typename ::pressio::Traits<T1>::size_type;
     for (size_type i=0; i<::pressio::Traits<T1>::rank; ++i)
-    {
-    if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
-       ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i) or
-       ::pressio::ops::extent(a, i)!=::pressio::ops::extent(d, i))
-        {
-    return false;
-        }
-    }
+      {
+	if(::pressio::ops::extent(a, i)!=::pressio::ops::extent(b, i) or
+	   ::pressio::ops::extent(a, i)!=::pressio::ops::extent(c, i) or
+	   ::pressio::ops::extent(a, i)!=::pressio::ops::extent(d, i))
+	  {
+	    return false;
+	  }
+      }
     return true;
   }
 };
@@ -107,8 +107,8 @@ struct matching_extents<T1, T2, T3, T4>
 template<class T1, class T2, class T3, class T4, class T5>
 struct matching_extents<T1, T2, T3, T4, T5>
 {
-  static bool compare(const T1 & a, const T2 & b, 
-                      const T3& c, const T4& d, 
+  static bool compare(const T1 & a, const T2 & b,
+                      const T3& c, const T4& d,
                       const T5 & e)
   {
     using size_type = typename ::pressio::Traits<T1>::size_type;
@@ -118,7 +118,7 @@ struct matching_extents<T1, T2, T3, T4, T5>
          ::pressio::ops::extent(a, i)!=::pressio::ops::extent(d, i) or
          ::pressio::ops::extent(a, i)!=::pressio::ops::extent(e, i))
         {
-  	return false;
+	  return false;
         }
     }
     return true;

@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_stepper_compose_impl.hpp
+// ops_scale.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,89 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
-#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+#ifndef OPS_PYBIND11_OPS_SCALE_HPP_
+#define OPS_PYBIND11_OPS_SCALE_HPP_
 
-#include "ode_explicit_stepper.hpp"
+namespace pressio{ namespace ops{
 
-namespace pressio{ namespace ode{ namespace impl{
-
-template<class StateType, class SystemType>
-struct ExplicitCompose
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_fstyle_array_pybind<T>::value
+  >
+scale(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
 {
-  static_assert
-  (::pressio::ode::continuous_time_system_with_at_least_velocity<mpl::remove_cvref_t<SystemType>>::value,
-   "The system passed to the ExplicitStepper does not meet the required API");
 
-  static_assert(::pressio::ode::explicit_state<StateType>::value,
-		"Invalid state type for explicit stepper");
-  static_assert
-  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
-   "Incompatible StateType and state_type alias deduced from the system class");
+  if (o.ndim()==1){
+    for (std::size_t i=0; i<extent(o,0); ++i){
+      o(i) *= value;
+    }
+  }
+  else if (o.ndim()==2){
+    for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+      for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+	o(i,j) *= value;
+      }
+    }
+  }
+  else{
+    throw std::runtime_error("scale: not implemented");
+  }
+}
 
-  using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
-  using scalar_type_from_system = typename mpl::remove_cvref_t<SystemType>::scalar_type;
-  static_assert(std::is_same<scalar_type, scalar_type_from_system>::value,
-		"State and system have inconsistent scalar types");
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_cstyle_array_pybind<T>::value
+  >
+scale(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
+{
 
-  using velocity_type = typename mpl::remove_cvref_t<SystemType>::velocity_type;
-  static_assert(::pressio::ode::explicit_velocity<velocity_type>::value,
-		"Invalid velocity type for explicit time stepping");
+  if (o.ndim()==1){
+    for (std::size_t i=0; i<extent(o,0); ++i){
+      o(i) *= value;
+    }
+  }
+  else if (o.ndim()==2){
+    for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+      for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+	o(i,j) *= value;
+      }
+    }
+  }
+  else{
+    throw std::runtime_error("scale: not implemented");
+  }
+}
 
-  // it is very important that the stepper is given "SystemType" because
-  // that contains the right logic for how we store the system
-  using type = ExplicitStepper<scalar_type, StateType, SystemType, velocity_type>;
-};
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_pybind<T>::value and
+  ::pressio::Traits<T>::rank == 1
+  >
+scale(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
+{
 
-}}}
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+  for (std::size_t i=0; i<extent(o,0); ++i){
+    o(i) *= value;
+  }
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_pybind<T>::value and
+  ::pressio::Traits<T>::rank == 2
+  >
+scale(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
+{
+  for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+    for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+      o(i,j) *= value;
+    }
+  }
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_SCALE_HPP_

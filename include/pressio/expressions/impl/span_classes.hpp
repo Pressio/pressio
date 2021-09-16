@@ -60,6 +60,7 @@ struct SpanExpr<
     >
   >
 {
+
   using this_t = SpanExpr<VectorType>;
   using mytraits = SpanTraits<this_t>;
   using ord_t = typename mytraits::ordinal_type;
@@ -76,13 +77,10 @@ private:
 
 public:
   SpanExpr() = delete;
-
   SpanExpr(const SpanExpr & other) = default;
   SpanExpr & operator=(const SpanExpr & other) = delete;
-
   SpanExpr(SpanExpr && other) = default;
   SpanExpr & operator=(SpanExpr && other) = delete;
-
   ~SpanExpr() = default;
 
   SpanExpr(VectorType & objIn,
@@ -148,12 +146,12 @@ struct SpanExpr<
   >
 {
   using this_t = SpanExpr<VectorType>;
-  using mytraits = SpanTraits<this_t>;
-  using ord_t = typename mytraits::ordinal_type;
-  using size_t = typename mytraits::size_type;
-  using pair_t = typename mytraits::pair_type;
-  using ref_t = typename mytraits::reference_type;
-  using native_expr_t = typename mytraits::native_expr_type;
+  using traits = SpanTraits<this_t>;
+  using ord_t = typename traits::ordinal_type;
+  using size_t = typename traits::size_type;
+  using pair_t = typename traits::pair_type;
+  using ref_t = typename traits::reference_type;
+  using native_expr_t = typename traits::native_expr_type;
 
 private:
   std::reference_wrapper<VectorType> vecObj_;
@@ -218,7 +216,7 @@ public:
 
   template<typename _VectorType = VectorType>
   mpl::enable_if_t<
-    std::is_same<typename mytraits::memory_space, Kokkos::HostSpace>::value,
+    std::is_same<typename traits::memory_space, Kokkos::HostSpace>::value,
     ref_t
     >
   operator()(size_t i) const
@@ -230,84 +228,83 @@ public:
 #endif
 
 
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template <typename VectorType>
-// struct SpanExpr<
-//   VectorType,
-//   ::pressio::mpl::enable_if_t<
-//     ::pressio::containers::predicates::is_rank1_tensor_pybind<VectorType>::value
-//     >
-//   >
-// {
-//   using this_t = SpanExpr<VectorType>;
-//   using traits = traits<this_t>;
-//   using sc_t = typename traits::scalar_t;
-//   using ord_t = typename traits::ordinal_t;
-//   using size_t = typename traits::size_t;
-//   using ref_t = typename traits::reference_t;
-//   using const_ref_t = typename traits::const_reference_t;
-//   using pair_t = std::pair<std::size_t, std::size_t>;
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename VectorType>
+struct SpanExpr<
+  VectorType,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_array_pybind<VectorType>::value
+    >
+  >
+{
+  using this_t = SpanExpr<VectorType>;
+  using traits = SpanTraits<this_t>;
+  using size_t = typename traits::size_type;
+  using ref_t = typename traits::reference_type;
+  using const_ref_t = typename traits::const_reference_type;
+  using pair_t = std::pair<std::size_t, std::size_t>;
 
-// private:
-//   std::reference_wrapper<VectorType> vecObj_;
-//   size_t startIndex_;
-//   size_t extent_ = {};
+private:
+  std::reference_wrapper<VectorType> vecObj_;
+  size_t startIndex_;
+  size_t extent_ = {};
 
-// public:
-//   SpanExpr() = delete;
-//   SpanExpr(const SpanExpr & other) = default;
-//   SpanExpr & operator=(const SpanExpr & other) = delete;
-//   SpanExpr(SpanExpr && other) = default;
-//   SpanExpr & operator=(SpanExpr && other) = delete;
-//   ~SpanExpr() = default;
+public:
+  SpanExpr() = delete;
+  SpanExpr(const SpanExpr & other) = default;
+  SpanExpr & operator=(const SpanExpr & other) = delete;
+  SpanExpr(SpanExpr && other) = default;
+  SpanExpr & operator=(SpanExpr && other) = delete;
+  ~SpanExpr() = default;
 
-//   SpanExpr(VectorType & objIn,
-// 	   const size_t startIndexIn,
-// 	   const size_t extentIn)
-//     : vecObj_(objIn),
-//       startIndex_(startIndexIn),
-//       extent_(extentIn)
-//   {
-//     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-//     assert( extent_ <= objIn.extent(0) );
-//   }
+  SpanExpr(VectorType & objIn,
+	   const size_t startIndexIn,
+	   const size_t extentIn)
+    : vecObj_(objIn),
+      startIndex_(startIndexIn),
+      extent_(extentIn)
+  {
+    assert(objIn.ndim()==1);
+    assert(startIndex_ >= 0 and startIndex_ < objIn.shape(0));
+    assert(extent_ <= objIn.shape(0));
+  }
 
-//   SpanExpr(VectorType & objIn,
-// 	   pair_t indexRange)
-//     : vecObj_(objIn),
-//       startIndex_(std::get<0>(indexRange)),
-//       extent_(std::get<1>(indexRange)-startIndex_)
-//   {
-//     assert( startIndex_ >= 0 and startIndex_ < objIn.extent(0) );
-//     assert( extent_ <= objIn.extent(0) );
-//   }
+  SpanExpr(VectorType & objIn,
+	   pair_t indexRange)
+    : vecObj_(objIn),
+      startIndex_(std::get<0>(indexRange)),
+      extent_(std::get<1>(indexRange)-startIndex_)
+  {
+    assert(objIn.ndim()==1);
+    assert(startIndex_ >= 0 and startIndex_ < objIn.shape(0));
+    assert(extent_ <= objIn.shape(0));
+  }
 
-// public:
-//   size_t extent(size_t i) const{
-//     assert(i==0);
-//     return extent_;
-//   }
+public:
+  int ndim() const{
+    return 1;
+  }
 
-//   // non-const subscripting
-//   template<typename _VectorType = VectorType>
-//   mpl::enable_if_t<
-//     !std::is_const<typename std::remove_reference<_VectorType>::type>::value,
-//     ref_t
-//     >
-//   operator()(size_t i)
-//   {
-//     assert(i < (size_t)extent_);
-//     return vecObj_.get()(startIndex_+i);
-//   }
+  size_t extent(size_t i) const{
+    assert(i==0);
+    return extent_;
+  }
 
-//   // const subscripting
-//   const_ref_t operator()(size_t i) const
-//   {
-//     assert(i < (size_t)extent_);
-//     return vecObj_.get()(startIndex_+i);
-//   }
-// };
-// #endif
+  // non-const subscripting
+  ref_t operator()(size_t i)
+  {
+    assert(i < (size_t)extent_);
+    return vecObj_(startIndex_+i);
+  }
+
+  // const subscripting
+  const_ref_t operator()(size_t i) const
+  {
+    assert(i < (size_t)extent_);
+    return vecObj_(startIndex_+i);
+  }
+};
+#endif
 
 }}}
 #endif  // CONTAINERS_EXPRESSIONS_SPAN_CONTAINERS_SPAN_CLASSES_HPP_

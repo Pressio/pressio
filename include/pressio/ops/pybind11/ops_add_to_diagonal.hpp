@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_elementwise_multiply.hpp
+// ops_add_to_diagonal.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,31 +46,29 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
-#define OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#ifndef OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
+#define OPS_PYBIND_OPS_ADD_TO_DIAGONAL_HPP_
 
 namespace pressio{ namespace ops{
 
-/* computing elementwise: y = beta * y + alpha * x * z */
-
-template <typename T, typename T1, typename T2>
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
-  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
-  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind and
+  (::pressio::Traits<T>::rank == 2 or ::pressio::Traits<T>::rank == -1)
   >
-elementwise_multiply(typename T::traits::scalar_t alpha,
-		     const T & x,
-		     const T1 & z,
-		     typename T::traits::scalar_t beta,
-		     T2 & y)
+add_to_diagonal(T & o,
+		typename ::pressio::Traits<T>::scalar_type value)
 {
-  assert( y.extent(0)  == x.extent(0) );
-  assert( x.extent(0) == z.extent(0) );
-  for (std::size_t i=0; i<y.extent(0); ++i){
-    y(i) = beta*y(i) + alpha*x(i)*z(i);
+  // must be effectively rank2
+  assert(o.ndim() == 2);
+  // must be square
+  assert(extent(o,0) == extent(o,1));
+
+  using ord_t = typename ::pressio::Traits<T>::size_type;
+  for (ord_t i=0; i<extent(o,0); ++i){
+    o(i,i) += value;
   }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#endif  // OPS_EIGEN_OPS_ADD_TO_DIAGONAL_HPP_

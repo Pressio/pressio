@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ode_explicit_stepper_compose_impl.hpp
+// ops_abs.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,39 +46,36 @@
 //@HEADER
 */
 
-#ifndef ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
-#define ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+#ifndef OPS_PYBIND11_OPS_ABS_HPP_
+#define OPS_PYBIND11_OPS_ABS_HPP_
 
-#include "ode_explicit_stepper.hpp"
+namespace pressio{ namespace ops{
 
-namespace pressio{ namespace ode{ namespace impl{
-
-template<class StateType, class SystemType>
-struct ExplicitCompose
+// to = abs(from)
+template <class T1, class T2>
+::pressio::mpl::enable_if_t<
+  (::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
+   ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind)
+  >
+abs(T1 & to, const T2 & from)
 {
-  static_assert
-  (::pressio::ode::continuous_time_system_with_at_least_velocity<mpl::remove_cvref_t<SystemType>>::value,
-   "The system passed to the ExplicitStepper does not meet the required API");
+  static_assert(::pressio::are_scalar_compatible<T1, T2>::value,
+		"Types are not scalar compatible");
 
-  static_assert(::pressio::ode::explicit_state<StateType>::value,
-		"Invalid state type for explicit stepper");
-  static_assert
-  (std::is_same<StateType, typename mpl::remove_cvref_t<SystemType>::state_type>::value,
-   "Incompatible StateType and state_type alias deduced from the system class");
+  assert(to.ndim() == from.ndim());
 
-  using scalar_type   = typename ::pressio::Traits<StateType>::scalar_type;
-  using scalar_type_from_system = typename mpl::remove_cvref_t<SystemType>::scalar_type;
-  static_assert(std::is_same<scalar_type, scalar_type_from_system>::value,
-		"State and system have inconsistent scalar types");
+  using size_t = typename ::pressio::Traits<T1>::size_type;
+  assert(extent(to,0)==extent(from,0));
+  if (to.ndim() == 1)
+  {
+    for (size_t i=0; i<extent(to, 0); ++i){
+      to(i) = std::abs(from(i));
+    }
+  }
+  else{
+    throw std::runtime_error("abs: rank-2, rank-3 not impl yet");
+  }
+}
 
-  using velocity_type = typename mpl::remove_cvref_t<SystemType>::velocity_type;
-  static_assert(::pressio::ode::explicit_velocity<velocity_type>::value,
-		"Invalid velocity type for explicit time stepping");
-
-  // it is very important that the stepper is given "SystemType" because
-  // that contains the right logic for how we store the system
-  using type = ExplicitStepper<scalar_type, StateType, SystemType, velocity_type>;
-};
-
-}}}
-#endif  // ODE_EXPLICIT_IMPL_ODE_EXPLICIT_STEPPER_COMPOSE_IMPL_HPP_
+}}//end namespace pressio::ops
+#endif  // OPS_PYBIND11_OPS_ABS_HPP_

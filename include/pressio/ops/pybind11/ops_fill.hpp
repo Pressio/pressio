@@ -51,55 +51,75 @@
 
 namespace pressio{ namespace ops{
 
-template < typename T >
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value
+  ::pressio::is_fstyle_array_pybind<T>::value
   >
-fill(T & v,
-     typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
 {
-  for (std::size_t i=0; i<v.extent(0); ++i)
-    v(i) = value;
-}
 
-template < typename T >
-::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank2_tensor_wrapper_pybind<T>::value
-  >
-fill(T & M,
-     typename ::pressio::containers::details::traits<T>::scalar_t value)
-{
-  for (std::size_t j=0; j<M.extent(1); ++j){
-    for (std::size_t i=0; i<M.extent(0); ++i){
-      M(i,j) = value;
+  if (o.ndim()==1){
+    for (std::size_t i=0; i<extent(o,0); ++i){
+      o(i) = value;
+    }
+  }
+  else if (o.ndim()==2){
+    for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+      for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+	o(i,j) = value;
+      }
     }
   }
 }
 
-template < typename T >
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_cstyle_rank2_tensor_wrapper_pybind<T>::value
+  ::pressio::is_cstyle_array_pybind<T>::value
   >
-fill(T & M,
-     typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
 {
-  for (std::size_t i=0; i<M.extent(0); ++i)
-    for (std::size_t j=0; j<M.extent(1); ++j)
-      M(i,j) = value;
+
+  if (o.ndim()==1){
+    for (std::size_t i=0; i<extent(o,0); ++i){
+      o(i) = value;
+    }
+  }
+  else if (o.ndim()==2){
+    for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+      for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+	o(i,j) = value;
+      }
+    }
+  }
 }
 
-template < typename T >
+template <typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_fstyle_rank3_tensor_wrapper_pybind<T>::value
+  ::pressio::is_expression_pybind<T>::value and
+  ::pressio::Traits<T>::rank == 1
   >
-fill(T & M,
-     typename ::pressio::containers::details::traits<T>::scalar_t value)
+fill(T & o,
+      typename ::pressio::Traits<T>::scalar_type value)
 {
-  for (std::size_t k=0; k<M.extent(2); ++k){
-    for (std::size_t j=0; j<M.extent(1); ++j){
-      for (std::size_t i=0; i<M.extent(0); ++i){
-	M(i,j,k) = value;
-      }
+
+  for (std::size_t i=0; i<extent(o,0); ++i){
+    o(i) = value;
+  }
+}
+
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_pybind<T>::value and
+  ::pressio::Traits<T>::rank == 2
+  >
+fill(T & o,
+     typename ::pressio::Traits<T>::scalar_type value)
+{
+  for (std::size_t i=0; i<::pressio::ops::extent(o,0); ++i){
+    for (std::size_t j=0; j<::pressio::ops::extent(o,1); ++j){
+      o(i,j) = value;
     }
   }
 }

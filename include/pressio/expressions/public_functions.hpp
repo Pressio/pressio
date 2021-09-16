@@ -58,24 +58,26 @@
 #include "impl/asdiagonalmatrix_traits.hpp"
 #include "impl/asdiagonalmatrix_classes.hpp"
 
-namespace pressio{ 
+namespace pressio{
 
 //----------------
 // span
 //----------------
 template <typename T, typename ... Args>
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  // for kokkos, we don't need this overload 
+  // for kokkos, we don't need this overload
  mpl::enable_if_t<!::pressio::is_vector_kokkos<T>::value, expressions::impl::SpanExpr<T>>
 #else
- expressions::impl::SpanExpr<T> 
+ expressions::impl::SpanExpr<T>
 #endif
 span(T & vecObj, Args&& ... args)
 {
-  static_assert(0 < sizeof...(Args), 
+  static_assert(0 < sizeof...(Args),
     "span must be called with arguments specifying the span bounds.");
-  static_assert(::pressio::Traits<T>::rank==1, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==1,
     "span can only be applied to a rank-1 object.");
+#endif
 
   using return_t = expressions::impl::SpanExpr<T>;
   return return_t(vecObj, std::forward<Args>(args)... );
@@ -83,11 +85,13 @@ span(T & vecObj, Args&& ... args)
 
 template <typename T, typename ... Args>
 expressions::impl::SpanExpr<const T> span(const T & vecObj, Args&& ... args)
-{  
-  static_assert(0 < sizeof...(Args), 
+{
+  static_assert(0 < sizeof...(Args),
     "span must be called with arguments specifying the span bounds.");
-  static_assert(::pressio::Traits<T>::rank==1, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==1,
     "span can only be applied to a rank-1 object.");
+#endif
 
   using return_t = expressions::impl::SpanExpr<const T>;
   return return_t(vecObj, std::forward<Args>(args)... );
@@ -98,17 +102,19 @@ expressions::impl::SpanExpr<const T> span(const T & vecObj, Args&& ... args)
 //----------------
 template <typename T, typename ... Args>
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  // for kokkos, we don't need this overload 
+  // for kokkos, we don't need this overload
  mpl::enable_if_t<!::pressio::is_dense_matrix_kokkos<T>::value, expressions::impl::SubspanExpr<T>>
 #else
- expressions::impl::SubspanExpr<T> 
+ expressions::impl::SubspanExpr<T>
 #endif
 subspan(T & obj, Args&& ... args)
 {
-  static_assert(0 < sizeof...(Args), 
+  static_assert(0 < sizeof...(Args),
     "subspan must be called with arguments specifying the bounds.");
-  static_assert(::pressio::Traits<T>::rank==2, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==2,
     "subspan can only be applied to a rank-2 object.");
+#endif
 
   using return_t = expressions::impl::SubspanExpr<T>;
   return return_t(obj, std::forward<Args>(args)... );
@@ -117,10 +123,12 @@ subspan(T & obj, Args&& ... args)
 template <typename T, typename ... Args>
 expressions::impl::SubspanExpr<const T> subspan(const T & obj, Args&& ... args)
 {
-  static_assert(0 < sizeof...(Args), 
+  static_assert(0 < sizeof...(Args),
     "subspan must be called with arguments specifying the bounds.");
-  static_assert(::pressio::Traits<T>::rank==2, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==2,
     "subspan can only be applied to a rank-2 object.");
+#endif
 
   using return_t = expressions::impl::SubspanExpr<const T>;
   return return_t(obj, std::forward<Args>(args)... );
@@ -131,15 +139,17 @@ expressions::impl::SubspanExpr<const T> subspan(const T & obj, Args&& ... args)
 //----------------
 template <typename T, typename ... Args>
 #ifdef PRESSIO_ENABLE_TPL_KOKKOS
-  // for kokkos, we don't need this overload 
+  // for kokkos, we don't need this overload
  mpl::enable_if_t<!::pressio::is_dense_matrix_kokkos<T>::value, expressions::impl::DiagExpr<T>>
 #else
- expressions::impl::DiagExpr<T> 
+ expressions::impl::DiagExpr<T>
 #endif
 diag(T & obj)
 {
-  static_assert(::pressio::Traits<T>::rank==2, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==2,
     "diag can only be applied to a rank-2 object.");
+#endif
 
   using return_t = expressions::impl::DiagExpr<T>;
   return return_t(obj);
@@ -148,8 +158,10 @@ diag(T & obj)
 template <typename T, typename ... Args>
 expressions::impl::DiagExpr<const T> diag(const T & obj)
 {
-  static_assert(::pressio::Traits<T>::rank==2, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==2,
     "diag can only be applied to a rank-2 object.");
+#endif
 
   using return_t = expressions::impl::DiagExpr<const T>;
   return return_t(obj);
@@ -161,8 +173,11 @@ expressions::impl::DiagExpr<const T> diag(const T & obj)
 template <typename T>
 expressions::impl::AsDiagonalMatrixExpr<T> as_diagonal_matrix(T & vecObj)
 {
-  static_assert(::pressio::Traits<T>::rank==1, 
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==1,
     "AsDiagonalMatrix can only be applied to a rank-1 object.");
+#endif
+
   using return_t = expressions::impl::AsDiagonalMatrixExpr<T>;
   return return_t(vecObj);
 }
@@ -170,8 +185,12 @@ expressions::impl::AsDiagonalMatrixExpr<T> as_diagonal_matrix(T & vecObj)
 template <typename T>
 expressions::impl::AsDiagonalMatrixExpr<const T> as_diagonal_matrix(const T & vecObj)
 {
-  static_assert(::pressio::Traits<T>::rank==1, 
+
+#ifndef PRESSIO_ENABLE_TPL_PYBIND11
+  static_assert(::pressio::Traits<T>::rank==1,
     "AsDiagonalMatrix can only be applied to a rank-1 object.");
+#endif
+
   using return_t = expressions::impl::AsDiagonalMatrixExpr<const T>;
   return return_t(vecObj);
 }

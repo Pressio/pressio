@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_norms_vector.hpp
+// ops_elementwise_multiply.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,40 +46,59 @@
 //@HEADER
 */
 
-#ifndef OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
-#define OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#ifndef OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
+#define OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
 
 namespace pressio{ namespace ops{
 
-template <typename T>
+/* computing elementwise: y = beta * y + alpha * x * z */
+
+template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2>::value
   >
-norm1(const T & a)
+elementwise_multiply
+(typename ::pressio::Traits<T>::scalar_type alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::Traits<T>::scalar_type beta,
+ T2 & y)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  sc_t result = ::pressio::utils::Constants<sc_t>::zero();
-  for (decltype(a.extent(0)) i=0; i<a.extent(0); i++){
-    result += std::abs(a(i));
+
+  assert(extent(x, 0)==extent(z, 0));
+  assert(extent(z, 0)==extent(y, 0));
+  for (std::size_t i=0; i<y.extent(0); ++i){
+    y(i) = beta*y(i) + alpha*x(i)*z(i);
   }
-  return result;
 }
 
-template <typename T>
+template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::containers::predicates::is_rank1_tensor_wrapper_pybind<T>::value,
-  typename ::pressio::containers::details::traits<T>::scalar_t
+  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
   >
-norm2(const T & a)
+elementwise_multiply
+(typename ::pressio::Traits<T>::scalar_type alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::Traits<T>::scalar_type beta,
+ T2 & y)
 {
-  using sc_t = typename ::pressio::containers::details::traits<T>::scalar_t;
-  auto result = ::pressio::utils::Constants<sc_t>::zero();
-  for (std::size_t i=0; i<a.extent(0); i++){
-    result += a(i)*a(i);
+  assert(extent(x, 0)==extent(z, 0));
+  assert(extent(z, 0)==extent(y, 0));
+  assert(x.ndim() == z.ndim());
+  assert(x.ndim() == y.ndim());
+
+  if(x.ndim()==1){
+    for (std::size_t i=0; i<y.extent(0); ++i){
+      y(i) = beta*y(i) + alpha*x(i)*z(i);
+    }
   }
-  return std::sqrt(result);
+  else{
+    throw std::runtime_error("non impl");
+  }
 }
 
 }}//end namespace pressio::ops
-#endif  // OPS_PYBIND11_OPS_NORMS_VECTOR_HPP_
+#endif  // OPS_PYBIND11_OPS_ELEMENTWISE_MULTIPLY_HPP_
