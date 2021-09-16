@@ -53,7 +53,9 @@ namespace pressio{ namespace ops{
 
 // x^exponent
 template <typename T>
-::pressio::mpl::enable_if_t<::pressio::is_array_pybind<T>::value>
+::pressio::mpl::enable_if_t<
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind
+  >
 pow(T & x,
     const typename ::pressio::Traits<T>::scalar_type & exponent)
 {
@@ -69,8 +71,8 @@ pow(T & x,
 // y= x^exponent
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T1>::value and
-  ::pressio::is_array_pybind<T2>::value
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind
   >
 pow(T1 & y,
     const T2 & x,
@@ -93,8 +95,8 @@ pow(T1 & y,
 // y = |x|^exponent, expo>0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T1>::value and
-  ::pressio::is_array_pybind<T2>::value
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind
   >
 abs_pow(T1 & y,
 	const T2 & x,
@@ -125,8 +127,8 @@ abs_pow(T1 & y,
 // y = |x|^exponent, expo<0
 template <typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T1>::value and
-  ::pressio::is_array_pybind<T2>::value
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind
   >
 abs_pow(T1 & y,
 	const T2 & x,

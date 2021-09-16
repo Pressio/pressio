@@ -52,24 +52,23 @@
 namespace pressio{ namespace ops{
 
 // to = abs(from)
-template <class T2, class T1>
+template <class T1, class T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T1>::value and
-  ::pressio::is_array_pybind<T2>::value
+  (::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind and
+   ::pressio::Traits<T2>::package_identifier == PackageIdentifier::Pybind)
   >
 abs(T1 & to, const T2 & from)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T1, T2>::value,
-     "Types are not scalar compatible");
+  static_assert(::pressio::are_scalar_compatible<T1, T2>::value,
+		"Types are not scalar compatible");
 
   assert(to.ndim() == from.ndim());
 
-  using ord_t = typename ::pressio::Traits<T1>::size_type;
+  using size_t = typename ::pressio::Traits<T1>::size_type;
+  assert(extent(to,0)==extent(from,0));
   if (to.ndim() == 1)
   {
-    assert(extent(to,0)==extent(from,0));
-    for (ord_t i=0; i<extent(to, 0); ++i){
+    for (size_t i=0; i<extent(to, 0); ++i){
       to(i) = std::abs(from(i));
     }
   }

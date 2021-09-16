@@ -53,12 +53,12 @@ namespace pressio{ namespace ops{
 
 template<typename T>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T>::value
+  ::pressio::Traits<T>::package_identifier
+  == ::pressio::PackageIdentifier::Pybind
   >
 set_zero(T & v)
 {
-  using traits	 = ::pressio::Traits<T>;
-  using scalar_t = typename traits::scalar_type;
+  using scalar_t = typename ::pressio::Traits<T>::scalar_type;
   constexpr auto zero = ::pressio::utils::Constants<scalar_t>::zero();
   ::pressio::ops::fill(v, zero);
 }

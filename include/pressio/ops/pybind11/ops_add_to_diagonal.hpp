@@ -52,11 +52,16 @@
 namespace pressio{ namespace ops{
 
 template <typename T>
-::pressio::mpl::enable_if_t<::pressio::is_array_pybind<T>::value>
+::pressio::mpl::enable_if_t<
+  ::pressio::Traits<T>::package_identifier == PackageIdentifier::Pybind and
+  (::pressio::Traits<T>::rank == 2 or ::pressio::Traits<T>::rank == -1)
+  >
 add_to_diagonal(T & o,
 		typename ::pressio::Traits<T>::scalar_type value)
 {
+  // must be effectively rank2
   assert(o.ndim() == 2);
+  // must be square
   assert(extent(o,0) == extent(o,1));
 
   using ord_t = typename ::pressio::Traits<T>::size_type;

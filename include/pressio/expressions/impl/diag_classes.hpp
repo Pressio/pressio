@@ -231,6 +231,10 @@ public:
   }
 
 public:
+  int ndim() const{
+    return 1;
+  }
+
   size_t extent() const{
     return extent_;
   }
@@ -243,13 +247,13 @@ public:
   // non-const subscripting
   ref_t operator()(size_t i){
     assert(i < (size_t)extent_);
-    return matObj_.get()(i,i);
+    return matObj_(i,i);
   }
 
   // const subscripting
   const_ref_t operator()(size_t i) const{
     assert(i < (size_t)extent_);
-    return matObj_.get()(i,i);
+    return matObj_(i,i);
   }
 };
 #endif

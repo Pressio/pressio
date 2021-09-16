@@ -75,14 +75,14 @@ public:
   template< class _T = T, mpl::enable_if_t<std::is_default_constructible<_T>::value, int> = 0>
   InstanceOrReferenceWrapper(){}
 
-  explicit InstanceOrReferenceWrapper(T & valIn) 
-    : value_(valIn){}
-  
-  explicit InstanceOrReferenceWrapper(const T & valIn) 
+  explicit InstanceOrReferenceWrapper(T & valIn)
     : value_(valIn){}
 
-  explicit InstanceOrReferenceWrapper(T && valIn) 
-    : value_(std::move(valIn)) {}
+  explicit InstanceOrReferenceWrapper(const T & valIn)
+    : value_(valIn){}
+
+  explicit InstanceOrReferenceWrapper(T && valIn)
+    : value_(std::move(valIn)){}
 
   T& get() { return value_; }
   T const& get() const { return value_; }

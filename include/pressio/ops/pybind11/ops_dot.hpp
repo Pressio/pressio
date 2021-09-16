@@ -53,21 +53,21 @@ namespace pressio{ namespace ops{
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T0>::value and
-  ::pressio::is_array_pybind<T1>::value
+  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind
   >
 dot(const T0 & a,
     const T1 & b,
     typename ::pressio::Traits<T0>::scalar_type & result)
 {
-  static_assert
-    (::pressio::are_scalar_compatible<T0,T1>::value,
-     "vectors are not scalar compatible");
-  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
+  static_assert(::pressio::are_scalar_compatible<T0,T1>::value,
+		"vectors are not scalar compatible");
 
+  using sc_t = typename ::pressio::Traits<T0>::scalar_type;
   assert(a.ndim() == b.ndim());
   assert(a.ndim() == 1);
   assert(a.shape(0) == b.shape(0));
+
   if (a.ndim() != 1){
     throw std::runtime_error("dot: only allowed for rank-1");
   }
@@ -80,8 +80,8 @@ dot(const T0 & a,
 
 template <typename T0, typename T1>
 ::pressio::mpl::enable_if_t<
-  ::pressio::is_array_pybind<T0>::value and
-  ::pressio::is_array_pybind<T1>::value,
+  ::pressio::Traits<T0>::package_identifier == PackageIdentifier::Pybind and
+  ::pressio::Traits<T1>::package_identifier == PackageIdentifier::Pybind,
   typename ::pressio::Traits<T0>::scalar_type
   >
 dot(const T0 & a, const T1 & b)

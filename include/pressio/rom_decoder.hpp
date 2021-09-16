@@ -59,5 +59,6 @@
 #include "./ode.hpp"
 
 #include "./rom/rom_public_api_decoder.hpp"
+#include "./rom/rom_reconstructor_fom_state.hpp"
 
 #endif

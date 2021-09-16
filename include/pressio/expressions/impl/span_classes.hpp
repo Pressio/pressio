@@ -281,6 +281,10 @@ public:
   }
 
 public:
+  int ndim() const{
+    return 1;
+  }
+
   size_t extent(size_t i) const{
     assert(i==0);
     return extent_;
@@ -290,14 +294,14 @@ public:
   ref_t operator()(size_t i)
   {
     assert(i < (size_t)extent_);
-    return vecObj_.get()(startIndex_+i);
+    return vecObj_(startIndex_+i);
   }
 
   // const subscripting
   const_ref_t operator()(size_t i) const
   {
     assert(i < (size_t)extent_);
-    return vecObj_.get()(startIndex_+i);
+    return vecObj_(startIndex_+i);
   }
 };
 #endif

@@ -55,20 +55,48 @@ namespace pressio{ namespace ops{
 
 template <typename T, typename T1, typename T2>
 ::pressio::mpl::enable_if_t<
-  ::pressio::ops::constraints::rank1_container_pybind<T>::value and
-  ::pressio::ops::constraints::rank1_container_pybind<T1>::value and
-  ::pressio::ops::constraints::rank1_container_pybind<T2>::value
+  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::variadic::any_of<_pybind_is_rank1, T, T1, T2>::value
   >
-elementwise_multiply(typename T::traits::scalar_t alpha,
-		     const T & x,
-		     const T1 & z,
-		     typename T::traits::scalar_t beta,
-		     T2 & y)
+elementwise_multiply
+(typename ::pressio::Traits<T>::scalar_type alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::Traits<T>::scalar_type beta,
+ T2 & y)
 {
-  assert( y.extent(0)  == x.extent(0) );
-  assert( x.extent(0) == z.extent(0) );
+
+  assert(extent(x, 0)==extent(z, 0));
+  assert(extent(z, 0)==extent(y, 0));
   for (std::size_t i=0; i<y.extent(0); ++i){
     y(i) = beta*y(i) + alpha*x(i)*z(i);
+  }
+}
+
+template <typename T, typename T1, typename T2>
+::pressio::mpl::enable_if_t<
+  mpl::variadic::all_of<_pybind_is_pybind, T, T1, T2>::value and
+  mpl::variadic::all_of<_pybind_is_rank_dyn, T, T1, T2>::value
+  >
+elementwise_multiply
+(typename ::pressio::Traits<T>::scalar_type alpha,
+ const T & x,
+ const T1 & z,
+ typename ::pressio::Traits<T>::scalar_type beta,
+ T2 & y)
+{
+  assert(extent(x, 0)==extent(z, 0));
+  assert(extent(z, 0)==extent(y, 0));
+  assert(x.ndim() == z.ndim());
+  assert(x.ndim() == y.ndim());
+
+  if(x.ndim()==1){
+    for (std::size_t i=0; i<y.extent(0); ++i){
+      y(i) = beta*y(i) + alpha*x(i)*z(i);
+    }
+  }
+  else{
+    throw std::runtime_error("non impl");
   }
 }
 

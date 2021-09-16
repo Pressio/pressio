@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// ops_fwd.hpp
+// ops_resize.hpp
 //                     		  Pressio
 //                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,17 +46,32 @@
 //@HEADER
 */
 
-#ifndef OPS_QUERY_LAYOUT_PYBIND_HPP_
-#define OPS_QUERY_LAYOUT_PYBIND_HPP_
+#ifndef OPS_PYBIND_OPS_RESIZE_HPP_
+#define OPS_PYBIND_OPS_RESIZE_HPP_
 
 namespace pressio{ namespace ops{
 
-template<class T>
-constexpr bool is_column_major(const T& o)
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value
+  >
+resize(T & o, typename ::pressio::Traits<T>::size_type newSize)
 {
-  (void)o;
-  return (::pressio::Traits<T>::layout == 1);
+  assert(o.ndim() == 1);
+  //o.resize(newSize);
 }
 
-}} //end namespace
-#endif
+template <typename T>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_array_pybind<T>::value
+  >
+resize(T & o,
+       const typename ::pressio::Traits<T>::size_type newRows,
+       const typename ::pressio::Traits<T>::size_type newCols)
+{
+  assert(o.ndim() == 2);
+  //o.resize(newRows, newCols);
+}
+
+}}//end namespace pressio::ops
+#endif  // OPS_EIGEN_OPS_RESIZE_HPP_

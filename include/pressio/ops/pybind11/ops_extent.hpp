@@ -61,5 +61,15 @@ extent(const T & objectIn, const IndexType i)
   return objectIn.shape(i);
 }
 
+template<class T, class IndexType>
+::pressio::mpl::enable_if_t<
+  ::pressio::is_expression_pybind<T>::value,
+  typename ::pressio::Traits<T>::size_type
+>
+extent(const T & objectIn, const IndexType i)
+{
+  return objectIn.extent(i);
+}
+
 }}
 #endif

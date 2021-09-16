@@ -174,7 +174,23 @@ struct is_expression_eigen<
   T,
   mpl::enable_if_t<
     (is_expression<T>::value and
-     ::pressio::Traits<T>::package_identifier == ::pressio::PackageIdentifier::Eigen)
+     ::pressio::Traits<T>::package_identifier
+     == ::pressio::PackageIdentifier::Eigen)
+    >
+  > : std::true_type{};
+#endif
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template <typename T, typename enable = void>
+struct is_expression_pybind : std::false_type{};
+
+template <typename T>
+struct is_expression_pybind<
+  T,
+  mpl::enable_if_t<
+    (is_expression<T>::value and
+     ::pressio::Traits<T>::package_identifier
+     == ::pressio::PackageIdentifier::Pybind)
     >
   > : std::true_type{};
 #endif

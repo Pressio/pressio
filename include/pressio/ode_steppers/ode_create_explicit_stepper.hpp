@@ -53,6 +53,13 @@
 
 namespace pressio{ namespace ode{
 
+// When user passed an lvalue system, SystemType is deduced to be a reference,
+// so the concrete stepper class composed inside the ExplicitCompose will
+// be composed such that it will hold a reference to the provided system arg.
+// When the user passes an rvalue system, SystemType will be correctly
+// deduced so that the stepper will hold an instance of the system that
+// is move-constructed (if applicable) from the system argument.
+
 template<
   class StateType,
   class SystemType,

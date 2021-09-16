@@ -304,6 +304,10 @@ public:
   }
 
 public:
+  int ndim() const{
+    return 2;
+  }
+
   size_t extent(size_t i) const{
     return (i==0) ? numRows_ : numCols_;
   }

@@ -51,13 +51,13 @@
 
 namespace pressio{ namespace rom{ namespace impl{
 
-template<typename fom_system_t, bool isbinding=false>
+template<typename FomSystemType, bool isbinding=false>
 struct FomObjHolder;
 
-template<class fom_system_t>
-struct FomObjHolder<fom_system_t, false>
+template<class FomSystemType>
+struct FomObjHolder<FomSystemType, false>
 {
-  std::reference_wrapper<const fom_system_t> fomObj_;
+  std::reference_wrapper<const FomSystemType> fomObj_;
 
   FomObjHolder() = delete;
   FomObjHolder(const FomObjHolder &) = default;
@@ -66,10 +66,32 @@ struct FomObjHolder<fom_system_t, false>
   FomObjHolder & operator=(FomObjHolder &&) = delete;
   ~FomObjHolder() = default;
 
-  explicit FomObjHolder(const fom_system_t & fomObjIn) : fomObj_(fomObjIn){}
-
-  const fom_system_t & fomCRef() const{ return fomObj_.get(); }
+  explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
+  const FomSystemType & fomCRef() const{ return fomObj_.get(); }
 };
+
+#ifdef PRESSIO_ENABLE_TPL_PYBIND11
+template<class FomSystemType>
+struct FomObjHolder<FomSystemType, true>
+{
+  // when dealing with bindings for pressio4py,
+  // we need to copy the fom object, since the c++ object
+  // is only a thin wrapper around the Python object
+  FomSystemType fomObj_;
+
+  FomObjHolder() = delete;
+  FomObjHolder(const FomObjHolder &) = default;
+  FomObjHolder & operator=(const FomObjHolder &) = delete;
+  FomObjHolder(FomObjHolder &&) = default;
+  FomObjHolder & operator=(FomObjHolder &&) = delete;
+  ~FomObjHolder() = default;
+
+  explicit FomObjHolder(const FomSystemType & fomObjIn) : fomObj_(fomObjIn){}
+  const FomSystemType & fomCRef() const{ return fomObj_; }
+};
+#endif
+
+
 
 template <class T, class StepperType>
 struct AddExplicitStepper : T
@@ -141,30 +163,3 @@ struct AddImplicitArbStepper : T
 
 }}}
 #endif  // ROM_IMPL_ROM_PROBLEM_MEMBERS_MIXINS_HPP_
-
-
-
-
-// #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-// template<class fom_system_t>
-// struct FomObjHolder<fom_system_t, true>
-// {
-//   // when dealing with bindings for pressio4py, the fom_system_t
-//   // is a C++ class in pressio4py that wraps the actual FOM python object.
-//   // to construct this ROM problem, the Python code passes the
-//   // python FOM object NOT a C++ object instantiated from fom_system_t.
-//   // Therefore, ONLY when we deal with pressio4py, we create the fom obj
-//   // instead of referencing it.
-//   fom_system_t fomObj_;
-
-//   FomObjHolder() = delete;
-//   FomObjHolder(const FomObjHolder &) = default;
-//   FomObjHolder & operator=(const FomObjHolder &) = delete;
-//   FomObjHolder(FomObjHolder &&) = default;
-//   FomObjHolder & operator=(FomObjHolder &&) = delete;
-//   ~FomObjHolder() = default;
-
-//   explicit FomObjHolder(pybind11::object pyFomObj): fomObj_(pyFomObj){}
-//   const fom_system_t & fomCRef() const{ return fomObj_; }
-// };
-// #endif

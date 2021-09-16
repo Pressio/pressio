@@ -162,24 +162,24 @@ template<class ...> struct matching_extents;
 // #endif
 
 #ifdef PRESSIO_ENABLE_TPL_PYBIND11
-#include "ops/pybind11/ops_query_layout.hpp"
+#include "ops/pybind11/ops_common.hpp"
 #include "ops/pybind11/ops_extent.hpp"
 #include "ops/pybind11/ops_clone.hpp"
 #include "ops/pybind11/ops_deep_copy.hpp"
 #include "ops/pybind11/ops_abs.hpp"
 #include "ops/pybind11/ops_scale.hpp"
 #include "ops/pybind11/ops_fill.hpp"
+#include "ops/pybind11/ops_resize.hpp"
 #include "ops/pybind11/ops_set_zero.hpp"
 #include "ops/pybind11/ops_add_to_diagonal.hpp"
 #include "ops/pybind11/ops_min_max.hpp"
 #include "ops/pybind11/ops_norms.hpp"
 #include "ops/pybind11/ops_dot.hpp"
 #include "ops/pybind11/ops_pow.hpp"
-// #include "ops/eigen/ops_rank1_update.hpp"
-// #include "ops/eigen/ops_rank2_update.hpp"
-// #include "ops/eigen/ops_elementwise_multiply.hpp"
-// #include "ops/eigen/ops_level2.hpp"
-// #include "ops/eigen/ops_level3.hpp"
+#include "ops/pybind11/ops_update.hpp"
+#include "ops/pybind11/ops_elementwise_multiply.hpp"
+#include "ops/pybind11/ops_level2.hpp"
+#include "ops/pybind11/ops_level3.hpp"
 #endif
 
 // keep this last
