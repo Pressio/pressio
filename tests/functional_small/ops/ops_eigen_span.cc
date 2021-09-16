@@ -3,7 +3,6 @@
 #include "pressio/ops.hpp"
 
 using vec_t = Eigen::VectorXd;
-using mat_t = Eigen::MatrixXd;
 
 TEST(ops_eigen, span_extent)
 {
