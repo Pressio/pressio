@@ -79,7 +79,7 @@
 #include "qr/impl/tpetra/qr_tpetra_multi_vector_tsqr_impl.hpp"
 #include "qr/impl/tpetra/qr_tpetra_mv_householder_using_eigen_impl.hpp"
 #include "qr/impl/tpetra/qr_tpetra_multi_vector_modified_gram_schmidt_impl.hpp"
-// #include "qr/impl/tpetra/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
+#include "qr/impl/tpetra/qr_tpetra_block_multi_vector_tsqr_impl.hpp"
 #endif
 
 #endif

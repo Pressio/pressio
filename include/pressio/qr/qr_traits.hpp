@@ -49,7 +49,7 @@
 #ifndef QR_QR_TRAITS_HPP_
 #define QR_QR_TRAITS_HPP_
 
-namespace pressio{ 
+namespace pressio{
 
 /* common to all cases */
 template<typename matrix_type, typename algo, bool in_place>
@@ -71,7 +71,7 @@ template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
   qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
     ::pressio::mpl::enable_if_t<
-      ::pressio::is_dense_matrix_eigen<matrix_type>::value 
+      ::pressio::is_dense_matrix_eigen<matrix_type>::value
       >
   > : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
@@ -119,34 +119,13 @@ struct impl_class_helper<Epetra_MultiVector, qr::ModifiedGramSchmidt, R_t>{
 
 template <class matrix_t, class R_t>
 struct impl_class_helper<
-  matrix_t, qr::TSQR, R_t, 
-  ::pressio::mpl::enable_if_t< 
+  matrix_t, qr::TSQR, R_t,
+  ::pressio::mpl::enable_if_t<
     ::pressio::is_multi_vector_tpetra<matrix_t>::value
     >
   >
 {
   using impl_t = qr::impl::TpetraMVTSQR<matrix_t, R_t>;
-};
-
-template <class matrix_t, class R_t>
-struct impl_class_helper<
-  matrix_t, qr::ModifiedGramSchmidt, R_t, 
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_multi_vector_tpetra<matrix_t>::value
-    >
-  >
-{
-  using impl_t = qr::impl::ModGramSchmidtMVTpetra<matrix_t, R_t>;
-};
-
-template <class matrix_t, class R_t>
-struct impl_class_helper<
-  matrix_t, qr::Householder, R_t, 
-  ::pressio::mpl::enable_if_t<
-    ::pressio::is_multi_vector_tpetra<matrix_t>::value
-    >
-  >{
-  using impl_t = qr::impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t>;
 };
 
 template <class matrix_t, class R_t>
@@ -160,17 +139,39 @@ struct impl_class_helper<
   using impl_t = qr::impl::TpetraBlockMVTSQR<matrix_t, R_t>;
 };
 
+template <class matrix_t, class R_t>
+struct impl_class_helper<
+  matrix_t, qr::ModifiedGramSchmidt, R_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra<matrix_t>::value
+    >
+  >
+{
+  using impl_t = qr::impl::ModGramSchmidtMVTpetra<matrix_t, R_t>;
+};
+
+template <class matrix_t, class R_t>
+struct impl_class_helper<
+  matrix_t, qr::Householder, R_t,
+  ::pressio::mpl::enable_if_t<
+    ::pressio::is_multi_vector_tpetra<matrix_t>::value
+    >
+  >{
+  using impl_t = qr::impl::TpetraMVHouseholderUsingEigen<matrix_t, R_t>;
+};
+
+
 
 /*
  * specialize for Epetra::MultiVector, R_type = void
  */
 template<class algo_t, bool in_place>
-struct Traits<  
+struct Traits<
   qr::impl::QRSolver<Epetra_MultiVector, algo_t, in_place, void>
   > : qr_traits_shared_all<Epetra_MultiVector, algo_t, in_place>
 {
 
-  static_assert( 
+  static_assert(
      std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
      std::is_same<algo_t, qr::Householder>::value or
      std::is_same<algo_t, qr::TSQR>::value,
@@ -199,11 +200,11 @@ template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
   qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
     ::pressio::mpl::enable_if_t<::pressio::is_multi_vector_tpetra<matrix_type>::value>
-  > 
+  >
   : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
 
-  static_assert( 
+  static_assert(
     std::is_same<algo_t, qr::ModifiedGramSchmidt>::value or
     std::is_same<algo_t, qr::Householder>::value or
     std::is_same<algo_t, qr::TSQR>::value,
@@ -232,10 +233,10 @@ struct Traits<
  */
 template<typename matrix_type, typename algo_t, bool in_place>
 struct Traits<
-  qr::impl::QRSolver<
-    matrix_type, algo_t, in_place, void>,
-    ::pressio::mpl::enable_if_t< ::pressio::is_multi_vector_tpetra_block<matrix_type>::value >
-  > : qr_traits_shared_all<matrix_type, algo_t, in_place>
+  qr::impl::QRSolver<matrix_type, algo_t, in_place, void>,
+  ::pressio::mpl::enable_if_t< ::pressio::is_multi_vector_tpetra_block<matrix_type>::value >
+  >
+  : qr_traits_shared_all<matrix_type, algo_t, in_place>
 {
 
   static_assert( std::is_same<algo_t, qr::TSQR>::value,
@@ -244,8 +245,8 @@ struct Traits<
   using traits_all_t  = qr_traits_shared_all<matrix_type, algo_t, in_place>;
   using typename traits_all_t::matrix_t;
   using typename traits_all_t::sc_t;
-  using node_t = typename ::pressio::Traits<matrix_type>::node_t;
-  using hexsp  = typename ::pressio::Traits<matrix_type>::host_exec_space_t;
+  using node_t = typename ::pressio::Traits<matrix_type>::node_type;
+  using hexsp  = typename ::pressio::Traits<matrix_type>::host_exec_space_type;
 
   using impl_t   = typename impl_class_helper<matrix_t, algo_t, void>::impl_t;
   using Q_type  = typename impl_t::Q_type;
