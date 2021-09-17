@@ -49,8 +49,7 @@
 #ifndef ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
 #define ROM_LSPG_IMPL_ROM_COMPOSE_STEADY_IMPL_HPP_
 
-#include "./rom_lspg_decorator_preconditioner.hpp"
-#include "./rom_lspg_decorator_masked.hpp"
+#include "./rom_lspg_steady_decorators.hpp"
 #include "./rom_problem_members_common_mixins.hpp"
 #include "./rom_lspg_problem_members.hpp"
 #include "./rom_lspg_steady_policies.hpp"

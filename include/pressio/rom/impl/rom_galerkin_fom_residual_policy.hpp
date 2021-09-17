@@ -148,7 +148,8 @@ private:
      * recomputes the n-th state and updates/shifts back all the other
      * FOM states stored. */
     if (storedStep_ != step_number){
-      fomStatesMngr_.get().reconstructWithStencilUpdate(galerkin_state_n);
+      fomStatesMngr_.get().reconstructAtAndUpdatePrevious(galerkin_state_n,
+							  ::pressio::ode::n());
       storedStep_ = step_number;
     }
   }

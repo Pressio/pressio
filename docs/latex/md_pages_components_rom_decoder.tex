@@ -1,9 +1,9 @@
-\hypertarget{md_pages_components_rom_decoder_autotoc_md76}{}\doxysection{Overview}\label{md_pages_components_rom_decoder_autotoc_md76}
+\hypertarget{md_pages_components_rom_decoder_autotoc_md74}{}\doxysection{Overview}\label{md_pages_components_rom_decoder_autotoc_md74}
 A key assumption of projection-\/based ROMs is to approximate the full-\/order model (FOM) state, $y_{fom}$, as\+: \[ y_{fom} = g(y_{rom}) \]
 
 where $y_{rom}$ is the reduced state (or generalized coordinates), and $g$ is the mapping between the two.
 
-Note that there is no explicit constraint on what the mapping is, it can be anything.\hypertarget{md_pages_components_rom_decoder_autotoc_md77}{}\doxysection{Decoder Concept}\label{md_pages_components_rom_decoder_autotoc_md77}
+Note that there is no explicit constraint on what the mapping is, it can be anything.\hypertarget{md_pages_components_rom_decoder_autotoc_md75}{}\doxysection{Decoder Concept}\label{md_pages_components_rom_decoder_autotoc_md75}
 In pressio, a valid decoder is any C++ object whose type meets the following API\+:
 
 
@@ -39,10 +39,10 @@ In pressio, a valid decoder is any C++ object whose type meets the following API
 \DoxyCodeLine{\};}
 
 \end{DoxyCode}
-\hypertarget{md_pages_components_rom_decoder_autotoc_md78}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_autotoc_md78}
+\hypertarget{md_pages_components_rom_decoder_autotoc_md76}{}\doxysubsection{Requirements}\label{md_pages_components_rom_decoder_autotoc_md76}
 
 \begin{DoxyItemize}
 \item {\ttfamily fom\+\_\+state\+\_\+type}\+: must be copy constructible
 \item {\ttfamily jacobian\+\_\+type}\+: must be copy constructible
-\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_autotoc_md79}{}\doxysubsection{Special case\+: linear decoder}\label{md_pages_components_rom_decoder_autotoc_md79}
+\end{DoxyItemize}\hypertarget{md_pages_components_rom_decoder_autotoc_md77}{}\doxysubsection{Special case\+: linear decoder}\label{md_pages_components_rom_decoder_autotoc_md77}
 The special case of a linear decoder is natively supported in pressio, see \href{./md_pages_components_rom_decoder_linear.html}{\texttt{ this page}}. 

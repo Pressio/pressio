@@ -82,27 +82,27 @@ public:
     class ScalarType,
     class StepType
     >
-  void compute(SteppersE name,
-	       const StateType & predictedState,
-	       const StencilStatesContainerType & stencilStatesManager,
-	       StencilVelocitiesContainerType & stencilVelocities,
-	       const ScalarType & rhsEvaluationTime,
-	       const ScalarType & dt,
-	       const StepType & step,
-	       ResidualType & R) const
+  void operator()(SteppersE name,
+		  const StateType & predictedState,
+		  const StencilStatesContainerType & stencilStatesManager,
+		  StencilVelocitiesContainerType & stencilVelocities,
+		  const ScalarType & rhsEvaluationTime,
+		  const ScalarType & dt,
+		  const StepType & step,
+		  ResidualType & R) const
   {
 
     if (name == SteppersE::BDF1){
       (*this).template compute_impl_bdf<ode::BDF1>(predictedState, stencilStatesManager,
-				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+						   stencilVelocities, rhsEvaluationTime, dt, step, R);
     }
     else if (name == SteppersE::BDF2){
       (*this).template compute_impl_bdf<ode::BDF2>(predictedState, stencilStatesManager,
-				  stencilVelocities, rhsEvaluationTime, dt, step, R);
+						   stencilVelocities, rhsEvaluationTime, dt, step, R);
     }
     else if (name == SteppersE::CrankNicolson){
       this->compute_impl_cn(predictedState, stencilStatesManager,
-		      stencilVelocities, rhsEvaluationTime, dt, step, R);
+			    stencilVelocities, rhsEvaluationTime, dt, step, R);
     }
   }
 

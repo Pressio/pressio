@@ -26,21 +26,21 @@ TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
 {
   /*
     check correctness of Galerkin with Euler forward
-  
+
     - run two steps: t0 -> t1 -> t2
     - dt = 1.
 
-    - phi in R^{10,3}: 
+    - phi in R^{10,3}:
         phi[:,0]=0, phi[:,0]=1, phi[:,0]=2
 
     - initial romState = [0,1,2]
 
     - fom velocity f(y,t) always computes y+t
 
-    step0: 
+    step0:
       rom state should just be the initial condition
-  
-    step1: 
+
+    step1:
       y_fom = phi*[0,1,2]
       rom state = [0,1,2]^T + phi^T f(y_fom, t=0.) = [0,51,102]
 
@@ -58,7 +58,7 @@ TEST(rom_galerkin, cont_time_default_explicit_correctness_eigen)
   auto problem = pressio::rom::galerkin::create_default_explicit_problem(
     pressio::ode::SteppersE::ForwardEuler, fomSystem, decoder, romState, fomReferenceState);
 
-  const scalar_t dt = 1.; 
+  const scalar_t dt = 1.;
   const int num_steps = 2;
   ObserverA obs;
   pressio::ode::advance_n_steps_and_observe(problem.stepper(), romState, 0., dt, num_steps, obs);
@@ -74,11 +74,11 @@ TEST(rom_galerkin, cont_time_default_implicit_correctness_eigen)
 {
   /*
     check correctness of Galerkin with BDF1
-  
+
     - run two steps: t0 -> t1 -> t2
     - dt = 2.
 
-    - phi in R^{10,3}: 
+    - phi in R^{10,3}:
         phi[:,0]=0, phi[:,0]=1, phi[:,0]=2
 
     - initial romState = [0,1,2]

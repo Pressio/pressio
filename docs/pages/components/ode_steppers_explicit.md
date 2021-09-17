@@ -24,32 +24,25 @@ In pressio, a "stepper" is an abstraction that represents the "how" to take a st
 
 ```cpp
 template<class StateType, class SystemType>
-auto create_keyword_stepper(const StateType & state,
-	                        const SystemType & system);
+auto create_explicit_stepper(pressio::ode::SteppersE name,
+							 const StateType & state,
+	                         const SystemType & system);
 ```
 
-where `keyword` is one of: forward_euler, runge_kutta4, adams_bashforth2, ssp_runge_kutta3.
+where `name` is one of the following
+enum class values: `ForwardEuler`, `RungeKutta4`, `AdamsBashforth2`, `SSPRungeKutta3`.
 This function returns an instance of the desired stepper.
 The returned stepper object satisfies the "steppable" concept discussed [here](/Users/fnrizzi/Desktop/work/ROM/gitrepos/pressio/docs/html/md_pages_components_ode_advance.html), so one can use the "advancers" functions to step forward.
 
 
-## Parameters
+## Parameters and Requirements
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `StateType`: data type of your state, must be copy constructible
 
-- `SystemType`:
-  - class defining how to create an instance of the velocity @f$f@f$ and how to compute it;
-
-
-## Requirements
-
-- `StateType`: must be copy constructible
-
-- The system class must conform to the following API:
-
+- `SystemType`: class defining how to create an instance of the velocity @f$f@f$ and how to compute it.<br/>
+  The system class must conform to the following API:
   ```cpp
-  struct SystemForExplicitOde
+  struct SystemForExplicitStepper
   {
 	using scalar_type   = /* */;
 	using state_type    = /* */;
@@ -79,7 +72,8 @@ int main()
   // systemObj is the system instance
 
   namespace pode = pressio::ode;
-  auto stepper = pode::create_forward_euler_stepper(stateObj, systemObj);
+  const auto scheme = pode::SteppersE::ForwardEuler;
+  auto stepper = pode::create_explicit_stepper(scheme, stateObj, systemObj);
 
   // use the stepper to advance in time,
   // for example using the advancer function

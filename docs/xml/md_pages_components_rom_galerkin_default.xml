@@ -8,7 +8,7 @@
     <detaileddescription>
 <para>Defined in: <computeroutput>&lt;pressio/rom_galerkin.hpp&gt;</computeroutput></para>
 <para>Public namespace: <computeroutput>pressio::rom</computeroutput>, <computeroutput>pressio::rom::galerkin</computeroutput>.</para>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md96">
 <title>Overview</title>
 <para>At a high level, using a Galerkin problem involces three steps:<orderedlist>
 <listitem><para><emphasis>create</emphasis>: you create an instance of a &quot;default Galerkin problem&quot;</para>
@@ -18,7 +18,7 @@
 </para>
 <para>You should now pause and think for a second about the steps above. What does a stepper have to do with a Galerkin ROM? The answer is that practically speaking, at the lowest-level, a Galerkin problem can be reduced to simply a &quot;custom&quot; stepper to advance in time. This is exactly how pressio implements this and the reason why a Galerkin problem contains a stepper object inside: when you create the problem, pressio creates the appropriate custom stepper object that you can use. You don&apos;t need to know how this is done, or rely on the details, because these are problem- and implementation-dependent, and we reserve the right to change this in the future.</para>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md99">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md97">
 <title>1. Creating a problem instance</title>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StepperTag,</highlight></codeline>
@@ -33,7 +33,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>FomReferenceStateType<sp/>&amp;<sp/>fomRef);</highlight></codeline>
 </programlisting></para>
 <para>where <computeroutput>StepperTag</computeroutput> is a tag type from the ode to specify which time scheme to use. This function returns an instance of the desired Galerkin problem.</para>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md100">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md98">
 <title>Parameters and Requirements</title>
 <para><itemizedlist>
 <listitem><para><computeroutput>StepperTag</computeroutput>:<itemizedlist>
@@ -66,7 +66,7 @@
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md101">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md99">
 <title>Problem class API</title>
 <para>A problem meets the following API:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">DefaultGalerkinProblem</highlight></codeline>
@@ -107,9 +107,9 @@
 </programlisting></para>
 </sect2>
 </sect1>
-<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md102">
+<sect1 id="md_pages_components_rom_galerkin_default_1autotoc_md100">
 <title>2.,3. Extract and Solve</title>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md103">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md101">
 <title>Explicit Case</title>
 <para>An example usage for explicit stepper is as follows:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>
@@ -127,7 +127,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect2>
-<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md104">
+<sect2 id="md_pages_components_rom_galerkin_default_1autotoc_md102">
 <title>Implicit Case</title>
 <para>An example usage for implicit stepper is as follows:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()</highlight></codeline>

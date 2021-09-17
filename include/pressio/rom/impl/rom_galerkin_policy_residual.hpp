@@ -83,29 +83,33 @@ public:
     class GalerkinStencilVelocitiesContainerType,
     class ScalarType
     >
-  void compute(::pressio::ode::SteppersE name,
-	       const GalerkinStateType & galerkinState,
-	       const GalerkinStencilStatesContainerType & galerkinStencilStates,
-	       GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
-	       const ScalarType & t_np1,
-	       const ScalarType & dt,
-	       const ::pressio::ode::step_count_type & currentStepNumber,
-	       GalerkinResidualType & galerkinResidual) const
+  void operator()(::pressio::ode::SteppersE name,
+		  const GalerkinStateType & galerkinState,
+		  const GalerkinStencilStatesContainerType & galerkinStencilStates,
+		  GalerkinStencilVelocitiesContainerType & galerkinStencilVelocities,
+		  const ScalarType & t_np1,
+		  const ScalarType & dt,
+		  const ::pressio::ode::step_count_type & currentStepNumber,
+		  GalerkinResidualType & galerkinResidual) const
   {
+
     if (name == ::pressio::ode::SteppersE::BDF1){
-      (*this).template compute_impl_bdf<ode::BDF1>(galerkinState, galerkinStencilStates,
-						   galerkinStencilVelocities, t_np1, dt,
-						   currentStepNumber, galerkinResidual);
+      (*this).template compute_impl_bdf<ode::BDF1>
+	(galerkinState, galerkinStencilStates,
+	 galerkinStencilVelocities, t_np1, dt,
+	 currentStepNumber, galerkinResidual);
     }
     else if (name == ::pressio::ode::SteppersE::BDF2){
-      (*this).template compute_impl_bdf<ode::BDF2>(galerkinState, galerkinStencilStates,
-						   galerkinStencilVelocities, t_np1, dt,
-						   currentStepNumber, galerkinResidual);
+      (*this).template compute_impl_bdf<ode::BDF2>
+	(galerkinState, galerkinStencilStates,
+	 galerkinStencilVelocities, t_np1, dt,
+	 currentStepNumber, galerkinResidual);
     }
     else if (name == ::pressio::ode::SteppersE::CrankNicolson){
-      (*this).template compute_impl_cn<ode::CrankNicolson>(galerkinState, galerkinStencilStates,
-							    galerkinStencilVelocities, t_np1, dt,
-							    currentStepNumber, galerkinResidual);
+      (*this).template compute_impl_cn<ode::CrankNicolson>
+	(galerkinState, galerkinStencilStates,
+	 galerkinStencilVelocities, t_np1, dt,
+	 currentStepNumber, galerkinResidual);
     }
   }
 

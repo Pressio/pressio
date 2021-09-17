@@ -297,13 +297,13 @@ public:
 
   void residual(const StateType & odeState, ResidualType & R) const
   {
-    res_policy_.get().compute(name_, odeState, stencil_states_,
+    res_policy_.get()(name_, odeState, stencil_states_,
 			      stencil_velocities_, t_np1_, dt_, step_number_, R);
   }
 
   void jacobian(const StateType & odeState, JacobianType & J) const
   {
-    jac_policy_.get().compute(name_, odeState, stencil_states_,
+    jac_policy_.get()(name_, odeState, stencil_states_,
 			      t_np1_, dt_, step_number_, J);
   }
 

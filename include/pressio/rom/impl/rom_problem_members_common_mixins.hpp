@@ -110,7 +110,10 @@ struct AddImplicitStepper : T
 		     const T1 & romState,
 		     Args && ...args)
     : T(name, romState, std::forward<Args>(args)...),
-      stepperObj_(::pressio::ode::create_implicit_stepper(name, romState, T::residualPolicy_, T::jacobianPolicy_))
+      stepperObj_(::pressio::ode::create_implicit_stepper(name,
+							  romState,
+							  T::residualPolicy_,
+							  T::jacobianPolicy_))
   {}
 };
 

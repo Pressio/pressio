@@ -61,8 +61,8 @@ template<
   >
 class SteadySystem
 {
-  std::reference_wrapper<const ResidualPolicyType> residualEvaluator_;
-  std::reference_wrapper<const JacobianPolicyType> jacobianEvaluator_;
+  std::reference_wrapper<const ResidualPolicyType> residualPolicy_;
+  std::reference_wrapper<const JacobianPolicyType> jacobianPolicy_;
   mutable LspgResidualType R_;
   mutable LspgJacobianType J_;
 
@@ -83,10 +83,10 @@ public:
 
   SteadySystem(const ResidualPolicyType & resPolicyObj,
 	       const JacobianPolicyType & jacPolicyObj)
-    : residualEvaluator_(resPolicyObj),
-      jacobianEvaluator_(jacPolicyObj),
-      R_(residualEvaluator_.get().create()),
-      J_(jacobianEvaluator_.get().create())
+    : residualPolicy_(resPolicyObj),
+      jacobianPolicy_(jacPolicyObj),
+      R_(residualPolicy_.get().create()),
+      J_(jacobianPolicy_.get().create())
     {}
 
 public:
@@ -95,12 +95,12 @@ public:
 
   void residual(const LspgStateType & romState, LspgResidualType & R) const
   {
-    residualEvaluator_.get().template compute(romState, R);
+    residualPolicy_.get().template compute(romState, R);
   }
 
   void jacobian(const LspgStateType & romState, LspgJacobianType & J) const
   {
-    jacobianEvaluator_.get().template compute(romState, J);
+    jacobianPolicy_.get().template compute(romState, J);
   }
 
   //

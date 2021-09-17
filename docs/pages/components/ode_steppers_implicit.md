@@ -33,23 +33,25 @@ In this case, pressio exposes the following functions to create an instance of a
 @code{.cpp}
 // overload 1
 template<class StateType, class SystemType>
-auto create_keyword_stepper(const StateType & state,
-							const SystemType & system);
+auto create_implicit_stepper(pressio::ode::SteppersE name,
+							 const StateType & state,
+							 const SystemType & system);
 
 // overload 2
 template<class StateType, class ResidualPolicyType, class JacobianPolicyType>
-auto create_keyword_stepper(const StateType & state,
-							ResidualPolicyType && rPol,
-							JacobianPolicyType && jPol);
+auto create_implicit_stepper(pressio::ode::SteppersE name,
+							 const StateType & state,
+							 ResidualPolicyType && rPol,
+							 JacobianPolicyType && jPol);
 @endcode
 
 Currently, the choices are:
 
-| `keyword`         	| Method                  	| Discrete Residual Formula                                                                                      	|
-|-----------------	|-------------------------	|----------------------------------------------------------------------------------------------	|
-| bdf1          	| Backward Diff 1st order 	| @f$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})@f$                                                      	|
-| bdf2          	| Backward Diff 2nd order 	| @f$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})@f$ 	|
-| cranknicolson 	| Crank-Nicolson          	| @f$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)@f$  	|
+| enum value    | Method                  | Discrete Residual Formula                                                                          |
+|---------------|-------------------------|----------------------------------------------------------------------------------------------------|
+| BDF1          | Backward Diff 1st order | @f$R = y_{n+1}-y_{n}- hf(t_{n+1},y_{n+1})@f$                                                       |
+| BDF2          | Backward Diff 2nd order | @f$R = y_{n+1}-{\tfrac {4}{3}}y_{n}+{\tfrac {1}{3}}y_{n-1} - {\tfrac {2}{3}}hf(t_{n+1},y_{n+1})@f$ |
+| CrankNicolson | Crank-Nicolson          | @f$R = y_{n+1}- y_{n} - {\tfrac {1}{2}} h \left( f(t_{n+1},y_{n+1}) + f(t_{n},y_{n}) \right)@f$    |
 
 
 ### Parameters
@@ -103,13 +105,13 @@ Notes:
 	residual_type create() const;
 
 	template <class TagType, class AuxStatesType, class AuxRhsType, class TimeType, class StepType>
-	void compute(const StateType & state,
-				 const AuxStatesType & auxStates,
-				 AuxRhsType & auxRhs,
-				 const TimeType & time_at_n_plus_one,
-				 const TimeType & dt,
-				 StepType step,
-				 residual_type & R) const;
+	void operator()(const StateType & state,
+				    const AuxStatesType & auxStates,
+				    AuxRhsType & auxRhs,
+				    const TimeType & time_at_n_plus_one,
+				    const TimeType & dt,
+				    StepType step,
+				    residual_type & R) const;
   };
   @endcode
 
@@ -123,12 +125,12 @@ Notes:
 	jacobian_type create() const;
 
 	template <class TagType, class AuxStatesType, class TimeType, class StepType>
-	void compute(const StateType & state,
-				 const AuxStatesType & auxStates,
-				 const TimeType & time_at_n_plus_one,
-				 const TimeType & dt,
-				 StepType step,
-				 jacobian_type & J) const;
+	void operator()(const StateType & state,
+				    const AuxStatesType & auxStates,
+				    const TimeType & time_at_n_plus_one,
+				    const TimeType & dt,
+				    StepType step,
+				    jacobian_type & J) const;
   };
   @endcode
 
@@ -177,10 +179,10 @@ states and RHS evaluations, respectively, needed to compute the operators
 for a certain scheme. All you need to know about these containers is the following:
 
 
-| TagType         	| Description/Info 	|
-|-----------------	|---------------------------	|
-| `BDF1`          	| `auxStates`: contains: state at n-th step <br/> &emsp; &emsp; &emsp; &emsp;  &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> `auxRhs`: Empty |
-| `BDF2`          	| `auxStates`: contains: states at n-th and (n-1)-th step <br/> &emsp; &emsp; &emsp; &emsp;  &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> &emsp; &emsp; &emsp; &emsp; &ensp; `const auto & ynm1 = auxStates(pressio::ode::nMinusOne());` <br/> `auxRhs`: Empty |
+| Scheme          | Description/Info                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `BDF1`          | `auxStates`: contains: state at n-th step <br/> &emsp; &emsp; &emsp; &emsp;  &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> `auxRhs`: Empty                                                                                                                                                                                                                      |
+| `BDF2`          | `auxStates`: contains: states at n-th and (n-1)-th step <br/> &emsp; &emsp; &emsp; &emsp;  &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> &emsp; &emsp; &emsp; &emsp; &ensp; `const auto & ynm1 = auxStates(pressio::ode::nMinusOne());` <br/> `auxRhs`: Empty                                                                                                   |
 | `CrankNicolson` | `auxStates`: contains: states at n-th step <br/>  &emsp; &emsp; &emsp; &emsp; &ensp; Use: `const auto & yn = auxStates(pressio::ode::n());` <br/> `auxRhs`: contains evaluations of the RHS are n-th and (n+1)-th steps <br/>  &emsp; &emsp; &emsp; Use: `auto & fn = auxRhs(pressio::ode::n());` <br/> &ensp; &ensp; &ensp; &emsp; `auto & fnp1 = auxRhs(pressio::ode::nPlusOne());` |
 
 
@@ -203,7 +205,8 @@ int main()
   // systemObj is the system instance
 
   namespace pode = pressio::ode;
-  auto stepper = pode::create_bdf1_stepper(stateObj, systemObj);
+  const auto scheme = pode::SteppersE::BDF1;
+  auto stepper = pode::create_implicit_stepper(scheme, stateObj, systemObj);
 
   // create a solver, here for simplicity we show the case where
   // for the types used, we can leverage pressio solvers
@@ -306,7 +309,11 @@ int main()
 Obviously, if you want to use pressio nonlinear solvers, then you need provide
 also the specializations described [here](md_pages_components_nonlinsolvers.html).
 
+<br/>
+
 ## API for discrete-time systems
+
+\todo FINISH
 
 @code{.cpp}
 template<int num_states, class StateType, class SystemType>
@@ -314,19 +321,14 @@ auto create_arbitrary_stepper(const StateType & state,
 						      SystemType && system);
 @endcode
 
-### Parameters
+### Parameters and Requirements
 
-- `StateType`:
-  - type of the data structure you use for the state
+- `num_states`: total number of states you need.
 
-- `SystemType`:
-  - class defining how to create and compute the residual and Jacobian
+- `StateType`: data type of your state, must be copy constructible
 
-### Requirements
-
-- `StateType`: must be copy constructible
-
-- `SystemType` must conform to the following API:
+- `SystemType`: class defining how to create and compute the residual and Jacobian.<br/>
+  Must conform to the following API:
   @code{.cpp}
   class ValidDiscreteTimeSystem
   {

@@ -60,7 +60,7 @@ struct nontranspose{};
 enum class Norm{Undefined, L1, L2};
 
 namespace ops{
-// matching_extents needs extent but we need to fwd 
+// matching_extents needs extent but we need to fwd
 // because it is used by, e.g., deep_copy
 template<class ...> struct matching_extents;
 }//end namespace ops
@@ -84,6 +84,7 @@ template<class ...> struct matching_extents;
 #include "ops/eigen/ops_dot.hpp"
 #include "ops/eigen/ops_pow.hpp"
 #include "ops/eigen/ops_rank1_update.hpp"
+#include "ops/eigen/ops_rank2_update.hpp"
 #include "ops/eigen/ops_elementwise_multiply.hpp"
 #include "ops/eigen/ops_level2.hpp"
 #include "ops/eigen/ops_level3.hpp"
